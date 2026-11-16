@@ -40,16 +40,21 @@ struct SettingsView: View {
             // Vanliga
             voiceSection
             answerSection
-            Section {
-                Toggle("Påminn mig varje dag", isOn: $studyReminders)
-                    .onChange(of: studyReminders) { _, on in Task { await model.refreshStudyPlan(askForReminders: on) } }
-                if studyReminders {
-                    DatePicker("Tid", selection: reminderTime, displayedComponents: .hourAndMinute)
+            // A110 (D198): one section "Påminnelser": the repetition flow's reminder (A109, D194, Angela Fable) and
+            // the study plan's older one after it. Nothing is removed.
+            if let repetition = model.repetition {
+                PracticeReminderSection(model: repetition,
+                                        mergedFooter: "Varje påminnelse kommer högst en gång om dagen, och inte de dagar du redan har pluggat.") {
+                    studyReminderRows(merged: true)
                 }
-            } header: {
-                Text("Påminnelser")
-            } footer: {
-                Text("En gång om dagen: dagar kvar till provet och 5 snabba frågor. Ingen påminnelse de dagar du redan har övat.")
+            } else {
+                Section {
+                    studyReminderRows(merged: false)
+                } header: {
+                    Text("Påminnelser")
+                } footer: {
+                    Text("En gång om dagen: dagar kvar till provet och 5 snabba frågor. Ingen påminnelse de dagar du redan har övat.")
+                }
             }
             Section {
                 NavigationLink("Röstkommandon") { VoiceCommandsView(store: model.phrases, music: model.music, voice: model.speaker.settings, tips: model.tips) }
@@ -162,6 +167,27 @@ struct SettingsView: View {
     }
 
     /// D86: light, dark or as the iPhone; handwriting for the user's questions.
+    /// A19/A38: the study plan's reminder (the listening modes). `merged` (A110): it shares the section with the
+    /// repetition flow's reminder, so the rows say which one they are.
+    @ViewBuilder
+    private func studyReminderRows(merged: Bool) -> some View {
+        Toggle(isOn: $studyReminders) {
+            if merged {
+                VStack(alignment: .leading, spacing: 2) {
+                    // Kelly (Ke65 §14, after D198)
+                    Text("Studieplan i Fler lägen")
+                    Text("Dagar kvar till provet och 5 snabba frågor").font(.subheadline).foregroundStyle(.secondary)
+                }
+            } else {
+                Text("Påminn mig varje dag")
+            }
+        }
+        .onChange(of: studyReminders) { _, on in Task { await model.refreshStudyPlan(askForReminders: on) } }
+        if studyReminders {
+            DatePicker("Tid", selection: reminderTime, displayedComponents: .hourAndMinute)
+        }
+    }
+
     private var appearanceSection: some View {
         @Bindable var appearance = appearance
         return Section {

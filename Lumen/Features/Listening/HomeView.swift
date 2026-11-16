@@ -40,7 +40,15 @@ struct HomeView: View {
     /// A24 (Kelly Ke10, T3 finding 3): a start with the microphone off shows the screen that fixes it.
     @State private var isShowingMicrophoneDenied = false
 
+    /// Toby T24 V4 (D189): with the repetition flow there is one way to an exam, Nytt prov; the exam made there is
+    /// also Provläge's exam.
+    @State private var showsNewDrill = false
+
     private var plans: [ExamPlan] { model.examPlans?.upcoming() ?? [] }
+
+    private func addExam() {
+        if model.repetition != nil { showsNewDrill = true } else { model.isShowingAddExam = true }
+    }
 
     var body: some View {
         Group {
@@ -99,6 +107,9 @@ struct HomeView: View {
             if phase == .active { Task { await showSheetOnOpen() } }
         }
         .sheet(isPresented: $showsCapabilitiesIntro) { CapabilitiesIntroSheet() }
+        .sheet(isPresented: $showsNewDrill) { // T24 V4
+            if let repetition = model.repetition { NewDrillView(model: repetition) { _ in } }
+        }
         .sheet(isPresented: Binding(get: { model.testMode?.needsServerNotice == true && !model.isShowingSettings },
                                     set: { if !$0 { model.testMode?.needsServerNotice = false } })) {
             // A76 (Ke46 T2): the server switched the test mode on for this account: said once, with "Okej".
@@ -390,7 +401,7 @@ struct HomeView: View {
             header {
                 SectionLabel("Nästa prov")
                 if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
-                RedPenRing(text: ExamPlan.daysLeftText(plan.daysLeft()))
+                if plan.hasDate { RedPenRing(text: ExamPlan.daysLeftText(plan.daysLeft())) } // D189: no countdown without a date
             }
             HStack(alignment: .center, spacing: 12) {
                 Text(plan.name)
@@ -569,7 +580,7 @@ struct HomeView: View {
                     Rectangle().fill(LumenColor.line).frame(height: 1).padding(.leading, 16)
                 }
                 Button {
-                    model.isShowingAddExam = true
+                    addExam()
                 } label: {
                     Label("Lägg till prov", systemImage: "plus")
                         .font(LumenFont.text(17, .semibold))
@@ -596,7 +607,7 @@ struct HomeView: View {
                 .font(LumenFont.text(16))
                 .foregroundStyle(LumenColor.muted)
             Button {
-                model.isShowingAddExam = true
+                addExam()
             } label: {
                 Label("Lägg till prov", systemImage: "plus")
             }

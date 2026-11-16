@@ -22,6 +22,29 @@ struct DrillDraft: Sendable, Equatable {
     var note: String? = nil
 }
 
+/// A105 (D185, K70 `/exam read`): the material cleaned for reading aloud, in parts. Nothing is stored until the user
+/// saves it (`Drill.text`, `RepetitionModel.save`), and only saving counts against the month (`countsAs`).
+struct DrillTextDraft: Sendable, Equatable {
+    var title: String
+    var summary: DrillSummary
+    /// Headings and paragraphs in reading order (`DrillItem.textPart`).
+    var parts: [DrillItem]
+    var chars: Int
+    /// What saving will count: every started 800 characters is one question (D185).
+    var countsAs: Int
+    /// The material was longer than the server reads (40 000 characters, 150 parts).
+    var truncated: Bool = false
+    var warning: String? = nil
+
+    /// A105: the exam to save.
+    var drill: Drill { Drill.text(title: title, summary: summary, parts: parts) }
+
+    /// D185: every started 800 characters is one question (the server's `counts_as` wins when it sends one).
+    static func countsAs(chars: Int, perQuestion: Int = 800) -> Int {
+        chars <= 0 ? 0 : (chars + perQuestion - 1) / perQuestion
+    }
+}
+
 enum DrillMakingError: Error, Equatable {
     case noMaterial
     /// No network (Ke50 §13: "Ingen internetanslutning …"), only when the phone has none (A85).
@@ -45,6 +68,8 @@ protocol DrillMaking: AnyObject, Sendable {
     func answer(_ question: String, summary: DrillSummary, notes: String, longWords: Int) async throws(DrillMakingError) -> DrillItem
     /// .docx: iOS cannot read Word (only macOS can), so the server does (K45 `doc_text`).
     func documentText(docx: Data) async throws(DrillMakingError) -> String
+    /// A105 (D185, K70): Läs upp texten: the material cleaned for reading aloud, in parts.
+    func readText(_ material: DrillMaterial, subject: String?, grade: String?, title: String?) async throws(DrillMakingError) -> DrillTextDraft
 }
 
 @MainActor
@@ -86,6 +111,16 @@ final class DrillClient: DrillMaking {
         var note: String?
         struct Upload: Decodable { var path: String; var url: String }
         var uploads: [Upload]?
+        /// K70 `/exam read`.
+        struct Part: Decodable { var kind: String?; var text: String }
+        var parts: [Part]?
+        var title: String?
+        var subject: String?
+        var grade: String?
+        var chars: Int?
+        var counts_as: Int?
+        var truncated: Bool?
+        var warning: String?
     }
 
     /// K53: up to 4 photos go as base64 in the drill itself; more are uploaded first (at most 40).
@@ -220,6 +255,44 @@ final class DrillClient: DrillMaking {
         return made
     }
 
+    func readText(_ material: DrillMaterial, subject: String?, grade: String?, title: String?) async throws(DrillMakingError) -> DrillTextDraft {
+        guard !material.isEmpty else { throw .noMaterial }
+        // K70: the same inputs as `drill`.
+        var body: [String: Any] = ["action": "read"]
+        if material.pages.count > Self.inlinePages {
+            body["page_paths"] = try await upload(Array(material.pages.prefix(Self.maxPages)))
+        } else if !material.pages.isEmpty {
+            body["pages"] = material.pages.map { ["media_type": "image/jpeg", "data": $0.base64EncodedString()] }
+        }
+        let text = material.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !text.isEmpty { body["text"] = String(text.prefix(40_000)) }
+        if let subject, !subject.isEmpty { body["subject"] = subject }
+        if let grade, !grade.isEmpty { body["grade"] = grade }
+        if let title, !title.isEmpty { body["title"] = title }
+        let reply = try await call(body, timeout: 150)
+        return try Self.textDraft(reply.parts ?? [], title: reply.title, subject: reply.subject, grade: reply.grade,
+                                  chars: reply.chars, countsAs: reply.counts_as, truncated: reply.truncated,
+                                  warning: reply.warning)
+    }
+
+    /// K70's reply as the draft to save; a reply without a readable part is the server's "too little".
+    private static func textDraft(_ parts: [Reply.Part], title: String?, subject: String?, grade: String?, chars: Int?,
+                                  countsAs: Int?, truncated: Bool?, warning: String?) throws(DrillMakingError) -> DrillTextDraft {
+        let items = parts.compactMap { part -> DrillItem? in
+            let text = part.text.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !text.isEmpty else { return nil }
+            return DrillItem.textPart(text, part: part.kind == "heading" ? .heading : .para)
+        }
+        guard !items.isEmpty else { throw .server("no text") }
+        let total = chars ?? items.reduce(0) { $0 + $1.long.count }
+        let subjectText = subject ?? ""
+        let name = title?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return DrillTextDraft(title: name?.isEmpty == false ? name! : (subjectText.isEmpty ? "Text" : subjectText),
+                              summary: DrillSummary(subject: subjectText, grade: grade ?? "", covers: ""),
+                              parts: items, chars: total, countsAs: countsAs ?? DrillTextDraft.countsAs(chars: total),
+                              truncated: truncated ?? false, warning: warning?.isEmpty == false ? warning : nil)
+    }
+
     func documentText(docx: Data) async throws(DrillMakingError) -> String {
         // K45 drill.ts: {"action":"doc_text", "data": "<base64 .docx>"}
         let reply = try await call(["action": "doc_text", "data": docx.base64EncodedString()], timeout: 60)
@@ -312,6 +385,8 @@ extension DrillMakingError {
         case .offline: NetworkStatus.noNetworkLine // A103: nothing is queued, so "försök igen"
         case .server(let why) where why == "no questions":
             "EarMind hittade för lite att göra frågor av. Lägg till fler sidor eller mer text."
+        case .server(let why) where why == "no text":
+            "EarMind hittade ingen text att läsa upp. Lägg till fler sidor eller mer text." // A105
         case .refused(let message): message
         case .server: "Det gick inte att skapa frågorna. Försök igen." // A85
         }
@@ -370,6 +445,45 @@ final class MockDrillMaker: DrillMaking {
     func documentText(docx: Data) async throws(DrillMakingError) -> String {
         throw .server("Word-filer läses av servern (K45 doc_text)")
     }
+
+    /// A105: the material's own lines as parts (a short line without a full stop is a heading), clearly a sample.
+    func readText(_ material: DrillMaterial, subject: String?, grade: String?, title: String?) async throws(DrillMakingError) -> DrillTextDraft {
+        guard !material.isEmpty else { throw .noMaterial }
+        if delay > .zero { try? await Task.sleep(for: delay) }
+        var source = material.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        if source.isEmpty {
+            source = "Fotosyntes\nVäxter gör socker av koldioxid och vatten. De behöver ljus för det. Syre blir över."
+        }
+        let parts = source.split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+            .map { line in
+                var part = DrillItem.textPart(line, part: line.count < 60 && !line.hasSuffix(".") ? .heading : .para)
+                part.sentences = MockDrillMaker.sentences(line)
+                return part
+            }
+        let chars = parts.reduce(0) { $0 + $1.long.count }
+        return DrillTextDraft(title: title ?? "Exempeltext (testläge)",
+                              summary: DrillSummary(subject: subject ?? "Biologi", grade: grade ?? "åk 8", covers: ""),
+                              parts: parts, chars: chars, countsAs: DrillTextDraft.countsAs(chars: chars))
+    }
+
+    /// The mock's sentence split: after ".", "!" or "?" and a space.
+    nonisolated static func sentences(_ text: String) -> [String] {
+        var out: [String] = []
+        var current = ""
+        var previous: Character?
+        for char in text {
+            if char == " ", let p = previous, ".!?".contains(p) {
+                out.append(current.trimmingCharacters(in: .whitespaces))
+                current = ""
+            } else {
+                current.append(char)
+            }
+            previous = char
+        }
+        let last = current.trimmingCharacters(in: .whitespaces)
+        if !last.isEmpty { out.append(last) }
+        return out.isEmpty ? [text] : out
+    }
 }
 
 // MARK: - K46: the exams per account
@@ -404,7 +518,11 @@ final class DrillStore {
         write()
     }
 
+    /// T24-M1 (D189): told after every change, so Provläge's exams follow the repetition exams.
+    @ObservationIgnored var onChange: (@MainActor ([Drill]) -> Void)?
+
     private func write() {
+        onChange?(drills)
         do {
             try JSONEncoder().encode(drills).write(to: url, options: .atomic)
         } catch {
@@ -444,6 +562,27 @@ protocol DrillAudioProviding: AnyObject, Sendable {
     func problem(for drill: Drill) -> String?
     /// Kelly N1: "Tryck en gång för svaret." in the exam's voice, if there is one.
     func cue(for drill: Drill) -> URL?
+    /// A105 (D185): a text's part `index`: its file and sentence times, or nil while its sound is not here.
+    func reading(for drill: Drill, part index: Int) -> ReadingAudio?
+    /// A107 (D190, K71): Starta prov asks the server for the sound. False = it could not start (said in `problem`).
+    func startAudio(_ drill: Drill) async -> Bool
+    /// A107: Starta prov is asking for the sound right now.
+    func isStarting(_ drill: Drill) -> Bool
+}
+
+extension DrillAudioProviding {
+    /// A107 (D190): the on-phone voice (mock mode) has nothing to start.
+    func startAudio(_ drill: Drill) async -> Bool { true }
+    func isStarting(_ drill: Drill) -> Bool { false }
+
+    /// A105: all of an exam's sound is on the phone (a text has no tracks, so it is counted by its files).
+    func hasAllSound(_ drill: Drill) -> Bool {
+        if drill.isText {
+            let p = progress(for: drill)
+            return p.total > 0 && p.ready == p.total
+        }
+        return tracks(for: drill) != nil
+    }
 }
 
 @MainActor
@@ -475,7 +614,8 @@ final class DeviceVoiceDrillAudio: DrillAudioProviding {
     }
 
     private func texts(_ drill: Drill) -> [String] {
-        drill.items.flatMap { [$0.question, $0.short, $0.long] }
+        // A105: a text's part is one file of its text.
+        drill.isText ? drill.items.map(\.long) : drill.items.flatMap { [$0.question, $0.short, $0.long] }
     }
 
     func progress(for drill: Drill) -> (ready: Int, total: Int) {
@@ -505,6 +645,29 @@ final class DeviceVoiceDrillAudio: DrillAudioProviding {
     var stagedProblems: [UUID: String] = [:]
 
     func cue(for drill: Drill) -> URL? { nil } // the mock has no fixed line
+
+    /// A105: the iPhone voice reads each sentence into its own file part by part; the times are spread over the part
+    /// by the sentences' lengths (Apple's voice gives no timestamps). Only for the mock mode and the Simulator.
+    func reading(for drill: Drill, part index: Int) -> ReadingAudio? {
+        _ = made
+        guard drill.items.indices.contains(index) else { return nil }
+        let item = drill.items[index]
+        let file = self.url(text: item.long)
+        guard FileManager.default.fileExists(atPath: file.path) else { return nil }
+        let duration = (try? AVAudioPlayer(contentsOf: file))?.duration ?? 0
+        return ReadingAudio(url: file, times: Self.spread(item.readingSentences, over: duration))
+    }
+
+    /// Sentence times over `duration` in proportion to each sentence's characters.
+    nonisolated static func spread(_ sentences: [String], over duration: TimeInterval) -> [ClosedRange<TimeInterval>] {
+        let total = Double(max(sentences.reduce(0) { $0 + $1.count }, 1))
+        var start = 0.0
+        return sentences.map { sentence in
+            let end = start + duration * Double(sentence.count) / total
+            defer { start = end }
+            return start...max(start, end)
+        }
+    }
 
     func prepare(_ drill: Drill) async {
         guard makesSound, !preparing.contains(drill.id) else { return }

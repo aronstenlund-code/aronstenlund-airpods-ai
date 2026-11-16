@@ -14,8 +14,14 @@ label = sys.argv[1] if len(sys.argv) > 1 else "before"
 counts = [int(x) for x in sys.argv[2:]] or [3, 15, 20]
 EX = os.environ.get("K69_EX", "photo:bio-ak8-fotosyntes,text:bio-ak8-fotosyntes,photo:h3-hi-franska-revolutionen").split(",")
 
+_TOK = []
 def one(key, n):
-    tok = qa.signup()[0]
+    # K69_ONE=1: one test account for every run, one at a time (Supabase limits anonymous sign-ups per hour)
+    if os.environ.get("K69_ONE"):
+        if not _TOK: _TOK.append(qa.signup()[0])
+        tok = _TOK[0]
+    else:
+        tok = qa.signup()[0]
     kind, name = key.split(":")
     if kind == "photo":
         files = sorted(glob.glob(os.path.join(HERE, "qa", "repetition_bank", "files", name, "*.jpg")))
@@ -29,16 +35,16 @@ def one(key, n):
     if st != 200: return {"key": key, "n": n, "status": st, "wall_ms": wall, "body": raw[:200].decode()}
     j = json.loads(raw); u = j.get("usage", {})
     step = lambda k: {x: u.get(k, {}).get(x) for x in ("ms", "input_tokens", "output_tokens")} if u.get(k) else None
-    return {"key": key, "n": n, "status": st, "wall_ms": wall, "server_ms": u.get("ms"), "plan": step("plan"), "shorten": step("shorten"),
+    return {"key": key, "n": n, "status": st, "wall_ms": wall, "server_ms": u.get("ms"), "plan": step("plan"), "notes": step("notes"), "shorten": step("shorten"),
             "questions": len(j.get("items", [])), "notes_chars": len(j.get("notes", "")), "cost": u.get("est_cost_usd"),
             "items": [i["question"] for i in j.get("items", [])]}
 
 jobs = [(k, n) for n in counts for k in EX]
 out = []
-with cf.ThreadPoolExecutor(3) as pool:
+with cf.ThreadPoolExecutor(1 if os.environ.get("K69_ONE") else 3) as pool:
     for r in pool.map(lambda a: one(*a), jobs):
         out.append(r)
-        print(r["key"], r["n"], r.get("status"), "wall", r["wall_ms"], "plan", r.get("plan"), "shorten", r.get("shorten"), "q", r.get("questions"), "notes", r.get("notes_chars"), flush=True)
+        print(r["key"], r["n"], r.get("status"), "wall", r["wall_ms"], "plan", (r.get("plan") or {}).get("ms"), "notes", (r.get("notes") or {}).get("ms"), "shorten", r.get("shorten"), "q", r.get("questions"), "notes", r.get("notes_chars"), flush=True)
 stamp = datetime.datetime.now().strftime("%Y-%m-%d-%H%M%S")
 p = os.path.join(HERE, "..", "reports", "qa", "data", f"{stamp}-k69-{label}.json")
 json.dump(out, open(p, "w", encoding="utf8"), ensure_ascii=False, indent=1)

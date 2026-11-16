@@ -1,0 +1,114 @@
+name: Apptest nightly (T24, T27, T28, T29, T30)
+
+# T31 (Toby (moln), Deangelo 2026-11-15 22:15): every night about 03:00 Swedish time, without any session awake, the
+# repetition flow's app tests run in the Simulator with fake audio only (D180: LUMEN_TEST_HEADER / x-earmind-test,
+# 0 ElevenLabs). One runner per test, in parallel. The last job writes one line per test (grön/röd) to
+# reports/apptest/nightly/YYYY-MM-DD.md and pushes it to main (reports/** does not start an iOS build).
+# Simulator only: never a verification on a device.
+on:
+  schedule:
+    - cron: "0 2 * * *" # 02:00 UTC = 03:00 Swedish winter time (04:00 in summer)
+  workflow_dispatch:
+
+concurrency:
+  group: apptest-nightly
+  cancel-in-progress: false
+
+jobs:
+  test:
+    name: ${{ matrix.id }} ${{ matrix.title }}
+    runs-on: macos-26
+    timeout-minutes: 110
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { id: T24, title: "hela repetitionsflödet", script: fullflow.sh, out: fullflow }
+          - { id: T27, title: "prov utan nät", script: offline.sh, out: offline }
+          - { id: T28, title: "läsläget", script: reading.sh, out: reading }
+          - { id: T29, title: "A107 redigera och Starta prov", script: a107.sh, out: a107 }
+          - { id: T30, title: "streak och påminnelse", script: t30.sh, out: t30 }
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Run ${{ matrix.id }}
+        id: run
+        continue-on-error: true
+        run: bash scripts/apptest/${{ matrix.script }}
+
+      - name: Status line
+        if: always()
+        run: |
+          mkdir -p status
+          if [ "${{ steps.run.outcome }}" = "success" ]; then R="grön"; else R="röd"; fi
+          FAILS="$(grep -hE '^FEL ' apptest-out/${{ matrix.out }}/*log*.txt 2>/dev/null | head -n 3 | sed 's/: [0-9]* s, [0-9]* tryck//' | paste -sd ';' -)"
+          LINE="- **${{ matrix.id }}** ${{ matrix.title }}: **$R**"
+          [ -n "$FAILS" ] && LINE="$LINE ($FAILS)"
+          LINE="$LINE · [körning](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})"
+          echo "$LINE" > "status/${{ matrix.id }}.md"
+          cat "status/${{ matrix.id }}.md"
+          cat apptest-out/${{ matrix.out }}/summary.md >> "$GITHUB_STEP_SUMMARY" 2>/dev/null || true
+
+      - name: Upload status
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: status-${{ matrix.id }}
+          path: status/${{ matrix.id }}.md
+          retention-days: 7
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: nightly-${{ matrix.id }}
+          path: |
+            apptest-out/${{ matrix.out }}
+            !apptest-out/${{ matrix.out }}/logs/*.xcresult
+          retention-days: 14
+          if-no-files-found: warn
+
+  report:
+    name: Nightly line in reports/apptest/nightly
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: status-*
+          path: status
+          merge-multiple: true
+      - name: Write and push
+        run: |
+          set -euo pipefail
+          DAY="$(TZ=Europe/Stockholm date +%Y-%m-%d)"
+          FILE="reports/apptest/nightly/$DAY.md"
+          mkdir -p reports/apptest/nightly
+          {
+            echo "# Nattlig apptest $DAY $(TZ=Europe/Stockholm date +%H:%M) (simulatorn, inte enhet, falskt ljud, 0 ElevenLabs)"
+            echo
+            for id in T24 T27 T28 T29 T30; do cat "status/$id.md" 2>/dev/null || echo "- **$id**: ingen status (jobbet startade inte)"; done
+          } > "$FILE"
+          cat "$FILE"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$FILE"
+          git commit -m "Apptest nightly $DAY (T31) [skip eval]"
+          for i in 1 2 3 4; do git pull -q --rebase origin main && git push -q origin HEAD:main && exit 0; sleep $((i*10)); done
+          exit 1

@@ -23,7 +23,52 @@ enum RepetitionDemo {
                                       "repQuotaUsedUp", "repLength", "repLengthEdit", "repSoundProblemNone",
                                       "repWaitingProblem",
                                       // A102 (K66 point 4): numbers and formulas shown as in a textbook
-                                      "repNumbers", "repNumbersEdit"]
+                                      "repNumbers", "repNumbersEdit",
+                                      // A104 (Angela Fable): empty and error states; A103: no network
+                                      "repSchoolsOffline", "repSchoolsFailed", "repSchoolSearchNone", "repSchoolSearchFailed", "repPublishFailed", "repSoundMaking", "repQuotaExam", "repHelpTryUsedUp", "repNewOffline", "repExamOffline",
+                                      // A106 (Angela Fable, Kelly Ke63): a text read aloud
+                                      "repTextNew", "repTextConfirm", "repText", "repTextMaking", "repTextPlay", "repTextPaused",
+                                      "repTextEnd", "repTextWaiting", "repHomeText", "repTextControls",
+                                      // A107 (D190): the sound is made at Starta prov
+                                      "repUnstarted", "repUnstartedEdit", "repHomeUnstarted", "repUnstartedTooMany",
+                                      // A109 (D194, Ke65): the practice reminder
+                                      "repReminderAsk", "repReminderSettings", "repReminderDenied",
+                                      // A110 (D198): the text exam before it is started (no Dela, the line under it)
+                                      "repUnstartedText"]
+
+    /// A107: Fysikprovet is saved but not started: no sound is asked for yet.
+    static let unstarted: Drill = {
+        var made = Drill(title: "Fysikprovet", summary: DrillSummary(subject: "Fysik", grade: "åk 9", covers: "Kraft och rörelse."),
+                         items: [
+                            DrillItem(question: "Vad är en kraft?", short: "En kraft är något som kan ändra ett föremåls rörelse eller form.",
+                                      long: "En kraft är något som kan ändra ett föremåls rörelse eller form. Den mäts i newton."),
+                            DrillItem(question: "Vad säger Newtons första lag?", short: "Ett föremål fortsätter som förut om ingen kraft verkar på det.",
+                                      long: "Ett föremål fortsätter som förut om ingen kraft verkar på det. Det kallas tröghetslagen."),
+                         ])
+        made.audioStarted = false
+        return made
+    }()
+
+    /// A106 (Ke63): Biologiprovet as a text read aloud: two headings, nine sentences (made up, no student text).
+    static let reading: Drill = {
+        func part(_ sentences: [String], heading: Bool = false) -> DrillItem {
+            var item = DrillItem.textPart(sentences.joined(separator: " "), part: heading ? .heading : .para)
+            item.sentences = sentences
+            return item
+        }
+        return Drill.text(title: "Biologiprovet", summary: DrillSummary(subject: "Biologi", grade: "åk 9", covers: ""),
+                          parts: [
+                            part(["Fotosyntesen"], heading: true),
+                            part(["Växter tillverkar sin egen näring genom fotosyntes.", "Det sker i bladens gröna korn, kloroplasterna.",
+                                  "Där fångar klorofyllet energin i solljuset."]),
+                            part(["Växten tar upp koldioxid ur luften och vatten genom rötterna.",
+                                  "Med ljusets energi blir de till socker och syre.",
+                                  "Sockret är växtens mat, och syret släpps ut genom klyvöppningarna."]),
+                            part(["Cellandningen"], heading: true),
+                            part(["I cellandningen bryts sockret ner igen.", "Det sker i mitokondrierna, i alla levande celler.",
+                                  "Energin som frigörs använder cellen för att växa och röra sig."]),
+                          ])
+    }()
 
     /// A102: Matteprovet, spoken with the numbers as words, shown with digits and formulas (`DrillItem.screen`).
     static let maths: Drill = {
@@ -111,7 +156,10 @@ enum RepetitionDemo {
     static func seed(_ model: RepetitionModel, for name: String) {
         for old in model.store.drills { model.store.delete(old.id) } // left by an earlier screen
         // A83: demo schools and publications instead of the server; my school is set except for the empty list.
-        model.publishing = DemoPublishing(empty: name == "repSchoolsEmpty")
+        model.publishing = DemoPublishing(empty: name == "repSchoolsEmpty", failure: DemoPublishing.failure(for: name),
+                                          noSchools: name == "repSchoolSearchNone")
+        // A103/A104: no network, said before the user tries.
+        if ["repSchoolsOffline", "repNewOffline", "repExamOffline"].contains(name) { model.stageOffline(true) }
         model.mySchool = name == "repSchoolsEmpty" ? nil : DemoPublishing.school
         if name == "repSchoolsEmpty" { model.mySchoolAsked = true }
         // A100: a new user without exams has not started one, so no Fler lägen row (set here, scenes share defaults).
@@ -123,6 +171,10 @@ enum RepetitionDemo {
         // A99: the month's questions are used up (D175); the server's length classes (D176).
         if name == "repQuotaUsedUp" { model.quota = DrillQuota(used: 15, limit: 15, resets: "2026-12-01", serverLeft: 0, suggest: 0) }
         if name == "repLength" || name == "repLengthEdit" { model.store.save(drillWithLengths) }
+        // A104: the sound is being made (no file yet, nothing wrong); the month's questions ran out for an exam.
+        if name == "repSoundMaking" { model.store.save(chemistry) }
+        if name == "repQuotaExam" { model.stagedQuotaExceeded.insert(history.id) }
+        if name == "repHelpTryUsedUp" { model.quota = DrillQuota(used: 15, limit: 15, resets: "2026-12-01", serverLeft: 0, suggest: 0) }
         if name == "repNumbers" || name == "repNumbersEdit" { model.store.save(maths) } // A102
         if name == "repSoundProblemNone", let audio = model.audio as? DeviceVoiceDrillAudio {
             model.store.save(chemistry) // no files at all
@@ -151,6 +203,38 @@ enum RepetitionDemo {
                 try? WAVWriter.write(samples: silence, sampleRate: 16_000, to: audio.url(text: text))
             }
         }
+        if name.hasPrefix("repUnstarted") || name == "repHomeUnstarted" { // A107: the newest exam
+            model.store.save(unstarted)
+            if name == "repUnstartedText" { // A110
+                var text = reading
+                text.audioStarted = false
+                model.store.save(text)
+            }
+            // Kelly Ke64b N1: what starting counts as, and a month that does not cover it.
+            let left = name == "repUnstartedTooMany" ? 1 : 12
+            model.quota = DrillQuota(used: 15 - left, limit: 15, resets: "2026-12-01", serverLeft: left, suggest: left)
+            return
+        }
+        if name.hasPrefix("repText") || name == "repHomeText" { // A106: the text is the newest exam, with its sound
+            model.store.save(reading)
+            if name != "repTextMaking", let audio = model.audio as? DeviceVoiceDrillAudio {
+                for item in reading.items {
+                    try? WAVWriter.write(samples: [Int16](repeating: 0, count: 1_600), sampleRate: 16_000, to: audio.url(text: item.long))
+                }
+            }
+            if name == "repHomeText" { UserDefaults.standard.set(true, forKey: "repetition.controlsChecked") }
+            let reader = ReadingPlayer(parts: reading.readingParts, audio: { _ in nil }, source: FileRepetitionAudioSource(),
+                                       timer: TaskRepetitionTimer())
+            switch name {
+            case "repTextPlay": reader.stageForScreenshot(.reading, sentence: 5)
+            case "repTextPaused": reader.stageForScreenshot(.reading, sentence: 5, paused: true)
+            case "repTextEnd": reader.stageForScreenshot(.atEnd, sentence: 10)
+            case "repTextWaiting": reader.stageForScreenshot(.waitingForAudio, sentence: 7)
+            default: return
+            }
+            model.session.stageForScreenshot(reading, reader: reader)
+            return
+        }
         let player = RepetitionPlayer(count: drill.items.count, track: { _ in nil }, source: FileRepetitionAudioSource(),
                                       timer: TaskRepetitionTimer(), thinkingSeconds: 6)
         switch name {
@@ -168,6 +252,13 @@ enum RepetitionDemo {
         default: return
         }
         model.session.stageForScreenshot(drill, player: player)
+    }
+
+    /// A106: Nytt prov with Läs upp texten chosen, or its "Stämmer det här?".
+    static func readingForm(_ model: RepetitionModel, _ staged: NewDrillView.StagedReading) -> NewDrillView {
+        var view = NewDrillView(model: model) { _ in }
+        view.stagedReading = staged
+        return view
     }
 
     /// The check after the three presses: all arrived, or AirPods 1/2 (two presses came as play/pause, three never).
@@ -190,11 +281,44 @@ enum RepetitionDemo {
     static func view(_ name: String, listening: ListeningModel) -> some View {
         if let model = listening.repetition {
             switch name {
-            case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem":
+            case "repReminderAsk":
+                Color(.systemGroupedBackground).ignoresSafeArea()
+                    .sheet(isPresented: .constant(true)) {
+                        PracticeReminderQuestion(model: model)
+                    }
+            case "repReminderSettings", "repReminderDenied":
+                NavigationStack {
+                    Form { PracticeReminderSection(model: model, stagedDenied: name == "repReminderDenied") }
+                        .navigationTitle("Inställningar")
+                        .navigationBarTitleDisplayMode(.inline)
+                }
+            case "repUnstartedText": NavigationStack { DrillView(model: model, drillID: reading.id) }
+            case "repUnstarted", "repUnstartedTooMany": NavigationStack { DrillView(model: model, drillID: unstarted.id) }
+            case "repUnstartedEdit": DrillItemEditor(model: model, drill: unstarted, itemID: unstarted.items[0].id)
+            case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted":
                 NavigationStack { HomeView(model: listening) }
+            // A106 (Kelly Ke63): Läs upp texten
+            case "repTextNew": readingForm(model, .choice)
+            case "repTextConfirm":
+                readingForm(model, .confirm(DrillTextDraft(title: reading.title, summary: reading.summary, parts: reading.items,
+                                                           chars: 620, countsAs: 1)))
+            case "repText", "repTextMaking": NavigationStack { DrillView(model: model, drillID: reading.id) }
+            case "repTextPlay", "repTextPaused", "repTextEnd", "repTextWaiting": RepetitionPlayerView(model: model)
+            case "repTextControls":
+                ControlCheckView(hub: RemoteCommandHub(), sound: nil, waitSeconds: 3600, forText: true, onStart: {}, onLater: {})
             case "repSoundProblem": NavigationStack { DrillView(model: model, drillID: history.id) }
             case "repSoundProblemNone": NavigationStack { DrillView(model: model, drillID: chemistry.id) }
-            case "repQuotaUsedUp": NewDrillView(model: model) { _ in }
+            case "repQuotaUsedUp", "repNewOffline": NewDrillView(model: model) { _ in }
+            case "repSchoolsOffline", "repSchoolsFailed": NavigationStack { SchoolExamsView(model: model) }
+            case "repSchoolSearchNone", "repSchoolSearchFailed":
+                SchoolPicker(model: model, title: "Välj skola", selected: nil, onSkip: nil, stagedQuery: "Kungsh", onPick: { _ in })
+            case "repPublishFailed":
+                PublishSheet(model: model, drill: drill, stagedProblem: "Det gick inte att publicera just nu. Försök igen om en stund.")
+            case "repSoundMaking": NavigationStack { DrillView(model: model, drillID: chemistry.id) }
+            case "repQuotaExam": NavigationStack { DrillView(model: model, drillID: history.id) }
+            case "repExamOffline": NavigationStack { DrillView(model: model, drillID: drill.id) }
+            case "repHelpTryUsedUp": // the pushed stack showed an empty page in the pictures (43707813309)
+                NavigationStack { HelpTryView(model: model) {} }
             case "repLength": NavigationStack { DrillView(model: model, drillID: drill.id) }
             case "repLengthEdit": DrillItemEditor(model: model, drill: drillWithLengths, itemID: drill.items[2].id)
             case "repNumbers": NavigationStack { DrillView(model: model, drillID: maths.id) }
@@ -269,15 +393,39 @@ final class DemoPublishing: DrillPublishingService {
                              display_name: nil),
     ]
     let empty: Bool
+    /// A104: every call fails with this (no network, the server down).
+    let failure: DrillCloudError?
+    /// A104: the school search finds nothing.
+    let noSchools: Bool
 
-    init(empty: Bool) { self.empty = empty }
+    init(empty: Bool, failure: DrillCloudError? = nil, noSchools: Bool = false) {
+        self.empty = empty
+        self.failure = failure
+        self.noSchools = noSchools
+    }
 
-    func schools(matching query: String) async throws(DrillCloudError) -> [DrillSchool] { [Self.school] }
+    static func failure(for scene: String) -> DrillCloudError? {
+        switch scene {
+        case "repSchoolsOffline": .offline("screenshots")
+        case "repSchoolsFailed", "repSchoolSearchFailed", "repPublishFailed":
+            .refused(status: 503, code: "unavailable", message: "Ingen kontakt med EarMind just nu. Försök igen om en stund.")
+        default: nil
+        }
+    }
+
+    func schools(matching query: String) async throws(DrillCloudError) -> [DrillSchool] {
+        if let failure { throw failure }
+        return noSchools ? [] : [Self.school]
+    }
     func publish(drillID: String, school: DrillSchool, subject: String, examDate: Date,
-                 displayName: String?) async throws(DrillCloudError) -> DrillPublicationView { Self.results[0] }
+                 displayName: String?) async throws(DrillCloudError) -> DrillPublicationView {
+        if let failure { throw failure }
+        return Self.results[0]
+    }
     func unpublish(drillID: String) async throws(DrillCloudError) {}
     func search(school: DrillSchool?, subject: String?, mySchool: DrillSchool?) async throws(DrillCloudError) -> [DrillPublicationView] {
-        empty ? [] : Self.results
+        if let failure { throw failure }
+        return empty ? [] : Self.results
     }
     func importPublication(id: String) async throws(DrillCloudError) -> DrillCloudView {
         throw .offline("screenshots")

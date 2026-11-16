@@ -42,9 +42,18 @@ struct ExamPlan: Codable, Equatable, Identifiable, Sendable {
     var subject: String
     var date: Date
     var topics = ""
+    /// T24-M1 (D189): the repetition exam (`Drill`) this plan mirrors. Nil for an exam said aloud in Provläge.
+    var drillID: UUID?
+    /// D189: the repetition exam's own name ("Vad är magma", "Biologi åk 8"), used as the plan's name.
+    var title: String?
+    /// D189: a repetition exam without a date (only a school's published exam has one). Nil = the date is real.
+    var undated: Bool?
 
-    /// "Biologiprovet", "Matteprovet", "Provet i Filosofi".
+    var hasDate: Bool { undated != true }
+
+    /// "Biologiprovet", "Matteprovet", "Provet i Filosofi"; a repetition exam's own name (D189).
     var name: String {
+        if let title = title?.trimmingCharacters(in: .whitespaces), !title.isEmpty { return title }
         let s = subject.trimmingCharacters(in: .whitespaces)
         guard !s.isEmpty else { return "Provet" }
         if area == .matte { return "Matteprovet" }
@@ -58,15 +67,19 @@ struct ExamPlan: Codable, Equatable, Identifiable, Sendable {
 
     /// "Fre 14 nov, åk 9"
     func dateLine(calendar: Calendar = .current) -> String {
-        var line = Self.shortDate(date, calendar: calendar)
+        var line = hasDate ? Self.shortDate(date, calendar: calendar) : Self.noDateLine
         if let grade { line += ", " + StudyProfile.gradeName(grade).lowercased() }
         return line
     }
 
     /// "Ons 19 nov, om 10 dagar"
     func whenLine(now: Date = Date(), calendar: Calendar = .current) -> String {
-        Self.shortDate(date, calendar: calendar) + ", " + Self.inDays(daysLeft(now: now, calendar: calendar))
+        guard hasDate else { return Self.noDateLine }
+        return Self.shortDate(date, calendar: calendar) + ", " + Self.inDays(daysLeft(now: now, calendar: calendar))
     }
+
+    /// D189: a repetition exam without a date.
+    static let noDateLine = "Inget datum"
 
     static func inDays(_ days: Int) -> String {
         switch days {
@@ -148,18 +161,67 @@ final class ExamPlanStore {
         plans = (try? file.load([ExamPlan].self)) ?? []
     }
 
-    /// Exams from today on, nearest first.
+    /// Exams from today on, nearest first; repetition exams without a date last, newest first (D189).
     func upcoming(now: Date = Date()) -> [ExamPlan] {
-        plans.filter { $0.daysLeft(now: now) >= 0 }.sorted { $0.date < $1.date }
+        let dated = plans.filter { $0.hasDate && $0.daysLeft(now: now) >= 0 }.sorted { $0.date < $1.date }
+        return dated + plans.filter { !$0.hasDate }.reversed()
     }
 
+    /// D189: only exams with a real date, for the countdown, the study plan, reminders and the widget.
+    func upcomingDated(now: Date = Date()) -> [ExamPlan] { upcoming(now: now).filter(\.hasDate) }
+
     func nearest(now: Date = Date()) -> ExamPlan? { upcoming(now: now).first }
+
+    /// T24-M1 (D189): the repetition exams are the user's exams. One plan per exam in `drills`, kept in step: a new
+    /// exam adds one, a renamed or dated one updates it, a deleted one removes it (with its Mina svar left for the
+    /// store to keep). Plans said aloud in Provläge (no `drillID`) are left as they are.
+    func sync(with drills: [Drill], now: Date = Date()) {
+        var changed = false
+        let ids = Set(drills.map(\.id))
+        let before = plans.count
+        plans.removeAll { $0.drillID.map { !ids.contains($0) } ?? false }
+        changed = changed || plans.count != before
+        for drill in drills {
+            let mirrored = Self.plan(for: drill, now: now)
+            if let index = plans.firstIndex(where: { $0.drillID == drill.id }) {
+                var plan = plans[index]
+                if plan.title != mirrored.title || plan.subject != mirrored.subject || plan.undated != mirrored.undated
+                    || (mirrored.hasDate && plan.date != mirrored.date) {
+                    plan.title = mirrored.title
+                    plan.subject = mirrored.subject
+                    plan.area = mirrored.area
+                    plan.undated = mirrored.undated
+                    if mirrored.hasDate { plan.date = mirrored.date }
+                    plans[index] = plan
+                    changed = true
+                }
+            } else {
+                plans.append(mirrored)
+                changed = true
+            }
+        }
+        if changed { persist() }
+    }
+
+    /// D189: a repetition exam as a plan: its name, subject and grade, and the school's date when it has one.
+    static func plan(for drill: Drill, now: Date = Date()) -> ExamPlan {
+        let subject = drill.summary.subject.trimmingCharacters(in: .whitespaces)
+        let date = drill.publication?.examDate
+        var plan = ExamPlan(grade: nil, area: .of(subject: subject),
+                            subject: subject, date: date ?? now)
+        plan.id = drill.id // the same id, so Mina svar recorded for it follow the exam
+        plan.drillID = drill.id
+        plan.title = drill.title
+        plan.undated = date == nil ? true : nil
+        return plan
+    }
 
     /// A new exam, or the same subject on the same day updated (a voice statement said twice is one exam).
     func save(_ plan: ExamPlan) {
         if let index = plans.firstIndex(where: { $0.id == plan.id }) {
             plans[index] = plan
         } else if let index = plans.firstIndex(where: {
+            $0.drillID == nil && plan.drillID == nil && $0.hasDate && plan.hasDate &&
             $0.subject.caseInsensitiveCompare(plan.subject) == .orderedSame && Calendar.current.isDate($0.date, inSameDayAs: plan.date)
         }) {
             var merged = plan

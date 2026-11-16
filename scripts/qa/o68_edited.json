@@ -1,0 +1,145 @@
+{
+ "about": "O68: 20 svar som en elev kan ha redigerat eller importerat (D190: svaren går att redigera före Starta prov). Påhittade, inga riktiga användares ord.",
+ "items": [
+  {
+   "eid": "edit-01",
+   "subject": "Fysik",
+   "question": "Vad säger Newtons andra lag?",
+   "short": "Kraften är massan gånger accelerationen.",
+   "long": "Kraften är massan gånger accelerationen. Enl. kap. 4 skrivs det F = m · a, t.ex. ger 5 kg och 2 m/s² en kraft på 10 N (se fig. 3)."
+  },
+  {
+   "eid": "edit-02",
+   "subject": "Fysik",
+   "question": "Hur snabbt går ljudet?",
+   "short": "Ljudet går ca 340 m/s i luft.",
+   "long": "Ljudet går ca 340 m/s i luft. I vatten går det ungefär 4 ggr snabbare, dvs. ca 1 500 m/s."
+  },
+  {
+   "eid": "edit-03",
+   "subject": "Kemi",
+   "question": "Vad bildas när metan brinner?",
+   "short": "Det bildas koldioxid och vatten.",
+   "long": "Det bildas koldioxid och vatten. Formeln är CH4 + 2 O2 → CO2 + 2 H2O, och reaktionen avger energi (exoterm)."
+  },
+  {
+   "eid": "edit-04",
+   "subject": "Kemi",
+   "question": "Vad är pH?",
+   "short": "pH är ett mått på hur surt något är.",
+   "long": "pH är ett mått på hur surt något är. Skalan går från 0–14; pH < 7 är surt, pH = 7 neutralt och pH > 7 basiskt."
+  },
+  {
+   "eid": "edit-05",
+   "subject": "Biologi",
+   "question": "Vad gör de röda blodkropparna?",
+   "short": "De transporterar syre.",
+   "long": "De transporterar syre. Hemoglobinet (Hb) binder O2 i lungorna och lämnar det i vävnaderna, bl.a. i musklerna."
+  },
+  {
+   "eid": "edit-06",
+   "subject": "Biologi",
+   "question": "Hur många kromosomer har människan?",
+   "short": "Människan har 46 kromosomer.",
+   "long": "Människan har 46 kromosomer. Det är 23 par, dvs. ett från varje förälder. DNA:t finns i cellkärnan, och ca 2 % av det är gener."
+  },
+  {
+   "eid": "edit-07",
+   "subject": "Matematik",
+   "question": "Vad är 25 % av 80?",
+   "short": "Det är 20.",
+   "long": "Det är 20. Man räknar 0,25 · 80 = 20, eller 80/4 = 20."
+  },
+  {
+   "eid": "edit-08",
+   "subject": "Matematik",
+   "question": "Vad är arean av en cirkel?",
+   "short": "Arean är pi gånger radien i kvadrat.",
+   "long": "Arean är pi gånger radien i kvadrat. A = π · r², så med r = 3 cm blir A ≈ 28,3 cm²."
+  },
+  {
+   "eid": "edit-09",
+   "subject": "Matematik",
+   "question": "Hur löser man 2x + 3 = 11?",
+   "short": "Man får x = 4.",
+   "long": "Man får x = 4. Först drar man bort 3: 2x = 8. Sedan delar man med 2: x = 8/2 = 4."
+  },
+  {
+   "eid": "edit-10",
+   "subject": "Fysik",
+   "question": "Vad är temperaturen på solens yta?",
+   "short": "Den är ungefär 5 500 °C.",
+   "long": "Den är ungefär 5 500 °C. Det motsvarar ca 5 800 K, och i kärnan är det ~15 milj. °C."
+  },
+  {
+   "eid": "edit-11",
+   "subject": "Geografi",
+   "question": "Hur stor är Sveriges befolkning?",
+   "short": "Sverige har drygt 10,5 miljoner invånare.",
+   "long": "Sverige har drygt 10,5 miljoner invånare. Ca 85 % bor i tätorter, främst i Sthlm, Gbg och Malmö."
+  },
+  {
+   "eid": "edit-12",
+   "subject": "Historia",
+   "question": "När var franska revolutionen?",
+   "short": "Den började 1789.",
+   "long": "Den började 1789. Kungen Ludvig XVI avrättades 1793, och Napoleon tog makten 1799."
+  },
+  {
+   "eid": "edit-13",
+   "subject": "Historia",
+   "question": "Vad hände 1914–1918?",
+   "short": "Då pågick första världskriget.",
+   "long": "Då pågick första världskriget. Det började efter mordet i Sarajevo 28/6 1914, och ca 17 milj. människor dog."
+  },
+  {
+   "eid": "edit-14",
+   "subject": "Samhällskunskap",
+   "question": "Hur många ledamöter har riksdagen?",
+   "short": "Riksdagen har 349 ledamöter.",
+   "long": "Riksdagen har 349 ledamöter. Partierna måste få minst 4 % av rösterna; S, M och SD är störst (2022)."
+  },
+  {
+   "eid": "edit-15",
+   "subject": "Svenska",
+   "question": "Vad är ett argument?",
+   "short": "Ett argument är ett skäl för en åsikt.",
+   "long": "Ett argument är ett skäl för en åsikt. Ex: \"Skolan borde börja senare\" – argument: 1) tonåringar sover mer, 2) de lär sig bättre."
+  },
+  {
+   "eid": "edit-16",
+   "subject": "Svenska",
+   "question": "Vad är en tes?",
+   "short": "En tes är textens huvudåsikt.",
+   "long": "En tes är textens huvudåsikt. Den står ofta i inledningen, s. 2 i boken, och upprepas i avslutningen m.m."
+  },
+  {
+   "eid": "edit-17",
+   "subject": "Engelska",
+   "question": "What does the greenhouse effect mean?",
+   "short": "It means that gases trap heat.",
+   "long": "It means that gases trap heat. CO2 and CH4 (methane) act like glass, e.g. in a greenhouse → the Earth gets ~1.2 °C warmer."
+  },
+  {
+   "eid": "edit-18",
+   "subject": "Engelska",
+   "question": "How tall is the lighthouse?",
+   "short": "It is about 30 m tall.",
+   "long": "It is about 30 m tall. That is roughly 100 ft, i.e. a ten-storey building, and the light can be seen 20+ km away & it flashes every 5 sec."
+  },
+  {
+   "eid": "edit-19",
+   "subject": "Engelska",
+   "question": "Who was Thomas?",
+   "short": "Thomas was the keeper's grandson.",
+   "long": "Thomas was the keeper's grandson. He climbed the 154 steps w/ a lamp at 3 a.m."
+  },
+  {
+   "eid": "edit-20",
+   "subject": "Teknik",
+   "question": "Vad är en kraftverk?",
+   "short": "Ett kraftverk gör el.",
+   "long": "Ett kraftverk gör el. Ett vattenkraftverk ger ca 1 000 MW, och el mäts i kWh, t.ex. 2 kWh/dag för ett kylskåp."
+  }
+ ]
+}

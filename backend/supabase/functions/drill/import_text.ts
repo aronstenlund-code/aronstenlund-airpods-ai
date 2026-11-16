@@ -41,6 +41,16 @@ const SIGN_OFF = /^(?:hoppas|lycka till|säg till|vill du|behöver du|om du vill
 // rule 7 (variant 21): "Fråga: q Svar: a" on one line
 const INLINE_SVAR = /\s(?:\*\*|__)?\s*svar\s*(?:\*\*|__)?\s*(?:[:：]|[–—](?=\s))\s*(?:\*\*|__)?\s*/iu;
 const stripMd = (s: string) => s.replace(/\*\*|__|`/g, "").trim();
+/**
+ * K73 (Oscar O66, o58 variants 27 and 31): a keycap emoji number at the start of a line ("1️⃣ Fråga:", "🔟") is
+ * numbering like "1."; single *italics* and _italics_ around words lose their marks (double ** was already removed).
+ */
+export function cleanLine(line: string): string {
+  return line
+    .replace(/^(\s*(?:[-*•>]\s*)?)((?:[0-9]\uFE0F?\u20E3)+|\u{1F51F})\s*/u,
+      (_m, pre: string, e: string) => `${pre}${e === "\u{1F51F}" ? "10" : e.replace(/[\uFE0F\u20E3]/gu, "")}. `)
+    .replace(/(^|[\s(„"“])([*_])(?![\s*_])([^*_\n]*?[^\s*_])\2(?=$|[\s.,;:!?)"”])/gu, "$1$3");
+}
 
 /** The first sentence: up to the first ". ", "! " or "? " that is not an abbreviation or a decimal number. */
 export function firstSentence(answer: string): string {
@@ -58,7 +68,7 @@ interface Para { line: number; lines: string[]; nums: number[]; afterBlank: bool
 
 export function importText(raw: unknown): ImportResult {
   const text = typeof raw === "string" ? raw.slice(0, IMPORT_LIMITS.textChars) : "";
-  const lines = text.replace(/\r\n?/g, "\n").split("\n");
+  const lines = text.replace(/\r\n?/g, "\n").split("\n").map(cleanLine);
   const items: ImportItem[] = [], skipped: ImportProblem[] = [], warnings: ImportProblem[] = [];
   const seen = new Map<string, number>();
   let cur: { line: number; question: string; paras: Para[]; blank: boolean } | null = null;

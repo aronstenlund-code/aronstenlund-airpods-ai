@@ -29,12 +29,54 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     var fromPublication: String?
     /// A84 (D151): "A", "B" or "C", chosen before the sound is made; locked after the first save (K50).
     var voiceModel: String?
+    /// A105 (D185, K70): a running text read aloud instead of questions. Nil = questions (every exam before K70).
+    /// Locked at the first save (the server answers 409 `kind_locked`).
+    var kind: DrillKind?
+
+    /// A107 (D190, K71): false while the server has made no sound for this exam (saved with `defer_audio`, never
+    /// started). Nil = started, or an exam from before K71. Starta prov starts it (`RepetitionModel.startAudio`).
+    var audioStarted: Bool?
+
+    /// A107: the sound is not asked for yet; Starta prov asks for it.
+    var awaitsAudioStart: Bool { audioStarted == false }
+
+    /// A105: the items are the text's parts (headings and paragraphs), read in order.
+    var isText: Bool { kind == .text }
 
     static let defaultQuestionCount = 20
     static let defaultLongWords = 90
 
     /// "Ljud: 36 av 40 klara" (Kelly Ke49 §4.7): with D145 two files per question, the question and the long answer.
-    var audioFileCount: Int { items.count * 2 }
+    /// A105 (K70): a text has one file per part.
+    var audioFileCount: Int { isText ? items.count : items.count * 2 }
+
+    /// A105 (D185): the text as the reading player and the screen see it.
+    var readingParts: [ReadingParagraph] {
+        items.map { ReadingParagraph(sentences: $0.readingSentences, isHeading: $0.part == .heading) }
+    }
+
+    /// A105: "Mening 5 av 9".
+    var sentenceCount: Int { items.reduce(0) { $0 + $1.readingSentences.count } }
+
+    /// A105 (D185): a new text from `/exam read`'s parts, saved like an exam (`RepetitionModel.save`).
+    static func text(title: String, summary: DrillSummary, parts: [DrillItem]) -> Drill {
+        var drill = Drill(title: title, summary: summary, items: parts)
+        drill.kind = .text
+        drill.questionCount = parts.count
+        return drill
+    }
+}
+
+/// A105 (D185, K70): what an exam is: questions (D142) or a text read aloud.
+enum DrillKind: String, Codable, Sendable {
+    case questions
+    case text
+}
+
+/// A105 (K70): a text's part: a heading (one sentence, read as a heading) or a paragraph.
+enum DrillPart: String, Codable, Sendable {
+    case heading
+    case para
 }
 
 /// A99 (D176): how long a question is to listen to, from the server (≤ 800 characters normal, 801–1 600 a bit longer,
@@ -88,6 +130,13 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
     /// A102 (K66 point 4): the text to show where it differs from the spoken one (numbers and formulas as in a
     /// textbook: "1850", "a² + b²"). The voice always reads `question`, `short` and `long`. Nil when they are the same.
     var screen: DrillScreenText?
+    /// A105 (D185, K70): a text's part. The part's text is `long` (as on the server); `question` and `short` are empty.
+    var part: DrillPart?
+    /// A105 (K70): the part's sentences as the server split them (the screen's sentences, the same number as the
+    /// times). Nil until the server has seen the part.
+    var sentences: [String]?
+    /// A105 (K70): [start_ms, end_ms] per sentence in the part's file (`longAudio`), from the download.
+    var sentenceTimesMs: [[Int]]?
 
     init(id: UUID = UUID(), question: String, short: String, long: String, serverID: String? = nil) {
         self.id = id
@@ -142,6 +191,30 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
             if run >= 2 { return t }
         }
         return body
+    }
+
+    /// A105 (D185): a text's part, before the server has split it.
+    static func textPart(_ text: String, part: DrillPart) -> DrillItem {
+        var item = DrillItem(question: "", short: "", long: text)
+        item.part = part
+        return item
+    }
+
+    /// A105: the sentences the reader steps through. The server's split when it has one; before that the part is
+    /// one sentence (a heading always is).
+    var readingSentences: [String] {
+        if let sentences, !sentences.isEmpty { return sentences }
+        return [long]
+    }
+
+    /// A105 (K70): the part's sentence times in seconds, nil while unknown.
+    var sentenceTimes: [ClosedRange<TimeInterval>]? {
+        guard let ms = sentenceTimesMs, !ms.isEmpty else { return nil }
+        return ms.map { pair in
+            let start = Double(pair.first ?? 0) / 1000
+            let end = max(start, Double(pair.count > 1 ? pair[1] : pair.first ?? 0) / 1000)
+            return start...end
+        }
     }
 
     /// The same texts (an item whose texts did not change keeps its sound).

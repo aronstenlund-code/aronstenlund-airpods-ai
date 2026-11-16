@@ -61,7 +61,7 @@
   const $ = (id) => document.getElementById(id);
   const msg = (t) => { $("msg").textContent = t || ""; };
   let rows = [], newest = null;
-  const MODE = { auto: "Standardläge (Auto)", push_to_talk: "Standardläge (tryck och prata)", text: "Text", tutor: "Provläge / Socialt / Rizz", interview_prep: "Intervjuförberedelse" };
+  const MODE = { auto: "Standardläge (Auto)", push_to_talk: "Standardläge (tryck och prata)", text: "Text", tutor: "Provläge / Socialt / Rizz", interview_prep: "Intervjuförberedelse", repetition: "Repetitionsläget", read: "Läsläget" };
 
   async function token() { const { data } = await sb.auth.getSession(); return data.session?.access_token || null; }
   async function load() {

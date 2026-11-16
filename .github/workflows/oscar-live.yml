@@ -1,0 +1,79 @@
+name: Oscar live QA
+
+# Oscar (moln, 2026-11-15): the cloud session's network cannot reach the Supabase project, so Oscar's live QA runs
+# here (Actions > Oscar live QA > Run workflow, or a dispatch from the session). Only scripts in the list below.
+# Every script uses scripts/qa/qa_testaccount.py: anonymous test accounts, the header x-earmind-test and a script user
+# agent, so the server gives fake audio/transcripts and never calls ElevenLabs (D180); direct ElevenLabs calls are
+# refused in the script. Claude cost only (cap about 0.5 USD per run). Results: the log and the artifact "oscar-live".
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "Script to run"
+        required: true
+        type: choice
+        options:
+          - o66_nightly.py
+          - o67_reading.py
+          - o68_voice.py
+          - o70_k77_live.py
+      args:
+        description: "Arguments (optional, e.g. --fast)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write  # only the O68 step pushes its test data (no user data) to the branch oscar/qa-data
+
+concurrency:
+  group: oscar-live
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Material files (O55 bank, git-ignored, deterministic, no network)
+        run: |
+          pip install --quiet Pillow
+          python -I scripts/qa/repetition_bank/make_files.py
+      - name: Run
+        env:
+          SCRIPT: ${{ inputs.script }}
+          ARGS: ${{ inputs.args }}
+        run: |
+          mkdir -p reports/qa/data
+          before=$(ls reports/qa/data | sort)
+          # shellcheck disable=SC2086
+          rc=0
+          python -I -X utf8 "scripts/qa/$SCRIPT" $ARGS || rc=$?
+          echo "=== result files ==="
+          for f in $(ls reports/qa/data | sort); do
+            if ! grep -qx "$f" <<< "$before"; then echo "--- $f ($(wc -c < "reports/qa/data/$f") bytes)"; fi
+          done
+          exit $rc
+      - name: O68 analysis (server's own voiceText via esbuild) and data to oscar/qa-data
+        if: always() && inputs.script == 'o68_voice.py'
+        run: |
+          f=$(ls -t reports/qa/data/*-o68-items.json | head -1)
+          printf 'export { voiceText, longVoice } from "%s/backend/supabase/functions/drill/handler.ts";\nexport { VOICE_RULES_VERSION } from "%s/backend/supabase/functions/drill/voicerules.ts";\nexport { examLanguage } from "%s/backend/supabase/functions/exam/drill.ts";\n' "$PWD" "$PWD" "$PWD" > /tmp/o68entry.ts
+          npx --yes esbuild@0.24.0 /tmp/o68entry.ts --bundle --format=esm --platform=node --external:'npm:*' --external:'jsr:*' --outfile=/tmp/o68voice.mjs --log-level=warning
+          node scripts/qa/o68_analyze.mjs /tmp/o68voice.mjs "$f"
+          git config user.name "oscar-qa-bot"
+          git config user.email "oscar-qa-bot@users.noreply.github.com"
+          mkdir -p /tmp/qa && cp reports/qa/data/*-o68-* /tmp/qa/
+          git fetch origin oscar/qa-data && git checkout -B oscar/qa-data origin/oscar/qa-data || git checkout --orphan oscar/qa-data
+          git rm -rq --cached . >/dev/null 2>&1 || true
+          mkdir -p o68 && cp /tmp/qa/* o68/
+          git add o68 && git commit -qm "O68 data $(basename "$f")" && git push -q origin HEAD:oscar/qa-data
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: oscar-live
+          path: reports/qa/data/*.json
+          retention-days: 14

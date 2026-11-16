@@ -8,6 +8,7 @@ import { finalNumber, isBareNumber } from "./spoken.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 import { practiceNav, spokenTask } from "./practice.ts";
 import { DEFAULT_DRILL_CONFIG, docxText, DRILL_WEIGHT, type DrillConfig, handleDrill, type MaterialStore, uploadUrls } from "./drill.ts";
+import { handleRead } from "./read.ts";
 
 /**
  * D84 (owner): exam session. `POST /exam` with one of four actions. The exam and its assessment instructions are
@@ -345,16 +346,16 @@ export function createExamHandler(deps: ExamDeps) {
         // K45: a Word file's text, read in code (iOS cannot read .docx); no model, no cost, nothing kept
         return json({ text: await docxText(String(b?.data ?? "")) });
       }
-      const drill = action === "drill" || action === "drill_answers" || action === "drill_one";
+      const drill = action === "drill" || action === "drill_answers" || action === "drill_one" || action === "read";
       if (!drill && !["parse", "hint", "grade"].includes(action)) {
-        throw new HttpError(400, "invalid_request", "action must be parse, hint, grade, summary, nav, drill, drill_answers, drill_one or doc_text");
+        throw new HttpError(400, "invalid_request", "action must be parse, hint, grade, summary, nav, drill, drill_answers, drill_one, read or doc_text");
       }
       const extra = appChecks("exam", await networkKey(req), user, {
         networkPerDay: cfg.networkPerDay,
         newUserAgeSec: 0,
         newUserPerHour: 0,
       });
-      const rl = await enforceLimits(deps.rateLimiter, "exam", user.id, cfg.limits, drill ? DRILL_WEIGHT[action] : 1, extra);
+      const rl = await enforceLimits(deps.rateLimiter, "exam", user.id, cfg.limits, drill ? DRILL_WEIGHT[action] ?? 4 : 1, extra);
       if (!rl.allowed) {
         throw new HttpError(429, "rate_limited", "För många försök just nu. Vänta en liten stund och försök igen.", {
           retryAfterSec: rl.retryAfterSec,
@@ -366,7 +367,7 @@ export function createExamHandler(deps: ExamDeps) {
         const req0 = { ...((b ?? {}) as Record<string, unknown>) };
         delete req0._max_questions;
         let quota: { used: number; limit: number; left: number; per: "month"; resets: string } | null = null;
-        if (action === "drill" && deps.quota) {
+        if ((action === "drill" || action === "read") && deps.quota) {
           const q = await deps.quota(user.id);
           quota = { used: q.used, limit: q.lim, left: Math.max(0, q.lim - q.used), per: "month", resets: monthResets(Date.now()) };
           if (quota.left <= 0) {
@@ -377,7 +378,10 @@ export function createExamHandler(deps: ExamDeps) {
           }
           req0._max_questions = quota.left;
         }
-        const { body, steps } = await handleDrill(
+        // K70 (D185): Läsläget, the material cleaned for reading aloud (read.ts); the quota is counted at save
+        const { body, steps } = action === "read"
+          ? await handleRead(req0, deps.provider, cfg.drill ?? DEFAULT_DRILL_CONFIG, req.signal, { userId: user.id, store: deps.material ?? null })
+          : await handleDrill(
           action as "drill" | "drill_answers" | "drill_one",
           req0,
           deps.provider,

@@ -1,0 +1,64 @@
+name: Kevin live check
+
+# Kevin (moln, 2026-11-15): the cloud session's network cannot reach the Supabase project, so backend live checks run
+# here (Actions > Kevin live check > Run workflow, or a dispatch from the session). Only scripts in the list below.
+# Every script uses scripts/qa/qa_testaccount.py: anonymous test accounts and the header x-earmind-test, so the server
+# gives silent audio and never calls ElevenLabs (D180). Claude cost only. The results are printed in the log and kept
+# as the artifact "kevin-live" (reports/qa/data/*.json).
+on:
+  workflow_dispatch:
+    inputs:
+      script:
+        description: "Script to run"
+        required: true
+        type: choice
+        options:
+          - k70-live.py
+          - k66-quality-check.py
+          - k67-live-check.py
+          - k69-measure.py
+          - k71-live.py
+          - k72-live.py
+          - k74-live.py
+          - k76-read-image.py
+          - k77-live.py
+      args:
+        description: "Arguments (optional)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kevin-live
+  cancel-in-progress: false
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run
+        env:
+          SCRIPT: ${{ inputs.script }}
+          ARGS: ${{ inputs.args }}
+        run: |
+          mkdir -p reports/qa/data
+          before=$(ls reports/qa/data | sort)
+          # shellcheck disable=SC2086
+          python -X utf8 "scripts/$SCRIPT" $ARGS
+          echo "=== result files ==="
+          for f in $(ls reports/qa/data | sort); do
+            if ! grep -qx "$f" <<< "$before"; then echo "--- $f"; cat "reports/qa/data/$f"; echo; fi
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kevin-live
+          path: reports/qa/data/*.json
+          retention-days: 14

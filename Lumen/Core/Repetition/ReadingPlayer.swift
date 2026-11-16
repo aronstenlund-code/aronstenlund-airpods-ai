@@ -1,83 +1,129 @@
 import Foundation
 import Observation
 
-/// D185 (A105): one sentence of a read-aloud text, with where it is in its paragraph's sound file.
-struct ReadingSentence: Codable, Equatable, Sendable {
-    var text: String
-    /// Seconds into the paragraph's file at normal speed (K70's timestamps, from ElevenLabs' character times).
-    var start: TimeInterval
-    var end: TimeInterval
-}
-
-/// D185: a paragraph of the text: one sound file and its sentences. A heading is a paragraph of its own.
-struct ReadingParagraph: Codable, Equatable, Sendable {
-    var sentences: [ReadingSentence]
+/// D185 (A105): a part of a read-aloud text as the screen shows it: a heading (one sentence) or a paragraph.
+struct ReadingParagraph: Equatable, Sendable {
+    var sentences: [String]
     var isHeading: Bool = false
 }
 
-/// Where the reader is: paragraph and sentence in it, and the same as one number counted through the whole text.
-struct ReadingPosition: Equatable, Sendable {
-    var paragraph: Int
-    var sentence: Int
+/// D185, K70: a part's downloaded file and where each of its sentences starts and ends in it (seconds at normal
+/// speed, from the server's `audio.text.sentences`).
+struct ReadingAudio: Equatable, Sendable {
+    var url: URL
+    var times: [ClosedRange<TimeInterval>]
+
+    /// Where sentence `i` starts. K70 promises as many times as sentences; a missing one starts at the last known
+    /// start (never past the file), so a short list can only replay, never skip.
+    func start(of i: Int) -> TimeInterval {
+        guard !times.isEmpty else { return 0 }
+        return times[min(max(i, 0), times.count - 1)].lowerBound
+    }
 }
 
-/// D185 (A105): the reading mode's player. A text is paragraphs of sentences; each paragraph is one file.
+/// D185 (A105): where a text was left, per text ("Fortsätt" starts there, Kelly Ke63 §5).
+struct ReadingProgress: Codable, Equatable, Sendable {
+    var sentence: Int
+    var savedAt: Date
+
+    static let key = "earmind.reading.progress"
+
+    static func load(_ drillID: UUID, _ defaults: UserDefaults) -> ReadingProgress? {
+        all(defaults)[drillID.uuidString]
+    }
+
+    static func save(_ drillID: UUID, sentence: Int, _ defaults: UserDefaults, now: Date = Date()) {
+        var all = all(defaults)
+        all[drillID.uuidString] = ReadingProgress(sentence: sentence, savedAt: now)
+        if all.count > 50 {
+            // Only the 50 latest texts are remembered.
+            for key in all.sorted(by: { $0.value.savedAt > $1.value.savedAt }).dropFirst(50).map(\.key) {
+                all[key] = nil
+            }
+        }
+        if let data = try? JSONEncoder().encode(all) { defaults.set(data, forKey: key) }
+    }
+
+    static func clear(_ drillID: UUID, _ defaults: UserDefaults) {
+        var all = all(defaults)
+        all[drillID.uuidString] = nil
+        if let data = try? JSONEncoder().encode(all) { defaults.set(data, forKey: key) }
+    }
+
+    private static func all(_ defaults: UserDefaults) -> [String: ReadingProgress] {
+        guard let data = defaults.data(forKey: key) else { return [:] }
+        return (try? JSONDecoder().decode([String: ReadingProgress].self, from: data)) ?? [:]
+    }
+}
+
+/// D185 (A105): the reading mode's player. A text is parts (headings and paragraphs) of sentences; each part is one
+/// file. No microphone, only files and presses, like `RepetitionPlayer`.
 ///
-/// The AirPods (and Control Center, and the screen's buttons) use the same three events as the questions (D142), with
-/// the meanings of an ordinary player:
+/// The AirPods, Control Center, the Lock Screen and the screen's buttons all send the three events of D142, which
+/// mean what they mean in an ordinary player (Play/Pause, Next track, Previous track):
 /// - 1 press (`.long`): pause, and 1 press again goes on **from the start of the sentence** (D164);
-/// - 2 presses (`.short`, next track): the next sentence;
-/// - 3 presses (`.pauseToggle`, previous track): the previous sentence.
+/// - 2 presses (`.short`): the next sentence (the next part's first after a part's last);
+/// - 3 presses (`.pauseToggle`): the previous sentence, never before the first.
 ///
-/// While paused, 2 and 3 presses move the place and stay paused, so the next 1 press starts from the sentence chosen
-/// (an ordinary player's next/previous while paused). After the last sentence the player stops at the end of the text
-/// (`isAtEnd`); 1 press there starts the text from the beginning, 3 presses go back to the last sentence. Only
-/// `stop()` (Avsluta) ends it.
+/// While paused, 2 and 3 presses move the place and stay paused; the next 1 press reads from there. A tap on a sentence
+/// reads from it, also when paused (Kelly Ke63 §3). After the last sentence the text stops (`atEnd`, Ke63 "Slut på
+/// texten"): 1 press = Börja om, 3 presses = the last sentence, 2 presses nothing. Only `stop()` (Avsluta) ends it.
 ///
-/// A paragraph whose sound is not downloaded yet is waited for in silence, as with the questions (A103: everything
-/// downloaded plays without network).
+/// A part whose sound is not downloaded is waited for in silence (`waitingForAudio`); with A103 everything downloaded
+/// plays without network.
 @MainActor
 @Observable
 final class ReadingPlayer {
     enum Phase: Equatable, Sendable {
         case idle
         case reading
-        /// The paragraph's sound is not on the phone yet; looked for again every `audioRetrySeconds`.
+        /// The part's sound is not on the phone yet; looked for again every `audioRetrySeconds`.
         case waitingForAudio
-        /// After the last sentence.
+        /// After the last sentence (Ke63 "Slut på texten").
         case atEnd
+    }
+
+    struct Position: Equatable, Sendable {
+        var part: Int
+        var sentence: Int
     }
 
     private(set) var phase: Phase = .idle
     private(set) var isPaused = false
+    /// Why it paused: a press, or iOS (a call, Siri, an AirPod out). Only iOS's own pause comes back by itself.
     private(set) var pausedBySystem = false
-    /// The sentence being read (or to start from), counted through the whole text (0-based).
+    /// The sentence being read, or to start from, counted through the whole text (0-based): "Mening 5 av 9".
     private(set) var sentenceIndex: Int
 
-    let paragraphs: [ReadingParagraph]
-    /// The paragraph and sentence of every sentence number.
-    let positions: [ReadingPosition]
+    let parts: [ReadingParagraph]
+    /// Part and sentence of every sentence number.
+    let positions: [Position]
+    /// A84 (D151): the chosen tempo, as for the questions (the voice never under 0.7).
     var tempo: Double = 1
-    /// Called when the sentence changes, with the sentence to come back to ("Fortsätt där du slutade").
+    /// Called when the sentence changes, with the sentence to come back to; 0 after the end (next time from the start).
     var onProgress: (@MainActor (Int) -> Void)?
+    /// Every step as one line, for the log and the Simulator tests.
     var onStep: (@MainActor (String) -> Void)?
+    /// A108 (D194): the text was read to its end.
+    var onEnd: (@MainActor () -> Void)?
 
     static let audioRetrySeconds = 1.0
 
-    private let audioAt: @MainActor (Int) -> URL?
+    private let audioAt: @MainActor (Int) -> ReadingAudio?
     private let source: any RepetitionAudioSource
     private let timer: any RepetitionTimer
     private var current: (any RepetitionAudioPlayer)?
-    /// The paragraph `current` plays.
-    private var currentParagraph: Int?
+    /// The part `current` plays, and its sentence times.
+    private var currentPart: Int?
+    private var currentAudio: ReadingAudio?
     private var failuresInARow = 0
 
-    /// `audio` gives a paragraph's file, or nil while it is not downloaded; asked again when it is needed.
-    init(paragraphs: [ReadingParagraph], audio: @escaping @MainActor (Int) -> URL?, source: any RepetitionAudioSource,
-         timer: any RepetitionTimer, startAt: Int = 0) {
-        self.paragraphs = paragraphs
-        self.positions = paragraphs.enumerated().flatMap { p, paragraph in
-            paragraph.sentences.indices.map { ReadingPosition(paragraph: p, sentence: $0) }
+    /// `audio` gives a part's file and times, or nil while it is not downloaded; asked each time a part begins.
+    init(parts: [ReadingParagraph], audio: @escaping @MainActor (Int) -> ReadingAudio?,
+         source: any RepetitionAudioSource, timer: any RepetitionTimer, startAt: Int = 0) {
+        self.parts = parts
+        self.positions = parts.enumerated().flatMap { p, part in
+            part.sentences.indices.map { Position(part: p, sentence: $0) }
         }
         self.audioAt = audio
         self.source = source
@@ -89,28 +135,35 @@ final class ReadingPlayer {
     var isRunning: Bool { phase != .idle }
     var isAtEnd: Bool { phase == .atEnd }
 
-    var currentSentence: ReadingSentence? {
-        guard positions.indices.contains(sentenceIndex) else { return nil }
-        let p = positions[sentenceIndex]
-        return paragraphs[p.paragraph].sentences[p.sentence]
+    /// The part being read.
+    var position: Position? { positions.indices.contains(sentenceIndex) ? positions[sentenceIndex] : nil }
+
+    var currentSentence: String? {
+        guard let position else { return nil }
+        return parts[position.part].sentences[position.sentence]
+    }
+
+    /// Ke63: the heading the reader is under ("Mening 5 av 9" and the heading; the Lock Screen's title). Nil before
+    /// the first heading and in a text without headings.
+    var currentHeading: String? {
+        guard let position else { return nil }
+        return parts[...position.part].last(where: \.isHeading)?.sentences.joined(separator: " ")
     }
 
     func start() {
         guard !positions.isEmpty, phase == .idle else { return }
-        step("read: start at sentence \(sentenceIndex + 1) of \(positions.count)")
-        playSentence(sentenceIndex)
+        step("start at sentence \(sentenceIndex + 1) of \(positions.count)")
+        read(from: sentenceIndex)
     }
 
-    /// Avsluta.
+    /// Avsluta: the place is kept by `onProgress`.
     func stop() {
         timer.cancel()
-        current?.stop()
-        current = nil
-        currentParagraph = nil
+        drop()
         phase = .idle
         isPaused = false
         pausedBySystem = false
-        step("read: stop")
+        step("stop")
     }
 
     // MARK: Presses
@@ -118,65 +171,69 @@ final class ReadingPlayer {
     func handle(_ event: RepetitionEvent) {
         guard isRunning else { return }
         switch event {
-        case .long:
-            togglePause()
-        case .short:
-            move(to: sentenceIndex + 1, why: "next")
-        case .pauseToggle:
-            move(to: sentenceIndex - 1, why: "previous")
+        case .long: playPause()
+        case .short: move(by: 1)
+        case .pauseToggle: move(by: -1)
         }
     }
 
-    /// The screen: a tap on a sentence reads from there (and goes on reading if it was paused).
+    /// Ke63 §3: a tap on a sentence reads from it, also when paused.
     func jump(to sentence: Int) {
         guard isRunning, positions.indices.contains(sentence) else { return }
         isPaused = false
         pausedBySystem = false
-        step("read: tap on sentence \(sentence + 1)")
-        playSentence(sentence)
+        step("tap on sentence \(sentence + 1)")
+        read(from: sentence)
     }
 
-    private func togglePause() {
-        if phase == .atEnd {
-            // The end of the text: 1 press reads it again from the beginning.
-            isPaused = false
-            step("read: from the beginning again")
-            playSentence(0)
-            return
-        }
+    /// Ke63 "Börja om" on the end screen (the same as 1 press there).
+    func startOver() {
+        guard isRunning else { return }
+        isPaused = false
+        pausedBySystem = false
+        step("from the beginning")
+        read(from: 0)
+    }
+
+    private func playPause() {
+        if phase == .atEnd { startOver(); return }
         if isPaused { resume(by: "press") } else { pause(bySystem: false) }
     }
 
-    private func move(to target: Int, why: String) {
+    private func move(by delta: Int) {
+        let target = sentenceIndex + delta
         if phase == .atEnd {
-            // 2 presses at the end do nothing; 3 presses go back to the last sentence.
-            guard target < positions.count else { return }
-            step("read: \(why) from the end")
-            if isPaused { place(at: positions.count - 1) } else { playSentence(positions.count - 1) }
+            // 2 presses at the end do nothing; 3 presses read the last sentence again.
+            guard delta < 0 else { return }
+            step("previous from the end")
+            read(from: positions.count - 1)
             return
         }
-        let clamped = min(max(target, 0), positions.count - 1)
         if target >= positions.count {
-            step("read: \(why) after the last sentence")
+            step("next after the last sentence")
             reachEnd()
             return
         }
-        step("read: \(why) → sentence \(clamped + 1)")
+        let clamped = max(target, 0)
+        step("\(delta > 0 ? "next" : "previous") → sentence \(clamped + 1)")
         if isPaused {
+            // Stays paused: the next 1 press reads from here.
             place(at: clamped)
         } else {
-            playSentence(clamped)
+            read(from: clamped)
         }
     }
 
     // MARK: iOS
 
+    /// A call, Siri, an alarm, an AirPod out of the ear or AirPods gone: pause, never end.
     func systemPaused(_ why: String) {
-        guard isRunning, !isPaused else { return }
-        step("read: system pause: \(why)")
+        guard isRunning, !isPaused, phase != .atEnd else { return }
+        step("system pause: \(why)")
         pause(bySystem: true)
     }
 
+    /// An interruption ended with `shouldResume`: only a pause iOS made comes back by itself.
     func systemResumed(_ why: String) {
         guard isRunning, isPaused, pausedBySystem else { return }
         resume(by: "system: \(why)")
@@ -184,22 +241,22 @@ final class ReadingPlayer {
 
     // MARK: Following the sound
 
-    /// Moves `sentenceIndex` to the sentence the sound is in. The session calls it a few times a second while it reads
-    /// (the highlighted sentence, Now Playing, the saved place).
+    /// Moves `sentenceIndex` to the sentence the sound is in. The session calls it a few times a second while reading
+    /// (the highlighted sentence, the Lock Screen, the saved place).
     func followSound() {
-        guard phase == .reading, let current, let paragraph = currentParagraph else { return }
+        guard phase == .reading, !isPaused, let current, let part = currentPart, let audio = currentAudio else { return }
         let time = current.currentTime
-        let sentences = paragraphs[paragraph].sentences
-        // The last sentence that has started (its start at or before the sound's time).
-        guard let inParagraph = sentences.lastIndex(where: { $0.start <= time + 0.01 }) else { return }
-        let found = firstIndex(paragraph: paragraph) + inParagraph
+        // Only sentences with a time of their own: without times the place stays where the presses put it.
+        let known = min(parts[part].sentences.count, audio.times.count)
+        guard known > 0, let inPart = (0..<known).last(where: { audio.start(of: $0) <= time + 0.01 }) else { return }
+        let found = firstSentence(of: part) + inPart
         if found != sentenceIndex { setSentence(found) }
     }
 
     // MARK: Steps
 
-    private func firstIndex(paragraph: Int) -> Int {
-        positions.firstIndex { $0.paragraph == paragraph } ?? 0
+    private func firstSentence(of part: Int) -> Int {
+        positions.firstIndex { $0.part == part } ?? 0
     }
 
     private func setSentence(_ i: Int) {
@@ -207,88 +264,93 @@ final class ReadingPlayer {
         onProgress?(i)
     }
 
-    /// Moves the place without sound (while paused): the next 1 press starts there.
-    private func place(at i: Int) {
-        timer.cancel()
+    private func drop() {
         current?.stop()
         current = nil
-        currentParagraph = nil
-        if phase == .atEnd || phase == .waitingForAudio { phase = .reading }
+        currentPart = nil
+        currentAudio = nil
+    }
+
+    /// Moves the place without sound (while paused).
+    private func place(at i: Int) {
+        timer.cancel()
+        drop()
+        if phase != .reading { phase = .reading }
         setSentence(i)
     }
 
-    private func playSentence(_ i: Int) {
+    private func read(from i: Int) {
         timer.cancel()
         let position = positions[i]
         setSentence(i)
-        let sentence = paragraphs[position.paragraph].sentences[position.sentence]
-        if currentParagraph == position.paragraph, let current {
+        if currentPart == position.part, let current, let audio = currentAudio {
             // The same file: only move in it.
             phase = .reading
-            current.seek(to: sentence.start)
+            current.seek(to: audio.start(of: position.sentence))
             current.play(until: nil)
             return
         }
-        current?.stop()
-        current = nil
-        currentParagraph = nil
-        guard let url = audioAt(position.paragraph) else {
-            if phase != .waitingForAudio { step("read: waiting for the sound of paragraph \(position.paragraph + 1)") }
+        drop()
+        guard let audio = audioAt(position.part) else {
+            if phase != .waitingForAudio { step("waiting for the sound of part \(position.part + 1)") }
             phase = .waitingForAudio
             timer.start(seconds: Self.audioRetrySeconds) { [weak self] in
                 guard let self, self.phase == .waitingForAudio, !self.isPaused, self.sentenceIndex == i else { return }
-                self.playSentence(i)
+                self.read(from: i)
             }
             return
         }
         phase = .reading
         do {
-            let player = try source.player(for: url)
+            let player = try source.player(for: audio.url)
             failuresInARow = 0
             player.rate = Float(max(RepetitionPlayer.lowestVoiceRate, tempo))
-            let paragraph = position.paragraph
-            player.onFinish = { [weak self] in self?.paragraphEnded(paragraph) }
+            let part = position.part
+            player.onFinish = { [weak self] in self?.partEnded(part) }
             current = player
-            currentParagraph = paragraph
-            if sentence.start > 0 { player.seek(to: sentence.start) }
+            currentPart = part
+            currentAudio = audio
+            let start = audio.start(of: position.sentence)
+            if start > 0 { player.seek(to: start) }
             player.play(until: nil)
         } catch {
             failuresInARow += 1
-            step("read: could not open \(url.lastPathComponent): \(error.localizedDescription)")
-            // Skip the paragraph that will not open, but never spin: a whole text of them waits instead.
-            let wait: Double = failuresInARow < max(paragraphs.count, 1) ? 1 : 30
+            step("could not open \(audio.url.lastPathComponent): \(error.localizedDescription)")
+            // The part is skipped after a second; a whole text that will not open waits longer instead of spinning.
+            let wait: Double = failuresInARow < max(parts.count, 1) ? 1 : 30
             timer.start(seconds: wait) { [weak self] in
                 guard let self, self.phase == .reading, !self.isPaused, self.current == nil else { return }
-                self.afterParagraph(position.paragraph)
+                if wait > 1 { self.failuresInARow = 0 }
+                self.afterPart(position.part)
             }
         }
     }
 
-    private func paragraphEnded(_ paragraph: Int) {
-        guard phase == .reading, currentParagraph == paragraph else { return }
+    private func partEnded(_ part: Int) {
+        guard phase == .reading, currentPart == part else { return }
         current = nil
-        currentParagraph = nil
-        afterParagraph(paragraph)
+        currentPart = nil
+        currentAudio = nil
+        afterPart(part)
     }
 
-    private func afterParagraph(_ paragraph: Int) {
-        guard let next = positions.firstIndex(where: { $0.paragraph > paragraph }) else {
+    private func afterPart(_ part: Int) {
+        guard let next = positions.firstIndex(where: { $0.part > part }) else {
             reachEnd()
             return
         }
-        playSentence(next)
+        read(from: next)
     }
 
     private func reachEnd() {
         timer.cancel()
-        current?.stop()
-        current = nil
-        currentParagraph = nil
+        drop()
         phase = .atEnd
         isPaused = false
         pausedBySystem = false
-        step("read: end of the text")
-        // Next time the text starts from the beginning.
+        step("end of the text")
+        onEnd?()
+        // The next start begins from the beginning (Ke63: the text does not go round by itself).
         onProgress?(0)
     }
 
@@ -297,25 +359,23 @@ final class ReadingPlayer {
         pausedBySystem = bySystem
         timer.cancel()
         current?.pause()
-        step(bySystem ? "read: paused by iOS" : "read: paused")
+        step(bySystem ? "paused by iOS" : "paused")
     }
 
     private func resume(by why: String) {
         let byUser = !pausedBySystem
         isPaused = false
         pausedBySystem = false
-        step("read: go on (\(why))")
-        guard phase != .atEnd else { return }
-        if let current, byUser || phase != .reading {
-            // D164: the user's pause goes on from the start of the sentence.
-            current.seek(to: currentSentence?.start ?? 0)
-            current.play(until: nil)
-        } else if let current {
-            // iOS's own short pause (a call, Siri) goes on from the word.
-            current.play(until: nil)
-        } else {
-            playSentence(sentenceIndex)
+        step("go on (\(why))")
+        guard phase == .reading, let current else {
+            read(from: sentenceIndex)
+            return
         }
+        if byUser, let position, let audio = currentAudio {
+            // D164: the user's pause goes on from the start of the sentence; iOS's own short pause from the word.
+            current.seek(to: audio.start(of: position.sentence))
+        }
+        current.play(until: nil)
     }
 
     private func step(_ line: String) {
@@ -323,3 +383,14 @@ final class ReadingPlayer {
         onStep?(line)
     }
 }
+
+#if DEBUG
+extension ReadingPlayer {
+    /// The Simulator screenshots (A106): the player in a given state, without sound or timers.
+    func stageForScreenshot(_ phase: Phase, sentence: Int, paused: Bool = false) {
+        self.phase = phase
+        self.sentenceIndex = min(max(sentence, 0), max(positions.count - 1, 0))
+        self.isPaused = paused
+    }
+}
+#endif

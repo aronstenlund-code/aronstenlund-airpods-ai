@@ -5,7 +5,7 @@ import WidgetKit
 /// reloads only when something it shows has changed.
 extension ListeningModel {
     func updateWidget(now: Date = Date()) {
-        let nearest = examPlans?.upcoming(now: now).first
+        let nearest = examPlans?.upcomingDated(now: now).first // D189: the countdown needs a real date
         let snapshot = ExamWidgetSnapshot(examName: nearest?.name, examDate: nearest?.date,
                                           streak: streak.current, doneToday: streak.doneToday,
                                           readyPct: nearest.flatMap { readiness(for: $0)?.readyPct }, updatedAt: now)

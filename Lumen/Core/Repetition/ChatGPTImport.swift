@@ -13,6 +13,9 @@ struct ChatGPTImport: Equatable, Sendable {
     var unreadable: [String]
     /// A96: read, but worth a look ("Rad 4: Frågan saknade Fråga:.", a long answer, a question asked twice).
     var warnings: [String] = []
+    /// Toby 2 T24 L3: ChatGPT's own words before the first question ("Här är frågorna:") and its sign-off after the
+    /// last answer. Left out without a word: they are never a question, so "1 rad kunde inte läsas" was wrong.
+    var leftOut: [String] = []
 
     static let maxItems = 60
     static let maxQuestionChars = 300
@@ -67,6 +70,7 @@ struct ChatGPTImport: Equatable, Sendable {
         var items: [DrillItem] = []
         var unreadable: [String] = []
         var warnings: [String] = []
+        var leftOut: [String] = []
         var current: Reading?
 
         func skip(_ line: Int, _ text: String, _ reason: String) {
@@ -74,6 +78,10 @@ struct ChatGPTImport: Equatable, Sendable {
         }
         func warn(_ line: Int, _ reason: String) {
             warnings.append("Rad \(line): \(reason)")
+        }
+        /// T24 L3: ChatGPT's intro or sign-off, not an unreadable line.
+        func leave(_ line: Int, _ text: String) {
+            leftOut.append("Rad \(line): \(String(text.trimmingCharacters(in: .whitespaces).prefix(120)))")
         }
         func flush(atEnd: Bool = false) {
             guard var reading = current else { return }
@@ -86,14 +94,12 @@ struct ChatGPTImport: Equatable, Sendable {
                 while reading.paragraphs.count > 1, let last = reading.paragraphs.last, last.afterBlankLine,
                       isSignOff(last.text.joined(separator: " "), afterBlankLine: true) {
                     let text = clean(last.text.joined(separator: " "), limit: Int.max)
-                    skip(last.line, text, "Avslutning, inte en del av svaret.")
-                    warn(last.line, "Texten efter sista svaret lästes inte in.")
+                    leave(last.line, text) // T24 L3: the sign-off, left out quietly
                     reading.paragraphs.removeLast()
                 }
                 if let last = reading.paragraphs.last, last.text.count > 1, let line = last.text.last,
                    isSignOff(line, afterBlankLine: false) {
-                    skip(last.lastLine, line, "Avslutning, inte en del av svaret.")
-                    warn(last.lastLine, "Texten efter sista svaret lästes inte in.")
+                    leave(last.lastLine, line) // T24 L3
                     reading.paragraphs[reading.paragraphs.count - 1].text.removeLast()
                 }
             }
@@ -154,6 +160,7 @@ struct ChatGPTImport: Equatable, Sendable {
             // Rule 2: a heading, a code fence or a rule is never answer text. It ends the answer, which stays open
             // for the sign-off check if it was the last one (as Kevin's `closed`).
             if isFormatting(trimmed) {
+                if current == nil, items.isEmpty { leave(number, trimmed); continue } // T24 L3: before the first question
                 skip(number, trimmed, "Rubrik eller formatering, inte en del av svaret.")
                 if current?.state == .answer { current?.state = .closed }
                 continue
@@ -170,12 +177,15 @@ struct ChatGPTImport: Equatable, Sendable {
                 current?.goOn(withoutBullet(trimmed), at: number)
             } else if current?.state == .question, current?.blankLine == false {
                 current?.question += " " + trimmed // the question went on over a second line
+            } else if current == nil, items.isEmpty {
+                leave(number, trimmed) // T24 L3: "Här är frågorna:" before the first question
             } else {
                 skip(number, trimmed, "Raden börjar inte med Fråga: eller Svar:.")
             }
         }
         flush(atEnd: true)
-        return items.isEmpty ? nil : ChatGPTImport(items: items, unreadable: unreadable, warnings: warnings)
+        return items.isEmpty ? nil : ChatGPTImport(items: items, unreadable: unreadable, warnings: warnings,
+                                                   leftOut: leftOut)
     }
 
     /// Oscar's variant 23: how ChatGPT signs off. A paragraph after a blank line that ends in "?" or "!" is one too.
@@ -418,11 +428,27 @@ extension RepetitionModel {
             return save(existing)
         }
         let name = title.trimmingCharacters(in: .whitespaces)
-        var made = Drill(title: name.isEmpty ? "Nytt prov" : name,
+        var made = Drill(title: name.isEmpty ? Self.importTitle(found.items) : name,
                          summary: DrillSummary(subject: "", grade: grade.map { GradeChoice.label($0) } ?? "", covers: ""),
                          items: found.items, questionCount: found.items.count)
         made.voiceModel = voice
         return save(made)
+    }
+
+    /// Toby 2 T24 L2: an imported exam without a name is named after its first question ("Vad är magma"), never
+    /// "Nytt prov" (Start then said "Nästa prov · Nytt prov", and the page's title was the button's).
+    nonisolated static func importTitle(_ items: [DrillItem]) -> String {
+        guard let first = items.first?.question.trimmingCharacters(in: .whitespacesAndNewlines), !first.isEmpty else {
+            return "Prov"
+        }
+        var text = first
+        while let last = text.last, "?.!:".contains(last) { text.removeLast() }
+        guard text.count > 40 else { return text.isEmpty ? "Prov" : text }
+        // At a word's end within 40 characters, with an ellipsis.
+        let cut = text.prefix(40)
+        let words = cut.split(separator: " ").dropLast()
+        let kept = words.isEmpty ? String(cut) : words.joined(separator: " ")
+        return kept.trimmingCharacters(in: CharacterSet(charactersIn: " ,;–-")) + " …"
     }
 
     private static func key(_ question: String) -> String {

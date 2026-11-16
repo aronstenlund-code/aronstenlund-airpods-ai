@@ -1,0 +1,84 @@
+T24 phase b (simulator, not a device), header x-earmind-test=1
+taps (a user's): 17, test taps: 0, screens: 9
+
+Sections:
+OK  Andra kontot: första starten utan prov: 10 s, 2 tryck
+OK  Prov från din skola: 52 s, 5 tryck
+OK  Läget slow (ljudet dröjer): 117 s, 5 tryck
+OK  Läget unavailable (inga krediter): 91 s, 5 tryck
+OK  Proven finns kvar efter omstart (D183): 91 s, 0 tryck
+
+Not obvious:
+- unavailable: 'Ljudet kan inte göras just nu' never shown on Start in 40 s
+
+Log:
+launched with LUMEN_TEST_HEADER=1
+=== Andra kontot: första starten utan prov
+TAP 1 at   32.8 s: Fortsätt
+TAP 2 at   35.2 s: Senare (no exam yet)
+SCREEN t24b-01-start-utan-prov at   38.7 s — Start without an exam
+  texts: Prov | Kom förberedd till provet | Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods.
+  buttons: Inställningar | Nytt prov | Hitta prov från din skola | Klistra in en länk
+OK  Andra kontot: första starten utan prov: 10 s, 2 tryck
+=== Prov från din skola
+TAP 3 at   41.3 s: Hitta prov från din skola
+SCREEN t24b-02-skolan at   45.6 s — Prov från din skola
+  texts: Prov från din skola | Alla skolor | Byt | Ämne | Alla | Kommande prov | Nytt prov | Biologi · sön 22 nov | 3 frågor | Nytt prov | Biologi · sön 22 nov | 3 frågor | Vilken skola går du på? | Då visas prov från din skola först. Det sparas bara på telefonen. | Skriv minst två bokstäver. | Hittar du inte skolan? Sök på orten.
+  buttons: Prov | Alla skolor, Byt | Ämne, Alla | Nytt prov, Biologi · sön 22 nov, 3 frågor | Lägg till Nytt prov | Nytt prov, Biologi · sön 22 nov, 3 frågor | Lägg till Nytt prov | Hoppa över
+SCREEN t24b-02-skolsok at   59.9 s — School search: Kiruna
+  texts: Prov från din skola | Alla skolor | Byt | Ämne | Alla | Kommande prov | Nytt prov | Biologi · sön 22 nov | 3 frågor | Nytt prov | Biologi · sön 22 nov | 3 frågor | Då visas prov från din skola först. Det sparas bara på telefonen. | Anpassad grundskola 1-6 Kiruna | Kiruna | Anpassad grundskola 7-9 Kiruna | Kiruna | Bergaskolan | Kiruna | Central insamlingsenhet | Kiruna | Högalidskolan 4-9 | Kiruna | Kiruna Lärcentra | Kiruna | Kiruna Lärcentra, SFI | Kiruna | Kiruna Lärcentra., anpassad utbildning | Kiruna | Lapplands Gymnasium Kiruna enh. 1 | Kiruna
+  buttons: Prov | Alla skolor, Byt | Ämne, Alla | Nytt prov, Biologi · sön 22 nov, 3 frågor | Lägg till Nytt prov | Nytt prov, Biologi · sön 22 nov, 3 frågor | Lägg till Nytt prov | Rensa text | Stäng | Anpassad grundskola 1-6 Kiruna, Kiruna | Anpassad grundskola 7-9 Kiruna, Kiruna | Bergaskolan, Kiruna | Central insamlingsenhet, Kiruna | Högalidskolan 4-9, Kiruna | Kiruna Lärcentra, Kiruna | Kiruna Lärcentra, SFI, Kiruna | Kiruna Lärcentra., anpassad utbildning, Kiruna | Lapplands Gymnasium Kiruna enh. 1, Kiruna | skift | sök | Emoji-symboler | Diktera | Diktera
+TAP 5 at   67.7 s: Central insamlingsenhet
+looking for the exam A published: 'Nytt prov'
+SCREEN t24b-03-skolans-prov at   74.4 s — The school's exams
+  texts: Prov från din skola | Central insamlingsenhet | Byt | Ämne | Alla | Kommande prov | Nytt prov | Biologi · sön 22 nov | 3 frågor | Nytt prov | Biologi · sön 22 nov | 3 frågor
+  buttons: Prov | Central insamlingsenhet, Byt | Ämne, Alla | Nytt prov, Biologi · sön 22 nov, 3 frågor | Lägg till Nytt prov | Nytt prov, Biologi · sön 22 nov, 3 frågor | Lägg till Nytt prov
+TAP 6 at   75.4 s: Lägg till
+SCREEN t24b-04-publicering at   79.4 s — The published exam
+  texts: Prov från din skola | Central insamlingsenhet | Byt | Ämne | Alla | Kommande prov | Nytt prov | Biologi · sön 22 nov | 3 frågor | Nytt prov | Biologi · sön 22 nov | 3 frågor | Nytt prov | Biologi · sön 22 nov · Central insamlingsenhet | 3 frågor | Frågor | Fråga 1. Vad behöver växter för fotosyntesen? Koldioxid, vatten och solljus. | Vad behöver växter för fotosyntesen? | Koldioxid, vatten och solljus. | Fråga 2. Var i bladet sker fotosyntesen? I kloroplasterna. | Var i bladet sker fotosyntesen? | I kloroplasterna. | Fråga 3. Vad används sockret till? Som energi och byggmaterial. | Vad används sockret till? | Som energi och byggmaterial. | Lyssna på första frågan | Rapportera
+  buttons: Prov | Central insamlingsenhet, Byt | Ämne, Alla | Nytt prov, Biologi · sön 22 nov, 3 frågor | Lägg till Nytt prov | Nytt prov, Biologi · sön 22 nov, 3 frågor | Lägg till Nytt prov | Stäng | Lyssna på första frågan | Rapportera provet | Lägg till i mina prov
+TAP 7 at   80.3 s: Lägg till i mina prov
+SCREEN t24b-05-tillagt at   90.5 s — Added to my exams
+  texts: Prov från din skola | Central insamlingsenhet | Byt | Ämne | Alla | Kommande prov | Nytt prov | Biologi · sön 22 nov | 3 frågor | Tillagt | Nytt prov | Biologi · sön 22 nov | 3 frågor | Nytt prov | Biologi · sön 22 nov · Central insamlingsenhet | 3 frågor | Frågor | Fråga 1. Vad behöver växter för fotosyntesen? Koldioxid, vatten och solljus. | Vad behöver växter för fotosyntesen? | Koldioxid, vatten och solljus. | Fråga 2. Var i bladet sker fotosyntesen? I kloroplasterna. | Var i bladet sker fotosyntesen? | I kloroplasterna. | Fråga 3. Vad används sockret till? Som energi och byggmaterial. | Vad används sockret till? | Som energi och byggmaterial. | Lyssna på första frågan | Rapportera | Starta prov | Nytt prov är tillagt. Ljudet är redan klart.
+  buttons: Prov | Central insamlingsenhet, Byt | Ämne, Alla | Nytt prov, Biologi · sön 22 nov, 3 frågor | Nytt prov, Biologi · sön 22 nov, 3 frågor | Lägg till Nytt prov | Stäng | Lyssna på första frågan | Rapportera provet | Starta prov
+OK  Prov från din skola: 52 s, 5 tryck
+=== Läget slow (ljudet dröjer)
+launched with LUMEN_TEST_HEADER=slow
+TAP 8 at  104.8 s: Nytt prov
+TAP 9 at  115.1 s: Gör med ChatGPT
+TAP 10 at  118.8 s: Kopiera prompten
+TAP 11 at  123.4 s: Klistra in
+TAP 12 at  149.2 s: Spara frågorna
+launched with LUMEN_TEST_HEADER=slow
+SCREEN t24b-06-lage-slow at  207.4 s — Start in the server's 'slow' mode after 40 s
+  texts: Prov | Nästa prov, Nytt prov, 3 frågor · cirka 1 min per varv | Nästa prov | Nytt prov | 3 frågor · cirka 1 min per varv | Starta prov | Frågor och svar | Andra prov | Nytt prov | 3 frågor · ljud klart | Prov från din skola | Nytt prov
+  buttons: Inställningar | Starta prov | Frågor och svar | Nytt prov, 3 frågor · ljud klart | Starta Nytt prov | Prov från din skola | Nytt prov | Öppna länk
+mode slow: sound lines seen on Start: Nästa prov, Nytt prov, 3 frågor · Ljud: 0 av 6 klara | 3 frågor · Ljud: 0 av 6 klara | Ljud: 0 av 6 klara | 3 frågor · ljud klart
+OK  Läget slow (ljudet dröjer): 117 s, 5 tryck
+=== Läget unavailable (inga krediter)
+launched with LUMEN_TEST_HEADER=unavailable
+TAP 13 at  219.2 s: Nytt prov
+TAP 14 at  224.0 s: Gör med ChatGPT
+TAP 15 at  227.7 s: Kopiera prompten
+TAP 16 at  230.3 s: Klistra in
+TAP 17 at  238.3 s: Spara frågorna
+launched with LUMEN_TEST_HEADER=unavailable
+SCREEN t24b-07-lage-unavailable at  298.5 s — Start in the server's 'unavailable' mode after 40 s
+  texts: Prov | Nästa prov, Nytt prov, 3 frågor · cirka 1 min per varv | Nästa prov | Nytt prov | 3 frågor · cirka 1 min per varv | Starta prov | Frågor och svar | Andra prov | Nytt prov | 3 frågor · ljud klart | Nytt prov | 3 frågor · ljud klart | Prov från din skola | Nytt prov
+  buttons: Inställningar | Starta prov | Frågor och svar | Nytt prov, 3 frågor · ljud klart | Starta Nytt prov | Nytt prov, 3 frågor · ljud klart | Starta Nytt prov | Prov från din skola | Nytt prov | Öppna länk
+mode unavailable: sound lines seen on Start: Nästa prov, Nytt prov, 3 frågor · Ljud: 0 av 6 klara | 3 frågor · Ljud: 0 av 6 klara | 3 frågor · ljud klart
+UNCLEAR: unavailable: 'Ljudet kan inte göras just nu' never shown on Start in 40 s
+OK  Läget unavailable (inga krediter): 91 s, 5 tryck
+=== Proven finns kvar efter omstart (D183)
+launched with LUMEN_TEST_HEADER=1
+before the relaunches: Nästa prov, Nytt prov, 3 frågor · cirka 1 min per varv | 3 frågor · cirka 1 min per varv | 3 frågor · ljud klart | 3 frågor · ljud klart
+launched with LUMEN_TEST_HEADER=1
+SCREEN t24b-08-efter-omstart-1 at  368.4 s — Start after relaunch 1 (D183)
+  texts: Prov | Nästa prov, Nytt prov, 3 frågor · cirka 1 min per varv | Nästa prov | Nytt prov | 3 frågor · cirka 1 min per varv | Starta prov | Frågor och svar | Andra prov | Nytt prov | 3 frågor · ljud klart | Nytt prov | 3 frågor · ljud klart | Prov från din skola | Nytt prov
+  buttons: Inställningar | Starta prov | Frågor och svar | Nytt prov, 3 frågor · ljud klart | Starta Nytt prov | Nytt prov, 3 frågor · ljud klart | Starta Nytt prov | Prov från din skola | Nytt prov | Öppna länk
+launched with LUMEN_TEST_HEADER=1
+SCREEN t24b-09-efter-omstart-2 at  389.1 s — Start after relaunch 2 (D183)
+  texts: Prov | Nästa prov, Nytt prov, 3 frågor · cirka 1 min per varv | Nästa prov | Nytt prov | 3 frågor · cirka 1 min per varv | Starta prov | Frågor och svar | Andra prov | Nytt prov | 3 frågor · ljud klart | Nytt prov | 3 frågor · ljud klart | Prov från din skola | Nytt prov
+  buttons: Inställningar | Starta prov | Frågor och svar | Nytt prov, 3 frågor · ljud klart | Starta Nytt prov | Nytt prov, 3 frågor · ljud klart | Starta Nytt prov | Prov från din skola | Nytt prov | Öppna länk
+after two relaunches: Nästa prov, Nytt prov, 3 frågor · cirka 1 min per varv | 3 frågor · cirka 1 min per varv | 3 frågor · ljud klart | 3 frågor · ljud klart
+OK  Proven finns kvar efter omstart (D183): 91 s, 0 tryck

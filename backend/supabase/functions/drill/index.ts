@@ -74,6 +74,8 @@ Deno.serve(withCors(withTestMode("drill",
     },
     background: rt?.waitUntil ? (p) => rt.waitUntil!(p) : undefined,
     ownerEmails: (env.get("OWNER_EMAIL") ?? "").split(","),
+    // K77 (D197): Repetitionsläget in Aron's analysis, the same table as qa-log (deleted after delivery, 14 days at most)
+    analysis: (rows) => db.insertMany("qa_log", rows.map((r) => ({ mode: r.mode, persona: r.persona, question: r.question, answer: r.answer }))),
     db: {
       drill: async (id) => ((await db.select("drills", `select=*&id=eq.${encodeURIComponent(id)}&limit=1`)) as DrillRow[])[0] ?? null,
       drills: async (u) => (await db.select("drills", `select=*&user_id=eq.${encodeURIComponent(u)}&order=updated_at.desc&limit=500`)) as DrillRow[],
@@ -97,7 +99,7 @@ Deno.serve(withCors(withTestMode("drill",
         chunked(hashes, 100, async (p) =>
           (await db.select(
             "drill_audio_files",
-            `select=hash,kind,text,short_chars,model,voice_id,status,attempts,bytes,duration_ms,short_end_ms,credits,error,done_at,queued_at&hash=in.(${list(p)})`,
+            `select=hash,kind,text,short_chars,model,voice_id,status,attempts,bytes,duration_ms,short_end_ms,credits,error,done_at,queued_at,sentence_ends,sentences&hash=in.(${list(p)})`,
           )) as AudioRow[]),
       enqueue: (rows) => db.insertManyIgnoreDuplicates("drill_audio_files", rows, "hash"),
       claim: async (n) => {
@@ -220,7 +222,7 @@ Deno.serve(withCors(withTestMode("drill",
             method: "POST",
             headers: { "xi-api-key": xi, "content-type": "application/json" },
             // v3 takes no language_code (the blind test's voice-lab call sent none for it)
-            body: JSON.stringify({ text, model_id: m, ...(m === "eleven_v3" ? {} : { language_code: "sv" }) }),
+            body: JSON.stringify({ text, model_id: m, ...(m === "eleven_v3" || m === "eleven_v4" ? {} : { language_code: "sv" }) }),
             signal: AbortSignal.timeout(60_000),
           });
           if (!r.ok) {

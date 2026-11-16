@@ -20,7 +20,11 @@ struct NewDrillView: View {
     /// Välkommen. Then a line at the top says what to do, **Fota sidor** is the one bold row in the accent colour,
     /// and "Senare" (not Avbryt) calls this instead of closing a sheet.
     var onLater: (() -> Void)? = nil
+    /// The screenshots (A106): Läs upp texten chosen, or its "Stämmer det här?" with this text.
+    var stagedReading: StagedReading? = nil
+    enum StagedReading { case choice, confirm(DrillTextDraft) }
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     init(model: RepetitionModel, onSaved: @escaping (Drill) -> Void, stagedProblem: String? = nil) {
         self.model = model
@@ -36,6 +40,8 @@ struct NewDrillView: View {
     }
 
     private enum Stage: Equatable { case material, making, confirm }
+    /// A106 (D185, Kelly Ke63): what is made of the material: questions, or the text read aloud as it is.
+    private enum Make: Hashable { case questions, text }
 
     @State private var stage: Stage = .material
     @State private var title = ""
@@ -55,6 +61,8 @@ struct NewDrillView: View {
     @State private var isImporting = false
     @State private var isAddingText = false
     @State private var draft: DrillDraft?
+    @State private var make: Make = .questions
+    @State private var textDraft: DrillTextDraft?
     @State private var correction = ""
     @State private var problem: String?
     @State private var making: Task<Void, Never>?
@@ -88,7 +96,8 @@ struct NewDrillView: View {
                 switch stage {
                 case .material: materialForm
                 case .making: makingView
-                case .confirm: confirmView
+                case .confirm:
+                    if make == .text { textConfirmView } else { confirmView }
                 }
             }
             .navigationTitle(stage == .confirm ? "Stämmer det här?" : "Nytt prov")
@@ -135,6 +144,9 @@ struct NewDrillView: View {
         .onChange(of: stage) { AccessibilityNotification.ScreenChanged().post() }
         // A99 (D175): the month's questions now, from the server (no sound is made by asking).
         .task {
+            #if DEBUG
+            if pasted.isEmpty, let test = TestMaterial.text() { pasted = test } // Toby T28: LUMEN_TEST_MATERIAL
+            #endif
             await model.refreshQuota()
             capQuestions()
         }
@@ -175,7 +187,11 @@ struct NewDrillView: View {
             }
 
             if model.quotaUsedUp { // A99 (D175, Kelly): said before anything is sent, not as an error afterwards
-                Section { Text(verbatim: Self.usedUpLine) }
+                // Kelly Ke64 T2: with the largest text the long line filled the screen.
+                Section {
+                    Text(verbatim: typeSize.isAccessibilitySize
+                         ? "Inga frågor kvar förrän den 1 \(ChatGPTImportView.nextMonth())." : Self.usedUpLine)
+                }
             } else if model.isOffline { // A104 (A103): said before the user has taken photos and waited
                 Section {
                     Label("Ingen internetanslutning. Du kan lägga till material nu och skapa frågorna när du är uppkopplad.",
@@ -196,6 +212,27 @@ struct NewDrillView: View {
                 Section {
                     TextField("Provets namn", text: $title)
                         .accessibilityLabel("Provets namn") // A95: a name of its own, not only the placeholder
+                }
+            }
+
+            if !isFirstStart { // A106 (Ke63 §4.4; Kelly Ke64 L1: under the name, so the choice shows without scrolling): a new user makes questions; the choice shows from the second exam
+                Section {
+                    Picker("Gör", selection: $make) {
+                        Text("Frågor").tag(Make.questions)
+                        Text("Läs upp texten").tag(Make.text)
+                    }
+                    .pickerStyle(.segmented)
+                    .listRowBackground(Color.clear)
+                    .listRowInsets(EdgeInsets())
+                } header: {
+                    Text("Gör")
+                } footer: {
+                    if make == .text {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("EarMind läser upp materialet som en löpande text, utan frågor. Du pausar och hoppar mellan meningar med AirPods.")
+                            Text("Texten räknas som en fråga per påbörjade 800 tecken, ungefär en tredjedel av en boksida.")
+                        }
+                    }
                 }
             }
 
@@ -280,11 +317,9 @@ struct NewDrillView: View {
                 } footer: {
                     Text("Varje fråga får ett kort och ett långt svar.")
                 }
-            } else {
+            } else if make == .questions {
                 Section {
                     questionStepper
-                } header: {
-                    Text("Frågor")
                 } footer: {
                     Text("Varje fråga får ett kort och ett långt svar.") // D162: both answers are always made
                 }
@@ -294,12 +329,12 @@ struct NewDrillView: View {
         }
         .safeAreaInset(edge: .bottom) {
             // Kelly N3: the reason while the button is grey. A84 (D155): else what is left of the month's questions.
-            MainActionBar(title: "Skapa frågor",
+            MainActionBar(title: make == .text ? "Skapa uppläsning" : "Skapa frågor",
                           note: model.quotaUsedUp ? "Inga frågor kvar den här månaden." // Kelly: the long line is at the top
-                              : model.isOffline ? "Skapa frågor kräver internet."
+                              : model.isOffline ? (make == .text ? "Skapa uppläsning kräver internet." : "Skapa frågor kräver internet.")
                               : material.isEmpty ? "Lägg till minst en sida, bild eller text." : model.quota.map { $0.line + "." },
                           isDisabled: material.isEmpty || readingDocument || model.quotaUsedUp || model.isOffline) {
-                create(correction: nil)
+                if make == .text { createText() } else { create(correction: nil) }
             }
         }
         .onAppear {
@@ -307,6 +342,15 @@ struct NewDrillView: View {
                 grade = model.preferredGrade // A88
                 settings = model.newDrillSettings // A89
                 gradeLoaded = true
+            }
+            if let stagedReading, make == .questions {
+                make = .text
+                if title.isEmpty { title = "Biologiprovet" }
+                if pasted.isEmpty { pasted = "Fotosyntesen. Växter tillverkar sin egen näring genom fotosyntes." }
+                if case .confirm(let draft) = stagedReading {
+                    textDraft = draft
+                    stage = .confirm
+                }
             }
             if let stagedProblem, problem == nil {
                 problem = stagedProblem
@@ -329,7 +373,8 @@ struct NewDrillView: View {
     private var questionStepper: some View {
         // A99 (D175): never more questions than are left of the month's.
         Stepper(value: $settings.questions, in: model.newDrillQuestionRange) {
-            LabeledContent("Antal frågor", value: "\(settings.questions)").monospacedDigit()
+            // T24 L4: no number until the month's quota has come, so 20 is not shown and then lowered.
+            LabeledContent("Antal frågor", value: model.quotaIsKnown ? "\(settings.questions)" : "").monospacedDigit()
         }
     }
 
@@ -492,7 +537,10 @@ struct NewDrillView: View {
 
     // MARK: Läser materialet
 
-    private static let steps = ["Läser sidorna", "Tar reda på ämne och årskurs", "Gör frågor", "Skriver svar"]
+    private static let questionSteps = ["Läser sidorna", "Tar reda på ämne och årskurs", "Gör frågor", "Skriver svar"]
+    /// A106 (Ke63 §5).
+    private static let textSteps = ["Läser sidorna", "Tar reda på ämne och årskurs", "Gör texten klar för uppläsning"]
+    private var steps: [String] { make == .text ? Self.textSteps : Self.questionSteps }
 
     private var makingView: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -502,7 +550,7 @@ struct NewDrillView: View {
                 if !materialLine.isEmpty { Text(verbatim: materialLine).foregroundStyle(.secondary) }
             }
             VStack(alignment: .leading, spacing: 14) {
-                ForEach(Self.steps.indices, id: \.self) { i in
+                ForEach(steps.indices, id: \.self) { i in
                     HStack(spacing: 12) {
                         Group {
                             if i < stepsDone {
@@ -516,7 +564,7 @@ struct NewDrillView: View {
                         .font(.title3)
                         .frame(width: 28)
                         .accessibilityHidden(true) // A95: "klart" and "pågår" are the row's value
-                        Text(verbatim: Self.steps[i])
+                        Text(verbatim: steps[i])
                             .foregroundStyle(i <= stepsDone ? Color.primary : Color.secondary)
                     }
                     .accessibilityElement(children: .combine)
@@ -568,6 +616,117 @@ struct NewDrillView: View {
                 stage = draft == nil ? .material : .confirm
             }
         }
+    }
+
+    /// A106 (D185, K70 `/exam read`): the material cleaned for reading aloud. Nothing is saved or counted until
+    /// "Ser rätt ut".
+    private func createText() {
+        problem = nil
+        stage = .making
+        stepsDone = 0
+        let material = self.material
+        let name = title.trimmingCharacters(in: .whitespaces)
+        let gradeCode = grade?.rawValue
+        making = Task {
+            let ticks = Task {
+                try? await Task.sleep(for: .seconds(2))
+                if Task.isCancelled { return }
+                stepsDone = max(stepsDone, 1)
+                try? await Task.sleep(for: .seconds(4))
+                if Task.isCancelled { return }
+                stepsDone = max(stepsDone, 2)
+            }
+            defer { ticks.cancel() }
+            do throws(DrillMakingError) {
+                let made = try await model.readText(material, grade: gradeCode, title: name.isEmpty ? nil : name)
+                guard !Task.isCancelled else { return }
+                textDraft = made
+                stage = .confirm
+            } catch {
+                guard !Task.isCancelled else { return }
+                problem = error.userMessage
+                stage = .material
+            }
+        }
+    }
+
+    /// Ke63 `lasa/las-stammer.png`: the headings with what is under each, how long the text is, and what it counts as
+    /// before the sound is made.
+    private var textConfirmView: some View {
+        Form {
+            if let draft = textDraft {
+                Section {
+                    if !draft.summary.subject.isEmpty { LabeledContent("Ämne", value: draft.summary.subject) }
+                    if !draft.summary.grade.isEmpty { LabeledContent("Årskurs", value: draft.summary.grade) }
+                }
+
+                let headings = Self.headings(draft.parts)
+                Section {
+                    ForEach(Array(headings.enumerated()), id: \.offset) { _, heading in
+                        LabeledContent(heading.title, value: heading.paragraphs == 1 ? "1 stycke" : "\(heading.paragraphs) stycken")
+                    }
+                    if headings.isEmpty, let first = draft.parts.first {
+                        Text(verbatim: first.long).lineLimit(3)
+                    }
+                } header: {
+                    Text(headings.isEmpty ? "Texten börjar" : "Rubriker")
+                } footer: {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Cirka \(ReadingText.minutes(draft.drill)) min. Sidnummer och sidhuvuden är borttagna.")
+                        if draft.truncated {
+                            Text("Materialet var för långt. EarMind läser upp de första cirka \(max(1, draft.chars / 2400)) sidorna. Gör ett prov till av resten.")
+                                .foregroundStyle(Color.primary)
+                        }
+                        if let warning = draft.warning { Text(verbatim: warning) }
+                    }
+                }
+
+                DrillVoiceChoice(voice: $voice) // A84 (D151): before the sound is made
+            }
+        }
+        .safeAreaInset(edge: .bottom) {
+            MainActionBar(title: "Ser rätt ut", note: textDraft.map(countsLine), isDisabled: textDraft.map(tooLong) ?? true) {
+                if let textDraft { saveText(textDraft) }
+            }
+        }
+    }
+
+    private static func headings(_ parts: [DrillItem]) -> [(title: String, paragraphs: Int)] {
+        var found: [(title: String, paragraphs: Int)] = []
+        for part in parts {
+            if part.part == .heading {
+                found.append((part.long, 0))
+            } else if !found.isEmpty {
+                found[found.count - 1].paragraphs += 1
+            }
+        }
+        return found
+    }
+
+    /// The month's questions do not cover the text (K70 `counts_as`).
+    private func tooLong(_ draft: DrillTextDraft) -> Bool {
+        guard let quota = model.quota else { return false }
+        return draft.countsAs > quota.left
+    }
+
+    /// Ke63 §5: "Texten räknas som 1 fråga. 11 kvar sedan.", or why it cannot be saved.
+    private func countsLine(_ draft: DrillTextDraft) -> String {
+        guard let quota = model.quota else { return ReadingText.countsAs(draft.countsAs) }
+        if draft.countsAs > quota.left {
+            return "Texten räknas som \(DrillText.questions(draft.countsAs)), och du har \(quota.left) kvar den här månaden. "
+                + "Ta bort några sidor, eller vänta till den 1 \(ChatGPTImportView.nextMonth())."
+        }
+        return "\(ReadingText.countsAs(draft.countsAs)) \(quota.left - draft.countsAs) kvar sedan."
+    }
+
+    private func saveText(_ draft: DrillTextDraft) {
+        let name = title.trimmingCharacters(in: .whitespaces)
+        var made = draft.drill
+        if !name.isEmpty { made.title = name }
+        made.voiceModel = voice
+        let drill = model.save(made)
+        onSaved(drill)
+        dismiss()
     }
 
     /// Step 2 of K45 while the summary is read (R1: answers within 90 s).

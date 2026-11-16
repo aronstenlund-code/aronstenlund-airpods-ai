@@ -233,6 +233,7 @@ struct HelpTryView: View {
         Form {
             Section {
                 TextField("Text", text: $text, axis: .vertical).lineLimit(4...10)
+                    .disabled(model.quotaUsedUp) // Kelly Ke64 T5: nobody writes for nothing
             } footer: {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Klistra in eller skriv några meningar. Räknas som 3 av dina frågor.")

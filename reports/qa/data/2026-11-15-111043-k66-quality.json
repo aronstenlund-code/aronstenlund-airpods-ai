@@ -1,0 +1,638 @@
+{
+ "h3-hi-franska-revolutionen": {
+  "status": 200,
+  "subject": "Historia",
+  "questions": 12,
+  "why": 2,
+  "circular": [],
+  "mentions_material": [],
+  "screen": [
+   {
+    "question": "Vad hände när folket stormade Bastiljen och vad symboliserade fängelset?",
+    "screen": {
+     "long": "Anledningen går inte att läsa ut av det jag har, men fängelset stormades av folket i Paris och sågs som en symbol för kungens makt. Vad som är säkert är att folket stormade Bastiljen den 14 juli 1789, och att just den dagen blev ett tecken på att folket vågade ta strid mot kungens välde. Att fängelset stod för kungens makt gjorde stormningen till en stark symbolisk handling mot det gamla styret."
+    }
+   },
+   {
+    "question": "Vad innebar deklarationen om människans och medborgarens rättigheter?",
+    "screen": {
+     "long": "Deklarationen slog fast att alla människor föds fria och har lika rättigheter. Den antogs i augusti 1789 och var ett brott mot det gamla ståndssamhället, där prästerna och adeln hade särskilda privilegier. Tankarna kom från upplysningen, där tänkare som Rousseau menade att makten ska komma från folket. Deklarationen blev en grund för idéerna om frihet, jämlikhet och broderskap, som sedan spreds i Europa."
+    }
+   },
+   {
+    "question": "Vad hände med kungen 1793 och vad följde efter det?",
+    "screen": {
+     "short": "Varför kungen avrättades framgår inte av det jag har, men det hände 1793, under revolutionens mest radikala skede.",
+     "long": "Varför kungen avrättades framgår inte av det jag har, men det hände 1793, under revolutionens mest radikala skede. Det som går att säga är att makten hade flyttat från kungen till folket och dess företrädare, och att kungens styre hade förlorat sin grund. Efter avrättningen följde skräckväldet, då revolutionens fiender förföljdes hårt."
+    }
+   },
+   {
+    "question": "Vad hände under skräckväldet med människor som sågs som fiender?",
+    "screen": {
+     "long": "Under skräckväldet lät Robespierre avrätta tusentals människor som ansågs vara revolutionens fiender. Skräckväldet varade från 1793 till 1794. Den som misstänktes för att vara emot revolutionen kunde dömas och avrättas. Revolutionen, som hade börjat med idéer om frihet och lika rättigheter, blev alltså under en period ett våldsamt styre där rädsla användes för att behålla makten."
+    }
+   },
+   {
+    "question": "Vem tog makten i Frankrike år 1799, och vad hände sedan?",
+    "screen": {
+     "short": "Generalen Napoleon Bonaparte tog makten i Frankrike år 1799, och fem år senare krönte han sig själv till kejsare.",
+     "long": "Generalen Napoleon Bonaparte tog makten i Frankrike år 1799, och fem år senare krönte han sig själv till kejsare. Det hände efter revolutionen och skräckväldet, då landet hade genomgått stora förändringar. Revolutionen hade börjat med att folket och tredje ståndet gjorde uppror mot kungens makt. Nu var det i stället en general som styrde landet. År 1804 krönte Napoleon sig till kejsare, och därmed hade Frankrike åter en enväldig härskare, fast efter en revolution som sagt sig vilja ge makten åt folket."
+    }
+   }
+  ],
+  "english_questions": 0,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Hur såg skattefördelningen ut mellan de tre stånden före revolutionen?",
+    "short": "Tredje ståndet var nästan hela befolkningen men betalade nästan alla skatter, medan prästerna och adeln betalade nästan ingenting.",
+    "long": "Tredje ståndet var nästan hela befolkningen men betalade nästan alla skatter, medan prästerna och adeln betalade nästan ingenting. Frankrike var indelat i tre stånd. Första ståndet var prästerna, andra ståndet var adeln, och tredje ståndet var alla andra, alltså bönder, hantverkare och borgare. Systemet var orättvist, eftersom de som var flest bar nästan hela bördan. Det skapade ett stort missnöje hos tredje ståndet, och det blev en viktig grund för revolutionen."
+   },
+   {
+    "id": "q2",
+    "question": "Varför var staten nära konkurs före revolutionen?",
+    "short": "Staten hade lagt enorma summor på dyra krig, bland annat stödet till den amerikanska revolutionen, och därför var kassan nästan tom.",
+    "long": "Staten hade lagt enorma summor på dyra krig, bland annat stödet till den amerikanska revolutionen, och därför var kassan nästan tom. När staten var nära konkurs behövde kungen mer pengar, och det var just därför han senare ville höja skatterna. Eftersom tredje ståndet redan betalade nästan alla skatter och var fattigt, fanns det litet att hämta där. Statens ekonomiska kris var alltså en av de viktigaste orsakerna till att revolutionen kom igång, eftersom den tvingade kungen att kalla in generalständerna."
+   },
+   {
+    "id": "q3",
+    "question": "Hur påverkade de dåliga skördarna 1788 folket?",
+    "short": "De dåliga skördarna gjorde att brödet blev så dyrt att många svalt, vilket ökade vreden mot kungen och styret.",
+    "long": "De dåliga skördarna gjorde att brödet blev så dyrt att många svalt, vilket ökade vreden mot kungen och styret. Bröd var den viktigaste maten för vanliga människor, så när priset steg kunde många inte längre köpa tillräckligt. Hungern kom ovanpå att tredje ståndet redan betalade nästan alla skatter. Missnöjet växte därför snabbt, och när folket i Paris sedan reste sig var nöden och ilskan en viktig förklaring till att så många var villiga att kämpa."
+   },
+   {
+    "id": "q4",
+    "question": "Vad menade upplysningens tänkare, som Rousseau, om makten?",
+    "short": "Rousseau och andra upplysningstänkare menade att makten borde komma från folket och inte från kungen.",
+    "long": "Rousseau och andra upplysningstänkare menade att makten borde komma från folket och inte från kungen. Det var en radikal idé, eftersom kungen i Frankrike styrde med nästan obegränsad makt. Tankarna spreds bland borgare och andra som ville ha inflytande. De gav tredje ståndet en idé att stödja sig på när de krävde förändring. Senare syns idéerna i deklarationen om människans och medborgarens rättigheter, där alla föds fria och lika i rättigheter."
+   },
+   {
+    "id": "q5",
+    "question": "Varför kallade kung Ludvig XVI in generalständerna 1789?",
+    "short": "Kungen kallade in generalständerna för att få mer skatt, eftersom staten var nära konkurs.",
+    "long": "Kungen kallade in generalständerna för att få mer skatt, eftersom staten var nära konkurs. Generalständerna var en församling med representanter för de tre stånden. Kungen hoppades att de skulle godkänna högre skatter. Det gick inte som han tänkt sig. Tredje ståndet var nästan hela befolkningen men fick ändå inte tillräckligt inflytande, så de bröt sig ut och bildade nationalförsamlingen. Därmed började revolutionen på allvar, och några veckor senare stormade folket i Paris Bastiljen."
+   },
+   {
+    "id": "q6",
+    "question": "Hur bildade tredje ståndet nationalförsamlingen?",
+    "short": "När kungen kallade in generalständerna för att få mer skatt bröt sig tredje ståndet ut och bildade en egen nationalförsamling.",
+    "long": "När kungen kallade in generalständerna för att få mer skatt bröt sig tredje ståndet ut och bildade en egen nationalförsamling. Tredje ståndet var nästan hela befolkningen men betalade nästan alla skatter, och de ville därför ha verklig makt. Genom att lämna generalständerna och kalla sig nationalförsamling hävdade de att de representerade folket. Det var början på revolutionen, eftersom kungen inte längre kunde styra ensam."
+   },
+   {
+    "id": "q7",
+    "question": "Vad hände när folket stormade Bastiljen och vad symboliserade fängelset?",
+    "short": "Anledningen går inte att läsa ut av det jag har, men fängelset stormades av folket i Paris och sågs som en symbol för kungens makt.",
+    "long": "Anledningen går inte att läsa ut av det jag har, men fängelset stormades av folket i Paris och sågs som en symbol för kungens makt. Vad som är säkert är att folket stormade Bastiljen den fjortonde juli sjuttonhundraåttionio, och att just den dagen blev ett tecken på att folket vågade ta strid mot kungens välde. Att fängelset stod för kungens makt gjorde stormningen till en stark symbolisk handling mot det gamla styret.",
+    "screen": {
+     "long": "Anledningen går inte att läsa ut av det jag har, men fängelset stormades av folket i Paris och sågs som en symbol för kungens makt. Vad som är säkert är att folket stormade Bastiljen den 14 juli 1789, och att just den dagen blev ett tecken på att folket vågade ta strid mot kungens välde. Att fängelset stod för kungens makt gjorde stormningen till en stark symbolisk handling mot det gamla styret."
+    }
+   },
+   {
+    "id": "q8",
+    "question": "Vad innebar deklarationen om människans och medborgarens rättigheter?",
+    "short": "Deklarationen slog fast att alla människor föds fria och har lika rättigheter.",
+    "long": "Deklarationen slog fast att alla människor föds fria och har lika rättigheter. Den antogs i augusti sjuttonhundraåttionio och var ett brott mot det gamla ståndssamhället, där prästerna och adeln hade särskilda privilegier. Tankarna kom från upplysningen, där tänkare som Rousseau menade att makten ska komma från folket. Deklarationen blev en grund för idéerna om frihet, jämlikhet och broderskap, som sedan spreds i Europa.",
+    "screen": {
+     "long": "Deklarationen slog fast att alla människor föds fria och har lika rättigheter. Den antogs i augusti 1789 och var ett brott mot det gamla ståndssamhället, där prästerna och adeln hade särskilda privilegier. Tankarna kom från upplysningen, där tänkare som Rousseau menade att makten ska komma från folket. Deklarationen blev en grund för idéerna om frihet, jämlikhet och broderskap, som sedan spreds i Europa."
+    }
+   },
+   {
+    "id": "q9",
+    "question": "Vad hände med kungen 1793 och vad följde efter det?",
+    "short": "Varför kungen avrättades framgår inte av det jag har, men det hände sjuttonhundranittiotre, under revolutionens mest radikala skede.",
+    "long": "Varför kungen avrättades framgår inte av det jag har, men det hände sjuttonhundranittiotre, under revolutionens mest radikala skede. Det som går att säga är att makten hade flyttat från kungen till folket och dess företrädare, och att kungens styre hade förlorat sin grund. Efter avrättningen följde skräckväldet, då revolutionens fiender förföljdes hårt.",
+    "screen": {
+     "short": "Varför kungen avrättades framgår inte av det jag har, men det hände 1793, under revolutionens mest radikala skede.",
+     "long": "Varför kungen avrättades framgår inte av det jag har, men det hände 1793, under revolutionens mest radikala skede. Det som går att säga är att makten hade flyttat från kungen till folket och dess företrädare, och att kungens styre hade förlorat sin grund. Efter avrättningen följde skräckväldet, då revolutionens fiender förföljdes hårt."
+    }
+   },
+   {
+    "id": "q10",
+    "question": "Vad hände under skräckväldet med människor som sågs som fiender?",
+    "short": "Under skräckväldet lät Robespierre avrätta tusentals människor som ansågs vara revolutionens fiender.",
+    "long": "Under skräckväldet lät Robespierre avrätta tusentals människor som ansågs vara revolutionens fiender. Skräckväldet varade från sjuttonhundranittiotre till sjuttonhundranittiofyra. Den som misstänktes för att vara emot revolutionen kunde dömas och avrättas. Revolutionen, som hade börjat med idéer om frihet och lika rättigheter, blev alltså under en period ett våldsamt styre där rädsla användes för att behålla makten.",
+    "screen": {
+     "long": "Under skräckväldet lät Robespierre avrätta tusentals människor som ansågs vara revolutionens fiender. Skräckväldet varade från 1793 till 1794. Den som misstänktes för att vara emot revolutionen kunde dömas och avrättas. Revolutionen, som hade börjat med idéer om frihet och lika rättigheter, blev alltså under en period ett våldsamt styre där rädsla användes för att behålla makten."
+    }
+   },
+   {
+    "id": "q11",
+    "question": "Vilka idéer spred revolutionen i Europa, och vem tog makten efteråt?",
+    "short": "Revolutionen spred idéerna om frihet, jämlikhet och broderskap i Europa, och efter den tog generalen Napoleon Bonaparte makten i Frankrike.",
+    "long": "Revolutionen spred idéerna om frihet, jämlikhet och broderskap i Europa, och efter den tog generalen Napoleon Bonaparte makten i Frankrike. Idéerna byggde på det som skrevs i deklarationen om människans och medborgarens rättigheter, att alla föds fria och lika i rättigheter. De byggde också på upplysningens tanke att makten ska komma från folket och inte från kungen. När Frankrike visade att en kung kunde störtas fick idéerna ny kraft hos människor i andra länder. Napoleon blev kejsare, men tankarna om frihet och jämlikhet levde vidare i Europa."
+   },
+   {
+    "id": "q12",
+    "question": "Vem tog makten i Frankrike år 1799, och vad hände sedan?",
+    "short": "Generalen Napoleon Bonaparte tog makten i Frankrike år sjutton hundra nittionio, och fem år senare krönte han sig själv till kejsare.",
+    "long": "Generalen Napoleon Bonaparte tog makten i Frankrike år sjutton hundra nittionio, och fem år senare krönte han sig själv till kejsare. Det hände efter revolutionen och skräckväldet, då landet hade genomgått stora förändringar. Revolutionen hade börjat med att folket och tredje ståndet gjorde uppror mot kungens makt. Nu var det i stället en general som styrde landet. År arton hundra fyra krönte Napoleon sig till kejsare, och därmed hade Frankrike åter en enväldig härskare, fast efter en revolution som sagt sig vilja ge makten åt folket.",
+    "screen": {
+     "short": "Generalen Napoleon Bonaparte tog makten i Frankrike år 1799, och fem år senare krönte han sig själv till kejsare.",
+     "long": "Generalen Napoleon Bonaparte tog makten i Frankrike år 1799, och fem år senare krönte han sig själv till kejsare. Det hände efter revolutionen och skräckväldet, då landet hade genomgått stora förändringar. Revolutionen hade börjat med att folket och tredje ståndet gjorde uppror mot kungens makt. Nu var det i stället en general som styrde landet. År 1804 krönte Napoleon sig till kejsare, och därmed hade Frankrike åter en enväldig härskare, fast efter en revolution som sagt sig vilja ge makten åt folket."
+    }
+   }
+  ],
+  "cost_usd": 0.0712357
+ },
+ "h3-ke-atomer": {
+  "status": 200,
+  "subject": "Kemi",
+  "questions": 12,
+  "why": 3,
+  "circular": [],
+  "mentions_material": [],
+  "screen": [
+   {
+    "question": "Vad bestämmer vilket grundämne en atom är?",
+    "screen": {
+     "long": "Antalet protoner i kärnan, som kallas atomnumret, bestämmer vilket grundämne en atom är. Ett grundämne består av bara ett slags atomer, och alla atomer av samma grundämne har lika många protoner. Väte har 1 proton, kol har 6 och syre har 8. Om antalet protoner ändras blir det alltså ett helt annat grundämne. I periodiska systemet står grundämnena just i ordning efter sitt atomnummer."
+    }
+   },
+   {
+    "question": "Hur många protoner har syre?",
+    "screen": {
+     "short": "Syre har 8 protoner i sin kärna, och det är just det som gör atomen till syre.",
+     "long": "Syre har 8 protoner i sin kärna, och det är just det som gör atomen till syre. Antalet protoner kallas atomnumret, och för syre är det 8. Eftersom en atom har lika många elektroner som protoner har en oladdad syreatom också 8 elektroner. Väte har bara 1 proton och kol har 6, så det är antalet protoner som skiljer grundämnena åt."
+    }
+   },
+   {
+    "question": "Vad betyder formeln H2O?",
+    "screen": {
+     "short": "Formeln H2O betyder att en vattenmolekyl består av två väteatomer och en syreatom som sitter ihop.",
+     "long": "Formeln H2O betyder att en vattenmolekyl består av två väteatomer och en syreatom som sitter ihop. Bokstaven H står för grundämnet väte och bokstaven O står för grundämnet syre. Siffran 2 efter H visar att det är två väteatomer, och när ingen siffra står efter O betyder det att det är en syreatom. Vatten är därför en kemisk förening, eftersom det är uppbyggt av två olika grundämnen. Med en kemisk formel kan man alltså på ett kort sätt visa vilka atomer en molekyl innehåller och hur många av varje."
+    }
+   },
+   {
+    "question": "Vad skiljer en proton från en neutron?",
+    "screen": {
+     "long": "En proton är positivt laddad, medan en neutron saknar laddning, och båda sitter i atomens kärna. Protonerna är viktiga eftersom antalet protoner, atomnumret, bestämmer vilket grundämne atomen är. Väte har 1 proton, kol har 6 och syre har 8. Neutronerna ändrar inte vilket ämne det är, eftersom de inte har någon laddning. Kärnans positiva laddning kommer alltså bara från protonerna, och den håller kvar de negativa elektronerna som rör sig runt kärnan. Eftersom en atom har lika många elektroner som protoner är den som helhet oladdad."
+    }
+   }
+  ],
+  "english_questions": 0,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Vad finns i en atoms kärna?",
+    "short": "I en atoms kärna finns protoner, som är positivt laddade, och neutroner, som inte har någon laddning alls.",
+    "long": "I en atoms kärna finns protoner, som är positivt laddade, och neutroner, som inte har någon laddning alls. Tillsammans bildar de kärnan i mitten av atomen. Runt kärnan rör sig elektronerna, som är negativt laddade. Kärnan är alltså positivt laddad, eftersom protonerna ger plus och neutronerna varken ger plus eller minus. Det är elektronerna utanför kärnan som sedan väger upp den positiva laddningen."
+   },
+   {
+    "id": "q2",
+    "question": "Varför är en atom oladdad?",
+    "short": "En atom är oladdad eftersom den har lika många negativt laddade elektroner som positivt laddade protoner, så laddningarna tar ut varandra.",
+    "long": "En atom är oladdad eftersom den har lika många negativt laddade elektroner som positivt laddade protoner, så laddningarna tar ut varandra. Varje proton i kärnan har en positiv laddning och varje elektron utanför kärnan har en lika stor negativ laddning. När antalet är exakt detsamma blir summan noll. Neutronerna har ingen laddning och påverkar därför inte saken. En kolatom har till exempel sex protoner och sex elektroner, och därför är den oladdad som helhet."
+   },
+   {
+    "id": "q3",
+    "question": "Vad bestämmer vilket grundämne en atom är?",
+    "short": "Antalet protoner i kärnan, som kallas atomnumret, bestämmer vilket grundämne en atom är.",
+    "long": "Antalet protoner i kärnan, som kallas atomnumret, bestämmer vilket grundämne en atom är. Ett grundämne består av bara ett slags atomer, och alla atomer av samma grundämne har lika många protoner. Väte har en proton, kol har sex och syre har åtta. Om antalet protoner ändras blir det alltså ett helt annat grundämne. I periodiska systemet står grundämnena just i ordning efter sitt atomnummer.",
+    "screen": {
+     "long": "Antalet protoner i kärnan, som kallas atomnumret, bestämmer vilket grundämne en atom är. Ett grundämne består av bara ett slags atomer, och alla atomer av samma grundämne har lika många protoner. Väte har 1 proton, kol har 6 och syre har 8. Om antalet protoner ändras blir det alltså ett helt annat grundämne. I periodiska systemet står grundämnena just i ordning efter sitt atomnummer."
+    }
+   },
+   {
+    "id": "q4",
+    "question": "Hur många protoner har syre?",
+    "short": "Syre har åtta protoner i sin kärna, och det är just det som gör atomen till syre.",
+    "long": "Syre har åtta protoner i sin kärna, och det är just det som gör atomen till syre. Antalet protoner kallas atomnumret, och för syre är det åtta. Eftersom en atom har lika många elektroner som protoner har en oladdad syreatom också åtta elektroner. Väte har bara en proton och kol har sex, så det är antalet protoner som skiljer grundämnena åt.",
+    "screen": {
+     "short": "Syre har 8 protoner i sin kärna, och det är just det som gör atomen till syre.",
+     "long": "Syre har 8 protoner i sin kärna, och det är just det som gör atomen till syre. Antalet protoner kallas atomnumret, och för syre är det 8. Eftersom en atom har lika många elektroner som protoner har en oladdad syreatom också 8 elektroner. Väte har bara 1 proton och kol har 6, så det är antalet protoner som skiljer grundämnena åt."
+    }
+   },
+   {
+    "id": "q5",
+    "question": "Varför har atomer i samma grupp i periodiska systemet liknande egenskaper?",
+    "short": "Atomer i samma grupp har lika många elektroner i det yttersta skalet, och därför reagerar de på liknande sätt.",
+    "long": "Atomer i samma grupp har lika många elektroner i det yttersta skalet, och därför reagerar de på liknande sätt. Grupperna är kolumnerna i periodiska systemet. Det är elektronerna i yttersta skalet som avgör hur en atom reagerar med andra atomer, så lika många där ger liknande egenskaper. Ädelgaserna längst till höger är ett exempel: de har fullt yttersta skal och reagerar nästan inte alls."
+   },
+   {
+    "id": "q6",
+    "question": "Varför reagerar ädelgaserna nästan inte alls?",
+    "short": "Ädelgaserna har fullt yttersta elektronskal, och därför har deras atomer ingen anledning att ta upp, ge bort eller dela på elektroner med andra atomer.",
+    "long": "Ädelgaserna har fullt yttersta elektronskal, och därför har deras atomer ingen anledning att ta upp, ge bort eller dela på elektroner med andra atomer. De flesta andra grundämnen reagerar just för att deras yttersta skal inte är fullt. Då försöker atomerna få ett fullt skal genom att binda till sig andra atomer. Ädelgaserna står längst till höger i periodiska systemet, och eftersom de redan har det de strävar efter är de mycket stabila. Det är därför ämnen som helium och neon nästan aldrig bildar föreningar med andra ämnen."
+   },
+   {
+    "id": "q7",
+    "question": "Hur är grundämnena ordnade i periodiska systemet?",
+    "short": "Grundämnena står i ordning efter atomnummer, alltså efter hur många protoner atomen har i sin kärna, med minst antal först.",
+    "long": "Grundämnena står i ordning efter atomnummer, alltså efter hur många protoner atomen har i sin kärna, med minst antal först. Systemet är dessutom byggt i kolumner som kallas grupper. Ämnen i samma grupp har lika många elektroner i det yttersta skalet, och därför reagerar de på liknande sätt. Väte, med en proton, kommer först, sedan kommer ämnen med fler och fler protoner, till exempel kol med sex och syre med åtta. Ordningen gör det lätt att förutsäga hur ett ämne beter sig utifrån var det står."
+   },
+   {
+    "id": "q8",
+    "question": "Vad är skillnaden mellan ett grundämne och en kemisk förening?",
+    "short": "Ett grundämne består av bara ett slags atomer, medan en kemisk förening består av två eller flera olika grundämnen som sitter ihop.",
+    "long": "Ett grundämne består av bara ett slags atomer, medan en kemisk förening består av två eller flera olika grundämnen som sitter ihop. Vilket grundämne det är bestäms av antalet protoner i atomen, till exempel har syre åtta protoner. Syre och väte är därför grundämnen. Vatten är däremot en kemisk förening, eftersom det är uppbyggt av två olika grundämnen, väte och syre, som sitter ihop med varandra. Ett grundämne kan alltså inte delas upp i andra ämnen, men en kemisk förening är en sammansättning av olika grundämnen."
+   },
+   {
+    "id": "q9",
+    "question": "Hur bildas en molekyl?",
+    "short": "En molekyl bildas när två eller flera atomer binds ihop med varandra.",
+    "long": "En molekyl bildas när två eller flera atomer binds ihop med varandra. Atomerna kan vara av samma slag eller av olika slag. Om de olika atomerna kommer från olika grundämnen blir molekylen också en kemisk förening. Vatten är ett exempel: där sitter två väteatomer ihop med en syreatom. När atomerna binds ihop bildas ett nytt ämne med andra egenskaper än de enskilda atomerna hade för sig."
+   },
+   {
+    "id": "q10",
+    "question": "Vad betyder formeln H2O?",
+    "short": "Formeln H två O betyder att en vattenmolekyl består av två väteatomer och en syreatom som sitter ihop.",
+    "long": "Formeln H två O betyder att en vattenmolekyl består av två väteatomer och en syreatom som sitter ihop. Bokstaven H står för grundämnet väte och bokstaven O står för grundämnet syre. Siffran två efter H visar att det är två väteatomer, och när ingen siffra står efter O betyder det att det är en syreatom. Vatten är därför en kemisk förening, eftersom det är uppbyggt av två olika grundämnen. Med en kemisk formel kan man alltså på ett kort sätt visa vilka atomer en molekyl innehåller och hur många av varje.",
+    "screen": {
+     "short": "Formeln H2O betyder att en vattenmolekyl består av två väteatomer och en syreatom som sitter ihop.",
+     "long": "Formeln H2O betyder att en vattenmolekyl består av två väteatomer och en syreatom som sitter ihop. Bokstaven H står för grundämnet väte och bokstaven O står för grundämnet syre. Siffran 2 efter H visar att det är två väteatomer, och när ingen siffra står efter O betyder det att det är en syreatom. Vatten är därför en kemisk förening, eftersom det är uppbyggt av två olika grundämnen. Med en kemisk formel kan man alltså på ett kort sätt visa vilka atomer en molekyl innehåller och hur många av varje."
+    }
+   },
+   {
+    "id": "q11",
+    "question": "Hur rör sig elektronerna runt kärnan, och vad är de för något?",
+    "short": "Elektronerna är negativt laddade och rör sig runt atomens kärna, och en oladdad atom har lika många elektroner som protoner.",
+    "long": "Elektronerna är negativt laddade och rör sig runt atomens kärna, och en oladdad atom har lika många elektroner som protoner. Eftersom elektronerna är negativa och protonerna i kärnan är positiva, tar laddningarna ut varandra när antalet är lika, och därför är atomen oladdad. De yttersta elektronerna, de i yttersta skalet, är viktigast för hur ett ämne reagerar. Ämnen i samma grupp i periodiska systemet har lika många elektroner i yttersta skalet och reagerar därför på liknande sätt. Ädelgaserna har fullt yttersta skal och reagerar nästan inte alls."
+   },
+   {
+    "id": "q12",
+    "question": "Vad skiljer en proton från en neutron?",
+    "short": "En proton är positivt laddad, medan en neutron saknar laddning, och båda sitter i atomens kärna.",
+    "long": "En proton är positivt laddad, medan en neutron saknar laddning, och båda sitter i atomens kärna. Protonerna är viktiga eftersom antalet protoner, atomnumret, bestämmer vilket grundämne atomen är. Väte har en proton, kol har sex och syre har åtta. Neutronerna ändrar inte vilket ämne det är, eftersom de inte har någon laddning. Kärnans positiva laddning kommer alltså bara från protonerna, och den håller kvar de negativa elektronerna som rör sig runt kärnan. Eftersom en atom har lika många elektroner som protoner är den som helhet oladdad.",
+    "screen": {
+     "long": "En proton är positivt laddad, medan en neutron saknar laddning, och båda sitter i atomens kärna. Protonerna är viktiga eftersom antalet protoner, atomnumret, bestämmer vilket grundämne atomen är. Väte har 1 proton, kol har 6 och syre har 8. Neutronerna ändrar inte vilket ämne det är, eftersom de inte har någon laddning. Kärnans positiva laddning kommer alltså bara från protonerna, och den håller kvar de negativa elektronerna som rör sig runt kärnan. Eftersom en atom har lika många elektroner som protoner är den som helhet oladdad."
+    }
+   }
+  ],
+  "cost_usd": 0.04631
+ },
+ "h3-sh-riksdagen": {
+  "status": 200,
+  "subject": "Samhällskunskap",
+  "questions": 8,
+  "why": 4,
+  "circular": [],
+  "mentions_material": [],
+  "screen": [
+   {
+    "question": "Vad innebär det att Sverige är en representativ demokrati?",
+    "screen": {
+     "long": "Det innebär att medborgarna inte bestämmer själva i varje fråga, utan väljer politiker som fattar besluten åt dem. Valen hålls vart 4:e år till riksdagen, regionerna och kommunerna. På så sätt får folket makten genom sina röster, och politikerna kan bytas ut om väljarna inte är nöjda. Det är en praktisk lösning i ett stort land, där det vore svårt att låta alla rösta om varje enskilt beslut."
+    }
+   },
+   {
+    "question": "Vad gör riksdagen?",
+    "screen": {
+     "long": "Riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen. Riksdagen är folkets viktigaste företrädare och har 349 ledamöter som medborgarna har valt. Genom att besluta om budgeten bestämmer den hur statens pengar ska användas. Genom granskningen kontrollerar den att regeringen sköter sitt arbete, och riksdagen kan till och med avsätta en minister om förtroendet saknas."
+    }
+   }
+  ],
+  "english_questions": 0,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Vad innebär det att Sverige är en representativ demokrati?",
+    "short": "Det innebär att medborgarna inte bestämmer själva i varje fråga, utan väljer politiker som fattar besluten åt dem.",
+    "long": "Det innebär att medborgarna inte bestämmer själva i varje fråga, utan väljer politiker som fattar besluten åt dem. Valen hålls vart fjärde år till riksdagen, regionerna och kommunerna. På så sätt får folket makten genom sina röster, och politikerna kan bytas ut om väljarna inte är nöjda. Det är en praktisk lösning i ett stort land, där det vore svårt att låta alla rösta om varje enskilt beslut.",
+    "screen": {
+     "long": "Det innebär att medborgarna inte bestämmer själva i varje fråga, utan väljer politiker som fattar besluten åt dem. Valen hålls vart 4:e år till riksdagen, regionerna och kommunerna. På så sätt får folket makten genom sina röster, och politikerna kan bytas ut om väljarna inte är nöjda. Det är en praktisk lösning i ett stort land, där det vore svårt att låta alla rösta om varje enskilt beslut."
+    }
+   },
+   {
+    "id": "q2",
+    "question": "Vad gör riksdagen?",
+    "short": "Riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen.",
+    "long": "Riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen. Riksdagen är folkets viktigaste företrädare och har trehundrafyrtionio ledamöter som medborgarna har valt. Genom att besluta om budgeten bestämmer den hur statens pengar ska användas. Genom granskningen kontrollerar den att regeringen sköter sitt arbete, och riksdagen kan till och med avsätta en minister om förtroendet saknas.",
+    "screen": {
+     "long": "Riksdagen stiftar lagar, beslutar om statens budget och granskar regeringen. Riksdagen är folkets viktigaste företrädare och har 349 ledamöter som medborgarna har valt. Genom att besluta om budgeten bestämmer den hur statens pengar ska användas. Genom granskningen kontrollerar den att regeringen sköter sitt arbete, och riksdagen kan till och med avsätta en minister om förtroendet saknas."
+    }
+   },
+   {
+    "id": "q3",
+    "question": "Hur styr regeringen landet?",
+    "short": "Regeringen, som leds av statsministern, styr landet genom att genomföra de beslut som riksdagen har fattat.",
+    "long": "Regeringen, som leds av statsministern, styr landet genom att genomföra de beslut som riksdagen har fattat. Regeringen bestämmer alltså inte över riksdagen utan verkställer det som riksdagen har bestämt, till exempel lagar och budget. Eftersom riksdagen också granskar regeringen och kan avsätta ministrar måste regeringen hela tiden ha riksdagens förtroende. Det gör att den som styr landet också är beroende av folkets valda företrädare."
+   },
+   {
+    "id": "q4",
+    "question": "Hur kan riksdagen avsätta en minister?",
+    "short": "Riksdagen kan avsätta en minister genom en misstroendeförklaring.",
+    "long": "Riksdagen kan avsätta en minister genom en misstroendeförklaring. Det betyder att riksdagen visar att den inte längre har förtroende för ministern. Möjligheten är en del av riksdagens granskning av regeringen och visar att regeringen måste svara inför riksdagen. På så sätt kan makthavare inte sitta kvar om de förlorar de folkvaldas förtroende."
+   },
+   {
+    "id": "q5",
+    "question": "Varför är makten delad i Sverige?",
+    "short": "Makten är delad för att ingen enskild person eller del av staten ska få för mycket makt.",
+    "long": "Makten är delad för att ingen enskild person eller del av staten ska få för mycket makt. Riksdagen stiftar lagarna, regeringen styr landet och domstolarna dömer självständigt, så de tre kan kontrollera varandra. Dessutom granskar fria medier makthavarna och kallas ibland den tredje statsmakten. Maktdelningen skyddar demokratin, eftersom det blir svårare att missbruka makt när flera oberoende delar håller utkik på varandra."
+   },
+   {
+    "id": "q6",
+    "question": "Varför är det viktigt att domstolarna dömer självständigt?",
+    "short": "Domstolarna dömer självständigt för att makten ska vara delad, så att varken riksdagen eller regeringen kan styra utgången av rättegångar.",
+    "long": "Domstolarna dömer självständigt för att makten ska vara delad, så att varken riksdagen eller regeringen kan styra utgången av rättegångar. Maktdelningen i Sverige innebär att riksdagen stiftar lagarna, regeringen styr landet och domstolarna dömer. Om domstolarna inte vore självständiga skulle de som har makten kunna påverka domarna, och då skulle ingen kunna hålla makthavarna i schack. Självständiga domstolar skyddar alltså medborgarna mot att makten blir för stor hos en enda part."
+   },
+   {
+    "id": "q7",
+    "question": "Varför kallas de fria medierna för den tredje statsmakten?",
+    "short": "De fria medierna kallas den tredje statsmakten eftersom de granskar makthavarna och därmed fungerar som en kontroll av dem som styr.",
+    "long": "De fria medierna kallas den tredje statsmakten eftersom de granskar makthavarna och därmed fungerar som en kontroll av dem som styr. Makten i Sverige är delad mellan riksdagen som stiftar lagar, regeringen som styr och domstolarna som dömer. Medierna ingår inte formellt i den uppdelningen, men de har en viktig roll genom att undersöka vad politiker och myndigheter gör och berätta det för medborgarna. På så vis ser de till att ingen får för mycket makt utan insyn, och därför räknas de ibland som en egen statsmakt."
+   },
+   {
+    "id": "q8",
+    "question": "Varför finns det en spärr som kräver att ett parti får minst fyra procent av rösterna för att komma in i riksdagen?",
+    "short": "Spärren finns för att det ska bli lättare att bilda en stabil regering, eftersom färre partier kommer in i riksdagen.",
+    "long": "Spärren finns för att det ska bli lättare att bilda en stabil regering, eftersom färre partier kommer in i riksdagen. Om väldigt många små partier fick plats i riksdagen skulle det bli svårare att få en majoritet bakom en regering, och regeringen kunde falla lättare. Genom att ett parti måste få minst fyra procent av rösterna i hela landet hålls antalet partier nere. Nackdelen är att små partier får svårare att komma in, även om en del väljare har röstat på dem."
+   }
+  ],
+  "cost_usd": 0.0290249
+ },
+ "h3-en-climate": {
+  "status": 200,
+  "subject": "Engelska",
+  "questions": 12,
+  "why": 4,
+  "circular": [],
+  "mentions_material": [],
+  "screen": [
+   {
+    "question": "Why is the Earth's climate getting warmer?",
+    "screen": {
+     "long": "The Earth is getting warmer mainly because humans burn coal, oil and gas, which releases carbon dioxide that traps heat in the atmosphere. Since about 1850 the average temperature has risen by roughly 1.2 degrees, and most scientists agree that human activity is the main cause. The more carbon dioxide we release, the more heat stays in the atmosphere, so the planet keeps warming. This shows how our everyday use of energy is directly connected to changes in the climate."
+    }
+   },
+   {
+    "question": "What can people do to help the climate, for example when they travel?",
+    "screen": {
+     "long": "People can take the train instead of flying, which helps cut the emissions that make the Earth warmer. Burning coal, oil and gas releases carbon dioxide, and this gas traps heat in the atmosphere like the glass roof of a greenhouse. The more carbon dioxide we release, the more heat is trapped and the warmer the world becomes. Choosing the train over a plane is one way for ordinary people to help. Countries have also promised to cut their emissions in the Paris Agreement from 2015, so personal choices and national promises work toward the same goal."
+    }
+   }
+  ],
+  "english_questions": 12,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Why is the Earth's climate getting warmer?",
+    "short": "The Earth is getting warmer mainly because humans burn coal, oil and gas, which releases carbon dioxide that traps heat in the atmosphere.",
+    "long": "The Earth is getting warmer mainly because humans burn coal, oil and gas, which releases carbon dioxide that traps heat in the atmosphere. Since about eighteen fifty the average temperature has risen by roughly one point two degrees, and most scientists agree that human activity is the main cause. The more carbon dioxide we release, the more heat stays in the atmosphere, so the planet keeps warming. This shows how our everyday use of energy is directly connected to changes in the climate.",
+    "screen": {
+     "long": "The Earth is getting warmer mainly because humans burn coal, oil and gas, which releases carbon dioxide that traps heat in the atmosphere. Since about 1850 the average temperature has risen by roughly 1.2 degrees, and most scientists agree that human activity is the main cause. The more carbon dioxide we release, the more heat stays in the atmosphere, so the planet keeps warming. This shows how our everyday use of energy is directly connected to changes in the climate."
+    }
+   },
+   {
+    "id": "q2",
+    "question": "How does carbon dioxide make the Earth warmer?",
+    "short": "Carbon dioxide is a greenhouse gas that traps heat in the atmosphere, so less heat escapes and the Earth gets warmer.",
+    "long": "Carbon dioxide is a greenhouse gas that traps heat in the atmosphere, so less heat escapes and the Earth gets warmer. It works a bit like the glass roof of a greenhouse, which lets sunlight in but keeps the warmth from leaving. This is called the greenhouse effect. Some of this effect is natural, but when we add extra carbon dioxide to the air, more heat is trapped and the Earth's temperature rises."
+   },
+   {
+    "id": "q3",
+    "question": "What happens to the heat when more carbon dioxide is released?",
+    "short": "When more carbon dioxide is released, more heat is trapped in the atmosphere instead of escaping.",
+    "long": "When more carbon dioxide is released, more heat is trapped in the atmosphere instead of escaping. This extra trapped heat makes the whole planet warmer over time. The effect is like making the glass roof of a greenhouse thicker, so the inside gets hotter. That is why rising carbon dioxide levels lead to a rising average temperature, which in turn causes problems such as melting ice and more extreme weather."
+   },
+   {
+    "id": "q4",
+    "question": "Why do burning coal, oil and gas increase the greenhouse effect?",
+    "short": "Burning coal, oil and gas releases carbon dioxide, and the more of this gas there is, the more heat is trapped in the atmosphere.",
+    "long": "Burning coal, oil and gas releases carbon dioxide, and the more of this gas there is, the more heat is trapped in the atmosphere. Carbon dioxide acts like the glass of a greenhouse, so the greenhouse effect becomes stronger when we add more of it. Because we burn so much fuel for electricity, heating and transport, the amount of carbon dioxide keeps growing. This is why cutting emissions, for example by taking the train instead of flying, can help slow the warming."
+   },
+   {
+    "id": "q5",
+    "question": "What happens to sea levels when the ice in Greenland and Antarctica melts?",
+    "short": "When the ice in Greenland and Antarctica melts, the water flows into the oceans and sea levels rise.",
+    "long": "When the ice in Greenland and Antarctica melts, the water flows into the oceans and sea levels rise. Rising seas are dangerous because they threaten cities near the coast, which could be flooded. This is one of the main consequences of a warmer world. It is also connected to other effects of climate change, such as heatwaves, droughts and heavy rain, and to animals like polar bears losing their habitat."
+   },
+   {
+    "id": "q6",
+    "question": "Why are cities near the coast threatened?",
+    "short": "Cities near the coast are threatened because melting ice in Greenland and Antarctica makes sea levels rise, so the sea can flood low-lying coastal land.",
+    "long": "Cities near the coast are threatened because melting ice in Greenland and Antarctica makes sea levels rise, so the sea can flood low-lying coastal land. The ice sheets hold huge amounts of frozen water. As the Earth gets warmer, this ice melts and the water runs into the oceans, so the sea slowly climbs higher. Cities built right by the sea have less and less space between the buildings and the water. This puts homes, roads and the people who live there at greater risk."
+   },
+   {
+    "id": "q7",
+    "question": "How are heatwaves, droughts and heavy rain changing?",
+    "short": "Heatwaves, droughts and heavy rain are all becoming more common as the climate gets warmer.",
+    "long": "Heatwaves, droughts and heavy rain are all becoming more common as the climate gets warmer. This means that extreme weather happens more often than it used to. Long periods of very hot weather and long periods without rain can hurt people, farmland and nature. At other times, very heavy rain can fall instead. All of these changes are linked to the same cause, which is a world that is warming because humans release more carbon dioxide."
+   },
+   {
+    "id": "q8",
+    "question": "Why are polar bears losing their habitat?",
+    "short": "Polar bears are losing their habitat because the warming climate is melting the ice they live on.",
+    "long": "Polar bears are losing their habitat because the warming climate is melting the ice they live on. Polar bears depend on cold, icy areas in the Arctic. As humans burn coal, oil and gas, more carbon dioxide traps heat, the Earth warms, and the ice melts away. With less ice, the bears have less place to live, and they become one example of how global warming harms animals."
+   },
+   {
+    "id": "q9",
+    "question": "What did countries promise in the Paris Agreement?",
+    "short": "In the Paris Agreement from twenty fifteen, countries promised to cut their emissions of greenhouse gases.",
+    "long": "In the Paris Agreement from twenty fifteen, countries promised to cut their emissions of greenhouse gases. The aim is to release less carbon dioxide, because that gas traps heat in the atmosphere and makes the Earth warmer. If countries burn less coal, oil and gas, the warming can slow down. The agreement shows that countries understand the problem and have agreed to work on it together, instead of leaving it to each country alone."
+   },
+   {
+    "id": "q10",
+    "question": "How can people help reduce the warming of the planet?",
+    "short": "People can help by taking the train instead of flying, eating less meat and wasting less food.",
+    "long": "People can help by taking the train instead of flying, eating less meat and wasting less food. These choices matter because they reduce the greenhouse gases that heat the planet. Flying releases a lot of carbon dioxide, so travelling by train is a cleaner choice. Producing meat and food that is later thrown away also causes emissions. When many people change their habits a little, the effect adds up, and it supports what countries promised to do in the Paris Agreement."
+   },
+   {
+    "id": "q11",
+    "question": "What can people do to help the climate, for example when they travel?",
+    "short": "People can take the train instead of flying, which helps cut the emissions that make the Earth warmer.",
+    "long": "People can take the train instead of flying, which helps cut the emissions that make the Earth warmer. Burning coal, oil and gas releases carbon dioxide, and this gas traps heat in the atmosphere like the glass roof of a greenhouse. The more carbon dioxide we release, the more heat is trapped and the warmer the world becomes. Choosing the train over a plane is one way for ordinary people to help. Countries have also promised to cut their emissions in the Paris Agreement from twenty fifteen, so personal choices and national promises work toward the same goal.",
+    "screen": {
+     "long": "People can take the train instead of flying, which helps cut the emissions that make the Earth warmer. Burning coal, oil and gas releases carbon dioxide, and this gas traps heat in the atmosphere like the glass roof of a greenhouse. The more carbon dioxide we release, the more heat is trapped and the warmer the world becomes. Choosing the train over a plane is one way for ordinary people to help. Countries have also promised to cut their emissions in the Paris Agreement from 2015, so personal choices and national promises work toward the same goal."
+    }
+   },
+   {
+    "id": "q12",
+    "question": "What can people do to help the climate, apart from travelling differently?",
+    "short": "People can eat less meat and waste less food, which are two everyday ways to help the climate.",
+    "long": "People can eat less meat and waste less food, which are two everyday ways to help the climate. The climate is getting warmer because humans release more greenhouse gases, such as carbon dioxide, which trap heat in the atmosphere. Because of this, many small choices in daily life can matter when lots of people make them. Eating less meat and wasting less food are two examples. Together with taking the train instead of flying, they show that ordinary people can help. This matters because a warmer world means rising sea levels, more heatwaves and droughts, and animals like polar bears losing their habitat."
+   }
+  ],
+  "cost_usd": 0.0372196
+ },
+ "h3-ma-pythagoras": {
+  "status": 200,
+  "subject": "Matematik",
+  "questions": 9,
+  "why": 1,
+  "circular": [],
+  "mentions_material": [],
+  "screen": [
+   {
+    "question": "Vad säger Pythagoras sats?",
+    "screen": {
+     "short": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat, alltså a² + b² = c².",
+     "long": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat, alltså a² + b² = c². Här är a och b kateterna och c hypotenusan. Satsen gäller bara i rätvinkliga trianglar, men den fungerar också åt andra hållet: om a² + b² = c² för en triangel, så är triangeln rätvinklig. Med satsen kan man räkna ut en okänd sida när man känner de två andra."
+    }
+   },
+   {
+    "question": "Hur räknar man ut hypotenusan om kateterna är tre centimeter och fyra centimeter?",
+    "screen": {
+     "question": "Hur räknar man ut hypotenusan om kateterna är 3 cm och 4 cm?",
+     "short": "Man kvadrerar kateterna, lägger ihop dem och tar kvadratroten: 9 + 16 = 25, så hypotenusan är 5 cm.",
+     "long": "Man kvadrerar kateterna, lägger ihop dem och tar kvadratroten: 9 + 16 = 25, så hypotenusan är 5 cm. Med Pythagoras sats blir c² = 3² + 4², alltså 9 + 16, vilket är 25. Hypotenusan c är det tal som multiplicerat med sig självt ger 25, och det är 5. Trianglar med sidorna 3, 4 och 5 är ett klassiskt exempel på en rätvinklig triangel."
+    }
+   },
+   {
+    "question": "Hur räknar man ut en katet om man vet hypotenusan och den andra kateten?",
+    "screen": {
+     "long": "Man använder Pythagoras sats baklänges: kvadraten på den okända kateten är hypotenusans kvadrat minus den andra katetens kvadrat, och sedan tar man kvadratroten. Formeln är a² = c² − b². Man ska alltid subtrahera, eftersom hypotenusan är den längsta sidan. Om hypotenusan till exempel är 5 och en katet är 3, blir a² = 25 − 9 = 16, och kateten a är 4. Det går bara att göra så i en rätvinklig triangel."
+    }
+   },
+   {
+    "question": "Hur räknar man ut arean av en cirkel och vad betyder pi?",
+    "screen": {
+     "short": "Arean av en cirkel är π · r², och π är ungefär 3,14.",
+     "long": "Arean av en cirkel är π · r², och π är ungefär 3,14. Radien är avståndet från cirkelns mitt till kanten. Man tar radien gånger radien och multiplicerar resultatet med π. π är samma tal för alla cirklar och är ungefär 3,14. Har en cirkel radien 3 cm, blir arean π · 9, alltså ungefär 28,3 cm². Eftersom radien kvadreras växer arean snabbt när cirkeln blir större."
+    }
+   }
+  ],
+  "english_questions": 0,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Vad är hypotenusan i en rätvinklig triangel?",
+    "short": "Hypotenusan är den längsta sidan i en rätvinklig triangel, och den står mitt emot den räta vinkeln.",
+    "long": "Hypotenusan är den längsta sidan i en rätvinklig triangel, och den står mitt emot den räta vinkeln. De två andra sidorna kallas kateter. Hypotenusan är alltså den sida som inte rör vid den räta vinkeln, och det är den sidan som kallas c i Pythagoras sats. Kateterna är de två sidor som bildar den räta vinkeln mellan sig."
+   },
+   {
+    "id": "q2",
+    "question": "Varför är hypotenusan alltid den längsta sidan?",
+    "short": "Hypotenusan är längst eftersom den står mitt emot den största vinkeln i triangeln, och den största vinkeln är den räta vinkeln på nittio grader.",
+    "long": "Hypotenusan är längst eftersom den står mitt emot den största vinkeln i triangeln, och den största vinkeln är den räta vinkeln på nittio grader. I en triangel är den längsta sidan alltid mitt emot den största vinkeln. De två andra vinklarna i en rätvinklig triangel är tillsammans nittio grader, så båda är mindre än den räta vinkeln. Därför blir sidorna mitt emot dem kortare. Pythagoras sats visar samma sak, eftersom c i kvadrat är summan av a i kvadrat och b i kvadrat, och då måste c vara större än både a och b."
+   },
+   {
+    "id": "q3",
+    "question": "Vad säger Pythagoras sats?",
+    "short": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat, alltså a i kvadrat plus b i kvadrat är lika med c i kvadrat.",
+    "long": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat, alltså a i kvadrat plus b i kvadrat är lika med c i kvadrat. Här är a och b kateterna och c hypotenusan. Satsen gäller bara i rätvinkliga trianglar, men den fungerar också åt andra hållet: om a i kvadrat plus b i kvadrat är lika med c i kvadrat för en triangel, så är triangeln rätvinklig. Med satsen kan man räkna ut en okänd sida när man känner de två andra.",
+    "screen": {
+     "short": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat, alltså a² + b² = c².",
+     "long": "Pythagoras sats säger att i en rätvinklig triangel är summan av kateternas kvadrater lika med hypotenusans kvadrat, alltså a² + b² = c². Här är a och b kateterna och c hypotenusan. Satsen gäller bara i rätvinkliga trianglar, men den fungerar också åt andra hållet: om a² + b² = c² för en triangel, så är triangeln rätvinklig. Med satsen kan man räkna ut en okänd sida när man känner de två andra."
+    }
+   },
+   {
+    "id": "q4",
+    "question": "Hur räknar man ut hypotenusan om kateterna är tre centimeter och fyra centimeter?",
+    "short": "Man kvadrerar kateterna, lägger ihop dem och tar kvadratroten: nio plus sexton är tjugofem, så hypotenusan är fem centimeter.",
+    "long": "Man kvadrerar kateterna, lägger ihop dem och tar kvadratroten: nio plus sexton är tjugofem, så hypotenusan är fem centimeter. Med Pythagoras sats blir c i kvadrat lika med tre i kvadrat plus fyra i kvadrat, alltså nio plus sexton, vilket är tjugofem. Hypotenusan c är det tal som multiplicerat med sig självt ger tjugofem, och det är fem. Trianglar med sidorna tre, fyra och fem är ett klassiskt exempel på en rätvinklig triangel.",
+    "screen": {
+     "question": "Hur räknar man ut hypotenusan om kateterna är 3 cm och 4 cm?",
+     "short": "Man kvadrerar kateterna, lägger ihop dem och tar kvadratroten: 9 + 16 = 25, så hypotenusan är 5 cm.",
+     "long": "Man kvadrerar kateterna, lägger ihop dem och tar kvadratroten: 9 + 16 = 25, så hypotenusan är 5 cm. Med Pythagoras sats blir c² = 3² + 4², alltså 9 + 16, vilket är 25. Hypotenusan c är det tal som multiplicerat med sig självt ger 25, och det är 5. Trianglar med sidorna 3, 4 och 5 är ett klassiskt exempel på en rätvinklig triangel."
+    }
+   },
+   {
+    "id": "q5",
+    "question": "Hur räknar man ut en katet om man vet hypotenusan och den andra kateten?",
+    "short": "Man använder Pythagoras sats baklänges: kvadraten på den okända kateten är hypotenusans kvadrat minus den andra katetens kvadrat, och sedan tar man kvadratroten.",
+    "long": "Man använder Pythagoras sats baklänges: kvadraten på den okända kateten är hypotenusans kvadrat minus den andra katetens kvadrat, och sedan tar man kvadratroten. Formeln är a i kvadrat lika med c i kvadrat minus b i kvadrat. Man ska alltid subtrahera, eftersom hypotenusan är den längsta sidan. Om hypotenusan till exempel är fem och en katet är tre, blir a i kvadrat tjugofem minus nio, alltså sexton, och kateten a är fyra. Det går bara att göra så i en rätvinklig triangel.",
+    "screen": {
+     "long": "Man använder Pythagoras sats baklänges: kvadraten på den okända kateten är hypotenusans kvadrat minus den andra katetens kvadrat, och sedan tar man kvadratroten. Formeln är a² = c² − b². Man ska alltid subtrahera, eftersom hypotenusan är den längsta sidan. Om hypotenusan till exempel är 5 och en katet är 3, blir a² = 25 − 9 = 16, och kateten a är 4. Det går bara att göra så i en rätvinklig triangel."
+    }
+   },
+   {
+    "id": "q6",
+    "question": "Vad säger Pythagoras sats och i vilka trianglar gäller den?",
+    "short": "Pythagoras sats säger att summan av kateternas kvadrater är lika med hypotenusans kvadrat, och den gäller bara i trianglar som har en rät vinkel.",
+    "long": "Pythagoras sats säger att summan av kateternas kvadrater är lika med hypotenusans kvadrat, och den gäller bara i trianglar som har en rät vinkel. Satsen handlar om en rätvinklig triangel, där hypotenusan är den längsta sidan och ligger mitt emot den räta vinkeln. Kateterna är de två andra sidorna. Om triangeln inte har någon rät vinkel finns ingen hypotenusa i den meningen, och sambandet stämmer inte. Ett exempel är en triangel med kateterna tre och fyra centimeter. Då blir hypotenusan fem centimeter, eftersom nio plus sexton är tjugofem."
+   },
+   {
+    "id": "q7",
+    "question": "Hur kan man med Pythagoras sats avgöra om en triangel är rätvinklig?",
+    "short": "Man sätter in sidornas längder i sambandet och kontrollerar om kateternas kvadrater tillsammans blir lika stora som hypotenusans kvadrat; då är triangeln rätvinklig.",
+    "long": "Man sätter in sidornas längder i sambandet och kontrollerar om kateternas kvadrater tillsammans blir lika stora som hypotenusans kvadrat; då är triangeln rätvinklig. Man utgår från den längsta sidan, som då är hypotenusan, och kallar den c. Sedan kvadrerar man de två kortare sidorna, a och b, och lägger ihop dem. Om a i kvadrat plus b i kvadrat är exakt lika med c i kvadrat, är triangeln rätvinklig. Är talen inte lika, har triangeln ingen rät vinkel. Med sidorna tre, fyra och fem blir nio plus sexton lika med tjugofem, så den triangeln är rätvinklig."
+   },
+   {
+    "id": "q8",
+    "question": "Hur räknar man ut arean av en triangel?",
+    "short": "Arean av en triangel är basen gånger höjden delat med två.",
+    "long": "Arean av en triangel är basen gånger höjden delat med två. Basen är en av triangelns sidor, och höjden är det vinkelräta avståndet från basen till det motsatta hörnet. Man multiplicerar alltså basen med höjden och delar produkten med två. Delningen med två beror på att triangeln är hälften så stor som en rektangel med samma bas och höjd. Är basen åtta centimeter och höjden fem centimeter, blir arean fyrtio delat med två, alltså tjugo kvadratcentimeter."
+   },
+   {
+    "id": "q9",
+    "question": "Hur räknar man ut arean av en cirkel och vad betyder pi?",
+    "short": "Arean av en cirkel är pi gånger radien i kvadrat, och pi är ett tal som är ungefär tre komma fjorton.",
+    "long": "Arean av en cirkel är pi gånger radien i kvadrat, och pi är ett tal som är ungefär tre komma fjorton. Radien är avståndet från cirkelns mitt till kanten. Man tar radien gånger radien och multiplicerar resultatet med pi. Pi är samma tal för alla cirklar och är ungefär tre komma fjorton. Har en cirkel radien tre centimeter, blir arean pi gånger nio, alltså ungefär tjugoåtta komma tre kvadratcentimeter. Eftersom radien kvadreras växer arean snabbt när cirkeln blir större.",
+    "screen": {
+     "short": "Arean av en cirkel är π · r², och π är ungefär 3,14.",
+     "long": "Arean av en cirkel är π · r², och π är ungefär 3,14. Radien är avståndet från cirkelns mitt till kanten. Man tar radien gånger radien och multiplicerar resultatet med π. π är samma tal för alla cirklar och är ungefär 3,14. Har en cirkel radien 3 cm, blir arean π · 9, alltså ungefär 28,3 cm². Eftersom radien kvadreras växer arean snabbt när cirkeln blir större."
+    }
+   }
+  ],
+  "cost_usd": 0.057641500000000005
+ },
+ "h3-bi-anteckningar": {
+  "status": 200,
+  "subject": "Biologi",
+  "questions": 11,
+  "why": 3,
+  "circular": [],
+  "mentions_material": [],
+  "screen": [],
+  "english_questions": 0,
+  "items": [
+   {
+    "id": "q1",
+    "question": "Vad består ett ekosystem av?",
+    "short": "Ett ekosystem består av alla levande organismer på en plats tillsammans med de icke levande delarna, som ljus, vatten och jord.",
+    "long": "Ett ekosystem består av alla levande organismer på en plats tillsammans med de icke levande delarna, som ljus, vatten och jord. De levande och icke levande delarna hänger ihop. Växterna behöver ljus, vatten och jord för att växa, djuren äter växterna eller varandra, och nedbrytarna för tillbaka näring till jorden. Ett ekosystem kan vara så litet som en damm eller så stort som en skog."
+   },
+   {
+    "id": "q2",
+    "question": "Varför är växter producenter i ett ekosystem?",
+    "short": "Växter är producenter eftersom de gör sin egen energi genom fotosyntes, där solenergi omvandlas till socker.",
+    "long": "Växter är producenter eftersom de gör sin egen energi genom fotosyntes, där solenergi omvandlas till socker. Det betyder att växterna inte behöver äta något annat. De tar koldioxid och vatten och använder ljuset för att bilda socker, och syre blir över. Sockret är energi som sedan går vidare till konsumenterna när djur äter växterna. Därför är producenterna grunden i hela näringskedjan."
+   },
+   {
+    "id": "q3",
+    "question": "Vad händer med solenergin vid fotosyntesen?",
+    "short": "Vid fotosyntesen omvandlas solenergin till energi som växten lagrar i socker.",
+    "long": "Vid fotosyntesen omvandlas solenergin till energi som växten lagrar i socker. Växten tar upp koldioxid och vatten och använder ljuset för att bilda socker, och syre blir över. Sockret är alltså lagrad energi som växten kan använda själv. När ett djur äter växten går den energin vidare i näringskedjan."
+   },
+   {
+    "id": "q4",
+    "question": "Vad skiljer en konsument av första ordningen från en konsument av andra ordningen?",
+    "short": "En konsument av första ordningen äter växter, medan en konsument av andra ordningen äter konsumenter av första ordningen.",
+    "long": "En konsument av första ordningen äter växter, medan en konsument av andra ordningen äter konsumenter av första ordningen. Haren är ett exempel på första ordningens konsument, eftersom den äter gräs. Räven är andra ordningens konsument, eftersom den äter haren. I näringskedjan gräs, hare, räv visar pilarna att energin går vidare från varje steg till nästa."
+   },
+   {
+    "id": "q5",
+    "question": "Varför finns det få rovdjur högst upp i en näringskedja?",
+    "short": "Det finns få rovdjur högst upp eftersom bara ungefär tio procent av energin går vidare till nästa steg i kedjan.",
+    "long": "Det finns få rovdjur högst upp eftersom bara ungefär tio procent av energin går vidare till nästa steg i kedjan. Resten av energin blir värme och rörelse, så den når inte nästa steg. För varje steg uppåt finns det alltså mindre energi kvar. Högst upp räcker energin bara till ett fåtal djur. Därför finns det många växter, färre harar och ännu färre rävar."
+   },
+   {
+    "id": "q6",
+    "question": "Vad händer med energin när den går från ett steg i näringskedjan till nästa?",
+    "short": "Bara ungefär en tiondel av energin går vidare till nästa steg, och resten förloras som värme och rörelse.",
+    "long": "Bara ungefär en tiondel av energin går vidare till nästa steg, och resten förloras som värme och rörelse. Djuret som äter använder det mesta av energin till att leva, röra sig och hålla kroppen varm. Därför minskar energin för varje steg uppåt i kedjan. Det förklarar varför det finns många växter, färre växtätare och allra färrast rovdjur högst upp, eftersom det inte räcker energi till fler. Pilarna i kedjan visar just hur energin går vidare."
+   },
+   {
+    "id": "q7",
+    "question": "Hur skiljer sig en näringsväv från en näringskedja?",
+    "short": "En näringskedja visar en enda väg för energin, medan en näringsväv består av många näringskedjor som är sammanflätade med varandra.",
+    "long": "En näringskedja visar en enda väg för energin, medan en näringsväv består av många näringskedjor som är sammanflätade med varandra. I en kedja, som gräs, hare och räv, äter varje organism bara en sorts föda. I verkligheten äter de flesta djur flera sorters föda och blir själva uppätna av flera arter. En näringsväv visar därför hur hela ekosystemet hänger ihop och är en mer realistisk bild än en enskild kedja."
+   },
+   {
+    "id": "q8",
+    "question": "Vilka organismer är nedbrytare och vad gör de?",
+    "short": "Nedbrytare är svampar, bakterier och maskar, och de bryter ner döda växter och djur så att näringsämnena går tillbaka till jorden.",
+    "long": "Nedbrytare är svampar, bakterier och maskar, och de bryter ner döda växter och djur så att näringsämnena går tillbaka till jorden. När växter och djur dör finns näringen kvar i kroppen. Nedbrytarna gör om den till näringsämnen som växterna sedan kan ta upp med rötterna. På så sätt sluts kretsloppet. Nedbrytare är alltså en viktig del av varje ekosystem, eftersom producenterna är beroende av dem för att få ny näring."
+   },
+   {
+    "id": "q9",
+    "question": "Varför tar näringen slut i ett ekosystem utan nedbrytare?",
+    "short": "Utan nedbrytare blir döda växter och djur liggande, så näringsämnena kommer aldrig tillbaka till jorden och växterna får inget att växa av.",
+    "long": "Utan nedbrytare blir döda växter och djur liggande, så näringsämnena kommer aldrig tillbaka till jorden och växterna får inget att växa av. Växter är producenterna och startar hela näringskedjan. Om de saknar näring i jorden växer de dåligt och dör, och då får växtätarna ingen mat. Det slår i sin tur mot rovdjuren. Nedbrytarna håller alltså hela ekosystemet igång genom att återvinna näringen om och om igen."
+   },
+   {
+    "id": "q10",
+    "question": "Hur påverkar det en näringsväv om rävarna dör ut?",
+    "short": "Om rävarna dör ut blir det fler harar, och hararna äter mer gräs så att det blir mindre gräs.",
+    "long": "Om rävarna dör ut blir det fler harar, och hararna äter mer gräs så att det blir mindre gräs. Rävarna äter harar, så utan dem minskar dödligheten bland harar och antalet ökar. Fler harar betar mer gräs, och gräset minskar. När gräset tar slut kan det till sist bli brist på mat även för hararna. Exemplet visar att alla arter i en näringsväv hänger ihop, så när en försvinner påverkas hela väven."
+   },
+   {
+    "id": "q11",
+    "question": "Vad behövs och vad bildas vid fotosyntesen?",
+    "short": "Växten behöver koldioxid, vatten och ljus, och av dem bildas socker och syre.",
+    "long": "Växten behöver koldioxid, vatten och ljus, och av dem bildas socker och syre. Det är så växter, som är producenter, gör sin egen energi. Solens ljusenergi omvandlas till kemisk energi som lagras i sockret. Sockret använder växten för att växa och leva, och det är också den energi som konsumenterna får när de äter växten. Syret släpps ut i luften. Fotosyntesen är därför grunden för hela näringskedjan, eftersom all energi i ett ekosystem börjar hos producenterna. Till exempel äter haren gräset och tar på så vis del av den energi som gräset byggde upp."
+   }
+  ],
+  "cost_usd": 0.0337456
+ }
+}

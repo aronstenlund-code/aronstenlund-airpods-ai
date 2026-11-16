@@ -1,0 +1,125 @@
+[
+ {
+  "key": "photo:bio-ak8-fotosyntes",
+  "n": 3,
+  "status": 200,
+  "wall_ms": 6246,
+  "server_ms": 3799,
+  "plan": {
+   "ms": 2781,
+   "input_tokens": 21967,
+   "output_tokens": 455
+  },
+  "notes": {
+   "ms": 3776,
+   "input_tokens": 22006,
+   "output_tokens": 1095
+  },
+  "shorten": {
+   "ms": 1012,
+   "input_tokens": 1145,
+   "output_tokens": 40
+  },
+  "questions": 3,
+  "notes_chars": 2395,
+  "cost": 0.0053068,
+  "items": [
+   "Varför behöver gröna växter klorofyll?",
+   "Vad händer med koldioxid och vatten i fotosyntesen?",
+   "Vad blir av glukosen som växten bildar?"
+  ]
+ },
+ {
+  "key": "text:bio-ak8-fotosyntes",
+  "n": 3,
+  "status": 200,
+  "wall_ms": 5557,
+  "server_ms": 4710,
+  "plan": {
+   "ms": 2813,
+   "input_tokens": 2895,
+   "output_tokens": 507
+  },
+  "notes": {
+   "ms": 3710,
+   "input_tokens": 2934,
+   "output_tokens": 1095
+  },
+  "shorten": {
+   "ms": 1895,
+   "input_tokens": 1187,
+   "output_tokens": 527
+  },
+  "questions": 3,
+  "notes_chars": 2395,
+  "cost": 0.0017661,
+  "items": [
+   "Varför behöver växter ljusenergi för fotosyntesen?",
+   "Vad händer med koldioxid och vatten när växter gör fotosyntes?",
+   "Vad blir av glukosen som växten tillverkar?"
+  ]
+ },
+ {
+  "key": "photo:bio-ak8-fotosyntes",
+  "n": 15,
+  "status": 200,
+  "wall_ms": 5360,
+  "server_ms": 4634,
+  "plan": {
+   "ms": 3851,
+   "input_tokens": 21967,
+   "output_tokens": 653
+  },
+  "notes": {
+   "ms": 4005,
+   "input_tokens": 22006,
+   "output_tokens": 1095
+  },
+  "shorten": {
+   "ms": 778,
+   "input_tokens": 1413,
+   "output_tokens": 43
+  },
+  "questions": 15,
+  "notes_chars": 2395,
+  "cost": 0.0054341,
+  "items": [
+   "Varför behövs klorofyll för fotosyntesen?",
+   "Vad behöver växten för att göra fotosyntes?",
+   "Vad händer med glukosen som bildas vid fotosyntesen?",
+   "Varför släpps syre ut i luften vid fotosyntesen?",
+   "Varför kallas djur som äter växter förstahandskonsumenter?",
+   "Varför blir näringskedjor sällan längre än fyra eller fem led?",
+   "Varför bildar näringskedjorna en näringsväv i naturen?",
+   "Vad händer med energin i varje steg i en näringskedja?",
+   "Varför finns det färre rovdjur än växtätare?",
+   "Vad skulle hända med kretsloppet utan nedbrytare?",
+   "Hur kommer kol tillbaka ut i luften i kolets kretslopp?",
+   "Varför ökar halten koldioxid i luften när vi eldar fossila bränslen?",
+   "Hur leder övergödning till att fiskar och bottendjur dör?",
+   "Varför växer alger kraftigt när det finns mycket kväve och fosfor i sjön?",
+   "Hur kan man motverka övergödning?"
+  ]
+ },
+ {
+  "key": "text:bio-ak8-fotosyntes",
+  "n": 15,
+  "status": 429,
+  "wall_ms": 1335,
+  "body": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"För många försök just nu. Vänta en liten stund och försök igen.\",\"fallback\":false}}"
+ },
+ {
+  "key": "photo:bio-ak8-fotosyntes",
+  "n": 20,
+  "status": 429,
+  "wall_ms": 212,
+  "body": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"För många försök just nu. Vänta en liten stund och försök igen.\",\"fallback\":false}}"
+ },
+ {
+  "key": "text:bio-ak8-fotosyntes",
+  "n": 20,
+  "status": 429,
+  "wall_ms": 113,
+  "body": "{\"error\":{\"code\":\"rate_limited\",\"message\":\"För många försök just nu. Vänta en liten stund och försök igen.\",\"fallback\":false}}"
+ }
+]

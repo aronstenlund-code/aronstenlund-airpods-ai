@@ -11,6 +11,8 @@ import SwiftUI
 struct PublishSheet: View {
     let model: RepetitionModel
     let drill: Drill
+    /// The screenshots (A104): the sheet as it is after a failed Publicera.
+    var stagedProblem: String? = nil
     @Environment(\.dismiss) private var dismiss
     @State private var school: DrillSchool?
     @State private var subject: String?
@@ -42,9 +44,13 @@ struct PublishSheet: View {
                             .environment(\.locale, Locale(identifier: "sv_SE"))
                     } else {
                         Button { date = Calendar.current.date(byAdding: .day, value: 7, to: Date()) } label: {
-                            LabeledContent("Provdatum", value: "Välj datum")
+                            // Kelly Ke64 T3 (Toby V1): what is missing looks like something to tap.
+                            HStack {
+                                Text("Provdatum").foregroundStyle(Color.primary)
+                                Spacer()
+                                Text("Välj datum")
+                            }
                         }
-                        .foregroundStyle(.primary)
                     }
                 } footer: {
                     Text("Alla som söker på skolan kan lägga till provet och plugga på det. **Frågor, svar och ljud** publiceras. Aldrig foton, dokument eller ditt namn.")
@@ -79,7 +85,10 @@ struct PublishSheet: View {
                     choosingSchool = false
                 }
             }
-            .onAppear(perform: load)
+            .onAppear {
+                load()
+                if let stagedProblem, problem == nil { problem = stagedProblem }
+            }
         }
     }
 
@@ -115,7 +124,7 @@ struct PublishSheet: View {
         Task {
             do throws(DrillCloudError) {
                 try await model.publish(drill, school: school, subject: subject, examDate: date, displayName: shownName)
-                model.importMessage = "Publicerat."
+                // T24 V2: no alert; the row Publicerat on the exam says it.
                 dismiss()
             } catch {
                 if case .offline = error {
@@ -138,10 +147,13 @@ struct SchoolPicker: View {
     var selected: DrillSchool?
     /// "Vilken skola går du på?" the first time: with Hoppa över.
     var onSkip: (() -> Void)?
+    /// The screenshots (A104): a search already typed, so the empty and the failed search can be shown.
+    var stagedQuery: String? = nil
     let onPick: (DrillSchool) -> Void
     @State private var query = ""
     @State private var results: [DrillSchool] = []
     @State private var problem: String?
+    @State private var isOffline = false
     @State private var searching: Task<Void, Never>?
     @Environment(\.dismiss) private var dismiss
 
@@ -159,7 +171,8 @@ struct SchoolPicker: View {
                     } else if let problem {
                         // A104: what went wrong and the way on, in the system's own empty state.
                         ContentUnavailableView {
-                            Label("Skolorna går inte att hämta", systemImage: "wifi.slash")
+                            Label(isOffline ? "Ingen internetanslutning" : "Skolorna går inte att hämta",
+                                  systemImage: isOffline ? "wifi.slash" : "icloud.slash")
                         } description: {
                             Text(verbatim: problem)
                         } actions: {
@@ -191,6 +204,9 @@ struct SchoolPicker: View {
             }
             .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "Sök skola eller ort")
             .onChange(of: query) { _, q in search(q) }
+            .onAppear {
+                if let stagedQuery, query.isEmpty { query = stagedQuery }
+            }
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -214,8 +230,10 @@ struct SchoolPicker: View {
                 results = found
             } catch {
                 if case .offline = error {
-                    problem = "Anslut till internet och försök igen."
+                    isOffline = true
+                    problem = "Skolorna går att söka när du är uppkopplad."
                 } else {
+                    isOffline = false
                     problem = "Försök igen om en stund."
                 }
             }
@@ -611,8 +629,7 @@ struct PublishedRow: View {
             Button("Ta bort publiceringen", role: .destructive) {
                 Task {
                     do throws(DrillCloudError) {
-                        try await model.unpublish(drill)
-                        model.importMessage = "Publiceringen är borttagen."
+                        try await model.unpublish(drill) // T24 V2b: no alert; the row Publicerat goes away
                     } catch {
                         problem = "Något gick fel. Försök igen."
                     }

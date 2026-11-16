@@ -5,10 +5,14 @@ import { readLimitedJson } from "../answer/validate.ts";
 import { toSpeech } from "../answer/speech.ts";
 import { wordsToNumber } from "../answer/svnum.ts";
 import { pronounce } from "../tts/handler.ts";
+import { sentenceTimes, TEXT_LIMITS, voicedPart } from "./text.ts";
+import { polishVoice, preVoice, V4_MODEL, VOICE_RULES_VERSION, withPauseTag } from "./voicerules.ts";
+import { countsAs, textLanguage } from "../exam/read.ts";
 import { composeLong, examLanguage, spokenText } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
 import { lengthClass, lengthLimits, questionKey } from "./length.ts";
 import { currentTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
+import { type AnalysisRow, pressStats, saveRows, statsRow } from "./analysis.ts";
 
 /** K62b (D180): test traffic never shares a file with real users and never reaches ElevenLabs (silent files). */
 const voiceFor = (real: string | null) => currentTest()?.test ? TEST_VOICE_ID : real;
@@ -71,6 +75,14 @@ export interface DrillRow {
   shared_from?: string | null;
   /** K50 (D151): the voice model, chosen before the audio is made and locked after. */
   voice_model?: string;
+  /** K70 (D185): "questions" (default) or "text" (Läsläget: the items are the text's parts, read aloud in order). */
+  kind?: "questions" | "text";
+  /** K71 (D190): when Starta prov (or an old app's save) queued the audio; null = text only, editable for free. */
+  audio_started_at?: string | null;
+  /** K72: the language a text drill is read in ("" or null = by the subject, as before; "sv"; "English" ...). */
+  language?: string | null;
+  /** K74: the voice text's rules version (1 = before K74, kept for old drills so their hashes stay; 2 = now). */
+  voice_rules?: number;
   created_at?: string;
   updated_at?: string;
 }
@@ -89,10 +101,12 @@ export interface ItemRow {
   /** K61 (D176): question + long answer, characters sent to ElevenLabs, and the class */
   voice_chars?: number | null;
   length_class?: string | null;
+  /** K70: a text drill's part ("heading" or "para"); null for a question. */
+  part?: "heading" | "para" | null;
 }
 export interface AudioRow {
   hash: string;
-  kind: "question" | "long";
+  kind: "question" | "long" | "text";
   text: string;
   short_chars?: number | null;
   model: string;
@@ -104,6 +118,9 @@ export interface AudioRow {
   duration_ms?: number | null;
   short_end_ms?: number | null;
   words?: number[][] | null;
+  /** K70: a text file's sentence ends (characters, when queued) and [[start_ms, end_ms], ...] per sentence (when made). */
+  sentence_ends?: number[] | null;
+  sentences?: number[][] | null;
   /** K50: what ElevenLabs charged for the file (`character-cost`), when it said. */
   credits?: number | null;
   seq?: number;
@@ -203,6 +220,8 @@ export interface Synth {
 
 export interface DrillDeps {
   authenticate: Authenticator;
+  /** K77 (D197, D116): rows for Aron's analysis (table qa_log); never for test accounts. */
+  analysis?: (rows: AnalysisRow[]) => Promise<void>;
   rateLimiter: RateLimiter;
   db: DrillDb;
   storage: AudioStorage;
@@ -226,10 +245,16 @@ export interface DrillDeps {
 // ---------- text and hashes ----------
 
 /** Exactly what the voice reads: no markdown, numbers and symbols in words, measured spellings (K18). */
-export function voiceText(s: string, lang = ""): string {
-  if (lang) return foreignVoice(spokenText(s, 4000));
+export function voiceText(s: string, lang = "", rules = 1): string {
+  // K74: rules version 2 adds the table in voicerules.ts (abbreviations, brackets, slashes, symbols, quotes, long
+  // sentences); version 1 is exactly the text before K74 (drills made earlier keep their hashes)
+  if (lang) {
+    const f = foreignVoice(preVoice(spokenText(s, 4000), lang, rules));
+    return rules >= 2 ? polishVoice(f, lang, rules) : f;
+  }
   // a sentence end as the context: each text starts a sentence ("6 koldioxid" -> "Sex koldioxid")
-  return divided(pronounce(toSpeech(spokenText(s, 4000), "Start. "), "sv"), "delat med").replace(/\s+/g, " ").trim();
+  const t = divided(pronounce(toSpeech(preVoice(spokenText(s, 4000), "", rules), "Start. "), "sv"), "delat med").replace(/\s+/g, " ").trim();
+  return rules >= 2 ? polishVoice(t, "", rules) : t;
 }
 
 /**
@@ -272,10 +297,10 @@ export function screenOf(v: unknown): { question?: string; short?: string; long?
 }
 
 /** D145: the long file is the short answer, then the rest; the boundary is known to the character. */
-export function longVoice(short: string, long: string, lang = ""): { text: string; shortChars: number } {
-  const s = voiceText(short, lang);
+export function longVoice(short: string, long: string, lang = "", rules = 1): { text: string; shortChars: number } {
+  const s = voiceText(short, lang, rules);
   const rest = long.startsWith(short) ? long.slice(short.length) : long;
-  const r = voiceText(rest, lang);
+  const r = voiceText(rest, lang, rules);
   return { text: r ? `${s} ${r}` : s, shortChars: s.length };
 }
 export async function audioHash(text: string, model: string, voiceId: string): Promise<string> {
@@ -310,7 +335,7 @@ export const CUES: Record<string, string> = { press_for_answer: "Tryck en gång 
 // ---------- K50 helpers ----------
 
 /** D151: A = Multilingual v2 (default), B = v3, C = Flash v2.5. Also accepted as "A"/"B"/"C" or "v2"/"v3"/"flash". */
-export const VOICE_MODELS = ["eleven_multilingual_v2", "eleven_v3", "eleven_flash_v2_5"] as const;
+export const VOICE_MODELS = ["eleven_multilingual_v2", "eleven_v3", "eleven_flash_v2_5", "eleven_v4"] as const;
 export function voiceModel(v: unknown): string | null {
   if (typeof v !== "string") return null;
   const k = v.trim().toLowerCase();
@@ -347,13 +372,18 @@ export const daysBetween = (a: string, b: string) => Math.round((Date.parse(`${b
 /** What anyone may see of a published drill: never the account, photos or documents (B4, D149/D150). */
 /** K65 (Kelly P1, A87 punkt 5): what a publication shows before "Lägg till": the first questions and the first audio. */
 export interface PublicPreview {
-  preview: { question: string; short: string; screen?: { question?: string; short?: string } }[];
+  preview: { question: string; short: string; part?: string; screen?: { question?: string; short?: string } }[];
   first_audio_url: string | null;
 }
 /** K65 + K66 (A102): a preview row, with the display text for the question and the short answer when it differs. */
-export function previewItem(i: { question: string; short: string; screen?: { question?: string; short?: string; long?: string } | null }) {
+export function previewItem(i: {
+  question?: string; short?: string; long?: string; text?: string; part?: string | null;
+  screen?: { question?: string; short?: string; long?: string } | null;
+}) {
+  // K70 (D185): a text part shows its text as the row (no answer)
+  if (i.part) return { question: (i.text ?? i.long ?? "").slice(0, 300), short: "", part: i.part };
   const sc = { ...(i.screen?.question ? { question: i.screen.question } : {}), ...(i.screen?.short ? { short: i.screen.short } : {}) };
-  return { question: i.question, short: i.short, ...(Object.keys(sc).length ? { screen: sc } : {}) };
+  return { question: i.question ?? "", short: i.short ?? "", ...(Object.keys(sc).length ? { screen: sc } : {}) };
 }
 export const PREVIEW_QUESTIONS = 4;
 export function publicView(r: PublicationRow, school: SchoolRow, title: string, items: number, pv?: PublicPreview) {
@@ -402,6 +432,7 @@ export function createDrillHandler(deps: DrillDeps) {
         await deps.db.finish(j.hash, {
           status: "done", chars: j.text.length, bytes: r.audio.length, duration_ms: t.duration_ms, short_end_ms: t.short_end_ms,
           words: t.words, credits: 0, error: null, done_at: new Date(now()).toISOString(),
+          ...(j.sentence_ends?.length ? { sentences: sentenceTimes(r.starts, r.ends, j.sentence_ends) } : {}),
         });
         made++;
       } catch (e) {
@@ -467,6 +498,7 @@ export function createDrillHandler(deps: DrillDeps) {
               credits: r.credits ?? null,
               error: null,
               done_at: new Date(now()).toISOString(),
+              ...(j.sentence_ends?.length ? { sentences: sentenceTimes(r.starts, r.ends, j.sentence_ends) } : {}),
             });
             made++;
           } catch (e) {
@@ -510,7 +542,10 @@ export function createDrillHandler(deps: DrillDeps) {
         status: a.status,
         ...(a.status === "failed" ? { error: (a.error ?? "").startsWith(AUDIO_UNAVAILABLE) ? AUDIO_UNAVAILABLE : "audio_failed" } : {}),
         ...(a.status === "done"
-          ? { url: urls[audioPath(h)] ?? null, duration_ms: a.duration_ms, ...(a.kind === "long" ? { short_end_ms: a.short_end_ms } : {}) }
+          ? {
+            url: urls[audioPath(h)] ?? null, duration_ms: a.duration_ms, ...(a.kind === "long" ? { short_end_ms: a.short_end_ms } : {}),
+            ...(a.kind === "text" ? { sentences: a.sentences ?? null } : {}),
+          }
           : {}),
       };
     };
@@ -522,15 +557,23 @@ export function createDrillHandler(deps: DrillDeps) {
     return {
       drill: {
         id: drill.id, title: drill.title, subject: drill.subject, grade: drill.grade, covers: drill.covers,
-        long_words: drill.long_words, shared_from: drill.shared_from ?? null, voice_model: model,
+        long_words: drill.long_words, shared_from: drill.shared_from ?? null, voice_model: model, kind: drill.kind ?? "questions",
+        audio_started: !!drill.audio_started_at, ...(drill.kind === "text" ? { language: drill.language ?? null } : {}),
         created_at: drill.created_at, updated_at: drill.updated_at,
       },
       cue,
-      items: items.map((i) => ({
-        id: i.id, position: i.position, question: i.question, short: i.short, long: i.long, ...(i.screen ? { screen: i.screen } : {}),
-        voice_chars: i.voice_chars ?? null, length_class: i.length_class ?? null,
-        audio: { question: file(i.question_hash), long: file(i.long_hash) },
-      })),
+      items: items.map((i) => i.part
+        ? {
+          // K70 (D185): a text part; "sentences" are the displayed sentences, the audio's "sentences" their times
+          id: i.id, position: i.position, part: i.part, text: i.long,
+          sentences: voicedPart(i.long, i.part, (x) => voiceText(x, drill.language ? (drill.language === "sv" ? "" : drill.language) : examLanguage(drill.subject))).display,
+          voice_chars: i.voice_chars ?? null, audio: { text: file(i.long_hash) },
+        }
+        : {
+          id: i.id, position: i.position, question: i.question, short: i.short, long: i.long, ...(i.screen ? { screen: i.screen } : {}),
+          voice_chars: i.voice_chars ?? null, length_class: i.length_class ?? null,
+          audio: { question: file(i.question_hash), long: file(i.long_hash) },
+        }),
       audio: {
         done: done.length,
         total: hashes.length,
@@ -593,12 +636,18 @@ export function createDrillHandler(deps: DrillDeps) {
     const copy: DrillRow = {
       id: crypto.randomUUID(), user_id: userId, title: src.title, subject: src.subject, grade: src.grade,
       covers: src.covers, long_words: src.long_words, shared_from: src.id, voice_model: src.voice_model ?? deps.model,
+      kind: src.kind ?? "questions",
+      language: src.language ?? null,
+      voice_rules: src.voice_rules ?? 1, // the copy has the original's files
+      // the copy's files are the original's (finished: sharing and publishing need all of it)
+      audio_started_at: new Date(now()).toISOString(),
     };
     const its = (await deps.db.items([src.id])).sort((a, b) => a.position - b.position);
     await deps.db.saveDrill(copy, true);
     await deps.db.replaceItems(copy.id, [], its.map((i) => ({
       drill_id: copy.id, user_id: userId, position: i.position, question: i.question, short: i.short, long: i.long, screen: i.screen ?? null,
       question_hash: i.question_hash, long_hash: i.long_hash, voice_chars: i.voice_chars ?? null, length_class: i.length_class ?? null,
+      part: i.part ?? null,
     })));
     return { ...(await view((await deps.db.drill(copy.id)) ?? copy)), new_chars: 0 };
   }
@@ -616,6 +665,210 @@ export function createDrillHandler(deps: DrillDeps) {
     const d = await deps.db.drill(s);
     if (!d || d.user_id !== userId) throw new HttpError(404, "not_found", "Provet finns inte");
     return d;
+  }
+
+  /**
+   * The save. K71 (D190): with "defer_audio": true and a drill whose audio has not been started, nothing is queued or
+   * counted (the text can be edited for free until Starta prov). After start, a save queues only what changed (hashes).
+   * `queue` = true is the start itself (and an old app without the flag: as before, the audio is made at save).
+   */
+  async function saveDrill(user: { id: string }, b: Record<string, unknown> | null, queueNow: boolean): Promise<Response> {
+    const di = (b?.drill ?? {}) as Record<string, unknown>;
+    const rawItems = Array.isArray(b?.items) ? b!.items as Record<string, unknown>[] : [];
+    if (!rawItems.length) throw new HttpError(400, "invalid_request", "items: at least one question");
+    if (rawItems.length > DRILL_STORE_LIMITS.items) throw new HttpError(400, "invalid_request", `items: at most ${DRILL_STORE_LIMITS.items}`);
+    const vid = voiceFor(deps.voiceId);
+    if (!vid) throw new HttpError(503, "provider_unconfigured", "No voice configured");
+    let existing: DrillRow | null = null;
+    if (di.id !== undefined && di.id !== null) existing = await owned(user.id, di.id);
+    else if ((await deps.db.drills(user.id)).length >= DRILL_STORE_LIMITS.drillsPerUser) {
+      throw new HttpError(409, "too_many_drills", "Du har många prov sparade. Ta bort några gamla först.");
+    }
+    const lw = Math.round(Number(di.long_words));
+    // K50 (D151): the voice is chosen before the audio is made; after that it is locked (never regenerated)
+    const asked = di.voice_model === undefined || di.voice_model === null ? null : voiceModel(di.voice_model);
+    if (di.voice_model !== undefined && di.voice_model !== null && !asked) {
+      throw new HttpError(400, "invalid_request", "voice_model must be eleven_multilingual_v2, eleven_v3 or eleven_flash_v2_5 (A, B or C)");
+    }
+    const settings0 = await deps.db.settings?.().catch(() => null) ?? null;
+    if (asked === V4_MODEL && Number(settings0?.allow_eleven_v4) !== 1 && !(existing && (existing.voice_model ?? deps.model) === V4_MODEL)) {
+      // K74 part 2: prepared, not on (no ElevenLabs v4 call until Aron says yes)
+      throw new HttpError(409, "voice_model_unavailable", "Den rösten går inte att välja än.");
+    }
+    const lockedModel = existing ? existing.voice_model ?? deps.model : null;
+    if (lockedModel && asked && asked !== lockedModel) {
+      throw new HttpError(409, "voice_locked", "Rösten är redan vald för det här provet. Gör ett nytt prov för en annan röst.");
+    }
+    const voice = lockedModel ?? asked ?? deps.model;
+    // K70 (D185): a drill is questions or a text, chosen at the first save and never changed after
+    const kindAsked = di.kind === "text" || di.kind === "questions" ? di.kind : di.kind === undefined || di.kind === null ? null : "bad";
+    if (kindAsked === "bad") throw new HttpError(400, "invalid_request", "drill.kind must be questions or text");
+    const kind: "questions" | "text" = existing ? existing.kind ?? "questions" : kindAsked ?? "questions";
+    if (existing && kindAsked && kindAsked !== kind) throw new HttpError(409, "kind_locked", "Provet kan inte byta mellan frågor och text. Gör ett nytt prov.");
+    const isText = kind === "text";
+    if (isText && rawItems.length > TEXT_LIMITS.parts) throw new HttpError(400, "invalid_request", `items: at most ${TEXT_LIMITS.parts} parts`);
+    const drill: DrillRow = {
+      id: existing?.id ?? crypto.randomUUID(),
+      user_id: user.id,
+      title: clean(di.title, 120) || existing?.title || "",
+      subject: clean(di.subject, 60) || existing?.subject || "",
+      grade: clean(di.grade, 60) || existing?.grade || "",
+      covers: clean(di.covers, 400) || existing?.covers || "",
+      long_words: Number.isFinite(lw) && lw >= 40 && lw <= 200 ? lw : existing?.long_words ?? 90,
+      shared_from: existing?.shared_from ?? null,
+      voice_model: voice,
+      kind,
+      language: existing?.language ?? null,
+      voice_rules: existing ? existing.voice_rules ?? 1 : VOICE_RULES_VERSION,
+    };
+    const oldItems = existing ? await deps.db.items([existing.id]) : [];
+    const oldIds = new Set(oldItems.map((i) => i.id));
+    const rows: (ItemRow & { keep?: string })[] = [];
+    const files = new Map<string, AudioRow>();
+    const limits = lengthLimits(settings0);
+    const pauseTag = drill.voice_model === V4_MODEL && Number(settings0?.v4_pause_tag) === 1;
+    // K67 (D182): an English exam is read in English. K72 (O67): a text by its own language (asked, or detected)
+    if (isText) {
+      const asked = typeof di.language === "string" ? di.language.trim() : "";
+      const known = asked === "sv" ? "sv" : examLanguage(asked) || null;
+      drill.language = known ?? drill.language ??
+        (textLanguage(rawItems.map((it) => String(it?.text ?? "")).join(" "), drill.subject) || "sv");
+    }
+    const lang = isText && drill.language ? (drill.language === "sv" ? "" : drill.language) : examLanguage(drill.subject);
+    let textChars = 0;
+    for (const [pos, it] of isText ? rawItems.entries() : []) {
+      // K70 (D185): one file per part; question_hash = long_hash; the sentence ends are kept for the times
+      const part = it?.kind === "heading" ? "heading" as const : "para" as const;
+      const text = clean(it?.text, part === "heading" ? TEXT_LIMITS.heading : TEXT_LIMITS.part);
+      if (!text) throw new HttpError(400, "invalid_request", `items[${pos}].text is required`);
+      textChars += text.length;
+      if (textChars > TEXT_LIMITS.chars) throw new HttpError(400, "invalid_request", `the text is at most ${TEXT_LIMITS.chars} characters`);
+      const v = voicedPart(text, part, (x) => voiceText(x, lang, drill.voice_rules));
+      if (!v.spoken) throw new HttpError(400, "invalid_request", `items[${pos}].text has nothing to read`);
+      const h = await audioHash(v.spoken, voice, vid);
+      files.set(h, files.get(h) ?? { hash: h, kind: "text", text: v.spoken, model: voice, voice_id: vid, seq: pos * 2, sentence_ends: v.ends });
+      const id = typeof it?.id === "string" && oldIds.has(it.id) ? it.id : undefined;
+      rows.push({
+        ...(id ? { id } : {}), drill_id: drill.id, user_id: user.id, position: pos, question: "", short: "", long: text, screen: null,
+        question_hash: h, long_hash: h, voice_chars: v.spoken.length, length_class: null, part,
+      });
+    }
+    for (const [pos, it] of isText ? [] : rawItems.entries()) {
+      const question = clean(it?.question, DRILL_STORE_LIMITS.question);
+      if (!question) throw new HttpError(400, "invalid_request", `items[${pos}].question is required`);
+      const short = clean(it?.short, DRILL_STORE_LIMITS.short);
+      if (!short) throw new HttpError(400, "invalid_request", `items[${pos}].short is required`);
+      // D145: the long answer starts with the short one; an edited short answer is put in front again
+      let long = clean(it?.long, DRILL_STORE_LIMITS.long) || short;
+      if (!long.startsWith(short)) long = composeLong(short, long).slice(0, DRILL_STORE_LIMITS.long);
+      const q = voiceText(question, lang, drill.voice_rules);
+      const l0 = longVoice(short, long, lang, drill.voice_rules);
+      const l = pauseTag ? withPauseTag(l0.text, l0.shortChars) : l0;
+      const qh = await audioHash(q, voice, vid);
+      const lh = await audioHash(l.text, voice, vid);
+      files.set(qh, files.get(qh) ?? { hash: qh, kind: "question", text: q, model: voice, voice_id: vid, seq: pos * 2 });
+      files.set(lh, files.get(lh) ?? { hash: lh, kind: "long", text: l.text, short_chars: l.shortChars, model: voice, voice_id: vid, seq: pos * 2 + 1 });
+      const id = typeof it?.id === "string" && oldIds.has(it.id) ? it.id : undefined;
+      const chars = q.length + l.text.length; // D176: what ElevenLabs gets for this question
+      rows.push({
+        ...(id ? { id } : {}), drill_id: drill.id, user_id: user.id, position: pos, question, short, long, screen: screenOf(it?.screen), question_hash: qh, long_hash: lh,
+        voice_chars: chars, length_class: lengthClass(chars, limits),
+      });
+    }
+    // D144: only files no account has yet are generated and counted
+    const queue = queueNow || !!existing?.audio_started_at || b?.defer_audio !== true;
+    if (queue) drill.audio_started_at = existing?.audio_started_at ?? new Date(now()).toISOString();
+    else drill.audio_started_at = null;
+    const existingAudio = await deps.db.audio([...files.keys()]);
+    const have = new Set(existingAudio.map((a) => a.hash));
+    // K55: a file that failed earlier is made again now (the text is wanted again); free, it was paid for nothing
+    const failed = existingAudio.filter((a) => a.status === "failed").map((a) => a.hash);
+    if (queue && failed.length) await deps.db.requeue(failed);
+    const fresh = [...files.values()].filter((f) => !have.has(f.hash));
+    const newChars = fresh.reduce((n, f) => n + f.text.length, 0);
+    if (!queue) {
+      // K71 (D190): saved as text only; the audio (and the count) waits for Starta prov
+      await deps.db.saveDrill(drill, !existing);
+      await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
+      await analyse(saveRows(kind, oldItems, rows));
+      const saved = await deps.db.drill(drill.id);
+      return json({ ...(await view(saved ?? drill)), new_chars: 0, chars_on_start: newChars, generated_questions: 0 });
+    }
+    if (newChars > 0) {
+      const rl = await enforceLimits(deps.rateLimiter, "drill_tts", user.id, deps.charLimits, newChars);
+      if (!rl.allowed) {
+        throw new HttpError(429, "rate_limited", "Du har gjort mycket ljud i dag. Spara provet igen i morgon, så görs resten.", {
+          retryAfterSec: rl.retryAfterSec,
+        });
+      }
+    }
+    // K50 (D151): at most N generated questions per account. A question counts when any of its two files is new;
+    // audio another account already made (shared, published, the same text) is free and never counts
+    const freshSet = new Set(fresh.map((f) => f.hash));
+    const genRows = rows.filter((r) => freshSet.has(r.question_hash) || freshSet.has(r.long_hash));
+    // D177: questions already counted in /help try are not counted again
+    const keys = [...new Set(genRows.map((r) => questionKey(r.question)))];
+    const credited = keys.length ? new Set(await deps.db.tryCredits?.(user.id, keys).catch(() => []) ?? []) : new Set<string>();
+    // K70 (D185): a text counts every started N characters of new audio as one question (drill_settings)
+    const perQ = Number((await deps.db.settings?.().catch(() => null))?.text_chars_per_question) || 800;
+    const generated = isText ? countsAs(newChars, perQ) : genRows.filter((r) => !credited.has(questionKey(r.question))).length;
+    if (generated > 0) {
+      const q = await deps.db.useQuota(user.id, generated);
+      if (!q.ok) {
+        return json({
+          error: {
+            code: "quota_exceeded",
+            message: `Du har gjort ${q.used} av ${q.lim} frågor med ljud den här månaden. ${newFrom(now())} Andras prov är gratis.`,
+            fallback: false,
+          },
+          used: q.used,
+          limit: q.lim,
+          needed: generated,
+          per: "month",
+          resets: nextMonthStart(now()),
+        }, 402);
+      }
+    }
+    // the audio is queued first: a failure leaves no half-saved drill (a queued file nobody uses costs nothing)
+    if (fresh.length) {
+      const at = new Date(now()).toISOString();
+      // every row with the same keys (PostgREST bulk insert, live 2026-11-13: HTTP 400 otherwise)
+      await deps.db.enqueue(fresh.map((f) => ({
+        hash: f.hash, kind: f.kind, text: f.text, short_chars: f.short_chars ?? null, model: f.model,
+        voice_id: f.voice_id, status: "pending", seq: f.seq ?? 0, queued_at: at, sentence_ends: f.sentence_ends ?? null,
+      })));
+    }
+    if (credited.size) await deps.db.dropTryCredits?.(user.id, [...credited]).catch(() => {});
+    await deps.db.saveDrill(drill, !existing);
+    await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
+    await analyse(saveRows(kind, oldItems, rows));
+    if (fresh.length || failed.length) await kick([...files.keys()]);
+    const saved = await deps.db.drill(drill.id);
+    return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated, ...(credited.size ? { already_counted: credited.size } : {}) });
+  }
+
+  /** K77: to Aron's analysis (D197); a test account never, and a failure never stops the save. */
+  async function analyse(rows: AnalysisRow[]) {
+    if (!rows.length || !deps.analysis || currentTest()?.test) return;
+    await deps.analysis(rows).catch((e) => console.error("analysis_log_failed", e instanceof Error ? e.message.slice(0, 120) : String(e)));
+  }
+
+  async function share(d: DrillRow, userId: string): Promise<Response> {
+    let sh = await deps.db.shareOf(d.id);
+    if (!sh || sh.revoked_at) {
+      sh = { code: newShareCode(), drill_id: d.id, user_id: userId };
+      await deps.db.createShare(sh);
+    }
+    return json({ code: sh.code, url: SHARE_URL(sh.code), app_url: SHARE_APP_URL(sh.code) });
+  }
+
+  /** K71: the stored drill saved again with its audio queued (the same hashes: only what is missing is made). */
+  async function startAudio(user: { id: string }, d: DrillRow): Promise<Response> {
+    const its = (await deps.db.items([d.id])).sort((x, y) => x.position - y.position);
+    const items = its.map((i) => i.part
+      ? { id: i.id, kind: i.part, text: i.long }
+      : { id: i.id, question: i.question, short: i.short, long: i.long, ...(i.screen ? { screen: i.screen } : {}) });
+    return await saveDrill(user, { drill: { id: d.id }, items }, true);
   }
 
   return async (req: Request): Promise<Response> => {
@@ -656,7 +909,7 @@ export function createDrillHandler(deps: DrillDeps) {
             const hs = [...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))];
             return {
               id: d.id, title: d.title, subject: d.subject, grade: d.grade, items: its.length, updated_at: d.updated_at,
-              shared_from: d.shared_from ?? null, voice_model: d.voice_model ?? deps.model,
+              shared_from: d.shared_from ?? null, voice_model: d.voice_model ?? deps.model, kind: d.kind ?? "questions", audio_started: !!d.audio_started_at,
               audio: { done: hs.filter((h) => doneSet.has(h)).length, total: hs.length },
             };
           }),
@@ -681,21 +934,24 @@ export function createDrillHandler(deps: DrillDeps) {
       }
       if (action === "share") {
         const d = await owned(user.id, b?.id);
-        const v = await view(d);
+        let v = await view(d);
         if (v.audio.total === 0 || v.audio.done < v.audio.total) {
+          // K71 (D190): a drill never started gets its audio now (counted as at Starta prov); shared when it is done
+          if (!d.audio_started_at) {
+            const r = await startAudio(user, d);
+            if (r.status !== 200) return r;
+            v = await view((await deps.db.drill(d.id)) ?? d);
+            if (v.audio.done >= v.audio.total && v.audio.total > 0) return await share(d, user.id);
+          }
           // D143: sharing before the audio is done would make the recipient pay for the same audio again
           return json({
             error: { code: "audio_not_ready", message: `Delas när ljudet är klart (${v.audio.done} av ${v.audio.total})`, fallback: false },
             done: v.audio.done,
             total: v.audio.total,
+            audio_started: true,
           }, 409);
         }
-        let sh = await deps.db.shareOf(d.id);
-        if (!sh || sh.revoked_at) {
-          sh = { code: newShareCode(), drill_id: d.id, user_id: user.id };
-          await deps.db.createShare(sh);
-        }
-        return json({ code: sh.code, url: SHARE_URL(sh.code), app_url: SHARE_APP_URL(sh.code) });
+        return await share(d, user.id);
       }
       if (action === "unshare") {
         const d = await owned(user.id, b?.id);
@@ -737,7 +993,13 @@ export function createDrillHandler(deps: DrillDeps) {
       }
       if (action === "publish") {
         const d = await owned(user.id, b?.id);
-        const v = await view(d);
+        let v = await view(d);
+        if (!d.audio_started_at && (v.audio.total === 0 || v.audio.done < v.audio.total)) {
+          // K71 (D190): publishing a drill never started makes its audio now (the 409 below says how far it is)
+          const r = await startAudio(user, d);
+          if (r.status !== 200) return r;
+          v = await view((await deps.db.drill(d.id)) ?? d);
+        }
         const code = typeof b?.school_code === "string" ? b.school_code.trim() : "";
         const school = /^[0-9]{6,10}$/.test(code) ? await deps.db.school(code) : null;
         const subject = clean(b?.subject, 60) || d.subject;
@@ -767,7 +1029,7 @@ export function createDrillHandler(deps: DrillDeps) {
         return json({
           publication: publicView(row, school!, d.title, v.items.length, {
             preview: v.items.slice(0, PREVIEW_QUESTIONS).map(previewItem),
-            first_audio_url: (v.items[0]?.audio.question as { url?: string | null } | undefined)?.url ?? null,
+            first_audio_url: ((v.items[0]?.audio.question ?? v.items[0]?.audio.text) as { url?: string | null } | undefined)?.url ?? null,
           }),
         });
       }
@@ -825,6 +1087,25 @@ export function createDrillHandler(deps: DrillDeps) {
         if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många rapporter på kort tid.", { retryAfterSec: rl.retryAfterSec });
         return json(await deps.db.report(pub.id, user.id, reason));
       }
+      if (action === "stats") {
+        // K77 (D197): which presses were used (1, 2, 3), in total and per question; logged for Aron's analysis only
+        const d = await owned(user.id, b?.id);
+        const total = pressStats(b?.presses);
+        if (!total) throw new HttpError(400, "invalid_request", 'presses must be {"1": n, "2": n, "3": n}');
+        const rl = await enforceLimits(deps.rateLimiter, "drill_stats", user.id, { perMinute: 6, perDay: 100, globalPerDay: 500_000 }, 1);
+        if (!rl.allowed) return json({ logged: false });
+        const its = (await deps.db.items([d.id])).sort((x, y) => x.position - y.position);
+        const per = (Array.isArray(b?.per_question) ? b!.per_question as Record<string, unknown>[] : []).flatMap((q) => {
+          const it = its.find((i) => i.position === Number(q?.position));
+          const p = pressStats(q?.presses);
+          return it && p && !it.part ? [{ question: it.question, presses: p }] : [];
+        });
+        const m = Number(b?.minutes);
+        const row = statsRow(d.kind ?? "questions", d.subject, total, per, Number.isFinite(m) && m >= 0 && m < 10_000 ? Math.round(m) : null);
+        const logged = !currentTest()?.test && !!deps.analysis;
+        await analyse([row]);
+        return json({ logged });
+      }
       if (action === "played") {
         const d = await owned(user.id, b?.id);
         const pub = d.shared_from ? await deps.db.publicationOf(d.shared_from) : null;
@@ -857,125 +1138,13 @@ export function createDrillHandler(deps: DrillDeps) {
         }
         return json({ deleted: true });
       }
+      if (action === "start") {
+        // K71 (D190): Starta prov makes the audio: everything still missing is queued and counted now
+        const d = await owned(user.id, b?.id);
+        return await startAudio(user, d);
+      }
       if (action !== "save") throw new HttpError(400, "invalid_request", "unknown action");
-
-      // ---------- save ----------
-      const di = (b?.drill ?? {}) as Record<string, unknown>;
-      const rawItems = Array.isArray(b?.items) ? b!.items as Record<string, unknown>[] : [];
-      if (!rawItems.length) throw new HttpError(400, "invalid_request", "items: at least one question");
-      if (rawItems.length > DRILL_STORE_LIMITS.items) throw new HttpError(400, "invalid_request", `items: at most ${DRILL_STORE_LIMITS.items}`);
-      const vid = voiceFor(deps.voiceId);
-      if (!vid) throw new HttpError(503, "provider_unconfigured", "No voice configured");
-      let existing: DrillRow | null = null;
-      if (di.id !== undefined && di.id !== null) existing = await owned(user.id, di.id);
-      else if ((await deps.db.drills(user.id)).length >= DRILL_STORE_LIMITS.drillsPerUser) {
-        throw new HttpError(409, "too_many_drills", "Du har många prov sparade. Ta bort några gamla först.");
-      }
-      const lw = Math.round(Number(di.long_words));
-      // K50 (D151): the voice is chosen before the audio is made; after that it is locked (never regenerated)
-      const asked = di.voice_model === undefined || di.voice_model === null ? null : voiceModel(di.voice_model);
-      if (di.voice_model !== undefined && di.voice_model !== null && !asked) {
-        throw new HttpError(400, "invalid_request", "voice_model must be eleven_multilingual_v2, eleven_v3 or eleven_flash_v2_5 (A, B or C)");
-      }
-      const lockedModel = existing ? existing.voice_model ?? deps.model : null;
-      if (lockedModel && asked && asked !== lockedModel) {
-        throw new HttpError(409, "voice_locked", "Rösten är redan vald för det här provet. Gör ett nytt prov för en annan röst.");
-      }
-      const voice = lockedModel ?? asked ?? deps.model;
-      const drill: DrillRow = {
-        id: existing?.id ?? crypto.randomUUID(),
-        user_id: user.id,
-        title: clean(di.title, 120) || existing?.title || "",
-        subject: clean(di.subject, 60) || existing?.subject || "",
-        grade: clean(di.grade, 60) || existing?.grade || "",
-        covers: clean(di.covers, 400) || existing?.covers || "",
-        long_words: Number.isFinite(lw) && lw >= 40 && lw <= 200 ? lw : existing?.long_words ?? 90,
-        shared_from: existing?.shared_from ?? null,
-        voice_model: voice,
-      };
-      const oldItems = existing ? await deps.db.items([existing.id]) : [];
-      const oldIds = new Set(oldItems.map((i) => i.id));
-      const rows: (ItemRow & { keep?: string })[] = [];
-      const files = new Map<string, AudioRow>();
-      const limits = lengthLimits(await deps.db.settings?.().catch(() => null));
-      const lang = examLanguage(drill.subject); // K67 (D182): an English exam is read in English
-      for (const [pos, it] of rawItems.entries()) {
-        const question = clean(it?.question, DRILL_STORE_LIMITS.question);
-        if (!question) throw new HttpError(400, "invalid_request", `items[${pos}].question is required`);
-        const short = clean(it?.short, DRILL_STORE_LIMITS.short);
-        if (!short) throw new HttpError(400, "invalid_request", `items[${pos}].short is required`);
-        // D145: the long answer starts with the short one; an edited short answer is put in front again
-        let long = clean(it?.long, DRILL_STORE_LIMITS.long) || short;
-        if (!long.startsWith(short)) long = composeLong(short, long).slice(0, DRILL_STORE_LIMITS.long);
-        const q = voiceText(question, lang);
-        const l = longVoice(short, long, lang);
-        const qh = await audioHash(q, voice, vid);
-        const lh = await audioHash(l.text, voice, vid);
-        files.set(qh, files.get(qh) ?? { hash: qh, kind: "question", text: q, model: voice, voice_id: vid, seq: pos * 2 });
-        files.set(lh, files.get(lh) ?? { hash: lh, kind: "long", text: l.text, short_chars: l.shortChars, model: voice, voice_id: vid, seq: pos * 2 + 1 });
-        const id = typeof it?.id === "string" && oldIds.has(it.id) ? it.id : undefined;
-        const chars = q.length + l.text.length; // D176: what ElevenLabs gets for this question
-        rows.push({
-          ...(id ? { id } : {}), drill_id: drill.id, user_id: user.id, position: pos, question, short, long, screen: screenOf(it?.screen), question_hash: qh, long_hash: lh,
-          voice_chars: chars, length_class: lengthClass(chars, limits),
-        });
-      }
-      // D144: only files no account has yet are generated and counted
-      const existingAudio = await deps.db.audio([...files.keys()]);
-      const have = new Set(existingAudio.map((a) => a.hash));
-      // K55: a file that failed earlier is made again now (the text is wanted again); free, it was paid for nothing
-      const failed = existingAudio.filter((a) => a.status === "failed").map((a) => a.hash);
-      if (failed.length) await deps.db.requeue(failed);
-      const fresh = [...files.values()].filter((f) => !have.has(f.hash));
-      const newChars = fresh.reduce((n, f) => n + f.text.length, 0);
-      if (newChars > 0) {
-        const rl = await enforceLimits(deps.rateLimiter, "drill_tts", user.id, deps.charLimits, newChars);
-        if (!rl.allowed) {
-          throw new HttpError(429, "rate_limited", "Du har gjort mycket ljud i dag. Spara provet igen i morgon, så görs resten.", {
-            retryAfterSec: rl.retryAfterSec,
-          });
-        }
-      }
-      // K50 (D151): at most N generated questions per account. A question counts when any of its two files is new;
-      // audio another account already made (shared, published, the same text) is free and never counts
-      const freshSet = new Set(fresh.map((f) => f.hash));
-      const genRows = rows.filter((r) => freshSet.has(r.question_hash) || freshSet.has(r.long_hash));
-      // D177: questions already counted in /help try are not counted again
-      const keys = [...new Set(genRows.map((r) => questionKey(r.question)))];
-      const credited = keys.length ? new Set(await deps.db.tryCredits?.(user.id, keys).catch(() => []) ?? []) : new Set<string>();
-      const generated = genRows.filter((r) => !credited.has(questionKey(r.question))).length;
-      if (generated > 0) {
-        const q = await deps.db.useQuota(user.id, generated);
-        if (!q.ok) {
-          return json({
-            error: {
-              code: "quota_exceeded",
-              message: `Du har gjort ${q.used} av ${q.lim} frågor med ljud den här månaden. ${newFrom(now())} Andras prov är gratis.`,
-              fallback: false,
-            },
-            used: q.used,
-            limit: q.lim,
-            needed: generated,
-            per: "month",
-            resets: nextMonthStart(now()),
-          }, 402);
-        }
-      }
-      // the audio is queued first: a failure leaves no half-saved drill (a queued file nobody uses costs nothing)
-      if (fresh.length) {
-        const at = new Date(now()).toISOString();
-        // every row with the same keys (PostgREST bulk insert, live 2026-11-13: HTTP 400 otherwise)
-        await deps.db.enqueue(fresh.map((f) => ({
-          hash: f.hash, kind: f.kind, text: f.text, short_chars: f.short_chars ?? null, model: f.model,
-          voice_id: f.voice_id, status: "pending", seq: f.seq ?? 0, queued_at: at,
-        })));
-      }
-      if (credited.size) await deps.db.dropTryCredits?.(user.id, [...credited]).catch(() => {});
-      await deps.db.saveDrill(drill, !existing);
-      await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
-      if (fresh.length || failed.length) await kick([...files.keys()]);
-      const saved = await deps.db.drill(drill.id);
-      return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated, ...(credited.size ? { already_counted: credited.size } : {}) });
+      return await saveDrill(user, b, false);
     } catch (e) {
       return errorResponse(toHttpError(e));
     }

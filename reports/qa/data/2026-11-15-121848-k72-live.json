@@ -1,0 +1,4 @@
+{"checks": {"read_language_en": true, "read_usage": true, "save_language_en": true, "osv_two_sentences": true, "emoji_numbering": true, "italics": true},
+ "voice_text_sql": ["In 1769 James Watt improved the steam engine, and it was used in the mills of the north. About 1.2 million people moved to the towns in the years that followed.", "Kroppen behöver kol, kväve osv. Nästa stycke handlar om energi."],
+ "import": [{"question": "Vad är magma?", "long": "Magma är smält berg under jorden. Det finns på Hawaii."}, {"question": "Vad är lava?", "long": "Lava är magma ovan jord."}],
+ "source": "GitHub Actions kevin-live.yml run 43713152150 (test account, x-earmind-test, silent audio)"}

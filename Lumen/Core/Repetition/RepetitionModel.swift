@@ -189,7 +189,9 @@ final class RepetitionModel {
         self.remote = remote
         self.cloud = cloud
         self.defaults = defaults
+        self.practice = PracticeTracker(defaults: defaults)
         watchNetwork()
+        wirePractice()
     }
 
     /// A103 (Angela Fable A104): no network now, observed, so the views say it before the user tries and grey only
@@ -198,13 +200,18 @@ final class RepetitionModel {
 
     #if DEBUG
     /// Screenshots (A104): the offline rows without turning the network off.
-    func stageOffline(_ offline: Bool) { isOffline = offline }
+    func stageOffline(_ offline: Bool) { isOffline = offline; isOfflineStaged = offline }
+    /// The staged state stays when the Simulator's own network reports in (the pictures showed no offline row).
+    private var isOfflineStaged = false
     #endif
 
     private func watchNetwork() {
         Task { [weak self] in
             for await online in NetworkStatus.shared.changes() {
                 guard let self else { return }
+                #if DEBUG
+                if self.isOfflineStaged { continue }
+                #endif
                 let cameBack = online && self.isOffline
                 self.isOffline = !online
                 if cameBack { await self.refresh() } // the sound that was waiting goes on
@@ -222,6 +229,13 @@ final class RepetitionModel {
                              questions: settings.questions, longWords: settings.length.words)
     }
 
+    /// A105 (D185, K70): Läs upp texten: the material cleaned for reading aloud. Nothing is stored or counted until
+    /// `save(draft.drill)`.
+    func readText(_ material: DrillMaterial, subject: String? = nil, grade: String? = nil,
+                  title: String? = nil) async throws(DrillMakingError) -> DrillTextDraft {
+        try await maker.readText(material, subject: subject, grade: grade, title: title)
+    }
+
     /// Saves on the phone at once, then on the server, which starts the sound in the background (D143: when the exam
     /// is saved). Items whose texts changed lose their old sound; the others keep it.
     @discardableResult
@@ -230,11 +244,14 @@ final class RepetitionModel {
         let before = store.drill(drill.id)
         drill.items = drill.items.map { item in
             var item = item
-            item.long = DrillItem.long(item.long, startingWith: item.short) // D145
+            if item.part == nil { item.long = DrillItem.long(item.long, startingWith: item.short) } // D145
             if let old = before?.items.first(where: { $0.id == item.id }), !old.sameText(as: item) {
                 item.questionAudio = old.question == item.question ? old.questionAudio : nil
                 item.longAudio = nil
                 item.shortEndMs = nil
+                // A105: a changed text part is split and timed again by the server.
+                item.sentenceTimesMs = nil
+                if item.part != nil { item.sentences = nil }
             }
             return item
         }
@@ -269,7 +286,18 @@ final class RepetitionModel {
                 let account = await cloud.accountID()
                 for entry in remote where !store.drills.contains(where: { $0.serverID == entry.id }) {
                     if let view = try? await cloud.status(id: entry.id) {
+                        // Toby T27/T31: the save's reply may have come while we waited.
+                        guard !store.drills.contains(where: { $0.serverID == entry.id }) else { continue }
                         var drill = Drill.from(view)
+                        if var twin = Self.unsavedTwin(of: drill, in: store.drills) {
+                            // The phone's own exam, saved on the server before its reply came back (a ChatGPT import
+                            // left after ~3 s, or the app closed meanwhile): the same exam, not another phone's.
+                            twin.serverID = entry.id
+                            twin.ownerID = account
+                            twin.needsUpload = true // sent again with the id: an update, never a second exam
+                            store.save(twin)
+                            continue
+                        }
                         drill.ownerID = account
                         store.save(drill)
                     }
@@ -288,7 +316,24 @@ final class RepetitionModel {
                 Log.repetition.info("Drill list: \(error.userMessage, privacy: .public)")
             }
         }
-        for drill in store.drills where audio.tracks(for: drill) == nil || drill.needsUpload == true { prepareAudio(drill) }
+        for drill in store.drills where !audio.hasAllSound(drill) || drill.needsUpload == true { prepareAudio(drill) }
+        await reschedulePracticeReminders() // A108: the week ahead, today only if not practised
+    }
+
+    /// Toby T27/T31: the phone's exam that the server already has but the phone does not know it has (no server id
+    /// yet): the same kind, and the same questions and answers in the same order.
+    nonisolated static func unsavedTwin(of remote: Drill, in drills: [Drill]) -> Drill? {
+        drills.first { local in
+            local.serverID == nil && local.isText == remote.isText && local.items.count == remote.items.count
+                && !local.items.isEmpty && zip(local.items, remote.items).allSatisfy { mine, theirs in
+                    // The server cleans whitespace; the words decide.
+                    plain(mine.question) == plain(theirs.question) && plain(mine.long) == plain(theirs.long)
+                }
+        }
+    }
+
+    nonisolated private static func plain(_ text: String) -> String {
+        text.lowercased().split(whereSeparator: \.isWhitespace).joined(separator: " ")
     }
 
     enum ListDecision: Equatable { case stamp(UUID), delete(UUID), keepOtherAccount(UUID) }
@@ -321,9 +366,80 @@ final class RepetitionModel {
         return p.total > 0 && p.ready == p.total
     }
 
+    // MARK: Streak och påminnelse (A108, D194)
+
+    /// A108: the practised days and the streak ("3 dagar i rad"); observed, so the views follow it.
+    let practice: PracticeTracker
+
+    /// A108 (D194): the first exam was played through and iOS has not been asked yet: the moment for the app's own
+    /// short question about a reminder (Angela Fable's A109), never at the first start. Answer with
+    /// `allowPracticeReminders()` or `declinePracticeReminders()`.
+    var asksForReminders = false
+    static let reminderAskedKey = "reminders.practice.asked"
+    /// A108: iOS's notifications (`LivePracticeReminders`); set by the app, nil in tests and the mock mode.
+    @ObservationIgnored var reminders: (any PracticeReminding)?
+
+    private func wirePractice() {
+        session.onQuestionPlayed = { [weak self] id in self?.practice.questionPlayed(in: id) }
+        session.onReadSeconds = { [weak self] id, seconds in self?.practice.read(seconds: seconds, in: id) }
+        session.onFinished = { [weak self] _ in self?.examFinished() }
+        practice.onDayDone = { [weak self] in self?.reminders?.cancelToday() } // D194: only on days not practised
+    }
+
+    private func examFinished() {
+        practice.examFinished()
+        guard !defaults.bool(forKey: Self.reminderAskedKey), let reminders, reminders.isOn else { return }
+        Task {
+            if await reminders.notAskedYet() { asksForReminders = true }
+        }
+    }
+
+    /// A109's "Ja": iOS's own question now, then the reminders.
+    func allowPracticeReminders() async {
+        defaults.set(true, forKey: Self.reminderAskedKey)
+        asksForReminders = false
+        await reschedulePracticeReminders(ask: true)
+    }
+
+    /// A109's "Inte nu": not asked again by itself; Inställningar can turn reminders on later.
+    func declinePracticeReminders() {
+        defaults.set(true, forKey: Self.reminderAskedKey)
+        asksForReminders = false
+    }
+
+    /// A108: the reminders for the coming week, at the chosen time, for the latest exam. Called at every open, after
+    /// a change in Inställningar, and after the app's question. Never asks iOS unless `ask`.
+    func reschedulePracticeReminders(ask: Bool = false) async {
+        guard let reminders else { return }
+        let latest = practice.lastDrillID.flatMap { store.drill($0) } ?? store.drills.last
+        await reminders.schedule(drillID: latest?.id, examTitle: latest?.title, doneToday: practice.practisedToday, ask: ask)
+    }
+
+    // MARK: Ljud vid Starta prov (A107, D190, K71)
+
+    /// A107: the exam's sound is not asked for yet. Starta prov asks for it (`startAudio`), then plays as the sound
+    /// comes. Saving and editing until then cost nothing.
+    func awaitsAudioStart(_ drill: Drill) -> Bool { (store.drill(drill.id) ?? drill).awaitsAudioStart }
+
+    /// A107: Starta prov is asking the server for the sound now ("Gör ljudet …"); then `progress` counts the files.
+    func isStartingAudio(_ drill: Drill) -> Bool { audio.isStarting(drill) }
+
+    /// A107 (D190): asks for the exam's sound (the month's quota is counted now) without playing. False when it could
+    /// not start; `audio.problem(for:)` says why (no network, the month used up).
+    @discardableResult
+    func startAudio(_ drill: Drill) async -> Bool {
+        guard awaitsAudioStart(drill) else { return true }
+        let started = await audio.startAudio(store.drill(drill.id) ?? drill)
+        await refreshQuota()
+        return started
+    }
+
     /// Kelly Ke49: Starta prov works as soon as the first question has its sound; the player waits for the rest.
+    /// A107: an exam whose sound is not asked for yet can always be started (Starta prov asks for it).
     func canStart(_ drill: Drill) -> Bool {
-        audio.track(for: drill, at: 0) != nil
+        if awaitsAudioStart(drill) { return true }
+        if drill.isText { return audio.reading(for: drill, part: 0) != nil } // A105
+        return audio.track(for: drill, at: 0) != nil
     }
 
     func newAnswer(for question: String, in drill: Drill) async throws(DrillMakingError) -> DrillItem {
@@ -335,7 +451,23 @@ final class RepetitionModel {
     func savedIndex(_ drill: Drill) -> Int? { session.savedIndex(for: drill) }
 
     func start(_ drill: Drill, at index: Int = 0) async {
+        // A107 (D190): Starta prov asks for the sound first; the player then waits for each question's sound.
+        if awaitsAudioStart(drill) {
+            guard await startAudio(drill) else { return }
+            let started = store.drill(drill.id) ?? drill
+            if started.isText { await read(started, at: index, waitingForSound: true) } else {
+                await play(started, at: index)
+            }
+            return
+        }
+        if drill.isText { await read(drill, at: index); return }
         guard !drill.items.isEmpty, canStart(drill) || audio.track(for: drill, at: index) != nil else { return }
+        await play(drill, at: index)
+    }
+
+    /// The questions' player, whether the first question has its sound yet or not (it waits in silence, Ke49).
+    private func play(_ drill: Drill, at index: Int) async {
+        guard !drill.items.isEmpty else { return }
         await stopListening?()
         let audio = self.audio
         let store = self.store
@@ -357,6 +489,42 @@ final class RepetitionModel {
     }
 
     static let playedKey = "repetition.hasPlayed"
+
+    // MARK: Läsläget (A105, D185)
+
+    /// A105 (Ke63 §5): the sentence a text was left at ("Fortsätt"), nil for the start.
+    func savedSentence(_ drill: Drill) -> Int? { session.savedSentence(for: drill) }
+
+    /// A105 (D185): reads a text aloud from `sentence` (counted through the whole text). Plays without network once
+    /// the sound is downloaded (A103); a part whose sound has not come is waited for. Starts when the sound of the
+    /// part it starts in is here.
+    func read(_ drill: Drill, at sentence: Int = 0, waitingForSound: Bool = false) async {
+        guard drill.isText, !drill.items.isEmpty else { return }
+        let startPart = Self.part(of: sentence, in: drill)
+        guard waitingForSound || audio.reading(for: drill, part: startPart) != nil || canStart(drill) else { return }
+        await stopListening?()
+        let audio = self.audio
+        let store = self.store
+        let id = drill.id
+        if let publishing, drill.fromPublication != nil, let serverID = drill.serverID {
+            Task { await publishing.played(drillID: serverID) }
+        }
+        session.startReading(drill, at: sentence, tempo: tempo) { part in
+            audio.reading(for: store.drill(id) ?? drill, part: part)
+        }
+        showsPlayer = true
+    }
+
+    /// The part sentence number `sentence` is in.
+    static func part(of sentence: Int, in drill: Drill) -> Int {
+        var left = max(sentence, 0)
+        for (i, item) in drill.items.enumerated() {
+            let n = item.readingSentences.count
+            if left < n { return i }
+            left -= n
+        }
+        return max(drill.items.count - 1, 0)
+    }
 
     // MARK: Voice, tempo and the limit (A84, D151, D152, D155)
 
@@ -433,9 +601,21 @@ final class RepetitionModel {
     /// prov follows it.
     var quota: DrillQuota?
 
+    /// Toby 2 T24 L4: the month's questions are known (Nytt prov showed 20 and then jumped to 15). Until then the
+    /// view shows no number, or a grey one. Always known in the mock mode, which has no limit.
+    var quotaIsKnown: Bool { quota != nil || cloud == nil }
+
     func quotaExceeded(_ drill: Drill) -> Bool {
-        (audio as? CloudDrillAudio)?.quotaExceeded.contains(drill.id) ?? false
+        #if DEBUG
+        if stagedQuotaExceeded.contains(drill.id) { return true }
+        #endif
+        return (audio as? CloudDrillAudio)?.quotaExceeded.contains(drill.id) ?? false
     }
+
+    #if DEBUG
+    /// Screenshots (A104): an exam the month's questions ran out for.
+    @ObservationIgnored var stagedQuotaExceeded: Set<UUID> = []
+    #endif
 
     // MARK: Publicera prov (A83, D149, D150, K49)
 
@@ -483,8 +663,20 @@ final class RepetitionModel {
         guard let publishing, let id = drill.serverID else {
             throw .refused(status: 409, code: "publish_incomplete", message: "Publiceras när ljudet är klart.")
         }
-        let view = try await publishing.publish(drillID: id, school: school, subject: subject, examDate: examDate,
+        let view: DrillPublicationView
+        do throws(DrillCloudError) {
+            view = try await publishing.publish(drillID: id, school: school, subject: subject, examDate: examDate,
                                                 displayName: displayName)
+        } catch {
+            // A107 (D191): publishing an exam never started starts its sound on the server; follow it here.
+            if case .refused(_, let code, _) = error, code == "audio_not_ready", var latest = store.drill(drill.id),
+               latest.awaitsAudioStart {
+                latest.audioStarted = nil
+                store.save(latest)
+                prepareAudio(latest)
+            }
+            throw error
+        }
         guard var latest = store.drill(drill.id) else { return }
         latest.publication = DrillPublication(id: view.id, school: view.school, subject: view.subject,
                                               examDate: view.examDate ?? examDate, displayName: view.display_name)
@@ -536,6 +728,8 @@ final class RepetitionModel {
     // MARK: Sharing (A81)
 
     func shareLink(_ drill: Drill) async throws(DrillShareError) -> DrillShareResult {
+        // A107 (D191): an exam never started gets its sound first; it is shared when the sound is done.
+        if awaitsAudioStart(drill) { await startAudio(drill) }
         let p = progress(drill)
         guard p.total > 0, p.ready == p.total else { throw .audioNotReady(ready: p.ready, total: p.total) }
         return try await sharing.link(for: drill)

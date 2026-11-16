@@ -768,8 +768,14 @@ export async function handleDrill(
     });
     const notesCall = runLLM(provider, planReq(PART_NOTES, 3500), cfg.planPriceIn, cfg.planPriceOut);
     notesCall.catch(() => {}); // awaited below; never an unhandled rejection while the questions run
-    const plan = await runLLM(provider, planReq(PART_QUESTIONS, 1500 + (count + DRILL_LIMITS.extraQuestions) * 60), cfg.planPriceIn, cfg.planPriceOut);
-    const p = parsePlan(plan.text, Number.MAX_SAFE_INTEGER); // all candidates; trimmed after shortening
+    let plan = await runLLM(provider, planReq(PART_QUESTIONS, 1500 + (count + DRILL_LIMITS.extraQuestions) * 60), cfg.planPriceIn, cfg.planPriceOut);
+    let p = parsePlan(plan.text, Number.MAX_SAFE_INTEGER); // all candidates; trimmed after shortening
+    if (!p.questions.length && !p.unreadable) {
+      // K69 live (10 photos: a reply with no questions and no reason): the one-call plan as before, never a false 422
+      console.warn("drill_questions_part_empty", JSON.stringify({ images: images.length, reply_chars: plan.text.length }));
+      plan = await runLLM(provider, planReq("", 4000 + (count + DRILL_LIMITS.extraQuestions) * 40), cfg.planPriceIn, cfg.planPriceOut);
+      p = parsePlan(plan.text, Number.MAX_SAFE_INTEGER);
+    }
     if (!p.questions.length) {
       // K51 (Aron 22:12, two photos of a screen: 502 after 4 s): not a server error; say why, log only the reason
       console.warn("drill_unreadable", JSON.stringify({ images: images.length, text_chars: text.length, reply_chars: plan.text.length,

@@ -186,7 +186,7 @@ Raderna nedan med etiketterna Långt svar, Kort svar och Paus gäller bara teste
 | Överst | Fråga {7} av {20} · Varv {2} | |
 | Bricka | {Biologiprovet} · Frågan · Tänk · Långt svar · Kort svar · Pausad | |
 | Under ringen | Tänk | |
-| Väntar på ljud | Gör ljud … | |
+| Väntar på ljud | Gör ljudet … *(D190, Ke64)* | |
 | Pausad, stort | Tryck på AirPods för att fortsätta | Pausad. Tryck på AirPods för att fortsätta. Fortsätter från samma ord. |
 | Pausad, litet | Fortsätter från början av meningen *(D164)* | Fortsätter från samma ord |
 | Tryckraden | ● Långt svar · ●● Kort svar · ●●● Paus *(Fortsätt när pausat)* | Långt / 1 tryck … |
@@ -255,3 +255,47 @@ Raderna nedan med etiketterna Långt svar, Kort svar och Paus gäller bara teste
 | Dagens gräns för nytt ljud (K46) | Dagens gräns för nytt ljud är nådd. Resten görs i morgon. Frågorna som har ljud kan du plugga på redan nu. | |
 | Inloggningen gick ut | Logga in igen för att spara provet. Ingenting har försvunnit. | Logga in |
 | Okänt fel | Något gick fel. Försök igen. | Försök igen |
+
+## 14. Påminnelse (D194, Ke65, till A109)
+**Ton:** en gång, kort, ingen skuld. Inga utropstecken, inga ord som "Glöm inte", "Missa inte" eller "Du har inte …".
+Påminnelsen säger vad det kostar i tid och öppnar senaste provet, inget mer. `{…}` är värden.
+
+**Frågan efter första klara provet** (ett blad i Apples stil, före iOS egen fråga; visas en gång)
+| Ställe | Text |
+|---|---|
+| Rubrik | Vill du ha en påminnelse? |
+| Rad | EarMind kan påminna dig klockan {18} de dagar du inte har pluggat. Högst en gång om dagen. |
+| Huvudknapp | Påminn mig *(sedan iOS fråga om notiser)* |
+| Textknapp | Inte nu *(frågar aldrig igen; finns i Inställningar)* |
+| Fotnot | Du kan ändra tiden eller stänga av det i Inställningar. |
+| iOS nekade notiser efteråt | *(ingen text i bladet; raden i Inställningar säger det)* |
+
+**Inställningar**
+| Ställe | Text |
+|---|---|
+| Avsnittets rubrik | PÅMINNELSE |
+| Reglage | Påminn mig att plugga |
+| Rad (när på) | Tid · {18:00} *(tidväljare, timmar och minuter)* |
+| Fotnot | Högst en gång om dagen, och bara de dagar du inte har pluggat. |
+| Fotnot när iOS notiser är av | Notiser är avstängda för EarMind. · knapp: Öppna Inställningar |
+
+**Inställningar efter D198 (ett avsnitt, A110)**
+| Ställe | Text |
+|---|---|
+| Avsnittets rubrik | Påminnelser |
+| Rad 1 (reglage) | Påminn mig att plugga |
+| Rad 2 (när rad 1 är på) | Tid · {18:00} |
+| Rad 3 (reglage) | Studieplan i Fler lägen · *underrad:* Dagar kvar till provet och 5 snabba frågor |
+| Rad 4 (när rad 3 är på) | Tid · {16:00} |
+| Fotnot | Varje påminnelse kommer högst en gång om dagen, och inte de dagar du redan har pluggat. |
+
+**Påminnelsen själv** (en av tre, i den här ordningen; öppnar senaste provet)
+| Fall | Titel | Text |
+|---|---|---|
+| Provdatum i dag eller i morgon | {Biologiprovet} | Provet är {i morgon}. Ett varv tar cirka {4} min. |
+| Streak på 2 dagar eller mer | {Biologiprovet} | {3} dagar i rad. Ett varv i dag håller det igång. |
+| Annars | {Biologiprovet} | Ett varv tar cirka {4} min. Tryck för att börja. |
+| En text (läsläget) | {Biologiprovet} | Texten tar cirka {6} min att lyssna på. |
+
+Regler: titeln är alltid provets namn, aldrig "EarMind" (det står redan i notisen). Inget emoji. "Dagar i rad" är samma ord
+som raden på Start ("{3} dagar i rad").

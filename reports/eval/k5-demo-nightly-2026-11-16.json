@@ -1,0 +1,143 @@
+{
+ "summary": {
+  "n": 10,
+  "answered": 10,
+  "correct": 10,
+  "natural": 10,
+  "slips": 0,
+  "cost_mean_usd": 0.00313,
+  "first_ms_p50": 1433
+ },
+ "rows": [
+  {
+   "q": "vad är fotosyntes",
+   "status": 200,
+   "answer": "Fotosyntes är processen där växter, alger och vissa bakterier använder solljus för att omvandla koldioxid och vatten till glukos och syre. Det sker i kloroplasterna, med hjälp av det gröna ämnet klorofyll, och syret du andas in är en biprodukt.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0121575,
+   "ms": 2001
+  },
+  {
+   "q": "varför är himlen blå",
+   "status": 200,
+   "answer": "Solljuset sprids av luftens molekyler, och kortvågigt blått ljus sprids mycket mer än rött, så blått kommer från alla håll på himlen. Det kallas Rayleighspridning, och vid solnedgång har ljuset en längre väg genom luften, så blått sprids bort och himlen blir röd.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0022094000000000003,
+   "ms": 1769
+  },
+  {
+   "q": "hur fungerar en vaccin",
+   "status": 200,
+   "answer": "Ett vaccin visar immunförsvaret en ofarlig bit av en sjukdomsalstrare, till exempel ett protein eller dess ritning, så att kroppen tränar upp antikroppar och minnesceller. Möter du sedan det riktiga smittämnet känner immunförsvaret igen det och slår ut det snabbt, innan du blir riktigt sjuk.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Kort och korrekt. Enda smolk: 'en vaccin' är fel genus hos eleven, men svaret hanterar det. 'Ritning' kan låta lite udda men är begripligt.",
+   "cost": 0.0024069,
+   "ms": 1394
+  },
+  {
+   "q": "vem var Gustav Vasa",
+   "status": 200,
+   "answer": "Gustav Vasa var Sveriges kung från femtonhundratjugotre till femtonhundrasextio och räknas som den moderna svenska statens grundare. Han ledde befrielsekriget mot den danske kungen Kristian den andre, införde reformationen och gjorde kronan ärftlig.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0020069,
+   "ms": 1433
+  },
+  {
+   "q": "vad är skillnaden mellan väder och klimat",
+   "status": 200,
+   "answer": "Väder är hur atmosfären ser ut just nu eller de närmaste dagarna, till exempel regn eller femton grader idag. Klimat är det typiska vädret på en plats över lång tid, vanligen ett genomsnitt över minst trettio år.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0020019,
+   "ms": 2408
+  },
+  {
+   "q": "hur räknar man ut procent",
+   "status": 200,
+   "answer": "Procent betyder hundradelar. Delen delad med helheten gånger hundra ger procenten: femton av sextio blir femton genom sextio gånger hundra, alltså tjugofem procent. För att ta en procentsats av ett tal gör du tvärtom: tjugo procent av hundrafemtio är noll komma två noll gånger hundrafemtio, alltså trettio.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0022344,
+   "ms": 1404
+  },
+  {
+   "q": "varför har vi skottår",
+   "status": 200,
+   "answer": "Ett jordår är ungefär trehundrasextiofem komma två fem dygn, så vi lägger till en extra dag, den tjugonionde februari, vart fjärde år för att kalendern inte ska glida ur takt med årstiderna. Århundradeår hoppar över skottåret om de inte är delbara med fyrahundra, så nittonhundra var inget skottår men tvåtusen var det.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0022594,
+   "ms": 1281
+  },
+  {
+   "q": "vad är en atom",
+   "status": 200,
+   "answer": "En atom är den minsta byggstenen i ett grundämne, uppbyggd av en tung kärna med protoner och neutroner, omgiven av elektroner. Antalet protoner avgör vilket ämne det är, till exempel har syre alltid åtta protoner.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0019944000000000003,
+   "ms": 1414
+  },
+  {
+   "q": "hur uppstår regnbågar",
+   "status": 200,
+   "answer": "Solljus bryts när det går in i en regndroppe, studsar mot droppens insida och bryts igen på vägen ut. Eftersom olika färger bryts olika mycket sprids ljuset till ett spektrum, med rött ytterst och violett innerst, och du ser det när solen står bakom dig.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0021368999999999997,
+   "ms": 1464
+  },
+  {
+   "q": "vad betyder demokrati",
+   "status": 200,
+   "answer": "Demokrati betyder folkstyre, av grekiskans demos, folket, och kratos, makt. Det är ett styrelseskick där medborgarna har den yttersta makten, till exempel genom fria och hemliga val.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0018519,
+   "ms": 1362
+  }
+ ]
+}
