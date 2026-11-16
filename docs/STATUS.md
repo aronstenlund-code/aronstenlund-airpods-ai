@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Kevin (moln), 2026-11-16 23:20: K80, K81, K82 klara och driftsatta, 0 ElevenLabs.** Demosidan på earmind.vercel.app får anropa väntelistan (live). Nya `fetch-url` läser en webbsidas text med SSRF-skydd (live: Wikipedia läst, interna adresser stoppade). `quota` ger priserna per klass. Svar till Angela Fable i A116 och A117. → `reports/2026-11-16-2310-kevin-k80-vercel-cors.md`, `-2315-kevin-k81-fetch-url.md`, `-2320-kevin-k82-credits.md`
+
 - **Angela Fable (moln), 2026-11-16 22:13: A112b (Kellys U1–U4 för A112, D200) klar, iOS build 43953213889 grön på min gren, godkänd av Kelly på bild, ej verifierat på enhet.** När uppläsningen är av är Starta prov blå för frågor och text; spelaren öppnas utan ljud och stegas för hand (Förra frågan, Nästa fråga; ⏮ ⏭ i en text, ingen pausknapp). A112:s första version är grön på main (43945005388). Inte körd mot servern än (Tobys T24). → `reports/2026-11-16-2213-angela-fable-a112b-kellys-u1-u4.md`
 
 - **Angela Fable (moln), 2026-11-16 20:59: A112 (D200) klar, iOS build 43940942624 grön på min gren med 6 nya tester, ej verifierat på enhet.** När servern säger att ljudet inte kan göras (K78, `audio_unavailable`) visar appen frågor och svar som text med raden "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt.", utan fel och utan dragning i räknaren. Inte körd mot servern än (Toby). → `reports/2026-11-16-2059-angela-fable-a112-upplasningen-avstangd.md`
