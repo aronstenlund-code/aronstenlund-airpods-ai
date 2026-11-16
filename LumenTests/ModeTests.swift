@@ -210,6 +210,20 @@ import Testing
         #expect(!VoiceCommand.isInterviewRequest("klarade mig bra"))
     }
 
+    /// D199 step 1 (A111): Intervjuläge's decisions live in `InterviewModeController`, wired to the model, with the
+    /// same persona and words as before the move.
+    @Test func interviewIsItsOwnController() {
+        let rig = makeRig(events: [])
+        let interview = rig.model.interviewMode
+        #expect(interview.mode == .interview)
+        #expect(interview.host === rig.model)
+        #expect(interview.spokenKeyterms.isEmpty)
+        #expect(interview.persona(turn: "question").persona == "interview")
+        #expect(interview.persona(turn: "question").setup == "Säljare på Volvo")
+        #expect(interview.persona(turn: "question").turn == "question")
+        #expect(interview.persona().turn == nil, "the preparation has no turn, as before")
+    }
+
     @Test func prepareSendsTheJobAdAndIsNotSpoken() async {
         let rig = makeRig(events: [.delta("Fråga ett. "), .delta("Svar ett. "), .done(AnswerDone(answered: true))])
         rig.model.prepareInterview()
