@@ -23,12 +23,15 @@ out, ok = {}, {}
 tok = qa.signup()[0]
 st, q0 = call({"action": "quota"}, tok); out["quota_before"] = q0.get("used")
 st, s = call({"action": "save", "items": ITEMS}, tok, "unavailable")
-out["save"] = {"status": st, "generated": s.get("generated_questions")}
+out["save"] = {"status": st, "generated": s.get("generated_questions"), "audio_unavailable": s.get("audio_unavailable")}
+# when another test made a fake failure in the last 10 minutes, the save itself is already held back (path 2)
+held = s.get("audio_unavailable") is True
+ok["save_held_counts_nothing" if held else "save_counted"] = (s.get("generated_questions") == 0) if held else (s.get("generated_questions") == 2)
 time.sleep(2)
 st, v = call({"action": "status", "id": s["drill"]["id"]}, tok, "unavailable")
 out["status"] = {"status": st, "audio_unavailable": v.get("audio_unavailable"), "notice": v.get("notice"), "refunded": v.get("refunded_questions"), "text": [i.get("question") for i in v.get("items", [])]}
 ok["code_and_text"] = v.get("audio_unavailable") is True and v.get("notice", {}).get("code") == "audio_unavailable" and len(out["status"]["text"]) == 2
-ok["given_back"] = v.get("refunded_questions") == out["save"]["generated"]
+if not held: ok["given_back"] = v.get("refunded_questions") == out["save"]["generated"]
 st, q1 = call({"action": "quota"}, tok); out["quota_after_refund"] = q1.get("used")
 ok["quota_unchanged"] = q1.get("used") == q0.get("used")
 st, d2 = call({"action": "save", "defer_audio": True, "items": [{"question": f"Vad är is {tag}?", "short": "Fruset vatten.", "long": "Fruset vatten."}]}, tok)

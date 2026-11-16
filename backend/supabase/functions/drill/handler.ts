@@ -982,7 +982,9 @@ export function createDrillHandler(deps: DrillDeps) {
         }
         // K78 (D200): never charged for audio that was not made; the app shows the text with the notice
         const refunded = await refundUnavailable(d, user.id).catch(() => 0);
-        const unavailable = v.items.some((i) => Object.values(i.audio as unknown as Record<string, { error?: string } | undefined>).some((f) => f?.error === AUDIO_UNAVAILABLE));
+        const unavailable = v.items.some((i) => Object.values(i.audio as unknown as Record<string, { error?: string } | undefined>).some((f) => f?.error === AUDIO_UNAVAILABLE)) ||
+          // K78: audio still missing while ElevenLabs is out (a drill kept as text by start) says so too
+          (v.audio.done < v.audio.total && await creditsOut());
         return json({ ...v, ...(unavailable ? { audio_unavailable: true, notice: AUDIO_UNAVAILABLE_NOTICE } : {}), ...(refunded ? { refunded_questions: refunded } : {}) });
       }
       if (action === "share") {

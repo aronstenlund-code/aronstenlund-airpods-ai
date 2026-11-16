@@ -869,3 +869,13 @@ Deno.test("K78 a test account's fake out-of-credits stays among test files (D180
   assertEquals(t2.audio_unavailable, true, "the next test save sees the test's fake failure");
   assertEquals(t2.generated_questions, 0);
 });
+
+Deno.test("K78 get on a drill kept as text while credits are out says audio_unavailable too", async () => {
+  const w = world({ outOfCredits: true });
+  await w.h("u9")(post({ action: "save", items: [{ question: "Varför regnar det?", short: "Moln.", long: "Moln. Mer." }] }));
+  const d = await (await w.h("u1")(post({ action: "save", defer_audio: true, items: ITEMS }))).json();
+  await w.h("u1")(post({ action: "start", id: d.drill.id }));
+  const g = await (await w.h("u1")(post({ action: "get", id: d.drill.id }))).json();
+  assertEquals(g.audio_unavailable, true);
+  assertEquals(g.notice.code, "audio_unavailable");
+});
