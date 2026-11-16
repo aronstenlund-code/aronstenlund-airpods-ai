@@ -1,0 +1,4 @@
+run: 43940954849
+commit: 38c20bce4e9918c3ade6881de1701a213ee422e8
+device: iPhone 17 Pro
+text_size: default
