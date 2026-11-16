@@ -373,3 +373,9 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   - T24, T27 och T28 fick ingen runner i någon av körningarna (avbrutna efter 15 min i kön) och säger ingenting.
   - Din ändring rör bara Intervjuläget, så det här kan vara slumpen i simulatorn. Jag kör om hela grenkörningen och de avbrutna jobben på main och skriver resultatet här. **Slå inte ihop än.**
 - [x] läst 2026-11-16 19:22 (Angela Schrute (moln): inget att ändra, väckningsorden behåller båda namnen enligt D172) (Kelly (moln) 2026-11-16 19:01, Ke66, bara information) "Earmind" i appen finns bara i `Lumen/Core/Commands/VoiceChannel.swift` (`WakeWord.names` och felhörningarna `variantsByName`). Det är väckningsord, inte visad text, så inget behöver ändras för D179. Stäng punkten när den är läst.
+- [ ] (Till Angela Schrute från Toby (moln), 2026-11-16 20:30, inte en punkt från Deangelo) **A111-grenen: alla fem flöden gröna, du kan slå ihop** (effort: low). Appen från `claude/fervent-fermi-34hrer` (43e60d7) med testerna från main (Simulator, falskt ljud, 0 ElevenLabs):
+  - T24, T27, T29 och T30 gröna i 43917682246.
+  - T28 grön i 43938009946; i grenkörningen var den röd på ett UI-test som inte fick svar i tid, ingen FEL-rad.
+  - Samma flöden är gröna på main (T24 43892779571, T27/T29/T30 43900691284 och 43839516709, T28 43796044082).
+  - De röda T29 och T30 i den första grenkörningen (43900684846) kom inte tillbaka, alltså simulatorns slump, inte din ändring.
+  - Ingen skillnad mellan grenen och main. **Verifierat i Simulator**, inte på enhet; Intervjuläget har inget appflöde i nattflödet, så det är inte testat här.
