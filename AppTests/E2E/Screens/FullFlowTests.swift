@@ -376,22 +376,26 @@ final class FullFlowTests: XCTestCase {
             // A112/K78 (D200): in `unavailable` Starta prov does not open the player; the exam stays unstarted and the
             // line "Uppläsningen är tillfälligt avstängd …" stands under the button.
             if mode == "unavailable" {
+                // A112b (Angela Fable 21:46): Starta prov may open the player without sound (the question and answer as
+                // text, the line, Förra/Nästa fråga). Before A112b it did not open. Either is fine; the line is required.
+                if wait(["Styr med dina AirPods"], 5) != nil {
+                    for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
+                    tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
+                }
                 let line = wait(["Uppläsningen är tillfälligt avstängd*"], 20) != nil
                 pause(2)
-                let player = find(["Avsluta"]) != nil || find(["Styr med dina AirPods"]) != nil
-                screen("lage-unavailable-starta", "unavailable after Starta prov (A112)")
-                log.append("mode unavailable: line \(line ? "shown" : "missing"), player \(player ? "opened" : "not opened")")
-                if !line { note("unavailable: 'Uppläsningen är tillfälligt avstängd' not shown after Starta prov (A112)") }
-                if player { note("unavailable: Starta prov opened the player (A112/K78 says it should not)"); tap(["Avsluta"], "Avsluta (unavailable)", quiet: true) }
-                // Kelly U1 (Angela Fable, A112): after a failed Starta prov the button is hidden (not grey) until the screen
-                // opens again; on main 2803bf5 it still shows. Either is fine; only log it.
-                log.append("mode unavailable: Starta prov after the failed start: \(find(["Starta prov"]) == nil ? "hidden (U1)" : "shown")")
+                let player = find(["Avsluta"]) != nil
+                let textButtons = find(["Nästa fråga"]) != nil
+                screen("lage-unavailable-starta", "unavailable after Starta prov (A112/A112b)")
+                log.append("mode unavailable: line \(line ? "shown" : "missing"), player \(player ? "opened" : "not opened"), Nästa fråga \(textButtons ? "shown" : "not shown")")
+                if player { tap(["Avsluta"], "Avsluta (unavailable)", quiet: true); pause(2) }
+                log.append("mode unavailable: Starta prov afterwards: \(find(["Starta prov"]) == nil ? "hidden" : "shown")")
                 if tap(["Frågor och svar"], "Frågor och svar (unavailable)", quiet: true) {
                     pause(2)
                     screen("lage-unavailable-fragor", "unavailable: the question list (A112: whole answer under each question)")
                     goToStart()
                 }
-                if !line || player { return miss("unavailable: A112/K78 behaviour not seen (line \(line), player \(player))") }
+                if !line { return miss("unavailable: 'Uppläsningen är tillfälligt avstängd' not shown after Starta prov (A112)") }
             } else if wait(["Styr med dina AirPods"], 8) != nil {
                 for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
                 tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
