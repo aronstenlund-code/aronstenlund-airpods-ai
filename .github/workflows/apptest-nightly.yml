@@ -16,7 +16,8 @@ on:
         default: ""
 
 concurrency:
-  group: apptest-nightly
+  # One group per app branch (T33): a group keeps only one pending run, so main and a branch must not share one.
+  group: apptest-nightly-${{ inputs.app_ref || 'main' }}
   cancel-in-progress: false
 
 jobs:
