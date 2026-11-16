@@ -173,7 +173,8 @@ struct RepetitionHomeSection: View {
         ContentUnavailableView {
             Label("Kom förberedd till provet", systemImage: "book.closed") // A86 (Aron 22:19)
         } description: {
-            Text("Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods.")
+            // Kelly Ke67: the reading mode is named too, in the same words as the demo page.
+            Text("Fota ditt material. EarMind gör frågor och svar, eller läser upp texten, i dina AirPods.")
         } actions: {
             Button {
                 isCreating = true

@@ -123,6 +123,7 @@ struct RepetitionPlayerView: View {
                     Button { session.stepQuestion(by: -1) } label: {
                         Label("Förra frågan", systemImage: "backward.fill").frame(maxWidth: .infinity)
                     }
+                    .disabled(session.player?.index == 0) // Kelly: nothing is before the first question
                     Button { session.stepQuestion(by: 1) } label: {
                         Label("Nästa fråga", systemImage: "forward.fill").frame(maxWidth: .infinity)
                     }
