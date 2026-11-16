@@ -242,10 +242,26 @@ final class FullFlowTests: XCTestCase {
         goToStart()
     }
 
+    /// A110 on the exam's own screen: when Dela is not there the exam is not started; start this one, close the player
+    /// and come back to its screen (run 43766804245: startOnce on Start had started the other exam).
+    private func startHereIfNeeded() {
+        guard find(["Dela"]) == nil, let start = find(["Starta prov"]), start.isHittable else { return }
+        tapElement(start, "Starta prov (on the exam's screen, A110)")
+        if wait(["Styr med dina AirPods"], 8) != nil {
+            for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
+            tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
+        }
+        if wait(["Avsluta"], 20) != nil { pause(4); tap(["Avsluta"], "Avsluta (A110)") }
+        pause(2)
+        if find(["Vill du ha en påminnelse?"]) != nil { tap(["Inte nu"], "Inte nu", counted: false, quiet: true) }
+        if find(["Dela"]) == nil { tap(["Frågor och svar"], "Frågor och svar (again)", quiet: true); pause(1) }
+    }
+
     private func share() -> Bool {
-        startOnce()
         goToStart()
         guard tap(["Frågor och svar"], "Frågor och svar") else { return false }
+        pause(1)
+        startHereIfNeeded()
         guard tap(["Dela"], "Dela") else { return false }
         pause(3)
         screen("dela", "Dela")
@@ -257,6 +273,8 @@ final class FullFlowTests: XCTestCase {
     private func publish() -> Bool {
         goToStart()
         guard tap(["Frågor och svar"], "Frågor och svar") else { return false }
+        pause(1)
+        startHereIfNeeded()
         guard tap(["Mer"], "Mer") else { return false }
         guard tap(["Publicera prov"], "Publicera prov in Mer") else { return false }
         pause(2)
