@@ -299,6 +299,25 @@ import Testing
         #expect(!rig.model.liveMode.isActive && rig.model.rizz == nil)
     }
 
+    /// D199 step 3 (A114): Rizzläge's own rules (the 18+ question, the style) are `RizzModeController`, on the same
+    /// live session as Socialt läge.
+    @Test func rizzIsItsOwnControllerAndTheAgeQuestionIsNeverSkipped() async {
+        let rig = makeRig(events: [], microphone: .iPhone, adult: false)
+        let rizz = rig.model.rizzMode
+        #expect(rizz.mode == .rizz && rizz.style == .flirt)
+        #expect(rizz.spokenKeyterms == rig.model.socialMode.spokenKeyterms)
+        #expect(rizz.needsAgeConfirmation)
+
+        await rig.model.startHandsFree(.rizz)
+        #expect(rig.model.isShowingAgeGate && !rig.model.liveMode.isActive, "D63: never started without the answer")
+
+        rig.model.answerAgeGate(confirmed: true)
+        #expect(!rizz.needsAgeConfirmation && rig.settings.isAdultConfirmed)
+        await rig.model.startHandsFree(.rizz)
+        #expect(rig.model.liveMode.isActive && rig.model.rizz?.style == .flirt)
+        await rig.model.stopListening()
+    }
+
     @Test func nextAsksForAFreshSuggestion() async {
         let rig = makeRig(events: [], microphone: .iPhone)
         await rig.model.startHandsFree(.social)

@@ -211,6 +211,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var rizz: RizzSession? { liveMode.session }
     let liveMode: LiveModeController
     let socialMode: SocialModeController
+    /// D199 step 3 (A114): Rizzläge's own rules (the 18+ question, the style) on the same live session.
+    let rizzMode: RizzModeController
     var isShowingInterviewSetup = false
     var isShowingLiveStart = false
     var isShowingAgeGate = false
@@ -325,8 +327,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let live = LiveModeController(settings: modes)
         self.liveMode = live
         self.socialMode = SocialModeController(live: live)
+        let rizzController = RizzModeController(live: live, settings: modes)
+        self.rizzMode = rizzController
         // The remembered mode. Rizzläge only if the 18+ question was answered; the gate is never skipped.
-        self.selectedMode = modes.lastMode == .rizz && !modes.isAdultConfirmed ? .standard : modes.lastMode
+        self.selectedMode = modes.lastMode == .rizz && rizzController.needsAgeConfirmation ? .standard : modes.lastMode
         self.feedback = feedback
         self.remote = remote
         self.memoryExtractor = memoryExtractor
@@ -560,7 +564,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let spoken: [String] = switch mode {
         case .prov, .standard: ["kortare", "upprepa", "viska", "högre"]
         case .social: socialMode.spokenKeyterms // D199 step 2
-        case .rizz: LiveModeController.spokenKeyterms
+        case .rizz: rizzMode.spokenKeyterms // D199 step 3
         case .interview: interviewMode.spokenKeyterms
         }
         // A75: the name first, with the most weight Scribe and the phone's recogniser give (the first keyterms).
@@ -744,20 +748,20 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .prov: await startProvFromCard()
         case .interview: isShowingInterviewSetup = true
         case .rizz:
-            if modeSettings.isAdultConfirmed { isShowingLiveStart = true } else { isShowingAgeGate = true }
+            if rizzMode.needsAgeConfirmation { isShowingAgeGate = true } else { isShowingLiveStart = true }
         case .social: isShowingLiveStart = true
         }
     }
 
     /// The picker moved: Rizzläge asks for the age the first time it is opened (D63).
     func modeSelected() {
-        if selectedMode == .rizz, !modeSettings.isAdultConfirmed { isShowingAgeGate = true }
+        if selectedMode == .rizz, rizzMode.needsAgeConfirmation { isShowingAgeGate = true }
     }
 
     func answerAgeGate(confirmed: Bool) {
         isShowingAgeGate = false
         if confirmed {
-            modeSettings.confirmAdult()
+            rizzMode.confirmAge()
         } else {
             selectedMode = .standard
         }
@@ -777,7 +781,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             controller.log("\(newMode.rawValue) needs a subscription (D83, flag off today)")
             return
         }
-        if newMode == .rizz, !modeSettings.isAdultConfirmed {
+        if newMode == .rizz, rizzMode.needsAgeConfirmation {
             controller.log("Rizzläge refused: no age confirmation")
             isShowingAgeGate = true
             return
@@ -1231,7 +1235,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             switch mode {
             case .interview: interviewMode.turn(text) // D199
             case .social: socialMode.turn(text) // D199 step 2
-            case .rizz: liveMode.turn(text) // the same live session; its own controller in step 3
+            case .rizz: rizzMode.turn(text) // D199 step 3
             case .standard, .prov:
                 headMotion.stop() // answered with the voice
                 if silentQuiz?.awaitingAnswer == true { silentQuiz?.answered(); noteQuizAnswer() } // A20.2: "ja" / "nej" by voice; A38
@@ -1280,8 +1284,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     // MARK: - Rizzläge (D43)
 
-    // The live turn, the instructions and the suggestions are `LiveModeController` (D199 step 2). What is Rizzläge's
-    // own (the age question, the start screen) stays here until step 3.
+    // The live turn, the instructions and the suggestions are `LiveModeController` (D199 step 2). Rizzläge's own rules
+    // (the 18+ question, the style) are `RizzModeController` (step 3); the screens' flags stay here until step 4.
 
     // MARK: - Voice (D74)
 
@@ -1683,7 +1687,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// "Lumen, byt till provläge" (D74). The same checks as the screen: Rizzläge needs the 18+ answer, a live mode
     /// its start screen once, Intervjuläge a role.
     func switchByVoice(to target: ConversationMode) async {
-        if target == .rizz, !modeSettings.isAdultConfirmed {
+        if target == .rizz, rizzMode.needsAgeConfirmation {
             say("Rizzläge kräver att du bekräftar 18 år i appen.")
             return
         }
@@ -1788,7 +1792,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// as `social.calibrate` with the stored calibration, never as a line of the conversation. The backend answers a
     /// calibration with `done.calibration` and a request for more with that many suggestions.
     func liveInstruction(_ text: String) {
-        if mode == .social { socialMode.instruction(text) } else { liveMode.instruction(text) } // D199 step 2
+        switch mode { // D199 steps 2 and 3
+        case .social: socialMode.instruction(text)
+        case .rizz: rizzMode.instruction(text)
+        case .standard, .prov, .interview: liveMode.instruction(text) // as before: the session decides, not the mode
+        }
     }
 
     /// A short confirmation in the AirPods. Not while paused: the audio belongs to someone else then.
@@ -2603,7 +2611,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// "Byt läge": the same checks as the screen and the voice; listening goes on.
     func switchMode(to target: ConversationMode) async {
-        if target == .rizz, !modeSettings.isAdultConfirmed {
+        if target == .rizz, rizzMode.needsAgeConfirmation {
             selectedMode = .rizz
             isShowingAgeGate = true
             return
