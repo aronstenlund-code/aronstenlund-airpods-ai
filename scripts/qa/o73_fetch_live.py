@@ -11,7 +11,7 @@ import json, time, urllib.parse  # noqa: E402
 
 sys = _s
 sys.stdout.reconfigure(encoding="utf-8")
-R = "https://httpbin.org/redirect-to?url="
+R = "https://httpbingo.org/redirect-to?url="  # httpbin.org svarade inte med 3xx i körning 1
 CASES = [  # (namn, url, väntad status, väntad kod eller None, väntad reason eller None)
     ("kontroll: vanlig sida", "https://httpbin.org/html", 200, None, None),
     ("DNS: 127.0.0.1.nip.io", "http://127.0.0.1.nip.io/", 400, "url_blocked", "private_address"),
@@ -24,8 +24,8 @@ CASES = [  # (namn, url, väntad status, väntad kod eller None, väntad reason 
     ("omdirigering till file:", R + urllib.parse.quote("file:///etc/passwd", safe=""), 400, "url_blocked", "scheme"),
     ("omdirigering till vår Supabase", R + urllib.parse.quote(T.URL + "/rest/v1/drills", safe=""), 400, "url_blocked", "own_host"),
     ("4 omdirigeringar", "https://httpbin.org/absolute-redirect/4", 422, "url_unreachable", "too_many_redirects"),
-    ("timeout (15 s)", "https://httpbin.org/delay/15", 422, "url_unreachable", None),
-    ("för stor sida (4 MB text)", "https://www.gutenberg.org/cache/epub/10/pg10.txt", 413, "url_too_large", None),
+    ("timeout (10 s svarstid + DNS)", "https://httpbingo.org/delay/10", 422, "url_unreachable", None),
+    ("för stor sida (6 MB text)", "https://norvig.com/big.txt", 413, "url_too_large", None),
     ("icke-HTML: png", "https://httpbin.org/image/png", 415, "url_not_text", None),
     ("icke-HTML: json", "https://httpbin.org/json", 415, "url_not_text", None),
     ("IPv6 6to4 med 127.0.0.1 (O73 3)", "http://[2002:7f00:1::]/", 400, "url_blocked", "private_address"),
@@ -46,7 +46,7 @@ for i, (name, url, want_st, want_code, want_reason) in enumerate(CASES):
     if want_st == 200:
         good = good and len(j.get("text") or "") > 100
     ok_n += good
-    print(f"{'ok   ' if good else 'FEL  '}{name} | {st} {code} {reason} {ms} ms" + (f" chars {j.get('chars')} title {j.get('title')!r}" if st == 200 else ""), flush=True)
+    print(f"{'ok   ' if good else 'FEL  '}{name} | {st} {code} {reason} upstream={j.get('status')} type={j.get('content_type')} {ms} ms" + (f" chars {j.get('chars')} title {j.get('title')!r}" if st == 200 else ""), flush=True)
     time.sleep(1)
 print(f"\n=== O73 fetch-url {ok_n}/{len(CASES)} ok")
 sys.exit(0 if ok_n == len(CASES) else 1)
