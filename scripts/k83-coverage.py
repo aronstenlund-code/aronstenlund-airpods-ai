@@ -23,6 +23,7 @@ out = {}
 for name, (subject, grade, text) in mats.items():
     runs = []
     for _ in range(2):
+        tok = qa.signup()[0]  # /exam limits generations per account: a fresh test account per run
         t0 = time.perf_counter()
         st, _, raw = qa.call("POST", "/functions/v1/exam", {"action": "drill", "text": text, "questions": 12, "answers": False, "subject": subject, "grade": grade}, tok, timeout=200)
         j = json.loads(raw or b"{}")
