@@ -9,6 +9,11 @@ on:
   schedule:
     - cron: "0 2 * * *" # 02:00 UTC = 03:00 Swedish winter time (04:00 in summer)
   workflow_dispatch:
+    inputs:
+      app_ref:
+        description: "Branch or commit whose app code to test (empty = main). The tests and scripts always come from main."
+        required: false
+        default: ""
 
 concurrency:
   group: apptest-nightly
@@ -30,6 +35,19 @@ jobs:
           - { id: T30, title: "streak och påminnelse", script: t30.sh, out: t30 }
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.app_ref || github.ref }}
+          fetch-depth: 0
+
+      # T33 (G7 guard): on another branch the app is that branch's, the tests are main's, so main and the branch are
+      # compared with the same tests.
+      - name: Tests from main
+        if: inputs.app_ref != ''
+        run: |
+          set -euo pipefail
+          git fetch -q origin main
+          git checkout origin/main -- AppTests/E2E scripts/apptest
+          echo "App from ${{ inputs.app_ref }} ($(git rev-parse --short HEAD)), tests from main ($(git rev-parse --short origin/main))"
 
       - name: Select Xcode 26
         run: |
@@ -98,10 +116,14 @@ jobs:
         run: |
           set -euo pipefail
           DAY="$(TZ=Europe/Stockholm date +%Y-%m-%d)"
+          REF="${{ inputs.app_ref }}"
           FILE="reports/apptest/nightly/$DAY.md"
+          TITLE="Nattlig apptest $DAY"
+          # A branch run (T33) gets its own file, so it never overwrites main's line for the day.
+          if [ -n "$REF" ]; then SAFE="$(echo "$REF" | tr '/' '-')"; FILE="reports/apptest/nightly/$DAY-$SAFE.md"; TITLE="Apptest på grenen $REF $DAY"; fi
           mkdir -p reports/apptest/nightly
           {
-            echo "# Nattlig apptest $DAY $(TZ=Europe/Stockholm date +%H:%M) (simulatorn, inte enhet, falskt ljud, 0 ElevenLabs)"
+            echo "# $TITLE $(TZ=Europe/Stockholm date +%H:%M) (simulatorn, inte enhet, falskt ljud, 0 ElevenLabs)"
             echo
             for id in T24 T27 T28 T29 T30; do cat "status/$id.md" 2>/dev/null || echo "- **$id**: ingen status (jobbet startade inte)"; done
           } > "$FILE"
