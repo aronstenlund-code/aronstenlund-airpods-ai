@@ -944,7 +944,23 @@ export function createDrillHandler(deps: DrillDeps) {
         // K61 (D175, A99): what Nytt prov may suggest (at most what is left, never more than 20)
         const q = await deps.db.useQuota(user.id, 0);
         const left = Math.max(0, q.lim - q.used);
-        return json({ used: q.used, limit: q.lim, left, suggest: Math.min(left, 20), per: "month", resets: nextMonthStart(now()) });
+        // K82 (D205): what costs what, from the same table the save counts with (drill_settings)
+        const st = await deps.db.settings?.().catch(() => null) ?? null;
+        const lim = lengthLimits(st);
+        const perRead = Number(st?.text_chars_per_question) || 800;
+        return json({
+          used: q.used, limit: q.lim, left, suggest: Math.min(left, 20), per: "month", resets: nextMonthStart(now()),
+          prices: {
+            // today every question with new audio counts as 1; the tokens are what D176 will charge with payment (D157)
+            classes: [
+              { class: "normal", max_chars: lim.normalMax, questions: 1, tokens: 40 },
+              { class: "longer", min_chars: lim.normalMax + 1, max_chars: lim.longerMax, questions: 1, tokens: 60 },
+              { class: "too_long", min_chars: lim.longerMax + 1, max_chars: DRILL_STORE_LIMITS.long, questions: 1, tokens: 80 },
+            ],
+            read: { chars_per_question: perRead },
+            free: ["shared", "published", "imported", "existing_audio"],
+          },
+        });
       }
       if (action === "list") {
         const drills = await deps.db.drills(user.id);
