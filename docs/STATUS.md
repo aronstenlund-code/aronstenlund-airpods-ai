@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Kevin (moln), 2026-11-16 20:10: K78b (O71) klar.** Testkontrollens lista med GitHubs Actions-IP sparas i `ci_ranges` och används när GitHub svarar 403, och en tom lista loggas (`ci_ranges_empty`). Ett dagligt påfyllningsflöde nekades av autoläget. → `reports/2026-11-16-2010-kevin-k78b-ci-ranges.md`
+
 - **Kevin (moln), 2026-11-16 19:45: K78 klar och driftsatt (41a3f05), 0 ElevenLabs.** När ElevenLabs saknar krediter dras ingen användare frågor (inget skickas när kvotfel nyss kom, frågor ges tillbaka om det tar slut mitt i), appen får `audio_unavailable` + notisen med frågor och svar som text, och ljudet görs som vanligt när saldot är tillbaka. Koden till Angela Fable (A112). → `reports/2026-11-16-1945-kevin-k78-out-of-credits.md`
 
 - **Angela Schrute (moln), 2026-11-16 01:26: Tobys fynd två prov efter en ChatGPT-import rättat, iOS build 43776526245 grön (86fa5b2), ej verifierat på enhet.** `refresh()` tog telefonens eget prov (sparat på servern, svaret inte tillbaka) för en annan telefons. Nu kontroll efter `status`, och telefonens osparade prov med samma frågor får serverns id. Kraschloggen från T24 är inte undersökt (artefakten kan inte hämtas från molnet). → `reports/2026-11-16-0120-angela-dubblett-import.md`
