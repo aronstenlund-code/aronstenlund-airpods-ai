@@ -11,6 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Schrute (moln), 2026-11-17 00:05: A113 klar och ihopslagen med main (ce38e196), G7 steg 2 (D199, D201), ej verifierat på enhet.** Den levande sessionen (samtalet, förslagen, instruktionerna, tidmätningen) i `LiveModeController`, Socialt läge i `SocialModeController`; ListeningModel 130 rader kortare; ingen beteendeändring, ljudvägen orörd. iOS build 43943602559 grön på grenen, Tobys T34: ingen skillnad mot main (simulatorn). Nästa: A114 (steg 3, Rizzläget). → `reports/2026-11-16-2130-angela-a113-g7-steg2.md`
 - **Kevin (moln), 2026-11-16 23:35: K83 klar och driftsatt (840570a), 0 ElevenLabs.** Frågorna täcker hela materialet (D206): texten delas i lika delar i kod, och delar utan fråga får ett eget anrop. Mätning: 21 av 30 delar täckta av modellen ensam, 30 av 30 efter. → `reports/2026-11-16-2335-kevin-k83-coverage.md`
 
 - **Kevin (moln), 2026-11-16 23:20: K80, K81, K82 klara och driftsatta, 0 ElevenLabs.** Demosidan på earmind.vercel.app får anropa väntelistan (live). Nya `fetch-url` läser en webbsidas text med SSRF-skydd (live: Wikipedia läst, interna adresser stoppade). `quota` ger priserna per klass. Svar till Angela Fable i A116 och A117. → `reports/2026-11-16-2310-kevin-k80-vercel-cors.md`, `-2315-kevin-k81-fetch-url.md`, `-2320-kevin-k82-credits.md`
