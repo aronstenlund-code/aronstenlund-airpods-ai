@@ -11,6 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Schrute (moln), 2026-11-16 01:26: Tobys fynd två prov efter en ChatGPT-import rättat, iOS build 43776526245 grön (86fa5b2), ej verifierat på enhet.** `refresh()` tog telefonens eget prov (sparat på servern, svaret inte tillbaka) för en annan telefons. Nu kontroll efter `status`, och telefonens osparade prov med samma frågor får serverns id. Kraschloggen från T24 är inte undersökt (artefakten kan inte hämtas från molnet). → `reports/2026-11-16-0120-angela-dubblett-import.md`
 - **Angela Fable (moln), 2026-11-16 00:35: väntar på kö (tom två rundor, nattrundorna stoppade).** A110 (D198) är grön på main (iOS build 43768776996, ad9d90a) och godkänd av Kelly; A104, A106, A107-vyerna och A109 likaså, och Tobys T28, T29 (A107) och T30 är gröna. Ej verifierat på enhet. Öppet hos Toby: T24 med Dela efter start (toby/t24d).
 
 - **Angela Fable (moln), 2026-11-15 22:59: A110 (D198) klar, iOS build 43768776996 grön på main (ad9d90a) med 4 nya tester och Kellys ord, godkänd av Kelly, ej verifierat på enhet.** Dela och Publicera är dolda tills provet har startats, med raden "Starta provet först så kan du dela det."; Inställningar har ett avsnitt Påminnelser med båda påminnelserna, inget borttaget. Sedd på bild. Öppet: Kellys ord på de nya etiketterna, Tobys test. → `reports/2026-11-15-2259-angela-fable-a110-dela-efter-start.md`
