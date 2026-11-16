@@ -415,6 +415,10 @@ All calls are `POST` with the user's JWT, like `/answer`.
    - A photo that never arrived gives 422 `material_missing` ("2 av 30 bilder kom inte fram. Ladda upp dem igen."). Upload those again with new URLs.
 - More than 10 photos are written out as text in parallel batches before the questions are made. Measured live: 30 photos to questions in 22.5 s, answers 12 s more.
 
+### Länkar som material (K81, D204)
+
+`POST /fetch-url {"url"}` (signed in) -> `{"url", "title", "text", "chars", "truncated"?}`: a web page's readable text (no JavaScript run), then sent as `text` to `/exam drill` or `/exam read`. SSRF guard (`fetch-url/guard.ts`): only http/https on ports 80/443, no user info, no internal names (localhost, *.local, *.internal, metadata), our own Supabase hosts refused, every address the name resolves to (DNS over HTTPS) must be public, checked again on each of at most 3 redirects; 10 s and 2 MB in all; HTML and plain text only. Errors: `url_blocked` (400, `reason`), `url_unreachable`, `url_too_large` (413), `url_not_text` (415), `url_empty`, `rate_limited`.
+
 ### Slut på ElevenLabs-krediter (K78, D200)
 
 The text always works and the user is never charged for audio that was not made. `save`/`start` when a real file failed for lack of credits within the last 10 minutes: nothing is sent to ElevenLabs, nothing is counted, the drill stays not started, and the reply adds `"audio_unavailable": true, "notice": {"code": "audio_unavailable", "message": "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt."}`. `get`/`status`: the same two fields when any of the drill's files failed that way, and the questions counted for them are given back once (`refunded_questions`, `drills.refunded`, rpc `refund_drill_quota`). When credits are back, `status` retries the failed files after 10 minutes and the next `start` makes the rest (a failed file is never counted again). Test with `x-earmind-test: unavailable` (a test sees only test files' fake failures).
