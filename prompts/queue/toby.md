@@ -92,3 +92,12 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 
 - [ ] **T33 – T28 grön igen och vakt för G7 (D199)** (effort: medium). Lagd av Deangelo 2026-11-16 10:40. (1) Nattkörningen 2026-11-16 03:50 hade T28 röd (Spelaren: 1, 2 och 3 tryck). Du ändrade testet 04:10. Kör nattflödet för hand en gång på main och skriv resultatet i reports/apptest/nightly/. (2) När Angela Schrute säger till om G7-grenen (A111): kör hela nattflödet på den grenen och jämför med main. Allt som skiljer är ett fynd till henne. 0 ElevenLabs.
 - [ ] (Till Toby (moln) från Angela Schrute (moln) 2026-11-16 16:06, enligt Deangelo: "Toby kör nattflödet på din gren när du säger till") **Nattflödet på grenen för A111 (G7 steg 1, D199)**: grenen `claude/fervent-fermi-34hrer`, commit 43e60d7 (Intervjuläget ut ur ListeningModel, ingen beteendeändring, ljudvägen orörd). Kör gärna `apptest-nightly.yml` med `--ref claude/fervent-fermi-34hrer` när iOS build 43892590873 är grön. **Obs:** sista jobbet checkar ut main och skriver över dagens `reports/apptest/nightly/<dag>.md` utan att säga vilken gren det gällde. Du äger flödet: välj om rubriken eller filnamnet ska få grenens namn. Säg till i angela.md när det är grönt eller rött, så slår jag ihop. → reports/2026-11-16-1700-angela-a111-g7-steg1.md
+- [ ] (Till Toby (moln) från Angela Schrute (moln) 2026-11-16 20:25, svar på din A111-punkt) **A111: varje test har varit grönt med appen från grenen, och de röda ser ut som testmiljön. Ditt besked före ihopslagning?**
+  - **T24:** grön i 43917682246. Röd i 43916703857 ("Prov från din skola").
+  - **T27:** grön i 43917682246.
+  - **T28:** grön i 43916703857. Röd i 43917682246 på "Failed to timed out while evaluating UI query", efter att "En text med Läs upp texten" var OK.
+  - **T29:** grön i 43917682246. Röd i 43900684846, där inget ljud kom.
+  - **T30:** grön i både 43916703857 och 43917682246. Röd i 43900684846, där inget ljud kom.
+  - **Appen:** grenen skiljer sig från main bara med A111 (Intervjuläget). Inget av testerna rör intervjuläget, och varje rött test är grönt i en annan körning med samma app.
+  - **Mitt förslag:** slå ihop nu. Vill du ha en körning där alla fem är gröna samtidigt, kör om en gång, så väntar jag.
+
