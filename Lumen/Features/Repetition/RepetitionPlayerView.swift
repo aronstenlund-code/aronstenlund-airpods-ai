@@ -117,6 +117,21 @@ struct RepetitionPlayerView: View {
             if !typeSize.isAccessibilitySize, !waitsWithoutSound, let player = session.player, session.drill != nil {
                 PressesRow(paused: player.isPaused, lit: lit(player))
             }
+            if stepsByHand {
+                // A112b (D200, Kelly U4): no sound, so the way to the next question is on the screen, in words.
+                HStack(spacing: 12) {
+                    Button { session.stepQuestion(by: -1) } label: {
+                        Label("Förra frågan", systemImage: "backward.fill").frame(maxWidth: .infinity)
+                    }
+                    Button { session.stepQuestion(by: 1) } label: {
+                        Label("Nästa fråga", systemImage: "forward.fill").frame(maxWidth: .infinity)
+                    }
+                }
+                .buttonStyle(.bordered)
+                .controlSize(.large)
+                .font(.headline)
+                .labelStyle(.titleOnly)
+            }
             Button {
                 model.end()
             } label: {
@@ -140,6 +155,13 @@ struct RepetitionPlayerView: View {
     /// coming (the credits ran out in the middle of an exam).
     private var soundProblem: String? {
         session.drill.flatMap { model.audio.problem(for: $0) }
+    }
+
+    /// A112b (D200): reading aloud is off and this question has no sound: the answer is on the screen and the
+    /// questions are stepped by hand.
+    private var stepsByHand: Bool {
+        guard let player = session.player, let drill = session.drill, case .waitingForAudio = player.phase else { return false }
+        return model.isReadingAloudOff(drill)
     }
 
     private var waitsWithoutSound: Bool {

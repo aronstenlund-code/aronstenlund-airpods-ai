@@ -96,3 +96,40 @@ import Testing
         #expect(audio.problem(for: drill) == nil)
     }
 }
+
+/// A112b (D200, Kelly U4): without sound the questions are stepped by hand, only while the player waits.
+@MainActor
+@Suite struct A112bStepByHandTests {
+    typealias MockSource = A78RepetitionTests.MockSource
+    typealias MockTimer = A78RepetitionTests.MockTimer
+
+    @Test func thePlayerWithoutSoundIsSteppedByHandAndGoesRoundTheList() {
+        final class Places { var saved: [Int] = [] }
+        let places = Places()
+        let player = RepetitionPlayer(count: 3, track: { _ in nil }, source: MockSource(), timer: MockTimer(), thinkingSeconds: 6)
+        player.onProgress = { places.saved.append($0) }
+        player.start()
+        #expect(player.phase == .waitingForAudio(0))
+        player.stepByHand(1)
+        #expect(player.phase == .waitingForAudio(1))
+        #expect(player.index == 1)
+        player.stepByHand(1)
+        player.stepByHand(1)
+        #expect(player.index == 0, "after the last question comes the first")
+        player.stepByHand(-1)
+        #expect(player.index == 2, "before the first question comes the last")
+        #expect(places.saved == [1, 2, 0, 2], "the place is saved, so Fortsätt comes back to it")
+        #expect(player.lap == 0, "no lap is counted by hand")
+    }
+
+    @Test func aQuestionThatPlaysIsNotSkipped() {
+        let track = RepetitionTrack(question: A78RepetitionTests.url("q0"), long: A78RepetitionTests.url("l0"),
+                                    short: .file(A78RepetitionTests.url("s0")))
+        let player = RepetitionPlayer(tracks: [track, track], source: MockSource(), timer: MockTimer(), thinkingSeconds: 6)
+        player.start()
+        #expect(player.phase == .question(0))
+        player.stepByHand(1)
+        #expect(player.phase == .question(0), "D142: no skipping while there is sound")
+        #expect(player.index == 0)
+    }
+}

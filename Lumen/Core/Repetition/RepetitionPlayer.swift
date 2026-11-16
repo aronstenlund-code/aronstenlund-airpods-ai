@@ -115,6 +115,19 @@ final class RepetitionPlayer {
         step("stop")
     }
 
+    /// A112b (D200, Kelly U4): reading aloud is off, so the question and its answer are read on the screen and the
+    /// user goes to the next or the previous question by hand. Only while the player waits for a sound; a question
+    /// that plays is never skipped (D142). Goes round the list like the laps do; no lap and no practice is counted.
+    func stepByHand(_ delta: Int) {
+        guard count > 0, case .waitingForAudio = phase else { return }
+        timer.cancel()
+        isPaused = false
+        let target = ((index + delta) % count + count) % count
+        step("by hand → question \(target + 1)")
+        onProgress?(target)
+        playQuestion(target)
+    }
+
     // MARK: Presses
 
     func handle(_ event: RepetitionEvent) {

@@ -462,16 +462,28 @@ final class RepetitionModel {
     func start(_ drill: Drill, at index: Int = 0) async {
         // A107 (D190): Starta prov asks for the sound first; the player then waits for each question's sound.
         if awaitsAudioStart(drill) {
-            guard await startAudio(drill) else { return }
+            guard await startAudio(drill) else {
+                // A112b (D200, Kelly U1): the voice service is out. Starta prov still opens the exam: the questions
+                // and answers (or the text) are read on the screen and stepped through by hand. Nothing is counted.
+                if let latest = store.drill(drill.id), isReadingAloudOff(latest) { await showAsText(latest, at: index) }
+                return
+            }
             let started = store.drill(drill.id) ?? drill
             if started.isText { await read(started, at: index, waitingForSound: true) } else {
                 await play(started, at: index)
             }
             return
         }
+        if isReadingAloudOff(drill), !canStart(drill) { await showAsText(drill, at: index); return } // A112b
         if drill.isText { await read(drill, at: index); return }
         guard !drill.items.isEmpty, canStart(drill) || audio.track(for: drill, at: index) != nil else { return }
         await play(drill, at: index)
+    }
+
+    /// A112b (D200): the player without sound. It waits for a sound that is not coming, shows the question with its
+    /// answer (or the text), and the screen's buttons step by hand.
+    private func showAsText(_ drill: Drill, at index: Int) async {
+        if drill.isText { await read(drill, at: index, waitingForSound: true) } else { await play(drill, at: index) }
     }
 
     /// The questions' player, whether the first question has its sound yet or not (it waits in silence, Ke49).

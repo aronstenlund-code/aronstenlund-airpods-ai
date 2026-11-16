@@ -177,6 +177,12 @@ final class RepetitionSession {
     }
 
     /// The phone's own buttons on the playing screen use the same path as AirPods.
+    /// A112b (D200): the next or the previous question by hand, while the player waits for a sound.
+    func stepQuestion(by delta: Int) {
+        player?.stepByHand(delta)
+        updateNowPlaying()
+    }
+
     func press(_ event: RepetitionEvent) {
         player?.handle(event)
         reader?.handle(event)

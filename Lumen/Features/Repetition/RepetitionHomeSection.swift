@@ -288,7 +288,7 @@ struct RepetitionHomeSection: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
-            .disabled(!model.canStart(drill))
+            .disabled(!model.canStart(drill) && !model.isReadingAloudOff(drill)) // A112b: the text can be opened
             .accessibilityHint(drill.isText ? "Läser upp texten i dina AirPods. EarMind använder inte mikrofonen."
                                    : "Spelar frågorna i dina AirPods. EarMind använder inte mikrofonen.")
         }
@@ -343,7 +343,7 @@ struct RepetitionHomeSection: View {
             opened = drill.id
             return
         }
-        if drill.isText ? textControlsChecked : controlsChecked {
+        if model.isReadingAloudOff(drill) || (drill.isText ? textControlsChecked : controlsChecked) { // A112b: no check without sound
             Task { await model.start(drill, at: place(drill) ?? 0) }
         } else {
             checking = drill
@@ -397,7 +397,7 @@ struct RepetitionHomeSection: View {
                     .symbolRenderingMode(.hierarchical)
             }
             .buttonStyle(.borderless)
-            .disabled(!model.canStart(drill))
+            .disabled(!model.canStart(drill) && !model.isReadingAloudOff(drill)) // A112b: the text can be opened
             .accessibilityLabel("Starta \(drill.title)")
         }
     }
