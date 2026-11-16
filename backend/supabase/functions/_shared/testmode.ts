@@ -99,26 +99,66 @@ export function inRanges(ip: string, rs: Range[]): boolean {
 }
 
 /** Loads GitHub's Actions ranges (cached 12 h per isolate; a failure keeps the old list and the other rules). */
-export function loadCiRanges(fetchFn: typeof fetch = fetch): Promise<void> {
+/**
+ * GitHub's Actions IP ranges, for the "ci" test reason. K78b (Oscar O71: `ci_ranges_failed 403`, GitHub limits calls
+ * without a login from Supabase's shared IPs): when GitHub says no, the last list kept in the table `ci_ranges`
+ * (written here on success and daily by .github/workflows/ci-ranges.yml with GitHub's own token) is used instead.
+ * An empty list is logged (`ci_ranges_empty`) so it never goes unnoticed (D180).
+ */
+export function loadCiRanges(fetchFn: typeof fetch = fetch, env = Deno.env): Promise<void> {
   if (ranges.length && Date.now() - rangesAt < 12 * 3600_000) return Promise.resolve();
+  const base = (env.get("SUPABASE_URL") ?? "").replace(/\/+$/, "");
+  const key = env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
+  const h = { apikey: key, authorization: `Bearer ${key}`, "content-type": "application/json" };
   loading ??= (async () => {
+    let fromGithub: string[] = [];
     try {
       const r = await fetchFn("https://api.github.com/meta", { headers: { accept: "application/json", "user-agent": "earmind-server" }, signal: AbortSignal.timeout(2500) });
       if (r.ok) {
         const j = await r.json() as Record<string, unknown>;
-        const cidrs = Object.entries(j).filter(([k]) => k.startsWith("actions")).flatMap(([, v]) => Array.isArray(v) ? v as string[] : []);
-        if (cidrs.length) {
-          ranges = parseRanges(cidrs);
-          rangesAt = Date.now();
-        }
-      } else console.warn("ci_ranges_failed", r.status);
+        fromGithub = Object.entries(j).filter(([k]) => k.startsWith("actions")).flatMap(([, v]) => Array.isArray(v) ? v as string[] : []);
+      } else {
+        console.warn("ci_ranges_failed", r.status);
+        await r.body?.cancel();
+      }
     } catch (e) {
       console.warn("ci_ranges_failed", e instanceof Error ? e.message.slice(0, 80) : String(e));
+    }
+    try {
+      if (fromGithub.length) {
+        ranges = parseRanges(fromGithub);
+        rangesAt = Date.now();
+        // keep it for the next isolate GitHub turns away (fire and forget)
+        if (base && key) {
+          void fetchFn(`${base}/rest/v1/ci_ranges?on_conflict=id`, {
+            method: "POST", headers: { ...h, prefer: "resolution=merge-duplicates,return=minimal" },
+            body: JSON.stringify({ id: 1, cidrs: fromGithub, source: "function", updated_at: new Date().toISOString() }),
+          }).then((r) => r.body?.cancel()).catch(() => {});
+        }
+      } else if (base && key) {
+        const r = await fetchFn(`${base}/rest/v1/ci_ranges?select=cidrs&id=eq.1`, { headers: h, signal: AbortSignal.timeout(2500) });
+        const rows = r.ok ? await r.json() as { cidrs?: string[] }[] : [];
+        if (!r.ok) await r.body?.cancel();
+        const cidrs = rows[0]?.cidrs ?? [];
+        if (cidrs.length) {
+          ranges = parseRanges(cidrs);
+          // the stored list is used for an hour, then GitHub is asked again
+          rangesAt = Date.now() - 11 * 3600_000;
+        }
+      }
+    } catch (e) {
+      console.warn("ci_ranges_store_failed", e instanceof Error ? e.message.slice(0, 80) : String(e));
     } finally {
+      if (!ranges.length) console.warn("ci_ranges_empty");
       loading = null;
     }
   })();
   return loading;
+}
+/** Tests only: forget the loaded list (K78b). */
+export function resetCiRangesForTest() {
+  ranges = [];
+  rangesAt = 0;
 }
 export function setCiRangesForTest(cidrs: string[]) {
   ranges = parseRanges(cidrs);
