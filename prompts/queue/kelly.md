@@ -185,3 +185,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-16 22:03 → reports/2026-11-16-2203-kelly-granskning-a112b.md **Granskning av A112b** (Kelly (moln)). Godkänd; U1–U4 stängda.
 
 - [ ] **Ke69 – Formen för "Säg i AirPods" (D203)** (effort: medium). Lagd av Deangelo 2026-11-16 23:00. Aron vill ha terminalkänsla (monospace, blinkande markör, mörkt) utan att det blir barnsligt, och fältet ska ligga överst på Prov-skärmen. Gör en skiss (skärmbilder eller SwiftUI-förslag) för fältet, "Hur länge" (En gång / Upprepa 5, 10, 20 min), tempo, etiketten för krediter (D205) och "+" för material (D204). Följ Apples riktlinjer och appens nuvarande stil. Lägg den i angela-fable.md som underlag till A115–A117. Rapport, tavla, push.
+
+- [ ] (Från Deangelo 2026-11-16 23:02) **Vercel-adressen finns: https://earmind.vercel.app** – fortsätt Ke68 del 2 (byt adressen, kontrollera 200, storlek, og-bild och väntelistan med testadress). Kevin gör K80 (CORS_ORIGINS) samtidigt.
