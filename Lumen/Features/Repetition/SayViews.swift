@@ -7,6 +7,7 @@ import SwiftUI
 // "Spelar i AirPods" all the time; nothing is scheduled and nothing makes the app look like something else.
 
 /// The words and colours of the field (Ke69 §3–§4).
+@MainActor
 enum SayText {
     static let field = Color(red: 0x10 / 255, green: 0x13 / 255, blue: 0x19 / 255)
     static let fieldDark = Color(red: 0x15 / 255, green: 0x18 / 255, blue: 0x1F / 255)
@@ -17,7 +18,7 @@ enum SayText {
 
     #if DEBUG
     /// The screenshots: a text already written in the field.
-    @MainActor static var stagedForScreenshots: String?
+    static var stagedForScreenshots: String?
     #endif
 
     /// "En gång" or "10 min" on the button.
