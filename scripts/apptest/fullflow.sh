@@ -92,6 +92,14 @@ for P in $PHASES; do
   STATUS="$(cat "$OUT/logs/$P.status" 2>/dev/null || echo 1)"
   grep -E "error:|failed|passed|skipped" "$OUT/logs/$P-test.log" | tail -n 15
   xcrun xcresulttool export attachments --path "$OUT/logs/$P.xcresult" --output-path "$OUT/$P" || echo "::warning::attachment export failed"
+  # A crash report from the app (run 43766804245 attempt 1 lost its .ips when the run was re-run): keep a copy outside
+  # the renamed folder and print its head, so the job log alone shows the crashing thread.
+  mkdir -p "$OUT/crash"
+  { find "$OUT/$P" -maxdepth 1 -type f \( -name '*.ips' -o -name '*.crash' \); \
+    find "$HOME/Library/Logs/DiagnosticReports" -maxdepth 1 -type f \( -iname '*lumen*.ips' -o -iname '*lumen*.crash' \) -mmin -120; } 2>/dev/null | sort -u | while read -r f; do
+    cp "$f" "$OUT/crash/$P-$(basename "$f" | tr ' ' '_')"
+    echo "=== CRASH REPORT ($P): $f"; head -c 12000 "$f"; echo
+  done
   python3 -I "$ROOT/scripts/apptest/screens_index.py" rename "$OUT/$P"
   echo "::endgroup::"
   {
