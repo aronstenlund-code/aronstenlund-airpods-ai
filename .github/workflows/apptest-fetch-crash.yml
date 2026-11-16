@@ -25,10 +25,10 @@ jobs:
           gh run download "$RUN_ID" -R "$GITHUB_REPOSITORY" -D art || true
           echo "Files in the artifact:"; find art -type f | sed 's/^/  /' | head -200
           # Crash reports (.ips/.crash) and any file whose name says crash; the run's text logs.
-          find art -type f \( -iname '*.ips' -o -iname '*.crash' -o -iname '*crash*' \) -size -2M -exec cp {} "reports/apptest/crash/$RUN_ID/" \;
-          find art -type f -name '*log*.txt' -size -1M -exec cp {} "reports/apptest/crash/$RUN_ID/" \;
+          find art -type f \( -iname '*.ips' -o -iname '*.crash' -o -iname '*crash*' \) -not -name '*.png' -size -4000k -exec cp {} "reports/apptest/crash/$RUN_ID/" \;
+          find art -type f -name '*log*.txt' -size -1000k -exec cp {} "reports/apptest/crash/$RUN_ID/" \;
           ls -la "reports/apptest/crash/$RUN_ID"
-          for f in reports/apptest/crash/$RUN_ID/*; do case "$f" in *.ips|*.crash|*rash*) echo "=== $f"; head -c 6000 "$f"; echo;; esac; done
+          for f in reports/apptest/crash/$RUN_ID/*; do [ -e "$f" ] || continue; case "$f" in *.ips|*.crash|*rash*) echo "=== $f"; head -c 6000 "$f"; echo;; esac; done
       - name: Commit
         env:
           RUN_ID: ${{ inputs.run_id }}

@@ -105,7 +105,7 @@ final class FullFlowTests: XCTestCase {
         systemAlerts()
         pause(2)
         screen("kamera", "Fota sidor (photo library in the Simulator)")
-        closeSheet()
+        closePicker()
         guard pickPhoto() else { return false }
         lowerQuestions(to: 3)
         guard tap(["Skapa frågor"], "Skapa frågor") else { return false }
@@ -566,6 +566,7 @@ final class FullFlowTests: XCTestCase {
     // MARK: Shared steps
 
     private func pickPhoto() -> Bool {
+        closePicker()
         guard tap(["Välj bilder"], "Välj bilder") else { return false }
         systemAlerts()
         // Runs 43623858065, 43628656647: "Läser in …" after 15 s on a just-erased Simulator. Wait up to 60 s.
@@ -609,6 +610,24 @@ final class FullFlowTests: XCTestCase {
             guard decrement.isEnabled else { break }
             decrement.tap(); testTaps += 1
         }
+    }
+
+    /// Nightly 43839516709: the photo library from Fota sidor stayed open (a "Platsen är inkluderad … Läs mer… Stäng" row
+    /// in it), so Välj bilder and everything after was covered. Close it with a hittable Avbryt, or drag it down, and check.
+    private func closePicker() {
+        let pickerSigns = ["Samlingar", "Sortera och filtrera", "Collections"]
+        for attempt in 1...4 {
+            guard find(pickerSigns) != nil else { return }
+            let cancel = ["Avbryt", "Cancel"].lazy.compactMap { label in
+                self.app.buttons.matching(NSPredicate(format: "label ==[c] %@", label)).allElementsBoundByIndex.first { $0.exists && $0.isHittable }
+            }.first
+            if let cancel { tapElement(cancel, "Avbryt (photo library, try \(attempt))", counted: false) } else {
+                app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.95)))
+                log.append("closePicker: dragged the photo library down (try \(attempt))")
+            }
+            pause(1.5)
+        }
+        if find(pickerSigns) != nil { note("the photo library from Fota sidor did not close") }
     }
 
     private func closeSheet() {
