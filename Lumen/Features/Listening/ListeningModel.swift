@@ -216,6 +216,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
     /// Intervjuläge and Rizzläge setup.
     let modeSettings: ModeSettings
+    /// D199 step 1 (A111): Intervjuläge's own decisions, out of this file. The audio engine stays here.
+    let interviewMode: InterviewModeController
     /// The running live session, Rizzläge or Socialt läge. Gone when it ends, and the words with it.
     private(set) var rizz: RizzSession?
     var isShowingInterviewSetup = false
@@ -328,6 +330,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.microphone = microphone ?? MicrophoneSettings()
         let modes = modeSettings ?? ModeSettings()
         self.modeSettings = modes
+        self.interviewMode = InterviewModeController(settings: modes)
         // The remembered mode. Rizzläge only if the 18+ question was answered; the gate is never skipped.
         self.selectedMode = modes.lastMode == .rizz && !modes.isAdultConfirmed ? .standard : modes.lastMode
         self.feedback = feedback
@@ -417,6 +420,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             guard let self, self.isListening else { return }
             await self.togglePause()
         }
+        interviewMode.host = self // D199
     }
 
     // MARK: - User actions
@@ -561,7 +565,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let spoken: [String] = switch mode {
         case .prov, .standard: ["kortare", "upprepa", "viska", "högre"]
         case .social, .rizz: ["rizz", "cringe", "flirtig", "flirtigare"]
-        case .interview: []
+        case .interview: interviewMode.spokenKeyterms
         }
         // A75: the name first, with the most weight Scribe and the phone's recogniser give (the first keyterms).
         // A97 (D172): both names, "Lumen" and "EarMind".
@@ -1233,7 +1237,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 return
             }
             switch mode {
-            case .interview: interviewTurn(text)
+            case .interview: interviewMode.turn(text) // D199
             case .rizz, .social: rizzTurn(text)
             case .standard, .prov:
                 headMotion.stop() // answered with the voice
@@ -1273,25 +1277,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     // MARK: - Intervjuläge (D42)
 
-    /// D72: the interviewer's question gets the finished answer, read aloud, and nothing else: no feedback, no
-    /// follow-up questions. The wearer's own words (louder, by input level) are never answered, unless they ask for
-    /// something out loud ("klar", "sammanfatta", "ge mig feedback").
-    private func interviewTurn(_ text: String) {
-        let (speaker, why) = turnSpeaker(level: study.lastTurnLevelDBFS)
-        if speaker == .user, !VoiceCommand.isInterviewRequest(text) {
-            controller.log("Intervjuläge: own turn (\(why)), not answered")
-            study.resumeListening()
-            return
-        }
-        activated(ActivationRequest(query: text, trigger: .overheard, language: language),
-                  persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewPersonaSetup, turn: "question"))
-    }
+    // D72: the interviewer's question gets the finished answer; the wearer's own words are not answered. The turn,
+    // the ahead request and "Lumen, …" are `InterviewModeController` now (D199 step 1).
 
     /// Likely questions and model answers from the role or job ad. Long, so it is shown, not spoken.
     func prepareInterview() {
-        activated(ActivationRequest(query: language == .swedish ? "Förbered mig inför intervjun" : "Prepare me for the interview",
-                                    trigger: .interviewPrep, language: language),
-                  persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewPersonaSetup))
+        interviewMode.prepare()
     }
 
     // MARK: - Rizzläge (D43)
@@ -1814,8 +1805,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if rizz != nil {
             liveInstruction(text)
         } else if study.isActive, mode == .interview {
-            activated(ActivationRequest(query: text, trigger: .overheard, language: language),
-                      persona: PersonaRequest(persona: "interview", setup: modeSettings.interviewPersonaSetup, turn: "question"))
+            interviewMode.instruction(text) // D199
         } else if study.isActive, mode == .prov, StudyProfileVoice.apply(text, to: &studyProfile.profile) {
             // D83: "Lumen, korta förklaringar", "Lumen, provet är på fredag" …
             studyProfileChanged()
@@ -2517,7 +2507,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// The voice when it is known and there is a profile to compare with; otherwise the level, as before D81.
-    private func turnSpeaker(level: Double?) -> (speaker: RizzSpeaker, why: String) {
+    func turnSpeaker(level: Double?) -> (speaker: RizzSpeaker, why: String) {
         if let speakers, speakers.profiles.isEnrolled, let identity = speakers.identity(near: Date()), identity != .uncertain {
             return identity.isWearer ? (.user, "voice profile → wearer") : (.other, "voice → not the wearer")
         }
@@ -3442,7 +3432,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         submitText(text)
     }
 
-    private func activated(_ request: ActivationRequest, persona: PersonaRequest? = nil) {
+    func activated(_ request: ActivationRequest, persona: PersonaRequest? = nil) {
         let activatedAt = Date() // A72 part 3: how long it takes from here to the request
         if VoiceCommand.isMusicHandOff(request.query) { return } // the final result already paused the session
         // A8 (owner, 2026-11-08): Frågor answers the wearer's own questions too. D81's "Auto never answers the
@@ -3623,11 +3613,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             request = ActivationRequest(query: text, trigger: .tutor, language: language)
             persona = tutorPersona()
         case .interview:
-            guard study.isActive, study.phase == .listening else { return }
-            let speaker = turnSpeaker(level: study.currentTurnLevelDBFS).speaker
-            guard speaker == .other || VoiceCommand.isInterviewRequest(text) else { return }
-            request = ActivationRequest(query: text, trigger: .overheard, language: language)
-            persona = PersonaRequest(persona: "interview", setup: modeSettings.interviewPersonaSetup, turn: "question")
+            guard let ahead = interviewMode.aheadRequest(for: text) else { return } // D199
+            request = ahead.request
+            persona = ahead.persona
         case .rizz, .social:
             return
         }
@@ -4315,4 +4303,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func receiveAnswer(question: String, answer: String, latencyMs: Double? = nil, source: String) {
         conversation.append(AnswerTurn(question: question, answer: answer, latencyMs: latencyMs, source: source))
     }
+}
+
+/// D199: what a mode's controller may use (`ListeningModeHost`). Nothing here touches the audio engine.
+extension ListeningModel: ListeningModeHost {
+    func modeLog(_ line: String) { controller.log(line) }
 }

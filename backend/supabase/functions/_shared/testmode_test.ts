@@ -1,6 +1,7 @@
 import { assert, assertEquals, assertRejects, assertThrows } from "jsr:@std/assert@1.0.8";
 import {
-  assertNotTest, detectTest, guardedFetch, inRanges, parseRanges, runWithTest, setCiRangesForTest, silentMp3, TestCreditsError,
+  assertNotTest, detectTest, guardedFetch, inRanges, loadCiRanges, parseRanges, resetCiRangesForTest, runWithTest, setCiRangesForTest, silentMp3,
+  TestCreditsError,
 } from "./testmode.ts";
 
 const b64u = (o: unknown) => btoa(JSON.stringify(o)).replace(/=+$/, "").replace(/\+/g, "-").replace(/\//g, "_");
@@ -49,4 +50,27 @@ Deno.test("K62b fake audio is a silent MP3 of about the asked length", () => {
   assert(Math.abs(a.length / 417 * 0.026122 - 1) < 0.05);
   assert(inRanges("10.1.2.3", parseRanges(["10.0.0.0/8"])));
   assert(!inRanges("11.1.2.3", parseRanges(["10.0.0.0/8"])));
+});
+
+Deno.test("K78b (Oscar O71): GitHub answers 403, the stored list is used; GitHub answers, the list is stored", async () => {
+  const env = { get: (k: string) => ({ SUPABASE_URL: "https://db.example", SUPABASE_SERVICE_ROLE_KEY: "svc" } as Record<string, string>)[k] } as unknown as typeof Deno.env;
+  const calls: string[] = [];
+  resetCiRangesForTest();
+  await loadCiRanges(((url: string) => {
+    calls.push(String(url));
+    if (String(url).startsWith("https://api.github.com")) return Promise.resolve(new Response("rate limited", { status: 403 }));
+    return Promise.resolve(Response.json([{ cidrs: ["20.0.0.0/8"] }]));
+  }) as typeof fetch, env);
+  assert(calls.some((u) => u.includes("/rest/v1/ci_ranges?select=cidrs")));
+  assertEquals(detectTest(req({ "user-agent": APP, "x-forwarded-for": "20.1.2.3" })).reason, "ci");
+  resetCiRangesForTest();
+  const stored: string[] = [];
+  await loadCiRanges(((url: string, init?: RequestInit) => {
+    if (String(url).startsWith("https://api.github.com")) return Promise.resolve(Response.json({ actions: ["30.0.0.0/8"], web: ["1.1.1.1/32"] }));
+    stored.push(String(init?.body ?? ""));
+    return Promise.resolve(new Response(null, { status: 201 }));
+  }) as typeof fetch, env);
+  assertEquals(detectTest(req({ "user-agent": APP, "x-forwarded-for": "30.4.5.6" })).reason, "ci");
+  assert(stored.some((b) => b.includes("30.0.0.0/8")), "kept for the next isolate");
+  resetCiRangesForTest();
 });
