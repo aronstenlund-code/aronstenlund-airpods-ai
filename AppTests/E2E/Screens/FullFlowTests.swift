@@ -177,7 +177,11 @@ final class FullFlowTests: XCTestCase {
             if back.exists, back.isHittable, ["Prov", "Tillbaka", "Back"].contains(back.label) || back.label.isEmpty {
                 back.tap(); testTaps += 1; pause(1); continue
             }
-            if tap(["Avbryt", "Stäng", "Klar", "Cancel", "Done", "Prov"], "back to Start", counted: false, quiet: true) { pause(1); continue }
+            if let hit = ["Close", "Avbryt", "Stäng", "Klar", "Cancel", "Done", "Prov"].lazy.compactMap({ label in
+                self.app.buttons.matching(NSPredicate(format: "label ==[c] %@", label)).allElementsBoundByIndex.first { $0.exists && $0.isHittable }
+            }).first {
+                tapElement(hit, "\(hit.label) (back to Start)", counted: false); pause(1); continue
+            }
             // Run 43782880704: Start had been paged sideways to Fler lägen.
             if find(["FLER LÄGEN"]) != nil { app.swipeRight(); pause(1) }
             app.swipeDown(velocity: .fast)
@@ -373,7 +377,30 @@ final class FullFlowTests: XCTestCase {
         // (the player opens and waits for the sound), close it, and read Start as before.
         if waitEnabled(["Starta prov"], 20) {
             tap(["Starta prov"], "Starta prov (\(mode), A107)")
-            if wait(["Styr med dina AirPods"], 8) != nil {
+            // A112/K78 (D200): in `unavailable` Starta prov does not open the player; the exam stays unstarted and the
+            // line "Uppläsningen är tillfälligt avstängd …" stands under the button.
+            if mode == "unavailable" {
+                // A112b (Angela Fable 21:46): Starta prov may open the player without sound (the question and answer as
+                // text, the line, Förra/Nästa fråga). Before A112b it did not open. Either is fine; the line is required.
+                if wait(["Styr med dina AirPods"], 5) != nil {
+                    for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
+                    tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
+                }
+                let line = wait(["Uppläsningen är tillfälligt avstängd*"], 20) != nil
+                pause(2)
+                let player = find(["Avsluta"]) != nil
+                let textButtons = find(["Nästa fråga"]) != nil
+                screen("lage-unavailable-starta", "unavailable after Starta prov (A112/A112b)")
+                log.append("mode unavailable: line \(line ? "shown" : "missing"), player \(player ? "opened" : "not opened"), Nästa fråga \(textButtons ? "shown" : "not shown")")
+                if player { tap(["Avsluta"], "Avsluta (unavailable)", quiet: true); pause(2) }
+                log.append("mode unavailable: Starta prov afterwards: \(find(["Starta prov"]) == nil ? "hidden" : "shown")")
+                if tap(["Frågor och svar"], "Frågor och svar (unavailable)", quiet: true) {
+                    pause(2)
+                    screen("lage-unavailable-fragor", "unavailable: the question list (A112: whole answer under each question)")
+                    goToStart()
+                }
+                if !line { return miss("unavailable: 'Uppläsningen är tillfälligt avstängd' not shown after Starta prov (A112)") }
+            } else if wait(["Styr med dina AirPods"], 8) != nil {
                 for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
                 tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
             }
@@ -395,9 +422,12 @@ final class FullFlowTests: XCTestCase {
         }
         screen("lage-\(mode)", "Start in the server's '\(mode)' mode after 40 s")
         log.append("mode \(mode): sound lines seen on Start: \(seen.joined(separator: " | "))")
-        if mode == "unavailable", !seen.contains(where: { $0.contains("Ljudet kan inte göras just nu") }) {
-            note("unavailable: 'Ljudet kan inte göras just nu' never shown on Start in 40 s")
+        // A112 (D200): the old "Ljudet kan inte göras just nu" is gone; Start says "… · Uppläsningen är tillfälligt avstängd".
+        let offLine = Self.labels(in: app.debugDescription, kind: "StaticText").contains { $0.contains("Uppläsningen är tillfälligt avstängd") }
+        if mode == "unavailable", !offLine, !seen.contains(where: { $0.contains("Uppläsningen är tillfälligt avstängd") }) {
+            note("unavailable: 'Uppläsningen är tillfälligt avstängd' never shown on Start in 40 s (A112)")
         }
+        if seen.contains(where: { $0.contains("Ljudet kan inte göras just nu") }) { note("the old line 'Ljudet kan inte göras just nu' is still shown (A112 removed it)") }
         if mode == "slow", seen.isEmpty { note("slow: no line about the sound on Start") }
         return true
     }
@@ -565,6 +595,8 @@ final class FullFlowTests: XCTestCase {
 
     // MARK: Shared steps
 
+    private var retriedLibrary = false
+
     private func pickPhoto() -> Bool {
         closePicker()
         guard tap(["Välj bilder"], "Välj bilder") else { return false }
@@ -579,6 +611,13 @@ final class FullFlowTests: XCTestCase {
                 image.exists && samples.contains { image.label.contains($0) } && image.frame.width < 250
             }
         } while cells.isEmpty && Date() < end
+        // Nightly 43900691284: the library stayed empty for 60 s. Close it and open it once more before giving up.
+        if cells.isEmpty, !retriedLibrary {
+            retriedLibrary = true
+            note("Välj bilder: no pictures in 60 s, the library was opened again")
+            closePicker()
+            return pickPhoto()
+        }
         screen("bildbiblioteket", "Välj bilder: the photo library", counts: false)
         guard let width = cells.map(\.frame.width).max(), let top = cells.map(\.frame.minY).min() else {
             return miss("no grid of pictures")
@@ -630,10 +669,14 @@ final class FullFlowTests: XCTestCase {
         if find(pickerSigns) != nil { note("the photo library from Fota sidor did not close") }
     }
 
+    /// Run 43945192998: the share sheet's own button is "Close" while a hidden "Avbryt" elsewhere made `tap` scroll for
+    /// it and give up, so the sheet stayed. Only a hittable button is tapped; otherwise the sheet is dragged down.
     private func closeSheet() {
-        if !tap(["Avbryt", "Cancel", "Stäng", "Close", "Klar", "Done"], "close the sheet", counted: false, quiet: true) {
-            app.swipeDown(velocity: .fast)
+        for label in ["Close", "Stäng", "Avbryt", "Cancel", "Klar", "Done"] {
+            let hit = app.buttons.matching(NSPredicate(format: "label ==[c] %@", label)).allElementsBoundByIndex.first { $0.exists && $0.isHittable }
+            if let hit { tapElement(hit, "\(label) (close the sheet)", counted: false); pause(1); return }
         }
+        app.swipeDown(velocity: .fast)
         pause(1)
     }
 
