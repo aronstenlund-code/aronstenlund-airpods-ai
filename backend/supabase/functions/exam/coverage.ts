@@ -52,17 +52,23 @@ export function splitParts(text: string, k: number): string[] {
   return parts.filter(Boolean);
 }
 
-/** For each question, the part it draws on most (shared content stems), or -1 when it shares nothing with any part. */
+/**
+ * For each question, the part it draws on most, or -1 when it shares nothing distinctive with any part. K85 (Oscar
+ * O73): words are weighted by how rare they are among the parts (TF-IDF): a word every part has says nothing, a word
+ * only one part has says most. Ties go to the earlier part.
+ */
 export function placeQuestions(questions: string[], parts: string[]): number[] {
   const ps = parts.map(stems);
+  const df = new Map<string, number>();
+  for (const p of ps) for (const w of p) df.set(w, (df.get(w) ?? 0) + 1);
+  const idf = (w: string) => Math.log((ps.length + 1) / ((df.get(w) ?? 0) + 0.5)) - Math.log((ps.length + 1) / (ps.length + 0.5));
   return questions.map((q) => {
     const qs = stems(q);
     let best = -1, bestScore = 0;
     ps.forEach((p, i) => {
       let s = 0;
-      for (const w of qs) if (p.has(w)) s++;
-      // a stem rare across the parts says more than one every part has
-      if (s > bestScore) (best = i, bestScore = s);
+      for (const w of qs) if (p.has(w)) s += idf(w);
+      if (s > bestScore + 1e-9) (best = i, bestScore = s);
     });
     return best;
   });

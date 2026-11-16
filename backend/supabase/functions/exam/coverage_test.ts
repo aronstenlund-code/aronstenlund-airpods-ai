@@ -1,6 +1,6 @@
 // K83 (D206): coverage of the whole material, in code. Invented material only, a scripted model.
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
-import { coverage, mergeCoverage, partCount, splitParts } from "./coverage.ts";
+import { coverage, mergeCoverage, partCount, placeQuestions, splitParts } from "./coverage.ts";
 import { DEFAULT_DRILL_CONFIG, handleDrill } from "./drill.ts";
 import type { LLMChunk, LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 
@@ -58,4 +58,16 @@ Deno.test("K83 handleDrill: the model asked only about the start; the end gets i
   assertEquals(items.length, 4, "the count is kept");
   assert(items.includes("Hur börjar en näringskedja?") && items.includes("Var bryts glukosen ned?"), JSON.stringify(items));
   assertEquals(calls.filter((c) => c === "part").length, 2);
+});
+
+Deno.test("K85 (Oscar O73): a word every part shares does not decide the part; a rare word does", () => {
+  const parts = [
+    "Kraft mäts i newton. Newtons lagar beskriver hur kraft och rörelse hänger ihop. Energi finns i många former.",
+    "Syror och baser kan neutralisera varandra. Energi frigörs vid neutralisation och salt bildas.",
+    "Energi kan inte förstöras. Energiprincipen gäller för alla system, energi omvandlas bara.",
+  ];
+  // "energi" is in every part; "newton" only in the first
+  assertEquals(placeQuestions(["Hur hänger energi och Newtons lagar ihop?"], parts), [0]);
+  assertEquals(placeQuestions(["Vad händer vid neutralisation av energi?"], parts), [1]);
+  assertEquals(placeQuestions(["Vad är energi?"], parts), [-1], "only a shared word: no part");
 });
