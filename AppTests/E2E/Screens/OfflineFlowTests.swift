@@ -308,8 +308,13 @@ final class OfflineFlowTests: XCTestCase {
         screen("online-igen", "The exam's screen with the network back")
         let line = find(["Ingen internetanslutning. Dela och Publicera*"]) != nil
         if line { note("network back: the offline line is still there after 15 s") }
-        let share = find(["Dela"])?.isEnabled == true
-        if !share { note("network back: Dela still grey") }
+        // Nightly 43900691284: Dela was grey 20 s after the network came back while the offline line was gone.
+        // Wait up to 45 s and log how long it took, so a slow runner network and an app that never re-enables differ.
+        let t0 = Date()
+        var share = find(["Dela"])?.isEnabled == true
+        while !share, Date().timeIntervalSince(t0) < 45 { pause(3); share = find(["Dela"])?.isEnabled == true }
+        log.append(String(format: "network back: Dela %@ after %.0f s more (offline line %@)", share ? "enabled" : "still grey", Date().timeIntervalSince(t0), line ? "shown" : "gone"))
+        if !share { note("network back: Dela still grey after 45 s more") }
         goToStart()
         return !line && share
     }

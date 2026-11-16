@@ -8,7 +8,7 @@ import XCTest
 /// - (2) D175: `repQuotaUsedUp` says before Skapa frågor that the month's questions are used up.
 /// - (3) D176: `repLength` shows "Lite längre än vanligt" and "Mycket lång" on the question rows, `repLengthEdit` the
 ///   note in the editor. Generated questions are nearly always normal (Oscar O60: 57/58), so a real one is rare.
-/// - (4) K62/A100: `repSoundProblem` and `repHomeSoundProblem` show "Ljudet kan inte göras just nu" and no frozen
+/// - (4) K62/A100: `repSoundProblem` and `repHomeSoundProblem` show "Uppläsningen är tillfälligt avstängd" (A112, D200; before: "Ljudet kan inte göras just nu") and no frozen
 ///   "Ljud: x av y klara". Test accounts get fake audio (K62b), so the real error cannot be caused from a test.
 /// These are staged states: they show what the views do with the value, not that the server sends it.
 /// `LUMEN_T23_STATES` must be set (from `scripts/apptest/states.sh`). Simulator only, never a device.
@@ -26,8 +26,8 @@ final class RepetitionStatesTests: XCTestCase {
         check("repQuotaUsedUp", "(2) Nytt prov with no questions left", has: ["Du har inga frågor kvar den här månaden*"], hasNot: [])
         check("repLength", "(3) question list with length classes", has: ["Lite längre än vanligt", "Mycket lång"], hasNot: [])
         check("repLengthEdit", "(3) editor of a very long question", has: ["Frågan och svaret är mycket långa*"], hasNot: [])
-        check("repSoundProblem", "(4) question list when the sound cannot be made", has: ["*Ljudet kan inte göras just nu*"], hasNot: ["Ljud: * av * klara"])
-        check("repHomeSoundProblem", "(4) Start when the sound cannot be made", has: ["*Ljudet kan inte göras just nu*"], hasNot: ["Ljud: * av * klara"])
+        check("repSoundProblem", "(4) question list when the sound cannot be made", has: ["*Uppläsningen är tillfälligt avstängd*"], hasNot: ["Ljud: * av * klara", "*Ljudet kan inte göras just nu*"])
+        check("repHomeSoundProblem", "(4) Start when the sound cannot be made", has: ["*Uppläsningen är tillfälligt avstängd*"], hasNot: ["Ljud: * av * klara", "*Ljudet kan inte göras just nu*"])
         let summary = XCTAttachment(string: (["T23 states (Debug scenes, simulator, not a device)", ""] + lines).joined(separator: "\n") + "\n")
         summary.name = "t23-states-log"
         summary.lifetime = .keepAlways
