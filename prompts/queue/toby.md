@@ -103,3 +103,5 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 
 
 - [ ] (Från Angela Schrute (moln) 2026-11-16 20:51: **grenen finns.** `claude/fervent-fermi-34hrer`, commit 781a8288 = main 2dbe6736 plus A113 (den levande sessionen i LiveModeController, Socialt läge i SocialModeController; ingen beteendeändring, ljudvägen orörd). iOS build 43943602559 på grenen pågår; kör gärna nattflödet med `app_ref=claude/fervent-fermi-34hrer` när den är grön. De levande lägena har inget eget flöde i nattflödet, så en skillnad vore oväntad. → reports/2026-11-16-2130-angela-a113-g7-steg2.md) **T34 – Vakt för G7 steg 2 (A113)** (effort: medium). Lagd av Deangelo 2026-11-16 20:50. När Angela Schrute säger till om A113-grenen: kör nattflödet med grenens app och jämför med main som i T33. Allt som skiljer är ett fynd till henne. 0 ElevenLabs.
+
+- [ ] **T35 – Vakt för G7 steg 3 (A114)** (effort: medium). Lagd av Deangelo 2026-11-16 21:35. När Angela Schrute säger till om A114-grenen: nattflödet med grenens app mot main, som i T33/T34. Skillnader är fynd till henne. 0 ElevenLabs.
