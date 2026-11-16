@@ -191,7 +191,13 @@ struct DrillView: View {
                                 // A102 (K66): the screen shows numbers and formulas as written; the voice reads the
                                 // spoken text. An exam without the field shows what it always did.
                                 Text(verbatim: item.shownQuestion).fontWeight(.semibold).foregroundStyle(Color.primary)
-                                Text(verbatim: item.shownShort).font(.subheadline).foregroundStyle(Color.secondary).lineLimit(1)
+                                if model.isReadingAloudOff(drill) {
+                                    // A112 (D200): no sound for now, so the answer is here to read, all of it.
+                                    Text(verbatim: item.shownLong).font(.subheadline).foregroundStyle(Color.primary)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                } else {
+                                    Text(verbatim: item.shownShort).font(.subheadline).foregroundStyle(Color.secondary).lineLimit(1)
+                                }
                                 // A99 (D176, Kelly): quiet, and nothing on a question of normal length.
                                 if let length = item.lengthClass?.label {
                                     Text(verbatim: length).font(.footnote).foregroundStyle(Color.secondary)
@@ -247,7 +253,9 @@ struct DrillView: View {
         .environment(\.editMode, $editMode)
         .safeAreaInset(edge: .bottom) {
             // A100 (K62): when the sound cannot be made the button is grey with the reason under it, no spinner.
-            let soundProblem = canStart ? nil : model.audio.problem(for: drill)
+            // A112 (D200): while reading aloud is off the calm line stands under the button, also for an exam that is not
+            // started (Starta prov then asks again and costs nothing, K78).
+            let soundProblem = canStart && !model.isReadingAloudOff(drill) ? nil : model.audio.problem(for: drill)
             MainActionBar(title: canStart ? (saved == nil ? "Starta prov" : "Fortsätt")
                               : (soundProblem == nil ? "Gör ljudet …" : "Starta prov"),
                           systemImage: "play.fill",
@@ -315,7 +323,9 @@ struct DrillView: View {
         }
         .listStyle(.insetGrouped)
         .safeAreaInset(edge: .bottom) {
-            let soundProblem = canStart ? nil : model.audio.problem(for: drill)
+            // A112 (D200): while reading aloud is off the calm line stands under the button, also for an exam that is not
+            // started (Starta prov then asks again and costs nothing, K78).
+            let soundProblem = canStart && !model.isReadingAloudOff(drill) ? nil : model.audio.problem(for: drill)
             MainActionBar(title: canStart ? (saved == nil ? "Starta prov" : "Fortsätt")
                               : (soundProblem == nil ? "Gör ljudet …" : "Starta prov"),
                           systemImage: "play.fill",
@@ -334,7 +344,7 @@ struct DrillView: View {
     /// says what it counts as before the button is pressed, and the button is grey when the month does not cover it.
     /// Nil for a started exam and while the quota is not known.
     private func startCost(_ drill: Drill) -> (line: String, tooMany: Bool)? {
-        guard model.awaitsAudioStart(drill), let quota = model.quota else { return nil }
+        guard model.awaitsAudioStart(drill), !model.isReadingAloudOff(drill), let quota = model.quota else { return nil }
         let chars = drill.items.reduce(0) { $0 + $1.long.count }
         let counts = drill.isText ? DrillTextDraft.countsAs(chars: chars) : drill.items.count
         if counts > quota.left {
@@ -361,6 +371,9 @@ struct DrillView: View {
         return VStack(alignment: .leading, spacing: 6) {
             if ready {
                 Text(verbatim: "\(facts) · ljud klart")
+            } else if model.isReadingAloudOff(drill) {
+                // A112 (D200): the calm line under the facts (below); no counter, no bar.
+                Text(verbatim: facts)
             } else if model.awaitsAudioStart(drill) {
                 // A107 (D190): the sound is made at Starta prov; no "Ljud: 0 av N" that looks stuck.
                 Text(verbatim: facts)
@@ -379,7 +392,8 @@ struct DrillView: View {
                 ProgressView(value: Double(p.ready), total: Double(max(p.total, 1)))
                     .padding(.top, 6)
             }
-            if let problem = model.audio.problem(for: drill) {
+            // A112 (D200): the calm line stands once, under the button (not here too); another problem is said here.
+            if let problem = model.audio.problem(for: drill), !model.isReadingAloudOff(drill) {
                 Text(verbatim: problem).foregroundStyle(.primary)
             }
         }
@@ -394,6 +408,7 @@ struct DrillView: View {
     private func footnote(_ drill: Drill) -> String {
         if editMode.isEditing { return "Dra för att ändra ordning. Ordningen är den du hör." }
         // A107 (D190): until Starta prov nothing costs anything, so say that the answers can be changed.
+        if model.isReadingAloudOff(drill) { return "Tryck på en fråga för att ändra frågan eller svaret." } // A112
         if model.awaitsAudioStart(drill) { return "Tryck på en fråga för att ändra frågan eller svaret." } // Kelly N2
         let p = model.progress(drill)
         if p.total == 0 || p.ready < p.total {

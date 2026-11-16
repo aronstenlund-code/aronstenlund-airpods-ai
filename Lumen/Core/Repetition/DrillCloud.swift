@@ -86,6 +86,11 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
     var audio: Totals
     /// K51: fixed lines in the exam's voice, free and outside the progress.
     var cue: Cue? = nil
+    /// K78 (D200): the voice service's credits are out. The questions and answers are here as text, nothing was queued
+    /// or counted, and the sound is made the next time it is asked for with credits back. Not an error (HTTP 200).
+    var audio_unavailable: Bool? = nil
+    /// K78: questions that had been counted for sound that was never made, given back once.
+    var refunded_questions: Int? = nil
 }
 
 extension DrillCloudView.Item {
@@ -537,7 +542,14 @@ final class CloudDrillAudio: DrillAudioProviding {
 
     /// K62 (Kelly): the voice service cannot make sound now (its credits ran out), said instead of a counter that
     /// never moves.
-    static let unavailableLine = "Ljudet kan inte göras just nu. Försök igen om en stund."
+    /// A112 (D200): the calm line. The text works as usual, nothing is counted, and nothing is an error.
+    static let unavailableLine = "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt."
+
+    /// A112 (K78): how many times the server gave questions back; the model reads the month's quota again then.
+    private(set) var refunds = 0
+
+    /// A112 (D200): reading aloud is off for this exam for now (the views show the text and the calm line).
+    func isReadingAloudOff(_ drill: Drill) -> Bool { problems[drill.id] == Self.unavailableLine }
     /// The codes that mean the sound cannot be made now (K62; the app accepts these until Kevin's code is final).
     static let unavailableCodes: Set<String> = ["audio_unavailable", "tts_unavailable", "voice_unavailable",
                                                 "tts_quota_exceeded", "voice_quota_exceeded"]
@@ -623,9 +635,11 @@ final class CloudDrillAudio: DrillAudioProviding {
             latest.needsUpload = nil
             latest = await download(view, into: latest)
             store.save(latest)
+            if (view.refunded_questions ?? 0) > 0 { refunds += 1 } // A112 (K78): the quota went back up
             if latest.awaitsAudioStart {
                 // A107 (D190): saved, and no sound is asked for until Starta prov. Nothing to wait for.
-                problems[drill.id] = nil
+                // A112 (K78): unless the server says the voice service is out: then the calm line, already now.
+                problems[drill.id] = view.audio_unavailable == true ? Self.unavailableLine : nil
                 return
             }
             if noSpace.remove(drill.id) != nil {
@@ -635,6 +649,11 @@ final class CloudDrillAudio: DrillAudioProviding {
             failedFiles[drill.id] = view.audio.failed ?? 0
             let p = progress(for: latest)
             if p.total > 0, p.ready == p.total { problems[drill.id] = nil; return }
+            if view.audio_unavailable == true {
+                // A112 (K78, D200): the credits are out. The text is here; no counter that never moves, no error.
+                problems[drill.id] = Self.unavailableLine
+                return
+            }
             if view.items.flatMap(\.audio.files).contains(where: { $0.isFailed && Self.isUnavailable($0.error) }) {
                 // T24 L5 (K62): the voice service cannot make sound now; said at the first such file, not after
                 // every file has failed. The files that are done stay; the next open asks again.
@@ -765,6 +784,16 @@ final class CloudDrillAudio: DrillAudioProviding {
             guard let id = current.serverID else { return false }
             let view = try await cloud.start(id: id)
             guard var latest = store.drill(drill.id) else { return false }
+            if view.audio_unavailable == true, view.drill.audio_started == false {
+                // A112 (K78, D200): the voice service's credits are out. Nothing was queued or counted; the exam stays
+                // text, and the next Starta prov makes the sound when the credits are back.
+                latest = Drill.from(view, merging: latest)
+                latest.audioStarted = false
+                store.save(latest)
+                problems[drill.id] = Self.unavailableLine
+                Log.repetition.info("Drill audio not started: the voice service is out (audio_unavailable)")
+                return false
+            }
             latest = Drill.from(view, merging: latest)
             latest.audioStarted = nil // started, whatever an older server says
             store.save(latest)
