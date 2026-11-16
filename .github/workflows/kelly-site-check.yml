@@ -35,6 +35,8 @@ jobs:
             echo "run: ${GITHUB_RUN_ID}  time: $(date -u +%FT%TZ)  url: $URL"
             echo "== page"
             curl -sS -o page.html -w "status=%{http_code} bytes=%{size_download} type=%{content_type} time=%{time_total}\n" "$ORIGIN/"
+            echo "body (first 300 bytes): $(head -c 300 page.html | tr '\n' ' ')"
+            curl -sSI "$ORIGIN/" | grep -i -E '^(HTTP|x-vercel-error|x-vercel-id|server)' || true
             echo "title: $(grep -o '<title>[^<]*' page.html | sed 's/<title>//')"
             echo "h1: $(grep -o '<h1[^>]*>[^<]*' page.html | sed 's/<h1[^>]*>//')"
             echo "canonical: $(grep -o '<link rel="canonical" href="[^"]*' page.html | sed 's/.*href="//')"
