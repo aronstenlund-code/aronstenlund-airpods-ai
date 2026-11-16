@@ -41,10 +41,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// When the last words were heard (partial or final), for the half-pause TTS prefetch.
     private var lastHeardAt: Date?
     private var prefetchTask: Task<Void, Never>?
-    /// Socialt läge / Rizzläge: the text the last early suggestion request was for, and when (D80: at most every 3 s).
-    private var liveAhead: (key: String, at: Date)?
-    /// D82.3: one live turn, logged when its suggestion is spoken: who, why, requested, ready, spoken.
-    private var liveTurn: (endedAt: Date, who: String, requestedAt: Date?, readyAt: Date?)?
     /// When the last answer was completed, so a complaint right after it can be reported (D80).
     private var lastAnswerAt: Date?
     /// D80: turns go to the backend's memory extraction afterwards, never in the answer path.
@@ -186,15 +182,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @ObservationIgnored private var lastSentenceStartedAt: Date?
     /// The Diagnostics recording (D78) sees every final as it arrives.
     var finalObserver: (@MainActor (String) -> Void)?
-    /// An instruction is on its way to the backend for this mode (D69): what comes back is a calibration, or the
-    /// suggestions the wearer asked for ("ge mig tre", D72).
-    private var instructing: ConversationMode?
-    /// The suggestion trigger that waits until the instruction is back.
-    private var deferredTrigger: String?
-    /// The trigger of the suggestions being made, so an instruction that cancels them can ask again.
-    private var inFlightTrigger: String?
-    /// The instruction was a request for more and its suggestions are on screen: nothing replaces them at once.
-    private var instructionSuggested = false
     /// "Skickat", or why not.
     private(set) var reportNotice: String?
     /// "Fråga Lumen": the hands-free session ends after one answer.
@@ -219,7 +206,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// D199 step 1 (A111): Intervjuläge's own decisions, out of this file. The audio engine stays here.
     let interviewMode: InterviewModeController
     /// The running live session, Rizzläge or Socialt läge. Gone when it ends, and the words with it.
-    private(set) var rizz: RizzSession?
+    /// D199 step 2 (A113): the live session of Socialt läge and Rizzläge (the conversation, the suggestions, the
+    /// instructions and their timing) is `LiveModeController` now. The views read the session here, as before.
+    var rizz: RizzSession? { liveMode.session }
+    let liveMode: LiveModeController
+    let socialMode: SocialModeController
     var isShowingInterviewSetup = false
     var isShowingLiveStart = false
     var isShowingAgeGate = false
@@ -331,6 +322,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let modes = modeSettings ?? ModeSettings()
         self.modeSettings = modes
         self.interviewMode = InterviewModeController(settings: modes)
+        let live = LiveModeController(settings: modes)
+        self.liveMode = live
+        self.socialMode = SocialModeController(live: live)
         // The remembered mode. Rizzläge only if the 18+ question was answered; the gate is never skipped.
         self.selectedMode = modes.lastMode == .rizz && !modes.isAdultConfirmed ? .standard : modes.lastMode
         self.feedback = feedback
@@ -421,6 +415,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             await self.togglePause()
         }
         interviewMode.host = self // D199
+        liveMode.host = self
     }
 
     // MARK: - User actions
@@ -564,7 +559,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         // A14 (Toby T6): alone, these short words are what Scribe mishears most ("kortare" heard as "högre").
         let spoken: [String] = switch mode {
         case .prov, .standard: ["kortare", "upprepa", "viska", "högre"]
-        case .social, .rizz: ["rizz", "cringe", "flirtig", "flirtigare"]
+        case .social: socialMode.spokenKeyterms // D199 step 2
+        case .rizz: LiveModeController.spokenKeyterms
         case .interview: interviewMode.spokenKeyterms
         }
         // A75: the name first, with the most weight Scribe and the phone's recogniser give (the first keyterms).
@@ -801,7 +797,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         study.unfinishedHold = newMode == .prov || newMode == .standard ? UnfinishedQuestion.hold : 0 // A21.2
         if newMode == .prov { await transcription.applyKeytermsNow() } // D87: the exam's words from the first one
         if let style = newMode.liveStyle {
-            rizz = RizzSession(style: style)
+            liveMode.begin(style: style)
             study.stallSilence = Self.stallSilence
             study.speechDetector = { [weak self] in self?.transcription.vadSpeaking() } // D82.2
             applySpeechVolume()
@@ -1147,17 +1143,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private func handsFreeEnded() {
         isSingleTurn = false
         discardAhead(reason: "the session ended")
-        liveAhead = nil
         if let session = rizz, !session.offered.isEmpty {
             let lines = ownLinesAreReliable ? session.ownLines.joined(separator: "\n") : ""
             history.record(HistoryEntry(question: lines.isEmpty ? nil : lines, answer: "",
                                         summary: "\(mode == .rizz ? "Rizzläge" : "Socialt läge"): \(session.offered.count) förslag.",
                                         suggestions: session.offered, mode: mode.rawValue, persona: "social"))
         }
-        rizz = nil
-        instructing = nil
-        deferredTrigger = nil
-        inFlightTrigger = nil
+        liveMode.end() // D199 step 2: the session, the early request, the instruction and its triggers
         applySpeechVolume()
         answers.sessionLength = nil // A7: "svara kortare" lasts one session
         mode = .standard
@@ -1238,7 +1230,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             }
             switch mode {
             case .interview: interviewMode.turn(text) // D199
-            case .rizz, .social: rizzTurn(text)
+            case .social: socialMode.turn(text) // D199 step 2
+            case .rizz: liveMode.turn(text) // the same live session; its own controller in step 3
             case .standard, .prov:
                 headMotion.stop() // answered with the voice
                 if silentQuiz?.awaitingAnswer == true { silentQuiz?.answered(); noteQuizAnswer() } // A20.2: "ja" / "nej" by voice; A38
@@ -1251,7 +1244,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 if mode == .prov { recordStudyTurn(first) }
             }
         case .stalled:
-            if let session = rizz { requestSuggestions(trigger: session.hasConversation ? "stall" : "opener") }
+            liveMode.stalled()
         case .bargeIn:
             // D81: with a voice profile, only the wearer's own voice stops Lumen; someone else talking does not.
             if let speakers, speakers.profiles.isEnrolled, speakers.isReady {
@@ -1287,35 +1280,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     // MARK: - Rizzläge (D43)
 
-    private func rizzTurn(_ text: String) {
-        let (speaker, why) = turnSpeaker(level: study.lastTurnLevelDBFS)
-        let detector = transcription.vadIsRunning ? "Silero" : "level"
-        controller.log("\(mode.rawValue) turn · \(speaker == .user ? "wearer" : "other") · \(why) · speech by \(detector)")
-        if speaker == .other {
-            // A suggestion asked for while they were talking (D80) counts from that request.
-            let early = liveAhead?.at
-            let ready: Date? = early != nil && rizz?.current != nil ? Date() : nil
-            liveTurn = (endedAt: Date(), who: "other", requestedAt: early, readyAt: ready)
-        }
-        study.resumeListening() // the room goes on while the suggestions are being made
-        guard var session = rizz else { return }
-        if speaker == .user, session.usesSuggestion(text) {
-            modeSettings.countUse(of: session.style)
-        }
-        session.add(speaker, text: text, at: Date(), label: liveLabel())
-        rizz = session
-        if speaker == .other, !FillerFilter.isOnlyFiller(text) {
-            if let early = liveAhead, early.key == AheadAnswer.key(text) {
-                // D80: asked for while they were talking; it is on screen or on its way, and speaks in this pause.
-                liveAhead = nil
-                speakSuggestion()
-            } else {
-                if inFlightTrigger != nil { aheadStats.discarded += 1 }
-                liveAhead = nil
-                requestSuggestions(trigger: "other_spoke")
-            }
-        }
-    }
+    // The live turn, the instructions and the suggestions are `LiveModeController` (D199 step 2). What is Rizzläge's
+    // own (the age question, the start screen) stays here until step 3.
 
     // MARK: - Voice (D74)
 
@@ -1822,38 +1788,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// as `social.calibrate` with the stored calibration, never as a line of the conversation. The backend answers a
     /// calibration with `done.calibration` and a request for more with that many suggestions.
     func liveInstruction(_ text: String) {
-        guard let session = rizz,
-              let persona = LiveRequest.instruction(text, for: session, interests: modeSettings.interests,
-                                                    profile: modeSettings.rizzProfile,
-                                                    calibration: modeSettings.calibration(for: mode),
-                                                    adultConfirmed: modeSettings.isAdultConfirmed) else { return }
-        if let trigger = inFlightTrigger { deferredTrigger = trigger } // the suggestions being made are cancelled
-        inFlightTrigger = nil
-        instructing = mode
-        instructionSuggested = false
-        controller.log("\(mode.rawValue): instruction sent") // the words stay out of the log
-        let request = ActivationRequest(query: "", trigger: .rizz, language: language)
-        pendingQuestion = request
-        latency.begin(request)
-        answers.answer(request, context: AnswerContext(memories: memory.backendItems()), persona: persona)
-    }
-
-    /// The instruction came back: store a calibration, then ask for the suggestions that waited.
-    private func instructionEnded(_ calibration: String?, answered: Bool) {
-        guard let instructed = instructing else { return }
-        instructing = nil
-        if let calibration {
-            modeSettings.setCalibration(calibration, for: instructed)
-            controller.log("\(instructed.rawValue): calibration stored (\(calibration.count) characters)")
-            say(language == .swedish ? "Okej." : "Okay.")
-        }
-        let suggested = instructionSuggested
-        instructionSuggested = false
-        if let trigger = deferredTrigger, answered, !suggested {
-            deferredTrigger = nil
-            requestSuggestions(trigger: trigger)
-        }
-        deferredTrigger = nil
+        if mode == .social { socialMode.instruction(text) } else { liveMode.instruction(text) } // D199 step 2
     }
 
     /// A short confirmation in the AirPods. Not while paused: the audio belongs to someone else then.
@@ -1910,63 +1845,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         controller.log("Turn · \(mode.rawValue) · STT \(recognizerName) · mic \(microphone.source(for: mode).rawValue) · \(controller.config.rawValue)")
     }
 
-    private func requestSuggestions(trigger: String) {
-        guard let session = rizz else { return }
-        if liveTurn != nil, liveTurn?.requestedAt == nil { liveTurn?.requestedAt = Date() }
-        if instructing != nil {
-            deferredTrigger = trigger // the instruction goes first, the suggestions follow it
-            return
-        }
-        guard let persona = LiveRequest.suggestions(for: session, trigger: trigger, interests: modeSettings.interests,
-                                                    profile: modeSettings.rizzProfile,
-                                                    calibration: modeSettings.calibration(for: mode),
-                                                    adultConfirmed: modeSettings.isAdultConfirmed) else { return }
-        let request = ActivationRequest(query: "", trigger: .rizz, language: language)
-        pendingQuestion = request
-        inFlightTrigger = trigger
-        latency.begin(request)
-        answers.answer(request, context: AnswerContext(memories: memory.backendItems()), persona: persona)
-    }
-
     func answerSuggestions(_ options: [String]) {
-        latency.markFirstText(provider: answers.activeProvider.name)
-        if instructing != nil {
-            // The wearer asked for more ("ge mig tre", D72): all of them, shown and spoken, this time only.
-            instructionSuggested = true
-            rizz?.offer(options)
-            showActivity()
-            speakAllSuggestions()
-            return
-        }
-        inFlightTrigger = nil
-        if liveTurn != nil { liveTurn?.readyAt = Date() }
-        rizz?.offer(Array(options.prefix(Self.suggestionsShown))) // D72: one suggestion, shown and spoken
-        showActivity()
-        speakSuggestion()
-    }
-
-    private func speakAllSuggestions() {
-        guard let options = rizz?.suggestions, !study.someoneIsTalking() else { return }
-        for line in options { speaker.enqueue(line, language: language) }
+        liveMode.suggestionsArrived(options) // D199 step 2
     }
 
     /// "nästa", or the button on the Live Activity. With one suggestion on screen (D72) it asks for a fresh one.
     func nextSuggestion() {
-        guard let session = rizz else { return }
-        if session.suggestions.count <= 1 {
-            requestSuggestions(trigger: session.hasConversation ? "stall" : "opener")
-            return
-        }
-        rizz?.next()
-        showActivity()
-        speakSuggestion()
-    }
-
-    /// Only in a pause, never over anyone. A missed moment stays on the Live Activity.
-    private func speakSuggestion() {
-        guard let line = rizz?.current, !study.someoneIsTalking(), !speaker.isSpeaking else { return }
-        speaker.enqueue(line, language: language)
-        logLiveTurn()
+        liveMode.nextSuggestion()
     }
 
     /// The voice has taken the last sentence. Its sound may still be playing for many seconds (Toby T7: 2.8–13.3 s),
@@ -2442,9 +2327,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Rizzläge / Socialt läge: the wearer saying the suggestion out loud is its use, not Lumen's echo. Through
     /// AirPods Lumen is never heard by the microphone (D82, owner); out of the iPhone's own speaker it can be.
     private func isWearerUsingSuggestion(_ text: String, level: Double?) -> Bool {
-        guard let session = rizz, session.usesSuggestion(text),
-              !(controller.snapshot?.outputsToBuiltInSpeaker ?? false) else { return false }
-        return RizzSpeaker.tag(levelDBFS: level, thresholdDBFS: modeSettings.speakerThresholdDBFS) == .user
+        liveMode.isWearerUsingSuggestion(text, level: level) // D199 step 2
     }
 
     /// The answer produced no speech (silent mode, empty answer): back to listening right away.
@@ -2501,7 +2384,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// "Talare 1" for Socialt läge / Rizzläge (Kevin D81), when the labels are on and the voice is known.
-    private func liveLabel() -> String? {
+    func liveLabel() -> String? {
         guard let speakers, speakers.showsLabels, let identity = speakers.identity(near: Date()), identity.isOther else { return nil }
         return SpeakerLabeler.text(identity, swedish: true)
     }
@@ -3588,12 +3471,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// pause is over replace it with a new call for the whole text. One call at a time.
     private func answerAhead(for raw: String) {
         let text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard isListening, !isComparing, !isEnrollingVoice, instructing == nil, !text.isEmpty, !FillerFilter.isOnlyFiller(text),
+        guard isListening, !isComparing, !isEnrollingVoice, !liveMode.isInstructing, !text.isEmpty, !FillerFilter.isOnlyFiller(text),
               VoiceChannel.parse(text).intent == nil, !VoiceCommand.isMusicHandOff(text), !VoiceCommand.isComplaint(text),
               CommandMatcher.parseSaveCommand(text) == nil else { return }
         if rizz == nil, UnfinishedQuestion.looksUnfinished(text) { return } // A21.2: the rest may still come
         if rizz != nil {
-            liveSuggestionAhead(for: text)
+            liveMode.suggestionAhead(for: text) // D199 step 2
             return
         }
         var persona: PersonaRequest?
@@ -3738,41 +3621,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
     }
 
-    /// Socialt läge / Rizzläge: a suggestion is made while the other person is still talking, so it is ready when the
-    /// pause comes; during a long monologue at most every 3 s (D80).
-    private func liveSuggestionAhead(for text: String, now: Date = Date()) {
-        guard let session = rizz, instructing == nil else { return }
-        let speaker = turnSpeaker(level: study.currentTurnLevelDBFS).speaker
-        guard speaker == .other else { return }
-        if let last = liveAhead, now.timeIntervalSince(last.at) < Self.liveRefresh { return }
-        var preview = session
-        preview.add(.other, text: text, at: now)
-        guard let persona = LiveRequest.suggestions(for: preview, trigger: "other_spoke", interests: modeSettings.interests,
-                                                    profile: modeSettings.rizzProfile,
-                                                    calibration: modeSettings.calibration(for: mode),
-                                                    adultConfirmed: modeSettings.isAdultConfirmed) else { return }
-        if inFlightTrigger != nil { aheadStats.discarded += 1 }
-        liveAhead = (AheadAnswer.key(text), now)
-        aheadStats.started += 1
-        let request = ActivationRequest(query: "", trigger: .rizz, language: language)
-        pendingQuestion = request
-        inFlightTrigger = "other_spoke"
-        latency.begin(request)
-        answers.answer(request, context: AnswerContext(memories: memory.backendItems()), persona: persona)
-    }
-
+    /// D80: a live suggestion asked for while the other person talks, at most this often (`LiveModeController`).
     static let liveRefresh: TimeInterval = 3
-
-    /// D82.3: turn end → suggestion requested → ready → spoken, in ms from the end of the other person's turn.
-    private func logLiveTurn(now: Date = Date()) {
-        guard let turn = liveTurn else { return }
-        liveTurn = nil
-        func ms(_ date: Date?) -> String {
-            guard let date else { return "–" }
-            return "\(Int((date.timeIntervalSince(turn.endedAt) * 1000).rounded())) ms"
-        }
-        controller.log("Live turn timing · \(turn.who) · requested \(ms(turn.requestedAt)) · ready \(ms(turn.readyAt)) · spoken \(ms(now)) (from the end of the turn)")
-    }
 
     private func logTimeline(now: Date = Date()) {
         guard let current = timeline else { return }
@@ -3823,9 +3673,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func answerCompleted(latencyMs: Double?, done: AnswerDone?) {
-        if instructing != nil {
+        if liveMode.isInstructing {
             latency.end()
-            instructionEnded(done?.calibration, answered: true)
+            liveMode.instructionEnded(done?.calibration, answered: true)
             return
         }
         controller.turns.setStatus(eventTurnID, status: done?.retract == true ? "retract" : "ok", isQuestion: true)
@@ -3843,7 +3693,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         if ahead?.delivered == true { ahead = nil }
-        inFlightTrigger = nil
+        liveMode.requestEnded() // D199 step 2: no suggestions are being made any more
         if timeline?.doneAt == nil { timeline?.doneAt = Date() }
         if let turn = conversation.completeAnswer(latencyMs: latencyMs) {
             activation.answerDelivered()
@@ -3991,9 +3841,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     func answerSkipped(_ request: ActivationRequest) {
-        if instructing != nil {
+        if liveMode.isInstructing {
             latency.end()
-            instructionEnded(nil, answered: true)
+            liveMode.instructionEnded(nil, answered: true)
             return
         }
         controller.turns.setStatus(eventTurnID, status: "not_question", isQuestion: false)
@@ -4022,11 +3872,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func answerFailed(_ message: String, wantsFallback: Bool) {
         if summaryRequestID != nil { endAfterSummary(reason: "the summary failed") } // A19.2: never stuck
-        if instructing != nil {
+        if liveMode.isInstructing {
             latency.end()
             answerNotice = message
             controller.log("Instruction failed: \(message)")
-            instructionEnded(nil, answered: false)
+            liveMode.instructionEnded(nil, answered: false)
             return
         }
         if let current = ahead, !current.delivered {
@@ -4051,7 +3901,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         if ahead?.delivered == true { ahead = nil }
-        inFlightTrigger = nil
+        liveMode.requestEnded() // D199 step 2: no suggestions are being made any more
         latency.end()
         conversation.cancelAnswer()
         answerNotice = nil // D86: the problem card says it in Swedish; the raw message is in Diagnostik's log
@@ -4308,4 +4158,24 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 /// D199: what a mode's controller may use (`ListeningModeHost`). Nothing here touches the audio engine.
 extension ListeningModel: ListeningModeHost {
     func modeLog(_ line: String) { controller.log(line) }
+}
+
+/// D199 step 2: what the live session uses (`LiveModeHost`): the model's own calls, unchanged.
+extension ListeningModel: LiveModeHost {
+    var vadIsRunning: Bool { transcription.vadIsRunning }
+    var outputsToBuiltInSpeaker: Bool { controller.snapshot?.outputsToBuiltInSpeaker ?? false }
+    var voiceIsSpeaking: Bool { speaker.isSpeaking }
+
+    func sendLive(_ request: ActivationRequest, persona: PersonaRequest) {
+        pendingQuestion = request
+        latency.begin(request)
+        answers.answer(request, context: AnswerContext(memories: memory.backendItems()), persona: persona)
+    }
+
+    func markLiveFirstText() { latency.markFirstText(provider: answers.activeProvider.name) }
+    func showLiveActivity() { showActivity() }
+    func speakLive(_ line: String) { speaker.enqueue(line, language: language) }
+    func sayLive(_ line: String) { say(line) }
+    func aheadStarted() { aheadStats.started += 1 }
+    func aheadDiscarded() { aheadStats.discarded += 1 }
 }
