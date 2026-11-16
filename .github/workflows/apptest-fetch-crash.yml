@@ -1,0 +1,42 @@
+# Toby: fetches an apptest run's artifact on the runner (the cloud sessions cannot download artifacts)
+# and commits its crash logs and text logs to reports/apptest/crash/<run_id>/. Never calls ElevenLabs.
+name: Apptest fetch crash log
+on:
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: "Run id whose artifact to fetch"
+        required: true
+permissions:
+  contents: write
+  actions: read
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Download and pick crash logs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.run_id }}
+        run: |
+          set -euo pipefail
+          mkdir -p art "reports/apptest/crash/$RUN_ID"
+          gh run download "$RUN_ID" -R "$GITHUB_REPOSITORY" -D art || true
+          echo "Files in the artifact:"; find art -type f | sed 's/^/  /' | head -200
+          # Crash reports (.ips/.crash) and any file whose name says crash; the run's text logs.
+          find art -type f \( -iname '*.ips' -o -iname '*.crash' -o -iname '*crash*' \) -size -2M -exec cp {} "reports/apptest/crash/$RUN_ID/" \;
+          find art -type f -name '*log*.txt' -size -1M -exec cp {} "reports/apptest/crash/$RUN_ID/" \;
+          ls -la "reports/apptest/crash/$RUN_ID"
+          for f in reports/apptest/crash/$RUN_ID/*; do case "$f" in *.ips|*.crash|*rash*) echo "=== $f"; head -c 6000 "$f"; echo;; esac; done
+      - name: Commit
+        env:
+          RUN_ID: ${{ inputs.run_id }}
+        run: |
+          git config user.name "toby-apptest"
+          git config user.email "toby-apptest@users.noreply.github.com"
+          git add reports/apptest/crash || true
+          git diff --cached --quiet && { echo "nothing to commit"; exit 0; }
+          git commit -m "apptest: crash/text logs from run $RUN_ID"
+          for i in 1 2 3 4; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep $((i*5)); done
+          exit 1
