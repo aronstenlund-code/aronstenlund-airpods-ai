@@ -265,7 +265,10 @@ struct DrillView: View {
                               ?? saved.map { "Du var på fråga \($0 + 1) av \(drill.items.count)." }
                               ?? "Spelas i dina AirPods. Mikrofonen används inte.",
                           isBusy: (!canStart && soundProblem == nil) || model.isStartingAudio(drill),
-                          isDisabled: !canStart || model.isStartingAudio(drill) || startCost(drill)?.tooMany == true) {
+                          isDisabled: !canStart || model.isStartingAudio(drill) || startCost(drill)?.tooMany == true,
+                          // A112 (Kelly U1): reading aloud is off and no question has sound: the questions and answers
+                          // are the list above, and there is nothing to start. The line stays.
+                          hidesButton: model.isReadingAloudOff(drill) && (model.awaitsAudioStart(drill) || !canStart)) {
                 begin(drill, at: saved ?? 0)
             }
         }
@@ -334,7 +337,10 @@ struct DrillView: View {
                               ?? saved.map { "Du var på mening \($0 + 1) av \(drill.sentenceCount)." }
                               ?? "Spelas i dina AirPods. Mikrofonen används inte.",
                           isBusy: (!canStart && soundProblem == nil) || model.isStartingAudio(drill),
-                          isDisabled: !canStart || model.isStartingAudio(drill) || startCost(drill)?.tooMany == true) {
+                          // A112 (Kelly U1): a text can always be opened while reading aloud is off: the player shows
+                          // it and the sentence is moved by hand.
+                          isDisabled: !model.isReadingAloudOff(drill)
+                              && (!canStart || model.isStartingAudio(drill) || startCost(drill)?.tooMany == true)) {
                 begin(drill, at: saved ?? 0)
             }
         }
@@ -439,6 +445,17 @@ struct DrillView: View {
 
     /// Through "Styr med dina AirPods" the first time, else straight to the question.
     private func begin(_ drill: Drill, at index: Int) {
+        if drill.isText, model.isReadingAloudOff(drill) {
+            // A112 (D200, Kelly U1): no sound for now. Starta prov asks once more (it costs nothing, K78); if the
+            // sound still cannot be made the text is opened anyway, to read and step through by hand.
+            Task {
+                await model.start(drill, at: index)
+                if !model.showsPlayer, let latest = model.store.drill(drill.id) {
+                    await model.read(latest, at: index, waitingForSound: true)
+                }
+            }
+            return
+        }
         if drill.isText ? textControlsChecked : controlsChecked {
             Task { await model.start(drill, at: index) }
         } else {
@@ -501,10 +518,13 @@ struct MainActionBar: View {
     var note: String?
     var isBusy = false
     var isDisabled = false
+    /// A112 (Kelly U1): no button at all, only the line: a button that cannot do anything is not shown grey (as D198).
+    var hidesButton = false
     let action: () -> Void
 
     var body: some View {
         VStack(spacing: 8) {
+            if !hidesButton {
             Button(action: action) {
                 FilledButtonLabel {
                     HStack(spacing: 8) {
@@ -529,6 +549,7 @@ struct MainActionBar: View {
             // A95: the bar stops growing at the first accessibility size, so a long press shows the title large
             // (the system's large content viewer, as for tab bars).
             .accessibilityShowsLargeContentViewer()
+            }
             if let note {
                 // A95 (audit 43590746967): secondary text on the bar's material failed the contrast check; the
                 // note says why the button is grey or that the microphone is off, so it has the text colour.

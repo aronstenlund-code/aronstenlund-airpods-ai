@@ -349,7 +349,7 @@ struct ReadingPlayerView: View {
     /// What the screen says under the text: paused, waiting for the sound, or nothing.
     private var statusLine: String? {
         if reader.isAtEnd { return nil }
-        if reader.isPaused { return "Pausad. Fortsätter från början av meningen." }
+        if reader.isPaused, !readsByHand { return "Pausad. Fortsätter från början av meningen." }
         if reader.phase == .waitingForAudio {
             if let problem = model.audio.problem(for: drill) { return problem }
             return model.isOffline ? "Ingen internetanslutning. Resten av texten kommer när du är uppkopplad." : "Gör ljudet …"
@@ -369,12 +369,15 @@ struct ReadingPlayerView: View {
             if !reader.isAtEnd {
                 HStack(spacing: 44) {
                     control("backward.fill", "Förra meningen", size: 26) { session.press(.pauseToggle) }
-                    control(reader.isPaused ? "play.fill" : "pause.fill", reader.isPaused ? "Fortsätt" : "Pausa", size: 44) {
-                        session.press(.long)
+                    if !readsByHand { // A112 (Kelly U2): nothing plays, so there is nothing to pause
+                        control(reader.isPaused ? "play.fill" : "pause.fill", reader.isPaused ? "Fortsätt" : "Pausa", size: 44) {
+                            session.press(.long)
+                        }
+                        .frame(minWidth: 64, minHeight: 64)
                     }
-                    .frame(minWidth: 64, minHeight: 64)
                     control("forward.fill", "Nästa mening", size: 26) { session.press(.short) }
                 }
+                .frame(minHeight: 64)
                 .foregroundStyle(Color.primary)
             }
             // As for the questions (Kelly S2): with the largest text the presses are on the control check and the
@@ -389,9 +392,16 @@ struct ReadingPlayerView: View {
         .background(Color(.systemBackground))
     }
 
+    /// A112 (D200, Kelly U2): reading aloud is off and this part has no sound. The text is read on the screen and the
+    /// sentence is moved by hand (the buttons, the presses, a tap on a sentence).
+    private var readsByHand: Bool {
+        reader.phase == .waitingForAudio && model.isReadingAloudOff(drill)
+    }
+
     /// Ke63 §5: what the AirPods' presses do now.
     private var presses: [(event: RepetitionEvent, dots: Int, title: String)] {
         let previous: (event: RepetitionEvent, dots: Int, title: String) = (.pauseToggle, 3, "Förra meningen")
+        if readsByHand { return [(event: .short, dots: 2, title: "Nästa mening"), previous] }
         if reader.isAtEnd { return [(event: .long, dots: 1, title: "Börja om"), previous] }
         return [(event: .long, dots: 1, title: reader.isPaused ? "Fortsätt" : "Paus"),
                 (event: .short, dots: 2, title: "Nästa mening"), previous]
