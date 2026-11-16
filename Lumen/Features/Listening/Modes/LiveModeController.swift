@@ -289,8 +289,9 @@ final class SocialModeController: ListeningModeController {
 }
 
 /// D199 step 3 (A114): Rizzläge as a `ListeningModeController` on the same live session as Socialt läge. What is its
-/// own: the 18+ question (D63), asked once and never skipped, and its style. Its turns, instructions and suggestions
-/// are the shared `LiveModeController`.
+/// own: its style, and the age check the model's start and mode-change paths still ask (D63). D112 (owner) removed
+/// the 18+ gate: `ModeSettings.isAdultConfirmed` is always true, so the check never stops anything today. It is kept
+/// as it was (no behaviour change in G7). Its turns, instructions and suggestions are the shared `LiveModeController`.
 @MainActor
 final class RizzModeController: ListeningModeController {
     let mode: ConversationMode = .rizz
@@ -304,11 +305,10 @@ final class RizzModeController: ListeningModeController {
         self.settings = settings
     }
 
-    /// D63: the 18+ question has not been answered with yes. Rizzläge never starts then: not from the screen, not by
-    /// voice, not as the remembered mode.
+    /// D63's check, as the model had it. Always false since D112 (no 18+ gate): the flag is always confirmed.
     var needsAgeConfirmation: Bool { !settings.isAdultConfirmed }
 
-    /// The user answered yes to the 18+ question.
+    /// The age sheet's yes (D63). The sheet is never shown since D112; kept with the check.
     func confirmAge() { settings.confirmAdult() }
 
     var spokenKeyterms: [String] { LiveModeController.spokenKeyterms }

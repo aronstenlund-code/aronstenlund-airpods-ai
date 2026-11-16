@@ -299,23 +299,22 @@ import Testing
         #expect(!rig.model.liveMode.isActive && rig.model.rizz == nil)
     }
 
-    /// D199 step 3 (A114): Rizzläge's own rules (the 18+ question, the style) are `RizzModeController`, on the same
-    /// live session as Socialt läge.
-    @Test func rizzIsItsOwnControllerAndTheAgeQuestionIsNeverSkipped() async {
+    /// D199 step 3 (A114): Rizzläge's own rules are `RizzModeController`, on the same live session as Socialt läge.
+    /// D112 (owner): there is no 18+ gate any more, so the age check it carries never stops anything today.
+    @Test func rizzIsItsOwnControllerOnTheSharedLiveSession() async {
         let rig = makeRig(events: [], microphone: .iPhone, adult: false)
         let rizz = rig.model.rizzMode
         #expect(rizz.mode == .rizz && rizz.style == .flirt)
         #expect(rizz.spokenKeyterms == rig.model.socialMode.spokenKeyterms)
-        #expect(rizz.needsAgeConfirmation)
+        #expect(!rizz.needsAgeConfirmation, "D112: Rizzläge is for all ages")
 
         await rig.model.startHandsFree(.rizz)
-        #expect(rig.model.isShowingAgeGate && !rig.model.liveMode.isActive, "D63: never started without the answer")
-
-        rig.model.answerAgeGate(confirmed: true)
-        #expect(!rizz.needsAgeConfirmation && rig.settings.isAdultConfirmed)
-        await rig.model.startHandsFree(.rizz)
+        #expect(!rig.model.isShowingAgeGate, "D112: no gate, as before A114")
         #expect(rig.model.liveMode.isActive && rig.model.rizz?.style == .flirt)
+        rig.model.answerSuggestions(["Bästa", "Andra"])
+        #expect(rig.model.liveMode.session?.suggestions == ["Bästa"], "the same live session as Socialt läge")
         await rig.model.stopListening()
+        #expect(!rig.model.liveMode.isActive)
     }
 
     @Test func nextAsksForAFreshSuggestion() async {

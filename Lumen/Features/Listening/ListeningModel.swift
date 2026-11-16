@@ -211,7 +211,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var rizz: RizzSession? { liveMode.session }
     let liveMode: LiveModeController
     let socialMode: SocialModeController
-    /// D199 step 3 (A114): Rizzläge's own rules (the 18+ question, the style) on the same live session.
+    /// D199 step 3 (A114): Rizzläge's own rules (its style, and D63's age check, never true since D112) on the same
+    /// live session.
     let rizzMode: RizzModeController
     var isShowingInterviewSetup = false
     var isShowingLiveStart = false
@@ -1285,7 +1286,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     // MARK: - Rizzläge (D43)
 
     // The live turn, the instructions and the suggestions are `LiveModeController` (D199 step 2). Rizzläge's own rules
-    // (the 18+ question, the style) are `RizzModeController` (step 3); the screens' flags stay here until step 4.
+    // (its style, D63's age check) are `RizzModeController` (step 3); the screens' flags stay here until step 4.
 
     // MARK: - Voice (D74)
 
