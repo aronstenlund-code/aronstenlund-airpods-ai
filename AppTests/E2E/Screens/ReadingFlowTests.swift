@@ -160,13 +160,26 @@ final class ReadingFlowTests: XCTestCase {
         log.append("READ press 3: \(p22 ?? "-") → \(p3 ?? "-")")
         if p3 == p22 { note("press 3 did not move the place back (\(p22 ?? "-"))") }
         screen("efter-2-och-3", "After 2, 2 and 3 presses")
+        // Nightly 43791360412: the fake audio has no sentence times and can reach the last sentence before these presses;
+        // there 1 press is Börja om (D188), and Start's card also has a "Fortsätt". So only check that 1 press toggles.
+        let before = readingPaused()
         Self.press(1)
-        if wait(["Fortsätt"], 4) != nil { log.append("READ press 1: paused ('Fortsätt' shown)") } else { ok = false; log.append("MISS: press 1 did not pause the reading") }
-        screen("pausad", "Paused with 1 press")
+        pause(3)
+        let first = readingPaused()
+        log.append("READ press 1: paused \(before) → \(first)")
+        screen("pausad", "After 1 press")
         Self.press(1)
-        if wait(["Pausa"], 4) != nil { log.append("READ press 1 again: reading ('Pausa' shown)") } else { ok = false; log.append("MISS: press 1 did not go on") }
+        pause(3)
+        let second = readingPaused()
+        log.append("READ press 1 again: paused \(first) → \(second)")
+        if first == second { ok = false; log.append("MISS: two 1 presses did not toggle pause (\(first) both times)") }
         mark("READING-PRESSES-END")
         return ok
+    }
+
+    /// The player is paused when its own "Pausa" button is gone (Start's card under it has a "Fortsätt" of its own).
+    private func readingPaused() -> Bool {
+        !app.buttons.matching(NSPredicate(format: "label ==[c] 'Pausa'")).firstMatch.exists
     }
 
     /// Ke63: a tap on a sentence reads from there. The text is one UITextView; tap low in it, then high.
