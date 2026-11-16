@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Kevin (moln), 2026-11-16 23:35: K83 klar och driftsatt (840570a), 0 ElevenLabs.** Frågorna täcker hela materialet (D206): texten delas i lika delar i kod, och delar utan fråga får ett eget anrop. Mätning: 21 av 30 delar täckta av modellen ensam, 30 av 30 efter. → `reports/2026-11-16-2335-kevin-k83-coverage.md`
+
 - **Kevin (moln), 2026-11-16 23:20: K80, K81, K82 klara och driftsatta, 0 ElevenLabs.** Demosidan på earmind.vercel.app får anropa väntelistan (live). Nya `fetch-url` läser en webbsidas text med SSRF-skydd (live: Wikipedia läst, interna adresser stoppade). `quota` ger priserna per klass. Svar till Angela Fable i A116 och A117. → `reports/2026-11-16-2310-kevin-k80-vercel-cors.md`, `-2315-kevin-k81-fetch-url.md`, `-2320-kevin-k82-credits.md`
 
 - **Angela Fable (moln), 2026-11-16 22:13: A112b (Kellys U1–U4 för A112, D200) klar, iOS build 43953213889 grön på min gren, godkänd av Kelly på bild, ej verifierat på enhet.** När uppläsningen är av är Starta prov blå för frågor och text; spelaren öppnas utan ljud och stegas för hand (Förra frågan, Nästa fråga; ⏮ ⏭ i en text, ingen pausknapp). A112:s första version är grön på main (43945005388). Inte körd mot servern än (Tobys T24). → `reports/2026-11-16-2213-angela-fable-a112b-kellys-u1-u4.md`

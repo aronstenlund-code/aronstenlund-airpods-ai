@@ -1,0 +1,230 @@
+{
+ "bio-fotosyntes": {
+  "chars": 2657,
+  "runs": [
+   {
+    "status": 200,
+    "ms": 5935,
+    "coverage": {
+     "parts": 2,
+     "before": 2,
+     "after": 2,
+     "added": 0
+    },
+    "cost": 0.0017127,
+    "questions": [
+     "Varför räknas den icke levande miljön som en del av ett ekosystem?",
+     "Vad behöver växten för fotosyntesen?",
+     "Varför är klorofyll viktigt för fotosyntesen?",
+     "Vad bildas vid fotosyntesen och vad släpps ut?",
+     "Vad används glukosen till i växten?",
+     "Varför kallas djur som äter växter förstahandskonsumenter?",
+     "Varför bildar näringskedjor en näringsväv i naturen?",
+     "Varför försvinner en stor del av energin när den går från ett steg till nästa i en näringskedja?",
+     "Hur påverkar energiflödet antalet rovdjur jämfört med växtätare?",
+     "Varför är näringskedjor sällan längre än fyra eller fem led?",
+     "Vad händer med näringsämnena när nedbrytare bryter ner döda växter och djur?",
+     "Vad skulle hända med kretsloppet om det inte fanns några nedbrytare?"
+    ]
+   },
+   {
+    "status": 200,
+    "ms": 5275,
+    "coverage": {
+     "parts": 2,
+     "before": 2,
+     "after": 2,
+     "added": 0
+    },
+    "cost": 0.0016208,
+    "questions": [
+     "Vad skiljer en population från ett samhälle?",
+     "Varför behövs klorofyll för fotosyntesen?",
+     "Vad händer med glukosen som bildas vid fotosyntesen?",
+     "Vad blir av syret som växten bildar?",
+     "Vad skiljer en producent från en konsument?",
+     "Varför kallas djur som äter växter för förstahandskonsumenter?",
+     "Varför är näringskedjor sällan längre än fyra eller fem led?",
+     "Varför finns det färre rovdjur än växtätare?",
+     "Vad händer med energin när den går från ett steg i näringskedjan till nästa?",
+     "Vad gör nedbrytare, och vad skulle hända utan dem?",
+     "Hur går kolets kretslopp till när växter och djur andas?",
+     "Varför ökar halten koldioxid i luften när vi eldar fossila bränslen?"
+    ]
+   }
+  ]
+ },
+ "so-tre-delar": {
+  "chars": 3449,
+  "runs": [
+   {
+    "status": 200,
+    "ms": 8356,
+    "coverage": {
+     "parts": 3,
+     "before": 2,
+     "after": 3,
+     "added": 1
+    },
+    "cost": 0.0022749,
+    "questions": [
+     "Varför konkurrerade Europas stormakter om kolonier och handel?",
+     "Vad menas med militarism, och hur bidrog den till kriget?",
+     "Varför ledde mordet i Sarajevo till ett världskrig?",
+     "Varför kunde anfallen över ingenmansland bli så dödliga?",
+     "Varför stod fronten nästan stilla på västfronten?",
+     "Hur kom Tyskland att försöka besegra Frankrike, och varför stoppades anfallet?",
+     "Vad innebar det att kriget var ett totalt krig?",
+     "Vad hände med Ryssland när bolsjevikerna tog makten?",
+     "Varför fick Tyskland ta på sig skulden för kriget enligt Versaillesfreden?",
+     "Hur kände många tyskar efter freden, och varför?",
+     "Hur är Sverige styrt som parlamentarisk demokrati och konstitutionell monarki?",
+     "Varför är det kallare vid polerna än vid ekvatorn?"
+    ]
+   },
+   {
+    "status": 200,
+    "ms": 8905,
+    "coverage": {
+     "parts": 3,
+     "before": 2,
+     "after": 3,
+     "added": 1
+    },
+    "cost": 0.0024959,
+    "questions": [
+     "Varför var imperialism och militarism viktiga orsaker till första världskriget?",
+     "Varför bildade stormakterna allianser före kriget?",
+     "Vad hände den tjugoåttonde juni nittonhundrafjorton i Sarajevo?",
+     "Varför drog krigsförklaringen mellan Österrike-Ungern och Serbien in de andra stormakterna?",
+     "Varför stoppades Tysklands snabba anfall mot Frankrike?",
+     "Hur såg fronten ut på västfronten under kriget?",
+     "Varför ledde kulsprutor, taggtråd och artilleri till så många döda vid anfall?",
+     "Vad innebar det att första världskriget var ett totalt krig?",
+     "Hur påverkade bolsjevikernas maktövertagande i Ryssland krigets förlopp?",
+     "Vad innehöll Versaillesfreden nittonhundranitton för Tyskland?",
+     "Varför kände många tyskar sig förödmjukade efter freden?",
+     "Varför är det kallare vid polerna än vid ekvatorn?"
+    ]
+   }
+  ]
+ },
+ "no-tre-delar": {
+  "chars": 4829,
+  "runs": [
+   {
+    "status": 200,
+    "ms": 10125,
+    "coverage": {
+     "parts": 4,
+     "before": 3,
+     "after": 4,
+     "added": 1
+    },
+    "cost": 0.0030472000000000003,
+    "questions": [
+     "Hur kan man räkna ut hur många mol det är i 16 gram metan?",
+     "Varför är hemmets eluttag parallellkopplade?",
+     "Varför behövs klorofyll i bladen?",
+     "Vad händer med energin i en näringskedja och varför finns det färre rovdjur än växtätare?",
+     "Hur bildas en näringsväv?",
+     "Skillnad mellan producent och konsument?",
+     "Vad gör nedbrytarna och varför behövs de för kretsloppet?",
+     "Hur påverkar fotosyntesen kolets kretslopp?",
+     "Varför ökar halten koldioxid i luften när vi eldar fossila bränslen?",
+     "Hur uppstår övergödning i en sjö?",
+     "Varför dör fiskar vid övergödning?",
+     "Vad kan man göra för att motverka övergödning?"
+    ]
+   },
+   {
+    "status": 200,
+    "ms": 10591,
+    "coverage": {
+     "parts": 4,
+     "before": 2,
+     "after": 4,
+     "added": 2
+    },
+    "cost": 0.0037359999999999997,
+    "questions": [
+     "Varför måste en reaktionsformel balanseras?",
+     "Varför får man bara ändra koefficienterna och aldrig indexen när man balanserar?",
+     "Hur räknar man ut molmassan för vatten?",
+     "Hur räknar man om en given massa till substansmängd?",
+     "Hur beräknar man koncentrationen av en lösning?",
+     "Varför slutar hela kretsen fungera när en lampa i en seriekoppling går sönder?",
+     "Varför lyser de andra lamporna vidare när en lampa i en parallellkoppling går sönder?",
+     "Hur räknar man ut effekten i en elektrisk krets?",
+     "Hur beräknas energin och vad är en kilowattimme?",
+     "Vad gör en säkring och en jordfelsbrytare?",
+     "Varför behövs klorofyll för fotosyntesen?",
+     "Varför skulle kretsloppet stanna utan nedbrytare?"
+    ]
+   }
+  ]
+ },
+ "wikipedia-fotosyntes": {
+  "chars": 15498,
+  "runs": [
+   {
+    "status": 200,
+    "ms": 14552,
+    "coverage": {
+     "parts": 6,
+     "before": 4,
+     "after": 6,
+     "added": 2
+    },
+    "cost": 0.0045928,
+    "questions": [
+     "Varför behöver växter solljus för fotosyntesen?",
+     "Varför sker fotosyntesen främst i bladen?",
+     "Vad händer med koldioxid, vatten och solenergi under fotosyntesen?",
+     "Varför frigörs syre vid fotosyntesen?",
+     "Varför är växter gröna?",
+     "Varför fungerar klorofyll som en ljusfångande antenn?",
+     "Varför är blad på hösten gula eller orangea?",
+     "Hur skiljer sig klorofyll a och b från varandra?",
+     "Vad händer med elektronen när en foton träffar klorofyllmolekylen?",
+     "Varför bildas ATP under ljusreaktionerna?",
+     "Varför spjälkas vatten i fotosystem II?",
+     "Varför är fotosyntes viktigt för livet på jorden?"
+    ]
+   },
+   {
+    "status": 200,
+    "ms": 14370,
+    "coverage": {
+     "parts": 6,
+     "before": 4,
+     "after": 6,
+     "added": 2
+    },
+    "cost": 0.0048441000000000005,
+    "questions": [
+     "Varför kallas fotosyntes för en process där energi från solljus lagras i kemiska bindningar?",
+     "Varför behöver växter klorofyll för att kunna fotosyntetisera?",
+     "Vad händer med koldioxid, vatten och solenergi under dagen i en växt?",
+     "Varför använder växter både dag och natt syre och druvsocker i cellandningen?",
+     "Hur kan klorofyllmolekylerna fungera som en ljussamlande antenn?",
+     "Varför kan forskare med hjälp av kol-13-isotoper avgöra vad ett djur har ätit?",
+     "Varför är klorofyll a och b olika effektiva på olika våglängder av ljus?",
+     "Varför ser vi löv som gröna på våren och sommaren?",
+     "Varför blir löven gula eller orangea på hösten?",
+     "Varför behöver fotosyntesen energi från ljuset?",
+     "Hur bidrar vatten till fotosyntesen och varifrån kommer syret som bildas?",
+     "Varför behöver växter ljus för att utföra fotosyntes?"
+    ]
+   }
+  ]
+ },
+ "summary": {
+  "runs_with_parts": 8,
+  "parts": 30,
+  "covered_before": 21,
+  "covered_after": 30,
+  "added": 9,
+  "cost_usd": 0.0243
+ }
+}
