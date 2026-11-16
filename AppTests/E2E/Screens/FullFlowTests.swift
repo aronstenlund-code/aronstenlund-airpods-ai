@@ -156,6 +156,12 @@ final class FullFlowTests: XCTestCase {
     /// Back to Start without relaunching (a relaunch is a new account in the Simulator, see above).
     private func goToStart() {
         for _ in 0..<6 {
+            // A109: "Vill du ha en påminnelse?" after the first finished exam (T30 tests it).
+            if find(["Vill du ha en påminnelse?"]) != nil, let notNow = find(["Inte nu"]), notNow.isHittable {
+                tapElement(notNow, "Inte nu (reminder question)", counted: false)
+                pause(1)
+                continue
+            }
             if atStart() { return }
             // Run 43656117870: after Publicera prov an alert "Publicerat." with Okej stays up and blocked everything.
             if app.alerts.firstMatch.exists {
@@ -172,6 +178,8 @@ final class FullFlowTests: XCTestCase {
                 back.tap(); testTaps += 1; pause(1); continue
             }
             if tap(["Avbryt", "Stäng", "Klar", "Cancel", "Done", "Prov"], "back to Start", counted: false, quiet: true) { pause(1); continue }
+            // Run 43782880704: Start had been paged sideways to Fler lägen.
+            if find(["FLER LÄGEN"]) != nil { app.swipeRight(); pause(1) }
             app.swipeDown(velocity: .fast)
             pause(1)
         }
@@ -221,9 +229,41 @@ final class FullFlowTests: XCTestCase {
         return true
     }
 
+    /// A110 (D198): Dela and Publicera prov are only there for a started exam. Start the next exam once and close the
+    /// player, as a user does before sharing it.
+    private func startOnce() {
+        goToStart()
+        guard waitEnabled(["Starta prov"], 20) else { return }
+        tap(["Starta prov"], "Starta prov (before Dela, A110)")
+        if wait(["Styr med dina AirPods"], 8) != nil {
+            for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
+            tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
+        }
+        if wait(["Avsluta"], 20) != nil { pause(4); tap(["Avsluta"], "Avsluta (after starting, A110)") }
+        pause(2)
+        goToStart()
+    }
+
+    /// A110 on the exam's own screen: when Dela is not there the exam is not started; start this one, close the player
+    /// and come back to its screen (run 43766804245: startOnce on Start had started the other exam).
+    private func startHereIfNeeded() {
+        guard find(["Dela"]) == nil, let start = find(["Starta prov"]), start.isHittable else { return }
+        tapElement(start, "Starta prov (on the exam's screen, A110)")
+        if wait(["Styr med dina AirPods"], 8) != nil {
+            for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
+            tap(["Starta ändå", "Starta prov"], "Starta on the control check", quiet: true)
+        }
+        if wait(["Avsluta"], 20) != nil { pause(4); tap(["Avsluta"], "Avsluta (A110)") }
+        pause(2)
+        if find(["Vill du ha en påminnelse?"]) != nil { tap(["Inte nu"], "Inte nu", counted: false, quiet: true) }
+        if find(["Dela"]) == nil { tap(["Frågor och svar"], "Frågor och svar (again)", quiet: true); pause(1) }
+    }
+
     private func share() -> Bool {
         goToStart()
         guard tap(["Frågor och svar"], "Frågor och svar") else { return false }
+        pause(1)
+        startHereIfNeeded()
         guard tap(["Dela"], "Dela") else { return false }
         pause(3)
         screen("dela", "Dela")
@@ -235,6 +275,8 @@ final class FullFlowTests: XCTestCase {
     private func publish() -> Bool {
         goToStart()
         guard tap(["Frågor och svar"], "Frågor och svar") else { return false }
+        pause(1)
+        startHereIfNeeded()
         guard tap(["Mer"], "Mer") else { return false }
         guard tap(["Publicera prov"], "Publicera prov in Mer") else { return false }
         pause(2)
@@ -486,7 +528,15 @@ final class FullFlowTests: XCTestCase {
 
     private func cleanUp() -> Bool {
         goToStart()
-        guard tap(["Frågor och svar"], "Frågor och svar") else { return false }
+        // Run 43782880704: once the exam has a date the Start card is NÄSTA PROV with "Ändra <title>", no Frågor och svar.
+        if !tap(["Frågor och svar"], "Frågor och svar", quiet: true) {
+            var edit = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Ändra '")).firstMatch
+            for _ in 0..<4 where edit.exists && !edit.isHittable { app.swipeUp(); edit = app.buttons.matching(NSPredicate(format: "label BEGINSWITH 'Ändra '")).firstMatch }
+            guard edit.exists, edit.isHittable else { return miss("Frågor och svar: neither it nor 'Ändra …' found on Start") }
+            tapElement(edit, "\(edit.label) (NÄSTA PROV card)")
+            pause(2)
+            if find(["Ta bort publiceringen", "Mer"]) == nil { _ = tap(["Frågor och svar"], "Frågor och svar (after Ändra)", quiet: true) }
+        }
         if tap(["Ta bort publiceringen"], "Ta bort publiceringen", quiet: true) || (tap(["Mer"], "Mer", quiet: true) && tap(["Ta bort publiceringen"], "Ta bort publiceringen", quiet: true)) {
             pause(1)
             if !confirmDestructive("Ta bort publiceringen") { note("Ta bort publiceringen: no confirmation button to tap") }

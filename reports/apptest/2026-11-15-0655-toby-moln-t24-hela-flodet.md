@@ -98,3 +98,10 @@ Grenen toby/t24c med main efter A106/A107 och Angela Fables V4.
   inom 40 s efter omstarten.
 - Kvar som förut: Dela visar inget delningsblad med Kopiera i simulatorn. Dagen "22 november" hittas inte i
   kalendern (testets sätt att leta).
+
+## Tillägg 2026-11-16 03:20: anpassad till A110, grön
+Körning 43787584924 (toby/t24d, 77d367c7) är grön i alla 13 delar, både fas a och b (**verifierat i Simulator**, inte på enhet). Två ändringar i testet:
+- Dela och Publicera finns bara på startade prov (A110), så testet startar provet på provets egen skärm först.
+- När provet har fått ett datum visar Start kortet "NÄSTA PROV" med knappen "Ändra …" i stället för "Frågor och svar". Städningen går nu den vägen, och testet tar sig tillbaka till Start från "Fler lägen".
+
+Körningens publicering togs bort. Den röda körningen 43782880704 lämnade kvar publiceringen 3afc21d0 (01:25 UTC) hos Central insamlingsenhet. Den tas bara bort på Arons ja. Testet ligger nu på main och körs i nattflödet.
