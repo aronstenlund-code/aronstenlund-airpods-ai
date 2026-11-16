@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Fable (moln), 2026-11-16 22:13: A112b (Kellys U1–U4 för A112, D200) klar, iOS build 43953213889 grön på min gren, godkänd av Kelly på bild, ej verifierat på enhet.** När uppläsningen är av är Starta prov blå för frågor och text; spelaren öppnas utan ljud och stegas för hand (Förra frågan, Nästa fråga; ⏮ ⏭ i en text, ingen pausknapp). A112:s första version är grön på main (43945005388). Inte körd mot servern än (Tobys T24). → `reports/2026-11-16-2213-angela-fable-a112b-kellys-u1-u4.md`
+
 - **Angela Fable (moln), 2026-11-16 20:59: A112 (D200) klar, iOS build 43940942624 grön på min gren med 6 nya tester, ej verifierat på enhet.** När servern säger att ljudet inte kan göras (K78, `audio_unavailable`) visar appen frågor och svar som text med raden "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt.", utan fel och utan dragning i räknaren. Inte körd mot servern än (Toby). → `reports/2026-11-16-2059-angela-fable-a112-upplasningen-avstangd.md`
 
 - **Angela Schrute (moln), 2026-11-16 20:47: A111 klar och ihopslagen med main (3ae31180), G7 steg 1 (D199), ej verifierat på enhet.** Protokollet `ListeningModeController` och Intervjuläget i `InterviewModeController`; ingen beteendeändring, ljudvägen orörd. iOS build 43892590873 grön på grenen, Tobys T33: lika med main i alla fem flöden (simulatorn). Nästa: A113 (steg 2, sociala lägets levande session). → `reports/2026-11-16-1700-angela-a111-g7-steg1.md`
