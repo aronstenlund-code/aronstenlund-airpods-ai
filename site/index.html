@@ -3,52 +3,34 @@
 <head>
 <script>
   // Byt namn här, och bara här. Sidan hämtar namnet från den här variabeln.
-  const APP_NAME = "Earmind"; // D128. Väckningsordet ”Lumen” står i citaten och byts bara om Aron säger det.
+  const APP_NAME = "EarMind"; // D128. Väckningsordet ”Lumen” står i citaten och byts bara om Aron säger det.
 </script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
-<title>Earmind: fråga högt, få svaret i örat. AI i dina AirPods</title>
-<meta name="description" content="Starta Earmind en gång, sen finns AI:n i dina hörlurar. Fråga högt och hör svaret i örat, i vardagen, i skolan och på jobbet. Plugga inför prov och bli förhörd. Prova direkt här.">
-<link rel="canonical" href="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
+<title>EarMind: plugga med AirPods utan att röra mobilen</title>
+<meta name="description" content="Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods. Du styr med tryck, utan mikrofon. Eller låt EarMind läsa upp texten.">
+<link rel="canonical" href="https://earmind.vercel.app/">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="sv_SE">
-<meta property="og:site_name" content="Earmind">
-<meta property="og:url" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/">
-<meta property="og:title" content="Fråga högt. Få svaret i örat.">
-<meta property="og:description" content="AI:n i dina AirPods, för vardagen, skolan och jobbet. Prova här, svaret läses upp.">
-<meta property="og:image" content="https://aronstenlund-code.github.io/aronstenlund-airpods-ai/og-earmind.png">
+<meta property="og:site_name" content="EarMind">
+<meta property="og:url" content="https://earmind.vercel.app/">
+<meta property="og:title" content="Kom förberedd till provet.">
+<meta property="og:description" content="Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods.">
+<meta property="og:image" content="https://earmind.vercel.app/og-earmind-v2.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Earmind. Fråga högt. Få svaret i örat. Elias, en påhittad elev, med en hörlur i örat.">
+<meta property="og:image:alt" content="EarMind. Fråga högt. Få svaret i örat. Elias, en påhittad elev, med en hörlur i örat.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F1218">
 <meta name="color-scheme" content="light dark">
-<link rel="preload" href="fonts/familjen-grotesk.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preconnect" href="https://xjczbzfkmbjdebwlccki.supabase.co" crossorigin>
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Hur kan jag plugga inför prov utan att titta på telefonen?", "acceptedAnswer": {"@type": "Answer", "text": "Säg vilket prov du har och sedan ”Lumen, förhör mig”. Earmind ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan."}}, {"@type": "Question", "name": "Kan jag bli förhörd inför ett prov?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer Earmind frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon."}}, {"@type": "Question", "name": "Funkar det för nationella provet och A-nivå?", "acceptedAnswer": {"@type": "Answer", "text": "Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok."}}, {"@type": "Question", "name": "Kan jag prova utan att ladda ner något?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns."}}]}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Hur kan jag plugga inför prov utan att titta på telefonen?", "acceptedAnswer": {"@type": "Answer", "text": "Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods. Tryck en gång för det långa svaret, två gånger för det korta och tre gånger för paus. Mikrofonen används inte."}}, {"@type": "Question", "name": "Kan EarMind läsa upp min text?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Välj Läs upp texten i Nytt prov, så läses materialet upp som en löpande text. Tryck en gång för att pausa, två gånger för nästa mening och tre gånger för förra meningen."}}, {"@type": "Question", "name": "Funkar det för nationella provet och A-nivå?", "acceptedAnswer": {"@type": "Answer", "text": "Frågorna och svaren görs av ditt eget material. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok. Du kan ändra varje svar innan du startar provet."}}, {"@type": "Question", "name": "Kan jag prova utan att ladda ner något?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, du kan prova de lyssnande lägena direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns."}}]}</script>
 <style>
-  /* Ke13: samma system som appen (docs/design/SYSTEM.md). Familjen Grotesk överallt, ingen handstil, inget rutpapper. */
-  @font-face {
-    font-family: "Familjen Grotesk";
-    src: url("fonts/familjen-grotesk.woff2") format("woff2");
-    font-weight: 400 700;
-    font-style: normal;
-    font-display: swap;
-  }
-
-  /* Reservtypsnitt med samma bredd, så att texten inte hoppar när webbtypsnitten laddas. */
-  @font-face {
-    font-family: "FG reserv";
-    src: local("Arial"), local("Helvetica Neue"), local("Helvetica"), local("Roboto");
-    size-adjust: 93.9%;
-    ascent-override: 109.2%;
-    descent-override: 24%;
-    line-gap-override: 0%;
-  }
+  /* Ke67 (D160): samma typsnitt som appen, systemets (SF Pro på iPhone och Mac). Inget webbtypsnitt laddas. */
 
   /* Ke13: tokens från SYSTEM.md. En accent, rött bara vid fel. Ljust och mörkt följer systemet. */
   :root {
@@ -103,7 +85,7 @@
     margin: 0;
     background: var(--bg);
     color: var(--ink);
-    font: 400 1.0625rem/1.5 "Familjen Grotesk", "FG reserv", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font: 400 1.0625rem/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
     font-synthesis: none;
     -webkit-font-smoothing: antialiased;
     overflow-wrap: break-word;
@@ -616,7 +598,7 @@
   .shot { display: block; width: 100%; max-width: 220px; height: auto; margin: 14px auto 0; border-radius: 18px; border: 1px solid var(--line); }
   .shot-note { margin-top: 10px; font-size: .875rem; color: var(--mut); }
   @media (min-width: 900px) {
-    .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .start { padding-bottom: 88px; }
     .more { padding-top: 72px; }
   }
@@ -631,6 +613,12 @@
     ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
   }
   ::view-transition-old(root), ::view-transition-new(root) { animation-duration: 180ms; }
+  /* Ke67: BETA-märket som i appen (repetition.md §4.4): grå kontur, versaler, ingen färg. */
+  .beta { display: inline-block; margin-left: 6px; padding: 1px 7px; border: 1px solid var(--mut); border-radius: 6px; color: var(--mut); font-size: .6875rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; vertical-align: .2em; }
+  h2 .beta { font-size: .75rem; }
+  @media (min-width: 1180px) { .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .pitch-cta { margin: 18px 0 0; }
+  .pitch-cta .pill { text-decoration: none; display: inline-flex; }
 </style>
 </head>
 <body data-view="idle">
@@ -644,22 +632,22 @@
 <main>
   <section class="hero wrap" aria-labelledby="hero-h">
     <div class="intro">
-      <h1 id="hero-h">Fråga högt. Få svaret i örat.</h1>
-      <!-- Ke26 (D121): vardagen, skolan och jobbet. Sant formulerat: Lumen lyssnar efter "Lumen" så länge den är
-           startad (även med låst skärm). Inget "hela dagen", eftersom batteriet inte är mätt. -->
-      <p class="pitch">AI:n i dina AirPods. För vardagen, skolan och jobbet.</p>
-      <p class="pitch-sub">Starta <span data-app></span> en gång, sen finns den i örat. Säg ”Lumen” så svarar den.</p>
+      <h1 id="hero-h">Kom förberedd till provet.</h1>
+      <!-- Ke67: samma ord som appens Hem (A86). Huvudläget är repetitionsläget, de lyssnande lägena är Beta. -->
+      <p class="pitch">Fota ditt material. <span data-app></span> gör frågor och svar och läser upp dem i dina AirPods.</p>
+      <p class="pitch-sub">Du styr med tryck på AirPods, utan mikrofon. Telefonen kan ligga i fickan.</p>
+      <p class="pitch-cta"><a class="pill" href="#kom-igang">Så fungerar det</a></p>
     </div>
 
     <div class="demo paper" id="demo" role="region" aria-label="Prova demon">
       <p class="demo-label">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2z"/></svg>
-        Prova här. Svaret läses upp.
+        <span>Prova Fler lägen här <span class="beta">Beta</span></span>
       </p>
       <!-- Ke29 (D124, D126): samma ord som appens Start. Standardläge är livedemon, Förhör mig är Provläget. -->
-      <div class="seg" role="group" aria-label="Två sätt att använda Earmind">
+      <div class="seg" role="group" aria-label="Två lyssnande lägen i EarMind">
         <button class="seg-b" id="m-ask" type="button" aria-pressed="true">Standardläge</button>
-        <button class="seg-b" id="m-quiz" type="button" aria-pressed="false">Förhör mig</button>
+        <button class="seg-b" id="m-quiz" type="button" aria-pressed="false">Förhör med rösten</button>
       </div>
       <p class="seg-line" id="segline"><span data-app></span> svarar när någon frågar.</p>
       <div class="quiz" id="quiz" hidden>
@@ -735,11 +723,25 @@
     </figure>
   </section>
 
+
+  <!-- Ke67: samma flöde och knappnamn som appen i dag (A106–A112). Bilder från appens skärmbildsscener. -->
+  <section class="start wrap" id="kom-igang" aria-labelledby="start-h">
+    <h2 id="start-h">Så fungerar det</h2>
+    <p class="lead">Fota, kolla svaren, tryck Starta prov. Sedan ligger telefonen i fickan.</p>
+    <ol class="steps">
+      <li class="paper"><h3>Nytt prov</h3><p>Fota sidorna eller lägg till text. Välj <b>Frågor</b>, eller <b>Läs upp texten</b> om du vill lyssna på materialet.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/rep-nytt-dark.webp"><img class="shot" src="img/rep-nytt-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Nytt prov i appen: provets namn, valet Frågor eller Läs upp texten, och Fota sidor, Välj bilder, Skriv text och Lägg till dokument."></picture></li>
+      <li class="paper"><h3>Kolla frågorna och svaren</h3><p>Varje fråga får ett kort och ett långt svar. Tryck på en fråga för att ändra den.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/rep-fragor-dark.webp"><img class="shot" src="img/rep-fragor-light.webp" width="300" height="652" loading="lazy" alt="Biologiprovet i appen: fem frågor med det korta svaret under varje fråga, Lägg till fråga och knappen Starta prov."></picture></li>
+      <li class="paper"><h3>Starta prov</h3><p>Frågorna läses upp i dina AirPods. Tryck en gång för det långa svaret, två gånger för det korta och tre gånger för paus.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/rep-spelar-dark.webp"><img class="shot" src="img/rep-spelar-light.webp" width="300" height="652" loading="lazy" alt="Uppspelningen i appen: frågan och svaret i text medan svaret läses upp, och raden med de tre trycken."></picture></li>
+      <li class="paper"><h3>Eller lyssna på texten</h3><p>Med Läs upp texten läses materialet upp mening för mening. Tryck en gång för att pausa, två för nästa mening och tre för förra.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/rep-las-dark.webp"><img class="shot" src="img/rep-las-light.webp" width="300" height="652" loading="lazy" alt="Läsläget i appen: texten med meningen som läses markerad, och knapparna förra meningen, paus och nästa mening."></picture></li>
+    </ol>
+    <p class="shot-note">Skärmbilder från en testversion av appen.</p>
+  </section>
+
   <!-- Ke29 (D125), Ke47: samma namn och fraser som Shared/capabilities.json (K44), som appen och servern läser.
        "Kommer snart" tas bort per rad när funktionen är provad på telefon (sajtens regel sedan Ke1). -->
   <section class="can wrap" id="kan" aria-labelledby="kan-h">
-    <h2 id="kan-h">Vad kan <span data-app></span>?</h2>
-    <p class="lead">Som Siri, fast den förstår vad du frågar och svarar direkt i dina AirPods. Säg ”Lumen” och vad du vill.</p>
+    <h2 id="kan-h">Fler lägen <span class="beta">Beta</span></h2>
+    <p class="lead">De här lägena lyssnar på vad du säger. De är i beta och blir bättre hela tiden. Starta prov använder aldrig mikrofonen.</p>
     <ul class="can-list">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg><div><h3>Förhör</h3><p>”Lumen, förhör mig på fotosyntes”</p></div></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><div><h3>Svar på frågor</h3><p>”Lumen, vad betyder ambivalent?”</p></div></li>
@@ -752,19 +754,6 @@
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><div><h3>Spotify <span class="soon">Kommer snart</span></h3><p>”Lumen, kör spellistan Plugg”</p></div></li>
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><div><h3>Sömn <span class="soon">Kommer snart</span></h3><p>Vad du sa i sömnen, på morgonen</p></div></li>
     </ul>
-    <p class="shot-note">Siri är ett varumärke som tillhör Apple Inc. <span data-app></span> är inte gjord av eller kopplad till Apple.</p>
-  </section>
-
-  <!-- Ke9: en enda väg. Demo ovanför, tre steg här, och en knapp (väntelistan) direkt efter. Samma ord som appen. -->
-  <section class="start wrap" id="kom-igang" aria-labelledby="start-h">
-    <h2 id="start-h">Så kommer du igång</h2>
-    <p class="lead">Tre steg. Sedan ligger telefonen i fickan och du pluggar med rösten.</p>
-    <ol class="steps">
-      <li class="paper"><h3>Tryck Testa nu och fråga högt</h3><p>Inget konto. Sätt i AirPods och fråga vad som helst. Svaret hörs i örat.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/fraga-dark.webp"><img class="shot" src="img/fraga-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Fråga vad som helst i appen: frågan Vad är fotosyntes? och svaret i ett kort, knappen Fortsätt och raden om att ljudet blir text och inte sparas av Earmind."></picture></li>
-      <li class="paper"><h3>Säg vilket prov du har</h3><p>Till exempel <span class="hand">”Jag har prov i biologi på fredag”</span>. Du kan också skriva det.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg1-dark.webp"><img class="shot" src="img/steg1-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Har du prov snart? i appen: säg till exempel Jag har prov i biologi på fredag, eller tryck Skriv i stället. Knappen Inte nu."></picture></li>
-      <li class="paper"><h3>Säg ”Lumen, förhör mig”</h3><p><span data-app></span> ställer frågor om det du pluggar och svarar på dina. Vill du bara ha svar, starta <span data-app></span> och fråga.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/steg3-dark.webp"><img class="shot" src="img/steg3-light.webp" width="300" height="652" loading="lazy" alt="Provläget för Biologiprovet med brickan Lyssnar: frågan Vad är fotosyntes? och svaret, och knapparna Pausa och Avsluta."></picture></li>
-    </ol>
-    <p class="shot-note">Skärmbilder från en testversion av appen.</p>
   </section>
 
   <section class="join" id="vantelista" aria-labelledby="join-h">
@@ -801,12 +790,12 @@
     <h2 id="more-h">Mer när du vill</h2>
     <div class="acc">
       <details>
-        <summary>Egna röstkommandon</summary>
+        <summary>Röstkommandon i Fler lägen</summary>
         <p>Säg det du vill. Under Inställningar › Röstkommandon väljer du själv fraserna för att byta läge och pausa. Under Egna kommandon sparar du egna nyckelord med en instruktion till <span data-app></span>.</p>
       </details>
       <details>
-        <summary>Lägg in ditt material i förväg</summary>
-        <p>Importera instuderingsmaterial som PDF eller textfil, och kursmål, under Förberedelser. <span data-app></span> känner igen dina ämnesord och svarar på kursens nivå.</p>
+        <summary>Dela och publicera prov</summary>
+        <p>När du har startat ett prov kan du dela det med klassen. Kompisarna får samma frågor, svar och ljud. Med Publicera prov kan alla som söker på din skola plugga på det.</p>
       </details>
       <details>
         <summary>Fler lägen</summary>
@@ -819,10 +808,10 @@
       <details>
         <summary>Vanliga frågor</summary>
         <dl class="faq">
-          <dt>Hur kan jag plugga inför prov utan att titta på telefonen?</dt><dd>Säg vilket prov du har och sedan ”Lumen, förhör mig”. Earmind ställer frågor om det du pluggar, och svaren läses upp i hörlurarna medan telefonen ligger i fickan.</dd>
-          <dt>Kan jag bli förhörd inför ett prov?</dt><dd>Ja. Tryck Förhör mig eller säg ”Lumen, förhör mig”, så ställer Earmind frågor om det du pluggar och svarar på dina. Prova med tre frågor i demon.</dd>
-          <dt>Funkar det för nationella provet och A-nivå?</dt><dd>Du kan fråga om det du pluggar. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok.</dd>
-          <dt>Kan jag prova utan att ladda ner något?</dt><dd>Ja, du kan prova demon direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns.</dd>
+          <dt>Hur kan jag plugga inför prov utan att titta på telefonen?</dt><dd>Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods. Tryck en gång för det långa svaret, två gånger för det korta och tre gånger för paus. Mikrofonen används inte.</dd>
+          <dt>Kan EarMind läsa upp min text?</dt><dd>Ja. Välj Läs upp texten i Nytt prov, så läses materialet upp som en löpande text. Tryck en gång för att pausa, två gånger för nästa mening och tre gånger för förra meningen.</dd>
+          <dt>Funkar det för nationella provet och A-nivå?</dt><dd>Frågorna och svaren görs av ditt eget material. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok. Du kan ändra varje svar innan du startar provet.</dd>
+          <dt>Kan jag prova utan att ladda ner något?</dt><dd>Ja, du kan prova de lyssnande lägena direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns.</dd>
         </dl>
       </details>
     </div>
