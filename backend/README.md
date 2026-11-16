@@ -415,6 +415,10 @@ All calls are `POST` with the user's JWT, like `/answer`.
    - A photo that never arrived gives 422 `material_missing` ("2 av 30 bilder kom inte fram. Ladda upp dem igen."). Upload those again with new URLs.
 - More than 10 photos are written out as text in parallel batches before the questions are made. Measured live: 30 photos to questions in 22.5 s, answers 12 s more.
 
+### Slut på ElevenLabs-krediter (K78, D200)
+
+The text always works and the user is never charged for audio that was not made. `save`/`start` when a real file failed for lack of credits within the last 10 minutes: nothing is sent to ElevenLabs, nothing is counted, the drill stays not started, and the reply adds `"audio_unavailable": true, "notice": {"code": "audio_unavailable", "message": "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt."}`. `get`/`status`: the same two fields when any of the drill's files failed that way, and the questions counted for them are given back once (`refunded_questions`, `drills.refunded`, rpc `refund_drill_quota`). When credits are back, `status` retries the failed files after 10 minutes and the next `start` makes the rest (a failed file is never counted again). Test with `x-earmind-test: unavailable` (a test sees only test files' fake failures).
+
 ### Repetitionsläget i Arons analys (K77, D197, D116)
 
 Every `save` of a question drill writes, for Aron's analysis, the new questions with their answers and every changed question or answer (before and after) to `qa_log` (mode `repetition`, persona `sparad`/`ändrad`). A text drill's text is never written (it is the material, B4), nor are photos, test accounts or imported copies. Numbers are masked as in qa-log. The rows are delivered and deleted with qa-log (`backend/webtest/qa.html`, "Hämtat"), 14 days at most.

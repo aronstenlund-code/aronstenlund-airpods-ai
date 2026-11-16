@@ -143,6 +143,15 @@ Deno.serve(withCors(withTestMode("drill",
         await db.rpc("bump_publication", { p_id: id, p_field: field });
       },
       pending: async () => (await db.select("drill_audio_files", "select=hash&status=in.(pending,working)&attempts=lt.3&limit=1")).length > 0,
+      // K78 (D200)
+      refundQuota: async (u, n) => {
+        await db.rpc("refund_drill_quota", { p_user: u, p_n: n });
+      },
+      recentUnavailable: async (since, test) =>
+        (await db.select("drill_audio_files", `select=hash&status=eq.failed&error=like.audio_unavailable*&voice_id=${test ? "eq" : "neq"}.${TEST_VOICE_ID}&done_at=gte.${encodeURIComponent(since)}&limit=1`)).length > 0,
+      setRefunded: async (id, n) => {
+        await db.updateWhere("drills", `id=eq.${encodeURIComponent(id)}`, { refunded: n });
+      },
       requeue: async (hashes) => {
         if (!hashes.length) return;
         await db.updateWhere("drill_audio_files", `status=eq.failed&hash=in.(${list(hashes)})`, { status: "pending", attempts: 0, error: null });

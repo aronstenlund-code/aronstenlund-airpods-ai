@@ -22,6 +22,7 @@ on:
           - k74-live.py
           - k76-read-image.py
           - k77-live.py
+          - k78-live.py
       args:
         description: "Arguments (optional)"
         required: false

@@ -79,6 +79,8 @@ export interface DrillRow {
   kind?: "questions" | "text";
   /** K71 (D190): when Starta prov (or an old app's save) queued the audio; null = text only, editable for free. */
   audio_started_at?: string | null;
+  /** K78 (D200): questions of this drill given back because their audio could not be made. */
+  refunded?: number | null;
   /** K72: the language a text drill is read in ("" or null = by the subject, as before; "sv"; "English" ...). */
   language?: string | null;
   /** K74: the voice text's rules version (1 = before K74, kept for old drills so their hashes stay; 2 = now). */
@@ -133,6 +135,12 @@ export interface AudioRow {
 export const AUDIO_UNAVAILABLE = "audio_unavailable";
 /** K62: files that failed because ElevenLabs had no credits are tried again after this long (when someone looks). */
 export const UNAVAILABLE_RETRY_MS = 10 * 60_000;
+/**
+ * K78 (D200): what the app shows when ElevenLabs has no credits. The questions and answers are text as usual; the
+ * user is never charged a question for audio that was not made, and the audio is made the next time once credits
+ * are back (Starta prov again, or status after UNAVAILABLE_RETRY_MS).
+ */
+export const AUDIO_UNAVAILABLE_NOTICE = { code: AUDIO_UNAVAILABLE, message: "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt." };
 
 export interface DrillDb {
   drill(id: string): Promise<DrillRow | null>;
@@ -168,6 +176,12 @@ export interface DrillDb {
   requeue(hashes: string[]): Promise<void>;
   /** K50: adds n generated questions when within the limit (n = 0 only reads); atomic in the database. */
   useQuota(userId: string, n: number): Promise<{ ok: boolean; used: number; lim: number }>;
+  /** K78 (D200): gives back n questions counted for audio that could not be made (never below 0). */
+  refundQuota?(userId: string, n: number): Promise<void>;
+  /** K78: a real file failed for lack of ElevenLabs credits since this time (then nothing new is sent now). */
+  recentUnavailable?(sinceIso: string, testVoice: boolean): Promise<boolean>;
+  /** K78: remember how many of a drill's questions were given back, so they are given back once. */
+  setRefunded?(drillId: string, n: number): Promise<void>;
   /** K64: which of these file hashes some question (drill_items) still uses. */
   referenced?(hashes: string[]): Promise<string[]>;
   /** K61 (D176): drill_settings (length_normal_max, length_longer_max, ...). */
@@ -783,16 +797,23 @@ export function createDrillHandler(deps: DrillDeps) {
     const have = new Set(existingAudio.map((a) => a.hash));
     // K55: a file that failed earlier is made again now (the text is wanted again); free, it was paid for nothing
     const failed = existingAudio.filter((a) => a.status === "failed").map((a) => a.hash);
-    if (queue && failed.length) await deps.db.requeue(failed);
     const fresh = [...files.values()].filter((f) => !have.has(f.hash));
     const newChars = fresh.reduce((n, f) => n + f.text.length, 0);
-    if (!queue) {
+    // K78 (D200): ElevenLabs has just said it has no credits: nothing is sent, nothing is counted, the drill stays as
+    // text (not started) and the app is told; the next Starta prov once credits are back makes the audio as usual
+    const out = queue && (fresh.length > 0 || failed.length > 0) && await creditsOut();
+    if (out) drill.audio_started_at = existing?.audio_started_at ?? null;
+    if (queue && !out && failed.length) await deps.db.requeue(failed);
+    if (!queue || out) {
       // K71 (D190): saved as text only; the audio (and the count) waits for Starta prov
       await deps.db.saveDrill(drill, !existing);
       await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
       await analyse(saveRows(kind, oldItems, rows));
       const saved = await deps.db.drill(drill.id);
-      return json({ ...(await view(saved ?? drill)), new_chars: 0, chars_on_start: newChars, generated_questions: 0 });
+      return json({
+        ...(await view(saved ?? drill)), new_chars: 0, chars_on_start: newChars, generated_questions: 0,
+        ...(out ? { audio_unavailable: true, notice: AUDIO_UNAVAILABLE_NOTICE } : {}),
+      });
     }
     if (newChars > 0) {
       const rl = await enforceLimits(deps.rateLimiter, "drill_tts", user.id, deps.charLimits, newChars);
@@ -845,6 +866,35 @@ export function createDrillHandler(deps: DrillDeps) {
     if (fresh.length || failed.length) await kick([...files.keys()]);
     const saved = await deps.db.drill(drill.id);
     return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated, ...(credited.size ? { already_counted: credited.size } : {}) });
+  }
+
+  /** K78: ElevenLabs has no credits right now (a real file failed for that within UNAVAILABLE_RETRY_MS). */
+  async function creditsOut(): Promise<boolean> {
+    // a test sees only the test voice's fake failures (x-earmind-test: unavailable), real traffic only real ones
+    const test = !!currentTest()?.test;
+    if (!deps.db.recentUnavailable) return false;
+    return await deps.db.recentUnavailable(new Date(now() - UNAVAILABLE_RETRY_MS).toISOString(), test).catch(() => false);
+  }
+
+  /**
+   * K78 (D200): questions counted at start whose audio then failed for lack of credits are given back, once per
+   * question (drills.refunded). Their files are made again later for free (a failed file is never counted again).
+   */
+  async function refundUnavailable(d: DrillRow, userId: string) {
+    if (!deps.db.refundQuota || !deps.db.setRefunded || (d.shared_from ?? null)) return 0;
+    const its = await deps.db.items([d.id]);
+    const audio = new Map((await deps.db.audio([...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))])).map((a) => [a.hash, a]));
+    const bad = (h: string) => { const a = audio.get(h); return a?.status === "failed" && (a.error ?? "").startsWith(AUDIO_UNAVAILABLE); };
+    const isText = (d.kind ?? "questions") === "text";
+    const perQ = isText ? Number((await deps.db.settings?.().catch(() => null))?.text_chars_per_question) || 800 : 1;
+    const unavailable = isText
+      ? countsAs(its.filter((i) => bad(i.long_hash)).reduce((n, i) => n + (audio.get(i.long_hash)?.text.length ?? 0), 0), perQ)
+      : its.filter((i) => bad(i.question_hash) || bad(i.long_hash)).length;
+    const back = unavailable - (d.refunded ?? 0);
+    if (back <= 0) return 0;
+    await deps.db.refundQuota(userId, back);
+    await deps.db.setRefunded(d.id, unavailable);
+    return back;
   }
 
   /** K77: to Aron's analysis (D197); a test account never, and a failure never stops the save. */
@@ -930,7 +980,10 @@ export function createDrillHandler(deps: DrillDeps) {
           if (again.length) await deps.db.requeue(again);
           if (again.length || v.audio.done + v.audio.failed < v.audio.total) await kick(hs);
         }
-        return json(v);
+        // K78 (D200): never charged for audio that was not made; the app shows the text with the notice
+        const refunded = await refundUnavailable(d, user.id).catch(() => 0);
+        const unavailable = v.items.some((i) => Object.values(i.audio as unknown as Record<string, { error?: string } | undefined>).some((f) => f?.error === AUDIO_UNAVAILABLE));
+        return json({ ...v, ...(unavailable ? { audio_unavailable: true, notice: AUDIO_UNAVAILABLE_NOTICE } : {}), ...(refunded ? { refunded_questions: refunded } : {}) });
       }
       if (action === "share") {
         const d = await owned(user.id, b?.id);

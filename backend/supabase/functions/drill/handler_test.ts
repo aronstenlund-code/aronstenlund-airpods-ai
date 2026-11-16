@@ -7,6 +7,7 @@ import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoi
 
 function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: number; busy?: number; outOfCredits?: boolean } = {}) {
   let busy = opts.busy ?? 0;
+  let out = !!opts.outOfCredits; // K78: credits can come back
   const quota = new Map<string, number>();
   const credits = new Set<string>(); // K61 (D177): "user|question key" counted in /help try
   const models: string[] = [];
@@ -112,6 +113,18 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       }
       return Promise.resolve();
     },
+    // K78 (D200)
+    refundQuota: (u: string, n: number) => {
+      quota.set(u, Math.max(0, (quota.get(u) ?? 0) - n));
+      return Promise.resolve();
+    },
+    recentUnavailable: (since: string, test: boolean) =>
+      Promise.resolve([...audio.values()].some((a) => a.status === "failed" && (a.error ?? "").startsWith("audio_unavailable") &&
+        (a.voice_id === TEST_VOICE_ID) === test && (a.done_at ?? "") >= since)),
+    setRefunded: (id: string, n: number) => {
+      drills.get(id)!.refunded = n;
+      return Promise.resolve();
+    },
     useQuota: (u: string, n: number) => {
       const used = quota.get(u) ?? 0, lim = opts.freeQuestions ?? 30;
       if (n > 0 && used + n > lim) return Promise.resolve({ ok: false, used, lim });
@@ -152,7 +165,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       },
       synth: opts.noSynth ? null : {
         speak: (text, model) => {
-          if (opts.outOfCredits) return Promise.reject(new Error('elevenlabs 401: {"detail":{"code":"quota_exceeded"}}'));
+          if (out) return Promise.reject(new Error('elevenlabs 401: {"detail":{"code":"quota_exceeded"}}'));
           if (busy > 0) {
             busy--;
             return Promise.reject(new Error("elevenlabs 429: concurrent_limit_exceeded"));
@@ -173,7 +186,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       usdPer1kChars: 0.08,
       charLimits: { perMinute: 1e9, perDay: opts.perDay ?? 1e9, globalPerDay: 1e9 },
     });
-  return { h, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, logged, setBusy: (n: number) => (busy = n) };
+  return { h, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, logged, setBusy: (n: number) => (busy = n), setOut: (v: boolean) => (out = v) };
 }
 const CUE = "Tryck en gång för svaret.";
 const post = (b: unknown) => new Request("http://x/drill", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
@@ -802,4 +815,57 @@ Deno.test("K77 numbers are masked as in qa-log", async () => {
   const { saveRows } = await import("./analysis.ts");
   const r = saveRows("questions", [], [{ question: "Vad är mitt personnummer?", short: "Det är 19990101-1234.", long: "Det är 19990101-1234." }]);
   assert(r[0].answer.includes("[personnummer]") && !r[0].answer.includes("1234"));
+});
+
+// ---------- K78 (D200): out of ElevenLabs credits costs the user nothing ----------
+Deno.test("K78 credits run out during the audio: the questions are given back once, the app gets the code with the text", async () => {
+  const w = world({ outOfCredits: true, freeQuestions: 15 });
+  const s = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals(w.quota.get("u1"), 2, "counted at start, before ElevenLabs said no");
+  const st = await (await w.h("u1")(post({ action: "status", id: s.drill.id }))).json();
+  assertEquals(st.audio_unavailable, true);
+  assertEquals(st.notice, { code: "audio_unavailable", message: "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt." });
+  assertEquals(st.refunded_questions, 2);
+  assertEquals(w.quota.get("u1"), 0, "nothing paid for audio that was not made");
+  assertEquals(st.items[0].question, ITEMS[0].question, "the text is there as usual");
+  assertEquals(st.items[0].long, ITEMS[0].long);
+  const again = await (await w.h("u1")(post({ action: "status", id: s.drill.id }))).json();
+  assertEquals(again.refunded_questions, undefined, "given back once");
+  assertEquals(w.quota.get("u1"), 0);
+});
+
+Deno.test("K78 known out of credits: Starta prov sends nothing, counts nothing, the drill stays text; credits back: made as usual", async () => {
+  const w = world({ outOfCredits: true, freeQuestions: 15 });
+  await w.h("u9")(post({ action: "save", items: [{ question: "Varför regnar det?", short: "Moln.", long: "Moln. Mer." }] })); // a real failure now
+  const calls = w.spoken.length;
+  const d = await (await w.h("u1")(post({ action: "save", defer_audio: true, items: ITEMS }))).json();
+  const st = await (await w.h("u1")(post({ action: "start", id: d.drill.id }))).json();
+  assertEquals(st.audio_unavailable, true);
+  assertEquals(st.notice.code, "audio_unavailable");
+  assertEquals(st.generated_questions, 0);
+  assertEquals(st.drill.audio_started, false, "still not started: the next Starta prov makes the audio");
+  assertEquals(w.quota.get("u1") ?? 0, 0);
+  assertEquals(w.spoken.length, calls, "no call to ElevenLabs while it is known to be out");
+  assertEquals(st.items.length, 2);
+  // credits back, and the last failure is older than UNAVAILABLE_RETRY_MS
+  w.setOut(false);
+  for (const a of w.audio.values()) if (a.status === "failed") a.done_at = "2026-11-13T11:00:00Z";
+  const ok = await (await w.h("u1")(post({ action: "start", id: d.drill.id }))).json();
+  assertEquals(ok.audio_unavailable, undefined);
+  assertEquals(ok.generated_questions, 2);
+  assertEquals(ok.audio.done, ok.audio.total);
+});
+
+Deno.test("K78 a test account's fake out-of-credits stays among test files (D180): real traffic is not blocked by it", async () => {
+  const w = world();
+  await runWithTest({ test: true, reason: "header", userId: "t1", mode: "unavailable" }, async () => {
+    await w.h("t1")(post({ action: "save", items: ITEMS }));
+  });
+  const r = await (await w.h("u1")(post({ action: "save", items: [ITEMS[0]] }))).json();
+  assertEquals(r.audio_unavailable, undefined);
+  assertEquals(r.generated_questions, 1);
+  const t2 = await runWithTest({ test: true, reason: "header", userId: "t2" }, async () =>
+    await (await w.h("t2")(post({ action: "save", items: [{ question: "Vad är is?", short: "Fruset vatten.", long: "Fruset vatten." }] }))).json());
+  assertEquals(t2.audio_unavailable, true, "the next test save sees the test's fake failure");
+  assertEquals(t2.generated_questions, 0);
 });
