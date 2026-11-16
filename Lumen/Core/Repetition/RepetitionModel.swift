@@ -286,7 +286,18 @@ final class RepetitionModel {
                 let account = await cloud.accountID()
                 for entry in remote where !store.drills.contains(where: { $0.serverID == entry.id }) {
                     if let view = try? await cloud.status(id: entry.id) {
+                        // Toby T27/T31: the save's reply may have come while we waited.
+                        guard !store.drills.contains(where: { $0.serverID == entry.id }) else { continue }
                         var drill = Drill.from(view)
+                        if var twin = Self.unsavedTwin(of: drill, in: store.drills) {
+                            // The phone's own exam, saved on the server before its reply came back (a ChatGPT import
+                            // left after ~3 s, or the app closed meanwhile): the same exam, not another phone's.
+                            twin.serverID = entry.id
+                            twin.ownerID = account
+                            twin.needsUpload = true // sent again with the id: an update, never a second exam
+                            store.save(twin)
+                            continue
+                        }
                         drill.ownerID = account
                         store.save(drill)
                     }
@@ -307,6 +318,22 @@ final class RepetitionModel {
         }
         for drill in store.drills where !audio.hasAllSound(drill) || drill.needsUpload == true { prepareAudio(drill) }
         await reschedulePracticeReminders() // A108: the week ahead, today only if not practised
+    }
+
+    /// Toby T27/T31: the phone's exam that the server already has but the phone does not know it has (no server id
+    /// yet): the same kind, and the same questions and answers in the same order.
+    nonisolated static func unsavedTwin(of remote: Drill, in drills: [Drill]) -> Drill? {
+        drills.first { local in
+            local.serverID == nil && local.isText == remote.isText && local.items.count == remote.items.count
+                && !local.items.isEmpty && zip(local.items, remote.items).allSatisfy { mine, theirs in
+                    // The server cleans whitespace; the words decide.
+                    plain(mine.question) == plain(theirs.question) && plain(mine.long) == plain(theirs.long)
+                }
+        }
+    }
+
+    nonisolated private static func plain(_ text: String) -> String {
+        text.lowercased().split(whereSeparator: \.isWhitespace).joined(separator: " ")
     }
 
     enum ListDecision: Equatable { case stamp(UUID), delete(UUID), keepOtherAccount(UUID) }

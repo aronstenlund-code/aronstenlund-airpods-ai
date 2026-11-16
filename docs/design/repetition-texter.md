@@ -279,6 +279,16 @@ Påminnelsen säger vad det kostar i tid och öppnar senaste provet, inget mer. 
 | Fotnot | Högst en gång om dagen, och bara de dagar du inte har pluggat. |
 | Fotnot när iOS notiser är av | Notiser är avstängda för EarMind. · knapp: Öppna Inställningar |
 
+**Inställningar efter D198 (ett avsnitt, A110)**
+| Ställe | Text |
+|---|---|
+| Avsnittets rubrik | Påminnelser |
+| Rad 1 (reglage) | Påminn mig att plugga |
+| Rad 2 (när rad 1 är på) | Tid · {18:00} |
+| Rad 3 (reglage) | Studieplan i Fler lägen · *underrad:* Dagar kvar till provet och 5 snabba frågor |
+| Rad 4 (när rad 3 är på) | Tid · {16:00} |
+| Fotnot | Varje påminnelse kommer högst en gång om dagen, och inte de dagar du redan har pluggat. |
+
 **Påminnelsen själv** (en av tre, i den här ordningen; öppnar senaste provet)
 | Fall | Titel | Text |
 |---|---|---|

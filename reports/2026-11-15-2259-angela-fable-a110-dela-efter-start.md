@@ -46,3 +46,21 @@ avsnitt ska gå att skilja åt. Kelly får ändra dem.
 
 ## Nästa session
 Läs Kellys och Tobys svar. Bygget på main efter pushen står på tavlan.
+
+## Tillägg 2026-11-15 23:20: Kellys granskning och ord
+**Inte provat på telefon. Inga ElevenLabs-tester.**
+- Kelly godkände A110 (`reports/2026-11-15-2300-kelly-granskning-a110.md`) och gav orden för avsnittet Påminnelser
+  (`docs/design/repetition-texter.md` §14). Mina tre egna ordval är ersatta med hennes:
+  - rad 3: **Studieplan i Fler lägen**, underrad "Dagar kvar till provet och 5 snabba frågor";
+  - rad 4: **Tid**;
+  - fotnoten: "Varje påminnelse kommer högst en gång om dagen, och inte de dagar du redan har pluggat."
+- **iOS build 43766869309 grön** (min gren, 223000e, med orden). *Verifierat i CI.* **Inte sedd på bild** efter
+  ordbytet; Kelly behöver ingen ny bild när texten är exakt hennes.
+- Toby har anpassat T24 (startar provet före Dela och Publicera, körning 43766804245) och T30 hittar reglaget som förut.
+
+## Tillägg 2026-11-16 00:05: grönt på main
+- **iOS build 43768776996 grön på main** (ad9d90a, A110 med Kellys ord). *Verifierat i CI.*
+- Tobys T28 (läsläget, A106) är grön utan fynd i appen (`reports/apptest/2026-11-15-2215-toby-moln-t28-klar.md`):
+  paus, nästa och förra mening, tryck på en mening, platsen efter Avsluta och omstart utan nät. *Simulatorn, inte enhet.*
+- Tobys T24 med den nya ordningen (starta provet före Dela och Publicera, `toby/t24d`, körning 43766804245) är inte
+  rapporterad än.

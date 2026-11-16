@@ -90,8 +90,8 @@ struct PracticeReminderSection<Other: View>: View {
     /// The screenshots: iOS has said no to notifications.
     var stagedDenied: Bool? = nil
     /// A110 (D198): one section "Påminnelser" in Inställningar. The listening modes' older reminder (the study plan)
-    /// is the rows after this one, with its own line in the footer; no setting is removed.
-    var otherFooter: String? = nil
+    /// is the rows after this one, and the footer is one sentence for both (Kelly); no setting is removed.
+    var mergedFooter: String? = nil
     @ViewBuilder var other: () -> Other
     @AppStorage(LumenNotifications.practiceEnabledKey) private var isOn = true
     @AppStorage(LumenNotifications.practiceTimeKey) private var minutes = LumenNotifications.practiceHour * 60
@@ -131,9 +131,12 @@ struct PracticeReminderSection<Other: View>: View {
             Text("Påminnelser")
         } footer: {
             VStack(alignment: .leading, spacing: 4) {
-                Text(isOn && isDenied ? "Notiser är avstängda för EarMind."
-                                      : "Högst en gång om dagen, och bara de dagar du inte har pluggat.")
-                if let otherFooter { Text(verbatim: otherFooter) }
+                if isOn && isDenied { Text("Notiser är avstängda för EarMind.") }
+                if let mergedFooter {
+                    Text(verbatim: mergedFooter)
+                } else if !(isOn && isDenied) {
+                    Text("Högst en gång om dagen, och bara de dagar du inte har pluggat.")
+                }
             }
         }
         .task { await readStatus() }
@@ -148,6 +151,6 @@ struct PracticeReminderSection<Other: View>: View {
 extension PracticeReminderSection where Other == EmptyView {
     /// The practice reminder alone (the screenshots, and an app without the listening modes' reminder).
     init(model: RepetitionModel, stagedDenied: Bool? = nil) {
-        self.init(model: model, stagedDenied: stagedDenied, otherFooter: nil) { EmptyView() }
+        self.init(model: model, stagedDenied: stagedDenied, mergedFooter: nil) { EmptyView() }
     }
 }
