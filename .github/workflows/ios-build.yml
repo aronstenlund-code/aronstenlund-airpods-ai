@@ -22,6 +22,13 @@ on:
       - ".github/workflows/credits-ready.yml"
       - ".github/workflows/audio-eval.yml"
       - ".github/workflows/oscar-ab-audio.yml"
+      # Deangelo 2026-11-16: live-test and check workflows of Kevin, Oscar and Kelly cancelled six app builds in a row
+      # (A112b never got a green build on main). They never change the app.
+      - ".github/workflows/kevin-*.yml"
+      - ".github/workflows/oscar-*.yml"
+      - ".github/workflows/kelly-*.yml"
+      - ".github/workflows/storage-report.yml"
+      - ".github/workflows/testmode-check.yml"
       - "AppTests/**"
       - ".github/workflows/apptest-*.yml"
       - "**/*.md"
@@ -45,6 +52,13 @@ on:
       - ".github/workflows/credits-ready.yml"
       - ".github/workflows/audio-eval.yml"
       - ".github/workflows/oscar-ab-audio.yml"
+      # Deangelo 2026-11-16: live-test and check workflows of Kevin, Oscar and Kelly cancelled six app builds in a row
+      # (A112b never got a green build on main). They never change the app.
+      - ".github/workflows/kevin-*.yml"
+      - ".github/workflows/oscar-*.yml"
+      - ".github/workflows/kelly-*.yml"
+      - ".github/workflows/storage-report.yml"
+      - ".github/workflows/testmode-check.yml"
       - "AppTests/**"
       - ".github/workflows/apptest-*.yml"
       - "**/*.md"
