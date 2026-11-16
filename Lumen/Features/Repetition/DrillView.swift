@@ -392,9 +392,9 @@ struct DrillView: View {
                 ProgressView(value: Double(p.ready), total: Double(max(p.total, 1)))
                     .padding(.top, 6)
             }
-            if let problem = model.audio.problem(for: drill) {
-                // A112: the calm line is information, not a warning, so it is as quiet as the facts.
-                Text(verbatim: problem).foregroundStyle(model.isReadingAloudOff(drill) ? Color.secondary : Color.primary)
+            // A112 (D200): the calm line stands once, under the button (not here too); another problem is said here.
+            if let problem = model.audio.problem(for: drill), !model.isReadingAloudOff(drill) {
+                Text(verbatim: problem).foregroundStyle(.primary)
             }
         }
         .font(.footnote)

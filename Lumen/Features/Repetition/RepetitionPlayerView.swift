@@ -220,11 +220,18 @@ struct RepetitionPlayerView: View {
                     .multilineTextAlignment(.center)
                     .lineLimit(8)
             } else if case .waitingForAudio = player.phase, let item, model.isReadingAloudOff(drill) {
-                // A112 (D200): reading aloud is off for now, so the answer is here as text.
-                Text(verbatim: item.shownLong)
-                    .font(compact ? .body : .title3)
-                    .multilineTextAlignment(.center)
-                    .fixedSize(horizontal: false, vertical: !compact)
+                // A112 (D200): reading aloud is off for now, so the answer is here as text. With the largest text it
+                // scrolls in the room it has (it was cut off after two lines on iPhone SE).
+                if compact {
+                    ScrollView {
+                        Text(verbatim: item.shownLong).multilineTextAlignment(.center).frame(maxWidth: .infinity)
+                    }
+                } else {
+                    Text(verbatim: item.shownLong)
+                        .font(.title3)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
     }
