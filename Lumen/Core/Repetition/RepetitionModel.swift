@@ -272,8 +272,17 @@ final class RepetitionModel {
 
     func prepareAudio(_ drill: Drill) {
         let audio = self.audio
-        Task { await audio.prepare(drill) }
+        Task {
+            let before = (audio as? CloudDrillAudio)?.refunds
+            await audio.prepare(drill)
+            // A112 (K78, D200): questions counted for sound that was never made came back.
+            if let before, (audio as? CloudDrillAudio)?.refunds != before { await refreshQuota() }
+        }
     }
+
+    /// A112 (D200): the voice service is out, so this exam is text for now ("Uppläsningen är tillfälligt avstängd.
+    /// Texten fungerar som vanligt."). Not an error: nothing is counted and the sound comes when the credits are back.
+    func isReadingAloudOff(_ drill: Drill) -> Bool { audio.problem(for: drill) == CloudDrillAudio.unavailableLine }
 
     /// On opening: the exams of this account on the server (R5: another phone), then the sound of every exam that is
     /// not ready.

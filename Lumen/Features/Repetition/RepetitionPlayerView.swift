@@ -219,6 +219,12 @@ struct RepetitionPlayerView: View {
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .lineLimit(8)
+            } else if case .waitingForAudio = player.phase, let item, model.isReadingAloudOff(drill) {
+                // A112 (D200): reading aloud is off for now, so the answer is here as text.
+                Text(verbatim: item.shownLong)
+                    .font(compact ? .body : .title3)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: !compact)
             }
         }
     }
@@ -261,8 +267,10 @@ struct RepetitionPlayerView: View {
             case .waitingForAudio:
                 if let soundProblem {
                     // A100 (K62): no spinner that never ends when the sound cannot be made; Avsluta is below.
+                    // A112 (D200): the calm line is quiet; another problem with the sound stays a headline.
                     Text(verbatim: soundProblem)
-                        .font(.headline)
+                        .font(session.drill.map(model.isReadingAloudOff) == true ? .subheadline : .headline)
+                        .foregroundStyle(session.drill.map(model.isReadingAloudOff) == true ? Color.secondary : Color.primary)
                         .multilineTextAlignment(.center)
                         .fixedSize(horizontal: false, vertical: true)
                 } else {
