@@ -54,7 +54,7 @@ export function createFetchUrlHandler(deps: FetchUrlDeps) {
       try {
         url = checkUrl(raw, deps.ownHosts);
         for (let hop = 0; ; hop++) {
-          await checkResolved(url, deps.resolve);
+          await checkResolved(url, deps.resolve, deadline);
           res = await fetchFn(url.toString(), {
             redirect: "manual",
             signal: deadline,

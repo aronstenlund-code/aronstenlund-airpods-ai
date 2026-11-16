@@ -59,6 +59,13 @@ export function privateV6(g: number[]): boolean {
     return privateV4([g[6] >> 8, g[6] & 255, g[7] >> 8, g[7] & 255]);
   }
   if (g[0] === 0x64 && g[1] === 0xff9b) return privateV4([g[6] >> 8, g[6] & 255, g[7] >> 8, g[7] & 255]); // NAT64
+  // K84 (Oscar O73): IPv4-translated ::ffff:0:a.b.c.d (::ffff:0:0/96) judged by its IPv4 address
+  if (g.slice(0, 4).every((x) => x === 0) && g[4] === 0xffff && g[5] === 0) return privateV4([g[6] >> 8, g[6] & 255, g[7] >> 8, g[7] & 255]);
+  // 6to4 (2002::/16) carries an IPv4 address in groups 1-2
+  if (g[0] === 0x2002) return privateV4([g[1] >> 8, g[1] & 255, g[2] >> 8, g[2] & 255]);
+  // Teredo (2001::/32) and the discard prefix 100::/64 are never a school's web page
+  if (g[0] === 0x2001 && g[1] === 0) return true;
+  if (g[0] === 0x100 && g[1] === 0 && g[2] === 0 && g[3] === 0) return true;
   return (g[0] & 0xfe00) === 0xfc00 || // unique local fc00::/7
     (g[0] & 0xffc0) === 0xfe80 || // link-local
     (g[0] & 0xff00) === 0xff00 || // multicast
@@ -101,15 +108,15 @@ export function checkUrl(raw: string, ownHosts: string[] = []): URL {
   return u;
 }
 
-export type Resolver = (host: string) => Promise<string[]>;
+export type Resolver = (host: string, signal?: AbortSignal) => Promise<string[]>;
 
 /** Every address the host resolves to must be public (a literal IP was checked in checkUrl). */
-export async function checkResolved(u: URL, resolve: Resolver): Promise<void> {
+export async function checkResolved(u: URL, resolve: Resolver, signal?: AbortSignal): Promise<void> {
   const host = u.hostname.replace(/^\[|\]$/g, "");
   if (publicIp(host) !== null) return;
   let ips: string[];
   try {
-    ips = await resolve(host);
+    ips = await resolve(host, signal);
   } catch {
     throw new BlockedUrl("dns_failed");
   }
@@ -119,12 +126,13 @@ export async function checkResolved(u: URL, resolve: Resolver): Promise<void> {
 
 /** DNS over HTTPS (Cloudflare's JSON API): A and AAAA records. Deno.resolveDns is not in every runtime. */
 export function dohResolver(fetchFn: typeof fetch = fetch): Resolver {
-  return async (host) => {
+  return async (host, signal) => {
     const out: string[] = [];
     for (const type of ["A", "AAAA"]) {
       const r = await fetchFn(`https://cloudflare-dns.com/dns-query?name=${encodeURIComponent(host)}&type=${type}`, {
         headers: { accept: "application/dns-json" },
-        signal: AbortSignal.timeout(3000),
+        // K84: inside the whole request's 10 s (the deadline), at most 3 s each
+        signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(3000)]) : AbortSignal.timeout(3000),
       });
       if (!r.ok) throw new Error(`doh ${r.status}`);
       const j = await r.json() as { Answer?: { type: number; data: string }[] };

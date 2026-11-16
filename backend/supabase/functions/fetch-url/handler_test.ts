@@ -35,7 +35,10 @@ Deno.test("K81 SSRF: only public http/https on default ports; internal names and
     ["http://localhost/", "internal_name"], ["http://intranet/", "internal_name"], ["http://db.internal/", "internal_name"],
     ["http://metadata.google.internal/", "internal_name"], ["http://printer.local/", "internal_name"],
     ["http://example.com:22/", "port"], ["https://example.com:8443/", "port"], ["http://user:pw@example.com/", "userinfo"],
-    ["https://abc.supabase.co/rest/v1/", "own_host"], ["not a url", "invalid_url"],
+    ["https://abc.supabase.co/rest/v1/", "own_host"],
+    // K84 (Oscar O73): an IPv4 address inside IPv6 (translated, 6to4), Teredo and the discard prefix
+    ["http://[::ffff:0:7f00:1]/", "private_address"], ["http://[2002:7f00:1::]/", "private_address"], ["http://[2002:a9fe:a9fe::]/", "private_address"],
+    ["http://[2001:0:4136:e378::1]/", "private_address"], ["http://[100::1]/", "private_address"], ["not a url", "invalid_url"],
   ];
   for (const [u, reason] of blocked) {
     const e = assertThrows(() => checkUrl(u, ["supabase.co"]), BlockedUrl, undefined, u);
@@ -45,6 +48,7 @@ Deno.test("K81 SSRF: only public http/https on default ports; internal names and
   assertEquals(checkUrl("http://93.184.216.34/").hostname, "93.184.216.34");
   assertEquals(publicIp("8.8.8.8"), true);
   assertEquals(publicIp("2606:4700::1111"), true);
+  assertEquals(publicIp("2002:5db8:d822::1"), true, "6to4 of a public IPv4 is public");
 });
 
 function setup(pages: Record<string, () => Response>, dns: Record<string, string[]> = {}) {

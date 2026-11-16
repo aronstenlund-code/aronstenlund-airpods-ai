@@ -277,6 +277,28 @@ import Testing
         #expect(rig.activity.lastState?.suggestions == ["Bästa"], "still on the Lock Screen")
     }
 
+    /// D199 step 2 (A113): the live session is `LiveModeController`, shared by Socialt läge and Rizzläge; the views
+    /// still read it through `model.rizz`.
+    @Test func theLiveSessionIsItsOwnController() async {
+        let rig = makeRig(events: [], microphone: .iPhone)
+        #expect(rig.model.liveMode.host === rig.model)
+        #expect(rig.model.socialMode.mode == .social)
+        #expect(rig.model.socialMode.spokenKeyterms == ["rizz", "cringe", "flirtig", "flirtigare"])
+        let ahead = rig.model.socialMode.aheadRequest(for: "Vad gör du i helgen?")
+        #expect(ahead == nil, "a live mode answers ahead with a suggestion")
+        #expect(!rig.model.liveMode.isActive && rig.model.rizz == nil)
+
+        await rig.model.startHandsFree(.social)
+        #expect(rig.model.liveMode.isActive)
+        #expect(rig.model.rizz == rig.model.liveMode.session)
+        rig.model.answerSuggestions(["Bästa", "Andra"])
+        #expect(rig.model.liveMode.session?.suggestions == ["Bästa"], "D72: one suggestion, through the controller")
+        #expect(!rig.model.liveMode.isInstructing)
+
+        await rig.model.stopListening()
+        #expect(!rig.model.liveMode.isActive && rig.model.rizz == nil)
+    }
+
     @Test func nextAsksForAFreshSuggestion() async {
         let rig = makeRig(events: [], microphone: .iPhone)
         await rig.model.startHandsFree(.social)
