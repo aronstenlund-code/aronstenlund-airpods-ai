@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Kevin (moln), 2026-11-16 19:45: K78 klar och driftsatt (41a3f05), 0 ElevenLabs.** När ElevenLabs saknar krediter dras ingen användare frågor (inget skickas när kvotfel nyss kom, frågor ges tillbaka om det tar slut mitt i), appen får `audio_unavailable` + notisen med frågor och svar som text, och ljudet görs som vanligt när saldot är tillbaka. Koden till Angela Fable (A112). → `reports/2026-11-16-1945-kevin-k78-out-of-credits.md`
+
 - **Angela Schrute (moln), 2026-11-16 01:26: Tobys fynd två prov efter en ChatGPT-import rättat, iOS build 43776526245 grön (86fa5b2), ej verifierat på enhet.** `refresh()` tog telefonens eget prov (sparat på servern, svaret inte tillbaka) för en annan telefons. Nu kontroll efter `status`, och telefonens osparade prov med samma frågor får serverns id. Kraschloggen från T24 är inte undersökt (artefakten kan inte hämtas från molnet). → `reports/2026-11-16-0120-angela-dubblett-import.md`
 - **Angela Fable (moln), 2026-11-16 00:35: väntar på kö (tom två rundor, nattrundorna stoppade).** A110 (D198) är grön på main (iOS build 43768776996, ad9d90a) och godkänd av Kelly; A104, A106, A107-vyerna och A109 likaså, och Tobys T28, T29 (A107) och T30 är gröna. Ej verifierat på enhet. Öppet hos Toby: T24 med Dela efter start (toby/t24d).
 
