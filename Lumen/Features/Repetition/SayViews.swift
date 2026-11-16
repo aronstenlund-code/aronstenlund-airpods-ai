@@ -109,7 +109,7 @@ struct SayInAirPodsField: View {
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             HStack(alignment: .top, spacing: 8) { // the empty field keeps three rows: the mark stands at the first
                 Text(verbatim: "›").foregroundStyle(SayText.accent).accessibilityHidden(true)
-                TextField("", text: $text, prompt: Text("Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(0.45)),
+                TextField("", text: $text, prompt: Text(typeSize.isAccessibilitySize ? "Skriv eller klistra in" : "Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(0.45)),
                           axis: .vertical)
                     .lineLimit(typeSize.isAccessibilitySize ? 2...6 : 3...8)
                     .focused($focused)

@@ -76,6 +76,7 @@ struct CreditsCapsule: View {
 struct CreditsSheet: View {
     let model: RepetitionModel
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         NavigationStack {
@@ -119,6 +120,6 @@ struct CreditsSheet: View {
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } } }
             .task { await model.refreshQuota() }
         }
-        .presentationDetents([.medium, .large])
+        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium, .large]) // the largest text needs the whole height
     }
 }
