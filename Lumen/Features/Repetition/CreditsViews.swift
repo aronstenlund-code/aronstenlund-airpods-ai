@@ -141,6 +141,6 @@ struct CreditsSheet: View {
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } } }
             .task { await model.refreshQuota() }
         }
-        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.fraction(0.64), .large]) // Kelly K3: half the height cut the footnote; the largest text needs it all
+        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.fraction(model.quota?.isCredits == true ? 0.72 : 0.64), .large]) // Kelly K3: half the height cut the footnote; the largest text needs it all
     }
 }
