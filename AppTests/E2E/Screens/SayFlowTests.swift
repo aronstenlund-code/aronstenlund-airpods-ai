@@ -59,9 +59,9 @@ final class SayFlowTests: XCTestCase {
     }
 
     private var field: XCUIElement {
-        let byLabel = app.textFields.matching(NSPredicate(format: "label ==[c] 'Säg i AirPods' OR placeholderValue ==[c] 'Säg i AirPods'")).firstMatch
+        let byLabel = app.textFields.matching(NSPredicate(format: "label BEGINSWITH[c] 'Säg i AirPods'")).firstMatch
         if byLabel.exists { return byLabel }
-        return app.textViews.matching(NSPredicate(format: "label ==[c] 'Säg i AirPods'")).firstMatch
+        return app.textViews.matching(NSPredicate(format: "label BEGINSWITH[c] 'Säg i AirPods'")).firstMatch
     }
 
     private func writeText() -> Bool {
@@ -75,7 +75,7 @@ final class SayFlowTests: XCTestCase {
         log.append("T36 field value: \(value)")
         if !value.contains("Klorofyllet") { return miss("the text did not get into the field (value '\(value)')") }
         if find(["Räknas som 1 fråga*"]) == nil { note("no line 'Räknas som 1 fråga. Upprepningar kostar inget.' under the text") }
-        log.append("T36 Hur länge: \(find(["En gång", "10 min"])?.label ?? "-"), tempo: \(find(["1,0×"])?.label ?? "-")")
+        log.append("T36 Hur länge: \(find(["Hur länge*"])?.label ?? "-"), tempo: \(find(["Tempo*"])?.label ?? "-")")
         screen("text", "Säg i AirPods with a text")
         return waitEnabled(["Spela"], 5) || miss("Spela not tappable with a text")
     }
@@ -110,7 +110,8 @@ final class SayFlowTests: XCTestCase {
 
     private func repeatFive() -> Bool {
         if field.exists, ((field.value as? String) ?? "").isEmpty { tapElement(field, "Säg i AirPods (again)"); field.typeText(Self.text) }
-        guard tap(["En gång", "10 min", "5 min", "Hur länge*"], "Hur länge") else { return false }
+        // SayViews: the menu's label is "Hur länge, En gång" (A115).
+        guard tap(["Hur länge*", "En gång"], "Hur länge") else { return false }
         guard tap(["Upprepa 5 min", "5 min"], "Upprepa 5 min") else { return false }
         pause(1)
         guard openPlayer() else { return false }
