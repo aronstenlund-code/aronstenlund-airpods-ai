@@ -309,3 +309,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   - Appens rader sa "Kostar 78 krediter" två gånger och "Kostar 234 krediter" (texten från länken).
   - Enligt Angela Fable visar appen bara det /drill quota svarar, och frågar igen efter start och när spelaren stängs.
   - Frågan: räknas testtrafik inte i krediterna (det vore i så fall bra att veta och skriva ner), eller dras de inte alls?
+
+- [ ] **K92 – Kostnaden innan man sparar (D215 punkt 8, D212)** (effort: medium). Lagd av Deangelo 2026-11-17 18:10. Appen visar i dag sin egen uppskattning medan man skriver (din K91-rapport). Lägg en förhandsvisning: samma text, röst och tempo som save skulle få → `{cost, remaining}` utan att spara eller köa något, och med samma räkning som save (ljud som redan finns kostar 0). Begränsa anropen per konto så att det inte blir en väg att fråga ut vilka texter som har ljud. 0 ElevenLabs. Skriv fältet i angela-fable.md (A132). Rapport, tavla, push. Oscar testar (O77).
