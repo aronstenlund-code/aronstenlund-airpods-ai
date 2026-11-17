@@ -137,8 +137,14 @@ final class FullFlowTests: XCTestCase {
     /// True when none of `labels` is hittable within `timeout`.
     private func gone(_ labels: [String], _ timeout: TimeInterval) -> Bool {
         let end = Date().addingTimeInterval(timeout)
+        // Run 44021052293: isHittable on a button that is going away stopped the whole test ("Failed to determine
+        // hittability of Avsluta"). Read the buttons from the tree instead; nothing is queried that may vanish.
         repeat {
-            if find(labels)?.isHittable != true { return true }
+            let buttons = Self.labels(in: app.debugDescription, kind: "Button")
+            let present = labels.contains { label in
+                label.hasSuffix("*") ? buttons.contains { $0.hasPrefix(String(label.dropLast())) } : buttons.contains(label)
+            }
+            if !present { return true }
             pause(0.5)
         } while Date() < end
         return false
