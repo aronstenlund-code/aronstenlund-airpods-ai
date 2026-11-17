@@ -1,5 +1,8 @@
 # App Store: bilder och text (Kelly, Ke56, D160, 2026-11-13)
 
+> **Ersatt 2026-11-17 (Ke76):** texterna, integritetsuppgifterna och granskningsanteckningarna gäller nu i
+> `granskning.md`. Bilderna nedan görs om efter nya första skärmen (Ke74).
+
 **Förberedelse. Inget är inlagt i App Store Connect och inget skickas in.** Att publicera eller skicka in görs bara
 efter Arons ja (CLAUDE.md). Ersätter utkastet i `docs/marketing/appstore/` (Ke25), som beskrev lyssningen före D142.
 
