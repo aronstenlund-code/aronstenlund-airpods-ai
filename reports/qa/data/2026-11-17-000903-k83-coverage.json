@@ -1,0 +1,266 @@
+{
+ "bio-fotosyntes": {
+  "chars": 2657,
+  "runs": [
+   {
+    "status": 200,
+    "ms": 7438,
+    "coverage": {
+     "parts": 2,
+     "before": 2,
+     "after": 2,
+     "added": 0,
+     "target": 12,
+     "max_share": 7
+    },
+    "cost": 0.0015894,
+    "questions": [
+     "Vad ingår i ett ekosystem utöver de levande organismerna?",
+     "Varför behöver växter klorofyll?",
+     "Vad händer med ljusenergin i fotosyntesen?",
+     "Varifrån tar växten koldioxiden och vattnet?",
+     "Vad används glukosen till i växten?",
+     "Vad skiljer en förstahandskonsument från en andrahandskonsument?",
+     "Varför finns det färre rovdjur än växtätare?",
+     "Vad gör nedbrytarna och varför är de viktiga för kretsloppet?",
+     "Vad skulle hända med kretsloppet utan nedbrytare?",
+     "Varför ökar koldioxidhalten när vi eldar fossila bränslen?",
+     "Hur leder för mycket näring i en sjö till att fiskar dör?",
+     "Vad kan man göra för att motverka övergödning?"
+    ]
+   },
+   {
+    "status": 200,
+    "ms": 7187,
+    "coverage": {
+     "parts": 2,
+     "before": 2,
+     "after": 2,
+     "added": 0,
+     "target": 12,
+     "max_share": 7
+    },
+    "cost": 0.0016495000000000001,
+    "questions": [
+     "Varför ingår icke levande faktorer som vatten och ljus i ett ekosystem?",
+     "Varför behöver växter klorofyll?",
+     "Vad händer med ljusenergin i fotosyntesen?",
+     "Vad blir av glukosen som växten tillverkar?",
+     "Varför kallas växtätare för förstahandskonsumenter?",
+     "Varför finns det färre rovdjur än växtätare?",
+     "Varför är näringskedjor sällan längre än fyra eller fem led?",
+     "Vad skulle hända med kretsloppet om det inte fanns några nedbrytare?",
+     "Varför ökar halten koldioxid i luften när vi eldar fossila bränslen?",
+     "Hur påverkar utsläpp av kväve och fosfor en sjö?",
+     "Varför dör fiskar när det blir övergödning i en sjö?",
+     "Hur kan skyddszoner med gräs minska övergödningen?"
+    ]
+   }
+  ]
+ },
+ "so-tre-delar": {
+  "chars": 3449,
+  "runs": [
+   {
+    "status": 200,
+    "ms": 9915,
+    "coverage": {
+     "parts": 3,
+     "before": 2,
+     "after": 3,
+     "added": 1,
+     "target": 12,
+     "max_share": 5
+    },
+    "cost": 0.0026661,
+    "questions": [
+     "Varför konkurrerade Europas stormakter om kolonier och handel?",
+     "Hur bidrog militarismen till att kriget bröt ut?",
+     "Vad hände när ärkehertig Franz Ferdinand sköts i Sarajevo?",
+     "Vad innebar bolsjevikernas maktövertagande för kriget?",
+     "Varför kände många tyskar sig förödmjukade efter freden?",
+     "Hur skiljer sig maktdelningen mellan riksdagen, regeringen och domstolarna?",
+     "Vad krävs för att ett parti ska komma in i riksdagen?",
+     "Vilka krav ställdes på Tyskland i Versaillesfreden?",
+     "Varför är det kallare vid polerna än vid ekvatorn?",
+     "Hur påverkar Golfströmmen Skandinaviens klimat?",
+     "Varför blir det mycket regn på västsidan av fjällen men torrare på östsidan?",
+     "Varför blir det kallare vid polerna än vid ekvatorn?"
+    ]
+   },
+   {
+    "status": 200,
+    "ms": 9565,
+    "coverage": {
+     "parts": 3,
+     "before": 2,
+     "after": 3,
+     "added": 2,
+     "target": 12,
+     "max_share": 5
+    },
+    "cost": 0.0023313,
+    "questions": [
+     "Varför var Europas stormakter konkurrenter före första världskriget?",
+     "Vad menas med militarism och varför ledde den till ett vapenkapplöpning?",
+     "Hur bidrog alliansen mellan Ententen och Centralmakterna till att kriget spred sig?",
+     "Hur påverkade bolsjevikernas maktövertagande i Ryssland kriget?",
+     "Varför upplevde många tyskar Versaillesfreden som förödmjukande?",
+     "Varför bildades Nationernas förbund efter kriget?",
+     "Varför är Sverige en parlamentarisk demokrati?",
+     "Hur fördelas makten mellan riksdagen, regeringen och domstolarna?",
+     "Varför är det kallare vid polerna än vid ekvatorn?",
+     "Varför är klimatet i Skandinavien mildare än i Kanada på samma breddgrad?",
+     "Hur gör Golfströmmen att Skandinavien får ett mildare klimat än Kanada på samma breddgrad?",
+     "Varför regnar det mycket på västsidan av fjällen men mycket lite på östsidan?"
+    ]
+   }
+  ]
+ },
+ "no-tre-delar": {
+  "chars": 4829,
+  "runs": [
+   {
+    "status": 200,
+    "ms": 8462,
+    "coverage": {
+     "parts": 4,
+     "before": 2,
+     "after": 4,
+     "added": 0,
+     "target": 12,
+     "max_share": 3
+    },
+    "cost": 0.0025478000000000002,
+    "questions": [
+     "Varför är en mol användbar när man räknar på kemiska ämnen?",
+     "Hur räknar man ut molmassan för vatten?",
+     "Varför måste en reaktionsformel balanseras?",
+     "Varför kopplas en amperemeter i serie och en voltmeter parallellt?",
+     "Hur kan man räkna ut strömmen genom en lampa med känd resistans och spänning?",
+     "Varför slocknar alla lampor i en seriekoppling när en lampa går sönder?",
+     "Hur omvandlar växter ljusenergi till kemisk energi vid fotosyntesen?",
+     "Varför finns det färre rovdjur än växtätare i en näringskedja?",
+     "Varför är näringskedjor sällan längre än fyra eller fem led?",
+     "Varför är nedbrytare viktiga för kretsloppet?",
+     "Varför ökar koldioxidhalten i luften när vi eldar fossila bränslen?",
+     "Hur uppstår övergödning i en sjö, och varför dör fiskar då?"
+    ]
+   },
+   {
+    "status": 200,
+    "ms": 11221,
+    "coverage": {
+     "parts": 4,
+     "before": 2,
+     "after": 4,
+     "added": 2,
+     "target": 12,
+     "max_share": 3
+    },
+    "cost": 0.0029042,
+    "questions": [
+     "Varför måste en reaktionsformel balanseras?",
+     "Varför ändrar man bara koefficienterna och aldrig indexen när man balanserar?",
+     "Hur räknar man ut molmassan för vatten?",
+     "Varför går samma ström genom alla komponenter i en seriekoppling?",
+     "Varför fortsätter lamporna att lysa i en parallellkoppling när en lampa går sönder?",
+     "Hur räknar man ut energin som en vattenkokare använder?",
+     "Vad händer i fotosyntesen och vilken roll spelar klorofyll?",
+     "Varför behöver gröna växter klorofyll?",
+     "Vad händer med koldioxid och vatten vid fotosyntesen?",
+     "Varför minskar energin i en näringskedja, och vad följer av det?",
+     "Varför behövs nedbrytare för kretsloppet?",
+     "Hur uppstår övergödning, och hur kan den motverkas?"
+    ]
+   }
+  ]
+ },
+ "wikipedia-fotosyntes": {
+  "chars": 15498,
+  "runs": [
+   {
+    "status": 200,
+    "ms": 12738,
+    "coverage": {
+     "parts": 6,
+     "before": 5,
+     "after": 6,
+     "added": 3,
+     "target": 12,
+     "max_share": 2
+    },
+    "cost": 0.0044931,
+    "questions": [
+     "Varför behövs klorofyll i fotosyntesen?",
+     "Vad händer med koldioxid och vatten när växter utsätts för solljus?",
+     "Varför är växter gröna?",
+     "Varför kan inte prokaryoter fotosyntetisera med kloroplaster?",
+     "Hur skiljer sig klorofyll a och b från varandra?",
+     "Varför reflekterar löven gula och orangea färger på hösten?",
+     "Vad händer under ljusreaktionerna när en elektron exciteras?",
+     "Hur bildas syre i fotosyntesen?",
+     "Vad gör enzymet rubisco i mörkerreaktionerna?",
+     "Varför pumpar cytokrom-komplexet protoner in i tylakoiden?",
+     "Varför behöver växter ljus för fotosyntesen?",
+     "Hur är en kloroplast uppbyggd, och varför är den viktig för fotosyntesen?"
+    ]
+   },
+   {
+    "status": 200,
+    "ms": 14008,
+    "coverage": {
+     "parts": 6,
+     "before": 4,
+     "after": 6,
+     "added": 5,
+     "target": 12,
+     "max_share": 2
+    },
+    "cost": 0.005038900000000001,
+    "questions": [
+     "Varför behöver växter klorofyll för fotosyntesen?",
+     "Vad händer med koldioxid och vatten under fotosyntesen?",
+     "Varför är kloroplaster viktiga för fotosyntesen i växtceller?",
+     "Hur fungerar klorofyllmolekylerna som antenner?",
+     "Hur kan vi se att bladen är gröna?",
+     "Varför ser höstlöven gula och orangea ut?",
+     "Varför är ljus nödvändigt för kolsyreassimilationen?",
+     "Vad blir den första produkten av kolsyreassimilationen och varför är det viktigt?",
+     "Varför behövs ATP och NADPH i mörkerreaktionerna?",
+     "Varför kan elektronen bara lämna klorofyllmolekylerna i ett fotosyntetiskt reaktionscentrum?",
+     "Varför behöver växter ljus för fotosyntesen?",
+     "Hur fungerar klorofyll i fotosyntesen?"
+    ]
+   }
+  ]
+ },
+ "summary": {
+  "runs_with_parts": 8,
+  "parts": 30,
+  "covered_before": 21,
+  "covered_after": 30,
+  "added": 13,
+  "max_share": [
+   7,
+   7,
+   5,
+   5,
+   3,
+   3,
+   2,
+   2
+  ],
+  "questions": [
+   12,
+   12,
+   12,
+   12,
+   12,
+   12,
+   12,
+   12
+  ],
+  "cost_usd": 0.0232
+ }
+}

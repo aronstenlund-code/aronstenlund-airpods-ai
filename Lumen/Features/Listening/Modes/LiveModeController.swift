@@ -287,3 +287,36 @@ final class SocialModeController: ListeningModeController {
 
     func instruction(_ text: String) { live.instruction(text) }
 }
+
+/// D199 step 3 (A114): Rizzläge as a `ListeningModeController` on the same live session as Socialt läge. What is its
+/// own: its style, and the age check the model's start and mode-change paths still ask (D63). D112 (owner) removed
+/// the 18+ gate: `ModeSettings.isAdultConfirmed` is always true, so the check never stops anything today. It is kept
+/// as it was (no behaviour change in G7). Its turns, instructions and suggestions are the shared `LiveModeController`.
+@MainActor
+final class RizzModeController: ListeningModeController {
+    let mode: ConversationMode = .rizz
+    /// D43: Rizzläge's suggestions are flirty; Socialt läge's are social (`ConversationMode.liveStyle`).
+    let style: LiveStyle = .flirt
+    private let live: LiveModeController
+    private let settings: ModeSettings
+
+    init(live: LiveModeController, settings: ModeSettings) {
+        self.live = live
+        self.settings = settings
+    }
+
+    /// D63's check, as the model had it. Always false since D112 (no 18+ gate): the flag is always confirmed.
+    var needsAgeConfirmation: Bool { !settings.isAdultConfirmed }
+
+    /// The age sheet's yes (D63). The sheet is never shown since D112; kept with the check.
+    func confirmAge() { settings.confirmAdult() }
+
+    var spokenKeyterms: [String] { LiveModeController.spokenKeyterms }
+
+    func turn(_ text: String) { live.turn(text) }
+
+    /// A live mode answers ahead with a suggestion (`LiveModeController.suggestionAhead`), never with an answer.
+    func aheadRequest(for text: String) -> (request: ActivationRequest, persona: PersonaRequest?)? { nil }
+
+    func instruction(_ text: String) { live.instruction(text) }
+}

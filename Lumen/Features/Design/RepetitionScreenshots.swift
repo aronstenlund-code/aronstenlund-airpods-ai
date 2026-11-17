@@ -38,7 +38,20 @@ enum RepetitionDemo {
                                       // A112 (D200): reading aloud is off for now, the text works as usual
                                       "repOffUnstarted", "repOffText", "repOffTextPlay",
                                       // A115 (D203, Ke69): Säg i AirPods
-                                      "repSayText", "repSayPlay", "repSayPlayOnce"]
+                                      "repSayText", "repSayPlay", "repSayPlayOnce",
+                                      // A117 (D205, Ke69): the month's questions, visible
+                                      "repCredits", "repHomeCredits"]
+
+    /// A117: the month as Kevin's `/drill quota` gives it (K82), with the price table.
+    static let quotaWithPrices: DrillQuota = {
+        var quota = DrillQuota(used: 88, limit: 400, per: "month", resets: "2026-12-01", serverLeft: 312, suggest: 20)
+        quota.prices = DrillPrices(classes: [.init(name: "normal", min_chars: nil, max_chars: 800, questions: 1, tokens: 40),
+                                             .init(name: "longer", min_chars: 801, max_chars: 1600, questions: 1, tokens: 60),
+                                             .init(name: "too_long", min_chars: 1601, max_chars: 4000, questions: 1, tokens: 80)],
+                                   read: .init(chars_per_question: 800), free: ["shared", "published"])
+        return quota
+    }()
+
 
     /// A115: a text someone might want to hear over and over before an exam (made up).
     static let said = "Fotosyntes: koldioxid + vatten + ljus blir socker och syre.\nCellandning: socker + syre blir energi, koldioxid och vatten."
@@ -211,6 +224,12 @@ enum RepetitionDemo {
                 try? WAVWriter.write(samples: silence, sampleRate: 16_000, to: audio.url(text: text))
             }
         }
+        if name == "repCredits" || name == "repHomeCredits" { // A117
+            model.store.save(history)
+            model.store.save(drill)
+            model.quota = quotaWithPrices
+            return
+        }
         if name.hasPrefix("repSay") { // A115 (D203)
             model.store.save(history)
             model.store.save(drill)
@@ -335,9 +354,12 @@ enum RepetitionDemo {
             case "repOffTextPlay": RepetitionPlayerView(model: model)
             case "repUnstarted", "repUnstartedTooMany": NavigationStack { DrillView(model: model, drillID: unstarted.id) }
             case "repUnstartedEdit": DrillItemEditor(model: model, drill: unstarted, itemID: unstarted.items[0].id)
+            case "repCredits":
+                Color(.systemGroupedBackground).ignoresSafeArea()
+                    .sheet(isPresented: .constant(true)) { CreditsSheet(model: model) }
             case "repSayPlay", "repSayPlayOnce": RepetitionPlayerView(model: model)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
-                 "repSayText":
+                 "repSayText", "repHomeCredits":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)

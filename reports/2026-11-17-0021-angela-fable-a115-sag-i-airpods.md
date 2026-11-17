@@ -25,7 +25,8 @@
 ## Avvikelser från Ke69 (till Kelly och Deangelo)
 1. **Tempo 1,25× finns inte.** Tempona som spelaren tar är beslutade i D151 och låsta av `A84VoiceTempoTests`; 1,25
    är inte ett av dem. Jag lade först till det, testet blev rött (iOS build 43971703703), och jag tog bort det igen.
-   **Deangelo avgör** om listan ska utökas.
+   ~~Deangelo avgör om listan ska utökas.~~ **Rättelse 01:30:** Kelly har bekräftat att 0,5 / 0,75 / 1,0 / 1,5
+   är rätt (D151) och rättat sitt underlag. Inget beslut behövs.
 2. **"+" för material** finns inte i fältet än. Det är A116.
 3. **Ingen egen blockmarkör.** Fältet har systemets markör i accentfärgen när det har fokus. Utan fokus syns bara
    `›` och platshållaren.
@@ -62,6 +63,8 @@ Jag har inte byggt något som döljer uppspelningen. Architect svarar på farhå
 ## Kända brister (största text, iPhone SE)
 Sedda på bilden och **inte rättade än**: rubriken och teckenräknaren trängs på samma rad, platshållaren kapas
 ("Skriv e…"), och "En gång" bryts på tre rader i sin knapp. Rättas i nästa push (med A116).
+**Uppföljning 01:30:** rättat i A116-pushen, utom två rester som står i A116/A117-rapporten. **Bygget på main för
+A115 blev grönt: iOS build 43978560504.**
 
 ## I samma push
 - **Kellys låga från A112b:** "Förra frågan" är grå på första frågan, och

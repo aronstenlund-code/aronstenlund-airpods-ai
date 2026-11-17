@@ -140,9 +140,11 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     /// K61 (D175): what is left, and what Nytt prov should propose (min(left, 20)), from `/drill quota`.
     var serverLeft: Int?
     var suggest: Int?
+    /// K82 (D205): what costs what, from the server's table (never hard-coded in the app).
+    var prices: DrillPrices? = nil
 
     enum CodingKeys: String, CodingKey {
-        case used, limit, per, resets, suggest
+        case used, limit, per, resets, suggest, prices
         case serverLeft = "left"
     }
 
@@ -166,6 +168,29 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     var isUsedUp: Bool { left == 0 }
     /// "x av 15 frågor kvar den här månaden".
     var line: String { "\(left) av \(limit) frågor kvar den här månaden" }
+}
+
+/// K82 (D205): the price table in `/drill quota`. Today every question with new sound counts as 1 (`questions`);
+/// `tokens` is what D176 charges once payment is built.
+struct DrillPrices: Decodable, Sendable, Equatable {
+    struct Class: Decodable, Sendable, Equatable {
+        var name: String
+        var min_chars: Int?
+        var max_chars: Int?
+        var questions: Double
+        var tokens: Int?
+
+        enum CodingKeys: String, CodingKey {
+            case name = "class"
+            case min_chars, max_chars, questions, tokens
+        }
+    }
+
+    struct Read: Decodable, Sendable, Equatable { var chars_per_question: Int }
+
+    var classes: [Class]
+    var read: Read?
+    var free: [String]?
 }
 
 struct DrillCloudListEntry: Decodable, Sendable, Equatable {
