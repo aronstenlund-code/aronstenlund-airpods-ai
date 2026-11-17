@@ -91,6 +91,9 @@ struct RepetitionHomeSection: View {
         .onAppear { offerReminder() }
         .task { model.prepareAllAudio() }
         .task { await model.refreshQuota() } // A117: the capsule's number
+        // Toby T36 (2026-11-17): the capsule still said 15 after a new text had been played. The number is read again
+        // when the player closes, so what was counted (or given back, D200) while it played shows on Start.
+        .onChange(of: model.showsPlayer) { _, shows in if !shows { Task { await model.refreshQuota() } } }
     }
 
     @ToolbarContentBuilder
