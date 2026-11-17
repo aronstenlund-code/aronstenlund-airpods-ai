@@ -89,8 +89,16 @@ final class SayFlowTests: XCTestCase {
             tap(["Starta ändå", "Starta prov", "Spela"], "Start on the control check", quiet: true)
         }
         // Run 44006955559: with fake audio a short text can be read through before this looks ("Klart · Slut på texten").
-        if wait(["Spelar i AirPods*", "Klart*", "Slut på texten"], 30) != nil {
-            if find(["Spelar i AirPods*"]) == nil { log.append("T36 the player was already at the end: \(text(starting: "Klart") ?? "-")") }
+        // Run 44100858965: the player was up ("Spelar i AirPods, Varv 1 · 8:53 kvar") but the element query did not see
+        // it in 30 s while the line ticks; read the tree instead, for up to 60 s.
+        let end = Date().addingTimeInterval(60)
+        var up = false
+        repeat {
+            up = text(starting: "Spelar i AirPods") != nil || text(starting: "Klart") != nil || text(starting: "Slut på texten") != nil
+            if !up { pause(2) }
+        } while !up && Date() < end
+        if up {
+            if text(starting: "Spelar i AirPods") == nil { log.append("T36 the player was already at the end: \(text(starting: "Klart") ?? "-")") }
             return true
         }
         screen("ingen-spelare", "Spela did not open 'Spelar i AirPods'")
@@ -244,7 +252,7 @@ final class SayFlowTests: XCTestCase {
         // Run 44064540048: the text from the link was saved but never started (audio_started_at null, a 404 from /drill
         // first). Photograph the player and say whether it really plays (Spelar i AirPods or a lap).
         screen("lank-spelar", "The player after Spela with the text from the link")
-        let playing = find(["Spelar i AirPods*"]) != nil || lapAtLeast(1) != nil
+        let playing = text(starting: "Spelar i AirPods") != nil || lapAtLeast(1) != nil
         log.append("T36 the link text plays: \(playing)")
         if !playing { note("the text from the link did not start playing (no 'Spelar i AirPods' and no lap)") }
         tap(["Avsluta"], "Avsluta", quiet: true)
