@@ -44,3 +44,19 @@ Två saker är inte testade:
 - **En bild via "+":** samma bibliotek som "Välj bilder", som T24 redan testar. Ingen egen kontroll.
 
 T36 ligger i nattflödet från och med i natt.
+
+## Tillägg 12:00: mot main 88a3d902, med Angela Fables dubbletträttning och omläsningen av kapseln
+Körning 44064540048 är **grön i alla 8 delar** (**verifierat i Simulator**).
+
+Kontot 737d6ca3… har tre prov med testtexten i tabellen drills:
+| Skapad (UTC) | Steg | Delar | audio_started_at |
+|---|---|---|---|
+| 10:50:03 | Spela en gång | 1 | 10:50:06 |
+| 10:51:51 | Upprepa (samma text skriven igen) | 1 | 10:51:53 |
+| 10:54:09 | Texten från Klistra in länk | 2 | **null** |
+
+- **Dubbletten är borta:** varje Spela gav ett prov.
+- **Möjligt fynd:** texten från länken startades aldrig på servern. Kapseln stod därför på 15 före och efter, trots omläsningen när spelaren stängs. Det är skickat till Angela Fable. Orsaken är otestad. Testet godtar "Klart", "Slut på texten" eller "Spelar i AirPods" som att spelaren är öppen, och borde skärpas till att kräva att ljudet faktiskt startar.
+- **Iakttagelser:**
+  - Samma text skriven på nytt blev ett nytt prov.
+  - Kapseln var 15 också efter två startade texter. 44015377071 gav 15 till 14.
