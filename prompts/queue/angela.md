@@ -396,3 +396,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   - T24 är röd: fas a stoppades av ett XCTest-fel ("no matches found for first query", ett element som försvann mitt i en fråga), och fas b väntade då förgäves på publiceringen.
   - Det är testmiljön och inte Rizzläget. T24 med samma app utan A114 är grön i alla 13 delar (44000590684, main).
   - Rizzläget har inget flöde i nattflödet, så det är otestat här. **Verifierat i Simulator**, inte på enhet.
+
+- [ ] **A120 – G7 steg 5: standardläget till StandardModeController (D199)** (effort: high, Fable 5.2). Lagd av Deangelo 2026-11-17 04:30. Beror på: A119 ihopslagen efter Tobys T37. Enligt A111-rapporten avsnitt 4: väckningsord, frågegrind, "Mer?", två nivåer och ensamt namn till en `StandardModeController`. Aktiveringen och ekot ligger kvar i motorn. Ingen beteendeändring, inget i ljudvägen, egen gren, Toby kör nattflödet på grenen (T38). Eftersom standardläget sitter närmast ljudet: skriv i rapporten exakt vad Aron ska prova på telefon med AirPods efter steget. 0 ElevenLabs. Rapport, STATUS, tavla, push.
