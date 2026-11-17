@@ -61,6 +61,10 @@ enum SayText {
     static let lockLine = "Du kan låsa telefonen. Det hörs i AirPods ändå."
     static let hasPlayedKey = "say.hasPlayed"
 
+    /// A135 (D219.3): how long Spela shows its spinner, and what is said after that.
+    static let patience: Duration = .seconds(10)
+    static let slowLine = "Ljudet kunde inte hämtas. Kontrollera nätet och försök igen."
+
     /// A132 (Ke72): the main button says how long: "Spela i 10 min", "Spela i 1 timme".
     static func playTitle(_ minutes: Int) -> String { "Spela i \(howLong(minutes))" }
 
@@ -96,6 +100,9 @@ struct SayInAirPodsField: View {
     @AppStorage(SayText.hasPlayedKey) private var hasPlayed = false
     /// Ke72: the clipboard has text (asked without reading it, so the system shows no notice).
     @State private var clipboardHasText = false
+    /// A135: which press is waited for, and that the last one took too long (the button is then Försök igen).
+    @State private var attempt = 0
+    @State private var canRetry = false
     /// K92: the server's answer for the text it was asked about.
     @State private var asked: (text: String, cost: Int, left: Int?)?
     @Environment(\.scenePhase) private var scenePhase
@@ -183,7 +190,7 @@ struct SayInAirPodsField: View {
     /// "Nästa prov" and never among "Andra prov".
     @ViewBuilder
     private var recents: some View {
-        let said = Array(model.saidDrills.prefix(3))
+        let said = Array(model.recentSaid.prefix(3)) // A135 (D219.4): every text once
         if !said.isEmpty {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
@@ -282,7 +289,7 @@ struct SayInAirPodsField: View {
                 writingCard
             }
         }
-        .onChange(of: text) { refused = nil }
+        .onChange(of: text) { refused = nil; canRetry = false }
         .padding(16)
         .foregroundStyle(SayText.ink)
         .background(scheme == .dark ? SayText.fieldDark : SayText.field, in: RoundedRectangle(cornerRadius: 16))
@@ -482,7 +489,7 @@ struct SayInAirPodsField: View {
                 HStack(spacing: 6) {
                     if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: "play.fill").accessibilityHidden(true) }
                     // In a row of its own (the largest text) it may shrink; it must never be wider than the card.
-                    Text(verbatim: SayText.playTitle(minutes)).lineLimit(1)
+                    Text(verbatim: canRetry ? "Försök igen" : SayText.playTitle(minutes)).lineLimit(1)
                         .fixedSize(horizontal: !wide, vertical: false)
                         .minimumScaleFactor(0.6)
                 }
@@ -615,13 +622,29 @@ struct SayInAirPodsField: View {
         let text = self.text
         let minutes: Int? = self.minutes // A124: it always goes round for the chosen time
         refused = nil
+        canRetry = false
+        attempt += 1
+        let mine = attempt
         Task {
             // A130: the model knows whether this text is already an exam (the same text never becomes two).
-            if let drill = await model.say(text, repeatMinutes: minutes) {
+            let drill = await model.say(text, repeatMinutes: minutes)
+            guard mine == attempt, isStarting else { return } // given up meanwhile: the line below stands
+            if let drill {
                 refused = model.sayRefusal(drill)
                 if let refused { AccessibilityNotification.Announcement(refused).post() }
             }
             isStarting = false
+        }
+        Task {
+            // A135 (D219.3, Aron's phone 20:24): no spinner without an end. After 10 s it is said that the sound could
+            // not be fetched, and the button is Försök igen. Nothing starts to play by itself later.
+            try? await Task.sleep(for: SayText.patience)
+            guard mine == attempt, isStarting, !model.isSayingOnCard, !model.showsPlayer else { return }
+            model.giveUpSay()
+            isStarting = false
+            canRetry = true
+            refused = SayText.slowLine
+            AccessibilityNotification.Announcement(SayText.slowLine).post()
         }
     }
 }

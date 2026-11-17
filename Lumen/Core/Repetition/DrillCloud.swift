@@ -613,6 +613,36 @@ final class CloudDrillAudio: DrillAudioProviding {
 
     func fileURL(_ name: String) -> URL { folder.appendingPathComponent(name) }
 
+    /// A135 (D219.5): the sound kept on the phone has a ceiling. Over it, the files that were fetched longest ago go
+    /// first, never those of the exam that is playing. What is removed is still on the server and is fetched again
+    /// when it is asked for (a file that is gone is simply not "here": `exists`).
+    static let storageLimit: Int64 = 500 * 1024 * 1024
+
+    @discardableResult
+    func trimStorage(limit: Int64 = CloudDrillAudio.storageLimit, keeping playing: Drill? = nil) -> Int {
+        let keys: Set<URLResourceKey> = [.fileSizeKey, .contentModificationDateKey]
+        guard let urls = try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: Array(keys)) else { return 0 }
+        var files: [(url: URL, size: Int64, date: Date)] = urls.compactMap { url in
+            guard let values = try? url.resourceValues(forKeys: keys), let size = values.fileSize else { return nil }
+            return (url, Int64(size), values.contentModificationDate ?? .distantPast)
+        }
+        var total = files.reduce(Int64(0)) { $0 + $1.size }
+        guard total > limit else { return 0 }
+        let kept = Set((playing?.items ?? []).flatMap { [$0.questionAudio, $0.longAudio].compactMap { $0 } } + [playing?.cueAudio].compactMap { $0 })
+        files.sort { $0.date < $1.date }
+        var removed = 0
+        for file in files where total > limit && !kept.contains(file.url.lastPathComponent) {
+            guard (try? FileManager.default.removeItem(at: file.url)) != nil else { continue }
+            total -= file.size
+            removed += 1
+        }
+        if removed > 0 {
+            made += 1 // the views count the files again
+            Log.repetition.info("Drill audio: \(removed, privacy: .public) files removed to stay under the storage limit")
+        }
+        return removed
+    }
+
     private func exists(_ name: String?) -> Bool {
         guard let name else { return false }
         return FileManager.default.fileExists(atPath: fileURL(name).path)
