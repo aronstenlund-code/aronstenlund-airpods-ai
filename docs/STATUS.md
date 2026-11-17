@@ -11,6 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Fable (moln), 2026-11-17 11:23: orsaken till Arons fynd 08:55 hittad och rättad, iOS build 44059376273 grön på min gren, ej på enhet.** Servern svarade rätt (Kevin, K87). Appen sparade en ny Säg-text två gånger (uppladdningen i bakgrunden och Spela samtidigt): en startad och en ostartad kopia, och med den ostartade kom ljudet aldrig. Nu sparas den en gång. **Aron behöver prova Säg i AirPods igen med nästa app.** Den ostartade kopian ligger kvar på hans konto (Deangelo avgör). → `reports/2026-11-17-1018-angela-fable-arons-fynd-ingen-kontakt.md`
 - **Kevin (moln), 2026-11-17 09:45: K87 och Arons Säg-fynd utredda, 0 ElevenLabs, ingen kod ändrad.** Servern väntade inte. ElevenLabs fylldes på 07:27 (65 000 → 90 000 tecken, cirka 21 000 kvar), och sedan var Samhällskunskapprovet 30/30 och Säg-texten 24/24 klara. Telefonen fick 200 på alla anrop, så "0 av 30" och "Ingen kontakt" kommer från appen (svar till Angela Fable). → `reports/2026-11-17-0945-kevin-k87-ljud-0-av-30.md`
 
 - **Angela Fable (moln), 2026-11-17 10:18: Arons fynd 08:55 ("Ingen kontakt" med paus-knapp i Säg i AirPods): appens del rättad, iOS build 44048525653 grön på min gren, ej på enhet.** Spelaren stegas för hand utan paus-knapp när ljudet inte kommer, oavsett skäl. Varför servern inte gav ett läsbart svar är inte utrett (Kevin, K87). A122/A124/A123 gröna på main (44048245326), A122 och A124 godkända av Kelly. → `reports/2026-11-17-1018-angela-fable-arons-fynd-ingen-kontakt.md`

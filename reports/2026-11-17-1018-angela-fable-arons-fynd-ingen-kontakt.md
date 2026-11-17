@@ -1,7 +1,7 @@
 # Arons fynd 08:55: "Ingen kontakt med EarMind just nu" med paus-knapp (Angela Fable, moln)
 
-Klart för appens del 2026-11-17 10:18. **Verifierat i CI, inte på enhet och inte på bild.** Orsaken på servern är
-inte utredd (Kevin, K87). 0 ElevenLabs (D180).
+Klart 2026-11-17 11:23 (första delen 10:18). **Verifierat i CI, inte på enhet och inte på bild.** Orsaken var i appen
+och är rättad, se uppföljningen. 0 ElevenLabs (D180).
 
 ## Vad Aron såg
 Säg i AirPods med texten "HISTORIA – 1880–1918": spelaren visade "Spelar inte", "Mening 2 av 24", raden "Ingen
@@ -23,6 +23,29 @@ Aron hade 5G, så telefonens nät var inte orsaken. Ett svar med `audio_unavaila
 serverns loggar. **Kevin har fått frågan** (meddelande 09:39, K87) och har inte svarat än; jag har inte åtkomst
 till loggarna. Tills det är utrett visar appen den sanna raden ("Ingen kontakt …") och inte D200-raden, eftersom
 appen inte vet att det handlar om krediter.
+
+## Uppföljning 11:23: orsaken är hittad och rättad (appen)
+**Kevins utredning (K87, `reports/2026-11-17-0945-kevin-k87-ljud-0-av-30.md`):** servern svarade rätt på alla anrop
+från Arons telefon, ElevenLabs fylldes på 07:27 och ljudet för texten var klart (24 av 24). D200 var alltså inte rätt
+läge. Däremot sparades texten **två gånger**, 08:55:16 och 08:55:18: en kopia ostartad, en startad.
+
+**Felet i appen (mitt, från A115):** när en ny text sparas startar appen en bakgrundsuppgift som laddar upp den, och
+Spela i Säg i AirPods startade ljudet innan den uppgiften hade börjat. Båda såg ett prov utan server-id och båda
+sparade det. Det svar som skrevs sist avgjorde vilken kopia telefonen följde; med den ostartade kom ljudet aldrig,
+och spelaren stod och väntade. Samma sak kunde hända ett vanligt prov som startas i samma ögonblick som det sparas.
+
+**Rättat** (`CloudDrillAudio.startAudio`, `DrillCloud.swift`): Starta/Spela håller provet tills det är sparat och
+startat, så det sparas en gång. Ett anrop som avbryts skrivs inte längre som "Ingen kontakt" (Kevins punkt 2).
+Kreditkapseln läses om när spelaren stängs (Tobys iakttagelse i T36).
+**iOS build 44059376273 grön på min gren**, med testet `aNewTextThatIsStartedAtOnceIsSavedOnce` (uppladdningen och
+starten körs samtidigt mot en server som svarar med fördröjning: en sparning, en start, ingen felrad).
+
+**Inte belagt:** exakt var raden "Ingen kontakt" kom ifrån den gången. Det finns ingen logg från telefonen.
+**Aron behöver prova igen** med nästa app: skriv en ny text i Säg i AirPods och tryck Spela. Det ska höras inom
+några sekunder.
+**Kvar hos andra:** den ostartade kopian ligger kvar på Arons konto (Kevin raderar inte Arons data; Deangelo
+avgör). Kevins punkt 4 ("Ljud: 0 av 30" från en gammal vy) är Angela Schrutes del. Kevin föreslår ett `client_id`
+i `save` som extra skydd (förslag till Deangelo).
 
 ## Tester
 - **iOS build 44048525653 grön på min gren.** Ett nytt test: felrad ⇒ för hand; ingen felrad ⇒ paus finns kvar.
