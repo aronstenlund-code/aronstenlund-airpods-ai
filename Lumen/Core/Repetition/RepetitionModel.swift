@@ -512,6 +512,8 @@ final class RepetitionModel {
     /// A107: an exam whose sound is not asked for yet can always be started (Starta prov asks for it).
     func canStart(_ drill: Drill) -> Bool {
         if awaitsAudioStart(drill) { return true }
+        // A135: its sound was removed for space; starting it fetches the sound again.
+        if (store.drill(drill.id) ?? drill).audioTrimmed == true { return true }
         if drill.isText { return audio.reading(for: drill, part: 0) != nil } // A105
         return audio.track(for: drill, at: 0) != nil
     }

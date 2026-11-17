@@ -392,6 +392,11 @@ struct DrillView: View {
                 // A107 (D190): the sound is made at Starta prov; no "Ljud: 0 av N" that looks stuck.
                 Text(verbatim: facts)
                 Text(verbatim: model.isStartingAudio(drill) ? "Gör ljudet …" : "Ljudet görs när du startar provet.")
+            } else if drill.audioTrimmed == true {
+                // A135 (Angela Schrute): the sound was removed from the phone for space and is fetched again at Starta
+                // prov. No counter that stands still.
+                Text(verbatim: facts)
+                Text(verbatim: "Ljudet hämtas när du startar provet.")
             } else if model.quotaExceeded(drill) {
                 // Kelly Ke64 T1: nothing more is made this month, so no counter and no bar that seem to move.
                 Text(verbatim: facts)

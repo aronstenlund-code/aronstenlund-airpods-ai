@@ -342,6 +342,9 @@ struct RepetitionHomeSection: View {
 
     /// "Du var på fråga 3 av 5", "5 frågor · cirka 1 min per varv" or the sound's progress.
     private func facts(_ drill: Drill, saved: Int?) -> String {
+        if drill.audioTrimmed == true, saved == nil { // A135: removed for space, fetched again at Starta prov
+            return (drill.isText ? "Text" : DrillText.questions(drill.items.count)) + " · Ljudet hämtas när du startar"
+        }
         if drill.isText { // A106 (Ke63): "Text · cirka 6 min"; the word says what it is, the card is the same
             if let saved { return "Du var på mening \(saved + 1) av \(drill.sentenceCount)" }
             if let problem = shortProblem(drill) { return "Text · \(problem)" }
@@ -428,6 +431,7 @@ struct RepetitionHomeSection: View {
         let ready = p.total > 0 && p.ready == p.total
         let what = drill.isText ? "Text · cirka \(ReadingText.minutes(drill)) min" : DrillText.questions(drill.items.count)
         let detail = ready ? "\(what) · ljud klart"
+            : drill.audioTrimmed == true ? "\(what) · Ljudet hämtas när du startar" // A135: no counter that stands still
             : shortProblem(drill) ?? (model.awaitsAudioStart(drill) ? what // A107: nothing to count before Starta prov
                 : "Ljud: \(p.ready) av \(p.total) klara") // A100 (K62)
         return HStack(spacing: 12) {
