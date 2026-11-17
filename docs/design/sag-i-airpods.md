@@ -42,12 +42,13 @@ skanningslinjer, ASCII-konst, skrivmaskinsljud och glödeffekter. Resten av Prov
 | Fältets rubrik | Säg i AirPods |
 | Platshållare | Skriv eller klistra in det du vill höra |
 | Längd (uppe till höger) | {104} tecken |
-| Under fältet | Räknas som {1} fråga. Upprepningar kostar inget. |
+| Under fältet, rad 1 (D209, A122) | Du kan låsa telefonen och lägga undan den. Det hörs i AirPods ändå. *(alltid, även tomt fält)* |
+| Under fältet, rad 2 | Räknas som {1} fråga. Upprepningar kostar inget. *(när det finns text)* |
 | … krediterna räcker inte | Texten räknas som {3} frågor, och du har {1} kvar. Korta texten eller vänta till den 1 {december}. |
 | … utan krediter (D200) | Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt. |
 | Huvudknapp i fältet | Spela |
-| Hur länge, meny | En gång · Upprepa 5 min · Upprepa 10 min · Upprepa 20 min |
-| Hur länge, knappen | En gång · {10} min |
+| Hur länge, meny (D210, A124) | 10 min · 15 min · 20 min · 25 min · 30 min · 35 min · 40 min · 45 min · 50 min · 55 min · 1 timme *(standard 10 min; ersätter En gång och 5/10/20)* |
+| Hur länge, knappen | {10} min · 1 timme *(med upprepningssymbolen)* |
 | Tempo, meny | 0,5× · 0,75× · 1,0× · 1,5× *(D151:s tempon; 1,25× finns inte)* |
 | + meny | Fota sidor · Välj bilder · Lägg till fil · Klistra in länk |
 | Länken gick inte att läsa | Sidan gick inte att läsa. Kopiera texten och klistra in den i stället. |
@@ -63,6 +64,11 @@ skanningslinjer, ASCII-konst, skrivmaskinsljud och glödeffekter. Resten av Prov
 | VoiceOver på fältet | Säg i AirPods, textfält |
 | VoiceOver på + | Lägg till material |
 | VoiceOver på Hur länge | Hur länge, {Upprepa 10 minuter} |
+
+## 4b. Hur länge (D210, Kelly väljer formen)
+**Systemets `Menu`**, inte ett hjul. Elva val ryms i en meny utan att ta plats i fältet, menyn är samma form som
+`+` och tempo, och ett hjul skulle kräva ett eget blad eller flytta Spela. Den valda tiden har en bock. Knappen visar
+"10 min" eller "1 timme" med upprepningssymbolen. Spelaren visar "Varv {3} · {7:12} kvar av {10} min" som förut.
 
 ## 5. SwiftUI-förslag (till Angela Fable)
 - Fältet: `TextField(..., axis: .vertical).lineLimit(3...8).font(.body.monospaced())` i en `RoundedRectangle(cornerRadius: 16)`
