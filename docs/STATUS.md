@@ -11,6 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Fable (moln), 2026-11-17 03:05: A118 (Kellys K1–K3, D208) klar, iOS build 43996508869 grön på min gren, ej verifierat på enhet.** En prisrad "En fråga · 1" tills serverns tal skiljer sig, "Skriv här" och knappar som radbryts i Säg-fältet vid största text, kreditbladet så högt att fotnoten ryms; "En gång" syns i knappen igen (Kellys R1). A116/A117 gröna på main (43987825974). +-menyn finns inte på bild. 0 ElevenLabs. → `reports/2026-11-17-0305-angela-fable-a118-kellys-k1-k3.md`
 - **Angela Fable (moln), 2026-11-17 01:27: A116 (D204) och A117 (D205) klara, iOS build 43983386543 grön på min gren med 7 nya tester, ej verifierat på enhet.** "+" i Säg-fältet tar foton, bilder, fil och länk; "Klistra in länk" i Nytt prov (Kevins fetch-url); kreditkapsel på Prov med bladet "Frågor kvar" som läser prislistan ur kvotsvaret. Bladet visar serverns 1/1/1 (inte Kellys 1/1,5/2): fråga till Deangelo/Kelly. Menyn bakom + och riktiga anrop är otestade. A115 grön på main (43978560504); tempo 1,25× behöver inget beslut (Kelly bekräftade D151). 0 ElevenLabs. → `reports/2026-11-17-0127-angela-fable-a116-a117-plus-och-krediter.md`
 - **Kevin (moln), 2026-11-17 01:20: K86 klar och driftsatt, 0 ElevenLabs.** Frågorna sprids efter materialets längd, med högst hälften från en del (D207), och kodens eget tak (1 per 600 tecken) gäller när modellens är lägre. Mätning: 30/30 delar, SO-fallet 10/1/1 → 5/4/3, 12 av 12 frågor i alla 8 genereringar. → `reports/2026-11-17-0120-kevin-k86-spread-cap.md`
 
