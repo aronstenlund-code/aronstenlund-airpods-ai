@@ -8,6 +8,10 @@ on:
         description: "Branch or commit whose app code to test (empty = this checkout). Tests and scripts come from main then."
         required: false
         default: ""
+      sets:
+        description: "Transcript sets, comma separated (all = every set, about 2 h). Default: the wake sets (fynd9, a97, fynd8, web)."
+        required: false
+        default: "fynd9,a97,fynd8,web"
   push:
     branches: ["toby/**"]
     paths:
@@ -24,7 +28,7 @@ jobs:
   transcript:
     name: T17c transcripts (Simulator, live)
     runs-on: macos-26
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v5
         with:
@@ -53,6 +57,9 @@ jobs:
 
       - name: Transcript
         run: |
+          # T38: all eight sets (405 cases against the live /answer) took more than 90 min (44019597374).
+          SETS="${{ inputs.sets }}"; [ "$SETS" = "all" ] && SETS=""
+          export TRANSCRIPT_SETS="$SETS"
           bash scripts/apptest/transcript.sh
           STATUS=$?
           cat apptest-out/transcript/summary.md >> "$GITHUB_STEP_SUMMARY" || true
