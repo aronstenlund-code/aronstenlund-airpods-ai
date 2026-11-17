@@ -375,7 +375,7 @@ export function createExamHandler(deps: ExamDeps) {
           quota = { unit: "chars", used: q.used, limit: q.lim, left, remaining: left, per: "month", resets: monthResets(Date.now()) };
           if (left <= 0) {
             return json({
-              error: { code: "quota_exceeded", message: `Du har inga krediter kvar den här månaden. Nya krediter ${resetsDay(Date.now())}. Andras prov är gratis.`, fallback: false },
+              error: { code: "quota_exceeded", message: `Du har inga krediter kvar den här månaden. Nya krediter den ${resetsDay(Date.now())}. Andras prov är gratis.`, fallback: false },
               ...quota,
             }, 402);
           }

@@ -520,7 +520,7 @@ Deno.test("K90 (D213): /exam drill says the credits (characters) left; none left
   assertEquals(none.status, 402);
   const e = await none.json();
   assertEquals(e.error.code, "quota_exceeded");
-  assert((e.error.message as string).startsWith("Du har inga krediter kvar den här månaden. Nya krediter 1 "));
+  assert((e.error.message as string).startsWith("Du har inga krediter kvar den här månaden. Nya krediter den 1 "));
   assertEquals(llm.calls.length, calls, "no model call when nothing is left");
 });
 

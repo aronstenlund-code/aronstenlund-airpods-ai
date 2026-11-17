@@ -440,7 +440,9 @@ Deno.test("K90 (D213) limit: credits = characters of new audio (402 with cost, r
   assertEquals(r.status, 402);
   const j = await r.json();
   assertEquals([j.error.code, j.unit, j.cost, j.remaining, j.limit, j.resets], ["quota_exceeded", "chars", cost(more), cost([more[0]]), c2 + cost([more[0]]), "2026-12-01"]);
-  assertEquals(j.error.message, `Det här kostar ${cost(more)} krediter. Du har ${cost([more[0]])} kvar. Nya krediter 1 december.`);
+  assertEquals(j.error.message, `Det här kostar ${cost(more)} krediter. Du har ${cost([more[0]])} kvar. Nya krediter den 1 december.`);
+  const { thousands } = await import("./handler.ts");
+  assertEquals([thousands(2011), thousands(764), thousands(1500000)], ["2\u00a0011", "764", "1\u00a0500\u00a0000"], "Kelly Ke71: thousands with a no-break space");
   assertEquals([j.used, j.needed, j.per], [c2, cost(more), "month"], "old fields kept");
   assertEquals(w.drills.size, 1, "nothing saved");
   // the same questions again (audio exists): costs 0

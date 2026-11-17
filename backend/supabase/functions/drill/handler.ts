@@ -410,13 +410,18 @@ export function displayChars(items: { part?: string | null; question: string; lo
   return m;
 }
 
+/** K90 (Kelly Ke71): "2 011" with a no-break space between the thousands, so the number never breaks. */
+export function thousands(n: number): string {
+  return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
+}
+
 /** K90: the 402 when the credits do not reach; nothing was saved or started. Old fields kept for older apps. */
 export function creditsRefused(cost: number, used: number, limit: number, nowMs: number) {
   const remaining = Math.max(0, limit - used);
   return {
     error: {
       code: "quota_exceeded",
-      message: `Det här kostar ${cost} krediter. Du har ${remaining} kvar. Nya krediter ${resetsDay(nowMs)}.`,
+      message: `Det här kostar ${thousands(cost)} krediter. Du har ${thousands(remaining)} kvar. Nya krediter den ${resetsDay(nowMs)}.`,
       fallback: false,
     },
     unit: "chars", cost, remaining, limit, used, resets: nextMonthStart(nowMs),
