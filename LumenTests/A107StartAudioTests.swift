@@ -22,7 +22,7 @@ import Testing
                             duration_ms: 3000, short_end_ms: nil)
                     : .init(status: "pending", url: nil, duration_ms: nil, short_end_ms: nil)
             }
-            var info = DrillCloudView.Info(id: "srv-1", title: "Bio", subject: "Biologi", grade: "åk 8", covers: "",
+            var info = DrillCloudView.Info(id: currentID, title: "Bio", subject: "Biologi", grade: "åk 8", covers: "",
                                            long_words: 90, shared_from: nil)
             info.audio_started = started
             return DrillCloudView(drill: info, items: items.enumerated().map { i, item in
@@ -30,6 +30,10 @@ import Testing
                                     audio: .init(question: file("q\(i)"), long: file("l\(i)")))
             }, audio: .init(done: started ? items.count * 2 : 0, total: items.count * 2, failed: 0))
         }
+
+        /// A136: an id per exam (the same text with another voice or style is another exam on the server).
+        var idPerExam = false
+        private var currentID = "srv-1"
 
         /// As a real server: the answer takes a moment, so other tasks run meanwhile.
         var yieldsInSave = false
@@ -50,6 +54,7 @@ import Testing
             if yieldsInSave { await Task.yield(); await Task.yield() }
             if let saveError { throw saveError }
             saves.append(DrillCloudClient.saveBody(drill))
+            if idPerExam { currentID = drill.serverID ?? "srv-\(drill.id.uuidString.prefix(8))" }
             items = drill.items
             return view()
         }

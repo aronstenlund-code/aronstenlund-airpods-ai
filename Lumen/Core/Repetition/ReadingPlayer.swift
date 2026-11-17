@@ -12,12 +12,102 @@ struct ReadingParagraph: Equatable, Sendable {
 struct ReadingAudio: Equatable, Sendable {
     var url: URL
     var times: [ClosedRange<TimeInterval>]
+    /// A136 (D220.1): where each spoken word starts and ends, for "Skriv i takt". Empty for a file without them.
+    var words: [ClosedRange<TimeInterval>] = []
 
     /// Where sentence `i` starts. K70 promises as many times as sentences; a missing one starts at the last known
     /// start (never past the file), so a short list can only replay, never skip.
     func start(of i: Int) -> TimeInterval {
         guard !times.isEmpty else { return 0 }
         return times[min(max(i, 0), times.count - 1)].lowerBound
+    }
+}
+
+/// A136 (D220.1): "Skriv i takt". The text is read a little slower and stops after every phrase of 3–6 spoken words,
+/// so one has time to write it down. It is made on the phone from the word times the server keeps with the sound,
+/// so it costs nothing and needs no new sound. A file without word times stops after every sentence instead.
+enum WritingPace {
+    /// The voice's speed (D220.1).
+    static let rate: Double = 0.85
+    static let phrase = 3...6
+
+    /// Where the sound stops, and how many words were just said.
+    struct Stop: Equatable, Sendable {
+        var time: TimeInterval
+        var words: Int
+    }
+
+    struct Plan: Equatable, Sendable {
+        /// The stops inside the file, in order.
+        var stops: [Stop]
+        /// The words after the last stop: the pause after the file's end.
+        var tailWords: Int
+    }
+
+    /// The silence after a phrase: a second, and a little more than half a second per word (never over 8 s).
+    static func pause(words: Int) -> Double { min(8, 1 + 0.6 * Double(max(words, 1))) }
+
+    /// How many words each phrase of a sentence of `count` words gets. With pauses between the words (commas), a
+    /// phrase ends there when it has at least three words and at least three are left; else at six. Seven or eight
+    /// words are shared in two, so no phrase is under three (a sentence under three words is one phrase).
+    static func phrases(count: Int, gaps: [TimeInterval] = []) -> [Int] {
+        var result: [Int] = []
+        var n = 0
+        var total = count // the words from the phrase's first to the sentence's last
+        for i in 0..<count {
+            n += 1
+            let left = count - i - 1
+            if left == 0 { result.append(n); break }
+            guard n >= phrase.lowerBound, left >= phrase.lowerBound else { continue }
+            let comma = gaps.indices.contains(i) && gaps[i] >= 0.15
+            let forced = total > 8 ? n == phrase.upperBound : (total > phrase.upperBound && n == (total + 1) / 2)
+            if comma || forced {
+                result.append(n)
+                n = 0
+                total = left
+            }
+        }
+        return result
+    }
+
+    /// The plan for one file. `sentenceWords` is the number of words in each sentence's text, used when the file has
+    /// no word times.
+    static func plan(words: [ClosedRange<TimeInterval>], sentences: [ClosedRange<TimeInterval>], sentenceWords: [Int]) -> Plan {
+        guard !words.isEmpty else {
+            // No word times: a stop between the sentences.
+            let known = min(sentences.count, sentenceWords.count)
+            guard known > 1 else { return Plan(stops: [], tailWords: sentenceWords.reduce(0, +)) }
+            let stops = (0..<known - 1).map { Stop(time: (sentences[$0].upperBound + sentences[$0 + 1].lowerBound) / 2, words: sentenceWords[$0]) }
+            return Plan(stops: stops, tailWords: sentenceWords[(known - 1)...].reduce(0, +))
+        }
+        // The words of each sentence: a word belongs to the first sentence that ends after its middle.
+        var groups: [[Int]] = []
+        var sentence = 0
+        for (i, word) in words.enumerated() {
+            let middle = (word.lowerBound + word.upperBound) / 2
+            var moved = false
+            while sentence < sentences.count - 1, middle > sentences[sentence].upperBound {
+                sentence += 1
+                moved = true
+            }
+            if groups.isEmpty || moved { groups.append([i]) } else { groups[groups.count - 1].append(i) }
+        }
+        var stops: [Stop] = []
+        var tail = 0
+        for group in groups {
+            let gaps = zip(group, group.dropFirst()).map { max(0, words[$1].lowerBound - words[$0].upperBound) }
+            var at = 0
+            for size in phrases(count: group.count, gaps: gaps) {
+                at += size
+                let last = group[at - 1]
+                if last + 1 < words.count {
+                    stops.append(Stop(time: (words[last].upperBound + words[last + 1].lowerBound) / 2, words: size))
+                } else {
+                    tail = size
+                }
+            }
+        }
+        return Plan(stops: stops, tailWords: tail)
     }
 }
 
@@ -100,6 +190,8 @@ final class ReadingPlayer {
     let positions: [Position]
     /// A84 (D151): the chosen tempo, as for the questions (the voice never under 0.7).
     var tempo: Double = 1
+    /// A136 (D220.1): "Skriv i takt": 0,85× and a pause after each phrase (`WritingPace`).
+    var inPace = false
     /// Called when the sentence changes, with the sentence to come back to; 0 after the end (next time from the start).
     var onProgress: (@MainActor (Int) -> Void)?
     /// Every step as one line, for the log and the Simulator tests.
@@ -116,6 +208,8 @@ final class ReadingPlayer {
     /// The part `current` plays, and its sentence times.
     private var currentPart: Int?
     private var currentAudio: ReadingAudio?
+    /// A136: where `current` stops for a pause, when it is read in pace.
+    private var plan: WritingPace.Plan?
     private var failuresInARow = 0
 
     /// `audio` gives a part's file and times, or nil while it is not downloaded; asked each time a part begins.
@@ -269,6 +363,31 @@ final class ReadingPlayer {
         current = nil
         currentPart = nil
         currentAudio = nil
+        plan = nil
+    }
+
+    /// A136: plays on from where the file is: to its end, or in pace to the next phrase's end and a pause there.
+    private func go() {
+        guard let current, let part = currentPart else { return }
+        let end = current.duration > 0 ? current.duration - 0.1 : .infinity
+        if inPace, let stop = plan?.stops.first(where: { $0.time > current.currentTime + 0.05 && $0.time < end }) {
+            current.onFinish = { [weak self] in self?.phraseEnded(part, stop) }
+            current.play(until: stop.time)
+        } else {
+            current.onFinish = { [weak self] in self?.partEnded(part) }
+            current.play(until: nil)
+        }
+    }
+
+    /// A136: a phrase was said. The sound waits (the file stays where it is), then goes on with the next phrase.
+    private func phraseEnded(_ part: Int, _ stop: WritingPace.Stop) {
+        guard phase == .reading, currentPart == part, !isPaused else { return }
+        let seconds = WritingPace.pause(words: stop.words)
+        step("pace: \(stop.words) words, pause \(String(format: "%.1f", seconds)) s")
+        timer.start(seconds: seconds) { [weak self] in
+            guard let self, self.phase == .reading, !self.isPaused, self.currentPart == part else { return }
+            self.go()
+        }
     }
 
     /// Moves the place without sound (while paused).
@@ -287,7 +406,7 @@ final class ReadingPlayer {
             // The same file: only move in it.
             phase = .reading
             current.seek(to: audio.start(of: position.sentence))
-            current.play(until: nil)
+            go()
             return
         }
         drop()
@@ -304,15 +423,17 @@ final class ReadingPlayer {
         do {
             let player = try source.player(for: audio.url)
             failuresInARow = 0
-            player.rate = Float(max(RepetitionPlayer.lowestVoiceRate, tempo))
+            player.rate = Float(inPace ? WritingPace.rate : max(RepetitionPlayer.lowestVoiceRate, tempo))
             let part = position.part
-            player.onFinish = { [weak self] in self?.partEnded(part) }
             current = player
             currentPart = part
             currentAudio = audio
+            plan = inPace ? WritingPace.plan(words: audio.words, sentences: audio.times,
+                                             sentenceWords: parts[part].sentences.map { $0.split(whereSeparator: \.isWhitespace).count })
+                : nil
             let start = audio.start(of: position.sentence)
             if start > 0 { player.seek(to: start) }
-            player.play(until: nil)
+            go()
         } catch {
             failuresInARow += 1
             step("could not open \(audio.url.lastPathComponent): \(error.localizedDescription)")
@@ -328,9 +449,21 @@ final class ReadingPlayer {
 
     private func partEnded(_ part: Int) {
         guard phase == .reading, currentPart == part else { return }
+        let tail = plan?.tailWords
         current = nil
         currentPart = nil
         currentAudio = nil
+        plan = nil
+        if inPace, let tail, tail > 0 {
+            // A136: the last phrase of the part gets its pause too, before the next part (or the next lap).
+            let seconds = WritingPace.pause(words: tail)
+            step("pace: \(tail) words, pause \(String(format: "%.1f", seconds)) s")
+            timer.start(seconds: seconds) { [weak self] in
+                guard let self, self.phase == .reading, !self.isPaused, self.current == nil else { return }
+                self.afterPart(part)
+            }
+            return
+        }
         afterPart(part)
     }
 
@@ -375,7 +508,7 @@ final class ReadingPlayer {
             // D164: the user's pause goes on from the start of the sentence; iOS's own short pause from the word.
             current.seek(to: audio.start(of: position.sentence))
         }
-        current.play(until: nil)
+        go()
     }
 
     private func step(_ line: String) {

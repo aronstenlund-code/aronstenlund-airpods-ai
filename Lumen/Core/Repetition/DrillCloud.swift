@@ -18,6 +18,9 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         var kind: String? = nil
         /// K71 (D190, D191): false until `start`; nil from a server before K71 (always started then).
         var audio_started: Bool? = nil
+        /// A136 (K95, K96): "Hur ska det låta?" and the catalog voice of this exam.
+        var style: String? = nil
+        var voice_id: String? = nil
     }
 
     struct File: Decodable, Sendable, Equatable {
@@ -32,6 +35,8 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         var error: String? = nil
         /// K70 (D185): a text part's file: [start_ms, end_ms] per sentence, in the order of the item's `sentences`.
         var sentences: [[Int]]? = nil
+        /// A136 (D220.1): [start_ms, end_ms] per spoken word, in order; null for a file made before they were kept.
+        var words: [[Int]]? = nil
 
         var isDone: Bool { status == "done" && url != nil }
         var isFailed: Bool { status == "failed" }
@@ -312,6 +317,40 @@ protocol DrillCloudSyncing: AnyObject, Sendable {
     /// K92 (D215.8): what saving and starting this exam would cost, counted by the server exactly as `save` would.
     /// Nothing is saved, queued or counted.
     func cost(_ drill: Drill) async throws(DrillCloudError) -> DrillCost
+    /// A136 (K96): the voices a text can be given (`GET /voices` → `catalog`), and a search in the voice library.
+    func voices() async throws(DrillCloudError) -> [SayVoice]
+    func voiceLibrary(search: String) async throws(DrillCloudError) -> [SayVoice]
+}
+
+/// A136 (K96): a voice from the server's catalog (or from the voice library, then not selectable).
+struct SayVoice: Decodable, Sendable, Equatable, Identifiable {
+    struct Listing: Decodable {
+        var catalog: [SayVoice]? = nil
+        var library: [SayVoice]? = nil
+        var selectable: Bool? = nil
+    }
+
+    var voice_id: String
+    var name: String
+    var gender: String? = nil
+    var age: String? = nil
+    var accent: String? = nil
+    var language: String? = nil
+    /// The voice service's own sample file; listening to it costs nothing.
+    var preview_url: String? = nil
+    var description: String? = nil
+    /// Only for the library: false until the voice is in the catalog. Nil in the catalog (always selectable).
+    var selectable: Bool? = nil
+
+    var id: String { voice_id }
+    var canBeChosen: Bool { selectable ?? true }
+    var previewURL: URL? { preview_url.flatMap(URL.init(string:)).flatMap { $0.scheme == "https" ? $0 : nil } }
+    /// The line under the name: the server's description, else what it knows ("Skånska").
+    var line: String {
+        let said = (description ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        if !said.isEmpty { return said }
+        return (accent ?? "").trimmingCharacters(in: .whitespacesAndNewlines).capitalized
+    }
 }
 
 /// K92: `{cost, remaining, limit, unit, enough}`.
@@ -325,6 +364,9 @@ struct DrillCost: Decodable, Sendable, Equatable {
 extension DrillCloudSyncing {
     /// A server (or a mock) without K92 has no answer; the app then says nothing about the cost before Spela.
     func cost(_ drill: Drill) async throws(DrillCloudError) -> DrillCost { throw .offline("no cost preview") }
+    /// A136 (K96): a server (or a mock) without a voice catalog has no voices to choose.
+    func voices() async throws(DrillCloudError) -> [SayVoice] { [] }
+    func voiceLibrary(search: String) async throws(DrillCloudError) -> [SayVoice] { [] }
     func accountID() async -> String? { nil }
     /// Mocks written before K71: a started exam is what `status` says.
     func start(id: String) async throws(DrillCloudError) -> DrillCloudView { try await status(id: id) }
@@ -353,6 +395,10 @@ final class DrillCloudClient: DrillCloudSyncing {
         // at once, gives the exam that is already there, so one exam can never become two on the server.
         if drill.serverID == nil { info["client_id"] = drill.id.uuidString.lowercased() }
         if drill.serverID == nil, let voice = drill.voiceModel { info["voice_model"] = voice } // K50: locked after
+        // A136 (K95, K96): the style goes with every save and cost (the same text and style costs 0 again); the
+        // catalog voice only at the first save, where it is locked.
+        if let style = Drill.cleanStyle(drill.style) { info["style"] = style }
+        if drill.serverID == nil, let voice = drill.voiceID { info["voice_id"] = voice }
         // A107 (D190, K71): saving never makes sound; Starta prov does. After the start the server makes only the
         // changed files (D144), with or without the flag.
         if drill.isText {
@@ -406,6 +452,49 @@ final class DrillCloudClient: DrillCloudSyncing {
         var body = Self.saveBody(drill)
         body["action"] = "cost"
         return try await call(body, timeout: 15)
+    }
+
+    /// A136 (K96): `GET /voices` → `catalog`, the voices a text can be given. Costs nothing.
+    func voices() async throws(DrillCloudError) -> [SayVoice] {
+        let listing: SayVoice.Listing = try await get(config.voicesURL)
+        return listing.catalog ?? []
+    }
+
+    /// A136 (K96): `GET /voices?library=1&search=…` → the voice library (Swedish). They can be listened to; one is
+    /// selectable only when it is in the catalog.
+    func voiceLibrary(search: String) async throws(DrillCloudError) -> [SayVoice] {
+        let url = config.voicesURL.appending(queryItems: [URLQueryItem(name: "library", value: "1"),
+                                                           URLQueryItem(name: "search", value: search)])
+        let listing: SayVoice.Listing = try await get(url)
+        return (listing.library ?? []).map { voice in
+            var voice = voice
+            voice.selectable = voice.selectable ?? listing.selectable ?? false
+            return voice
+        }
+    }
+
+    private func get<Reply: Decodable>(_ url: URL) async throws(DrillCloudError) -> Reply {
+        let response: HTTPURLResponse
+        let data: Data
+        do {
+            let token = try await auth.accessToken()
+            var request = URLRequest(url: url)
+            request.httpMethod = "GET"
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+            request.markTestTraffic()
+            request.timeoutInterval = 15
+            (response, data) = try await http.data(for: request)
+        } catch {
+            throw .offline(error.localizedDescription)
+        }
+        guard response.statusCode == 200 else { throw Self.refusal(status: response.statusCode, data: data) }
+        do {
+            return try JSONDecoder().decode(Reply.self, from: data)
+        } catch {
+            Log.repetition.error("voices: bad reply \(error.localizedDescription, privacy: .public)")
+            throw .offline("bad reply")
+        }
     }
 
     /// K61 (D175): `/drill quota` → used, limit, left, suggest.
@@ -512,6 +601,7 @@ extension Drill {
                     item.longAudio = mine.longAudio
                     item.shortEndMs = mine.shortEndMs
                     item.sentenceTimesMs = mine.sentenceTimesMs
+                    item.wordTimesMs = mine.wordTimesMs
                 }
             }
             return item
@@ -525,6 +615,8 @@ extension Drill {
                                      covers: view.drill.covers ?? drill.summary.covers)
         if let words = view.drill.long_words { drill.longWords = words }
         if let voice = view.drill.voice_model { drill.voiceModel = voice }
+        if let style = Drill.cleanStyle(view.drill.style) { drill.style = style } // A136 (K95)
+        if let voice = view.drill.voice_id { drill.voiceID = voice } // A136 (K96): locked on the server
         if let started = view.drill.audio_started { drill.audioStarted = started ? nil : false } // A107 (K71)
         if let cost = view.startCost { drill.startCost = cost } // A131 (K90): the server's number, kept for the card
         if let kind = view.drill.kind.flatMap(DrillKind.init(rawValue:)) {
@@ -861,6 +953,7 @@ final class CloudDrillAudio: DrillAudioProviding {
                 }
                 drill.items[i].longAudio = name
                 drill.items[i].sentenceTimesMs = file.sentences
+                if let words = file.words { drill.items[i].wordTimesMs = words } // A136: for "Skriv i takt"
                 continue
             }
             for kind in [0, 1] {
@@ -984,6 +1077,6 @@ final class CloudDrillAudio: DrillAudioProviding {
         guard drill.items.indices.contains(index) else { return nil }
         let item = drill.items[index]
         guard let name = item.longAudio, exists(name) else { return nil }
-        return ReadingAudio(url: fileURL(name), times: item.sentenceTimes ?? [])
+        return ReadingAudio(url: fileURL(name), times: item.sentenceTimes ?? [], words: item.wordTimes ?? [])
     }
 }

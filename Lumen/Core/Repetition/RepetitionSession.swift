@@ -71,6 +71,7 @@ final class RepetitionSession {
         if activatesAudioSession { activatePlayback() }
         let reader = ReadingPlayer(parts: parts, audio: audio, source: makeSource(), timer: makeTimer(), startAt: sentence)
         reader.tempo = tempo
+        reader.inPace = saying?.inPace ?? false
         let defaults = self.defaults
         let id = drill.id
         reader.onProgress = { [weak self] index in
@@ -206,6 +207,8 @@ final class RepetitionSession {
     struct SayOptions: Equatable, Sendable {
         /// Nil = once ("En gång"); else "Upprepa i 5, 10, 20 min".
         var repeatMinutes: Int?
+        /// A136 (D220.1): "Skriv i takt": slower, and a pause after each phrase. Made on the phone, costs nothing.
+        var inPace = false
     }
 
     /// A115: set while a text from "Säg i AirPods" is read (the player then says "Spelar i AirPods" and shows the lap).
