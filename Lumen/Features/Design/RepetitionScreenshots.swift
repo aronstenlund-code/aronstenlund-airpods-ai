@@ -42,7 +42,7 @@ enum RepetitionDemo {
                                       // A131 (D213, Ke71): the month in credits
                                       "repSayCredits", "repSayCreditsShort", "repCreditsSheet",
                                       // A132 (D215): said texts are "Senaste" under the field, not exams
-                                      "repHomeSaid", "repHomeSaidOnly",
+                                      "repHomeSaid", "repHomeSaidOnly", "repSayOnCard",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -285,7 +285,14 @@ enum RepetitionDemo {
             let reader = ReadingPlayer(parts: text.readingParts, audio: { _ in nil }, source: FileRepetitionAudioSource(),
                                        timer: TaskRepetitionTimer())
             reader.stageForScreenshot(.reading, sentence: 1)
-            model.session.stageSaying(text, reader: reader, minutes: name == "repSayPlay" ? 10 : nil, lap: name == "repSayPlay" ? 3 : 1)
+            let goesRound = name == "repSayPlay" || name == "repSayOnCard"
+            model.session.stageSaying(text, reader: reader, minutes: goesRound ? 10 : nil, lap: goesRound ? 3 : 1)
+            if name == "repSayOnCard" { // A132 (D215.6, Ke72): it plays on the card on Start
+                var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
+                credits.unit = "chars"
+                credits.remaining = 1236
+                model.quota = credits
+            }
             return
         }
         if name.hasPrefix("repOff") { // A112 (D200): the voice service is out
@@ -404,7 +411,7 @@ enum RepetitionDemo {
             case "repSayPlay", "repSayPlayOnce": RepetitionPlayerView(model: model)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
-                 "repHomeSaid", "repHomeSaidOnly":
+                 "repHomeSaid", "repHomeSaidOnly", "repSayOnCard":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)

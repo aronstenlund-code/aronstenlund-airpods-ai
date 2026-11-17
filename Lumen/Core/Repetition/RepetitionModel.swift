@@ -591,7 +591,10 @@ final class RepetitionModel {
         session.startReading(drill, at: sentence, tempo: tempo, saying: saying) { part in
             audio.reading(for: store.drill(id) ?? drill, part: part)
         }
-        showsPlayer = true
+        // A132 (D215.6, Kelly Ke72): a text from "Säg i AirPods" plays on its card on Start ("Spelar i AirPods", the
+        // time left, pause and Stoppa); a tap on the text opens the player with the sentences. Without sound (D200)
+        // the player opens as before, since the text is then read on the screen.
+        showsPlayer = saying == nil || isReadingAloudOff(drill)
     }
 
     // MARK: Säg i AirPods (A115, D203)
@@ -603,7 +606,7 @@ final class RepetitionModel {
     /// A130 (D212): a Spela that did not open the player is never silent. The server's own words when it refused
     /// (the month's questions, K64), with when they are filled up; else the sound's problem, else a plain line.
     func sayRefusal(_ drill: Drill) -> String? {
-        guard !showsPlayer else { return nil }
+        guard !showsPlayer, !isSayingOnCard else { return nil }
         let latest = store.drill(drill.id) ?? drill
         return SaidText.refusalLine(problem: audio.problem(for: latest), quotaExceeded: quotaExceeded(latest),
                                     refill: quota?.isCredits == true ? nil : Self.refillLine(quota?.resets))
@@ -617,6 +620,16 @@ final class RepetitionModel {
         calendar.locale = Locale(identifier: "sv_SE")
         return "Fylls på den \(parts[2]) \(calendar.monthSymbols[parts[1] - 1])."
     }
+
+    /// A132 (D215.6): a text from "Säg i AirPods" is being read (or waits for its sound) and has not reached its end.
+    var isSayingOnCard: Bool {
+        guard session.saying != nil, let reader = session.reader else { return false }
+        return !reader.isAtEnd
+    }
+
+    /// A132 (D215.1, Ke72): the field on Start has a text that can be played, or plays one. Then Spela is the one
+    /// filled button and Starta prov is toned down. Set by the field.
+    var sayHoldsTheStage = false
 
     /// How the next text is read (set by `say`, used once by `read`).
     @ObservationIgnored private var sayOptions: RepetitionSession.SayOptions?
@@ -646,7 +659,7 @@ final class RepetitionModel {
         sayOptions = nil
         // A131 (D212 point 3, K90): the credits did not cover it, so the server saved nothing. The phone keeps nothing
         // either: no card on Start for a text that was refused. The text is still in the field, and why is said there.
-        if !showsPlayer, quotaExceeded(drill), let refused = store.drill(drill.id), refused.serverID == nil {
+        if !showsPlayer, !isSayingOnCard, quotaExceeded(drill), let refused = store.drill(drill.id), refused.serverID == nil {
             store.delete(refused.id)
             lastSaid = nil
             return refused

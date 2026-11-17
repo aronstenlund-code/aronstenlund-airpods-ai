@@ -218,6 +218,18 @@ struct RepetitionHomeSection: View {
 
     // MARK: With exams
 
+    private func startLabel(_ saved: Int?) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "play.fill").accessibilityHidden(true)
+            Text(saved == nil ? "Starta prov" : "Fortsätt")
+                .lineLimit(2)
+                .minimumScaleFactor(0.6)
+                .multilineTextAlignment(.center)
+        }
+        .font(.headline)
+        .frame(maxWidth: .infinity)
+    }
+
     /// A115 (D203, Ke69): "Säg i AirPods" is the first thing on Start, above Nästa prov.
     private var sayField: some View {
         SayInAirPodsField(model: model)
@@ -297,22 +309,26 @@ struct RepetitionHomeSection: View {
                 ProgressView(value: Double(saved), total: Double(max(drill.isText ? drill.sentenceCount : drill.items.count, 1)))
                     .accessibilityHidden(true)
             }
-            Button {
-                start(drill)
-            } label: {
-                FilledButtonLabel { // A95
-                    HStack(spacing: 8) {
-                        Image(systemName: "play.fill").accessibilityHidden(true)
-                        Text(saved == nil ? "Starta prov" : "Fortsätt")
-                            .lineLimit(2)
-                            .minimumScaleFactor(0.6)
-                            .multilineTextAlignment(.center)
+            // A132 (D215.1, Kelly Ke72): at most one filled button on Start. While the field has a text to play (or
+            // plays one) Spela is the filled one, and Starta prov is toned down.
+            Group {
+                if model.sayHoldsTheStage {
+                    Button {
+                        start(drill)
+                    } label: {
+                        startLabel(saved)
                     }
-                    .font(.headline)
-                    .frame(maxWidth: .infinity)
+                    .buttonStyle(.bordered)
+                    .tint(.accentColor)
+                } else {
+                    Button {
+                        start(drill)
+                    } label: {
+                        FilledButtonLabel { startLabel(saved) } // A95
+                    }
+                    .buttonStyle(.borderedProminent)
                 }
             }
-            .buttonStyle(.borderedProminent)
             .controlSize(.large)
             .disabled(!model.canStart(drill) && !model.isReadingAloudOff(drill)) // A112b: the text can be opened
             .accessibilityHint(drill.isText ? "Läser upp texten i dina AirPods. EarMind använder inte mikrofonen."

@@ -55,7 +55,23 @@ enum SayText {
     /// The line under the field: what the text counts as, or why it cannot be played now.
     /// A122 (D209, Aron 2026-11-17): the phone does not have to be out. The player goes on with the screen locked
     /// (background audio) and is steered from the Lock Screen and the AirPods.
-    static let lockLine = "Du kan låsa telefonen och lägga undan den. Det hörs i AirPods ändå."
+    /// A132 (D215.2, Kelly Ke72): shorter, and only until Spela has been pressed once.
+    static let lockLine = "Du kan låsa telefonen. Det hörs i AirPods ändå."
+    static let hasPlayedKey = "say.hasPlayed"
+
+    /// A132 (Ke72): the main button says how long: "Spela i 10 min", "Spela i 1 timme".
+    static func playTitle(_ minutes: Int) -> String { "Spela i \(howLong(minutes))" }
+
+    /// A132 (Ke72): the cost as two words by the button: "120 krediter", "0 krediter", or "120 krediter · du har 88".
+    static func creditsLine(cost: Int, left: Int) -> String {
+        cost > left ? "\(CreditText.credits(cost)) · du har \(CreditText.number(left))" : CreditText.credits(cost)
+    }
+
+    /// A132 (Ke72): a said text as a capsule under the field: its beginning, at most about 24 characters.
+    static func capsule(_ text: String) -> String {
+        let flat = text.split(whereSeparator: \.isNewline).joined(separator: " ")
+        return flat.count > 24 ? String(flat.prefix(23)).trimmingCharacters(in: .whitespaces) + "…" : flat
+    }
 
     static func costLine(counts: Int, left: Int?, readingAloudOff: Bool) -> String {
         if readingAloudOff { return CloudDrillAudio.unavailableLine }
@@ -74,6 +90,11 @@ struct SayInAirPodsField: View {
     @State private var isStarting = false
     /// A130 (D212): what the server said when Spela started nothing; cleared when the text changes.
     @State private var refused: String?
+    /// D215.2: the line about the locked phone is said until Spela has been pressed once.
+    @AppStorage(SayText.hasPlayedKey) private var hasPlayed = false
+    /// Ke72: the clipboard has text (asked without reading it, so the system shows no notice).
+    @State private var clipboardHasText = false
+    @Environment(\.scenePhase) private var scenePhase
     @AppStorage("say.repeatMinutes") private var storedMinutes = SayText.defaultRepeat
     private var minutes: Int { SayText.repeatMinutes(storedMinutes) }
     @AppStorage(RepetitionModel.tempoKey) private var tempo: Double = 1
@@ -118,108 +139,125 @@ struct SayInAirPodsField: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 10) {
             card
-            recents
+            if playing == nil { recents }
+        }
+        .onAppear { lookAtClipboard(); setStage() }
+        .onChange(of: scenePhase) { _, phase in if phase == .active { lookAtClipboard() } }
+        .onReceive(NotificationCenter.default.publisher(for: UIPasteboard.changedNotification)) { _ in lookAtClipboard() }
+        .onChange(of: isEmpty) { setStage() }
+        .onChange(of: tooMany) { setStage() }
+        .onChange(of: model.isSayingOnCard) { _, plays in
+            setStage()
+            // What was counted while it played shows in the capsule when it has stopped.
+            if !plays { Task { await model.refreshQuota() } }
         }
     }
 
-    /// A132 (D215): "Senaste". The texts that have been said, newest first; a tap puts the text back in the field.
-    /// They are not exams: they are never "Nästa prov" and never among "Andra prov".
+    private func lookAtClipboard() { clipboardHasText = UIPasteboard.general.hasStrings }
+
+    /// D215.1: at most one filled button on Start. Spela is filled when there is a text that can be played (or one
+    /// plays); then Starta prov is toned down.
+    private func setStage() { model.sayHoldsTheStage = model.isSayingOnCard || (!isEmpty && !tooMany) }
+
+    /// A132 (D215.3, Kelly Ke72): "Senaste". The three latest said texts as capsules in a row under the card; a tap
+    /// puts the text back in the field (it does not play), a long press removes it. They are not exams: they are never
+    /// "Nästa prov" and never among "Andra prov".
     @ViewBuilder
     private var recents: some View {
         let said = Array(model.saidDrills.prefix(3))
         if !said.isEmpty {
-            VStack(alignment: .leading, spacing: 0) {
-                Text("Senaste")
-                    .font(.footnote.weight(.semibold))
-                    .foregroundStyle(.secondary)
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 4)
-                ForEach(said) { drill in
-                    Button {
-                        text = String(drill.saidText.prefix(SaidText.maxChars))
-                    } label: {
-                        Text(verbatim: drill.saidText.replacingOccurrences(of: "\n", with: " "))
-                            .lineLimit(1)
-                            .foregroundStyle(Color.primary)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(.horizontal, 16)
-                            .padding(.vertical, 10)
-                            .contentShape(Rectangle())
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    Text("Senaste").font(.footnote).foregroundStyle(.secondary)
+                    ForEach(said) { drill in
+                        Button {
+                            text = String(drill.saidText.prefix(SaidText.maxChars))
+                        } label: {
+                            Text(verbatim: SayText.capsule(drill.saidText)).font(.footnote).lineLimit(1)
+                        }
+                        .buttonStyle(.bordered)
+                        .buttonBorderShape(.capsule)
+                        .tint(.primary)
+                        .accessibilityHint("Lägger tillbaka texten i fältet")
+                        .contextMenu {
+                            Button("Ta bort", systemImage: "trash", role: .destructive) { model.delete(drill) }
+                        }
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityHint("Lägger tillbaka texten i fältet")
-                    .contextMenu {
-                        Button("Ta bort", systemImage: "trash", role: .destructive) { model.delete(drill) }
-                    }
-                    if drill.id != said.last?.id { Divider().padding(.leading, 16) }
                 }
+                .padding(.horizontal, 2)
             }
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         }
+    }
+
+    // MARK: A132, playing on the card (D215.6)
+
+    /// The text that is being read on the card, if one is.
+    private var playing: (reader: ReadingPlayer, drill: Drill)? {
+        guard model.isSayingOnCard, let reader = model.session.reader, let drill = model.session.drill else { return nil }
+        return (reader, drill)
+    }
+
+    /// Ke72 "Spelar": "● Spelar i AirPods", the text (a tap opens the player with the sentences), pause, the time
+    /// that is left and Stoppa. It is always seen that something plays, and it is stopped with one tap.
+    @ViewBuilder
+    private func playingCard(_ reader: ReadingPlayer, _ drill: Drill) -> some View {
+        let waiting = reader.phase == .waitingForAudio
+        HStack(spacing: 6) {
+            Circle().fill(SayText.accent).frame(width: 8, height: 8).accessibilityHidden(true)
+            Text(waiting ? "Gör ljudet …" : "Spelar i AirPods").font(.footnote.weight(.semibold))
+        }
+        .foregroundStyle(SayText.accent)
+        .accessibilityElement(children: .combine)
+        Button {
+            model.showsPlayer = true
+        } label: {
+            Text(verbatim: drill.saidText)
+                .font(.body.monospaced())
+                .lineLimit(3)
+                .multilineTextAlignment(.leading)
+                .opacity(0.8)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility3)
+        .accessibilityHint("Öppnar spelaren med meningarna")
+        HStack(spacing: 12) {
+            Button {
+                model.session.press(.long)
+            } label: {
+                Image(systemName: reader.isPaused ? "play.fill" : "pause.fill")
+                    .font(.headline)
+                    .foregroundStyle(Color.black)
+                    .frame(width: 44, height: 44)
+                    .background(SayText.accent, in: Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(reader.isPaused ? "Fortsätt" : "Pausa")
+            TimelineView(.periodic(from: .now, by: 1)) { _ in
+                Text(verbatim: "\(SayText.clock(model.session.repeatSecondsLeft)) kvar" + (reader.isPaused ? " · pausad" : ""))
+                    .font(.body.weight(.semibold))
+                    .monospacedDigit()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+            }
+            Spacer(minLength: 8)
+            Button("Stoppa") { model.end() }
+                .foregroundStyle(SayText.accent)
+        }
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
 
     private var card: some View {
         VStack(alignment: .leading, spacing: 10) {
-            // With the largest text the heading and the count are two rows (they were squeezed side by side on SE).
-            let header = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2))
-                : AnyLayout(HStackLayout(alignment: .firstTextBaseline))
-            header {
-                Text("Säg i AirPods").font(.subheadline.weight(.semibold))
-                if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
-                if !isEmpty {
-                    Text("\(chars) tecken").font(.caption.monospaced()).opacity(0.55)
-                }
+            if let playing {
+                playingCard(playing.reader, playing.drill)
+            } else {
+                writingCard
             }
-            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-            HStack(alignment: .top, spacing: 8) { // the empty field keeps three rows: the mark stands at the first
-                Text(verbatim: "›").foregroundStyle(SayText.accent).accessibilityHidden(true)
-                TextField("", text: $text, prompt: Text(typeSize.isAccessibilitySize ? "Skriv här" : "Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(0.45)),
-                          axis: .vertical)
-                    // A132 (D215): at most 5 rows, then it scrolls inside; 3 rows when it is not being written in.
-                    .lineLimit(focused ? (typeSize.isAccessibilitySize ? 2...5 : 3...5) : (typeSize.isAccessibilitySize ? 2...3 : 3...3))
-                    .focused($focused)
-                    .tint(SayText.accent)
-                    .accessibilityLabel("Säg i AirPods, textfält")
-            }
-            .font(.body.monospaced())
-            .dynamicTypeSize(...DynamicTypeSize.accessibility3) // the field stays a field on a small screen
-            if isReadingMaterial || materialNote != nil {
-                HStack(spacing: 8) {
-                    if isReadingMaterial { ProgressView().controlSize(.small) }
-                    Text(verbatim: isReadingMaterial ? "Läser materialet …" : materialNote ?? "")
-                        .font(.footnote)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-                .accessibilityElement(children: .combine)
-            }
-            Text(verbatim: SayText.lockLine) // A122 (D209), Kelly: always, also with an empty field; the cost under it
-                .font(.footnote)
-                .opacity(0.7)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .fixedSize(horizontal: false, vertical: true)
-            if let refused, !isEmpty {
-                // A130 (D212): Spela started nothing. The server's words, and when the month is filled up.
-                Text(verbatim: refused)
-                    .font(.footnote.weight(.semibold))
-                    .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityAddTraits(.updatesFrequently)
-            } else if let credits, !readingAloudOff {
-                // A131 (Kelly Ke71): "Kostar 764 krediter. Upprepningar kostar inget.", or that they do not cover it.
-                let short = credits.cost > credits.left
-                Text(verbatim: short ? CreditText.notEnough(cost: credits.cost, left: credits.left, resetsDay: credits.resetsDay)
-                                     : CreditText.sayLine(cost: credits.cost))
-                    .font(short ? .footnote.weight(.semibold) : .footnote)
-                    .opacity(short ? 1 : 0.7)
-                    .fixedSize(horizontal: false, vertical: true)
-            } else if !isEmpty {
-                Text(verbatim: SayText.costLine(counts: counts, left: sameAsMade == nil ? model.quota?.left : nil,
-                                                 readingAloudOff: readingAloudOff))
-                    .font(.footnote)
-                    .opacity(0.7)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-            controls
         }
         .onChange(of: text) { refused = nil }
         .padding(16)
@@ -260,6 +298,71 @@ struct SayInAirPodsField: View {
 
     /// Kelly (review of A115–A117): the row as it fits. One row; else the small buttons on a row and Spela last; else
     /// every button on a row of its own. Nothing is cut with "…".
+    /// Ke72: the card has only the field and the row of buttons. No heading and no character count: the placeholder
+    /// says what the field is for, and the cost stands by the button.
+    @ViewBuilder
+    private var writingCard: some View {
+        HStack(alignment: .top, spacing: 8) { // the empty field keeps three rows: the mark stands at the first
+            Text(verbatim: "›").foregroundStyle(SayText.accent).accessibilityHidden(true)
+            TextField("", text: $text, prompt: Text(typeSize.isAccessibilitySize ? "Skriv här" : "Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(0.45)),
+                      axis: .vertical)
+                // A132 (D215.4): at most 5 rows, then it scrolls inside; 3 rows when it is not being written in.
+                .lineLimit(focused ? (typeSize.isAccessibilitySize ? 2...5 : 3...5) : (typeSize.isAccessibilitySize ? 2...3 : 3...3))
+                .focused($focused)
+                .tint(SayText.accent)
+                .accessibilityLabel("Säg i AirPods, textfält")
+        }
+        .font(.body.monospaced())
+        .dynamicTypeSize(...DynamicTypeSize.accessibility3) // the field stays a field on a small screen
+        if isReadingMaterial || materialNote != nil {
+            HStack(spacing: 8) {
+                if isReadingMaterial { ProgressView().controlSize(.small) }
+                Text(verbatim: isReadingMaterial ? "Läser materialet …" : materialNote ?? "")
+                    .font(.footnote)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .accessibilityElement(children: .combine)
+        }
+        if !hasPlayed { // D215.2: said until Spela has been pressed once, then never
+            Text(verbatim: SayText.lockLine)
+                .font(.footnote)
+                .opacity(0.7)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        costRow
+        controls
+    }
+
+    /// Ke72: the cost as a short line just above the main button; the server's own line when it refused (D212).
+    @ViewBuilder
+    private var costRow: some View {
+        if let refused, !isEmpty {
+            Text(verbatim: refused)
+                .font(.footnote.weight(.semibold))
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.updatesFrequently)
+        } else if readingAloudOff {
+            Text(verbatim: CloudDrillAudio.unavailableLine).font(.footnote).opacity(0.7).fixedSize(horizontal: false, vertical: true)
+        } else if let credits {
+            let short = credits.cost > credits.left
+            Text(verbatim: SayText.creditsLine(cost: credits.cost, left: credits.left))
+                .font(short ? .footnote.weight(.semibold) : .footnote)
+                .monospacedDigit()
+                .opacity(short ? 1 : 0.7)
+                .frame(maxWidth: .infinity, alignment: typeSize.isAccessibilitySize ? .leading : .trailing)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+        } else if !isEmpty, model.quota?.isCredits != true {
+            // A server that still counts questions.
+            Text(verbatim: SayText.costLine(counts: counts, left: sameAsMade == nil ? model.quota?.left : nil, readingAloudOff: false))
+                .font(.footnote)
+                .opacity(0.7)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    /// Ke72: +, how long, tempo and the main button in one row; with the largest text the main button is a row of its
+    /// own in full width. Nothing is cut with "…".
     private var controls: some View {
         ViewThatFits(in: .horizontal) {
             HStack(spacing: 8) {
@@ -267,7 +370,7 @@ struct SayInAirPodsField: View {
                 howLongMenu
                 tempoMenu
                 Spacer(minLength: 8)
-                playButton(wide: false)
+                mainButton(wide: false)
             }
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 8) {
@@ -275,13 +378,7 @@ struct SayInAirPodsField: View {
                     howLongMenu
                     tempoMenu
                 }
-                playButton(wide: true)
-            }
-            VStack(alignment: .leading, spacing: 10) {
-                addMenu
-                howLongMenu
-                tempoMenu
-                playButton(wide: true)
+                mainButton(wide: true)
             }
         }
     }
@@ -303,18 +400,14 @@ struct SayInAirPodsField: View {
         .smallSayControl()
     }
 
+    /// Ke72: the timer symbol without words; the main button says the time. The menu's heading is "Spela i".
     private var howLongMenu: some View {
         Menu {
-            Picker("Hur länge", selection: Binding(get: { minutes }, set: { storedMinutes = $0 })) {
+            Picker("Spela i", selection: Binding(get: { minutes }, set: { storedMinutes = $0 })) {
                 ForEach(SayText.repeats, id: \.self) { Text(verbatim: SayText.howLong($0)).tag($0) }
             }
         } label: {
-            // Image and Text, not a Label: the Label lost its words in the row ("En gång" became the symbol alone).
-            HStack(spacing: 4) {
-                Image(systemName: "repeat").accessibilityHidden(true)
-                Text(verbatim: SayText.howLong(minutes)).lineLimit(1)
-            }
-            .fixedSize()
+            Image(systemName: "timer")
         }
         .accessibilityLabel("Hur länge, \(minutes == 60 ? "1 timme" : "\(minutes) minuter")")
         .smallSayControl()
@@ -332,21 +425,37 @@ struct SayInAirPodsField: View {
         .smallSayControl()
     }
 
-    private func playButton(wide: Bool) -> some View {
-        Button {
-            play()
-        } label: {
-            HStack(spacing: 6) {
-                if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: "play.fill").accessibilityHidden(true) }
-                Text("Spela").lineLimit(1).fixedSize()
+    /// Ke72 (D215.1): the one button that says what happens: "Spela i 10 min", filled only when there is a text that
+    /// can be played. With an empty field and text on the clipboard it is "Klistra in" (toned down).
+    @ViewBuilder
+    private func mainButton(wide: Bool) -> some View {
+        if isEmpty, clipboardHasText {
+            Button {
+                if let pasted = UIPasteboard.general.string { text = String(pasted.prefix(SaidText.maxChars)) }
+            } label: {
+                Text("Klistra in").font(.subheadline.weight(.semibold)).lineLimit(1).fixedSize()
+                    .frame(maxWidth: wide ? .infinity : nil)
             }
-            .font(.subheadline.weight(.semibold))
-            .frame(maxWidth: wide ? .infinity : nil)
+            .buttonStyle(.bordered)
+            .buttonBorderShape(.capsule)
+            .tint(SayText.accent)
+        } else {
+            Button {
+                play()
+            } label: {
+                HStack(spacing: 6) {
+                    if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: "play.fill").accessibilityHidden(true) }
+                    Text(verbatim: SayText.playTitle(minutes)).lineLimit(1).fixedSize()
+                }
+                .font(.subheadline.weight(.semibold))
+                .frame(maxWidth: wide ? .infinity : nil)
+            }
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.capsule)
+            .tint(SayText.accent)
+            .foregroundStyle(Color.black)
+            .disabled(isEmpty || isStarting || tooMany)
         }
-        .buttonStyle(.borderedProminent)
-        .tint(SayText.accent)
-        .foregroundStyle(Color.black)
-        .disabled(isEmpty || isStarting || tooMany)
     }
 
     // MARK: A116, material into the field
@@ -461,6 +570,7 @@ struct SayInAirPodsField: View {
     /// then, D185). Either way the reading player comes up, and that is where it plays.
     private func play() {
         focused = false
+        hasPlayed = true
         isStarting = true
         let text = self.text
         let minutes: Int? = self.minutes // A124: it always goes round for the chosen time

@@ -21,7 +21,8 @@ import Testing
     }
 
     @Test func theLineUnderTheFieldIsAronsWords() {
-        #expect(SayText.lockLine == "Du kan låsa telefonen och lägga undan den. Det hörs i AirPods ändå.")
+        // A132 (D215.2, Kelly Ke72): shortened, and shown only until Spela has been pressed once.
+        #expect(SayText.lockLine == "Du kan låsa telefonen. Det hörs i AirPods ändå.")
     }
 
     @Test func theLockScreenSaysSagIAirPods() {
@@ -303,7 +304,10 @@ import Testing
 
         let text = "HISTORIA – 1880–1918\nNationalism = stark kärlek till den egna nationen."
         let said = try #require(await model.say(text, repeatMinutes: 10))
+        // D215.6 (Ke72): it plays on the card on Start; the player with the sentences is not put in front of it.
+        #expect(model.isSayingOnCard && !model.showsPlayer && model.sayRefusal(said) == nil)
         model.end()
+        #expect(!model.isSayingOnCard)
         #expect(model.examDrills.map(\.title) == ["Bio"], "Nästa prov and Andra prov are exams only")
         #expect(model.saidDrills.map(\.id) == [said.id], "the text is under Senaste")
         #expect(model.saidDrills.first?.saidText == text, "a tap puts exactly this back in the field")
@@ -326,5 +330,15 @@ import Testing
                                  parts: [DrillItem.textPart("Växter gör socker.", part: .para)])
         #expect(!reading.isSaid, "a text made in Nytt prov is an exam")
         #expect(!A79A81RepetitionTests.bio(2).isSaid)
+    }
+
+    @Test func theCardsWordsAreKellys() {
+        #expect(SayText.playTitle(10) == "Spela i 10 min" && SayText.playTitle(60) == "Spela i 1 timme")
+        #expect(SayText.creditsLine(cost: 120, left: 1236) == "120 krediter")
+        #expect(SayText.creditsLine(cost: 0, left: 88) == "0 krediter")
+        #expect(SayText.creditsLine(cost: 120, left: 88) == "120 krediter · du har 88")
+        #expect(SayText.capsule("Glosor v. 47") == "Glosor v. 47")
+        #expect(SayText.capsule("HISTORIA – 1880–1918\nNationalism = stark kärlek") == "HISTORIA – 1880–1918 Na…")
+        #expect(SayText.capsule("HISTORIA – 1880–1918\nNationalism = stark kärlek").count <= 24)
     }
 }
