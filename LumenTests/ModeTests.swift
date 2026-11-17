@@ -544,6 +544,30 @@ import Testing
         #expect(rig.provider.requests.isEmpty, "no exercise goes through the answer pipeline here")
     }
 
+    /// D199 step 6d (A127): the silent quiz inside Provläge (A20.2) is `SilentQuizController`, a part of `provMode`.
+    /// The screen still reads the quiz through `model.silentQuiz` and starts it with `model.startSilentQuiz()`.
+    @Test func theSilentQuizIsItsOwnController() async {
+        let rig = makeRig(events: [], microphone: .iPhone)
+        let quiz = rig.model.provMode.silentQuiz
+        #expect(quiz.host === rig.model && !quiz.isActive && rig.model.silentQuiz == nil)
+        rig.model.startSilentQuiz()
+        #expect(!quiz.isActive && rig.provider.requests.isEmpty, "only inside a running Provläge")
+
+        await rig.model.startHandsFree(.prov)
+        #expect(rig.model.study.isActive)
+        rig.model.startSilentQuiz()
+        #expect(quiz.isActive && rig.model.silentQuiz != nil && rig.model.hasRunningExercise)
+        #expect(await waitUntil { rig.provider.requests.count == 1 })
+        #expect(rig.provider.requests.first?.fragment == SilentQuiz.questionRequest, "the first question is asked for")
+        rig.model.startSilentQuiz()
+        #expect(rig.provider.requests.count == 1, "a running quiz is not started again")
+        quiz.answeredByVoice()
+        #expect(rig.model.silentQuiz?.awaitingAnswer == false, "no question waits yet, so \"ja\" answers nothing")
+
+        await rig.model.startHandsFree(.standard)
+        #expect(!quiz.isActive && rig.model.silentQuiz == nil, "leaving Provläge ends the quiz, as before")
+    }
+
     /// D199 step 4 (A119): each mode says what the app must show before it starts; the model shows the sheet or
     /// says the line. The same checks as before the move.
     @Test func eachModeSaysWhatItNeedsBeforeItStarts() async {

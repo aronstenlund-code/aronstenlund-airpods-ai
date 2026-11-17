@@ -180,8 +180,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @ObservationIgnored private var paceSignals = PaceSignals()
     @ObservationIgnored private var noteTask: Task<Void, Never>?
     /// A20.2: the silent quiz in Provläge (nod = ja, shake = nej). Nil: not running.
-    private(set) var silentQuiz: SilentQuiz?
-    @ObservationIgnored private var silentQuizSeenAnswers = 0
+    /// D199 step 6d (A127): the quiz is `SilentQuizController` in `provMode` now; the screen reads it here as before.
+    var silentQuiz: SilentQuiz? { provMode.silentQuiz.quiz }
     static let echoTail: TimeInterval = 0.7
     /// A72: when Lumen's last sentence began playing.
     @ObservationIgnored private var lastSentenceStartedAt: Date?
@@ -845,7 +845,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             study.speechDetector = nil
         }
         applyPace()
-        if silentQuiz != nil, newMode != .prov { endSilentQuiz(speak: false) }
+        if silentQuiz != nil, newMode != .prov { provMode.silentQuiz.end(speak: false) }
         study.start()
         if newMode == .prov, miniTest == nil { provStartedAt = Date() }
         controller.log("Hands-free \(newMode.rawValue) started")
@@ -1262,7 +1262,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             case .rizz: rizzMode.turn(text) // D199 step 3
             case .standard:
                 headMotion.stop() // answered with the voice
-                if silentQuiz?.awaitingAnswer == true { silentQuiz?.answered(); noteQuizAnswer() } // A20.2: "ja" / "nej" by voice; A38
+                provMode.silentQuiz.answeredByVoice() // A20.2: "ja" / "nej" by voice; A38
                 standardMode.turn(text) // D199 step 5
             case .prov:
                 // D199 step 6c: the mini test, then the exam session, then the ordinary turn (`ordinaryProvTurn`).
@@ -1594,7 +1594,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     private func stopByVoice() async {
         if silentQuiz != nil {
-            endSilentQuiz() // A20.2: the first "sluta" ends the quiz, the next one Provläge
+            provMode.silentQuiz.end() // A20.2: the first "sluta" ends the quiz, the next one Provläge
             return
         }
         if practice != nil {
@@ -1740,7 +1740,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private func recognizerOpenAfterSpeech(askedNext: Bool) {
         if !askedNext {
             listenForHeadAnswerIfAsked()
-            silentQuizAfterSpeech()
+            provMode.silentQuiz.afterSpeech() // D199 step 6d
             watchForNoteTaking()
             scheduleTip()
             standardMode.more.offerIfShort()
@@ -1865,64 +1865,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     // MARK: - A20.2 Tyst förhör
 
+    /// The button on Lyssnar and "Lumen, tyst förhör". The quiz itself is `SilentQuizController` (D199 step 6d).
     func startSilentQuiz() {
-        guard study.isActive, mode == .prov, silentQuiz == nil else { return }
-        silentQuiz = SilentQuiz()
-        silentQuizSeenAnswers = conversation.answers.count
-        controller.log("Silent quiz started (A20)")
-        tips.markUsed(.quizMe)
-        activated(ActivationRequest(query: SilentQuiz.questionRequest, trigger: .tutor, language: language), persona: tutorPersona())
-        // After `activated` (it interrupts speech): the start line plays before the first question arrives.
-        say(SilentQuiz.startLine)
-        if !headMotion.isAvailable { say(SilentQuiz.noHeadTrackingLine) }
-    }
-
-    func endSilentQuiz(speak: Bool = true) {
-        guard let quiz = silentQuiz else { return }
-        silentQuiz = nil
-        headMotion.stop()
-        controller.log("Silent quiz ended: \(quiz.summary) (A20)")
-        if speak { say(quiz.summary) }
-    }
-
-    /// After Lumen spoke in the quiz: count the new answer once, then wait for a nod or a shake.
-    private func silentQuizAfterSpeech() {
-        guard var quiz = silentQuiz, study.isActive, mode == .prov else { return }
-        let count = conversation.answers.count
-        if count > silentQuizSeenAnswers, let answer = conversation.answers.last?.answer {
-            silentQuizSeenAnswers = count
-            quiz.lumenSaid(answer)
-            silentQuiz = quiz
-        }
-        if quiz.graded >= SilentQuiz.questions || quiz.isFinished {
-            endSilentQuiz()
-            return
-        }
-        if quiz.awaitingAnswer { listenForSilentAnswer() }
-    }
-
-    private func listenForSilentAnswer() {
-        guard headMotion.isAvailable else { return } // the voice answers ("ja" / "nej")
-        headMotion.listen(for: SilentQuiz.answerWindow) { [weak self] gesture in
-            guard let self, self.silentQuiz?.awaitingAnswer == true else { return }
-            self.silentQuiz?.answered()
-            self.noteQuizAnswer() // A38
-            let text = gesture == .nod ? "Ja" : "Nej"
-            self.controller.log("Silent quiz: \(gesture == .nod ? "nod" : "shake") → \(text) (A20)")
-            self.activated(ActivationRequest(query: text, trigger: .tutor, language: self.language), persona: self.tutorPersona())
-        }
-        let asked = silentQuiz?.asked
-        Task { [weak self] in
-            try? await Task.sleep(for: .seconds(SilentQuiz.answerWindow + 0.3))
-            guard let self, var quiz = self.silentQuiz, quiz.awaitingAnswer, quiz.asked == asked else { return }
-            quiz.missed()
-            self.silentQuiz = quiz
-            if quiz.isFinished {
-                self.endSilentQuiz()
-            } else {
-                self.say(SilentQuiz.nudgeLine)
-            }
-        }
+        provMode.silentQuiz.start()
     }
 
     // MARK: - A21.3 the recogniser never stays closed for Lumen's voice longer than that voice should last
@@ -2528,7 +2473,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         provMode.miniTest.drop()
         examSession.drop() // D199 step 6a: as before, without a summary
-        endSilentQuiz()
+        provMode.silentQuiz.end()
         practiceExam.begin(run) // D199 step 6b
     }
 
@@ -3776,6 +3721,8 @@ extension ListeningModel: PracticeExamHost {
 /// D199 step 6c (A126): what Provläge's controller and the mini test use (`ProvModeHost`, `MiniTestHost`): the
 /// model's own calls, unchanged.
 extension ListeningModel: ProvModeHost {
+    func markQuizUsed() { tips.markUsed(.quizMe) }
+
     func markStudyCard(_ id: UUID, right: Bool) {
         studyCards?.mark(id, right: right)
     }
@@ -3789,7 +3736,7 @@ extension ListeningModel: ProvModeHost {
     /// Provläge's ordinary turn: a question to the tutor.
     func ordinaryProvTurn(_ text: String) {
         headMotion.stop() // answered with the voice
-        if silentQuiz?.awaitingAnswer == true { silentQuiz?.answered(); noteQuizAnswer() } // A20.2: "ja" / "nej" by voice; A38
+        provMode.silentQuiz.answeredByVoice() // A20.2: "ja" / "nej" by voice; A38
         // A8.4: several questions in one breath are separate turns, each with its own answer.
         var parts = QuestionSplitter.split(text)
         let first = parts.isEmpty ? text : parts.removeFirst()
