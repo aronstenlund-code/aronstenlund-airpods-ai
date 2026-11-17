@@ -30,8 +30,13 @@ st_l, l = call({"action": "list"}, tok)
 out["big"] = {"status": st, "cost": r.get("cost"), "remaining": r.get("remaining"), "limit": r.get("limit"), "message": r.get("error", {}).get("message"), "saved": sum(1 for d in l.get("drills", []) if d.get("title") == f"K90 stor {tag}")}
 ok["big_402_not_saved"] = st == 402 and r.get("cost") == sum(len(p["text"]) for p in big) and r.get("remaining") == 1500 and out["big"]["saved"] == 0
 ok["kelly_text"] = (r.get("error", {}).get("message") or "").endswith("Nya krediter den 1 december.") and "\u00a0" in (r.get("error", {}).get("message") or "")
+# K92: the cost before saving, the same as the save
 small = [{"kind": "heading", "text": f"Rubrik {tag}"}, {"kind": "para", "text": f"Klorofyll fångar ljus {tag}. Växten bildar glukos."}]
 want = sum(len(p["text"]) for p in small)
+st, pv = call({"action": "cost", "drill": {"kind": "text"}, "items": small}, tok)
+st_l2, l2 = call({"action": "list"}, tok)
+out["preview"] = {"status": st, "cost": pv.get("cost"), "remaining": pv.get("remaining"), "enough": pv.get("enough"), "drills": len(l2.get("drills", []))}
+ok["preview_same_cost_nothing_saved"] = st == 200 and pv.get("cost") == want and pv.get("remaining") == 1500 and pv.get("enough") is True and out["preview"]["drills"] == 0
 st, s = call({"action": "save", "defer_audio": True, "drill": {"kind": "text", "title": f"K90 liten {tag}"}, "items": small}, tok)
 out["small_save"] = {"status": st, "cost": s.get("cost"), "audio_cost": s.get("audio", {}).get("cost"), "started": s.get("drill", {}).get("audio_started")}
 ok["cost_before_start"] = st == 200 and s.get("cost") == want and s.get("audio", {}).get("cost") == want and s["drill"].get("audio_started") is False

@@ -978,3 +978,25 @@ Deno.test("K91 (Oscar O76): deleting a drill keeps the out-of-credits mark, so t
   assertEquals(w.spoken.length, calls, "nothing sent to ElevenLabs");
   assertEquals(w.quota.get("u2") ?? 0, 0);
 });
+
+Deno.test("K92 (D215 8): cost before saving: the same count as save, existing audio 0, nothing saved or queued, limited per account", async () => {
+  const w = world({ credits: 1500 });
+  const files = w.audio.size, spoken = w.spoken.length;
+  const text = [{ kind: "heading", text: "Rubrik" }, { kind: "para", text: "Klorofyll fångar ljus. Växten bildar glukos." }];
+  const c = await w.h("u1")(post({ action: "cost", drill: { kind: "text" }, items: text }));
+  assertEquals(c.status, 200);
+  const j = await c.json();
+  assertEquals([j.cost, j.remaining, j.limit, j.unit, j.enough], [text[0].text.length + text[1].text.length, 1500, 1500, "chars", true]);
+  assertEquals([w.drills.size, w.audio.size, w.spoken.length, w.quota.get("u1") ?? 0], [0, files, spoken, 0], "nothing saved, queued, voiced or counted");
+  // the save then costs exactly that
+  const s = await (await w.h("u1")(post({ action: "save", drill: { kind: "text" }, items: text }))).json();
+  assertEquals(s.cost, j.cost);
+  // the same text again: 0 (its audio exists); questions too
+  assertEquals((await (await w.h("u2")(post({ action: "cost", drill: { kind: "text" }, items: text }))).json()).cost, 0);
+  assertEquals((await (await w.h("u2")(post({ action: "cost", items: ITEMS }))).json()).cost, cost(ITEMS));
+  // a limit per account: the 21st in a minute is refused
+  let last = 200;
+  for (let i = 0; i < 20; i++) last = (await w.h("u3")(post({ action: "cost", items: [{ question: `Fråga ${i}?`, short: "Svar.", long: "Svar." }] }))).status;
+  assertEquals(last, 200);
+  assertEquals((await w.h("u3")(post({ action: "cost", items: ITEMS }))).status, 429);
+});
