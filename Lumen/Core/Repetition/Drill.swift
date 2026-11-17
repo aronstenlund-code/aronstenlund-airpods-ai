@@ -374,6 +374,13 @@ enum SaidText {
 
     /// D185: one question per started 800 characters.
     static func countsAs(_ text: String) -> Int { DrillTextDraft.countsAs(chars: chars(text)) }
+    /// A131 (K90): the characters the server counts as credits while a text is still being written: per line, every run
+    /// of blanks is one space and the line is trimmed. An estimate that can only be too high (a part whose exact text
+    /// already has sound costs 0); the server's `cost` is shown as soon as there is one.
+    static func creditChars(_ text: String) -> Int {
+        parts(text).reduce(0) { $0 + $1.split(whereSeparator: { $0 == " " || $0 == "\t" }).joined(separator: " ").count }
+    }
+
     /// A130 (D212): counted with the server's own number of characters per question (`/drill quota`, K82) when it is
     /// known, so the line under the field says what the server will say.
     static func countsAs(_ text: String, perQuestion: Int?) -> Int {

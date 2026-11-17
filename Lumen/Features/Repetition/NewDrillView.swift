@@ -758,12 +758,18 @@ struct NewDrillView: View {
     /// The month's questions do not cover the text (K70 `counts_as`).
     private func tooLong(_ draft: DrillTextDraft) -> Bool {
         guard let quota = model.quota else { return false }
+        if quota.isCredits { return (draft.cost ?? 0) > quota.left } // A131 (D213, K90): the server's cost
         return draft.countsAs > quota.left
     }
 
     /// Ke63 §5: "Texten räknas som 1 fråga. 11 kvar sedan.", or why it cannot be saved.
     private func countsLine(_ draft: DrillTextDraft) -> String {
         guard let quota = model.quota else { return ReadingText.countsAs(draft.countsAs) }
+        if quota.isCredits { // A131 (D213, Ke71): in credits, with the server's number; nothing is counted here
+            guard let cost = draft.cost else { return "" }
+            return cost > quota.left ? CreditText.notEnough(cost: cost, left: quota.left, resetsDay: quota.resetsDay)
+                : CreditText.sayLine(cost: cost)
+        }
         if draft.countsAs > quota.left {
             return "Texten räknas som \(DrillText.questions(draft.countsAs)), och du har \(quota.left) kvar den här månaden. "
                 + "Ta bort några sidor, eller vänta till den 1 \(ChatGPTImportView.nextMonth())."

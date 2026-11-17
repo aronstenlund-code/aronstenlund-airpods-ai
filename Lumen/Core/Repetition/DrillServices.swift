@@ -35,6 +35,9 @@ struct DrillTextDraft: Sendable, Equatable {
     /// The material was longer than the server reads (40 000 characters, 150 parts).
     var truncated: Bool = false
     var warning: String? = nil
+    /// A131 (D213, K90): what saving and starting the text costs in credits, from `/exam read`; nil from a server
+    /// that counts questions.
+    var cost: Int? = nil
 
     /// A105: the exam to save.
     var drill: Drill { Drill.text(title: title, summary: summary, parts: parts) }
@@ -149,6 +152,8 @@ final class DrillClient: DrillMaking {
         var grade: String?
         var chars: Int?
         var counts_as: Int?
+        /// K90 (D213): the text's cost in credits.
+        var cost: Int?
         var truncated: Bool?
         var warning: String?
     }
@@ -300,9 +305,11 @@ final class DrillClient: DrillMaking {
         if let grade, !grade.isEmpty { body["grade"] = grade }
         if let title, !title.isEmpty { body["title"] = title }
         let reply = try await call(body, timeout: 150)
-        return try Self.textDraft(reply.parts ?? [], title: reply.title, subject: reply.subject, grade: reply.grade,
-                                  chars: reply.chars, countsAs: reply.counts_as, truncated: reply.truncated,
-                                  warning: reply.warning)
+        var draft = try Self.textDraft(reply.parts ?? [], title: reply.title, subject: reply.subject, grade: reply.grade,
+                                       chars: reply.chars, countsAs: reply.counts_as, truncated: reply.truncated,
+                                       warning: reply.warning)
+        draft.cost = reply.cost // A131 (K90)
+        return draft
     }
 
     /// K70's reply as the draft to save; a reply without a readable part is the server's "too little".

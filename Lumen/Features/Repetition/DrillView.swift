@@ -354,7 +354,7 @@ struct DrillView: View {
         if quota.isCredits { // A131 (D213, K90): the server's number, in credits; nothing is counted here
             guard let cost = drill.startCost else { return nil }
             if cost > quota.left {
-                return (CreditText.notEnough(cost: cost, left: quota.left, resetsDay: quota.resets_day), true)
+                return (CreditText.notEnough(cost: cost, left: quota.left, resetsDay: quota.resetsDay), true)
             }
             return (CreditText.cardLine(cost: cost) + ".", false)
         }

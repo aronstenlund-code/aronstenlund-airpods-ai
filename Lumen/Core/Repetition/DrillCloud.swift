@@ -167,6 +167,16 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     /// A131 (D213): the month is counted in credits.
     var isCredits: Bool { unit == "chars" }
 
+    /// "1 december": the server's `resets_day`, or the same read from `resets` (the list's quota has only that, K90).
+    var resetsDay: String? {
+        if let resets_day, !resets_day.isEmpty { return resets_day }
+        let parts = (resets ?? "").split(separator: "-").compactMap { Int($0) }
+        guard parts.count == 3, (1...12).contains(parts[1]), (1...31).contains(parts[2]) else { return nil }
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = Locale(identifier: "sv_SE")
+        return "\(parts[2]) \(calendar.monthSymbols[parts[1] - 1])"
+    }
+
     /// A131: the price table changed shape with the credits (K90), and it may again. A table this app cannot read is
     /// left out; it must never take the month's number with it (the capsule would vanish).
     init(from decoder: any Decoder) throws {

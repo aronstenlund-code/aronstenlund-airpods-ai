@@ -116,7 +116,7 @@ struct CreditsSheet: View {
                         } header: {
                             Text("Så räknas det")
                         } footer: {
-                            Text(verbatim: CreditText.footnote(limit: quota.limit, resetsDay: quota.resets_day))
+                            Text(verbatim: CreditText.footnote(limit: quota.limit, resetsDay: quota.resetsDay))
                         }
                     } else if !rows.isEmpty {
                         Section {

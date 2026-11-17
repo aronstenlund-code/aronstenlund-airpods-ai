@@ -227,6 +227,11 @@ import Testing
         let quota = try JSONDecoder().decode(DrillQuota.self, from: Data(Self.creditsJSON.utf8))
         #expect(quota.isCredits && quota.left == 1236 && quota.limit == 1500 && quota.resets_day == "1 december")
         #expect(quota.line == "1\u{00A0}236 av 1\u{00A0}500 krediter kvar den här månaden")
+        // K90: the list's quota has no `resets_day`; the day is read from `resets` then.
+        let listed = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"unit":"chars","limit":1500,"used":264,"remaining":1236,"resets":"2026-12-01"}"#.utf8))
+        #expect(listed.resetsDay == "1 december" && quota.resetsDay == "1 december")
+        // While a text is written: the server's rule (runs of blanks are one space, lines trimmed, no line breaks).
+        #expect(SaidText.creditChars("  HISTORIA   –  1880  \n\n  Två   ord. ") == "HISTORIA – 1880".count + "Två ord.".count)
         let odd = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"unit":"chars","limit":1500,"used":0,"remaining":1500,"prices":{"unit":"chars"}}"#.utf8))
         #expect(odd.left == 1500 && odd.prices == nil, "a price table this app cannot read does not take the number with it")
         let old = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"used":3,"limit":15,"left":12}"#.utf8))

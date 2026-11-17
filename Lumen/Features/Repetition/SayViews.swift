@@ -113,8 +113,9 @@ struct SayInAirPodsField: View {
     private var credits: (cost: Int, left: Int, resetsDay: String?)? {
         guard let quota = model.quota, quota.isCredits, !isEmpty else { return nil }
         let cost: Int
-        if let same = sameAsMade { cost = model.awaitsAudioStart(same) ? same.startCost ?? chars : 0 } else { cost = chars }
-        return (cost, quota.left, quota.resets_day)
+        let written = SaidText.creditChars(text)
+        if let same = sameAsMade { cost = model.awaitsAudioStart(same) ? same.startCost ?? written : 0 } else { cost = written }
+        return (cost, quota.left, quota.resetsDay)
     }
 
     var body: some View {
