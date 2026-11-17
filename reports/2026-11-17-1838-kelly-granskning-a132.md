@@ -21,3 +21,8 @@ Klistra in-läget (urklipp med text) är inte på bild; simulatorn har inget urk
 ## Omgång 2 (19:10): 17 Pro
 `fable/screens-a132-17pro-4` (körning 44139555818, 4887f4e): **G3 stängd** (kortet direkt under kapseln), **G4 stängd**
 (kapseln "1 236 krediter kvar"), fältet tonar ut på tredje raden. G1 och G2 väntar på `fable/screens-a132-se-xxxl-3`.
+
+## Omgång 3 (19:41): SE största text – godkänt
+`fable/screens-a132-se-xxxl-4` (körning 44139551926, 4887f4e): **G1 stängd** (alla fyra scener visar appen, ingen
+hemskärm), **G2 stängd** (kortet ryms, +, ⏱ och 1,0× på en rad, kostnaden under, "Spela i 10 min" i full bredd, "Stoppa"
+hel). Ljust och mörkt. **A132 är godkänd från min sida.** Klistra in och menyn "Spela i" kontrolleras av Toby i T46.
