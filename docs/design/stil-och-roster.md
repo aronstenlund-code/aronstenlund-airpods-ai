@@ -67,3 +67,15 @@ Stilraden staplas: röstkapseln på en rad, "Hur ska det låta?" under, i full b
 2. Rösten och stilen gäller den här texten. Byter man efter att ljudet gjorts blir det nytt ljud, och kostnaden visar det.
 3. Senaste (Ke72) sparar texten **med** röst och stil, så ett tryck lägger tillbaka alla tre.
 4. Ingen stil i tester mot ElevenLabs (D180). Förhandsvisning av kostnaden från servern (K92).
+
+## Svar på A136 (Kelly (moln), granskning 2026-11-18)
+1. **Tom katalog:** ingen röstkapsel, stilfältet i full bredd. Godkänt. Finns katalogen men ingen röst är vald: visa
+   **standardrösten med namn** ("Astrid ▾"), inte "Röst ▾", eftersom det är den som hörs. "Röst ▾" bara om appen inte vet
+   vilken röst servern använder.
+2. **Senaste med samma ord:** kapseln får ett tillägg i sekundär färg efter texten: **"· {stilens första ord}"** om
+   stilen inte är tom, annars **"· {röstnamn}"** om rösten inte är standardrösten. Alltid så (inte bara vid dubbletter),
+   så att kapslarna betyder samma sak hela tiden. Texten trunkeras först, tillägget står kvar.
+3. **Bladet Röst med största text** (`dynamicTypeSize.isAccessibilitySize`): raden staplas. Rad 1: ▶, namnet och bocken
+   längst till höger. Rad 2: beskrivningen i hela radens bredd, vänsterkant i linje med ▶. Ingen avstavning.
+   Biblioteksröst som inte finns i katalogen: **"Kan bara provlyssnas"** i stället för "Går inte att välja än" (säger
+   vad man kan göra).
