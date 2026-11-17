@@ -17,3 +17,7 @@ och Stoppa. Säg-texter syns inte som Nästa prov. Orden stämmer.
 | G4 | låg | 17 Pro, repHomeCredits | Kapseln säger "312 frågor kvar" (gammal scendata). | Scenen ska ge krediter. |
 
 Klistra in-läget (urklipp med text) är inte på bild; simulatorn har inget urklipp. Toby i T46.
+
+## Omgång 2 (19:10): 17 Pro
+`fable/screens-a132-17pro-4` (körning 44139555818, 4887f4e): **G3 stängd** (kortet direkt under kapseln), **G4 stängd**
+(kapseln "1 236 krediter kvar"), fältet tonar ut på tredje raden. G1 och G2 väntar på `fable/screens-a132-se-xxxl-3`.
