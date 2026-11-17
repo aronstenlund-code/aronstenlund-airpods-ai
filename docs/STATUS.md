@@ -11,6 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Fable (moln), 2026-11-17 14:26: A130 (D212) och A129 (D211) klara, iOS build 44087342486 grön på min gren, ej på enhet.** Ett nekat Spela (402) säger serverns ord under fältet med påfyllningen; samma text blir aldrig ett nytt prov; provets eget id skickas i första sparningen; ett borttaget prov kommer inte tillbaka (Tobys T36). Texterna är i frågor tills A131 (krediter per tecken, D213) byggs på Kevins fält (K90). Varför servern sa 402 är Kevins K89. → `reports/2026-11-17-1426-angela-fable-a130-nekat-spela.md`
 - **Kevin (moln), 2026-11-17 11:30: K88 (D211) klar och driftsatt, live 4/4, 0 ElevenLabs.** `save` tar emot ett frivilligt `client_id`, och samma id från samma konto ger samma prov, även vid två samtidiga anrop (unikt index). Inget raderat; kopian 6c6633c3 ligger kvar. A129 och O75 meddelade. → `reports/2026-11-17-1125-kevin-k88-client-id.md`
 
 - **Angela Fable (moln), 2026-11-17 11:23: orsaken till Arons fynd 08:55 hittad och rättad, iOS build 44059376273 grön på min gren, ej på enhet.** Servern svarade rätt (Kevin, K87). Appen sparade en ny Säg-text två gånger (uppladdningen i bakgrunden och Spela samtidigt): en startad och en ostartad kopia, och med den ostartade kom ljudet aldrig. Nu sparas den en gång. **Aron behöver prova Säg i AirPods igen med nästa app.** Den ostartade kopian ligger kvar på hans konto (Deangelo avgör). → `reports/2026-11-17-1018-angela-fable-arons-fynd-ingen-kontakt.md`
