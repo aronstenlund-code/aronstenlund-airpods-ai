@@ -111,7 +111,14 @@ final class SayFlowTests: XCTestCase {
     }
 
     private func repeatFive() -> Bool {
-        if field.exists, ((field.value as? String) ?? "").isEmpty { tapElement(field, "Säg i AirPods (again)"); field.typeText(Self.text) }
+        // Run 43996745785: the field is empty after a played text, and an empty field's value is its placeholder.
+        if field.exists, !((field.value as? String) ?? "").contains("Klorofyllet") {
+            tapElement(field, "Säg i AirPods (again)")
+            pause(1)
+            field.typeText(Self.text)
+            pause(1)
+            log.append("T36 the field was empty after the first play; typed again")
+        }
         // SayViews: the menu's label is "Hur länge, En gång" (A115).
         guard tap(["Hur länge*", "En gång"], "Hur länge") else { return false }
         guard tap(["Upprepa 5 min", "5 min"], "Upprepa 5 min") else { return false }
@@ -129,7 +136,10 @@ final class SayFlowTests: XCTestCase {
 
     /// Still in the repeating player: 1 press pauses and goes on, 2 presses skip to the next sentence.
     private func pauseAndSkip() -> Bool {
-        if find(["Spelar i AirPods*"]) == nil, !openPlayer() { return false }
+        if find(["Spelar i AirPods*"]) == nil {
+            if field.exists, !((field.value as? String) ?? "").contains("Klorofyllet") { tapElement(field, "Säg i AirPods (again)"); pause(1); field.typeText(Self.text); pause(1) }
+            if !openPlayer() { return false }
+        }
         let pausedBefore = paused()
         Self.press(1); pause(3)
         let first = paused()
