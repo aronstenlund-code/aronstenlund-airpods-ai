@@ -50,7 +50,12 @@ K90 kostar Säg-texten nu **744 krediter** (764 minus rubriken, som redan har lj
   befintligt ljud och import gratis), nytt prov för senare som inte räcker (inget sparat), kostnad före start,
   quota i tecken, text och lång text (delar med ljud gratis), återbetalning i krediter, `/help try` gratis och
   `/exam` 402.
-- Livetest: `kevin-live.yml` med `scripts/k90-live.py` (resultat nedan).
+- **Livetest grönt, 5 av 5** (`kevin-live.yml` körning 44095203779, testkonto med teströst, 0 ElevenLabs).
+  Driftsatt med deploy-backend 44094568221 (grön). Resultat: quota `{unit:"chars", limit:1500, used:0, remaining:1500,
+  resets_day:"1 december"}`; en text på 2 011 tecken gav 402 "Det här kostar 2011 krediter. Du har 1500 kvar. Nya
+  krediter 1 december." och inget sparat prov; en liten text kostade 72 före start (`cost` och `audio.cost`) och 72
+  vid start (used 72); samma text igen kostade 0. Första körningen (44094970169) var röd på mitt eget test: den
+  stora texten kortades till exakt 1 500 tecken (gränsen för en del) och rymdes därför. Rättat i skriptet.
 
 ## Beslut (D213 lämnade detaljerna åt mig)
 - Räknat på **visade** tecken, inte rösttexten. Det är det Aron ser, och det fel som K89 handlade om.
