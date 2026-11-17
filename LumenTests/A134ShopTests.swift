@@ -66,6 +66,8 @@ import Testing
         }
     }
 
+    @MainActor final class Counter { var reads = 0 }
+
     final class FakeAttest: DeviceAttesting, @unchecked Sendable {
         var supported = true
         var keys = 0
@@ -112,8 +114,8 @@ import Testing
     @Test func aPurchaseGoesToTheServerAndIsFinishedOnlyThen() async throws {
         let (shop, front, server, _, _) = try make("a134-buy")
         await shop.load()
-        var walletReads = 0
-        shop.onWalletChanged = { walletReads += 1 }
+        let wallet = Counter()
+        shop.onWalletChanged = { wallet.reads += 1 }
         let account = UUID()
         shop.accountID = { account.uuidString.lowercased() }
         front.outcome = .success(.bought(Self.receipt))
@@ -121,7 +123,7 @@ import Testing
         await shop.buy(shop.packs[0])
         #expect(front.bought.count == 1 && front.bought[0].id == StoreCatalog.ids[0] && front.bought[0].account == account,
                 "the purchase is tied to the account (appAccountToken)")
-        #expect(server.verified == ["signed.transaction.jws"] && front.finished == [42] && walletReads == 1)
+        #expect(server.verified == ["signed.transaction.jws"] && front.finished == [42] && wallet.reads == 1)
         #expect(shop.note == nil && shop.buying == nil)
     }
 
@@ -177,13 +179,13 @@ import Testing
 
     @Test func theWelcomeCreditsAreAskedForOnceWithAProof() async throws {
         let (shop, _, server, attest, defaults) = try make("a141-welcome")
-        var walletReads = 0
-        shop.onWalletChanged = { walletReads += 1 }
+        let wallet = Counter()
+        shop.onWalletChanged = { wallet.reads += 1 }
         await shop.claimWelcome()
         #expect(attest.attested == ["key-1|challenge-1"], "the key attests the server's challenge")
         #expect(server.welcomes.count == 1 && server.welcomes[0].keyID == "key-1" && server.welcomes[0].challenge == "challenge-1")
         #expect(server.welcomes[0].attestation == Data("attestation".utf8).base64EncodedString())
-        #expect(defaults.bool(forKey: CreditShop.welcomeDoneKey) && walletReads == 1)
+        #expect(defaults.bool(forKey: CreditShop.welcomeDoneKey) && wallet.reads == 1)
 
         await shop.claimWelcome()
         let next = CreditShop(front: FakeFront(), server: server, attest: attest, defaults: defaults) // the next app run
