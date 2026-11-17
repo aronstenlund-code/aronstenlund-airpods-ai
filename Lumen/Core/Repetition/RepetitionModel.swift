@@ -257,6 +257,13 @@ final class RepetitionModel {
         }
         drill.questionCount = drill.items.count
         if cloud != nil { drill.needsUpload = true }
+        // Toby (moln) T24, 2026-11-15: an exam that has never been on the server and has no sound has asked for none
+        // (every save defers it, K71), also before the server's first answer. Until then the card said
+        // "Ljud: 0 av 6 klara" for a moment instead of "Ljudet görs när du startar". The server's answer decides after.
+        if cloud != nil, drill.serverID == nil, before?.serverID == nil, drill.audioStarted == nil,
+           drill.items.allSatisfy({ $0.questionAudio == nil && $0.longAudio == nil }) {
+            drill.audioStarted = false
+        }
         store.save(drill)
         prepareAudio(drill)
         return drill

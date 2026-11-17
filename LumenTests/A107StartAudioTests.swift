@@ -131,6 +131,28 @@ import Testing
         #expect(!model.awaitsAudioStart(saved))
     }
 
+    /// Toby (moln) T24, 2026-11-15 (small): the card of a new exam said "Ljud: 0 av 6 klara" for a moment, until the
+    /// server's first answer made it "Ljudet görs när du startar". A new exam has asked for no sound from the start.
+    @Test func aNewExamAwaitsStartaProvBeforeTheServerAnswers() async throws {
+        let (cloud, store, audio, _) = try setup()
+        let session = RepetitionSession(inputs: [], makeSource: { A78RepetitionTests.MockSource() },
+                                        makeTimer: { A78RepetitionTests.MockTimer() },
+                                        defaults: try #require(UserDefaults(suiteName: "a107-\(UUID())")),
+                                        activatesAudioSession: false)
+        let model = RepetitionModel(store: store, session: session, maker: MockDrillMaker(), audio: audio,
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+        let made = model.save(A79A81RepetitionTests.bio(3))
+        #expect(made.serverID == nil, "the server has not answered yet")
+        #expect(made.awaitsAudioStart && model.awaitsAudioStart(made), "no 'Ljud: 0 av 6 klara' before Starta prov")
+
+        // An exam that is on the server and started stays started when it is changed.
+        var started = A79A81RepetitionTests.bio(2)
+        started.serverID = "srv-9"
+        store.save(started)
+        started.title = "Bio 2"
+        #expect(!model.save(started).awaitsAudioStart)
+    }
+
     @Test func anOlderServerCountsAsStarted() throws {
         var info = DrillCloudView.Info(id: "x")
         #expect(Drill.from(DrillCloudView(drill: info, items: [], audio: .init(done: 0, total: 0))).audioStarted == nil)
