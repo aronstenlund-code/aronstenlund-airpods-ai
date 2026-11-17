@@ -384,9 +384,13 @@ final class StudyPlanController {
 /// D199 step 6c (A126): what Provläge's controller uses of `ListeningModel`, beside what its parts use.
 @MainActor
 protocol ProvModeHost: ExamSessionHost, PracticeExamHost, MiniTestHost, SilentQuizHost, StudyPlanHost {
-    /// Provläge's ordinary turn: a question to the tutor, split when several were asked in one breath (A8.4). Still
-    /// the model's, with the tutor's persona, the last turns and the queue it shares with Frågor.
-    func ordinaryProvTurn(_ text: String)
+    /// D83: Provläge's first-start answers (grade, subject, exam date, check questions, explanation length).
+    var studyProfile: StudyProfileStore { get }
+    /// D97: this pass only answers, it never quizzes.
+    var provAnswersOnly: Bool { get }
+    /// A8.4: the rest of a turn split into several questions goes to the queue Provläge shares with Frågor
+    /// (`TurnQueue`).
+    func queueTurns(_ parts: [String])
     /// What follows the name when it is not a command (D74).
     func instruct(_ text: String)
 }
@@ -399,8 +403,9 @@ protocol ProvModeHost: ExamSessionHost, PracticeExamHost, MiniTestHost, SilentQu
 /// 3. the exam session (nothing is answered, only "Lumen, …" counts);
 /// 4. the ordinary turn to the tutor.
 ///
-/// The ordinary turn and the tutor's persona are still in the model.
-/// `StudySessionController` decides when a turn ends, as before.
+/// Since step 7a (A137, D221) the ordinary turn is here too: the question to the tutor, the tutor's persona, the
+/// last turns sent with every call (D87) and the nod that answers a check question (D83). The queue of split turns
+/// is `TurnQueue`, which Frågor shares. `StudySessionController` decides when a turn ends, as before.
 @MainActor
 final class ProvModeController: ListeningModeController {
     let mode: ConversationMode = .prov
@@ -450,14 +455,83 @@ final class ProvModeController: ListeningModeController {
             exam.turn(text)
             return
         }
-        host?.ordinaryProvTurn(text)
+        ordinaryTurn(text)
+    }
+
+    // MARK: - The ordinary turn to the tutor (step 7a)
+
+    /// D87: the wearer's Provläge turns (answered or not), for `context.recent_turns`.
+    private(set) var turns: [AnswerContext.Turn] = []
+
+    /// D83: `persona: "tutor"` + `persona_setup` with the profile, on every Provläge call.
+    func tutorPersona() -> PersonaRequest? {
+        guard let host else { return nil }
+        var profile = host.studyProfile.profile
+        if host.provAnswersOnly { profile.checkQuestions = StudyProfile.CheckQuestions.none } // D97: never quiz
+        return profile.setupText().map { PersonaRequest(persona: "tutor", setup: $0) }
+    }
+
+    /// Provläge's ordinary turn: a question to the tutor.
+    private func ordinaryTurn(_ text: String) {
+        guard let host else { return }
+        host.headMotion.stop() // answered with the voice
+        silentQuiz.answeredByVoice() // A20.2: "ja" / "nej" by voice; A38
+        // A8.4: several questions in one breath are separate turns, each with its own answer.
+        var parts = QuestionSplitter.split(text)
+        let first = parts.isEmpty ? text : parts.removeFirst()
+        if !parts.isEmpty { host.modeLog("\(host.mode.rawValue): one turn split into \(parts.count + 1) parts") }
+        host.queueTurns(parts) // A21.1: turns heard while the last one was answered stay queued
+        host.activated(ActivationRequest(query: first, trigger: .tutor, language: host.language), persona: tutorPersona())
+        recordTurn(first)
+    }
+
+    /// D87: a Provläge turn; answered or not is filled in when the answer is complete.
+    func recordTurn(_ text: String) {
+        turns.append(AnswerContext.Turn(text: text, answered: false))
+        if turns.count > 10 { turns.removeFirst(turns.count - 10) }
+    }
+
+    /// The last three turns before `query` (the turn being answered is the fragment, not a recent turn).
+    func turnsBefore(_ query: String) -> [AnswerContext.Turn] {
+        var before = turns
+        if let last = before.last, AheadAnswer.key(last.text) == AheadAnswer.key(query) { before.removeLast() }
+        return Array(before.suffix(AnswerContext.turnLimit))
+    }
+
+    /// The answer to `question` is complete.
+    func turnAnswered(_ question: String) {
+        guard let index = turns.lastIndex(where: { AheadAnswer.key($0.text) == AheadAnswer.key(question) }) else { return }
+        turns[index].answered = true
+    }
+
+    /// Another exam is studied now: its turns are not this one's.
+    func forgetTurns() {
+        turns = []
+    }
+
+    /// D83: after a yes/no check question in Provläge, a nod or a shake answers it for 6 s. The voice works too.
+    func listenForHeadAnswerIfAsked() {
+        guard let host, host.study.isActive, host.mode == .prov, !silentQuiz.isActive,
+              host.studyProfile.profile.checkQuestions == .yesNo,
+              let answer = host.conversation.answers.last?.answer.trimmingCharacters(in: .whitespacesAndNewlines),
+              answer.hasSuffix("?") else { return }
+        guard host.headMotion.isAvailable else {
+            host.modeLog("Head gestures: not supported by these AirPods, answer with the voice")
+            return
+        }
+        host.headMotion.listen(for: 6) { [weak self] gesture in
+            guard let self, let host = self.host, host.study.isActive, host.study.phase == .listening else { return }
+            let text = gesture == .nod ? "Ja" : "Nej"
+            host.modeLog("Head gesture: \(gesture == .nod ? "nod" : "shake") → \(text)")
+            host.activated(ActivationRequest(query: text, trigger: .tutor, language: host.language), persona: self.tutorPersona())
+        }
     }
 
     /// D80: in Provläge a turn is answered ahead only while it listens and no exercise runs.
     func aheadRequest(for text: String) -> (request: ActivationRequest, persona: PersonaRequest?)? {
         guard let host, host.study.isActive, host.study.phase == .listening,
               !exam.isActive, !practice.isActive, !miniTest.isActive else { return nil }
-        return (ActivationRequest(query: text, trigger: .tutor, language: host.language), host.tutorPersona())
+        return (ActivationRequest(query: text, trigger: .tutor, language: host.language), tutorPersona())
     }
 
     /// "Lumen, …" for a running exercise: the practice exam in Provläge ("Lumen, nästa"), then the exam session.

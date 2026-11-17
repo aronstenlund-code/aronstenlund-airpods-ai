@@ -32,8 +32,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A8.3: the Diagnostics turn rows of the answer in flight and of the answer made ahead.
     private var currentTurnID: UUID?
     private var aheadTurnID: UUID?
-    /// A8.4: Provläge turns split from one utterance, asked one after another.
-    private var studyQueue: [String] = []
+    /// D221 (A137, G7 step 7a): the turns split from one utterance or heard while a turn was answered, asked one
+    /// after another. Frågor and Provläge share it.
+    let turnQueue = TurnQueue()
     private(set) var aheadStats = AheadStats()
     /// The turn being timed, logged at the first sound (D80).
     private var timeline: TurnTimeline?
@@ -93,8 +94,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case moreWindowClosed = "more window closed"
     }
     var listeningEventObserver: (@MainActor (ListeningEvent, Date) -> Void)?
-    /// D87: the wearer's Provläge turns (answered or not), for `context.recent_turns`; the exam they belong to.
-    private(set) var studyTurns: [AnswerContext.Turn] = []
+    /// D87: the exam the Provläge turns belong to. The turns themselves are `provMode.turns` (G7 step 7a).
     private(set) var activeExamID: UUID?
     /// "Lägg till prov" → the microphone button: the next sentence is the exam, said aloud.
     private(set) var awaitingExamStatement = false
@@ -427,6 +427,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         liveMode.host = self
         standardMode.host = self
         provMode.host = self
+        turnQueue.host = self
     }
 
     // MARK: - User actions
@@ -595,7 +596,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         stopListeningForExamStatement()
         answers.sessionLength = nil
         activation.cancelPending()
-        studyQueue.removeAll()
+        turnQueue.clear()
         ownSpeechEnded()
         answers.cancel()
         speaker.interrupt()
@@ -967,19 +968,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                 subject: profile.subject, date: date, topics: profile.topics ?? ""))
     }
 
-    /// D87: a Provläge turn; answered or not is filled in when the answer is complete.
-    private func recordStudyTurn(_ text: String) {
-        studyTurns.append(AnswerContext.Turn(text: text, answered: false))
-        if studyTurns.count > 10 { studyTurns.removeFirst(studyTurns.count - 10) }
-    }
-
-    /// The last three turns before `query` (the turn being answered is the fragment, not a recent turn).
-    private func turnsBefore(_ query: String) -> [AnswerContext.Turn] {
-        var turns = studyTurns
-        if let last = turns.last, AheadAnswer.key(last.text) == AheadAnswer.key(query) { turns.removeLast() }
-        return Array(turns.suffix(AnswerContext.turnLimit))
-    }
-
     /// The exam being studied: the one chosen, else the nearest exam in the profile's subject.
     func currentExamID() -> UUID? {
         if let activeExamID, examPlans?.plans.contains(where: { $0.id == activeExamID }) == true { return activeExamID }
@@ -997,7 +985,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// Provläge for this exam: its grade, subject, date and topics become the profile.
     func useExamPlan(_ plan: ExamPlan) {
-        if activeExamID != plan.id { studyTurns = [] } // another exam: its turns are not this one's
+        if activeExamID != plan.id { provMode.forgetTurns() } // another exam: its turns are not this one's
         activeExamID = plan.id
         var profile = studyProfile.profile
         plan.apply(to: &profile)
@@ -1122,10 +1110,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// D83: `persona: "tutor"` + `persona_setup` with the profile, on every Provläge call.
+    /// It is made by `ProvModeController` since G7 step 7a.
     func tutorPersona() -> PersonaRequest? {
-        var profile = studyProfile.profile
-        if provAnswersOnly { profile.checkQuestions = StudyProfile.CheckQuestions.none } // D97: never quiz
-        return profile.setupText().map { PersonaRequest(persona: "tutor", setup: $0) }
+        provMode.tutorPersona()
     }
 
     /// D82.2: 2 s of silence asks for a way to carry on (was 4 s, D43).
@@ -1252,7 +1239,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 provMode.silentQuiz.answeredByVoice() // A20.2: "ja" / "nej" by voice; A38
                 standardMode.turn(text) // D199 step 5
             case .prov:
-                // D199 step 6c: the mini test, then the exam session, then the ordinary turn (`ordinaryProvTurn`).
+                // D199 step 6c: the mini test, then the exam session, then the ordinary turn to the tutor.
                 provMode.turn(text)
             }
         case .stalled:
@@ -1726,7 +1713,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Lumen's sound is over and the recogniser hears again: now the student can answer (Toby T7 findings 1–2).
     private func recognizerOpenAfterSpeech(askedNext: Bool) {
         if !askedNext {
-            listenForHeadAnswerIfAsked()
+            provMode.listenForHeadAnswerIfAsked() // D83 (G7 step 7a)
             provMode.silentQuiz.afterSpeech() // D199 step 6d
             watchForNoteTaking()
             scheduleTip()
@@ -1735,51 +1722,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if !study.isActive { standardMode.askWaitingQuestionIfIdle() }
     }
 
-    /// A21.1 (Toby T5 finding 1): Scribe delivered several segments at once and the first one ended the turn; the
-    /// others arrive while it is answered. Each becomes its own turn, asked when the answer before is over.
-    private func queueStudyTurn(_ text: String) {
-        let parts = QuestionSplitter.split(text).map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .filter { !$0.isEmpty && !FillerFilter.isOnlyFiller($0) }
-        guard !parts.isEmpty else { return }
-        studyQueue += parts
-        controller.log("\(mode.rawValue): heard while a turn was answered, queued as \(parts.count) turn(s) (A21): \(text)")
-        if study.phase == .listening || (!speaker.isSpeaking && !speaker.hasPendingSpeech && !isAnswerInFlight) {
-            // Nothing is being answered after all (silent answer, failure): ask it now.
-            if askNextStudyPart() { return }
-        }
-    }
-
-    private var isAnswerInFlight: Bool {
-        if case .answering = answers.status { return true }
-        return false
-    }
-
-    /// A8.4: the next turn split from the same utterance, instead of listening again. True: it was asked.
-    private func askNextStudyPart() -> Bool {
-        guard study.isActive, mode == .prov || mode == .standard, !studyQueue.isEmpty else { return false }
-        let next = studyQueue.removeFirst()
-        controller.log("\(mode.rawValue): next part of the same turn: \(next)")
-        activated(ActivationRequest(query: next, trigger: .tutor, language: language), persona: mode == .prov ? tutorPersona() : nil)
-        if mode == .prov { recordStudyTurn(next) }
-        return true
-    }
-
-    /// D83: after a yes/no check question in Provläge, a nod or a shake answers it for 6 s. The voice works too.
-    private func listenForHeadAnswerIfAsked() {
-        guard study.isActive, mode == .prov, silentQuiz == nil, studyProfile.profile.checkQuestions == .yesNo,
-              let answer = conversation.answers.last?.answer.trimmingCharacters(in: .whitespacesAndNewlines),
-              answer.hasSuffix("?") else { return }
-        guard headMotion.isAvailable else {
-            controller.log("Head gestures: not supported by these AirPods, answer with the voice")
-            return
-        }
-        headMotion.listen(for: 6) { [weak self] gesture in
-            guard let self, self.study.isActive, self.study.phase == .listening else { return }
-            let text = gesture == .nod ? "Ja" : "Nej"
-            self.controller.log("Head gesture: \(gesture == .nod ? "nod" : "shake") → \(text)")
-            self.activated(ActivationRequest(query: text, trigger: .tutor, language: self.language), persona: self.tutorPersona())
-        }
-    }
+    // The queue of split turns (A8.4, A21.1) is `TurnQueue`, and the nod that answers a check question (D83) is in
+    // `ProvModeController` (G7 step 7a).
 
     /// D82: the recogniser opens again only when Lumen's voice has really stopped playing, plus 0.7 s for its echo.
     private func reopenRecognizerAfterSpeech() {
@@ -1802,7 +1746,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             self.transcription.setInputGated(false)
             var askedNext = false
             if self.study.isActive {
-                askedNext = self.askNextStudyPart()
+                askedNext = self.turnQueue.askNext()
                 if !askedNext { self.study.resumeListening() }
             }
             self.recognizerOpenAfterSpeech(askedNext: askedNext)
@@ -2090,7 +2034,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         transcription.setInputGated(false)
         var askedNext = false
         if study.isActive, study.phase != .listening {
-            askedNext = askNextStudyPart()
+            askedNext = turnQueue.askNext()
             if !askedNext { study.resumeListening() }
         }
         recognizerOpenAfterSpeech(askedNext: askedNext)
@@ -2127,7 +2071,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private func studyAnswerEnded() {
         guard study.isActive, !mode.isLive, !speaker.hasPendingSpeech, !finishSingleTurn() else { return }
         transcription.setInputGated(false)
-        if !askNextStudyPart() { study.resumeListening() }
+        if !turnQueue.askNext() { study.resumeListening() }
     }
 
     // MARK: - Voice profile and speakers (D81)
@@ -2844,7 +2788,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                  goals: goals.compact,
                                  commands: matched.map { AnswerContext.Command(keyword: $0.keyword, instruction: $0.instruction) },
                                  memories: memory.backendItems(),
-                                 recentTurns: turnsBefore(request.query),
+                                 recentTurns: provMode.turnsBefore(request.query),
                                  examID: currentExamID()?.uuidString,
                                  preferences: preferences.settings, prefProfile: preferences.profile,
                                  prefSubject: prefSubject, prefExam: prefExam,
@@ -3147,9 +3091,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             scheduleKeytermRefresh()
             if !provMode.studyPlan.isSummarizing { studyCardOrGrade(turn) } // A19.2: the summary is its own card
             showActivity()
-            if mode == .prov, let index = studyTurns.lastIndex(where: { AheadAnswer.key($0.text) == AheadAnswer.key(turn.question) }) {
-                studyTurns[index].answered = true
-            }
+            if mode == .prov { provMode.turnAnswered(turn.question) } // D87
             if let link = done?.resource { provMode.studyPlan.linkArrived(link, for: turn) }
             quizKeyArrived(done?.quizKey) // A62 (K40)
             standardMode.more.answerEnded(developed: done?.more, of: turn) // A56 (K13), A67
@@ -3503,7 +3445,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if study.isActive {
             if study.phase != .listening, mode == .prov || mode == .standard, exam == nil, practice == nil, miniTest == nil,
                !study.isPartOfLastTurn(segment.text, at: date) {
-                queueStudyTurn(segment.text) // A21.1: never dropped because a turn is being answered
+                turnQueue.heardWhileAnswering(segment.text) // A21.1: never dropped because a turn is being answered
                 return
             }
             // Provläge decides turns by silence, not by the question gate.
@@ -3567,7 +3509,7 @@ extension ListeningModel: StandardModeHost {
     func voice(in text: String, at date: Date) -> Bool { handleVoice(in: text, at: date) }
     func listeningEvent(_ event: ListeningEvent) { listeningEventObserver?(event, Date()) }
     func markMoreUsed() { tips.markUsed(.moreDetail) }
-    func queueTurns(_ parts: [String]) { studyQueue = parts + studyQueue }
+    func queueTurns(_ parts: [String]) { turnQueue.putFirst(parts) }
 
     func sayDeveloped(_ text: String, after last: AnswerTurn) {
         let turn = AnswerTurn(question: last.question, answer: text, source: "cloud", isOwnQuestion: last.isOwnQuestion)
@@ -3658,17 +3600,10 @@ extension ListeningModel: ProvModeHost {
         studyHistory.record(FlipDeck.concept(for: card, topics: plan.topics), ok: right, exam: examID)
         studyHistory.save()
     }
+}
 
-    /// Provläge's ordinary turn: a question to the tutor.
-    func ordinaryProvTurn(_ text: String) {
-        headMotion.stop() // answered with the voice
-        provMode.silentQuiz.answeredByVoice() // A20.2: "ja" / "nej" by voice; A38
-        // A8.4: several questions in one breath are separate turns, each with its own answer.
-        var parts = QuestionSplitter.split(text)
-        let first = parts.isEmpty ? text : parts.removeFirst()
-        if !parts.isEmpty { controller.log("\(mode.rawValue): one turn split into \(parts.count + 1) parts") }
-        queueTurns(parts) // A21.1: turns heard while the last one was answered stay queued
-        activated(ActivationRequest(query: first, trigger: .tutor, language: language), persona: tutorPersona())
-        recordStudyTurn(first)
-    }
+/// D221 (A137, G7 step 7a): what the queue of split turns uses (`TurnQueueHost`): the model's own calls, unchanged.
+extension ListeningModel: TurnQueueHost {
+    func turnPersona() -> PersonaRequest? { mode == .prov ? tutorPersona() : nil }
+    func turnAsked(_ text: String) { if mode == .prov { provMode.recordTurn(text) } }
 }

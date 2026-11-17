@@ -604,6 +604,40 @@ import Testing
         #endif
     }
 
+    /// D221 (A137, G7 step 7a): Provläge's ordinary turn (the question to the tutor, the tutor's persona, the last
+    /// turns) is in `ProvModeController`, and the queue of split turns is `TurnQueue`, which Frågor shares.
+    @Test func provlagesOrdinaryTurnIsInItsControllerAndTheQueueIsItsOwnPart() async {
+        let rig = makeRig(events: [], microphone: .iPhone)
+        let prov = rig.model.provMode
+        let queue = rig.model.turnQueue
+        #expect(queue.host === rig.model && queue.isEmpty && prov.turns.isEmpty)
+        #expect(rig.model.tutorPersona() == prov.tutorPersona(), "the model asks the controller for the persona")
+
+        // Outside a hands-free session nothing is asked from the queue.
+        queue.putFirst(["Vad är mitos?"])
+        #expect(!queue.askNext() && !queue.isEmpty)
+        queue.clear()
+        #expect(queue.isEmpty)
+
+        await rig.model.startHandsFree(.prov)
+        #expect(rig.model.study.isActive)
+        prov.turn("Vad är mitos?")
+        #expect(await waitUntil { rig.provider.requests.count == 1 })
+        #expect(prov.turns.map(\.text) == ["Vad är mitos?"] && prov.turns.first?.answered == false)
+        #expect(prov.turnsBefore("Vad är mitos?").isEmpty, "the turn being answered is not a recent turn")
+        #expect(prov.turnsBefore("Vad är en cell?").map(\.text) == ["Vad är mitos?"])
+        prov.turnAnswered("Vad är mitos?")
+        #expect(prov.turns.first?.answered == true)
+
+        // A queued turn is asked instead of listening again, and it is a Provläge turn too (D87).
+        queue.putFirst(["Vad är en cell?"])
+        #expect(queue.askNext() && queue.isEmpty)
+        #expect(prov.turns.map(\.text) == ["Vad är mitos?", "Vad är en cell?"])
+
+        prov.forgetTurns() // another exam is studied
+        #expect(prov.turns.isEmpty)
+    }
+
     /// D199 step 4 (A119): each mode says what the app must show before it starts; the model shows the sheet or
     /// says the line. The same checks as before the move.
     @Test func eachModeSaysWhatItNeedsBeforeItStarts() async {
