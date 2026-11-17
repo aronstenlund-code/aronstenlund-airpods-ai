@@ -253,6 +253,8 @@ export async function handleRead(
       parts,
       chars: total,
       counts_as: countsAs(total, perQuestion),
+      // K90 (D213): what the text's audio costs in credits at most (1 per character; parts whose audio exists cost 0 at save)
+      cost: total, unit: "chars",
       language: textLanguage(parts.map((p) => p.text).join(" "), clean(b.subject, 60)) || "sv",
       usage: sumUsage(steps, cfg.planModel ?? provider.model),
       ...(cut ? { truncated: true, warning: `Texten är lång. De första ${total} tecknen läses upp.` } : {}),

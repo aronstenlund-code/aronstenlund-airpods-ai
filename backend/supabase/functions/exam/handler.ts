@@ -107,9 +107,9 @@ export interface ExamDeps {
 }
 
 const MONTHS = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
-/** K64 (Kelly, repetition-texter §6): "Nya frågor går att göra från den 1 december." */
-function newFrom(nowMs: number): string {
-  return `Nya frågor går att göra från den 1 ${MONTHS[Number(monthResets(nowMs).slice(5, 7)) - 1]}.`;
+/** K90 (D213): "1 december", when the month's credits start again. */
+function resetsDay(nowMs: number): string {
+  return `1 ${MONTHS[Number(monthResets(nowMs).slice(5, 7)) - 1]}`;
 }
 /** K61: the first day of next month in Stockholm time (when the month's questions start again). */
 function monthResets(nowMs: number): string {
@@ -366,17 +366,19 @@ export function createExamHandler(deps: ExamDeps) {
         // K61 (D175): never more questions than the month has left; none left = say so before any work
         const req0 = { ...((b ?? {}) as Record<string, unknown>) };
         delete req0._max_questions;
-        let quota: { used: number; limit: number; left: number; per: "month"; resets: string } | null = null;
+        // K90 (D213): the quota is credits (characters of new audio); none left = say so before any work. The number
+        // of questions is not capped by it (what the audio costs is told at save: cost)
+        let quota: { unit: "chars"; used: number; limit: number; left: number; remaining: number; per: "month"; resets: string } | null = null;
         if ((action === "drill" || action === "read") && deps.quota) {
           const q = await deps.quota(user.id);
-          quota = { used: q.used, limit: q.lim, left: Math.max(0, q.lim - q.used), per: "month", resets: monthResets(Date.now()) };
-          if (quota.left <= 0) {
+          const left = Math.max(0, q.lim - q.used);
+          quota = { unit: "chars", used: q.used, limit: q.lim, left, remaining: left, per: "month", resets: monthResets(Date.now()) };
+          if (left <= 0) {
             return json({
-              error: { code: "quota_exceeded", message: `Du har inga frågor kvar den här månaden. ${newFrom(Date.now())} Andras prov är gratis.`, fallback: false },
+              error: { code: "quota_exceeded", message: `Du har inga krediter kvar den här månaden. Nya krediter ${resetsDay(Date.now())}. Andras prov är gratis.`, fallback: false },
               ...quota,
             }, 402);
           }
-          req0._max_questions = quota.left;
         }
         // K70 (D185): Läsläget, the material cleaned for reading aloud (read.ts); the quota is counted at save
         const { body, steps } = action === "read"

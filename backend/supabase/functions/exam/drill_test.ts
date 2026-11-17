@@ -503,23 +503,24 @@ Deno.test("K54 an intro is asked again; on the last try it is kept rather than n
   assertEquals([r2.items[0].short, m], ["Fotosyntes är en viktig process.", 3], "kept on the last, lenient try");
 });
 
-Deno.test("K61 D175: /exam drill never makes more questions than the month has left; none left = 402 before any work", async () => {
+Deno.test("K90 (D213): /exam drill says the credits (characters) left; none left = 402 before any work", async () => {
   const llm = new ScriptLLM();
   const mkQ = (used: number) =>
     createExamHandler({
       authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
       rateLimiter: new MemoryRateLimiter(),
       provider: llm,
-      quota: () => Promise.resolve({ used, lim: 15 }),
+      quota: () => Promise.resolve({ used, lim: 1500 }),
     });
-  const r = await mkQ(13)(post({ action: "drill", text: "Fotosyntes ... (påhittat material)", questions: 20, _max_questions: 99 }));
+  const r = await mkQ(1300)(post({ action: "drill", text: "Fotosyntes ... (påhittat material)", questions: 3 }));
   const j = await r.json();
-  assertEquals(j.items.length, 2, "2 left of 15");
-  assertEquals([j.quota.left, j.quota.limit], [2, 15]);
+  assertEquals([j.quota.unit, j.quota.remaining, j.quota.left, j.quota.limit], ["chars", 200, 200, 1500]);
   const calls = llm.calls.length;
-  const none = await mkQ(15)(post({ action: "drill", text: "material", questions: 20 }));
+  const none = await mkQ(1500)(post({ action: "drill", text: "material", questions: 20 }));
   assertEquals(none.status, 402);
-  assertEquals((await none.json()).error.code, "quota_exceeded");
+  const e = await none.json();
+  assertEquals(e.error.code, "quota_exceeded");
+  assert((e.error.message as string).startsWith("Du har inga krediter kvar den här månaden. Nya krediter 1 "));
   assertEquals(llm.calls.length, calls, "no model call when nothing is left");
 });
 

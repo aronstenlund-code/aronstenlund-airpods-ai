@@ -5,7 +5,7 @@ import { questionKey } from "./length.ts";
 import { runWithTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
-function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: number; busy?: number; outOfCredits?: boolean } = {}) {
+function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean } = {}) {
   let busy = opts.busy ?? 0;
   let out = !!opts.outOfCredits; // K78: credits can come back
   const quota = new Map<string, number>();
@@ -127,11 +127,11 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
       Promise.resolve([...audio.values()].some((a) => a.status === "failed" && (a.error ?? "").startsWith("audio_unavailable") &&
         (a.voice_id === TEST_VOICE_ID) === test && (a.done_at ?? "") >= since)),
     setRefunded: (id: string, n: number) => {
-      drills.get(id)!.refunded = n;
+      drills.get(id)!.refunded_chars = n;
       return Promise.resolve();
     },
     useQuota: (u: string, n: number) => {
-      const used = quota.get(u) ?? 0, lim = opts.freeQuestions ?? 30;
+      const used = quota.get(u) ?? 0, lim = opts.credits ?? 1_000_000; // K90 (D213): credits = characters
       if (n > 0 && used + n > lim) return Promise.resolve({ ok: false, used, lim });
       quota.set(u, used + n);
       return Promise.resolve({ ok: true, used: used + n, lim });
@@ -195,6 +195,8 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
 }
 const CUE = "Tryck en gång för svaret.";
 const post = (b: unknown) => new Request("http://x/drill", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
+/** K90 (D213): credits = the shown characters of a question and its long answer. */
+const cost = (its: { question: string; long: string }[]) => its.reduce((n, i) => n + i.question.length + i.long.length, 0);
 const ITEMS = [
   { question: "Varför behövs klorofyll?", short: "Klorofyll fångar ljusenergi.", long: "Klorofyll fångar ljusenergi. Utan den kan växten inte bilda glukos." },
   { question: "Hur bildas en näringsväv?", short: "Kedjor hakar i varandra.", long: "Kedjor hakar i varandra. De flesta djur äter mer än en sorts föda." },
@@ -427,28 +429,44 @@ Deno.test("K50 voice: chosen before the audio (A/B/C or the model id), locked af
   assertEquals(a.audio.credits, w.spoken.slice(0, 4).reduce((m, t) => m + Math.round(t.length * 0.4), 0), "what ElevenLabs charged is kept");
 });
 
-Deno.test("K50 limit: 30 generated questions per account by default (402 with the numbers); imported and existing audio never count", async () => {
-  const w = world({ freeQuestions: 3 });
-  const two = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
-  assertEquals(two.generated_questions, 2);
+Deno.test("K90 (D213) limit: credits = characters of new audio (402 with cost, remaining, limit); nothing saved; existing audio and imports cost 0", async () => {
+  const c2 = cost(ITEMS);
   const more = [{ question: "Varför regnar det?", short: "Moln släpper vatten.", long: "Moln släpper vatten. Mer." }, { question: "Hur fungerar ett öga?", short: "Ljus bryts.", long: "Ljus bryts. Mer." }];
+  const w = world({ credits: c2 + cost([more[0]]) });
+  const two = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals([two.cost, two.unit, two.generated_questions], [c2, "chars", 2]);
+  assertEquals(w.quota.get("u1"), c2);
   const r = await w.h("u1")(post({ action: "save", items: more }));
   assertEquals(r.status, 402);
   const j = await r.json();
-  assertEquals([j.error.code, j.used, j.limit, j.needed, j.per, j.resets], ["quota_exceeded", 2, 3, 2, "month", "2026-12-01"]);
-  assert(j.error.message.includes("den här månaden"));
-  assert(j.error.message.includes("Andras prov är gratis") && j.error.message.includes("Nya frågor går att göra från den 1 ") && !j.error.message.includes("Köp"));
+  assertEquals([j.error.code, j.unit, j.cost, j.remaining, j.limit, j.resets], ["quota_exceeded", "chars", cost(more), cost([more[0]]), c2 + cost([more[0]]), "2026-12-01"]);
+  assertEquals(j.error.message, `Det här kostar ${cost(more)} krediter. Du har ${cost([more[0]])} kvar. Nya krediter 1 december.`);
+  assertEquals([j.used, j.needed, j.per], [c2, cost(more), "month"], "old fields kept");
   assertEquals(w.drills.size, 1, "nothing saved");
-  // the same questions again (audio exists): 0 generated, free
-  assertEquals((await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json()).generated_questions, 0);
+  // the same questions again (audio exists): costs 0
+  assertEquals((await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json()).cost, 0);
   // someone else's drill, shared: free
   const { code } = await (await w.h("u1")(post({ action: "share", id: two.drill.id }))).json();
-  const imp = await w.h("u2")(post({ action: "import", code }));
-  assertEquals(imp.status, 200);
+  assertEquals((await w.h("u2")(post({ action: "import", code }))).status, 200);
   assertEquals(w.quota.get("u2") ?? 0, 0);
   // one more own question fits exactly
   assertEquals((await w.h("u1")(post({ action: "save", items: [more[0]] }))).status, 200);
-  assertEquals((await (await w.h("u1")(post({ action: "list" }))).json()).quota, { used: 3, limit: 3, left: 0, per: "month", resets: "2026-12-01" });
+  const l = (await (await w.h("u1")(post({ action: "list" }))).json()).quota;
+  assertEquals([l.unit, l.used, l.limit, l.remaining, l.left], ["chars", c2 + cost([more[0]]), c2 + cost([more[0]]), 0, 0]);
+});
+
+Deno.test("K90 (D212 3) a new drill saved for later whose cost the credits cannot pay is refused and not saved; an old one is kept", async () => {
+  const w = world({ credits: cost(ITEMS) - 1 });
+  const r = await w.h("u1")(post({ action: "save", defer_audio: true, drill: { title: "Säg" }, items: ITEMS }));
+  assertEquals(r.status, 402);
+  assertEquals((await r.json()).cost, cost(ITEMS));
+  assertEquals(w.drills.size, 0, "no unstarted drill is left behind");
+  const one = await (await w.h("u1")(post({ action: "save", defer_audio: true, items: [ITEMS[0]] }))).json();
+  assertEquals([one.cost, one.audio.cost, one.drill.audio_started], [cost([ITEMS[0]]), cost([ITEMS[0]]), false], "the cost is known before start");
+  assertEquals(w.quota.get("u1") ?? 0, 0, "nothing counted before start");
+  const st = await (await w.h("u1")(post({ action: "start", id: one.drill.id }))).json();
+  assertEquals([st.cost, st.audio.cost], [cost([ITEMS[0]]), 0]);
+  assertEquals(w.quota.get("u1"), cost([ITEMS[0]]));
 });
 
 Deno.test("K52 D155: the month the limit starts again, in Swedish time", async () => {
@@ -459,13 +477,13 @@ Deno.test("K52 D155: the month the limit starts again, in Swedish time", async (
 });
 
 Deno.test("Cue: 'Tryck en gång för svaret.' in the drill's own voice, made once per voice, never counted", async () => {
-  const w = world({ freeQuestions: 2 });
+  const w = world();
   const a = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
   const j = await (await w.h("u1")(post({ action: "get", id: a.drill.id }))).json();
   assertEquals(j.cue.press_for_answer.status, "done");
   assert(j.cue.press_for_answer.url.startsWith("https://signed/"));
   assertEquals(w.spoken.filter((t) => t === "Tryck en gång för svaret.").length, 1);
-  assertEquals(w.quota.get("u1"), 2, "the cue is not a generated question");
+  assertEquals(w.quota.get("u1"), cost(ITEMS), "the cue costs nothing");
   assertEquals(j.audio.total, 4, "the cue is not part of the drill's progress");
   // another drill, same voice: no new cue; another voice: its own cue
   await w.h("u2")(post({ action: "save", items: ITEMS }));
@@ -498,18 +516,18 @@ Deno.test("K61 D176: each question gets its length (question + long answer to El
   assertEquals(b.length_class, b.voice_chars > 200 ? "too_long" : "longer");
 });
 
-Deno.test("K61 D177: questions already counted in /help try are not counted again when saved", async () => {
-  const w = world({ freeQuestions: 15 });
+Deno.test("K90 (D213): /help try credits no longer change a save; the save costs the characters of its new audio", async () => {
+  const w = world();
   w.credits.add("u1|" + questionKey(ITEMS[0].question));
   const j = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
-  assertEquals([j.generated_questions, j.already_counted], [ITEMS.length - 1, 1]);
-  assertEquals(w.credits.size, 0, "the credit is used once");
+  assertEquals([j.generated_questions, j.cost], [ITEMS.length, cost(ITEMS)]);
 });
 
-Deno.test("K61 D175: quota tells the app what is left and what to suggest (never over 20)", async () => {
-  const w = world({ freeQuestions: 15 });
+Deno.test("K90 (D213): quota says credits in characters: limit, used, remaining, when they come back", async () => {
+  const w = world({ credits: 1500 });
   const q = await (await w.h("u1")(post({ action: "quota" }))).json();
-  assertEquals([q.used, q.limit, q.left, q.suggest, q.per], [0, 15, 15, 15, "month"]);
+  assertEquals([q.unit, q.limit, q.used, q.remaining, q.resets, q.resets_day], ["chars", 1500, 0, 1500, "2026-12-01", "1 december"]);
+  assertEquals([q.left, q.suggest, q.per], [1500, 20, "month"], "old fields kept");
 });
 
 Deno.test("K62b D180: a test account's drill uses the silent test voice, never the real files or voice", async () => {
@@ -624,8 +642,8 @@ const TEXT = [
   { kind: "para", text: "Klorofyll fångar ljuset." },
 ];
 
-Deno.test("K70 save a text: one file per part with times per sentence, counted per started 800 characters, shared by hash", async () => {
-  const w = world({ freeQuestions: 15 });
+Deno.test("K70 save a text: one file per part with times per sentence, costs its characters (K90), shared by hash", async () => {
+  const w = world();
   const r = await w.h("u1")(post({ action: "save", drill: { title: "Bio", kind: "text" }, items: TEXT }));
   assertEquals(r.status, 200);
   const j = await r.json();
@@ -641,8 +659,9 @@ Deno.test("K70 save a text: one file per part with times per sentence, counted p
   assertEquals(times.length, 3, "a time for every displayed sentence");
   assert(times[0][0] === 0 && times[0][1] < times[1][0] && times[1][1] < times[2][0], "in order, not overlapping");
   assertEquals(times[2][1], p.audio.text.duration_ms, "the last sentence ends with the file");
-  assertEquals(j.generated_questions, 1, "under 800 characters = one question");
-  assertEquals(w.quota.get("u1"), 1);
+  const shown = TEXT.reduce((n, t) => n + t.text.length, 0);
+  assertEquals(j.cost, shown, "K90: a text costs its shown characters");
+  assertEquals(w.quota.get("u1"), shown);
   // another account saving the same text: 0 new characters, nothing counted (D144)
   const k = w.spoken.length;
   const r2 = await (await w.h("u2")(post({ action: "save", drill: { kind: "text" }, items: TEXT }))).json();
@@ -657,14 +676,16 @@ Deno.test("K70 save a text: one file per part with times per sentence, counted p
   assertEquals(l.drills[0].kind, "text");
 });
 
-Deno.test("K70 a long text counts every started 800 characters; a question drill is unchanged", async () => {
-  const w = world({ freeQuestions: 15 });
-  const para = "Det här är en mening om cellen och dess delar. ".repeat(40).trim(); // about 1 900 characters
-  const j = await (await w.h("u1")(post({ action: "save", drill: { kind: "text" }, items: [{ kind: "para", text: para.slice(0, 1500) }, { kind: "para", text: para.slice(0, 900) + " Slut." }] }))).json();
-  assertEquals(j.generated_questions, Math.ceil(j.new_chars / 800));
+Deno.test("K90 a long text costs its characters (parts whose audio exists cost 0); a question drill its questions and long answers", async () => {
+  const w = world();
+  const para = "Det här är en mening om cellen och dess delar. ".repeat(40).trim();
+  const parts = [{ kind: "para", text: para.slice(0, 1500) }, { kind: "para", text: para.slice(0, 900) + " Slut." }];
+  const j = await (await w.h("u1")(post({ action: "save", drill: { kind: "text" }, items: parts }))).json();
+  assertEquals(j.cost, parts[0].text.length + parts[1].text.length);
+  const again = await (await w.h("u2")(post({ action: "save", drill: { kind: "text" }, items: [parts[0], { kind: "para", text: "En ny mening." }] }))).json();
+  assertEquals(again.cost, "En ny mening.".length, "the first part's audio exists");
   const q = await (await w.h("u3")(post({ action: "save", items: ITEMS }))).json();
-  assertEquals(q.drill.kind, "questions");
-  assertEquals(q.generated_questions, 2);
+  assertEquals([q.drill.kind, q.cost], ["questions", cost(ITEMS)]);
 });
 
 Deno.test("K70 a test account's text gets silent audio with sentence times (D180)", async () => {
@@ -678,7 +699,7 @@ Deno.test("K70 a test account's text gets silent audio with sentence times (D180
 
 // ---------- K71 (D190): the audio is made at Starta prov ----------
 Deno.test("K71 save with defer_audio: no audio, no count; start makes it all and counts; an edit after start makes only that question", async () => {
-  const w = world({ freeQuestions: 15 });
+  const w = world();
   const s = await (await w.h("u1")(post({ action: "save", defer_audio: true, drill: { title: "Bio" }, items: ITEMS }))).json();
   assertEquals(s.drill.audio_started, false);
   assertEquals(s.generated_questions, 0);
@@ -715,7 +736,7 @@ Deno.test("K71 share and publish of a drill never started make its audio first; 
   const sh = await w.h("u1")(post({ action: "share", id: s.drill.id }));
   assertEquals(sh.status, 200, "the audio was made, then shared");
   assert((await sh.json()).code);
-  assertEquals(w.quota.get("u1"), 2);
+  assertEquals(w.quota.get("u1"), cost(ITEMS));
   const old = await (await w.h("u2")(post({ action: "save", drill: { title: "Gammal app" }, items: [ITEMS[0]] }))).json();
   assertEquals(old.drill.audio_started, true);
   assertEquals(old.audio.done, old.audio.total);
@@ -824,23 +845,23 @@ Deno.test("K77 numbers are masked as in qa-log", async () => {
 
 // ---------- K78 (D200): out of ElevenLabs credits costs the user nothing ----------
 Deno.test("K78 credits run out during the audio: the questions are given back once, the app gets the code with the text", async () => {
-  const w = world({ outOfCredits: true, freeQuestions: 15 });
+  const w = world({ outOfCredits: true });
   const s = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
-  assertEquals(w.quota.get("u1"), 2, "counted at start, before ElevenLabs said no");
+  assertEquals(w.quota.get("u1"), cost(ITEMS), "counted at start, before ElevenLabs said no");
   const st = await (await w.h("u1")(post({ action: "status", id: s.drill.id }))).json();
   assertEquals(st.audio_unavailable, true);
   assertEquals(st.notice, { code: "audio_unavailable", message: "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt." });
-  assertEquals(st.refunded_questions, 2);
+  assertEquals([st.refunded_credits, st.refunded_questions], [cost(ITEMS), cost(ITEMS)], "K90: given back in credits");
   assertEquals(w.quota.get("u1"), 0, "nothing paid for audio that was not made");
   assertEquals(st.items[0].question, ITEMS[0].question, "the text is there as usual");
   assertEquals(st.items[0].long, ITEMS[0].long);
   const again = await (await w.h("u1")(post({ action: "status", id: s.drill.id }))).json();
-  assertEquals(again.refunded_questions, undefined, "given back once");
+  assertEquals(again.refunded_credits, undefined, "given back once");
   assertEquals(w.quota.get("u1"), 0);
 });
 
 Deno.test("K78 known out of credits: Starta prov sends nothing, counts nothing, the drill stays text; credits back: made as usual", async () => {
-  const w = world({ outOfCredits: true, freeQuestions: 15 });
+  const w = world({ outOfCredits: true });
   await w.h("u9")(post({ action: "save", items: [{ question: "Varför regnar det?", short: "Moln.", long: "Moln. Mer." }] })); // a real failure now
   const calls = w.spoken.length;
   const d = await (await w.h("u1")(post({ action: "save", defer_audio: true, items: ITEMS }))).json();
@@ -885,18 +906,18 @@ Deno.test("K78 get on a drill kept as text while credits are out says audio_unav
   assertEquals(g.notice.code, "audio_unavailable");
 });
 
-Deno.test("K82 (D205): quota gives what is left, the limit, when it fills up and the prices per class in one call", async () => {
-  const w = world({ freeQuestions: 15 });
+Deno.test("K82/K90: quota gives credits left, the limit, when they come back and the price (1 credit per character)", async () => {
+  const w = world({ credits: 1500 });
   await w.h("u1")(post({ action: "save", items: ITEMS }));
   const q = await (await w.h("u1")(post({ action: "quota" }))).json();
-  assertEquals([q.used, q.limit, q.left, q.per, q.resets], [2, 15, 13, "month", "2026-12-01"]);
+  assertEquals([q.used, q.limit, q.remaining, q.per, q.resets], [cost(ITEMS), 1500, 1500 - cost(ITEMS), "month", "2026-12-01"]);
+  assertEquals([q.prices.unit, q.prices.per_char], ["chars", 1]);
   assertEquals(q.prices.classes.map((c: { class: string; max_chars: number; tokens: number }) => [c.class, c.max_chars, c.tokens]),
-    [["normal", 100, 40], ["longer", 200, 60], ["too_long", 4000, 80]]);
-  assertEquals(q.prices.read.chars_per_question, 800);
+    [["normal", 100, 40], ["longer", 200, 60], ["too_long", 4000, 80]], "kept for older apps");
 });
 
 Deno.test("K88 the same client_id from the same account is one exam; without it two saves are two; another account has its own", async () => {
-  const w = world({ freeQuestions: 15 });
+  const w = world();
   const cid = "5B6E2F1A-0C3D-4E5F-8A9B-112233445566";
   const a = await w.h("u1")(post({ action: "save", defer_audio: true, drill: { title: "Bio", client_id: cid }, items: ITEMS }));
   assertEquals(a.status, 200);
@@ -931,8 +952,8 @@ Deno.test("K88 the same client_id from the same account is one exam; without it 
   assertEquals(bad.status, 400);
 });
 
-Deno.test("K88 two saves with the same client_id at once: one exam, the second's count given back", async () => {
-  const w = world({ freeQuestions: 15 });
+Deno.test("K88 two saves with the same client_id at once: one exam, the second's credits given back", async () => {
+  const w = world();
   const cid = "11111111-2222-4333-8444-555555555555";
   const [r1, r2] = await Promise.all([1, 2].map(() => w.h("u1")(post({ action: "save", drill: { title: "Samtidigt", client_id: cid }, items: ITEMS }))));
   const [j1, j2] = [await r1.json(), await r2.json()];
@@ -940,5 +961,5 @@ Deno.test("K88 two saves with the same client_id at once: one exam, the second's
   assertEquals(r2.status, 200);
   assertEquals(j1.drill.id, j2.drill.id);
   assertEquals([...w.drills.values()].filter((d) => d.title === "Samtidigt").length, 1);
-  assertEquals(w.quota.get("u1") ?? 0, 2, "the two questions counted once");
+  assertEquals(w.quota.get("u1") ?? 0, cost(ITEMS), "the credits counted once");
 });

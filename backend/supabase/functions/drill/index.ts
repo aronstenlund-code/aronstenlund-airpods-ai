@@ -147,19 +147,19 @@ Deno.serve(withCors(withTestMode("drill",
       pending: async () => (await db.select("drill_audio_files", "select=hash&status=in.(pending,working)&attempts=lt.3&limit=1")).length > 0,
       // K78 (D200)
       refundQuota: async (u, n) => {
-        await db.rpc("refund_drill_quota", { p_user: u, p_n: n });
+        await db.rpc("refund_drill_chars", { p_user: u, p_n: n }); // K90 (D213): characters
       },
       recentUnavailable: async (since, test) =>
         (await db.select("drill_audio_files", `select=hash&status=eq.failed&error=like.audio_unavailable*&voice_id=${test ? "eq" : "neq"}.${TEST_VOICE_ID}&done_at=gte.${encodeURIComponent(since)}&limit=1`)).length > 0,
       setRefunded: async (id, n) => {
-        await db.updateWhere("drills", `id=eq.${encodeURIComponent(id)}`, { refunded: n });
+        await db.updateWhere("drills", `id=eq.${encodeURIComponent(id)}`, { refunded_chars: n }); // K90: characters given back
       },
       requeue: async (hashes) => {
         if (!hashes.length) return;
         await db.updateWhere("drill_audio_files", `status=eq.failed&hash=in.(${list(hashes)})`, { status: "pending", attempts: 0, error: null });
       },
       useQuota: async (u, n) => {
-        const r = (await db.rpc("use_drill_quota", { p_user: u, p_n: n })) as { ok: boolean; used: number; lim: number }[];
+        const r = (await db.rpc("use_drill_chars", { p_user: u, p_n: n })) as { ok: boolean; used: number; lim: number }[]; // K90 (D213): credits = characters
         return r[0] ?? { ok: false, used: 0, lim: 0 };
       },
       // ---------- K64 ----------

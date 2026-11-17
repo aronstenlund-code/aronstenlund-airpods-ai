@@ -48,7 +48,7 @@ Deno.test("K57 outside the app: exactly 'Det kan jag inte svara på.' with a hin
   assertEquals((await mk(ok)(post({}))).status, 400);
 });
 
-Deno.test("K57 try: three questions with answers from a short text, counted as 3 only when made; 402 when not left", async () => {
+Deno.test("K57/K90 try: three questions with answers from a short text; free (no audio is made, D213), even with no credits left", async () => {
   const p = llm((req) => {
     if (req.system.includes("revision list")) return JSON.stringify({ summary: { subject: "Biologi", grade: "åk 8", covers: "x" }, notes: "n", questions_possible: 3, questions: ["Varför A?", "Varför B?", "Varför C?"] });
     if (req.system.includes("You check Swedish exam questions")) return JSON.stringify({ questions: [] });
@@ -56,12 +56,11 @@ Deno.test("K57 try: three questions with answers from a short text, counted as 3
     return JSON.stringify({ answers: qs.map((q) => ({ id: q.id, short: "Ett riktigt svar här.", rest: "Mer." })) });
   });
   const text = "Fotosyntes sker i kloroplasterna. Klorofyll fångar ljus. Växten bildar glukos och syre av koldioxid och vatten.";
-  const j = await (await mk(p, 0)(post({ action: "try", text }))).json();
+  const j = await (await mk(p, 100, 1500)(post({ action: "try", text }))).json();
   assertEquals(j.items.length, 3);
-  assertEquals(j.quota, { used: 3, limit: 15 });
-  const full = await mk(p, 13)(post({ action: "try", text }));
-  assertEquals(full.status, 402);
-  assert(((await full.json()).error.message as string).startsWith("Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 "));
+  assertEquals(j.quota, { unit: "chars", used: 100, limit: 1500, remaining: 1400 }, "nothing counted");
+  const full = await mk(p, 1500, 1500)(post({ action: "try", text }));
+  assertEquals(full.status, 200, "a try never costs credits");
   assertEquals((await mk(p)(post({ action: "try", text: "kort" }))).status, 400);
 });
 

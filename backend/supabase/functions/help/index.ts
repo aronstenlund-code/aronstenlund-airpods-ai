@@ -17,7 +17,7 @@ Deno.serve(withCors(
     provider: providerFromEnv(env),
     recordUsage: supabaseUsageSink(db),
     useQuota: async (u, n) => {
-      const r = (await db.rpc("use_drill_quota", { p_user: u, p_n: n })) as { ok: boolean; used: number; lim: number }[];
+      const r = (await db.rpc("use_drill_chars", { p_user: u, p_n: n })) as { ok: boolean; used: number; lim: number }[];
       return r[0] ?? { ok: false, used: 0, lim: 0 };
     },
     addTryCredits: async (u, keys) => {

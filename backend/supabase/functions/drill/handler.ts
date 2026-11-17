@@ -7,10 +7,10 @@ import { wordsToNumber } from "../answer/svnum.ts";
 import { pronounce } from "../tts/handler.ts";
 import { sentenceTimes, TEXT_LIMITS, voicedPart } from "./text.ts";
 import { polishVoice, preVoice, V4_MODEL, VOICE_RULES_VERSION, withPauseTag } from "./voicerules.ts";
-import { countsAs, textLanguage } from "../exam/read.ts";
+import { textLanguage } from "../exam/read.ts";
 import { composeLong, examLanguage, spokenText } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
-import { lengthClass, lengthLimits, questionKey } from "./length.ts";
+import { lengthClass, lengthLimits } from "./length.ts";
 import { currentTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
 import { type AnalysisRow, pressStats, saveRows, statsRow } from "./analysis.ts";
 
@@ -90,6 +90,9 @@ export interface DrillRow {
   language?: string | null;
   /** K74: the voice text's rules version (1 = before K74, kept for old drills so their hashes stay; 2 = now). */
   voice_rules?: number;
+  /** K90 (D213): credits (characters) charged for this drill's audio and given back when it could not be made. */
+  charged_chars?: number;
+  refunded_chars?: number;
   /** K88 (D211): the app's own id for the exam (its local UUID): the same id from the same account is one exam. */
   client_id?: string | null;
   created_at?: string;
@@ -378,6 +381,49 @@ export function nextMonthStart(nowMs: number): string {
   return m === 12 ? `${y + 1}-01-01` : `${y}-${String(m + 1).padStart(2, "0")}-01`;
 }
 
+/** K90 (D213): "1 december" for the 402 text and the capsule. */
+export function resetsDay(nowMs: number): string {
+  return `1 ${MONTHS[Number(nextMonthStart(nowMs).slice(5, 7)) - 1]}`;
+}
+
+/**
+ * K90 (D213): what new audio costs, in credits = characters of the shown text (Aron: "764 tecken kostar 764
+ * krediter"), per audio file: a text part's text, a question's question and its long answer. Audio that already
+ * exists (any account's, D144) costs 0, and so do repeats.
+ */
+export function creditCost(display: Map<string, number>, hashes: Iterable<string>): number {
+  let n = 0;
+  for (const h of new Set(hashes)) n += display.get(h) ?? 0;
+  return n;
+}
+
+/** The shown characters per audio file of a drill's items (see creditCost). */
+export function displayChars(items: { part?: string | null; question: string; long: string; question_hash: string; long_hash: string }[]): Map<string, number> {
+  const m = new Map<string, number>();
+  for (const i of items) {
+    if (i.part) m.set(i.long_hash, (i.long ?? "").length);
+    else {
+      m.set(i.question_hash, (i.question ?? "").length);
+      m.set(i.long_hash, (i.long ?? "").length);
+    }
+  }
+  return m;
+}
+
+/** K90: the 402 when the credits do not reach; nothing was saved or started. Old fields kept for older apps. */
+export function creditsRefused(cost: number, used: number, limit: number, nowMs: number) {
+  const remaining = Math.max(0, limit - used);
+  return {
+    error: {
+      code: "quota_exceeded",
+      message: `Det här kostar ${cost} krediter. Du har ${remaining} kvar. Nya krediter ${resetsDay(nowMs)}.`,
+      fallback: false,
+    },
+    unit: "chars", cost, remaining, limit, used, resets: nextMonthStart(nowMs),
+    needed: cost, per: "month",
+  };
+}
+
 /** List price per 1 000 characters (ElevenLabs API page, 2026-11-13): Flash half of v2/v3. */
 export const usdPer1k = (model: string, base: number) => /flash|turbo/i.test(model) ? base / 2 : base;
 
@@ -600,6 +646,9 @@ export function createDrillHandler(deps: DrillDeps) {
       audio: {
         done: done.length,
         total: hashes.length,
+        // K90 (D213): what Starta prov would cost now, in credits (shown characters of files not made or failed)
+        cost: creditCost(displayChars(items), hashes.filter((h) => !audio.get(h) || audio.get(h)!.status === "failed")),
+        unit: "chars",
         failed: hashes.filter((h) => audio.get(h)?.status === "failed").length,
         // R10: what this drill's audio costs (whoever generated it first), and its size
         chars,
@@ -824,6 +873,14 @@ export function createDrillHandler(deps: DrillDeps) {
     const out = queue && (fresh.length > 0 || failed.length > 0) && await creditsOut();
     if (out) drill.audio_started_at = existing?.audio_started_at ?? null;
     if (queue && !out && failed.length) await deps.db.requeue(failed);
+    // K90 (D213): the cost in credits (shown characters of the files that need new audio), known before anything is saved
+    const display = displayChars(rows);
+    const cost = creditCost(display, fresh.map((f) => f.hash));
+    if (!queue && !existing && cost > 0) {
+      // D212 (3): a new drill whose audio the credits cannot pay is not saved (no unstarted drill is left behind)
+      const q0 = await deps.db.useQuota(user.id, 0);
+      if (cost > q0.lim - q0.used) return json(creditsRefused(cost, q0.used, q0.lim, now()), 402);
+    }
     if (!queue || out) {
       // K71 (D190): saved as text only; the audio (and the count) waits for Starta prov
       const lost = await saveOrSame(drill, !existing, 0);
@@ -832,7 +889,7 @@ export function createDrillHandler(deps: DrillDeps) {
       await analyse(saveRows(kind, oldItems, rows));
       const saved = await deps.db.drill(drill.id);
       return json({
-        ...(await view(saved ?? drill)), new_chars: 0, chars_on_start: newChars, generated_questions: 0,
+        ...(await view(saved ?? drill)), new_chars: 0, chars_on_start: newChars, generated_questions: 0, cost, unit: "chars",
         ...(out ? { audio_unavailable: true, notice: AUDIO_UNAVAILABLE_NOTICE } : {}),
       });
     }
@@ -844,32 +901,14 @@ export function createDrillHandler(deps: DrillDeps) {
         });
       }
     }
-    // K50 (D151): at most N generated questions per account. A question counts when any of its two files is new;
-    // audio another account already made (shared, published, the same text) is free and never counts
+    // K90 (D213): the credits are characters of new audio (cost above); audio any account already made is free.
+    // generated_questions stays for older apps: the questions (or text parts) that get new audio.
     const freshSet = new Set(fresh.map((f) => f.hash));
-    const genRows = rows.filter((r) => freshSet.has(r.question_hash) || freshSet.has(r.long_hash));
-    // D177: questions already counted in /help try are not counted again
-    const keys = [...new Set(genRows.map((r) => questionKey(r.question)))];
-    const credited = keys.length ? new Set(await deps.db.tryCredits?.(user.id, keys).catch(() => []) ?? []) : new Set<string>();
-    // K70 (D185): a text counts every started N characters of new audio as one question (drill_settings)
-    const perQ = Number((await deps.db.settings?.().catch(() => null))?.text_chars_per_question) || 800;
-    const generated = isText ? countsAs(newChars, perQ) : genRows.filter((r) => !credited.has(questionKey(r.question))).length;
-    if (generated > 0) {
-      const q = await deps.db.useQuota(user.id, generated);
-      if (!q.ok) {
-        return json({
-          error: {
-            code: "quota_exceeded",
-            message: `Du har gjort ${q.used} av ${q.lim} frågor med ljud den här månaden. ${newFrom(now())} Andras prov är gratis.`,
-            fallback: false,
-          },
-          used: q.used,
-          limit: q.lim,
-          needed: generated,
-          per: "month",
-          resets: nextMonthStart(now()),
-        }, 402);
-      }
+    const generated = rows.filter((r) => freshSet.has(r.question_hash) || freshSet.has(r.long_hash)).length;
+    if (cost > 0) {
+      const q = await deps.db.useQuota(user.id, cost);
+      if (!q.ok) return json(creditsRefused(cost, q.used, q.lim, now()), 402);
+      drill.charged_chars = (existing?.charged_chars ?? 0) + cost;
     }
     // the audio is queued first: a failure leaves no half-saved drill (a queued file nobody uses costs nothing)
     if (fresh.length) {
@@ -880,14 +919,13 @@ export function createDrillHandler(deps: DrillDeps) {
         voice_id: f.voice_id, status: "pending", seq: f.seq ?? 0, queued_at: at, sentence_ends: f.sentence_ends ?? null,
       })));
     }
-    const lost = await saveOrSame(drill, !existing, generated);
+    const lost = await saveOrSame(drill, !existing, cost);
     if (lost) return lost;
-    if (credited.size) await deps.db.dropTryCredits?.(user.id, [...credited]).catch(() => {});
     await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
     await analyse(saveRows(kind, oldItems, rows));
     if (fresh.length || failed.length) await kick([...files.keys()]);
     const saved = await deps.db.drill(drill.id);
-    return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated, ...(credited.size ? { already_counted: credited.size } : {}) });
+    return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated, cost, unit: "chars" });
   }
 
   /** K88: the answer to a save whose client_id was already saved: that exam, in the same form, nothing new. */
@@ -926,16 +964,15 @@ export function createDrillHandler(deps: DrillDeps) {
    * question (drills.refunded). Their files are made again later for free (a failed file is never counted again).
    */
   async function refundUnavailable(d: DrillRow, userId: string) {
-    if (!deps.db.refundQuota || !deps.db.setRefunded || (d.shared_from ?? null)) return 0;
+    // K90 (D213): in credits (characters), and never more than this drill was charged in characters (a drill
+    // started before K90 was counted in questions and gives nothing back here)
+    const charged = d.charged_chars ?? 0;
+    if (!deps.db.refundQuota || !deps.db.setRefunded || (d.shared_from ?? null) || charged <= 0) return 0;
     const its = await deps.db.items([d.id]);
     const audio = new Map((await deps.db.audio([...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))])).map((a) => [a.hash, a]));
     const bad = (h: string) => { const a = audio.get(h); return a?.status === "failed" && (a.error ?? "").startsWith(AUDIO_UNAVAILABLE); };
-    const isText = (d.kind ?? "questions") === "text";
-    const perQ = isText ? Number((await deps.db.settings?.().catch(() => null))?.text_chars_per_question) || 800 : 1;
-    const unavailable = isText
-      ? countsAs(its.filter((i) => bad(i.long_hash)).reduce((n, i) => n + (audio.get(i.long_hash)?.text.length ?? 0), 0), perQ)
-      : its.filter((i) => bad(i.question_hash) || bad(i.long_hash)).length;
-    const back = unavailable - (d.refunded ?? 0);
+    const unavailable = Math.min(charged, creditCost(displayChars(its), [...audio.keys()].filter(bad)));
+    const back = unavailable - (d.refunded_chars ?? 0);
     if (back <= 0) return 0;
     await deps.db.refundQuota(userId, back);
     await deps.db.setRefunded(d.id, unavailable);
@@ -986,24 +1023,24 @@ export function createDrillHandler(deps: DrillDeps) {
         return json({ ...r, count: r.items.length });
       }
       if (action === "quota") {
-        // K61 (D175, A99): what Nytt prov may suggest (at most what is left, never more than 20)
+        // K90 (D213): credits are characters of new audio, 1 500 a month (drill_settings.free_chars_per_month)
         const q = await deps.db.useQuota(user.id, 0);
         const left = Math.max(0, q.lim - q.used);
-        // K82 (D205): what costs what, from the same table the save counts with (drill_settings)
         const st = await deps.db.settings?.().catch(() => null) ?? null;
         const lim = lengthLimits(st);
-        const perRead = Number(st?.text_chars_per_question) || 800;
         return json({
-          used: q.used, limit: q.lim, left, suggest: Math.min(left, 20), per: "month", resets: nextMonthStart(now()),
+          unit: "chars", limit: q.lim, used: q.used, remaining: left, resets: nextMonthStart(now()), resets_day: resetsDay(now()),
+          // kept for older apps (K61/K82): left is now credits; suggest is how many questions Nytt prov may offer
+          left, suggest: left > 0 ? 20 : 0, per: "month",
           prices: {
-            // today every question with new audio counts as 1; the tokens are what D176 will charge with payment (D157)
+            unit: "chars", per_char: 1,
             classes: [
               { class: "normal", max_chars: lim.normalMax, questions: 1, tokens: 40 },
               { class: "longer", min_chars: lim.normalMax + 1, max_chars: lim.longerMax, questions: 1, tokens: 60 },
               { class: "too_long", min_chars: lim.longerMax + 1, max_chars: DRILL_STORE_LIMITS.long, questions: 1, tokens: 80 },
             ],
-            read: { chars_per_question: perRead },
-            free: ["shared", "published", "imported", "existing_audio"],
+            read: { chars_per_question: 1 },
+            free: ["shared", "published", "imported", "existing_audio", "repeats"],
           },
         });
       }
@@ -1014,7 +1051,7 @@ export function createDrillHandler(deps: DrillDeps) {
         const doneSet = new Set((hashes.length ? await deps.db.audio(hashes) : []).filter((a) => a.status === "done").map((a) => a.hash));
         const q = await deps.db.useQuota(user.id, 0);
         return json({
-          quota: { used: q.used, limit: q.lim, left: Math.max(0, q.lim - q.used), per: "month", resets: nextMonthStart(now()) },
+          quota: { unit: "chars", used: q.used, limit: q.lim, left: Math.max(0, q.lim - q.used), remaining: Math.max(0, q.lim - q.used), per: "month", resets: nextMonthStart(now()) },
           drills: drills.map((d) => {
             const its = items.filter((i) => i.drill_id === d.id);
             const hs = [...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))];
@@ -1046,7 +1083,7 @@ export function createDrillHandler(deps: DrillDeps) {
         const unavailable = v.items.some((i) => Object.values(i.audio as unknown as Record<string, { error?: string } | undefined>).some((f) => f?.error === AUDIO_UNAVAILABLE)) ||
           // K78: audio still missing while ElevenLabs is out (a drill kept as text by start) says so too
           (v.audio.done < v.audio.total && await creditsOut());
-        return json({ ...v, ...(unavailable ? { audio_unavailable: true, notice: AUDIO_UNAVAILABLE_NOTICE } : {}), ...(refunded ? { refunded_questions: refunded } : {}) });
+        return json({ ...v, ...(unavailable ? { audio_unavailable: true, notice: AUDIO_UNAVAILABLE_NOTICE } : {}), ...(refunded ? { refunded_credits: refunded, refunded_questions: refunded } : {}) });
       }
       if (action === "share") {
         const d = await owned(user.id, b?.id);

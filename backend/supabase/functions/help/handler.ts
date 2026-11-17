@@ -8,7 +8,6 @@ import { CAPS } from "../_shared/capabilities.ts";
 import { HJALP } from "../_shared/hjalp.ts";
 import { DEFAULT_DRILL_CONFIG, type DrillConfig, handleDrill } from "../exam/drill.ts";
 import { questionKey } from "../drill/length.ts";
-import { newFrom } from "../drill/handler.ts";
 
 /**
  * K57 (D166): `POST /help`, the help AI inside the app ("Fråga om EarMind").
@@ -102,24 +101,15 @@ export function createHelpHandler(deps: HelpDeps) {
         if (text.length < 40) throw new HttpError(400, "invalid_request", "Skriv eller klistra in några meningar först.");
         const rl = await enforceLimits(deps.rateLimiter, "help_try", user.id, { perMinute: 3, perDay: 20, globalPerDay: 20_000 }, 1);
         if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många försök just nu. Vänta en liten stund.", { retryAfterSec: rl.retryAfterSec });
-        // D166: counts as 3 of the month's questions; checked first, counted only when the questions were made
-        const q0 = await deps.useQuota(user.id, 0);
-        if (q0.used + 3 > q0.lim) {
-          return json({
-            error: { code: "quota_exceeded", message: `Du har inga frågor kvar den här månaden. ${newFrom(Date.now())} Andras prov är gratis.`, fallback: false },
-            used: q0.used,
-            limit: q0.lim,
-            needed: 3,
-          }, 402);
-        }
+        // K90 (D213): only new audio costs credits; a try makes questions without audio and is free (the rate limit stays)
         const { body, steps } = await handleDrill("drill", { text, questions: 3, long_words: 90 }, deps.provider, deps.drill ?? DEFAULT_DRILL_CONFIG, req.signal);
-        const q = await deps.useQuota(user.id, 3);
+        const q = await deps.useQuota(user.id, 0);
         const made = Array.isArray(body.items) ? (body.items as { question?: string }[]).map((i) => questionKey(String(i.question ?? ""))).filter(Boolean) : [];
         await deps.addTryCredits?.(user.id, made).catch((e) => console.warn("try_credits_failed", e instanceof Error ? e.message.slice(0, 120) : String(e)));
         for (const st of steps) {
           await Promise.resolve(deps.recordUsage?.({ user_id: user.id, endpoint: "help-try", provider: deps.provider.name, model: st.model, input_tokens: st.input_tokens, output_tokens: st.output_tokens, est_cost_usd: st.est_cost_usd, status: "ok" })).catch(() => {});
         }
-        return json({ ...body, quota: { used: q.used, limit: q.lim } });
+        return json({ ...body, quota: { unit: "chars", used: q.used, limit: q.lim, remaining: Math.max(0, q.lim - q.used) } });
       }
       const question = typeof b?.question === "string" ? b.question.replace(/\s+/g, " ").trim().slice(0, 500) : "";
       if (!question) throw new HttpError(400, "invalid_request", "question is required");
