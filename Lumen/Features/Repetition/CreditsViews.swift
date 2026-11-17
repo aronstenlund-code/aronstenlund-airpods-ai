@@ -127,6 +127,6 @@ struct CreditsSheet: View {
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } } }
             .task { await model.refreshQuota() }
         }
-        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium]) // the largest text needs the whole height
+        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium, .large]) // the largest text needs the whole height
     }
 }

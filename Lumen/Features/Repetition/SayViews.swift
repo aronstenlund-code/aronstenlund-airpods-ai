@@ -221,7 +221,12 @@ struct SayInAirPodsField: View {
                 ForEach(SayText.repeats, id: \.self) { Text("Upprepa \($0) min").tag($0) }
             }
         } label: {
-            Label(SayText.howLong(minutes), systemImage: "repeat").lineLimit(1).fixedSize()
+            // Image and Text, not a Label: the Label lost its words in the row ("En gång" became the symbol alone).
+            HStack(spacing: 4) {
+                Image(systemName: "repeat").accessibilityHidden(true)
+                Text(verbatim: SayText.howLong(minutes)).lineLimit(1)
+            }
+            .fixedSize()
         }
         .accessibilityLabel("Hur länge, \(minutes == 0 ? "En gång" : "Upprepa \(minutes) minuter")")
         .smallSayControl()
