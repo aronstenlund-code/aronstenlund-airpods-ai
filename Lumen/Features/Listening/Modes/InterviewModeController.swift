@@ -48,6 +48,12 @@ final class InterviewModeController: ListeningModeController {
                        persona: persona(turn: "question"))
     }
 
+    /// D199 step 4: Intervjuläge needs a role or a CV before it can start by "Byt läge" or by voice.
+    func startBlock() -> ModeStartBlock? { settings.hasInterviewSetup ? nil : .interviewSetup }
+
+    /// The mode button always opens the setup first (D72).
+    func startScreen() -> ModeStartBlock { .interviewSetup }
+
     /// Likely questions and model answers from the role or job ad. Long, so it is shown, not spoken.
     func prepare() {
         guard let host else { return }

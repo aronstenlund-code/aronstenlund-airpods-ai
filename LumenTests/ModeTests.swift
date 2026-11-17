@@ -418,6 +418,30 @@ import Testing
         #expect(json["adult_confirmed"] == nil)
     }
 
+    /// D199 step 4 (A119): each mode says what the app must show before it starts; the model shows the sheet or
+    /// says the line. The same checks as before the move.
+    @Test func eachModeSaysWhatItNeedsBeforeItStarts() async {
+        let rig = makeRig(events: [])
+        #expect(rig.model.startBlock(for: .standard) == nil && rig.model.startBlock(for: .prov) == nil)
+        #expect(rig.model.startBlock(for: .interview) == nil, "the rig has a role")
+        rig.settings.interviewSetup = ""
+        #expect(rig.model.startBlock(for: .interview) == .interviewSetup)
+        #expect(rig.model.startBlock(for: .social) == .liveStartScreen)
+        #expect(rig.model.startBlock(for: .rizz) == .liveStartScreen, "D112: no age question, only the start screen")
+        rig.settings.confirmLiveStart(.social)
+        #expect(rig.model.startBlock(for: .social) == nil)
+        #expect(rig.model.socialMode.startScreen() == .liveStartScreen, "the mode button opens it every time")
+
+        #expect(ModeStartBlock.liveStartScreen.spokenLine(for: .rizz) == "Rizzläge startas i appen första gången.")
+        #expect(ModeStartBlock.interviewSetup.spokenLine(for: .interview) == "Intervjuläge behöver en roll i appen först.")
+
+        await rig.model.switchMode(to: .rizz)
+        #expect(rig.model.selectedMode == .rizz && rig.model.isShowingLiveStart, "Byt läge: selected, its sheet shown")
+        rig.model.isShowingLiveStart = false
+        await rig.model.switchMode(to: .interview)
+        #expect(rig.model.selectedMode == .interview && rig.model.isShowingInterviewSetup)
+    }
+
     @Test func theModeButtonOpensTheStartScreensAndDoesNotStartTheMicrophone() async {
         let rig = makeRig(events: [])
         rig.model.selectedMode = .rizz
