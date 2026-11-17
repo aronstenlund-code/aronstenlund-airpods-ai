@@ -63,7 +63,7 @@ enum SayText {
 
     /// A135 (D219.3): how long Spela shows its spinner, and what is said after that.
     static let patience: Duration = .seconds(10)
-    static let slowLine = "Ljudet kunde inte hämtas. Kontrollera nätet och försök igen."
+    static let slowLine = "Ljudet kunde inte hämtas. Kolla nätet." // Kelly: the button says the rest
 
     /// A132 (Ke72): the main button says how long: "Spela i 10 min", "Spela i 1 timme".
     static func playTitle(_ minutes: Int) -> String { "Spela i \(howLong(minutes))" }

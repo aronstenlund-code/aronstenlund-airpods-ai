@@ -635,6 +635,7 @@ final class CloudDrillAudio: DrillAudioProviding {
         let keys: Set<URLResourceKey> = [.fileSizeKey, .contentModificationDateKey]
         guard let urls = try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: Array(keys)) else { return 0 }
         var files: [(url: URL, size: Int64, date: Date)] = urls.compactMap { url in
+            guard url.pathExtension == "mp3" else { return nil } // only the sound, whatever else is in the folder
             guard let values = try? url.resourceValues(forKeys: keys), let size = values.fileSize else { return nil }
             return (url, Int64(size), values.contentModificationDate ?? .distantPast)
         }
@@ -643,10 +644,19 @@ final class CloudDrillAudio: DrillAudioProviding {
         let kept = Set((playing?.items ?? []).flatMap { [$0.questionAudio, $0.longAudio].compactMap { $0 } } + [playing?.cueAudio].compactMap { $0 })
         files.sort { $0.date < $1.date }
         var removed = 0
+        var gone = Set<String>()
         for file in files where total > limit && !kept.contains(file.url.lastPathComponent) {
             guard (try? FileManager.default.removeItem(at: file.url)) != nil else { continue }
             total -= file.size
             removed += 1
+            gone.insert(file.url.lastPathComponent)
+        }
+        // The exams that lost sound are marked, so they are not fetched again until someone opens or starts them.
+        for var drill in store.drills where drill.audioTrimmed != true {
+            let names = drill.items.flatMap { [$0.questionAudio, $0.longAudio].compactMap { $0 } }
+            guard names.contains(where: gone.contains) else { continue }
+            drill.audioTrimmed = true
+            store.save(drill)
         }
         if removed > 0 {
             made += 1 // the views count the files again

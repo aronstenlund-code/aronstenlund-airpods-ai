@@ -364,7 +364,11 @@ final class RepetitionModel {
     /// The sound of every exam that is not ready, and the exams with changes to send. Safe to call again: an exam that
     /// is already being followed is left alone.
     private func askForMissingSound() {
-        for drill in store.drills where !audio.hasAllSound(drill) || drill.needsUpload == true { prepareAudio(drill) }
+        // A135: an exam whose sound was removed to stay under the storage ceiling is not fetched again here (it would
+        // be removed and fetched at every visit to Start); it is fetched when it is started.
+        for drill in store.drills where (!audio.hasAllSound(drill) && drill.audioTrimmed != true) || drill.needsUpload == true {
+            prepareAudio(drill)
+        }
     }
 
     /// Aron's phone 2026-11-17 (Kevin's K87, point 4): the card said "Ljud: 0 av 30 klara" while the server had had
@@ -522,6 +526,17 @@ final class RepetitionModel {
 
     /// `stillWanted`: asked when the server has answered (A135); false when the one who pressed has stopped waiting.
     func start(_ drill: Drill, at index: Int = 0, stillWanted: (@MainActor () -> Bool)? = nil) async {
+        // A135 (D219.5): its sound was removed to stay under the storage ceiling. Starting it fetches the sound again,
+        // and the player waits for it as for an exam that has just been started.
+        if var trimmed = store.drill(drill.id), trimmed.audioTrimmed == true {
+            trimmed.audioTrimmed = nil
+            store.save(trimmed)
+            if !audio.hasAllSound(trimmed) {
+                prepareAudio(trimmed)
+                if trimmed.isText { await read(trimmed, at: index, waitingForSound: true) } else { await play(trimmed, at: index) }
+                return
+            }
+        }
         // A135 (D219.2, Aron's phone 2026-11-17 20:24): Spela never waits for the network when the sound is already on
         // the phone. It plays at once, and the server is told in the background (it has the sound, so nothing is
         // counted for it there).

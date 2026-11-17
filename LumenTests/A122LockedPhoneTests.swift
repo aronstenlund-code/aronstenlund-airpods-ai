@@ -450,6 +450,7 @@ import Testing
         let removed = audio.trimStorage(limit: 2_500, keeping: playing)
         let left = Set(try FileManager.default.contentsOfDirectory(atPath: audio.fileURL("x").deletingLastPathComponent().path).filter { $0.hasSuffix(".mp3") })
         #expect(removed == 2 && left == ["new.mp3", "playing.mp3"], "the oldest go first, never what is playing")
+        #expect(SayText.slowLine == "Ljudet kunde inte hämtas. Kolla nätet.")
         #expect(SayText.patience == .seconds(10) && !SayText.slowLine.isEmpty)
     }
 
@@ -491,5 +492,38 @@ import Testing
         #expect(!ended.hasWeeklyCard && CreditsText.capsule(ended) == "5,3k krediter kvar")
         let admin = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"unit":"chars","limit":1500,"used":0,"remaining":0,"unlimited":true,"subscription":{"active":true}}"#.utf8))
         #expect(CreditsText.capsule(admin) == "Obegränsat", "admin first")
+    }
+
+    /// Angela Schrute's finding: over the ceiling, Start removed the oldest files and then fetched them again, at every
+    /// visit. An exam that lost sound is marked and left alone until it is started.
+    @Test func soundRemovedForSpaceIsNotFetchedAgainUntilTheExamIsStarted() async throws {
+        let folder = try A79A81RepetitionTests.folder("a135-trim")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A107StartAudioTests.DeferredCloud()
+        cloud.started = true
+        let audio = CloudDrillAudio(cloud: cloud, store: store, folder: folder, pollInterval: .milliseconds(1), maxPolls: 20)
+        let session = RepetitionSession(inputs: [], makeSource: { MockSource() }, makeTimer: { MockTimer() },
+                                        defaults: try #require(UserDefaults(suiteName: "a135t-\(UUID())")),
+                                        activatesAudioSession: false)
+        let model = RepetitionModel(store: store, session: session, maker: MockDrillMaker(), audio: audio,
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+        var drill = Drill.text(title: "T", summary: A79A81RepetitionTests.summary, parts: [DrillItem.textPart("En.", part: .para)])
+        drill.serverID = "srv-1"
+        drill.audioStarted = nil
+        drill.items[0].longAudio = "en.mp3"
+        try Data(count: 1000).write(to: audio.fileURL("en.mp3"))
+        store.save(drill)
+
+        #expect(audio.trimStorage(limit: 500) == 1)
+        #expect(store.drill(drill.id)?.audioTrimmed == true && !audio.hasAllSound(drill))
+        model.appBecameActive() // Start is shown again, the app comes back: nothing is fetched
+        try? await Task.sleep(for: .milliseconds(30))
+        #expect(cloud.statusCalls == 0 && cloud.saves.isEmpty, "not fetched again just because Start is shown")
+
+        await model.start(drill) // someone starts it: now it is fetched
+        #expect(store.drill(drill.id)?.audioTrimmed == nil)
+        for _ in 0..<100 where cloud.statusCalls == 0 { try? await Task.sleep(for: .milliseconds(2)) }
+        #expect(cloud.statusCalls > 0, "the sound is asked for when the exam is started")
+        model.end()
     }
 }

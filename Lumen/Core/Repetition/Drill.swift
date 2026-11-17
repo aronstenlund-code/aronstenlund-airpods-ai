@@ -52,6 +52,11 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     /// A132: the text as it was written in the field (one line per part).
     var saidText: String { items.map(\.long).joined(separator: "\n") }
 
+    /// A135 (D219.5; Angela Schrute's finding): some of this exam's sound was removed from the phone to stay under the
+    /// storage ceiling. It is on the server and is fetched again when the exam is opened or started, not before
+    /// (else Start would remove and fetch the same files over and over).
+    var audioTrimmed: Bool?
+
     /// A131 (D213, K90): what Starta prov costs in credits, as the server last said it. Never counted in the app.
     var startCost: Int?
 
