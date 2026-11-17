@@ -10,6 +10,10 @@ import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type Pu
 
 const env = Deno.env;
 const db = restDbFromEnv();
+/** K93 (D216): credits shown as left for an admin (any large number works; the app reads unlimited). */
+const UNLIMITED_LEFT = 1_000_000;
+const isCreditAdmin = async (u: string): Promise<boolean> =>
+  (await db.rpc("is_credit_admin", { p_user: u }).catch((e) => (console.warn("credit_admin_check_failed", String(e).slice(0, 120)), false))) === true;
 const base = env.get("SUPABASE_URL")!.replace(/\/+$/, "");
 const key = env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const xi = secret(env, "ELEVENLABS_API_KEY");
@@ -76,6 +80,7 @@ Deno.serve(withCors(withTestMode("drill",
     ownerEmails: (env.get("OWNER_EMAIL") ?? "").split(","),
     // K77 (D197): Repetitionsläget in Aron's analysis, the same table as qa-log (deleted after delivery, 14 days at most)
     analysis: (rows) => db.insertMany("qa_log", rows.map((r) => ({ mode: r.mode, persona: r.persona, question: r.question, answer: r.answer }))),
+    // K93 (D216)
     db: {
       drill: async (id) => ((await db.select("drills", `select=*&id=eq.${encodeURIComponent(id)}&limit=1`)) as DrillRow[])[0] ?? null,
       drills: async (u) => (await db.select("drills", `select=*&user_id=eq.${encodeURIComponent(u)}&order=updated_at.desc&limit=500`)) as DrillRow[],
@@ -159,6 +164,12 @@ Deno.serve(withCors(withTestMode("drill",
         await db.updateWhere("drill_audio_files", `status=eq.failed&hash=in.(${list(hashes)})`, { status: "pending", attempts: 0, error: null });
       },
       useQuota: async (u, n) => {
+        // K93 (D216): an admin (credit_admins, service_role only) is never counted or refused
+        if (await isCreditAdmin(u)) {
+          const r0 = ((await db.rpc("use_drill_chars", { p_user: u, p_n: 0 })) as { used: number; lim: number }[])[0];
+          const used = r0?.used ?? 0;
+          return { ok: true, used, lim: used + UNLIMITED_LEFT, unlimited: true };
+        }
         const r = (await db.rpc("use_drill_chars", { p_user: u, p_n: n })) as { ok: boolean; used: number; lim: number }[]; // K90 (D213): credits = characters
         return r[0] ?? { ok: false, used: 0, lim: 0 };
       },

@@ -9,6 +9,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
   let busy = opts.busy ?? 0;
   let out = !!opts.outOfCredits; // K78: credits can come back
   const quota = new Map<string, number>();
+  const admins = new Set<string>(); // K93: credit_admins
   const credits = new Set<string>(); // K61 (D177): "user|question key" counted in /help try
   const models: string[] = [];
   const drills = new Map<string, DrillRow>();
@@ -132,6 +133,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
     },
     useQuota: (u: string, n: number) => {
       const used = quota.get(u) ?? 0, lim = opts.credits ?? 1_000_000; // K90 (D213): credits = characters
+      if (admins.has(u)) return Promise.resolve({ ok: true, used, lim: used + 1_000_000, unlimited: true }); // K93 (as index.ts)
       if (n > 0 && used + n > lim) return Promise.resolve({ ok: false, used, lim });
       quota.set(u, used + n);
       return Promise.resolve({ ok: true, used: used + n, lim });
@@ -191,7 +193,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
       usdPer1kChars: 0.08,
       charLimits: { perMinute: 1e9, perDay: opts.perDay ?? 1e9, globalPerDay: 1e9 },
     });
-  return { h, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, logged, setBusy: (n: number) => (busy = n), setOut: (v: boolean) => (out = v) };
+  return { h, admins, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, logged, setBusy: (n: number) => (busy = n), setOut: (v: boolean) => (out = v) };
 }
 const CUE = "Tryck en gång för svaret.";
 const post = (b: unknown) => new Request("http://x/drill", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
@@ -999,4 +1001,23 @@ Deno.test("K92 (D215 8): cost before saving: the same count as save, existing au
   for (let i = 0; i < 20; i++) last = (await w.h("u3")(post({ action: "cost", items: [{ question: `Fråga ${i}?`, short: "Svar.", long: "Svar." }] }))).status;
   assertEquals(last, 200);
   assertEquals((await w.h("u3")(post({ action: "cost", items: ITEMS }))).status, 429);
+});
+
+Deno.test("K93 (D216): an admin is never charged or refused; quota, list and cost say unlimited; another account is unchanged", async () => {
+  const w = world({ credits: 10 });
+  w.admins.add("aron");
+  const s = await (await w.h("aron")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals([s.cost, s.audio.done, w.quota.get("aron") ?? 0], [cost(ITEMS), s.audio.total, 0], "made, nothing counted");
+  const d = await w.h("aron")(post({ action: "save", defer_audio: true, items: [{ question: "Varför regnar det?", short: "Moln.", long: "Moln. Mer." }] }));
+  assertEquals(d.status, 200, "never 402");
+  const q = await (await w.h("aron")(post({ action: "quota" }))).json();
+  assertEquals([q.unlimited, q.used], [true, 0]);
+  assert(q.remaining >= 1_000_000);
+  assertEquals((await (await w.h("aron")(post({ action: "list" }))).json()).quota.unlimited, true);
+  const c = await (await w.h("aron")(post({ action: "cost", items: [{ question: "Hur fungerar ett öga?", short: "Ljus.", long: "Ljus. Mer." }] }))).json();
+  assertEquals([c.unlimited, c.enough], [true, true]);
+  assertEquals(w.drills.get(s.drill.id)!.charged_chars ?? 0, 0, "nothing charged, so nothing is ever given back");
+  // another account: as before
+  assertEquals((await w.h("u1")(post({ action: "save", items: [{ question: "Vad är en vulkan?", short: "Ett berg med magma.", long: "Ett berg med magma. Mer." }] }))).status, 402);
+  assertEquals((await (await w.h("u1")(post({ action: "quota" }))).json()).unlimited, undefined);
 });
