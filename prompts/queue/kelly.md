@@ -190,3 +190,4 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-17 01:28 → reports/2026-11-17-0128-kelly-granskning-a115-a117.md **Granskning av A115–A117** (Kelly (moln), på Angela Fables begäran). Godkänt; K1 en rad i kreditbladet, K2 största text utan kapning, K3 bladets höjd.
 
 - [x] klar 2026-11-17 08:31 → reports/2026-11-17-0831-kelly-ke70-vercel-live.md (allt grönt: 200, og-bild, väntelistan och CORS) **Ke70 – Livekontroll av earmind.vercel.app** (effort: low). Lagd av Deangelo 2026-11-17 08:30. Projektet finns nu (Aron raderade ett gammalt, Deangelo skapade `earmind` med rot site/). Kör kelly-site-check.yml: 200, storlek, og-bild, väntelistan med testadress och CORS från earmind.vercel.app. Fynd till rätt kö. Rapport, push.
+- [x] klar 2026-11-17 09:39 → reports/2026-11-17-0939-kelly-granskning-a122-a124.md **Granskning av A122 och A124** (Kelly (moln), på Angela Fables begäran). Godkänt.
