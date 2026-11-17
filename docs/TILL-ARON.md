@@ -39,3 +39,6 @@ Du har gjort 14 av 15 frågor med ljud den här månaden, så appen nekar mer lj
 - Prenumeration 80 kr i veckan, obegränsat med en dold gräns för rimlig användning på 40 000 tecken i veckan.
 - Varje nytt konto får 10 000 krediter första gången, så att man hinner prova ett helt prov. Därefter 1 500 i månaden.
 - Svara ja, eller ändra siffrorna.
+
+## 27. Betalningen i App Store Connect (D218), 2026-11-17 20:25
+Appen och servern byggs nu för köp med StoreKit, men produkterna måste finnas i App Store Connect innan de går att köpa på riktigt. Det kräver dig: avtalet för betalda appar (Paid Apps Agreement med bank och skatt) och de fyra produkterna. Vi säger till när det behövs och öppnar sidan åt dig. Inget kostar något innan dess.

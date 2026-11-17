@@ -175,7 +175,10 @@ final class ExamPlanStore {
     /// T24-M1 (D189): the repetition exams are the user's exams. One plan per exam in `drills`, kept in step: a new
     /// exam adds one, a renamed or dated one updates it, a deleted one removes it (with its Mina svar left for the
     /// store to keep). Plans said aloud in Provläge (no `drillID`) are left as they are.
-    func sync(with drills: [Drill], now: Date = Date()) {
+    func sync(with all: [Drill], now: Date = Date()) {
+        // D215 (A132): a text said in "Säg i AirPods" is no exam. It never becomes a plan, and one mirrored before
+        // D215 leaves the list here (its drill is no longer among the exams).
+        let drills = all.filter { !$0.isSaid }
         var changed = false
         let ids = Set(drills.map(\.id))
         let before = plans.count

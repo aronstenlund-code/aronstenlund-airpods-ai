@@ -187,7 +187,8 @@ export interface DrillDb {
   /** K55: files that failed are queued again when someone saves the same text. */
   requeue(hashes: string[]): Promise<void>;
   /** K50: adds n generated questions when within the limit (n = 0 only reads); atomic in the database. */
-  useQuota(userId: string, n: number): Promise<{ ok: boolean; used: number; lim: number }>;
+  /** K93 (D216): an admin (credit_admins) answers unlimited, is never counted and never refused (lim = used + a large number). */
+  useQuota(userId: string, n: number): Promise<{ ok: boolean; used: number; lim: number; unlimited?: boolean }>;
   /** K78 (D200): gives back n questions counted for audio that could not be made (never below 0). */
   refundQuota?(userId: string, n: number): Promise<void>;
   /** K78: a real file failed for lack of ElevenLabs credits since this time (then nothing new is sent now). */
@@ -877,7 +878,7 @@ export function createDrillHandler(deps: DrillDeps) {
       // K92 (D215 punkt 8): the cost before saving, counted exactly as the save would; nothing written or queued
       const q = await deps.db.useQuota(user.id, 0);
       const c = creditCost(displayChars(rows), fresh.map((f) => f.hash));
-      return json({ cost: c, remaining: Math.max(0, q.lim - q.used), limit: q.lim, unit: "chars", enough: c <= q.lim - q.used });
+      return json({ cost: c, remaining: Math.max(0, q.lim - q.used), limit: q.lim, unit: "chars", enough: c <= q.lim - q.used, ...(q.unlimited ? { unlimited: true } : {}) });
     }
     // K78 (D200): ElevenLabs has just said it has no credits: nothing is sent, nothing is counted, the drill stays as
     // text (not started) and the app is told; the next Starta prov once credits are back makes the audio as usual
@@ -919,7 +920,7 @@ export function createDrillHandler(deps: DrillDeps) {
     if (cost > 0) {
       const q = await deps.db.useQuota(user.id, cost);
       if (!q.ok) return json(creditsRefused(cost, q.used, q.lim, now()), 402);
-      drill.charged_chars = (existing?.charged_chars ?? 0) + cost;
+      if (!q.unlimited) drill.charged_chars = (existing?.charged_chars ?? 0) + cost; // K93: an admin is charged nothing
     }
     // the audio is queued first: a failure leaves no half-saved drill (a queued file nobody uses costs nothing)
     if (fresh.length) {
@@ -1041,6 +1042,7 @@ export function createDrillHandler(deps: DrillDeps) {
         const lim = lengthLimits(st);
         return json({
           unit: "chars", limit: q.lim, used: q.used, remaining: left, resets: nextMonthStart(now()), resets_day: resetsDay(now()),
+          ...(q.unlimited ? { unlimited: true } : {}), // K93 (D216): the capsule says "Obegränsat"
           // kept for older apps (K61/K82): left is now credits; suggest is how many questions Nytt prov may offer
           left, suggest: left > 0 ? 20 : 0, per: "month",
           prices: {
@@ -1062,7 +1064,7 @@ export function createDrillHandler(deps: DrillDeps) {
         const doneSet = new Set((hashes.length ? await deps.db.audio(hashes) : []).filter((a) => a.status === "done").map((a) => a.hash));
         const q = await deps.db.useQuota(user.id, 0);
         return json({
-          quota: { unit: "chars", used: q.used, limit: q.lim, left: Math.max(0, q.lim - q.used), remaining: Math.max(0, q.lim - q.used), per: "month", resets: nextMonthStart(now()) },
+          quota: { unit: "chars", used: q.used, limit: q.lim, left: Math.max(0, q.lim - q.used), remaining: Math.max(0, q.lim - q.used), per: "month", resets: nextMonthStart(now()), ...(q.unlimited ? { unlimited: true } : {}) },
           drills: drills.map((d) => {
             const its = items.filter((i) => i.drill_id === d.id);
             const hs = [...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))];

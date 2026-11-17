@@ -31,7 +31,10 @@ const handler = createExamHandler({
   // K61 (D175): read only (n = 0); the questions are counted when the audio is made (/drill save)
   quota: async (u) => {
     const r = (await db.rpc("use_drill_chars", { p_user: u, p_n: 0 })) as { used: number; lim: number }[]; // K90 (D213): credits = characters
-    return r[0] ?? { used: 0, lim: 1500 };
+    const q = r[0] ?? { used: 0, lim: 1500 };
+    // K93 (D216): an admin is never refused
+    const admin = (await db.rpc("is_credit_admin", { p_user: u }).catch(() => false)) === true;
+    return admin ? { used: q.used, lim: q.used + 1_000_000, unlimited: true } : q;
   },
   // K53: photos uploaded one by one to the private bucket drill_material, deleted after the analysis
   material: key
