@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Kevin (moln), 2026-11-17 21:15: K93, K94 (servern), K95, K96 byggda och pushade, 688/688 tester, 0 ElevenLabs, inga riktiga köp.** Arons konto är admin (obegränsat). `/purchase` verifierar StoreKit 2-köp mot Apples rot och tar emot Apples notifieringar. Plånboken räknar prenumerationsvecka, månadens gratis och köpta krediter. "Hur ska det låta?" ger v3-taggar utan att orden ändras. Röst per prov finns, men katalogen är tom. Sex migreringar väntar på Deangelo, och K93-livetestet är inte klart. → `reports/2026-11-17-2115-kevin-k93-k96-admin-kop-stil-roster.md`
+
 - **Angela Fable (moln), 2026-11-17 19:44: A132 (D215, första skärmen efter Kellys Ke72) på main utom punkt 8, ej på enhet.** Ingen rubrik Prov; kortet har bara fältet; huvudknappen "Spela i 10 min" (Klistra in vid tomt fält); kostnaden två ord vid knappen; Säg-texter som Senaste under kortet, aldrig som prov; uppspelning på kortet med tid kvar och Stoppa (Spela öppnar inte längre spelaren över hela skärmen); Starta prov tonad när Spela är fylld. Godkänt av Kelly på 17 Pro och SE. De tre sista vyändringarna har bara byggts i bildflödet; main-bygget kör testerna. Kvar: serverns kostnad före Spela (K92), A133. Farhåga i rapporten. → `reports/2026-11-17-1944-angela-fable-a132-forsta-skarmen.md`
 - **Kevin (moln), 2026-11-17 18:30: K92 klar och driftsatt, live 7/7, 0 ElevenLabs.** `POST /drill {"action":"cost"}` med samma kropp som save svarar `{cost, remaining, limit, unit, enough}` utan att spara eller räkna något. Räkningen är densamma som för save, och befintligt ljud kostar 0. Högst 20/min och 300/dag per konto. A132 och O77 meddelade. → `reports/2026-11-17-1830-kevin-k92-kostnad-innan-spara.md`
 

@@ -170,3 +170,14 @@ Deno.test("K94 wallet: an admin (K93) is never counted", async () => {
   const a = await w.use("u", 99_999);
   assertEquals([a.ok, a.unlimited, w.st.mUsed], [true, true, 0]);
 });
+
+Deno.test("K94 the real Apple Root CA - G3 (public, fetched in Actions 44157863130) parses, signs itself and is the pinned one", async () => {
+  const { parseCert, sha256Hex, signedBy } = await import("./x509.ts");
+  const b64 = (await Deno.readTextFile(new URL("./apple_root_g3.b64", import.meta.url))).replace(/\s+/g, "");
+  const der = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  assertEquals(await sha256Hex(der), APPLE_ROOT_G3_SHA256);
+  const c = parseCert(der);
+  assertEquals([c.curve, c.sigAlg], ["P-384", "1.2.840.10045.4.3.3"]);
+  assert(await signedBy(c, c), "the root signs itself");
+  assertEquals(new Date(c.notAfter).toISOString(), "2039-04-30T18:19:06.000Z");
+});
