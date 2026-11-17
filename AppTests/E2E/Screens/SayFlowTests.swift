@@ -86,7 +86,9 @@ final class SayFlowTests: XCTestCase {
             for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
             tap(["Starta ändå", "Starta prov", "Spela"], "Start on the control check", quiet: true)
         }
-        return wait(["Spelar i AirPods*"], 30) != nil || miss("no 'Spelar i AirPods' in the player")
+        if wait(["Spelar i AirPods*"], 30) != nil { return true }
+        screen("ingen-spelare", "Spela did not open 'Spelar i AirPods'")
+        return miss("no 'Spelar i AirPods' in the player")
     }
 
     private func playOnce() -> Bool {
