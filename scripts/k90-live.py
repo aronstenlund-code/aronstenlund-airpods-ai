@@ -23,11 +23,12 @@ tok = qa.signup()[0]
 st, q0 = call({"action": "quota"}, tok)
 out["quota"] = {k: q0.get(k) for k in ("unit", "limit", "used", "remaining", "resets", "resets_day", "left")}
 ok["quota_chars_1500"] = st == 200 and q0.get("unit") == "chars" and q0.get("limit") == 1500 and q0.get("remaining") == 1500
-big = [{"kind": "para", "text": (f"Mening {tag} om cellen och dess delar. " * 50)[:1700]}]
+body = (f"Mening {tag} om cellen och dess delar. " * 40)[:1000].strip()
+big = [{"kind": "para", "text": body}, {"kind": "para", "text": "Andra delen. " + body}]  # 2 000+ characters, over 1 500
 st, r = call({"action": "save", "defer_audio": True, "drill": {"kind": "text", "title": f"K90 stor {tag}"}, "items": big}, tok)
 st_l, l = call({"action": "list"}, tok)
 out["big"] = {"status": st, "cost": r.get("cost"), "remaining": r.get("remaining"), "limit": r.get("limit"), "message": r.get("error", {}).get("message"), "saved": sum(1 for d in l.get("drills", []) if d.get("title") == f"K90 stor {tag}")}
-ok["big_402_not_saved"] = st == 402 and r.get("cost") == len(big[0]["text"]) and r.get("remaining") == 1500 and out["big"]["saved"] == 0
+ok["big_402_not_saved"] = st == 402 and r.get("cost") == sum(len(p["text"]) for p in big) and r.get("remaining") == 1500 and out["big"]["saved"] == 0
 small = [{"kind": "heading", "text": f"Rubrik {tag}"}, {"kind": "para", "text": f"Klorofyll fångar ljus {tag}. Växten bildar glukos."}]
 want = sum(len(p["text"]) for p in small)
 st, s = call({"action": "save", "defer_audio": True, "drill": {"kind": "text", "title": f"K90 liten {tag}"}, "items": small}, tok)
