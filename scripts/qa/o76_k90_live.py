@@ -49,7 +49,7 @@ def nums(j):
     a = j.get("audio") or {}
     return {k: v for k, v in {"cost": j.get("cost"), "audio.cost": a.get("cost"), "unit": j.get("unit"), "already_saved": j.get("already_saved"),
                               "refunded_credits": j.get("refunded_credits"), "error": (j.get("error") or {}).get("message"),
-                              "remaining": j.get("remaining"), "drill": ((j.get("drill") or {}).get("id") or "")[:8]}.items() if v is not None}
+                              "remaining": j.get("remaining"), "audio_unavailable": j.get("audio_unavailable"), "audio_started": (j.get("drill") or {}).get("audio_started"), "drill": ((j.get("drill") or {}).get("id") or "")[:8]}.items() if v is not None}
 
 
 def check(name, ok, detail):
@@ -69,26 +69,6 @@ def save_text(tok, parts, defer=True, mode=None, title="O76"):
 def count(tok):
     return len(call({"action": "list"}, tok)[1].get("drills") or [])
 
-
-# 7 först: återbetalning vid fejkat kvotfel (kräver att inget fejkat kvotfel kom de senaste 10 minuterna)
-E = T.signup(True)[0]
-qe0 = quota(E)
-pe = [("para", text(300)), ("para", text(200))]
-st, j = save_text(E, pe, defer=False, mode="unavailable", title="O76-7")
-did = (j.get("drill") or {}).get("id")
-v, ref = {}, 0
-for _ in range(15):
-    s2, v = call({"action": "status", "id": did}, E, "unavailable")
-    ref += v.get("refunded_credits") or 0
-    a = v.get("audio") or {}
-    if a.get("total") and a.get("done", 0) + a.get("failed", 0) >= a.get("total"):
-        break
-    time.sleep(2)
-qe1 = quota(E)
-held = bool(j.get("audio_unavailable")) and not (j.get("cost") or 0) and qe1["used"] == qe0["used"]
-check("7 fejkat kvotfel: krediterna tillbaka (eller hållet tillbaka utan dragning)",
-      st == 200 and qe1["used"] == qe0["used"] and (held or ref == 500),
-      {"spara": [st, nums(j)], "status": nums(v), "refunded_credits summa": ref, "kvot före/efter": [qe0, qe1], "hölls tillbaka direkt": held})
 
 # 1: en text på N tecken kostar N
 A = T.signup(True)[0]
@@ -119,12 +99,18 @@ check("2b samma stycke tre gånger i ett prov kostar en gång (150)", (j3.get("a
 # 3: delade prov kostar 0 (import) och samma text på ett annat konto kostar 0
 B = T.signup(True)[0]
 qb0 = quota(B)
+for _ in range(20):
+    a1 = call({"action": "status", "id": d1}, A)[1].get("audio") or {}
+    if a1.get("total") and a1.get("done") == a1.get("total"):
+        break
+    time.sleep(2)
 s_sh, sh = call({"action": "share", "id": d1}, A)
 s_im, im = call({"action": "import", "code": sh.get("code")}, B)
 qb1 = quota(B)
 st, jb = save_text(B, p1, title="O76-3 B samma text")
 s_b, jbs = call({"action": "start", "id": (jb.get("drill") or {}).get("id")}, B)
 qb2 = quota(B)
+print("     dela:", s_sh, json.dumps({k: sh.get(k) for k in ("code", "error")}, ensure_ascii=False))
 check("3 import och samma text på ett annat konto kostar 0", s_im == 200 and qb1["used"] == qb0["used"] and (jb.get("audio") or {}).get("cost") == 0 and qb2["used"] == qb0["used"],
       {"import": [s_im, nums(im)], "B spara samma text": [st, nums(jb)], "B start": [s_b, nums(jbs)], "B kvot före/efter import/efter egen": [qb0, qb1, qb2]})
 
@@ -168,6 +154,26 @@ check(f"6 blanktecken: kostnad = {len(clean)} (inte {len(raw)})", (jw.get("audio
 st, jr = call({"_fn": "exam", "action": "read", "text": "# Rubrik\n\n" + text(300), "subject": "Historia"}, D)
 chars = sum(len(p["text"]) for p in jr.get("parts") or [])
 check("8 /exam read ger cost (= visade tecken)", st == 200 and jr.get("cost") is not None, {"svar": [st, {"cost": jr.get("cost"), "chars": jr.get("chars"), "delarnas tecken": chars, "counts_as": jr.get("counts_as")}]})
+
+# 7 SIST: återbetalning vid fejkat kvotfel (ett fejkat kvotfel håller tillbaka all testtrafik i 10 minuter, K78)
+E = T.signup(True)[0]
+qe0 = quota(E)
+pe = [("para", text(300)), ("para", text(200))]
+st, j = save_text(E, pe, defer=False, mode="unavailable", title="O76-7")
+did = (j.get("drill") or {}).get("id")
+v, ref = {}, 0
+for _ in range(15):
+    s2, v = call({"action": "status", "id": did}, E, "unavailable")
+    ref += v.get("refunded_credits") or 0
+    a = v.get("audio") or {}
+    if a.get("total") and a.get("done", 0) + a.get("failed", 0) >= a.get("total"):
+        break
+    time.sleep(2)
+qe1 = quota(E)
+held = bool(j.get("audio_unavailable")) and not (j.get("cost") or 0) and qe1["used"] == qe0["used"]
+check("7 fejkat kvotfel: krediterna tillbaka (eller hållet tillbaka utan dragning)",
+      st == 200 and qe1["used"] == qe0["used"] and (held or ref == 500),
+      {"spara": [st, nums(j)], "status": nums(v), "refunded_credits summa": ref, "kvot före/efter": [qe0, qe1], "hölls tillbaka direkt": held})
 
 for tok in (A, B, C, D, E):
     for d in call({"action": "list"}, tok)[1].get("drills") or []:
