@@ -214,4 +214,71 @@ import Testing
         #expect(cloud.startCalls == 3, "each press asks again: the month may have been filled up")
         #expect(model.sayRefusal(second) != nil)
     }
+
+    // MARK: A131 (D213, K90, Ke71): the month in credits
+
+    static let creditsJSON = """
+    {"unit":"chars","limit":1500,"used":264,"remaining":1236,"left":1236,"suggest":1236,"per":"month",
+     "resets":"2026-12-01","resets_day":"1 december",
+     "prices":{"unit":"chars","classes":[],"read":{"chars_per_question":1},"free":["shared","published"]}}
+    """
+
+    @Test func theMonthInCreditsIsReadFromTheServer() throws {
+        let quota = try JSONDecoder().decode(DrillQuota.self, from: Data(Self.creditsJSON.utf8))
+        #expect(quota.isCredits && quota.left == 1236 && quota.limit == 1500 && quota.resets_day == "1 december")
+        #expect(quota.line == "1\u{00A0}236 av 1\u{00A0}500 krediter kvar den här månaden")
+        let odd = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"unit":"chars","limit":1500,"used":0,"remaining":1500,"prices":{"unit":"chars"}}"#.utf8))
+        #expect(odd.left == 1500 && odd.prices == nil, "a price table this app cannot read does not take the number with it")
+        let old = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"used":3,"limit":15,"left":12}"#.utf8))
+        #expect(!old.isCredits && old.left == 12 && old.line == "12 av 15 frågor kvar den här månaden", "a server that counts questions")
+    }
+
+    @Test func theWordsAreKellysAndTheNumbersTheServers() {
+        #expect(CreditText.number(764) == "764" && CreditText.number(1236) == "1\u{00A0}236" && CreditText.number(1_234_567) == "1\u{00A0}234\u{00A0}567")
+        #expect(CreditText.capsule(1236) == "1\u{00A0}236 krediter kvar" && CreditText.capsule(1) == "1 kredit kvar")
+        #expect(CreditText.sayLine(cost: 764) == "Kostar 764 krediter. Upprepningar kostar inget.")
+        #expect(CreditText.sayLine(cost: 0) == "Kostar inget. Ljudet finns redan.")
+        #expect(CreditText.cardLine(cost: 2340) == "Kostar 2\u{00A0}340 krediter")
+        #expect(CreditText.notEnough(cost: 764, left: 312, resetsDay: "1 december")
+                == "Det här kostar 764 krediter. Du har 312 kvar. Nya krediter den 1 december.")
+        #expect(CreditText.footnote(limit: 1500, resetsDay: "1 december")
+                == "En text på 764 tecken kostar 764 krediter. Du får 1\u{00A0}500 krediter varje månad. Nya krediter den 1 december. Oanvända krediter sparas inte.")
+        // The server's own line at 402 is said as it is; nothing is added to it.
+        let server = "Det här kostar 764 krediter. Du har 312 kvar. Nya krediter 1 december."
+        #expect(SaidText.refusalLine(problem: server, quotaExceeded: true, refill: "Fylls på den 1 december.") == server)
+    }
+
+    @Test func theExamKeepsWhatTheServerSaysStartingCosts() throws {
+        let json = """
+        {"drill":{"id":"srv-1","title":"T","kind":"text","audio_started":false},"items":[],
+         "audio":{"done":0,"total":1,"cost":764},"cost":764,"unit":"chars"}
+        """
+        let view = try JSONDecoder().decode(DrillCloudView.self, from: Data(json.utf8))
+        #expect(view.startCost == 764)
+        #expect(Drill.from(view).startCost == 764)
+        let old = try JSONDecoder().decode(DrillCloudView.self, from: Data(#"{"drill":{"id":"srv-1"},"items":[],"audio":{"done":0,"total":0}}"#.utf8))
+        #expect(old.startCost == nil && Drill.from(old).startCost == nil, "a server without credits says nothing")
+    }
+
+    /// K90: a new text that the credits do not cover is refused at the save, and nothing is saved. The phone keeps
+    /// nothing either (no card on Start), and the server's line is what is said.
+    @Test func aNewTextTheCreditsDoNotCoverLeavesNothingBehind() async throws {
+        let folder = try A79A81RepetitionTests.folder("a131")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A107StartAudioTests.DeferredCloud()
+        let line = "Det här kostar 764 krediter. Du har 312 kvar. Nya krediter 1 december."
+        cloud.saveError = .refused(status: 402, code: "quota_exceeded", message: line)
+        let audio = CloudDrillAudio(cloud: cloud, store: store, folder: folder, pollInterval: .milliseconds(1), maxPolls: 20)
+        let session = RepetitionSession(inputs: [], makeSource: { MockSource() }, makeTimer: { MockTimer() },
+                                        defaults: try #require(UserDefaults(suiteName: "a131-\(UUID())")),
+                                        activatesAudioSession: false)
+        let model = RepetitionModel(store: store, session: session, maker: MockDrillMaker(), audio: audio,
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+
+        let refused = try #require(await model.say("1918: Vapenstillestånd den 11 november.", repeatMinutes: 10))
+        #expect(!model.showsPlayer)
+        #expect(model.sayRefusal(refused) == line, "the server's own words")
+        #expect(store.drills.isEmpty, "no card on Start for a text that was refused")
+        #expect(cloud.startCalls == 0)
+    }
 }

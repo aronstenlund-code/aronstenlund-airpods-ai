@@ -304,7 +304,10 @@ final class RepetitionModel {
         if let cloud {
             do throws(DrillCloudError) {
                 let remote = try await cloud.list()
-                if let client = cloud as? DrillCloudClient, let latest = client.lastQuota { quota = latest }
+                // A131 (D213): the list's quota is taken unless it would turn the month back from credits to
+                // questions (a reply in the older form); `/drill quota` decides then.
+                if let client = cloud as? DrillCloudClient, let latest = client.lastQuota,
+                   latest.isCredits || quota?.isCredits != true { quota = latest }
                 let ids = Set(remote.map(\.id))
                 let account = await cloud.accountID()
                 for entry in remote where !store.drills.contains(where: { $0.serverID == entry.id }) {
@@ -589,7 +592,7 @@ final class RepetitionModel {
         guard !showsPlayer else { return nil }
         let latest = store.drill(drill.id) ?? drill
         return SaidText.refusalLine(problem: audio.problem(for: latest), quotaExceeded: quotaExceeded(latest),
-                                    refill: Self.refillLine(quota?.resets))
+                                    refill: quota?.isCredits == true ? nil : Self.refillLine(quota?.resets))
     }
 
     /// "Fylls på den 1 december." from the server's "2026-12-01".
@@ -626,6 +629,13 @@ final class RepetitionModel {
         sayOptions = RepetitionSession.SayOptions(repeatMinutes: repeatMinutes)
         await start(drill)
         sayOptions = nil
+        // A131 (D212 point 3, K90): the credits did not cover it, so the server saved nothing. The phone keeps nothing
+        // either: no card on Start for a text that was refused. The text is still in the field, and why is said there.
+        if !showsPlayer, quotaExceeded(drill), let refused = store.drill(drill.id), refused.serverID == nil {
+            store.delete(refused.id)
+            lastSaid = nil
+            return refused
+        }
         return store.drill(drill.id) ?? drill
     }
 

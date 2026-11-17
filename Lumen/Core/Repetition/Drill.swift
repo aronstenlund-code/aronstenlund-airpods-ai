@@ -37,6 +37,9 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     /// started). Nil = started, or an exam from before K71. Starta prov starts it (`RepetitionModel.startAudio`).
     var audioStarted: Bool?
 
+    /// A131 (D213, K90): what Starta prov costs in credits, as the server last said it. Never counted in the app.
+    var startCost: Int?
+
     /// A107: the sound is not asked for yet; Starta prov asks for it.
     var awaitsAudioStart: Bool { audioStarted == false }
 
@@ -381,7 +384,8 @@ enum SaidText {
     static func refusalLine(problem: String?, quotaExceeded: Bool, refill: String?) -> String {
         let said = (problem ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
         let base = said.isEmpty ? (quotaExceeded ? "Du har inga frågor kvar den här månaden." : "Det gick inte att spela just nu. Försök igen om en stund.") : said
-        guard quotaExceeded, let refill, !base.contains(refill) else { return base }
+        // A131 (K90): in credits the server's own line already says when ("Nya krediter 1 december.").
+        guard quotaExceeded, let refill, !base.contains(refill), !base.contains("Nya krediter") else { return base }
         return "\(base) \(refill)"
     }
 
@@ -393,3 +397,48 @@ enum SaidText {
     }
 }
 
+
+/// A131 (D213, Aron 2026-11-17; Kelly Ke71): the month in credits. 1 credit = 1 character of new sound, repeating and
+/// sound that already exists cost nothing. Every number comes from the server; these are only the words.
+enum CreditText {
+    /// "1 236": thousands with a space that does not break the line.
+    static func number(_ n: Int) -> String {
+        let digits = String(abs(n))
+        var out = ""
+        for (i, ch) in digits.enumerated() {
+            if i > 0, (digits.count - i) % 3 == 0 { out.append("\u{00A0}") }
+            out.append(ch)
+        }
+        return n < 0 ? "-" + out : out
+    }
+
+    static func credits(_ n: Int) -> String { n == 1 ? "1 kredit" : "\(number(n)) krediter" }
+
+    /// The capsule: "1 236 krediter kvar".
+    static func capsule(_ left: Int) -> String { "\(credits(left)) kvar" }
+
+    /// Under the field in Säg i AirPods, before Spela.
+    static func sayLine(cost: Int) -> String {
+        cost == 0 ? "Kostar inget. Ljudet finns redan." : "Kostar \(credits(cost)). Upprepningar kostar inget."
+    }
+
+    /// On the exam's card and screen: "Kostar 2 340 krediter".
+    static func cardLine(cost: Int) -> String { cost == 0 ? "Kostar inget" : "Kostar \(credits(cost))" }
+
+    /// The credits do not cover it (said before anything is saved or started).
+    static func notEnough(cost: Int, left: Int, resetsDay: String?) -> String {
+        "Det här kostar \(credits(cost)). Du har \(number(left)) kvar." + (resetsDay.map { " Nya krediter den \($0)." } ?? "")
+    }
+
+    /// The sheet's rows ("Så räknas det").
+    static let rows: [(title: String, value: String)] = [
+        ("1 tecken nytt ljud", "1 kredit"), ("Ljud som redan finns", "0"), ("Upprepa samma text", "0"),
+        ("Prov som andra har delat eller publicerat", "0"),
+    ]
+
+    /// The sheet's footnote, with the month's limit from the server.
+    static func footnote(limit: Int, resetsDay: String?) -> String {
+        "En text på 764 tecken kostar 764 krediter. Du får \(credits(limit)) varje månad."
+            + (resetsDay.map { " Nya krediter den \($0)." } ?? "") + " Oanvända krediter sparas inte."
+    }
+}

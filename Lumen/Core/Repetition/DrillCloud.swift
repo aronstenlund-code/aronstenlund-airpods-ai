@@ -75,6 +75,8 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         var done: Int
         var total: Int
         var failed: Int?
+        /// K90 (D213): what Starta prov costs now, in credits (1 credit = 1 shown character that gets new sound).
+        var cost: Int? = nil
     }
 
     struct Cue: Decodable, Sendable, Equatable {
@@ -91,6 +93,13 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
     var audio_unavailable: Bool? = nil
     /// K78: questions that had been counted for sound that was never made, given back once.
     var refunded_questions: Int? = nil
+    /// K90 (D213): what this call took, or for a save that defers the sound what the start will take, in credits.
+    var cost: Int? = nil
+    /// K90: credits given back (the same thing as `refunded_questions`, in credits).
+    var refunded_credits: Int? = nil
+
+    /// K90: what starting this exam costs now, as the server says it (never counted in the app).
+    var startCost: Int? { audio.cost ?? cost }
 }
 
 extension DrillCloudView.Item {
@@ -142,10 +151,36 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     var suggest: Int?
     /// K82 (D205): what costs what, from the server's table (never hard-coded in the app).
     var prices: DrillPrices? = nil
+    /// K90 (D213): "chars" when the month is counted in credits (1 credit = 1 character of new sound); nil from a
+    /// server that still counts questions.
+    var unit: String? = nil
+    /// K90: credits left this month.
+    var remaining: Int? = nil
+    /// K90: "1 december", the day the credits are new.
+    var resets_day: String? = nil
 
     enum CodingKeys: String, CodingKey {
-        case used, limit, per, resets, suggest, prices
+        case used, limit, per, resets, suggest, prices, unit, remaining, resets_day
         case serverLeft = "left"
+    }
+
+    /// A131 (D213): the month is counted in credits.
+    var isCredits: Bool { unit == "chars" }
+
+    /// A131: the price table changed shape with the credits (K90), and it may again. A table this app cannot read is
+    /// left out; it must never take the month's number with it (the capsule would vanish).
+    init(from decoder: any Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        limit = try c.decode(Int.self, forKey: .limit)
+        remaining = try c.decodeIfPresent(Int.self, forKey: .remaining)
+        serverLeft = try c.decodeIfPresent(Int.self, forKey: .serverLeft)
+        used = try c.decodeIfPresent(Int.self, forKey: .used) ?? max(0, limit - (remaining ?? serverLeft ?? limit))
+        per = try? c.decodeIfPresent(String.self, forKey: .per)
+        resets = try? c.decodeIfPresent(String.self, forKey: .resets)
+        suggest = try? c.decodeIfPresent(Int.self, forKey: .suggest)
+        prices = try? c.decodeIfPresent(DrillPrices.self, forKey: .prices)
+        unit = try? c.decodeIfPresent(String.self, forKey: .unit)
+        resets_day = try? c.decodeIfPresent(String.self, forKey: .resets_day)
     }
 
     init(used: Int, limit: Int, per: String? = nil, resets: String? = nil, serverLeft: Int? = nil, suggest: Int? = nil) {
@@ -157,7 +192,7 @@ struct DrillQuota: Decodable, Sendable, Equatable {
         self.suggest = suggest
     }
 
-    var left: Int { max(0, serverLeft ?? (limit - used)) }
+    var left: Int { max(0, remaining ?? serverLeft ?? (limit - used)) }
 
     /// D175: Nytt prov proposes at most what is left, never more than 20 (D146); at least 1 while any is left.
     var suggestedQuestions: Int {
@@ -167,7 +202,10 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     /// D175: nothing left this month, said before the exam is made (not as a 402 afterwards).
     var isUsedUp: Bool { left == 0 }
     /// "x av 15 frågor kvar den här månaden".
-    var line: String { "\(left) av \(limit) frågor kvar den här månaden" }
+    var line: String {
+        isCredits ? "\(CreditText.number(left)) av \(CreditText.number(limit)) krediter kvar den här månaden"
+            : "\(left) av \(limit) frågor kvar den här månaden"
+    }
 }
 
 /// K82 (D205): the price table in `/drill quota`. Today every question with new sound counts as 1 (`questions`);
@@ -442,6 +480,7 @@ extension Drill {
         if let words = view.drill.long_words { drill.longWords = words }
         if let voice = view.drill.voice_model { drill.voiceModel = voice }
         if let started = view.drill.audio_started { drill.audioStarted = started ? nil : false } // A107 (K71)
+        if let cost = view.startCost { drill.startCost = cost } // A131 (K90): the server's number, kept for the card
         if let kind = view.drill.kind.flatMap(DrillKind.init(rawValue:)) {
             drill.kind = kind == .text ? .text : nil // K70; nil stays "questions" for old copies
         } else if items.contains(where: { $0.part != nil }) {
@@ -672,7 +711,7 @@ final class CloudDrillAudio: DrillAudioProviding {
             latest.needsUpload = nil
             latest = await download(view, into: latest)
             store.save(latest)
-            if (view.refunded_questions ?? 0) > 0 { refunds += 1 } // A112 (K78): the quota went back up
+            if (view.refunded_questions ?? view.refunded_credits ?? 0) > 0 { refunds += 1 } // A112 (K78): the quota went back up
             if latest.awaitsAudioStart {
                 // A107 (D190): saved, and no sound is asked for until Starta prov. Nothing to wait for.
                 // A112 (K78): unless the server says the voice service is out: then the calm line, already now.

@@ -39,6 +39,8 @@ enum RepetitionDemo {
                                       "repOffUnstarted", "repOffText", "repOffTextPlay",
                                       // A115 (D203, Ke69): Säg i AirPods
                                       "repSayText", "repSayPlay", "repSayPlayOnce", "repSayRefused",
+                                      // A131 (D213, Ke71): the month in credits
+                                      "repSayCredits", "repSayCreditsShort", "repCreditsSheet",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -224,6 +226,18 @@ enum RepetitionDemo {
                 try? WAVWriter.write(samples: silence, sampleRate: 16_000, to: audio.url(text: text))
             }
         }
+        if name == "repSayCredits" || name == "repSayCreditsShort" || name == "repCreditsSheet" { // A131 (D213)
+            model.store.save(history)
+            model.store.save(drill)
+            var credits = DrillQuota(used: name == "repSayCreditsShort" ? 1412 : 264, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = name == "repSayCreditsShort" ? 88 : 1236
+            credits.resets_day = "1 december"
+            model.quota = credits
+            SayText.stagedForScreenshots = name == "repCreditsSheet" ? nil : said
+            SayText.stagedRefusal = nil
+            return
+        }
         if name == "repCredits" || name == "repHomeCredits" { // A117
             model.store.save(history)
             model.store.save(drill)
@@ -363,12 +377,12 @@ enum RepetitionDemo {
             case "repOffTextPlay": RepetitionPlayerView(model: model)
             case "repUnstarted", "repUnstartedTooMany": NavigationStack { DrillView(model: model, drillID: unstarted.id) }
             case "repUnstartedEdit": DrillItemEditor(model: model, drill: unstarted, itemID: unstarted.items[0].id)
-            case "repCredits":
+            case "repCredits", "repCreditsSheet":
                 Color(.systemGroupedBackground).ignoresSafeArea()
                     .sheet(isPresented: .constant(true)) { CreditsSheet(model: model) }
             case "repSayPlay", "repSayPlayOnce": RepetitionPlayerView(model: model)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
-                 "repSayText", "repSayRefused", "repHomeCredits":
+                 "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)

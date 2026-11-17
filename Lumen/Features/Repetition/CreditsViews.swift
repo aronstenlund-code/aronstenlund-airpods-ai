@@ -15,7 +15,9 @@ enum CreditsText {
     }
 
     /// "312 frågor kvar".
-    static func capsule(_ quota: DrillQuota) -> String { "\(DrillText.questions(quota.left)) kvar" }
+    static func capsule(_ quota: DrillQuota) -> String {
+        quota.isCredits ? CreditText.capsule(quota.left) : "\(DrillText.questions(quota.left)) kvar" // A131 (D213)
+    }
 
     /// "1", "1,5", "2".
     static func number(_ value: Double) -> String {
@@ -91,10 +93,11 @@ struct CreditsSheet: View {
                 if let quota = model.quota {
                     Section {
                         VStack(spacing: 2) {
-                            Text(verbatim: "\(quota.left)")
+                            Text(verbatim: quota.isCredits ? CreditText.number(quota.left) : "\(quota.left)")
                                 .font(.system(.largeTitle, design: .rounded).weight(.bold))
                                 .monospacedDigit()
-                            Text(quota.left == 1 ? "fråga kvar den här månaden" : "frågor kvar den här månaden")
+                            Text(quota.isCredits ? (quota.left == 1 ? "kredit kvar den här månaden" : "krediter kvar den här månaden")
+                                 : quota.left == 1 ? "fråga kvar den här månaden" : "frågor kvar den här månaden")
                                 .foregroundStyle(.secondary)
                                 .multilineTextAlignment(.center)
                         }
@@ -104,7 +107,18 @@ struct CreditsSheet: View {
                         .listRowBackground(Color.clear)
                     }
                     let rows = CreditsText.rows(quota.prices)
-                    if !rows.isEmpty {
+                    if quota.isCredits {
+                        // A131 (D213, Kelly Ke71): how it is counted, in credits.
+                        Section {
+                            ForEach(CreditText.rows, id: \.title) { row in
+                                LabeledContent(row.title, value: row.value)
+                            }
+                        } header: {
+                            Text("Så räknas det")
+                        } footer: {
+                            Text(verbatim: CreditText.footnote(limit: quota.limit, resetsDay: quota.resets_day))
+                        }
+                    } else if !rows.isEmpty {
                         Section {
                             ForEach(rows) { row in
                                 LabeledContent(row.title, value: row.value)
@@ -122,7 +136,7 @@ struct CreditsSheet: View {
                     }
                 }
             }
-            .navigationTitle("Frågor kvar")
+            .navigationTitle(model.quota?.isCredits == true ? "Krediter" : "Frågor kvar")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } } }
             .task { await model.refreshQuota() }

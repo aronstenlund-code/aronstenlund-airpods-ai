@@ -102,8 +102,19 @@ struct SayInAirPodsField: View {
     private var readingAloudOff: Bool { sameAsMade.map(model.isReadingAloudOff) ?? false }
     /// The month does not cover the text (only a new text counts; the same sound again is free).
     private var tooMany: Bool {
+        if let credits { return credits.cost > credits.left } // A131
         guard sameAsMade == nil, let quota = model.quota else { return false }
         return counts > quota.left
+    }
+
+    /// A131 (D213, K90): the month in credits. The cost is the server's for a text it has seen (`startCost`; 0 when
+    /// the sound exists). For a text that is still being written no call has been made, so the line says the
+    /// number of characters, which is the server's own unit (1 credit = 1 shown character of new sound).
+    private var credits: (cost: Int, left: Int, resetsDay: String?)? {
+        guard let quota = model.quota, quota.isCredits, !isEmpty else { return nil }
+        let cost: Int
+        if let same = sameAsMade { cost = model.awaitsAudioStart(same) ? same.startCost ?? chars : 0 } else { cost = chars }
+        return (cost, quota.left, quota.resets_day)
     }
 
     var body: some View {
@@ -150,6 +161,14 @@ struct SayInAirPodsField: View {
                     .font(.footnote.weight(.semibold))
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.updatesFrequently)
+            } else if let credits, !readingAloudOff {
+                // A131 (Kelly Ke71): "Kostar 764 krediter. Upprepningar kostar inget.", or that they do not cover it.
+                let short = credits.cost > credits.left
+                Text(verbatim: short ? CreditText.notEnough(cost: credits.cost, left: credits.left, resetsDay: credits.resetsDay)
+                                     : CreditText.sayLine(cost: credits.cost))
+                    .font(short ? .footnote.weight(.semibold) : .footnote)
+                    .opacity(short ? 1 : 0.7)
+                    .fixedSize(horizontal: false, vertical: true)
             } else if !isEmpty {
                 Text(verbatim: SayText.costLine(counts: counts, left: sameAsMade == nil ? model.quota?.left : nil,
                                                  readingAloudOff: readingAloudOff))

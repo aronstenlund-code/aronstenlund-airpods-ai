@@ -325,6 +325,9 @@ struct RepetitionHomeSection: View {
             if let saved { return "Du var på mening \(saved + 1) av \(drill.sentenceCount)" }
             if let problem = shortProblem(drill) { return "Text · \(problem)" }
             if model.awaitsAudioStart(drill) {
+                if let quota = model.quota, quota.isCredits { // A131 (D213): the server's cost, in credits
+                    return drill.startCost.map { "Text · \(CreditText.cardLine(cost: $0))" } ?? "Text · Ljudet görs när du startar"
+                }
                 if let quota = model.quota { return "Text · Räknas som \(startCount(drill)) av dina \(quota.left) när du startar" }
                 return "Text · Ljudet görs när du startar"
             }
@@ -338,6 +341,10 @@ struct RepetitionHomeSection: View {
         // A107 (D190): not started yet, so no "Ljud: 0 av N".
         if model.awaitsAudioStart(drill) {
             // Kelly Ke64b N5: Starta prov on the card starts at once, so the card says what starting counts as.
+            if let quota = model.quota, quota.isCredits { // A131 (D213)
+                return drill.startCost.map { "\(DrillText.questions(drill.items.count)) · \(CreditText.cardLine(cost: $0))" }
+                    ?? "\(DrillText.questions(drill.items.count)) · Ljudet görs när du startar"
+            }
             if let quota = model.quota {
                 return "\(DrillText.questions(drill.items.count)) · Räknas som \(startCount(drill)) av dina \(quota.left) när du startar"
             }
@@ -362,7 +369,8 @@ struct RepetitionHomeSection: View {
     private func start(_ drill: Drill) {
         // Kelly Ke64b N5: when the month does not cover an exam that is not started, the card opens the exam's
         // screen, which says why, instead of starting.
-        if model.awaitsAudioStart(drill), let quota = model.quota, startCount(drill) > quota.left {
+        if model.awaitsAudioStart(drill), let quota = model.quota,
+           quota.isCredits ? (drill.startCost ?? 0) > quota.left : startCount(drill) > quota.left {
             opened = drill.id
             return
         }

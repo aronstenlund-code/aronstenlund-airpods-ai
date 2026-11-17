@@ -34,8 +34,12 @@ import Testing
         /// As a real server: the answer takes a moment, so other tasks run meanwhile.
         var yieldsInSave = false
 
+        /// What `save` answers instead of saving (K90: 402 when the credits do not cover a new exam).
+        var saveError: DrillCloudError?
+
         func save(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView {
             if yieldsInSave { await Task.yield(); await Task.yield() }
+            if let saveError { throw saveError }
             saves.append(DrillCloudClient.saveBody(drill))
             items = drill.items
             return view()
