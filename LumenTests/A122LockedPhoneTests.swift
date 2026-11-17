@@ -482,4 +482,14 @@ import Testing
         #expect(CreditText.exact(5392) == "5\u{00A0}392 krediter")
         #expect(CreditText.footnote(limit: 1500, resetsDay: nil).contains("1\u{00A0}500 krediter"))
     }
+
+    @Test func theCapsuleSaysVeckokortWithASubscription() throws {
+        let json = #"{"unit":"chars","limit":1500,"used":0,"remaining":37700,"resets":"2026-12-01","subscription":{"active":true,"until":"2026-11-24T10:00:00.000Z","week_used":3800,"week_limit":40000},"monthly_free":1500,"purchased":0}"#
+        let quota = try JSONDecoder().decode(DrillQuota.self, from: Data(json.utf8))
+        #expect(quota.hasWeeklyCard && quota.subscription?.week_limit == 40000 && CreditsText.capsule(quota) == "Veckokort")
+        let ended = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"unit":"chars","limit":1500,"used":0,"remaining":5392,"subscription":{"active":false,"until":null,"week_used":0,"week_limit":40000}}"#.utf8))
+        #expect(!ended.hasWeeklyCard && CreditsText.capsule(ended) == "5,3k krediter kvar")
+        let admin = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"unit":"chars","limit":1500,"used":0,"remaining":0,"unlimited":true,"subscription":{"active":true}}"#.utf8))
+        #expect(CreditsText.capsule(admin) == "Obegränsat", "admin first")
+    }
 }

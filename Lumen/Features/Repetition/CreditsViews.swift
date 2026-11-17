@@ -17,6 +17,7 @@ enum CreditsText {
     /// "312 frågor kvar".
     static func capsule(_ quota: DrillQuota) -> String {
         if quota.isUnlimited { return "Obegränsat" } // A133 (D216): the owner's account
+        if quota.hasWeeklyCard { return "Veckokort" } // A139 (D222, K94): a subscription
         return quota.isCredits ? CreditText.capsule(quota.left) : "\(DrillText.questions(quota.left)) kvar" // A131 (D213)
     }
 

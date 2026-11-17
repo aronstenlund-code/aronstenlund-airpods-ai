@@ -161,9 +161,20 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     /// K93 (D216): this account has no limit (the owner's). The capsule says "Obegränsat" and nothing is refused.
     var unlimited: Bool? = nil
     var isUnlimited: Bool { unlimited == true }
+    /// K94 (D218): the weekly card. `remaining` already counts the week's characters, the month's free ones and the
+    /// bought ones together.
+    struct Subscription: Decodable, Sendable, Equatable {
+        var active: Bool? = nil
+        var until: String? = nil
+        var week_used: Int? = nil
+        var week_limit: Int? = nil
+    }
+    var subscription: Subscription? = nil
+    /// A139 (D222): the capsule says "Veckokort" while the weekly card is active.
+    var hasWeeklyCard: Bool { subscription?.active == true }
 
     enum CodingKeys: String, CodingKey {
-        case used, limit, per, resets, suggest, prices, unit, remaining, resets_day, unlimited
+        case used, limit, per, resets, suggest, prices, unit, remaining, resets_day, unlimited, subscription
         case serverLeft = "left"
     }
 
@@ -195,6 +206,7 @@ struct DrillQuota: Decodable, Sendable, Equatable {
         unit = try? c.decodeIfPresent(String.self, forKey: .unit)
         resets_day = try? c.decodeIfPresent(String.self, forKey: .resets_day)
         unlimited = try? c.decodeIfPresent(Bool.self, forKey: .unlimited)
+        subscription = try? c.decodeIfPresent(Subscription.self, forKey: .subscription)
     }
 
     init(used: Int, limit: Int, per: String? = nil, resets: String? = nil, serverLeft: Int? = nil, suggest: Int? = nil) {
