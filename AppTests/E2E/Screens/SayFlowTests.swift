@@ -652,6 +652,16 @@ final class SayFlowTests: XCTestCase {
         return false
     }
 
+    private func hittableTwin(_ labels: [String]) -> XCUIElement? {
+        for label in labels {
+            let predicate = label.hasSuffix("*")
+                ? NSPredicate(format: "label BEGINSWITH[c] %@", String(label.dropLast()))
+                : NSPredicate(format: "label ==[c] %@", label)
+            if let hit = app.buttons.matching(predicate).allElementsBoundByIndex.first(where: { $0.exists && $0.isHittable }) { return hit }
+        }
+        return nil
+    }
+
     @discardableResult
     private func tap(_ labels: [String], _ step: String, counted: Bool = true, quiet: Bool = false) -> Bool {
         guard var element = wait(labels, quiet ? 1.5 : 6) else {
@@ -668,6 +678,9 @@ final class SayFlowTests: XCTestCase {
             log.append(String(format: "%@ at %6.1f s: %@ (centre)", counted ? "TAP \(taps)" : "TEST TAP", Date().timeIntervalSince(started), step))
             return true
         }
+        // A132 (run 44163428569): Start's own "Klistra in" (empty field, text on the clipboard) stands behind a sheet
+        // with the same label, and the first match was that one. Take a hittable button with the same label first.
+        if !element.isHittable, let twin = hittableTwin(labels) { element = twin }
         var swipes = 0
         while !element.isHittable, swipes < 6 {
             app.swipeUp()
