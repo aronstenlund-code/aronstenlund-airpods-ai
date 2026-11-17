@@ -141,8 +141,12 @@ final class OfflineFlowTests: XCTestCase {
         guard tap(["Nytt prov"], "Nytt prov") else { return false }
         pause(2)
         screen("utan-nat-nytt-prov", "Nytt prov without a network")
-        let said = find(["Ingen internetanslutning*"]) != nil
-        if !said { note("Nytt prov offline: no 'Ingen internetanslutning …' line") }
+        // Run 44106229421: the line was not there 2 s after Nytt prov once (green on the same app on the branch). Wait up to 8 s.
+        let said = wait(["Ingen internetanslutning*"], 8) != nil
+        if !said {
+            note("Nytt prov offline: no 'Ingen internetanslutning …' line in 8 s")
+            log.append("Nytt prov offline texts: " + Self.labels(in: app.debugDescription, kind: "StaticText").prefix(25).joined(separator: " | "))
+        }
         if let create = find(["Skapa frågor"]), create.isEnabled { note("Nytt prov offline: Skapa frågor is tappable") }
         closeSheet()
         if !atStart() { goToStart() }
