@@ -7,6 +7,8 @@ import { restDbFromEnv } from "../_shared/restdb.ts";
 import { useQuotaFromDb } from "../_shared/wallet_db.ts";
 import { walletFields } from "../_shared/wallet.ts";
 import { APPLE_ROOT_G3_SHA256 } from "./jws.ts";
+import { APPLE_APP_ATTEST_ROOT_SHA256, appleAppAttestRoot } from "./attest.ts";
+import { rewardStore } from "../_shared/rewards_db.ts";
 import { createPurchaseHandler, type LedgerRow, type Product, type SubRow } from "./handler.ts";
 
 const env = Deno.env;
@@ -20,6 +22,21 @@ Deno.serve(withCors(
     rateLimiter: new SupabaseRateLimiter(db),
     roots: [APPLE_ROOT_G3_SHA256], // never a test root here
     bundleId: env.get("APP_BUNDLE_ID") ?? "com.rsolutions.lumen",
+    // K98 (D224): welcome credits and invitations; App Attest's app id is "<TEAMID>.<bundle id>" (APPLE_TEAM_ID)
+    rewards: rewardStore(db),
+    attest: {
+      appId: env.get("APPLE_TEAM_ID") ? `${env.get("APPLE_TEAM_ID")}.${env.get("APP_BUNDLE_ID") ?? "com.rsolutions.lumen"}` : null,
+      allowDevelopment: env.get("APP_ATTEST_DEVELOPMENT") === "1",
+      rootDer: appleAppAttestRoot(),
+      roots: [APPLE_APP_ATTEST_ROOT_SHA256],
+      newChallenge: async (u) => {
+        const c = btoa(String.fromCharCode(...crypto.getRandomValues(new Uint8Array(32)))).replace(/[+/=]/g, "");
+        await db.insert("app_attest_challenges", { challenge: c, user_id: u, expires_at: new Date(Date.now() + 5 * 60_000).toISOString() });
+        return c;
+      },
+      useChallenge: async (u, c) =>
+        (await db.updateWhere("app_attest_challenges", `challenge=eq.${q(c)}&user_id=eq.${q(u)}&used=eq.false&expires_at=gt.${q(new Date().toISOString())}`, { used: true })) > 0,
+    },
     wallet: async (u) => {
       const a = await wallet(u, 0);
       return { unit: "chars", remaining: Math.max(0, a.lim - a.used), ...(a.unlimited ? { unlimited: true } : {}), ...walletFields(a) };

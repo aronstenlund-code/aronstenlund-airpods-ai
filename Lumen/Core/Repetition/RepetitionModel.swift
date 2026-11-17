@@ -315,6 +315,7 @@ final class RepetitionModel {
     /// On opening: the exams of this account on the server (R5: another phone), then the sound of every exam that is
     /// not ready.
     func refresh() async {
+        (audio as? CloudDrillAudio)?.trimStorage(keeping: session.drill) // A135 (D219.5)
         if let cloud {
             do throws(DrillCloudError) {
                 let remote = try await cloud.list()
@@ -519,10 +520,26 @@ final class RepetitionModel {
 
     func savedIndex(_ drill: Drill) -> Int? { session.savedIndex(for: drill) }
 
-    func start(_ drill: Drill, at index: Int = 0) async {
+    /// `stillWanted`: asked when the server has answered (A135); false when the one who pressed has stopped waiting.
+    func start(_ drill: Drill, at index: Int = 0, stillWanted: (@MainActor () -> Bool)? = nil) async {
+        // A135 (D219.2, Aron's phone 2026-11-17 20:24): Spela never waits for the network when the sound is already on
+        // the phone. It plays at once, and the server is told in the background (it has the sound, so nothing is
+        // counted for it there).
+        if awaitsAudioStart(drill), audio.hasAllSound(drill) {
+            Log.repetition.info("Start: the sound is on the phone, playing at once; the server is told in the background")
+            if drill.isText { await read(drill, at: index) } else { await play(drill, at: index) }
+            Task { await startAudio(drill) }
+            return
+        }
         // A107 (D190): Starta prov asks for the sound first; the player then waits for each question's sound.
         if awaitsAudioStart(drill) {
-            guard await startAudio(drill) else {
+            let asked = Date()
+            let ok = await startAudio(drill)
+            Log.repetition.info("Start: the server answered after \(Date().timeIntervalSince(asked), format: .fixed(precision: 1), privacy: .public) s (\(ok ? "started" : "not started", privacy: .public))")
+            // A135 (D219.3): the one who asked has stopped waiting (10 s). The sound goes on being made and fetched,
+            // but nothing starts to play by itself later.
+            if let stillWanted, !stillWanted() { return }
+            guard ok else {
                 // A112b (D200, Kelly U1): the voice service is out. Starta prov still opens the exam: the questions
                 // and answers (or the text) are read on the screen and stepped through by hand. Nothing is counted.
                 if let latest = store.drill(drill.id), isReadingAloudOff(latest) { await showAsText(latest, at: index) }
@@ -625,6 +642,44 @@ final class RepetitionModel {
         return "Fylls på den \(parts[2]) \(calendar.monthSymbols[parts[1] - 1])."
     }
 
+    /// A135 (D219.1): the same line of text has the same sound on the server (the same voice), so a part whose exact
+    /// text another exam on this phone already has the sound for is given that file. When every part has one, Spela
+    /// plays at once without the network.
+    nonisolated static func withSoundAlreadyHere(_ text: Drill, from drills: [Drill]) -> Drill {
+        var text = text
+        let known = drills.filter { $0.isText && $0.voiceModel == text.voiceModel }.flatMap(\.items).filter { $0.longAudio != nil }
+        text.items = text.items.map { item in
+            guard item.longAudio == nil, let same = known.first(where: { $0.long == item.long && $0.part == item.part }) else { return item }
+            var item = item
+            item.longAudio = same.longAudio
+            item.sentences = same.sentences
+            item.sentenceTimesMs = same.sentenceTimesMs
+            return item
+        }
+        return text
+    }
+
+    /// A135 (D219.4): "Senaste" shows every text once. The newest of the copies stands for the text.
+    var recentSaid: [Drill] {
+        var seen = Set<String>()
+        return saidDrills.filter { drill in
+            seen.insert(drill.items.map { $0.long.split(whereSeparator: \.isWhitespace).joined(separator: " ") }.joined(separator: "\n")).inserted
+        }
+    }
+
+    /// A132 (D215.8, K92): what Spela would cost for this text, asked of the server without saving anything. A text
+    /// that is already an exam is asked about as that exam, so sound that exists costs nothing. Nil when the server
+    /// cannot be asked; the app then says nothing about the cost, and the server answers at Spela.
+    func sayCost(_ text: String) async -> DrillCost? {
+        guard let cloud else { return nil }
+        let parts = SaidText.parts(text)
+        guard !parts.isEmpty else { return nil }
+        let drill = saidDrill(for: text)
+            ?? Drill.text(title: SaidText.title(text), summary: DrillSummary(subject: "", grade: "", covers: ""),
+                          parts: parts.map { DrillItem.textPart($0, part: .para) })
+        return try? await cloud.cost(drill)
+    }
+
     /// A132 (D215.6): a text from "Säg i AirPods" is being read (or waits for its sound) and has not reached its end.
     var isSayingOnCard: Bool {
         guard session.saying != nil, let reader = session.reader else { return false }
@@ -646,20 +701,23 @@ final class RepetitionModel {
     func say(_ text: String, repeatMinutes: Int?) async -> Drill? {
         let parts = SaidText.parts(text)
         guard !parts.isEmpty else { return nil }
+        sayAttempt += 1
+        let mine = sayAttempt
         // A130 (D212, Aron's phone 2026-11-17 13:48): the server refused the text (402) and every press on Spela made
         // one more unstarted exam. The same text is the same exam: it is started again, never saved again.
         if let same = saidDrill(for: text) ?? lastSaid.flatMap({ $0.text == text ? store.drill($0.drillID) : nil }) {
-            await sayAgain(same, repeatMinutes: repeatMinutes)
+            await sayAgain(same, repeatMinutes: repeatMinutes, attempt: mine)
             return store.drill(same.id) ?? same
         }
         var made = Drill.text(title: SaidText.title(text), summary: DrillSummary(subject: "", grade: "", covers: ""),
                               parts: parts.map { DrillItem.textPart($0, part: .para) })
         made.audioStarted = false // nothing is asked for or counted until it is started, just below
         made.said = true // A132 (D215): kept as "Senaste" under the field, never as an exam on Start
+        made = Self.withSoundAlreadyHere(made, from: store.drills) // A135 (D219.1)
         let drill = save(made)
         lastSaid = (text, drill.id)
         sayOptions = RepetitionSession.SayOptions(repeatMinutes: repeatMinutes)
-        await start(drill)
+        await start(drill, stillWanted: { [weak self] in self?.sayAttempt == mine })
         sayOptions = nil
         // A131 (D212 point 3, K90): the credits did not cover it, so the server saved nothing. The phone keeps nothing
         // either: no card on Start for a text that was refused. The text is still in the field, and why is said there.
@@ -672,11 +730,17 @@ final class RepetitionModel {
     }
 
     /// A115: Spela on the same text again: the sound that is already made, from the beginning. Costs nothing.
-    func sayAgain(_ drill: Drill, repeatMinutes: Int?) async {
+    func sayAgain(_ drill: Drill, repeatMinutes: Int?, attempt: Int? = nil) async {
         sayOptions = RepetitionSession.SayOptions(repeatMinutes: repeatMinutes)
-        await start(store.drill(drill.id) ?? drill, at: 0)
+        let mine = attempt ?? sayAttempt
+        await start(store.drill(drill.id) ?? drill, at: 0, stillWanted: { [weak self] in self?.sayAttempt == mine })
         sayOptions = nil
     }
+
+    /// A135 (D219.3): which press on Spela is being waited for. `giveUpSay` ends the wait: the sound goes on being
+    /// made and fetched, but nothing starts to play by itself later.
+    private(set) var sayAttempt = 0
+    func giveUpSay() { sayAttempt += 1 }
 
     /// The part sentence number `sentence` is in.
     static func part(of sentence: Int, in drill: Drill) -> Int {

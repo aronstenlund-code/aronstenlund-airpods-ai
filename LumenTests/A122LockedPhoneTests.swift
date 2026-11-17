@@ -341,4 +341,115 @@ import Testing
         #expect(SayText.capsule("HISTORIA – 1880–1918\nNationalism = stark kärlek") == "HISTORIA – 1880–1918 Na…")
         #expect(SayText.capsule("HISTORIA – 1880–1918\nNationalism = stark kärlek").count <= 24)
     }
+
+    // MARK: A132 (D215.8, K92): the cost before Spela is the server's; A133 (D216): an account without a limit
+
+    @Test func theCostBeforeSpelaIsAskedOfTheServerWithoutSavingAnything() async throws {
+        let folder = try A79A81RepetitionTests.folder("k92")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A107StartAudioTests.DeferredCloud()
+        cloud.costAnswer = try JSONDecoder().decode(DrillCost.self, from: Data(#"{"cost":744,"remaining":1236,"limit":1500,"unit":"chars","enough":true}"#.utf8))
+        let audio = CloudDrillAudio(cloud: cloud, store: store, folder: folder, pollInterval: .milliseconds(1), maxPolls: 20)
+        let session = RepetitionSession(inputs: [], makeSource: { MockSource() }, makeTimer: { MockTimer() },
+                                        defaults: try #require(UserDefaults(suiteName: "k92-\(UUID())")),
+                                        activatesAudioSession: false)
+        let model = RepetitionModel(store: store, session: session, maker: MockDrillMaker(), audio: audio,
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+
+        let answer = try #require(await model.sayCost("HISTORIA – 1880–1918\nNationalism = stark kärlek till den egna nationen."))
+        #expect(answer.cost == 744 && answer.remaining == 1236, "the server's number, not the app's count of characters")
+        #expect(cloud.costAsked.count == 1 && cloud.costAsked[0].isText && cloud.costAsked[0].items.count == 2)
+        #expect(store.drills.isEmpty && cloud.saves.isEmpty && cloud.startCalls == 0, "nothing is saved, started or counted")
+        #expect(DrillCloudClient.saveBody(cloud.costAsked[0])["items"] != nil, "the same body as save")
+        #expect(await model.sayCost("   ") == nil)
+
+        cloud.costAnswer = nil // a server without K92, or no network: nothing is said, and Spela asks the server
+        #expect(await model.sayCost("En text.") == nil)
+    }
+
+    @Test func anAccountWithoutALimitIsToldObegransat() throws {
+        let quota = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"unit":"chars","limit":1500,"used":9000,"remaining":0,"unlimited":true,"resets":"2026-12-01"}"#.utf8))
+        #expect(quota.isUnlimited && quota.left > 1_000_000 && !quota.isUsedUp, "nothing is refused for lack of credits")
+        #expect(CreditsText.capsule(quota) == "Obegränsat")
+        let usual = try JSONDecoder().decode(DrillQuota.self, from: Data(Self.creditsJSON.utf8))
+        #expect(!usual.isUnlimited && CreditsText.capsule(usual) == "1\u{00A0}236 krediter kvar")
+    }
+
+    // MARK: A135 (D219): Aron's phone 20:24, Spela loaded for over a minute; sound that is here plays without the network
+
+    /// A text whose every line already has its sound on the phone plays at once: no answer from the server is waited
+    /// for (the server here never answers in time), and the server is told afterwards.
+    @Test func aTextWhoseSoundIsOnThePhonePlaysAtOnceWithoutTheNetwork() async throws {
+        let folder = try A79A81RepetitionTests.folder("a135")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A107StartAudioTests.DeferredCloud()
+        let audio = CloudDrillAudio(cloud: cloud, store: store, folder: folder, pollInterval: .milliseconds(1), maxPolls: 20)
+        let session = RepetitionSession(inputs: [], makeSource: { MockSource() }, makeTimer: { MockTimer() },
+                                        defaults: try #require(UserDefaults(suiteName: "a135-\(UUID())")),
+                                        activatesAudioSession: false)
+        let model = RepetitionModel(store: store, session: session, maker: MockDrillMaker(), audio: audio,
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+        // An earlier text on the phone has the sound for the line "Hej".
+        var earlier = Drill.text(title: "Hej", summary: DrillSummary(subject: "", grade: "", covers: ""),
+                                 parts: [DrillItem.textPart("Hej", part: .para)])
+        earlier.said = true
+        earlier.items[0].longAudio = "abc.mp3"
+        earlier.serverID = "srv-0"
+        earlier.audioStarted = nil
+        try Data([1, 2, 3]).write(to: audio.fileURL("abc.mp3"))
+        store.save(earlier)
+
+        let given = RepetitionModel.withSoundAlreadyHere(
+            Drill.text(title: "Hej då", summary: DrillSummary(subject: "", grade: "", covers: ""),
+                       parts: [DrillItem.textPart("Hej", part: .para), DrillItem.textPart("Nytt.", part: .para)]),
+            from: store.drills)
+        #expect(given.items[0].longAudio == "abc.mp3" && given.items[1].longAudio == nil, "only the line that is here")
+
+        cloud.saveError = .offline("no network") // the server cannot be reached at all
+        let said = try #require(await model.say("  Hej ", repeatMinutes: 10))
+        #expect(said.id == earlier.id && model.isSayingOnCard, "the same text is the exam that is here, and it plays")
+        #expect(cloud.saves.isEmpty && cloud.startCalls == 0, "nothing was asked of the server")
+        model.end()
+    }
+
+    @Test func senasteShowsEveryTextOnce() async throws {
+        let folder = try A79A81RepetitionTests.folder("a135-once")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A107StartAudioTests.DeferredCloud()
+        let audio = CloudDrillAudio(cloud: cloud, store: store, folder: folder, pollInterval: .milliseconds(1), maxPolls: 20)
+        let session = RepetitionSession(inputs: [], makeSource: { MockSource() }, makeTimer: { MockTimer() },
+                                        defaults: try #require(UserDefaults(suiteName: "a135b-\(UUID())")),
+                                        activatesAudioSession: false)
+        let model = RepetitionModel(store: store, session: session, maker: MockDrillMaker(), audio: audio,
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+        for text in ["HISTORIA – 1880–1918\nNationalism.", "HISTORIA  –  1880–1918\nNationalism.", "Hej"] {
+            var made = Drill.text(title: SaidText.title(text), summary: DrillSummary(subject: "", grade: "", covers: ""),
+                                  parts: SaidText.parts(text).map { DrillItem.textPart($0, part: .para) })
+            made.said = true
+            store.save(made)
+        }
+        #expect(model.saidDrills.count == 3 && model.recentSaid.count == 2, "the two copies of the same text are one capsule")
+    }
+
+    @Test func theSoundOnThePhoneHasACeiling() async throws {
+        let folder = try A79A81RepetitionTests.folder("a135-space")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let audio = CloudDrillAudio(cloud: A107StartAudioTests.DeferredCloud(), store: store, folder: folder,
+                                    pollInterval: .milliseconds(1), maxPolls: 20)
+        for (i, name) in ["old.mp3", "mid.mp3", "new.mp3", "playing.mp3"].enumerated() {
+            let url = audio.fileURL(name)
+            try Data(count: 1000).write(to: url)
+            try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSince1970: 1_800_000_000 + Double(i * 60))],
+                                                  ofItemAtPath: url.path)
+        }
+        var playing = Drill.text(title: "T", summary: A79A81RepetitionTests.summary, parts: [DrillItem.textPart("En.", part: .para)])
+        playing.items[0].longAudio = "playing.mp3"
+        try FileManager.default.setAttributes([.modificationDate: Date(timeIntervalSince1970: 1_700_000_000)],
+                                              ofItemAtPath: audio.fileURL("playing.mp3").path) // the oldest of all
+        #expect(audio.trimStorage(limit: 10_000, keeping: playing) == 0, "under the ceiling nothing is removed")
+        let removed = audio.trimStorage(limit: 2_500, keeping: playing)
+        let left = Set(try FileManager.default.contentsOfDirectory(atPath: audio.fileURL("x").deletingLastPathComponent().path).filter { $0.hasSuffix(".mp3") })
+        #expect(removed == 2 && left == ["new.mp3", "playing.mp3"], "the oldest go first, never what is playing")
+        #expect(SayText.patience == .seconds(10) && !SayText.slowLine.isEmpty)
+    }
 }

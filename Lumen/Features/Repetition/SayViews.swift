@@ -30,6 +30,8 @@ enum SayText {
     static var stagedForScreenshots: String?
     /// A130: the line after a refused Spela, for the screenshots.
     static var stagedRefusal: String?
+    /// A132: the server's cost, for the screenshots (no server there).
+    static var stagedCost: Int?
     #endif
 
     /// "10 min" … "1 timme" on the button.
@@ -58,6 +60,10 @@ enum SayText {
     /// A132 (D215.2, Kelly Ke72): shorter, and only until Spela has been pressed once.
     static let lockLine = "Du kan låsa telefonen. Det hörs i AirPods ändå."
     static let hasPlayedKey = "say.hasPlayed"
+
+    /// A135 (D219.3): how long Spela shows its spinner, and what is said after that.
+    static let patience: Duration = .seconds(10)
+    static let slowLine = "Ljudet kunde inte hämtas. Kontrollera nätet och försök igen."
 
     /// A132 (Ke72): the main button says how long: "Spela i 10 min", "Spela i 1 timme".
     static func playTitle(_ minutes: Int) -> String { "Spela i \(howLong(minutes))" }
@@ -94,6 +100,11 @@ struct SayInAirPodsField: View {
     @AppStorage(SayText.hasPlayedKey) private var hasPlayed = false
     /// Ke72: the clipboard has text (asked without reading it, so the system shows no notice).
     @State private var clipboardHasText = false
+    /// A135: which press is waited for, and that the last one took too long (the button is then Försök igen).
+    @State private var attempt = 0
+    @State private var canRetry = false
+    /// K92: the server's answer for the text it was asked about.
+    @State private var asked: (text: String, cost: Int, left: Int?)?
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage("say.repeatMinutes") private var storedMinutes = SayText.defaultRepeat
     private var minutes: Int { SayText.repeatMinutes(storedMinutes) }
@@ -127,15 +138,27 @@ struct SayInAirPodsField: View {
         return counts > quota.left
     }
 
-    /// A131 (D213, K90): the month in credits. The cost is the server's for a text it has seen (`startCost`; 0 when
-    /// the sound exists). For a text that is still being written no call has been made, so the line says the
-    /// number of characters, which is the server's own unit (1 credit = 1 shown character of new sound).
+    /// A131 (D213), A132 (D215.8, K92): the month in credits, and what Spela costs as the server says it: asked a
+    /// moment after the typing stops, without saving anything (`cost`). A text that is already an exam and started
+    /// costs 0. While the server has not answered, nothing is said (Ke72), and the server answers at Spela anyway.
+    /// A133 (D216): an account without a limit is told no cost.
     private var credits: (cost: Int, left: Int, resetsDay: String?)? {
-        guard let quota = model.quota, quota.isCredits, !isEmpty else { return nil }
-        let cost: Int
-        let written = SaidText.creditChars(text)
-        if let same = sameAsMade { cost = model.awaitsAudioStart(same) ? same.startCost ?? written : 0 } else { cost = written }
-        return (cost, quota.left, quota.resetsDay)
+        guard let quota = model.quota, quota.isCredits, !quota.isUnlimited, !isEmpty else { return nil }
+        #if DEBUG
+        if let staged = SayText.stagedCost { return (staged, quota.left, quota.resetsDay) }
+        #endif
+        if let same = sameAsMade, !model.awaitsAudioStart(same) { return (0, quota.left, quota.resetsDay) }
+        if let asked, asked.text == text { return (asked.cost, asked.left ?? quota.left, quota.resetsDay) }
+        if let known = sameAsMade?.startCost { return (known, quota.left, quota.resetsDay) }
+        return nil
+    }
+
+    /// K92: asks the server what this text costs, 0.7 s after the last key (at most 20 a minute there).
+    private func askCost(for text: String) async {
+        guard model.quota?.isCredits == true, model.quota?.isUnlimited != true, SaidText.chars(text) > 0 else { return }
+        try? await Task.sleep(for: .milliseconds(700))
+        guard !Task.isCancelled, let answer = await model.sayCost(text), !Task.isCancelled else { return }
+        asked = (text, answer.cost, answer.remaining)
     }
 
     var body: some View {
@@ -143,6 +166,7 @@ struct SayInAirPodsField: View {
             card
             if playing == nil { recents }
         }
+        .task(id: text) { await askCost(for: text) } // cancelled and asked again when the text changes
         .onAppear { lookAtClipboard(); setStage() }
         .onChange(of: scenePhase) { _, phase in if phase == .active { lookAtClipboard() } }
         .onReceive(NotificationCenter.default.publisher(for: UIPasteboard.changedNotification)) { _ in lookAtClipboard() }
@@ -166,7 +190,7 @@ struct SayInAirPodsField: View {
     /// "Nästa prov" and never among "Andra prov".
     @ViewBuilder
     private var recents: some View {
-        let said = Array(model.saidDrills.prefix(3))
+        let said = Array(model.recentSaid.prefix(3)) // A135 (D219.4): every text once
         if !said.isEmpty {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
@@ -265,7 +289,7 @@ struct SayInAirPodsField: View {
                 writingCard
             }
         }
-        .onChange(of: text) { refused = nil }
+        .onChange(of: text) { refused = nil; canRetry = false }
         .padding(16)
         .foregroundStyle(SayText.ink)
         .background(scheme == .dark ? SayText.fieldDark : SayText.field, in: RoundedRectangle(cornerRadius: 16))
@@ -465,7 +489,7 @@ struct SayInAirPodsField: View {
                 HStack(spacing: 6) {
                     if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: "play.fill").accessibilityHidden(true) }
                     // In a row of its own (the largest text) it may shrink; it must never be wider than the card.
-                    Text(verbatim: SayText.playTitle(minutes)).lineLimit(1)
+                    Text(verbatim: canRetry ? "Försök igen" : SayText.playTitle(minutes)).lineLimit(1)
                         .fixedSize(horizontal: !wide, vertical: false)
                         .minimumScaleFactor(0.6)
                 }
@@ -598,13 +622,29 @@ struct SayInAirPodsField: View {
         let text = self.text
         let minutes: Int? = self.minutes // A124: it always goes round for the chosen time
         refused = nil
+        canRetry = false
+        attempt += 1
+        let mine = attempt
         Task {
             // A130: the model knows whether this text is already an exam (the same text never becomes two).
-            if let drill = await model.say(text, repeatMinutes: minutes) {
+            let drill = await model.say(text, repeatMinutes: minutes)
+            guard mine == attempt, isStarting else { return } // given up meanwhile: the line below stands
+            if let drill {
                 refused = model.sayRefusal(drill)
                 if let refused { AccessibilityNotification.Announcement(refused).post() }
             }
             isStarting = false
+        }
+        Task {
+            // A135 (D219.3, Aron's phone 20:24): no spinner without an end. After 10 s it is said that the sound could
+            // not be fetched, and the button is Försök igen. Nothing starts to play by itself later.
+            try? await Task.sleep(for: SayText.patience)
+            guard mine == attempt, isStarting, !model.isSayingOnCard, !model.showsPlayer else { return }
+            model.giveUpSay()
+            isStarting = false
+            canRetry = true
+            refused = SayText.slowLine
+            AccessibilityNotification.Announcement(SayText.slowLine).post()
         }
     }
 }

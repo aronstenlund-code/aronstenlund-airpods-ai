@@ -34,6 +34,15 @@ import Testing
         /// As a real server: the answer takes a moment, so other tasks run meanwhile.
         var yieldsInSave = false
 
+        /// K92: what `cost` answers, and the exams it was asked about.
+        var costAnswer: DrillCost?
+        var costAsked: [Drill] = []
+        func cost(_ drill: Drill) async throws(DrillCloudError) -> DrillCost {
+            costAsked.append(drill)
+            guard let costAnswer else { throw .offline("test") }
+            return costAnswer
+        }
+
         /// What `save` answers instead of saving (K90: 402 when the credits do not cover a new exam).
         var saveError: DrillCloudError?
 

@@ -5,6 +5,8 @@ import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { useQuotaFromDb } from "../_shared/wallet_db.ts";
 import { providerFromEnv } from "../answer/llm/factory.ts";
 import { haikuStyler } from "./style.ts";
+import { onFirstPlay } from "../_shared/rewards.ts";
+import { rewardStore } from "../_shared/rewards_db.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
 import { secret } from "../_shared/secrets.ts";
 import { parseVoices } from "../tts/voices.ts";
@@ -14,6 +16,7 @@ import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type Pu
 const env = Deno.env;
 const db = restDbFromEnv();
 const stylerProvider = providerFromEnv(Deno.env);
+const rewards = rewardStore(db);
 const base = env.get("SUPABASE_URL")!.replace(/\/+$/, "");
 const key = env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const xi = secret(env, "ELEVENLABS_API_KEY");
@@ -70,6 +73,8 @@ Deno.serve(withCors(withTestMode("drill",
     rateLimiter: new SupabaseRateLimiter(db),
     // K95 (D220): Haiku adds v3 tags for "Hur ska det låta?" (only for files that are made new)
     styler: stylerProvider ? haikuStyler(stylerProvider) : undefined,
+    // K98 (D224): the first Starta prov / Spela rewards the inviter
+    onStarted: (u) => onFirstPlay(rewards, u),
     model,
     voiceId: secret(env, "ELEVENLABS_VOICE_ID") ?? parseVoices(env.get("ELEVENLABS_VOICES")).voices[0]?.id ?? null,
     usdPer1kChars: 0.08,
@@ -107,7 +112,7 @@ Deno.serve(withCors(withTestMode("drill",
         chunked(hashes, 100, async (p) =>
           (await db.select(
             "drill_audio_files",
-            `select=hash,kind,text,short_chars,model,voice_id,status,attempts,bytes,duration_ms,short_end_ms,credits,error,done_at,queued_at,sentence_ends,sentences&hash=in.(${list(p)})`,
+            `select=hash,kind,text,short_chars,model,voice_id,status,attempts,bytes,duration_ms,short_end_ms,credits,error,done_at,queued_at,sentence_ends,sentences,words&hash=in.(${list(p)})`,
           )) as AudioRow[]),
       enqueue: (rows) => db.insertManyIgnoreDuplicates("drill_audio_files", rows, "hash"),
       claim: async (n) => {

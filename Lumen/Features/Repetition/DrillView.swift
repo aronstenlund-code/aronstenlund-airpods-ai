@@ -351,6 +351,7 @@ struct DrillView: View {
     /// Nil for a started exam and while the quota is not known.
     private func startCost(_ drill: Drill) -> (line: String, tooMany: Bool)? {
         guard model.awaitsAudioStart(drill), !model.isReadingAloudOff(drill), let quota = model.quota else { return nil }
+        if quota.isUnlimited { return nil } // A133 (D216): no cost is said to an account without a limit
         if quota.isCredits { // A131 (D213, K90): the server's number, in credits; nothing is counted here
             guard let cost = drill.startCost else { return nil }
             if cost > quota.left {

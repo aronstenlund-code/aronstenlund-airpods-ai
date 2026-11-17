@@ -42,7 +42,7 @@ enum RepetitionDemo {
                                       // A131 (D213, Ke71): the month in credits
                                       "repSayCredits", "repSayCreditsShort", "repCreditsSheet",
                                       // A132 (D215): said texts are "Senaste" under the field, not exams
-                                      "repHomeSaid", "repHomeSaidOnly", "repSayOnCard",
+                                      "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -247,6 +247,18 @@ enum RepetitionDemo {
             SayText.stagedRefusal = nil
             return
         }
+        if name == "repSayUnlimited" { // A133 (D216): the owner's account has no limit
+            model.store.save(history)
+            model.store.save(drill)
+            var credits = DrillQuota(used: 0, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.unlimited = true
+            model.quota = credits
+            SayText.stagedForScreenshots = said
+            SayText.stagedRefusal = nil
+            SayText.stagedCost = nil
+            return
+        }
         if name == "repSayCredits" || name == "repSayCreditsShort" || name == "repCreditsSheet" { // A131 (D213)
             model.store.save(history)
             model.store.save(drill)
@@ -257,6 +269,7 @@ enum RepetitionDemo {
             model.quota = credits
             SayText.stagedForScreenshots = name == "repCreditsSheet" ? nil : said
             SayText.stagedRefusal = nil
+            SayText.stagedCost = 120 // K92: what the server would answer for this text
             return
         }
         if name == "repCredits" || name == "repHomeCredits" { // A117
@@ -417,7 +430,7 @@ enum RepetitionDemo {
             case "repSayPlay", "repSayPlayOnce": RepetitionPlayerView(model: model)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
-                 "repHomeSaid", "repHomeSaidOnly", "repSayOnCard":
+                 "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)

@@ -16,7 +16,8 @@ enum CreditsText {
 
     /// "312 frågor kvar".
     static func capsule(_ quota: DrillQuota) -> String {
-        quota.isCredits ? CreditText.capsule(quota.left) : "\(DrillText.questions(quota.left)) kvar" // A131 (D213)
+        if quota.isUnlimited { return "Obegränsat" } // A133 (D216): the owner's account
+        return quota.isCredits ? CreditText.capsule(quota.left) : "\(DrillText.questions(quota.left)) kvar" // A131 (D213)
     }
 
     /// "1", "1,5", "2".
@@ -93,10 +94,11 @@ struct CreditsSheet: View {
                 if let quota = model.quota {
                     Section {
                         VStack(spacing: 2) {
-                            Text(verbatim: quota.isCredits ? CreditText.number(quota.left) : "\(quota.left)")
+                            Text(verbatim: quota.isUnlimited ? "Obegränsat" : quota.isCredits ? CreditText.number(quota.left) : "\(quota.left)")
                                 .font(.system(.largeTitle, design: .rounded).weight(.bold))
                                 .monospacedDigit()
-                            Text(quota.isCredits ? (quota.left == 1 ? "kredit kvar den här månaden" : "krediter kvar den här månaden")
+                            Text(quota.isUnlimited ? "Det här kontot har ingen gräns"
+                                 : quota.isCredits ? (quota.left == 1 ? "kredit kvar den här månaden" : "krediter kvar den här månaden")
                                  : quota.left == 1 ? "fråga kvar den här månaden" : "frågor kvar den här månaden")
                                 .foregroundStyle(.secondary)
                                 .multilineTextAlignment(.center)

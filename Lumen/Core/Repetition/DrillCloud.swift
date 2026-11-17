@@ -158,9 +158,12 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     var remaining: Int? = nil
     /// K90: "1 december", the day the credits are new.
     var resets_day: String? = nil
+    /// K93 (D216): this account has no limit (the owner's). The capsule says "Obegränsat" and nothing is refused.
+    var unlimited: Bool? = nil
+    var isUnlimited: Bool { unlimited == true }
 
     enum CodingKeys: String, CodingKey {
-        case used, limit, per, resets, suggest, prices, unit, remaining, resets_day
+        case used, limit, per, resets, suggest, prices, unit, remaining, resets_day, unlimited
         case serverLeft = "left"
     }
 
@@ -191,6 +194,7 @@ struct DrillQuota: Decodable, Sendable, Equatable {
         prices = try? c.decodeIfPresent(DrillPrices.self, forKey: .prices)
         unit = try? c.decodeIfPresent(String.self, forKey: .unit)
         resets_day = try? c.decodeIfPresent(String.self, forKey: .resets_day)
+        unlimited = try? c.decodeIfPresent(Bool.self, forKey: .unlimited)
     }
 
     init(used: Int, limit: Int, per: String? = nil, resets: String? = nil, serverLeft: Int? = nil, suggest: Int? = nil) {
@@ -202,7 +206,7 @@ struct DrillQuota: Decodable, Sendable, Equatable {
         self.suggest = suggest
     }
 
-    var left: Int { max(0, remaining ?? serverLeft ?? (limit - used)) }
+    var left: Int { isUnlimited ? Int.max / 2 : max(0, remaining ?? serverLeft ?? (limit - used)) }
 
     /// D175: Nytt prov proposes at most what is left, never more than 20 (D146); at least 1 while any is left.
     var suggestedQuestions: Int {
@@ -293,9 +297,22 @@ protocol DrillCloudSyncing: AnyObject, Sendable {
     func accountID() async -> String?
     /// K71 (D190): Starta prov: the server makes every missing file in play order and counts the month's quota now.
     func start(id: String) async throws(DrillCloudError) -> DrillCloudView
+    /// K92 (D215.8): what saving and starting this exam would cost, counted by the server exactly as `save` would.
+    /// Nothing is saved, queued or counted.
+    func cost(_ drill: Drill) async throws(DrillCloudError) -> DrillCost
+}
+
+/// K92: `{cost, remaining, limit, unit, enough}`.
+struct DrillCost: Decodable, Sendable, Equatable {
+    var cost: Int
+    var remaining: Int? = nil
+    var limit: Int? = nil
+    var enough: Bool? = nil
 }
 
 extension DrillCloudSyncing {
+    /// A server (or a mock) without K92 has no answer; the app then says nothing about the cost before Spela.
+    func cost(_ drill: Drill) async throws(DrillCloudError) -> DrillCost { throw .offline("no cost preview") }
     func accountID() async -> String? { nil }
     /// Mocks written before K71: a started exam is what `status` says.
     func start(id: String) async throws(DrillCloudError) -> DrillCloudView { try await status(id: id) }
@@ -370,6 +387,13 @@ final class DrillCloudClient: DrillCloudSyncing {
         let reply: Reply = try await call(["action": "list"], timeout: 20)
         lastQuota = reply.quota
         return reply.drills
+    }
+
+    /// K92 (D215.8): the same body as `save`, with the action `cost`.
+    func cost(_ drill: Drill) async throws(DrillCloudError) -> DrillCost {
+        var body = Self.saveBody(drill)
+        body["action"] = "cost"
+        return try await call(body, timeout: 15)
     }
 
     /// K61 (D175): `/drill quota` → used, limit, left, suggest.
@@ -588,6 +612,36 @@ final class CloudDrillAudio: DrillAudioProviding {
     @ObservationIgnored private var noSpace: Set<UUID> = []
 
     func fileURL(_ name: String) -> URL { folder.appendingPathComponent(name) }
+
+    /// A135 (D219.5): the sound kept on the phone has a ceiling. Over it, the files that were fetched longest ago go
+    /// first, never those of the exam that is playing. What is removed is still on the server and is fetched again
+    /// when it is asked for (a file that is gone is simply not "here": `exists`).
+    static let storageLimit: Int64 = 500 * 1024 * 1024
+
+    @discardableResult
+    func trimStorage(limit: Int64 = CloudDrillAudio.storageLimit, keeping playing: Drill? = nil) -> Int {
+        let keys: Set<URLResourceKey> = [.fileSizeKey, .contentModificationDateKey]
+        guard let urls = try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: Array(keys)) else { return 0 }
+        var files: [(url: URL, size: Int64, date: Date)] = urls.compactMap { url in
+            guard let values = try? url.resourceValues(forKeys: keys), let size = values.fileSize else { return nil }
+            return (url, Int64(size), values.contentModificationDate ?? .distantPast)
+        }
+        var total = files.reduce(Int64(0)) { $0 + $1.size }
+        guard total > limit else { return 0 }
+        let kept = Set((playing?.items ?? []).flatMap { [$0.questionAudio, $0.longAudio].compactMap { $0 } } + [playing?.cueAudio].compactMap { $0 })
+        files.sort { $0.date < $1.date }
+        var removed = 0
+        for file in files where total > limit && !kept.contains(file.url.lastPathComponent) {
+            guard (try? FileManager.default.removeItem(at: file.url)) != nil else { continue }
+            total -= file.size
+            removed += 1
+        }
+        if removed > 0 {
+            made += 1 // the views count the files again
+            Log.repetition.info("Drill audio: \(removed, privacy: .public) files removed to stay under the storage limit")
+        }
+        return removed
+    }
 
     private func exists(_ name: String?) -> Bool {
         guard let name else { return false }

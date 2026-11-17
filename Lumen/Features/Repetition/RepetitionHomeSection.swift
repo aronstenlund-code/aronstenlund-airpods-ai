@@ -347,6 +347,7 @@ struct RepetitionHomeSection: View {
             if let problem = shortProblem(drill) { return "Text · \(problem)" }
             if model.awaitsAudioStart(drill) {
                 if let quota = model.quota, quota.isCredits { // A131 (D213): the server's cost, in credits
+                    if quota.isUnlimited { return "Text · Ljudet görs när du startar" } // A133 (D216)
                     return drill.startCost.map { "Text · \(CreditText.cardLine(cost: $0))" } ?? "Text · Ljudet görs när du startar"
                 }
                 if let quota = model.quota { return "Text · Räknas som \(startCount(drill)) av dina \(quota.left) när du startar" }
@@ -363,6 +364,7 @@ struct RepetitionHomeSection: View {
         if model.awaitsAudioStart(drill) {
             // Kelly Ke64b N5: Starta prov on the card starts at once, so the card says what starting counts as.
             if let quota = model.quota, quota.isCredits { // A131 (D213)
+                if quota.isUnlimited { return "\(DrillText.questions(drill.items.count)) · Ljudet görs när du startar" } // A133
                 return drill.startCost.map { "\(DrillText.questions(drill.items.count)) · \(CreditText.cardLine(cost: $0))" }
                     ?? "\(DrillText.questions(drill.items.count)) · Ljudet görs när du startar"
             }

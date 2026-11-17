@@ -24,11 +24,12 @@ W, H = 1320, 2868
 
 # (scen, rubrik, rad under). Ordning enligt Ke56. Texten för trycken följer A90 (Arons ord).
 SHOTS = [
-    ("repMaterial", "Fota materialet.", "Sidor ur boken, bilder, PDF eller text."),
-    ("repList", "Frågor med A-svar.", "Ett kort och ett långt svar på varje fråga."),
-    ("repHome", "Starta prov.", "Frågorna läses upp i dina AirPods."),
-    ("repControlsDone", "Tryck för svaret.", "1 gång för A-svaret. 2 för ett kort. 3 för paus."),
-    ("repSchools", "Dela med klassen.", "Lägg till prov som kompisarna har gjort."),
+    # Ke74 (2026-11-17): nya första skärmen (D215) först. Inget om låst skärm (D209 inte provat på telefon).
+    ("repSayCredits", "Skriv. Lyssna.", "Det du skriver läses upp i dina hörlurar."),
+    ("repSayOnCard", "Om och om igen.", "Välj 10 minuter upp till en timme."),
+    ("repTextNew", "Fota boken.", "Frågor med svar, eller hela texten uppläst."),
+    ("repPlayAnswer", "Tryck för svaret.", "1 gång för långt svar, 2 för kort, 3 för paus."),
+    ("repTextPlay", "Följ texten.", "Meningen som läses är markerad."),
 ]
 
 
