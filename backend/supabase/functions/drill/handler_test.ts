@@ -197,7 +197,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
       usdPer1kChars: 0.08,
       charLimits: { perMinute: 1e9, perDay: opts.perDay ?? 1e9, globalPerDay: 1e9 },
     });
-  return { h, admins, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, logged, setBusy: (n: number) => (busy = n), setOut: (v: boolean) => (out = v) };
+  return { h, limiter, admins, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, logged, setBusy: (n: number) => (busy = n), setOut: (v: boolean) => (out = v) };
 }
 const CUE = "Tryck en gång för svaret.";
 const post = (b: unknown) => new Request("http://x/drill", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
@@ -1005,6 +1005,19 @@ Deno.test("K92 (D215 8): cost before saving: the same count as save, existing au
   for (let i = 0; i < 20; i++) last = (await w.h("u3")(post({ action: "cost", items: [{ question: `Fråga ${i}?`, short: "Svar.", long: "Svar." }] }))).status;
   assertEquals(last, 200);
   assertEquals((await w.h("u3")(post({ action: "cost", items: ITEMS }))).status, 429);
+});
+
+Deno.test("O77: cost's day limit has its own words (the minute limit keeps its own)", async () => {
+  const w = world({ credits: 1500 });
+  await w.limiter.check("drill_cost:u:u9:d", 300, 86400, 300); // the day already used up
+  const r = await w.h("u9")(post({ action: "cost", items: ITEMS }));
+  assertEquals(r.status, 429);
+  const j = await r.json();
+  assertEquals(JSON.stringify(j).includes("Du har förhandsvisat många texter i dag. Försök igen i morgon."), true, JSON.stringify(j));
+  for (let i = 0; i < 20; i++) await w.h("u8")(post({ action: "cost", items: ITEMS }));
+  const m = await w.h("u8")(post({ action: "cost", items: ITEMS }));
+  assertEquals(m.status, 429);
+  assertEquals(JSON.stringify(await m.json()).includes("Vänta en stund."), true);
 });
 
 Deno.test("K93 (D216): an admin is never charged or refused; quota, list and cost say unlimited; another account is unchanged", async () => {

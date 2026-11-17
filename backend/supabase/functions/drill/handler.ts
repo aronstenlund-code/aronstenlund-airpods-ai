@@ -1403,7 +1403,11 @@ export function createDrillHandler(deps: DrillDeps) {
         // K92 (D215 punkt 8): what a save of this text would cost, without saving. Limited per account, so it is not
         // a way to ask which texts already have audio (D144: any account's audio is free)
         const rl = await enforceLimits(deps.rateLimiter, "drill_cost", user.id, { perMinute: 20, perDay: 300, globalPerDay: 300_000 }, 1);
-        if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många förhandsvisningar just nu. Vänta en stund.", { retryAfterSec: rl.retryAfterSec });
+        if (!rl.allowed) {
+          // Oscar (O77): the day's limit waits until midnight, so it gets its own words
+          const day = !!rl.deniedKey?.endsWith(":d") || rl.retryAfterSec > 90;
+          throw new HttpError(429, "rate_limited", day ? "Du har förhandsvisat många texter i dag. Försök igen i morgon." : "För många förhandsvisningar just nu. Vänta en stund.", { retryAfterSec: rl.retryAfterSec });
+        }
         return await saveDrill(user, b, false, true);
       }
       if (action !== "save") throw new HttpError(400, "invalid_request", "unknown action");

@@ -65,3 +65,6 @@ Följden är att AI-valet inte väljer Kines eller Hindi ännu, inte ens för en
 - **Aron:** provlyssna Kines, Kines B, Hindi, Hindi B och karikatyrerna (gratis provljud i appen som admin) och säg vilka som ska synas. Bestäm om ett riktigt svenskt ljudprov får kosta krediter (TILL-ARON #28).
 - **Oscar:** O81.
 - **Angela Fable:** A140, med fälten i hennes kö.
+
+## Tillägg 23:45: Oscars låga O77-fynd
+`action:"cost"` svarar nu med en egen text när dagens gräns (300 per konto) är nådd: "Du har förhandsvisat många texter i dag. Försök igen i morgon." Minutens gräns behåller "För många förhandsvisningar just nu. Vänta en stund." Koden (`rate_limited`) och `retry-after` är oförändrade, så appen påverkas inte. Testat med fejk: ett nytt test, och 701/701 i backend/supabase/functions.
