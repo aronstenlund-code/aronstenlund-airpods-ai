@@ -434,10 +434,30 @@ enum CreditText {
         return n < 0 ? "-" + out : out
     }
 
-    static func credits(_ n: Int) -> String { n == 1 ? "1 kredit" : "\(number(n)) krediter" }
+    /// A139 (D222, Aron 2026-11-17): short numbers. Under 1 000 as it is ("764"); from 1 000 one decimal and k
+    /// ("5,3k"); from 10 000 no decimal ("12k"). What one has is rounded down and what something costs is rounded
+    /// up, so the app never shows more than there is or less than it costs. The exact number is in the credits sheet.
+    enum Rounding { case down, up }
+    static func short(_ n: Int, _ rounding: Rounding) -> String {
+        guard n >= 1000 else { return String(max(0, n)) }
+        // Tenths of a thousand, rounded the way asked for.
+        let tenths = rounding == .down ? n / 100 : (n + 99) / 100
+        if tenths >= 100 { // 10 000 and up: whole thousands
+            let thousands = rounding == .down ? n / 1000 : (n + 999) / 1000
+            return "\(number(thousands))k"
+        }
+        return "\(tenths / 10),\(tenths % 10)k"
+    }
 
-    /// The capsule: "1 236 krediter kvar".
-    static func capsule(_ left: Int) -> String { "\(credits(left)) kvar" }
+    /// What one has: "88 krediter", "5,3k krediter" (rounded down).
+    static func have(_ n: Int) -> String { n == 1 ? "1 kredit" : "\(short(n, .down)) krediter" }
+    /// What something costs: "764 krediter", "1,3k krediter" (rounded up).
+    static func credits(_ n: Int) -> String { n == 1 ? "1 kredit" : "\(short(n, .up)) krediter" }
+    /// The exact number with its word, for the credits sheet: "1 500 krediter".
+    static func exact(_ n: Int) -> String { n == 1 ? "1 kredit" : "\(number(n)) krediter" }
+
+    /// The capsule: "764 krediter kvar", "5,3k krediter kvar".
+    static func capsule(_ left: Int) -> String { "\(have(left)) kvar" }
 
     /// Under the field in Säg i AirPods, before Spela.
     static func sayLine(cost: Int) -> String {
@@ -449,7 +469,7 @@ enum CreditText {
 
     /// The credits do not cover it (said before anything is saved or started).
     static func notEnough(cost: Int, left: Int, resetsDay: String?) -> String {
-        "Det här kostar \(credits(cost)). Du har \(number(left)) kvar." + (resetsDay.map { " Nya krediter den \($0)." } ?? "")
+        "Det här kostar \(credits(cost)). Du har \(short(left, .down)) kvar." + (resetsDay.map { " Nya krediter den \($0)." } ?? "")
     }
 
     /// The sheet's rows ("Så räknas det").
@@ -460,7 +480,7 @@ enum CreditText {
 
     /// The sheet's footnote, with the month's limit from the server.
     static func footnote(limit: Int, resetsDay: String?) -> String {
-        "En text på 764 tecken kostar 764 krediter. Du får \(credits(limit)) varje månad."
+        "En text på 764 tecken kostar 764 krediter. Du får \(exact(limit)) varje månad."
             + (resetsDay.map { " Nya krediter den \($0)." } ?? "") + " Oanvända krediter sparas inte."
     }
 }

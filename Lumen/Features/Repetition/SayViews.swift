@@ -70,7 +70,7 @@ enum SayText {
 
     /// A132 (Ke72): the cost as two words by the button: "120 krediter", "0 krediter", or "120 krediter · du har 88".
     static func creditsLine(cost: Int, left: Int) -> String {
-        cost > left ? "\(CreditText.credits(cost)) · du har \(CreditText.number(left))" : CreditText.credits(cost)
+        cost > left ? "\(CreditText.credits(cost)) · du har \(CreditText.short(left, .down))" : CreditText.credits(cost)
     }
 
     /// A132 (Ke72): a said text as a capsule under the field: its beginning, at most about 24 characters.

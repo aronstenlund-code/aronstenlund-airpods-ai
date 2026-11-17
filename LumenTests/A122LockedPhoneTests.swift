@@ -227,7 +227,7 @@ import Testing
     @Test func theMonthInCreditsIsReadFromTheServer() throws {
         let quota = try JSONDecoder().decode(DrillQuota.self, from: Data(Self.creditsJSON.utf8))
         #expect(quota.isCredits && quota.left == 1236 && quota.limit == 1500 && quota.resets_day == "1 december")
-        #expect(quota.line == "1\u{00A0}236 av 1\u{00A0}500 krediter kvar den här månaden")
+        #expect(quota.line == "1,2k av 1,5k krediter kvar den här månaden") // A139: short numbers
         // K90: the list's quota has no `resets_day`; the day is read from `resets` then.
         let listed = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"unit":"chars","limit":1500,"used":264,"remaining":1236,"resets":"2026-12-01"}"#.utf8))
         #expect(listed.resetsDay == "1 december" && quota.resetsDay == "1 december")
@@ -241,10 +241,10 @@ import Testing
 
     @Test func theWordsAreKellysAndTheNumbersTheServers() {
         #expect(CreditText.number(764) == "764" && CreditText.number(1236) == "1\u{00A0}236" && CreditText.number(1_234_567) == "1\u{00A0}234\u{00A0}567")
-        #expect(CreditText.capsule(1236) == "1\u{00A0}236 krediter kvar" && CreditText.capsule(1) == "1 kredit kvar")
+        #expect(CreditText.capsule(1236) == "1,2k krediter kvar" && CreditText.capsule(1) == "1 kredit kvar") // A139: short
         #expect(CreditText.sayLine(cost: 764) == "Kostar 764 krediter. Upprepningar kostar inget.")
         #expect(CreditText.sayLine(cost: 0) == "Kostar inget. Ljudet finns redan.")
-        #expect(CreditText.cardLine(cost: 2340) == "Kostar 2\u{00A0}340 krediter")
+        #expect(CreditText.cardLine(cost: 2340) == "Kostar 2,4k krediter") // A139: a cost is rounded up
         #expect(CreditText.notEnough(cost: 764, left: 312, resetsDay: "1 december")
                 == "Det här kostar 764 krediter. Du har 312 kvar. Nya krediter den 1 december.")
         #expect(CreditText.footnote(limit: 1500, resetsDay: "1 december")
@@ -372,7 +372,7 @@ import Testing
         #expect(quota.isUnlimited && quota.left > 1_000_000 && !quota.isUsedUp, "nothing is refused for lack of credits")
         #expect(CreditsText.capsule(quota) == "Obegränsat")
         let usual = try JSONDecoder().decode(DrillQuota.self, from: Data(Self.creditsJSON.utf8))
-        #expect(!usual.isUnlimited && CreditsText.capsule(usual) == "1\u{00A0}236 krediter kvar")
+        #expect(!usual.isUnlimited && CreditsText.capsule(usual) == "1,2k krediter kvar")
     }
 
     // MARK: A135 (D219): Aron's phone 20:24, Spela loaded for over a minute; sound that is here plays without the network
@@ -451,5 +451,35 @@ import Testing
         let left = Set(try FileManager.default.contentsOfDirectory(atPath: audio.fileURL("x").deletingLastPathComponent().path).filter { $0.hasSuffix(".mp3") })
         #expect(removed == 2 && left == ["new.mp3", "playing.mp3"], "the oldest go first, never what is playing")
         #expect(SayText.patience == .seconds(10) && !SayText.slowLine.isEmpty)
+    }
+
+    // MARK: A139 (D222): short numbers for credits
+
+    @Test func creditsAreShownShort() {
+        // What one has is rounded down.
+        #expect(CreditText.short(999, .down) == "999")
+        #expect(CreditText.short(1000, .down) == "1,0k")
+        #expect(CreditText.short(5392, .down) == "5,3k")
+        #expect(CreditText.short(9999, .down) == "9,9k")
+        #expect(CreditText.short(10_000, .down) == "10k")
+        #expect(CreditText.short(12_999, .down) == "12k")
+        #expect(CreditText.short(1_000_000, .down) == "1\u{00A0}000k")
+        // What something costs is rounded up.
+        #expect(CreditText.short(999, .up) == "999")
+        #expect(CreditText.short(1000, .up) == "1,0k")
+        #expect(CreditText.short(1251, .up) == "1,3k")
+        #expect(CreditText.short(5392, .up) == "5,4k")
+        #expect(CreditText.short(9999, .up) == "10k", "never 10,0k")
+        #expect(CreditText.short(10_001, .up) == "11k")
+        #expect(CreditText.short(0, .down) == "0")
+        // The same formatter everywhere: the capsule, the cost by the button, the card and "not enough".
+        #expect(CreditText.capsule(5392) == "5,3k krediter kvar" && CreditText.capsule(764) == "764 krediter kvar")
+        #expect(SayText.creditsLine(cost: 1251, left: 5392) == "1,3k krediter")
+        #expect(SayText.creditsLine(cost: 5392, left: 1251) == "5,4k krediter · du har 1,2k")
+        #expect(CreditText.notEnough(cost: 5392, left: 1251, resetsDay: "1 december")
+                == "Det här kostar 5,4k krediter. Du har 1,2k kvar. Nya krediter den 1 december.")
+        // The sheet has the exact number.
+        #expect(CreditText.exact(5392) == "5\u{00A0}392 krediter")
+        #expect(CreditText.footnote(limit: 1500, resetsDay: nil).contains("1\u{00A0}500 krediter"))
     }
 }

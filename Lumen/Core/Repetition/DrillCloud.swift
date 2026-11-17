@@ -217,7 +217,7 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     var isUsedUp: Bool { left == 0 }
     /// "x av 15 frågor kvar den här månaden".
     var line: String {
-        isCredits ? "\(CreditText.number(left)) av \(CreditText.number(limit)) krediter kvar den här månaden"
+        isCredits ? "\(CreditText.short(left, .down)) av \(CreditText.short(limit, .down)) krediter kvar den här månaden" // A139
             : "\(left) av \(limit) frågor kvar den här månaden"
     }
 }
