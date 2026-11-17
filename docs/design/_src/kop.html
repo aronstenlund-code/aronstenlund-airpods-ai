@@ -184,34 +184,40 @@ const senaste = `<div class="chips"><b>Senaste</b><span>HISTORIA – 1880–1918
 // ===== Ke73 (D218, D214) =====
 const price = (t, filled = false) => `<span style="flex:none;display:inline-flex;align-items:center;height:32px;padding:0 14px;border-radius:16px;font-size:15px;font-weight:600;${filled ? 'background:var(--tint);color:var(--ontint)' : 'background:var(--tintsoft);color:var(--tint)'}">${t}</span>`;
 const sheetTop = (title = 'Krediter') => `<div class="nav"><span></span><span class="t">${title}</span><a class="b">Klar</a></div>`;
-const legal = `<div class="sf">Veckokortet kostar 80 kr i veckan och förnyas automatiskt tills du säger upp det, senast 24 timmar före nästa vecka. Säg upp i Inställningar › ditt namn › Prenumerationer.</div>
+const legal = `<div class="sf">Veckokortet kostar 79 kr i veckan och förnyas automatiskt tills du säger upp det, senast 24 timmar före nästa vecka. Säg upp i Inställningar › ditt namn › Prenumerationer.</div>
   <div style="display:flex;justify-content:center;gap:18px;font-size:13px;padding:12px 0 0"><span class="tintc">Villkor</span><span class="tintc">Integritet</span><span class="tintc">Återställ köp</span></div>`;
+const badge = '<span style="font-size:11px;font-weight:700;color:var(--tint);background:var(--tintsoft);border-radius:6px;padding:2px 6px;margin-left:8px;vertical-align:2px">Bäst värde</span>';
 const packs = `<div class="sh">Fyll på</div><div class="sec">
   <div class="row">100 krediter<span class="v">${price('10 kr')}</span></div>
   <div class="row">500 krediter<span class="v">${price('39 kr')}</span></div>
-  <div class="row">2 000 krediter<span class="v">${price('110 kr')}</span></div></div>
-  <div class="sh">Varje vecka</div><div class="sec"><div class="row"><div>Veckokort<div class="sub">80 kr i veckan · upp till 40 000 tecken nytt ljud</div></div><span class="v">${price('80 kr')}</span></div></div>`;
-
+  <div class="row"><span>2 000 krediter${badge}</span><span class="v">${price('110 kr')}</span></div></div>
+  <div class="sf">Ett prov ≈ 6 000 krediter.</div>
+  <div class="sh">Varje vecka</div><div class="sec"><div class="row"><div>Veckokort<div class="sub">79 kr i veckan · cirka 3 prov</div></div><span class="v">${price('79 kr')}</span></div></div>
+  <div class="sh">Bjud in</div><div class="sec"><div class="row"><div>Få 2 000 krediter<div class="sub">när en kompis har spelat sin första text</div></div><span class="v">${price('Bjud in')}</span></div></div>`;
 add('blad', '1 · Kreditbladet med köp', 'Siffran överst, sedan Fyll på (tre paket) och Varje vecka (veckokortet). Priset står på en tonad knapp (som Hämta i App Store); ett tryck öppnar Apples köpruta. Ingen knapp är fylld, eftersom inget val är förvalt. Apples krav står i fotnoten och länkarna. Så räknas det ligger kvar längre ner.',
   () => `<div class="phone g">${status}${sheetTop()}<div class="content" style="padding-top:0">
-  <div style="text-align:center;padding:4px 0 2px"><div style="font-size:40px;font-weight:700">1 236</div><div style="font-size:15px;color:var(--sec)">krediter kvar den här månaden</div></div>
+  <div style="text-align:center;padding:4px 0 2px"><div style="font-size:40px;font-weight:700">1 236</div><div style="font-size:15px;color:var(--sec)">krediter kvar</div></div>
   ${packs}${legal}</div></div>`);
+
+add('valkommen', '0 · Första gången: välkomstkrediter', 'Kapseln visar 5 000 från början. Ingen ruta och ingen förklaring på första skärmen; i bladet står en rad om att det är välkomstkrediter.',
+  () => `<div class="phone g">${status}${sheetTop()}<div class="content" style="padding-top:0">
+  <div style="text-align:center;padding:4px 0 2px"><div style="font-size:40px;font-weight:700">5 000</div><div style="font-size:15px;color:var(--sec)">välkomstkrediter</div></div>${packs}</div></div>`);
 
 add('slut', '2 · Krediterna räcker inte', 'Raden vid Spela får "Fyll på" som länk. Den öppnar bladet. Inget mer på första skärmen.',
   () => `<div class="phone g">${status}${topBar('88 krediter kvar')}<div class="content">
   <div class="card2">${field(SAMPLE, 3, { min: true })}<div class="cost warn">120 krediter · du har 88 · <span style="color:#7F9BFF">Fyll på</span></div>${row({ go: false })}</div>
   ${nasta(true)}</div>${tb}</div>`);
 
-add('vecka', '3 · Med veckokort', 'Kapseln visar "Obegränsat". Bladet säger till när och vad som är kvar av veckans tak, och var man hanterar kortet. Paketen ligger kvar under, för den som vill.',
+add('vecka', '3 · Med veckokort', 'Kapseln visar "Veckokort" (D222). Bladet säger till när och vad som är kvar av veckans tak, och var man hanterar kortet. Paketen ligger kvar under, för den som vill.',
   () => `<div class="phone g">${status}${sheetTop()}<div class="content" style="padding-top:0">
-  <div style="text-align:center;padding:4px 0 2px"><div style="font-size:30px;font-weight:700">Obegränsat</div><div style="font-size:15px;color:var(--sec)">till 24 nov · 36 200 tecken kvar den här veckan</div></div>
+  <div style="text-align:center;padding:4px 0 2px"><div style="font-size:30px;font-weight:700">Veckokort</div><div style="font-size:15px;color:var(--sec)">till 24 nov · 16 200 av 20 000 tecken kvar i veckan</div></div>
   <div class="sec" style="margin-top:14px"><div class="row tintc">Hantera veckokortet</div></div>
-  <div class="sf">Förnyas automatiskt den 24 nov för 80 kr.</div>
+  <div class="sf">Förnyas automatiskt den 24 nov för 79 kr.</div>
   <div class="sh">Fyll på</div><div class="sec"><div class="row">100 krediter<span class="v">${price('10 kr', false)}</span></div><div class="row">500 krediter<span class="v">${price('39 kr', false)}</span></div><div class="row">2 000 krediter<span class="v">${price('110 kr', false)}</span></div></div>
   <div style="display:flex;justify-content:center;gap:18px;font-size:13px;padding:12px 0 0"><span class="tintc">Villkor</span><span class="tintc">Integritet</span><span class="tintc">Återställ köp</span></div></div></div>`);
 
-add('vecka-hem', '4 · Första skärmen med veckokort', 'Kapseln "Obegränsat". Kostnadsraden säger "Ingår". Allt annat som i Ke72.',
-  () => `<div class="phone g">${status}${topBar('Obegränsat')}<div class="content">
+add('vecka-hem', '4 · Första skärmen med veckokort', 'Kapseln "Veckokort". Kostnadsraden säger "Ingår". Allt annat som i Ke72.',
+  () => `<div class="phone g">${status}${topBar('Veckokort')}<div class="content">
   <div class="card2">${field(SAMPLE, 3, { min: true })}<div class="cost">Ingår</div>${row()}</div>${nasta(false)}</div>${tb}</div>`);
 
 add('se-kop', '5 · iPhone SE, största text', 'Raderna staplas: paketets namn över, prisknappen under, vänsterställd. Fotnoten och länkarna går att skrolla till.',

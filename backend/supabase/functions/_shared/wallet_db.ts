@@ -17,7 +17,7 @@ export function walletStore(db: RestDb): WalletStore {
     week: async (u, n, lim) => one<{ ok: boolean; used: number }>(await db.rpc("use_week_chars", { p_user: u, p_n: n, p_lim: lim })) ?? { ok: false, used: 0 },
     weekLimit: async () => {
       const rows = (await db.select("drill_settings", "select=value&key=eq.subscription_week_chars").catch(() => [])) as { value: number }[];
-      return Number(rows[0]?.value) || 40_000;
+      return Number(rows[0]?.value) || 20_000; // D224
     },
   };
 }

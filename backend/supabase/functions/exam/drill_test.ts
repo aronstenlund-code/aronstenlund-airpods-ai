@@ -641,7 +641,9 @@ Deno.test("K97 (O79 F4): years in words become digits on screen, the spoken text
 Deno.test("K97 (O79 F3): the prompts forbid made-up causes and say what to do instead", async () => {
   const { SYSTEM_PROMPT_DRILL_ANSWERS, SYSTEM_PROMPT_DRILL_PLAN, SYSTEM_PROMPT_DRILL_SHORTEN } = await import("./drill.ts");
   assert(SYSTEM_PROMPT_DRILL_ANSWERS.includes("never invent a cause"));
-  assert(SYSTEM_PROMPT_DRILL_ANSWERS.includes("Varför det blev så sägs inte"));
+  assert(SYSTEM_PROMPT_DRILL_ANSWERS.includes("Varför det blev så är inte känt här"));
+  const { mentionsMaterial } = await import("./drill.ts");
+  assert(mentionsMaterial("Det får inte stöd i det material jag har.") && mentionsMaterial("The notes do not say why it stuck."));
   assert(SYSTEM_PROMPT_DRILL_PLAN.includes("Gustav Vasa"));
   assert(SYSTEM_PROMPT_DRILL_SHORTEN.includes('"drop": true'));
 });
