@@ -4,7 +4,7 @@ import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { useQuotaFromDb } from "../_shared/wallet_db.ts";
 import { providerFromEnv } from "../answer/llm/factory.ts";
-import { haikuStyler } from "./style.ts";
+import { haikuStyler, haikuVoicePicker } from "./style.ts";
 import { onFirstPlay } from "../_shared/rewards.ts";
 import { rewardStore } from "../_shared/rewards_db.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
@@ -75,6 +75,8 @@ Deno.serve(withCors(withTestMode("drill",
     styler: stylerProvider ? haikuStyler(stylerProvider) : undefined,
     // K98 (D224): the first Starta prov / Spela rewards the inviter
     onStarted: (u) => onFirstPlay(rewards, u),
+    // K99 (D223): Haiku picks the catalog voice that fits "Hur ska det låta?"
+    voicePicker: stylerProvider ? haikuVoicePicker(stylerProvider) : undefined,
     model,
     voiceId: secret(env, "ELEVENLABS_VOICE_ID") ?? parseVoices(env.get("ELEVENLABS_VOICES")).voices[0]?.id ?? null,
     usdPer1kChars: 0.08,
@@ -183,6 +185,8 @@ Deno.serve(withCors(withTestMode("drill",
         return hashes.filter((h) => out.has(h));
       },
       // ---------- K61 ----------
+      // K99 (D223): the catalog voices everyone may use (not under review) for mixing and the AI's choice
+      catalogVoices: async () => (await db.select("voice_catalog", "select=voice_id,name,description,accent,gender,age&enabled=eq.true&review=eq.false&limit=40").catch(() => [])) as { voice_id: string; name: string }[],
       // K96 (D220): a voice may be chosen only from the curated catalog
       voiceAllowed: async (id) => ((await db.select("voice_catalog", `select=voice_id&voice_id=eq.${encodeURIComponent(id)}&enabled=eq.true&limit=1`).catch(() => [])) as unknown[]).length > 0,
       settings: async () => Object.fromEntries(((await db.select("drill_settings", "select=key,value")) as { key: string; value: number }[]).map((r) => [r.key, Number(r.value)])),
