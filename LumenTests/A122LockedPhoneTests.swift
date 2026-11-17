@@ -52,4 +52,40 @@ import Testing
         #expect(session.readingLap == 2, "the text starts over while time is left")
         #expect(session.isActive)
     }
+
+    // MARK: A124 (D210): 10 min to 1 hour
+
+    @Test func howLongIsTenMinutesToOneHourInStepsOfFive() {
+        #expect(SayText.repeats == [10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60])
+        #expect(SayText.repeats.map(SayText.howLong).first == "10 min" && SayText.repeats.map(SayText.howLong).last == "1 timme")
+        #expect(SayText.defaultRepeat == 10)
+        #expect(SayText.repeatMinutes(0) == 10, "the old En gång becomes 10 min")
+        #expect(SayText.repeatMinutes(5) == 10 && SayText.repeatMinutes(20) == 20 && SayText.repeatMinutes(60) == 60)
+    }
+
+    /// One hour: it starts at once (nothing is scheduled), goes round the whole hour and stops after the lap that is
+    /// being read when the hour is out.
+    @Test func oneHourStartsAtOnceAndGoesRoundTheWholeHour() throws {
+        let source = MockSource()
+        let clock = Clock()
+        let session = session(source, clock)
+        session.startReading(A115SayInAirPodsTests.text, saying: .init(repeatMinutes: 60)) { _ in A115SayInAirPodsTests.audio }
+        #expect(session.isActive && source.made.count == 1, "it plays at once")
+        #expect(session.repeatSecondsLeft == 3600)
+        clock.date += 3599
+        source.last.finish()
+        #expect(session.readingLap == 2 && session.reader?.isAtEnd == false, "a second is left: one more lap")
+        clock.date += 2
+        source.last.finish()
+        #expect(session.reader?.isAtEnd == true && session.readingLap == 2, "the hour is out: it stops after this lap")
+    }
+
+    // MARK: A123: which build
+
+    @Test func theBuildLineNamesTheRunAndTheCommit() {
+        #expect(BuildInfo.line(version: "0.1.0", build: "44019359349", sha: "bb9a74b") == "Version 0.1.0 (körning 44019359349 · bb9a74b)")
+        #expect(BuildInfo.line(version: "0.1.0", build: "1", sha: "") == "Version 0.1.0 (1)")
+        #expect(BuildInfo.line(version: "0.1.0", build: "1", sha: nil) == "Version 0.1.0 (1)")
+        #expect(BuildInfo.line(version: "0.1.0", build: "1", sha: "$(LUMEN_GIT_SHA)") == "Version 0.1.0 (1)")
+    }
 }

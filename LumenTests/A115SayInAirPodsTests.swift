@@ -42,8 +42,8 @@ import Testing
     }
 
     @Test func theButtonsSayHowLongAndTheTempo() {
-        #expect(SayText.howLong(0) == "En gång")
         #expect(SayText.howLong(10) == "10 min")
+        #expect(SayText.howLong(60) == "1 timme")
         #expect(SayText.tempo(1) == "1,0×")
         #expect(SayText.tempo(0.75) == "0,75×")
         #expect(SayText.tempo(0.5) == "0,5×")

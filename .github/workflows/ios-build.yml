@@ -193,9 +193,14 @@ jobs:
             CODE_SIGN_ENTITLEMENTS="" \
             ENABLE_DEBUG_DYLIB=NO \
             SPOTIFY_CLIENT_ID="${SPOTIFY_CLIENT_ID:-}" \
+            CURRENT_PROJECT_VERSION="${GITHUB_RUN_ID}" \
+            LUMEN_GIT_SHA="${GITHUB_SHA::7}" \
             2>&1 | tee build-logs/xcodebuild-archive.log | xcbeautify --renderer github-actions
           APP=build/Lumen.xcarchive/Products/Applications/Lumen.app
           test -d "$APP"
+          # A123: the build says which run and commit it is (shown in Om appen and at the end of Inställningar).
+          test "$(/usr/libexec/PlistBuddy -c 'Print :CFBundleVersion' "$APP/Info.plist")" = "${GITHUB_RUN_ID}"
+          test "$(/usr/libexec/PlistBuddy -c 'Print :LumenGitSHA' "$APP/Info.plist")" = "${GITHUB_SHA::7}"
           echo "::group::Bundle contents"; ls -la "$APP" "$APP/PlugIns"; echo "::endgroup::"
           # The repo declares no entitlements (D70); an unsigned build embeds none. Sideloadly adds its own when it signs.
           if codesign -d --entitlements - "$APP" 2>/dev/null | grep -q "<key>"; then
@@ -207,7 +212,7 @@ jobs:
           ls -la Lumen-unsigned.ipa
           {
             echo "### Lumen-unsigned.ipa"
-            echo "Commit \`${GITHUB_SHA::7}\`, $(du -h Lumen-unsigned.ipa | cut -f1). Download it under **Artifacts** below (a .zip with the .ipa inside); install with Sideloadly, see docs/INSTALL-SIDELOADLY.md."
+            echo "Commit \`${GITHUB_SHA::7}\`, körning ${GITHUB_RUN_ID} (står i Om appen), $(du -h Lumen-unsigned.ipa | cut -f1). Download it under **Artifacts** below (a .zip with the .ipa inside); install with Sideloadly, see docs/INSTALL-SIDELOADLY.md."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Upload Lumen-unsigned.ipa (D70, for Sideloadly)

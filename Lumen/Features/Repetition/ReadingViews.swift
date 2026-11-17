@@ -281,7 +281,7 @@ struct ReadingPlayerView: View {
         if let minutes = session.saying?.repeatMinutes {
             TimelineView(.periodic(from: .now, by: 1)) { _ in
                 let left = session.repeatSecondsLeft
-                Text(verbatim: left > 0 ? "Varv \(session.readingLap) · \(SayText.clock(left)) kvar av \(minutes) min"
+                Text(verbatim: left > 0 ? "Varv \(session.readingLap) · \(SayText.clock(left)) kvar av \(SayText.howLong(minutes))"
                                         : "Varv \(session.readingLap) · sista varvet")
             }
         } else {

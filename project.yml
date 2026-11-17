@@ -69,6 +69,8 @@ targets:
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         MARKETING_VERSION: "0.1.0"
         CURRENT_PROJECT_VERSION: "1"
+        # A123: the short commit, set by ios-build.yml for the installable build; empty otherwise.
+        LUMEN_GIT_SHA: ""
         ENABLE_PREVIEWS: YES
       configs:
         Debug:

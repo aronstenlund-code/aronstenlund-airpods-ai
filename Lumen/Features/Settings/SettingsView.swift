@@ -158,6 +158,14 @@ struct SettingsView: View {
                 }
             }
             #endif
+            Section { // A123: which build this is, in small type at the very end
+                Text(verbatim: BuildInfo.line)
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .listRowBackground(Color.clear)
+                    .textSelection(.enabled)
+            }
         }
         .lumenForm() // D86: the new look, no capitals over headings
         .navigationTitle("Inställningar")

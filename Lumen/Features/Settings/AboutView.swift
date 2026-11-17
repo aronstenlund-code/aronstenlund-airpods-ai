@@ -23,7 +23,7 @@ struct AboutView: View {
             Section {
                 NavigationLink("Licenser") { LicencesView() }
             } footer: {
-                Text("Version \(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "–") (\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "–"))")
+                Text(verbatim: BuildInfo.line) // A123
             }
         }
         .lumenForm()

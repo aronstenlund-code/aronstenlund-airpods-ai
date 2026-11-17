@@ -18,15 +18,20 @@ enum SayText {
     static let ink = Color(red: 0xE7 / 255, green: 0xE9 / 255, blue: 0xEF / 255)
     static let accent = Color(red: 0x7F / 255, green: 0x9B / 255, blue: 0xFF / 255)
 
-    static let repeats = [5, 10, 20]
+    /// A124 (D210, Aron 2026-11-17): how long the text goes round: 10 min to 1 hour in steps of 5. It replaces
+    /// "En gång" and 5/10/20. Spela plays at once; nothing starts later.
+    static let repeats = Array(stride(from: 10, through: 60, by: 5))
+    static let defaultRepeat = 10
+    /// A stored value that is no longer on offer (0 = "En gång", 5) becomes the default.
+    static func repeatMinutes(_ stored: Int) -> Int { repeats.contains(stored) ? stored : defaultRepeat }
 
     #if DEBUG
     /// The screenshots: a text already written in the field.
     static var stagedForScreenshots: String?
     #endif
 
-    /// "En gång" or "10 min" on the button.
-    static func howLong(_ minutes: Int) -> String { minutes == 0 ? "En gång" : "\(minutes) min" }
+    /// "10 min" … "1 timme" on the button.
+    static func howLong(_ minutes: Int) -> String { minutes == 60 ? "1 timme" : "\(minutes) min" }
 
     /// "1,0×", "1,25×".
     static func tempo(_ tempo: Double) -> String {
@@ -67,7 +72,8 @@ struct SayInAirPodsField: View {
     @State private var isStarting = false
     /// The exam made from the text that is in the field now, so Spela again plays the same sound (it costs nothing).
     @State private var made: (text: String, drillID: UUID)?
-    @AppStorage("say.repeatMinutes") private var minutes = 0
+    @AppStorage("say.repeatMinutes") private var storedMinutes = SayText.defaultRepeat
+    private var minutes: Int { SayText.repeatMinutes(storedMinutes) }
     @AppStorage(RepetitionModel.tempoKey) private var tempo: Double = 1
     // A116 (D204, Ke69 `material.png`): "+" takes photos, pictures, a file or a link. What is read from the material is
     // put in the field, so one sees what will be read aloud.
@@ -142,6 +148,7 @@ struct SayInAirPodsField: View {
             Text(verbatim: SayText.lockLine) // A122 (D209)
                 .font(.footnote)
                 .opacity(0.7)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(16)
@@ -224,9 +231,8 @@ struct SayInAirPodsField: View {
 
     private var howLongMenu: some View {
         Menu {
-            Picker("Hur länge", selection: $minutes) {
-                Text("En gång").tag(0)
-                ForEach(SayText.repeats, id: \.self) { Text("Upprepa \($0) min").tag($0) }
+            Picker("Hur länge", selection: Binding(get: { minutes }, set: { storedMinutes = $0 })) {
+                ForEach(SayText.repeats, id: \.self) { Text(verbatim: SayText.howLong($0)).tag($0) }
             }
         } label: {
             // Image and Text, not a Label: the Label lost its words in the row ("En gång" became the symbol alone).
@@ -236,7 +242,7 @@ struct SayInAirPodsField: View {
             }
             .fixedSize()
         }
-        .accessibilityLabel("Hur länge, \(minutes == 0 ? "En gång" : "Upprepa \(minutes) minuter")")
+        .accessibilityLabel("Hur länge, \(minutes == 60 ? "1 timme" : "\(minutes) minuter")")
         .smallSayControl()
     }
 
@@ -383,7 +389,7 @@ struct SayInAirPodsField: View {
         focused = false
         isStarting = true
         let text = self.text
-        let minutes = self.minutes == 0 ? nil : self.minutes
+        let minutes: Int? = self.minutes // A124: it always goes round for the chosen time
         Task {
             if let again = sameAsMade {
                 await model.sayAgain(again, repeatMinutes: minutes)
