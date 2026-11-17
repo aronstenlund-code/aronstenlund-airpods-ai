@@ -29,6 +29,7 @@ on:
           - k88-live.py
           - k90-live.py
           - k93-live.py
+          - k94-apple-root.py
       args:
         description: "Arguments (optional)"
         required: false
