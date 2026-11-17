@@ -112,7 +112,7 @@ Deno.serve(withCors(withTestMode("drill",
         chunked(hashes, 100, async (p) =>
           (await db.select(
             "drill_audio_files",
-            `select=hash,kind,text,short_chars,model,voice_id,status,attempts,bytes,duration_ms,short_end_ms,credits,error,done_at,queued_at,sentence_ends,sentences&hash=in.(${list(p)})`,
+            `select=hash,kind,text,short_chars,model,voice_id,status,attempts,bytes,duration_ms,short_end_ms,credits,error,done_at,queued_at,sentence_ends,sentences,words&hash=in.(${list(p)})`,
           )) as AudioRow[]),
       enqueue: (rows) => db.insertManyIgnoreDuplicates("drill_audio_files", rows, "hash"),
       claim: async (n) => {

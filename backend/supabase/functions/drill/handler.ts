@@ -634,6 +634,8 @@ export function createDrillHandler(deps: DrillDeps) {
           ? {
             url: urls[audioPath(h)] ?? null, duration_ms: a.duration_ms, ...(a.kind === "long" ? { short_end_ms: a.short_end_ms } : {}),
             ...(a.kind === "text" ? { sentences: a.sentences ?? null } : {}),
+            // K97/D220 "Skriv i takt": [start_ms, end_ms] per spoken word, in order (null for files made before)
+            ...(a.kind === "text" || a.kind === "long" ? { words: a.words ?? null } : {}),
           }
           : {}),
       };
