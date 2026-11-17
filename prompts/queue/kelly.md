@@ -193,3 +193,4 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 - [x] klar 2026-11-17 09:39 → reports/2026-11-17-0939-kelly-granskning-a122-a124.md **Granskning av A122 och A124** (Kelly (moln), på Angela Fables begäran). Godkänt.
 
 - [x] klar 2026-11-17 14:29 → reports/2026-11-17-1429-kelly-ke71-krediter-ord.md (orden i sag-i-airpods.md, A130 godkänd, site/ behöver inget) **Ke71 – Ord för krediter per tecken (D213)** (effort: medium). Lagd av Deangelo 2026-11-17 14:05. Arons beslut: 1 kredit per tecken nytt ljud, 1 500 i månaden. Granska Angela Fables ord i A131 (kapseln, Säg-raden, provkortet, kreditbladet, 402-texten) så att det är lätt att förstå på en gång. Ändra demosidan (site/) där den säger frågor per månad. Bilder, rapport, push.
+- [x] klar 2026-11-17 15:00 → reports/2026-11-17-1500-kelly-granskning-a131.md **Granskning av A131** (Kelly (moln)). Godkänt ordagrant; L1 fotnoten skärs av, L2 provkortet och SE inte sedda.
