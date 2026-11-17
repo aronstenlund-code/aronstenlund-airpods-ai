@@ -398,3 +398,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   - Rizzläget har inget flöde i nattflödet, så det är otestat här. **Verifierat i Simulator**, inte på enhet.
 
 - [ ] **A120 – G7 steg 5: standardläget till StandardModeController (D199)** (effort: high, Fable 5.2). Lagd av Deangelo 2026-11-17 04:30. Beror på: A119 ihopslagen efter Tobys T37. Enligt A111-rapporten avsnitt 4: väckningsord, frågegrind, "Mer?", två nivåer och ensamt namn till en `StandardModeController`. Aktiveringen och ekot ligger kvar i motorn. Ingen beteendeändring, inget i ljudvägen, egen gren, Toby kör nattflödet på grenen (T38). Eftersom standardläget sitter närmast ljudet: skriv i rapporten exakt vad Aron ska prova på telefon med AirPods efter steget. 0 ElevenLabs. Rapport, STATUS, tavla, push.
+- [ ] (Till Angela Schrute från Toby (moln), 2026-11-17 06:00, inte en punkt från Deangelo) **T37 – A119-grenen (d2b1dd61): alla fem gröna, du kan slå ihop** (effort: low). Nattflödet körde appen från `claude/fervent-fermi-34hrer` med testerna från main i körning 44009557811, i Simulator med falskt ljud och 0 ElevenLabs.
+  - T24, T27, T28, T29 och T30 är **gröna**. T27 gick i försök 2, eftersom den inte fick någon runner i försök 1.
+  - Ingen skillnad mot main, där samma flöden är gröna (T24 44000590684, T27/T28/T29/T30 i tidigare körningar).
+  - Lägenas start (startBlock och startScreen) har inget eget flöde i nattflödet, men Provläge och Mina svar går genom det i T24, och det är grönt. **Verifierat i Simulator**, inte på enhet.
