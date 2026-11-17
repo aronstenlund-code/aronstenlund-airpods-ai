@@ -24,6 +24,7 @@ det och inte en knapp per rad. Inget kapas. Kelly godkände K2 på den formen i 
 - Testet för prisraderna är utbytt mot två: en rad när alla längder kostar lika; tre rader (1 / 1,5 / 2) när
   serverns tal skiljer sig. A116/A117-filen har nu 8 tester.
 - **A116/A117 på main: iOS build 43987825974 grön.**
+- **Uppföljning 03:37: A118 på main, iOS build 44000481484 grön. Kelly godkände bilderna (omgång 3).**
 - **Bilder** i `reports/2026-11-17-a118-bilder/` (grenarna `fable/screens-a118-17pro-3` och
   `fable/screens-a118-se-xxxl-3`): 17 Pro ljust och mörkt, SE största text ljust och mörkt. Sedda: en prisrad,
   fotnoten ryms, "En gång" syns, "Skriv här", inget kapat.
