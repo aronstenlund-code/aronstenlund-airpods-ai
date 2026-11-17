@@ -64,6 +64,11 @@ export const DRILL_STORE_LIMITS = {
   drillsPerUser: 200,
 };
 
+/** K88: a client_id is a UUID (any version), lower-cased; anything else is null. */
+export function clientIdOf(v: unknown): string | null {
+  return typeof v === "string" && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(v.trim()) ? v.trim().toLowerCase() : null;
+}
+
 export interface DrillRow {
   id: string;
   user_id: string;
@@ -85,6 +90,8 @@ export interface DrillRow {
   language?: string | null;
   /** K74: the voice text's rules version (1 = before K74, kept for old drills so their hashes stay; 2 = now). */
   voice_rules?: number;
+  /** K88 (D211): the app's own id for the exam (its local UUID): the same id from the same account is one exam. */
+  client_id?: string | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -146,6 +153,8 @@ export interface DrillDb {
   drill(id: string): Promise<DrillRow | null>;
   drills(userId: string): Promise<DrillRow[]>;
   saveDrill(row: DrillRow, isNew: boolean): Promise<void>;
+  /** K88 (D211): the account's exam saved with this client_id, or null. */
+  drillByClient?(userId: string, clientId: string): Promise<DrillRow | null>;
   items(drillIds: string[]): Promise<(ItemRow & { id: string })[]>;
   replaceItems(drillId: string, keepIds: string[], rows: ItemRow[]): Promise<void>;
   deleteDrill(id: string): Promise<void>;
@@ -694,6 +703,16 @@ export function createDrillHandler(deps: DrillDeps) {
     const vid = voiceFor(deps.voiceId);
     if (!vid) throw new HttpError(503, "provider_unconfigured", "No voice configured");
     let existing: DrillRow | null = null;
+    // K88 (D211): an optional client_id (the app's UUID for the exam). The same id from the same account again
+    // (a save sent twice, e.g. two tasks at once) answers with the exam already saved and creates nothing new.
+    const clientId = di.id === undefined || di.id === null ? clientIdOf(di.client_id) : null;
+    if (di.client_id !== undefined && di.client_id !== null && clientIdOf(di.client_id) === null) {
+      throw new HttpError(400, "invalid_request", "drill.client_id must be a UUID");
+    }
+    if (clientId && deps.db.drillByClient) {
+      const same = await deps.db.drillByClient(user.id, clientId);
+      if (same) return await alreadySaved(same);
+    }
     if (di.id !== undefined && di.id !== null) existing = await owned(user.id, di.id);
     else if ((await deps.db.drills(user.id)).length >= DRILL_STORE_LIMITS.drillsPerUser) {
       throw new HttpError(409, "too_many_drills", "Du har många prov sparade. Ta bort några gamla först.");
@@ -734,6 +753,7 @@ export function createDrillHandler(deps: DrillDeps) {
       kind,
       language: existing?.language ?? null,
       voice_rules: existing ? existing.voice_rules ?? 1 : VOICE_RULES_VERSION,
+      ...(existing ? {} : clientId ? { client_id: clientId } : {}),
     };
     const oldItems = existing ? await deps.db.items([existing.id]) : [];
     const oldIds = new Set(oldItems.map((i) => i.id));
@@ -806,7 +826,8 @@ export function createDrillHandler(deps: DrillDeps) {
     if (queue && !out && failed.length) await deps.db.requeue(failed);
     if (!queue || out) {
       // K71 (D190): saved as text only; the audio (and the count) waits for Starta prov
-      await deps.db.saveDrill(drill, !existing);
+      const lost = await saveOrSame(drill, !existing, 0);
+      if (lost) return lost;
       await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
       await analyse(saveRows(kind, oldItems, rows));
       const saved = await deps.db.drill(drill.id);
@@ -859,13 +880,37 @@ export function createDrillHandler(deps: DrillDeps) {
         voice_id: f.voice_id, status: "pending", seq: f.seq ?? 0, queued_at: at, sentence_ends: f.sentence_ends ?? null,
       })));
     }
+    const lost = await saveOrSame(drill, !existing, generated);
+    if (lost) return lost;
     if (credited.size) await deps.db.dropTryCredits?.(user.id, [...credited]).catch(() => {});
-    await deps.db.saveDrill(drill, !existing);
     await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
     await analyse(saveRows(kind, oldItems, rows));
     if (fresh.length || failed.length) await kick([...files.keys()]);
     const saved = await deps.db.drill(drill.id);
     return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated, ...(credited.size ? { already_counted: credited.size } : {}) });
+  }
+
+  /** K88: the answer to a save whose client_id was already saved: that exam, in the same form, nothing new. */
+  async function alreadySaved(d: DrillRow): Promise<Response> {
+    return json({ ...(await view(d)), new_chars: 0, generated_questions: 0, already_saved: true });
+  }
+
+  /**
+   * K88: saves the drill; when two saves with the same client_id race, the database's unique index stops the second.
+   * That one gives back the questions it had counted and answers with the first exam (its items were never written).
+   */
+  async function saveOrSame(drill: DrillRow, isNew: boolean, counted: number): Promise<Response | null> {
+    try {
+      await deps.db.saveDrill(drill, isNew);
+      return null;
+    } catch (e) {
+      const cid = isNew ? drill.client_id : null;
+      const same = cid && deps.db.drillByClient ? await deps.db.drillByClient(drill.user_id, cid).catch(() => null) : null;
+      if (!same || same.id === drill.id) throw e;
+      if (counted > 0) await deps.db.refundQuota?.(drill.user_id, counted).catch(() => {});
+      console.warn("drill_client_id_race", same.id);
+      return await alreadySaved(same);
+    }
   }
 
   /** K78: ElevenLabs has no credits right now (a real file failed for that within UNAVAILABLE_RETRY_MS). */

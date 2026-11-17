@@ -79,6 +79,8 @@ Deno.serve(withCors(withTestMode("drill",
     db: {
       drill: async (id) => ((await db.select("drills", `select=*&id=eq.${encodeURIComponent(id)}&limit=1`)) as DrillRow[])[0] ?? null,
       drills: async (u) => (await db.select("drills", `select=*&user_id=eq.${encodeURIComponent(u)}&order=updated_at.desc&limit=500`)) as DrillRow[],
+      drillByClient: async (u, c) =>
+        ((await db.select("drills", `select=*&user_id=eq.${encodeURIComponent(u)}&client_id=eq.${encodeURIComponent(c)}&limit=1`)) as DrillRow[])[0] ?? null,
       saveDrill: async (row) => {
         await db.upsert("drills", { ...row, updated_at: new Date().toISOString() }, "id");
       },

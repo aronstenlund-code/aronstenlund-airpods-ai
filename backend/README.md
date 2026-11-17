@@ -341,6 +341,7 @@ All calls are `POST` with the user's JWT, like `/answer`.
 
 **`/functions/v1/drill`, saved drills and their audio (K46).**
 - `{"action":"save","drill":{"id"?,"title","subject","grade","covers","long_words"},"items":[{"id"?,"question","short","long"}]}` → the drill, as `get` returns it, plus `new_chars`.
+  - **K88 (D211) `drill.client_id`** (optional, a UUID: the app's own id for the exam). Send it on the first save (no `drill.id`). The same `client_id` from the same account again, also two saves at once, answers 200 with the exam already saved, in the same form, plus `"already_saved": true`, `new_chars: 0`, `generated_questions: 0`: nothing new is created, nothing is counted twice and the items sent the second time are ignored. Not a UUID: 400 `invalid_request`. With `drill.id` it is ignored (editing works as before). Without it: as before. Another account may use the same id.
   - The order of `items` is the play order.
   - Send back the `id` of each kept item, so that its audio is reused.
   - Saving starts the audio in the background.

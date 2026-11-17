@@ -26,6 +26,7 @@ on:
           - k80-cors.py
           - k81-live.py
           - k83-coverage.py
+          - k88-live.py
       args:
         description: "Arguments (optional)"
         required: false

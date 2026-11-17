@@ -27,7 +27,12 @@ function world(opts: { perDay?: number; noSynth?: boolean; freeQuestions?: numbe
   const db = {
     drill: (id: string) => Promise.resolve(drills.get(id) ?? null),
     drills: (u: string) => Promise.resolve([...drills.values()].filter((d) => d.user_id === u)),
+    drillByClient: (u: string, c: string) => Promise.resolve([...drills.values()].find((d) => d.user_id === u && d.client_id === c) ?? null),
     saveDrill: (row: DrillRow) => {
+      // K88: the unique index (user_id, client_id)
+      if (row.client_id && [...drills.values()].some((d) => d.id !== row.id && d.user_id === row.user_id && d.client_id === row.client_id)) {
+        return Promise.reject(new Error("upsert drills failed: HTTP 409"));
+      }
       drills.set(row.id, { ...row, created_at: drills.get(row.id)?.created_at ?? "t", updated_at: "t" });
       return Promise.resolve();
     },
@@ -888,4 +893,52 @@ Deno.test("K82 (D205): quota gives what is left, the limit, when it fills up and
   assertEquals(q.prices.classes.map((c: { class: string; max_chars: number; tokens: number }) => [c.class, c.max_chars, c.tokens]),
     [["normal", 100, 40], ["longer", 200, 60], ["too_long", 4000, 80]]);
   assertEquals(q.prices.read.chars_per_question, 800);
+});
+
+Deno.test("K88 the same client_id from the same account is one exam; without it two saves are two; another account has its own", async () => {
+  const w = world({ freeQuestions: 15 });
+  const cid = "5B6E2F1A-0C3D-4E5F-8A9B-112233445566";
+  const a = await w.h("u1")(post({ action: "save", defer_audio: true, drill: { title: "Bio", client_id: cid }, items: ITEMS }));
+  assertEquals(a.status, 200);
+  const first = await a.json();
+  const b = await w.h("u1")(post({ action: "save", defer_audio: true, drill: { title: "Bio", client_id: cid }, items: ITEMS }));
+  assertEquals(b.status, 200);
+  const second = await b.json();
+  assertEquals(second.drill.id, first.drill.id, "the exam already saved");
+  assertEquals(second.already_saved, true);
+  assertEquals(second.items.length, first.items.length);
+  assertEquals([...w.drills.values()].filter((d) => d.user_id === "u1").length, 1);
+  // started through save (an old app's way): the second save counts nothing again
+  const cid2 = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee";
+  const s1 = await (await w.h("u1")(post({ action: "save", drill: { title: "Kemi", client_id: cid2 }, items: ITEMS }))).json();
+  const used = w.quota.get("u1") ?? 0;
+  const s2 = await (await w.h("u1")(post({ action: "save", drill: { title: "Kemi", client_id: cid2 }, items: ITEMS }))).json();
+  assertEquals(s2.drill.id, s1.drill.id);
+  assertEquals(s2.generated_questions, 0);
+  assertEquals(w.quota.get("u1") ?? 0, used, "nothing counted twice");
+  // without client_id: as before, two exams
+  await w.h("u1")(post({ action: "save", defer_audio: true, drill: { title: "Utan" }, items: ITEMS }));
+  await w.h("u1")(post({ action: "save", defer_audio: true, drill: { title: "Utan" }, items: ITEMS }));
+  assertEquals([...w.drills.values()].filter((d) => d.title === "Utan").length, 2);
+  // another account with the same id gets its own exam
+  const o = await (await w.h("u2")(post({ action: "save", defer_audio: true, drill: { title: "Bio", client_id: cid }, items: ITEMS }))).json();
+  assert(o.drill.id !== first.drill.id);
+  // a save of the exam by its id still edits it (client_id is only for the first save)
+  const e = await w.h("u1")(post({ action: "save", defer_audio: true, drill: { id: first.drill.id, title: "Bio 2", client_id: cid }, items: ITEMS }));
+  assertEquals((await e.json()).drill.title, "Bio 2");
+  // not a UUID: refused
+  const bad = await w.h("u1")(post({ action: "save", drill: { title: "x", client_id: "abc" }, items: ITEMS }));
+  assertEquals(bad.status, 400);
+});
+
+Deno.test("K88 two saves with the same client_id at once: one exam, the second's count given back", async () => {
+  const w = world({ freeQuestions: 15 });
+  const cid = "11111111-2222-4333-8444-555555555555";
+  const [r1, r2] = await Promise.all([1, 2].map(() => w.h("u1")(post({ action: "save", drill: { title: "Samtidigt", client_id: cid }, items: ITEMS }))));
+  const [j1, j2] = [await r1.json(), await r2.json()];
+  assertEquals(r1.status, 200);
+  assertEquals(r2.status, 200);
+  assertEquals(j1.drill.id, j2.drill.id);
+  assertEquals([...w.drills.values()].filter((d) => d.title === "Samtidigt").length, 1);
+  assertEquals(w.quota.get("u1") ?? 0, 2, "the two questions counted once");
 });
