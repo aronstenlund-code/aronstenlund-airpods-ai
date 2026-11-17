@@ -327,7 +327,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         self.interviewMode = InterviewModeController(settings: modes)
         let live = LiveModeController(settings: modes)
         self.liveMode = live
-        self.socialMode = SocialModeController(live: live)
+        self.socialMode = SocialModeController(live: live, settings: modes)
         let rizzController = RizzModeController(live: live, settings: modes)
         self.rizzMode = rizzController
         // The remembered mode. Rizzläge only if the 18+ question was answered; the gate is never skipped.
@@ -747,16 +747,40 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         switch selectedMode {
         case .standard: await toggleListening()
         case .prov: await startProvFromCard()
-        case .interview: isShowingInterviewSetup = true
-        case .rizz:
-            if rizzMode.needsAgeConfirmation { isShowingAgeGate = true } else { isShowingLiveStart = true }
-        case .social: isShowingLiveStart = true
+        case .interview, .rizz, .social:
+            // D199 step 4: the mode says which screen its button opens.
+            if let screen = modeController(for: selectedMode)?.startScreen() { show(screen) }
+        }
+    }
+
+    /// D199 step 4 (A119): the controller of a mode that has one. Standardläget and Provläge get theirs in steps 5
+    /// and 6; until then they have no start block.
+    func modeController(for mode: ConversationMode) -> (any ListeningModeController)? {
+        switch mode {
+        case .interview: interviewMode
+        case .social: socialMode
+        case .rizz: rizzMode
+        case .standard, .prov: nil
+        }
+    }
+
+    /// D199 step 4: what must be shown in the app before `target` can start; nil when nothing is missing.
+    func startBlock(for target: ConversationMode) -> ModeStartBlock? {
+        modeController(for: target)?.startBlock()
+    }
+
+    /// The sheet for a start block (the views watch these flags).
+    private func show(_ block: ModeStartBlock) {
+        switch block {
+        case .ageQuestion: isShowingAgeGate = true
+        case .liveStartScreen: isShowingLiveStart = true
+        case .interviewSetup: isShowingInterviewSetup = true
         }
     }
 
     /// The picker moved: Rizzläge asks for the age the first time it is opened (D63).
     func modeSelected() {
-        if selectedMode == .rizz, rizzMode.needsAgeConfirmation { isShowingAgeGate = true }
+        if startBlock(for: selectedMode) == .ageQuestion { show(.ageQuestion) } // D199 step 4
     }
 
     func answerAgeGate(confirmed: Bool) {
@@ -782,9 +806,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             controller.log("\(newMode.rawValue) needs a subscription (D83, flag off today)")
             return
         }
-        if newMode == .rizz, rizzMode.needsAgeConfirmation {
+        if startBlock(for: newMode) == .ageQuestion { // D199 step 4
             controller.log("Rizzläge refused: no age confirmation")
-            isShowingAgeGate = true
+            show(.ageQuestion)
             return
         }
         studyNotice = nil
@@ -1688,16 +1712,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// "Lumen, byt till provläge" (D74). The same checks as the screen: Rizzläge needs the 18+ answer, a live mode
     /// its start screen once, Intervjuläge a role.
     func switchByVoice(to target: ConversationMode) async {
-        if target == .rizz, rizzMode.needsAgeConfirmation {
-            say("Rizzläge kräver att du bekräftar 18 år i appen.")
-            return
-        }
-        if target.isLive, !modeSettings.hasConfirmedLiveStart(target) {
-            say("\(VoiceChannel.spokenName(target).dropLast()) startas i appen första gången.")
-            return
-        }
-        if target == .interview, !modeSettings.hasInterviewSetup {
-            say("Intervjuläge behöver en roll i appen först.")
+        if let block = startBlock(for: target) { // D199 step 4: the mode says what is missing
+            say(block.spokenLine(for: target))
             return
         }
         let current: ConversationMode? = study.isActive ? mode : (isListening ? .standard : nil)
@@ -2612,19 +2628,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// "Byt läge": the same checks as the screen and the voice; listening goes on.
     func switchMode(to target: ConversationMode) async {
-        if target == .rizz, rizzMode.needsAgeConfirmation {
-            selectedMode = .rizz
-            isShowingAgeGate = true
-            return
-        }
-        if target.isLive, !modeSettings.hasConfirmedLiveStart(target) {
+        if let block = startBlock(for: target) { // D199 step 4: the mode says what is missing, the app shows it
             selectedMode = target
-            isShowingLiveStart = true
-            return
-        }
-        if target == .interview, !modeSettings.hasInterviewSetup {
-            selectedMode = .interview
-            isShowingInterviewSetup = true
+            show(block)
             return
         }
         await switchByVoice(to: target)

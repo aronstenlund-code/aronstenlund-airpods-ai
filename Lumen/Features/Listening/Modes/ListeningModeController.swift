@@ -18,6 +18,31 @@ protocol ListeningModeController: AnyObject {
     func aheadRequest(for text: String) -> (request: ActivationRequest, persona: PersonaRequest?)?
     /// "Lumen, …" while this mode's session runs.
     func instruction(_ text: String)
+    /// D199 step 4 (A119): what the app must show before this mode can start by "Byt läge" or by voice; nil when
+    /// nothing is missing.
+    func startBlock() -> ModeStartBlock?
+    /// D199 step 4: the screen the mode button opens before the mode starts (every time, D72).
+    func startScreen() -> ModeStartBlock
+}
+
+/// D199 step 4 (A119): what a mode needs from the user in the app before it starts. Each mode says its own; the model
+/// shows the sheet or says the line.
+enum ModeStartBlock: Equatable, Sendable {
+    /// D63's 18+ question. Never since D112 (no gate); kept with the check.
+    case ageQuestion
+    /// A live mode's start screen, once per mode.
+    case liveStartScreen
+    /// Intervjuläge needs a role or a CV.
+    case interviewSetup
+
+    /// What the voice says when the mode is asked for by voice and this is missing (D74).
+    func spokenLine(for mode: ConversationMode) -> String {
+        switch self {
+        case .ageQuestion: "Rizzläge kräver att du bekräftar 18 år i appen."
+        case .liveStartScreen: "\(VoiceChannel.spokenName(mode).dropLast()) startas i appen första gången."
+        case .interviewSetup: "Intervjuläge behöver en roll i appen först."
+        }
+    }
 }
 
 /// D199: what a mode's controller may use of `ListeningModel`. Narrow on purpose: the turn's speaker, the session's

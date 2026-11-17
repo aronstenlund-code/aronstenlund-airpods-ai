@@ -273,10 +273,18 @@ final class LiveModeController {
 final class SocialModeController: ListeningModeController {
     let mode: ConversationMode = .social
     private let live: LiveModeController
+    private let settings: ModeSettings
 
-    init(live: LiveModeController) {
+    init(live: LiveModeController, settings: ModeSettings) {
         self.live = live
+        self.settings = settings
     }
+
+    /// D199 step 4: a live mode is started in the app the first time (its start screen, once).
+    func startBlock() -> ModeStartBlock? { settings.hasConfirmedLiveStart(mode) ? nil : .liveStartScreen }
+
+    /// The mode button always opens the start screen.
+    func startScreen() -> ModeStartBlock { .liveStartScreen }
 
     var spokenKeyterms: [String] { LiveModeController.spokenKeyterms }
 
@@ -310,6 +318,15 @@ final class RizzModeController: ListeningModeController {
 
     /// The age sheet's yes (D63). The sheet is never shown since D112; kept with the check.
     func confirmAge() { settings.confirmAdult() }
+
+    /// D199 step 4: D63's age check first (never since D112), then the live start screen, once.
+    func startBlock() -> ModeStartBlock? {
+        if needsAgeConfirmation { return .ageQuestion }
+        return settings.hasConfirmedLiveStart(mode) ? nil : .liveStartScreen
+    }
+
+    /// The mode button opens the start screen (after the age check, never since D112).
+    func startScreen() -> ModeStartBlock { needsAgeConfirmation ? .ageQuestion : .liveStartScreen }
 
     var spokenKeyterms: [String] { LiveModeController.spokenKeyterms }
 
