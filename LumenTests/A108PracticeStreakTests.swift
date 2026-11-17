@@ -186,6 +186,30 @@ import Testing
         #expect(reminders.scheduled.last?.drillID == drill.id)
     }
 
+    /// D215 (A132): a text said in "Säg i AirPods" is no exam, so the reminder never names or opens one, also when
+    /// it was the last thing practised.
+    @Test func theReminderIsForTheLatestExamNeverForASaidText() async throws {
+        let (model, _, _, _, reminders, drill) = try setup()
+        var said = Drill.text(title: SaidText.title("Hej hej hooooo"), summary: DrillSummary(subject: "", grade: "", covers: ""),
+                              parts: [DrillItem.textPart("Hej hej hooooo", part: .para)])
+        said.said = true
+        let saved = model.save(said) // saved after the exam, so it is the last one in the list
+        #expect(saved.isSaid && model.drills.last?.id == saved.id)
+
+        await model.reschedulePracticeReminders()
+        #expect(reminders.scheduled.last?.drillID == drill.id, "nothing practised: the latest exam, not the said text")
+
+        model.practice.read(seconds: 130, in: saved.id) // the said text was listened to last
+        #expect(model.practice.lastDrillID == saved.id)
+        await model.reschedulePracticeReminders()
+        #expect(reminders.scheduled.last?.drillID == drill.id)
+        #expect(reminders.scheduled.last?.title == drill.title)
+
+        model.practice.questionPlayed(in: drill.id) // an exam practised last is still the reminder's exam
+        await model.reschedulePracticeReminders()
+        #expect(reminders.scheduled.last?.drillID == drill.id)
+    }
+
     @Test func readingTimeIsCountedOnlyWhileReading() throws {
         let (model, session, _, _, _, _) = try setup()
         let text = Drill.from(try A105TextDrillTests.view())

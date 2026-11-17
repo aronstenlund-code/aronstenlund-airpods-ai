@@ -476,7 +476,10 @@ final class RepetitionModel {
     /// a change in Inställningar, and after the app's question. Never asks iOS unless `ask`.
     func reschedulePracticeReminders(ask: Bool = false) async {
         guard let reminders else { return }
-        let latest = practice.lastDrillID.flatMap { store.drill($0) } ?? store.drills.last
+        // D215 (A132): a text said in "Säg i AirPods" is no exam, so the reminder never names or opens one. When the
+        // last thing practised was such a text, the reminder is for the latest exam.
+        let practised = practice.lastDrillID.flatMap { store.drill($0) }.flatMap { $0.isSaid ? nil : $0 }
+        let latest = practised ?? examDrills.last
         await reminders.schedule(drillID: latest?.id, examTitle: latest?.title, doneToday: practice.practisedToday, ask: ask)
     }
 
