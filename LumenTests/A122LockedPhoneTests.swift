@@ -88,4 +88,13 @@ import Testing
         #expect(BuildInfo.line(version: "0.1.0", build: "1", sha: nil) == "Version 0.1.0 (1)")
         #expect(BuildInfo.line(version: "0.1.0", build: "1", sha: "$(LUMEN_GIT_SHA)") == "Version 0.1.0 (1)")
     }
+
+    // MARK: Aron's phone 2026-11-17 08:55: "Ingen kontakt" with a pause button
+
+    @Test func aPlayerThatWaitsForSoundThatIsNotComingIsSteppedByHand() {
+        #expect(RepetitionModel.soundIsNotComing(problem: CloudDrillAudio.unavailableLine))
+        #expect(RepetitionModel.soundIsNotComing(problem: "Ingen kontakt med EarMind just nu. Försök igen om en stund."))
+        #expect(!RepetitionModel.soundIsNotComing(problem: nil), "Gör ljudet …: it is on its way, so pause stays")
+        #expect(!RepetitionModel.soundIsNotComing(problem: ""))
+    }
 }

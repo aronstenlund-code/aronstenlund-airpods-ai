@@ -162,7 +162,7 @@ struct RepetitionPlayerView: View {
     /// questions are stepped by hand.
     private var stepsByHand: Bool {
         guard let player = session.player, let drill = session.drill, case .waitingForAudio = player.phase else { return false }
-        return model.isReadingAloudOff(drill)
+        return model.soundIsNotComing(drill)
     }
 
     private var waitsWithoutSound: Bool {
@@ -242,7 +242,7 @@ struct RepetitionPlayerView: View {
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .lineLimit(8)
-            } else if case .waitingForAudio = player.phase, let item, model.isReadingAloudOff(drill) {
+            } else if case .waitingForAudio = player.phase, let item, model.soundIsNotComing(drill) {
                 // A112 (D200): reading aloud is off for now, so the answer is here as text. With the largest text it
                 // scrolls in the room it has (it was cut off after two lines on iPhone SE).
                 if compact {

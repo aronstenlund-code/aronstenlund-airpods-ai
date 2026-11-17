@@ -291,6 +291,12 @@ final class RepetitionModel {
     /// Texten fungerar som vanligt."). Not an error: nothing is counted and the sound comes when the credits are back.
     func isReadingAloudOff(_ drill: Drill) -> Bool { audio.problem(for: drill) == CloudDrillAudio.unavailableLine }
 
+    /// Aron's phone 2026-11-17: the sound did not come and the player said "Ingen kontakt med EarMind just nu" with
+    /// a pause button, as if something played. Whatever the reason the sound is not coming (the voice service is out,
+    /// no contact, no network), the player that waits for it is stepped by hand and offers nothing to pause.
+    func soundIsNotComing(_ drill: Drill) -> Bool { Self.soundIsNotComing(problem: audio.problem(for: drill)) }
+    nonisolated static func soundIsNotComing(problem: String?) -> Bool { !(problem ?? "").isEmpty }
+
     /// On opening: the exams of this account on the server (R5: another phone), then the sound of every exam that is
     /// not ready.
     func refresh() async {

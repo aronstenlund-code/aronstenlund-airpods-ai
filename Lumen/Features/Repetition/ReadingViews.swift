@@ -438,7 +438,7 @@ struct ReadingPlayerView: View {
     /// A112 (D200, Kelly U2): reading aloud is off and this part has no sound. The text is read on the screen and the
     /// sentence is moved by hand (the buttons, the presses, a tap on a sentence).
     private var readsByHand: Bool {
-        reader.phase == .waitingForAudio && model.isReadingAloudOff(drill)
+        reader.phase == .waitingForAudio && model.soundIsNotComing(drill)
     }
 
     /// Ke63 §5: what the AirPods' presses do now.
