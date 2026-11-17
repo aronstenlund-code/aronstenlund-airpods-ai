@@ -1291,7 +1291,9 @@ export function createDrillHandler(deps: DrillDeps) {
         const hs = [...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))];
         if (hs.length && deps.db.referenced) {
           const still = new Set(await deps.db.referenced(hs).catch(() => hs));
-          const waiting = (await deps.db.audio(hs)).filter((a) => (a.status === "pending" || a.status === "failed") && !still.has(a.hash));
+          // K91 (Oscar O76): a file that failed for lack of credits keeps its error, so the K78 check (creditsOut)
+          // still knows that ElevenLabs is out; deleting a drill must not lift it
+          const waiting = (await deps.db.audio(hs)).filter((a) => (a.status === "pending" || (a.status === "failed" && !(a.error ?? "").startsWith(AUDIO_UNAVAILABLE))) && !still.has(a.hash));
           for (const a of waiting) await deps.db.finish(a.hash, { status: "failed", attempts: 3, error: "unused: the drill was deleted (K64)" }).catch(() => {});
         }
         return json({ deleted: true });

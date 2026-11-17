@@ -965,3 +965,16 @@ Deno.test("K88 two saves with the same client_id at once: one exam, the second's
   assertEquals([...w.drills.values()].filter((d) => d.title === "Samtidigt").length, 1);
   assertEquals(w.quota.get("u1") ?? 0, cost(ITEMS), "the credits counted once");
 });
+
+Deno.test("K91 (Oscar O76): deleting a drill keeps the out-of-credits mark, so the next save is still held back (D200)", async () => {
+  const w = world({ outOfCredits: true });
+  const a = await (await w.h("u1")(post({ action: "save", items: [{ question: "Varför regnar det?", short: "Moln.", long: "Moln. Mer." }] }))).json();
+  assert([...w.audio.values()].some((f) => f.status === "failed" && (f.error ?? "").startsWith("audio_unavailable")));
+  await w.h("u1")(post({ action: "delete", id: a.drill.id }));
+  assert([...w.audio.values()].some((f) => f.status === "failed" && (f.error ?? "").startsWith("audio_unavailable")), "the mark stays");
+  const calls = w.spoken.length;
+  const b = await (await w.h("u2")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals(b.audio_unavailable, true);
+  assertEquals(w.spoken.length, calls, "nothing sent to ElevenLabs");
+  assertEquals(w.quota.get("u2") ?? 0, 0);
+});
