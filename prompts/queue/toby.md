@@ -137,3 +137,6 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 - [ ] **T49 – Utan nät och dåligt nät (D219, A135)** (effort: medium). Lagd av Deangelo 2026-11-17 20:30. När A135 är på main: en Säg-text som har spelats en gång spelas igen med nätet avstängt; ett prov vars ljud har hämtats spelas utan nät; med långsamt nät visas snurran högst 10 s och sedan Försök igen; Senaste har inga dubbletter. 0 ElevenLabs. Rapport, push.
 
 - [ ] **T50 – Skriv i takt, stil och röster i appen (A136)** (effort: medium). Lagd av Deangelo 2026-11-17 20:40. När A136 är på main: Skriv i takt ger pauser utan nytt ljud och utan dragning, stilfältet skickar style och visar kostnaden, röstväljaren spelar provljud och låser rösten. 0 ElevenLabs. Rapport, push.
+
+- [ ] **T51 – Vakt för G7 steg 7a (A137)** (effort: medium). Lagd av Deangelo 2026-11-17 20:55. Nattflödet med grenens app mot main, högst 2 maskiner (D217). 0 ElevenLabs.
+- [ ] **T52 – Vakt för G7 steg 7d (A138)** (effort: medium). Lagd av Deangelo 2026-11-17 20:55. Som T51.

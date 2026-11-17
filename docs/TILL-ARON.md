@@ -45,3 +45,6 @@ Appen och servern byggs nu för köp med StoreKit, men produkterna måste finnas
 
 ## 28. Får vi lyssna på taggarna en gång? (D220), 2026-11-17 20:40
 För att veta att taggarna (lugnt, tydligt, viskande) och en skånsk röst faktiskt låter bra måste vi göra riktigt ljud en gång. Ett A/B-test med 6 korta texter kostar ungefär 2 000 ElevenLabs-krediter. Svara ja eller nej. Utan ja testas bara att texten blir rätt, inte hur den låter.
+
+## 29. När det passar: prova lyssnarlägena med AirPods (D221)
+Fem omstruktureringar av lyssnarlägena (Frågor, Provläge med rösten, minitestet, det tysta förhöret, studieplanen) är bara testade i simulatorn. Provlistorna står i rapporterna för A120, A125, A126, A127 och A128. Ingen brådska; de två sista stegen med högre risk väntar tills du har provat.
