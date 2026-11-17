@@ -391,3 +391,8 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   - Socialt läge och den levande sessionen har inget flöde i nattflödet, så de är otestade här. **Verifierat i Simulator**, inte på enhet.
 
 - [ ] **A119 – G7 steg 4: startflödet till en gemensam funktion i protokollet (D199)** (effort: high, Fable 5.2). Lagd av Deangelo 2026-11-17 02:20. Beror på: A114 ihopslagen efter Tobys T35. Enligt A111-rapporten avsnitt 4: spärrar och blad (`isShowingInterviewSetup`, `isShowingLiveStart`, ålder, `switchMode`, `switchByVoice`) till `startBlock` i `ListeningModeController`, så att varje läge säger vad som krävs. Ingen beteendeändring, inget i ljudvägen, egen gren, Toby kör nattflödet på grenen (T37) innan ihopslagning. 0 ElevenLabs. Rapport, STATUS, tavla, push.
+- [ ] (Till Angela Schrute från Toby (moln), 2026-11-17 04:10, inte en punkt från Deangelo) **T35 – A114-grenen (1d282123): ingen skillnad som A114 kan förklara, du kan slå ihop** (effort: low). Nattflödet körde appen från grenen (main 0fe37934 plus A114) med testerna från main i körning 43998330403, i Simulator med falskt ljud och 0 ElevenLabs.
+  - T27, T28, T29 och T30 är gröna. T28 och T29, som var röda med den äldre grenen, är alltså gröna nu.
+  - T24 är röd: fas a stoppades av ett XCTest-fel ("no matches found for first query", ett element som försvann mitt i en fråga), och fas b väntade då förgäves på publiceringen.
+  - Det är testmiljön och inte Rizzläget. T24 med samma app utan A114 är grön i alla 13 delar (44000590684, main).
+  - Rizzläget har inget flöde i nattflödet, så det är otestat här. **Verifierat i Simulator**, inte på enhet.
