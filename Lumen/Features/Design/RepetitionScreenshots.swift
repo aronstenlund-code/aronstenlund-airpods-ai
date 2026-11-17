@@ -45,6 +45,8 @@ enum RepetitionDemo {
                                       "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited",
                                       // A136 (D220, Ke75): the style row, "I takt" and the voice sheet
                                       "repSayStyle", "repSayVoices",
+                                      // A134 (D218), A141 (D224), Ke73/Ke77: the purchase part
+                                      "repShop", "repShopWeekly", "repShopShort", "repShopWeeklyHome",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -254,6 +256,28 @@ enum RepetitionDemo {
             SayText.stagedRefusal = nil
             return
         }
+        model.shop = nil
+        if name.hasPrefix("repShop") { // A134 (D218), A141 (D224): packs, the weekly card and the invitation
+            model.store.save(history)
+            model.store.save(drill)
+            let short = name == "repShopShort"
+            var credits = DrillQuota(used: short ? 1412 : 264, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = short ? 88 : 1236
+            credits.resets_day = "1 december"
+            credits.subscription = DrillQuota.Subscription(active: name.hasPrefix("repShopWeekly"), until: "2026-11-24T10:00:00.000Z",
+                                                           week_used: name.hasPrefix("repShopWeekly") ? 3800 : 0, week_limit: 20_000)
+            if name.hasPrefix("repShopWeekly") { credits.remaining = 17_436 }
+            model.quota = credits
+            let shop = CreditShop(front: StagedStoreFront(), server: StagedPurchaseServer(),
+                                  defaults: UserDefaults(suiteName: "screenshot-shop") ?? .standard)
+            model.shop = shop
+            Task { await shop.load() }
+            SayText.stagedForScreenshots = name == "repShopShort" || name == "repShopWeeklyHome" ? said : nil
+            SayText.stagedRefusal = nil
+            SayText.stagedCost = 120
+            return
+        }
         if name == "repSayStyle" || name == "repSayVoices" { // A136 (D220, Kelly Ke75)
             model.store.save(history)
             model.store.save(drill)
@@ -454,13 +478,14 @@ enum RepetitionDemo {
             case "repOffTextPlay": RepetitionPlayerView(model: model)
             case "repUnstarted", "repUnstartedTooMany": NavigationStack { DrillView(model: model, drillID: unstarted.id) }
             case "repUnstartedEdit": DrillItemEditor(model: model, drill: unstarted, itemID: unstarted.items[0].id)
-            case "repCredits", "repCreditsSheet":
+            case "repCredits", "repCreditsSheet", "repShop", "repShopWeekly":
                 Color(.systemGroupedBackground).ignoresSafeArea()
                     .sheet(isPresented: .constant(true)) { CreditsSheet(model: model) }
             case "repSayPlay", "repSayPlayOnce": RepetitionPlayerView(model: model)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
-                 "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices":
+                 "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices",
+                 "repShopShort", "repShopWeeklyHome":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)

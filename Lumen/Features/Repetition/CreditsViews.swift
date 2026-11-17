@@ -21,6 +21,15 @@ enum CreditsText {
         return quota.isCredits ? CreditText.capsule(quota.left) : "\(DrillText.questions(quota.left)) kvar" // A131 (D213)
     }
 
+    /// The words under the sheet's number. With purchases the credits are not only the month's (Ke73: "krediter kvar").
+    static func leftLine(_ quota: DrillQuota, withShop: Bool) -> String {
+        if quota.isCredits {
+            let noun = quota.left == 1 ? "kredit kvar" : "krediter kvar"
+            return withShop ? noun : "\(noun) den här månaden"
+        }
+        return quota.left == 1 ? "fråga kvar den här månaden" : "frågor kvar den här månaden"
+    }
+
     /// "1", "1,5", "2".
     static func number(_ value: Double) -> String {
         value == value.rounded() ? String(Int(value)) : String(format: "%.1f", value).replacingOccurrences(of: ".", with: ",")
@@ -79,6 +88,8 @@ struct CreditsCapsule: View {
             }
             .accessibilityHint("Visar vad som kostar vad")
             .sheet(isPresented: $showsSheet) { CreditsSheet(model: model) }
+            // A141 (D224, K98): the welcome credits are asked for once per installation, when Start is first shown.
+            .task { await model.shop?.claimWelcome() }
         }
     }
 }
@@ -95,12 +106,14 @@ struct CreditsSheet: View {
                 if let quota = model.quota {
                     Section {
                         VStack(spacing: 2) {
-                            Text(verbatim: quota.isUnlimited ? "Obegränsat" : quota.isCredits ? CreditText.number(quota.left) : "\(quota.left)")
+                            // A134 (Ke73 §3): with the weekly card the sheet says so, and how much of the week is left.
+                            let weekly = quota.hasWeeklyCard && !quota.isUnlimited ? quota.subscription : nil
+                            Text(verbatim: quota.isUnlimited ? "Obegränsat" : weekly != nil ? ShopText.weeklyTitle
+                                 : quota.isCredits ? CreditText.number(quota.left) : "\(quota.left)")
                                 .font(.system(.largeTitle, design: .rounded).weight(.bold))
                                 .monospacedDigit()
-                            Text(quota.isUnlimited ? "Det här kontot har ingen gräns"
-                                 : quota.isCredits ? (quota.left == 1 ? "kredit kvar den här månaden" : "krediter kvar den här månaden")
-                                 : quota.left == 1 ? "fråga kvar den här månaden" : "frågor kvar den här månaden")
+                            Text(verbatim: quota.isUnlimited ? "Det här kontot har ingen gräns"
+                                 : weekly.map(ShopText.weekLine) ?? CreditsText.leftLine(quota, withShop: model.shop != nil))
                                 .foregroundStyle(.secondary)
                                 .multilineTextAlignment(.center)
                         }
@@ -108,6 +121,10 @@ struct CreditsSheet: View {
                         .padding(.vertical, 8)
                         .accessibilityElement(children: .combine)
                         .listRowBackground(Color.clear)
+                    }
+                    // A134 (D218), A141 (D224): the packs, the weekly card and the invitation.
+                    if quota.isCredits, !quota.isUnlimited, let shop = model.shop {
+                        ShopSections(model: model, shop: shop, quota: quota)
                     }
                     let rows = CreditsText.rows(quota.prices)
                     if quota.isCredits {
@@ -143,7 +160,10 @@ struct CreditsSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } } }
             .task { await model.refreshQuota() }
+            .task { await model.shop?.load() }
         }
-        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.fraction(model.quota?.isCredits == true ? 0.72 : 0.64), .large]) // Kelly K3: half the height cut the footnote; the largest text needs it all
+        // A134: with the purchase part the sheet is a whole page.
+        .presentationDetents(typeSize.isAccessibilitySize || (model.shop != nil && model.quota?.isCredits == true && model.quota?.isUnlimited != true)
+                             ? [.large] : [.fraction(model.quota?.isCredits == true ? 0.72 : 0.64), .large]) // Kelly K3: half the height cut the footnote; the largest text needs it all
     }
 }

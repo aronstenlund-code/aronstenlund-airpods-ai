@@ -154,6 +154,9 @@ final class RepetitionModel {
     @ObservationIgnored var stopListening: (@MainActor () async -> Void)?
     /// A92 (D166, K57): "Fråga om EarMind". Nil: the row and the ? button are not shown.
     @ObservationIgnored var help: (any HelpAnswering)?
+    /// A134 (D218): buying credits and the weekly card. Nil in the mock mode and in tests without a shop: the credits
+    /// sheet then has no purchase part.
+    var shop: CreditShop?
 
     /// A83 (K49): Publicera prov and Prov från din skola. Nil in the mock mode.
     @ObservationIgnored var publishing: (any DrillPublishingService)?
@@ -1023,6 +1026,7 @@ final class RepetitionModel {
     }
 
     func handle(_ url: URL) -> Bool {
+        if shop?.handle(url) == true { return true } // A141 (K98): an invitation, `earmind://invite/<code>`
         guard let code = DrillShareClient.code(in: url) else { return false }
         open(code: code)
         return true

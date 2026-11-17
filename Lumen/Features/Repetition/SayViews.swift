@@ -84,6 +84,14 @@ enum SayText {
         cost > left ? "\(CreditText.credits(cost)) · du har \(CreditText.short(left, .down))" : CreditText.credits(cost)
     }
 
+    /// A134 (Ke73 §3): the cost by the button with the weekly card. While the week covers the text it is "Ingår"; when
+    /// nothing covers it, "Veckans tak är nått"; when the week is out and other credits pay, the usual line.
+    static func costLine(cost: Int, left: Int, subscription: DrillQuota.Subscription?) -> String {
+        guard let subscription, subscription.active == true else { return creditsLine(cost: cost, left: left) }
+        if cost > left { return ShopText.weekIsOut }
+        return ShopText.weekIsOut(subscription) ? creditsLine(cost: cost, left: left) : ShopText.included
+    }
+
     /// A132 (Ke72): a said text as a capsule under the field: its beginning, at most about 24 characters.
     static func capsule(_ text: String) -> String {
         let flat = text.split(whereSeparator: \.isNewline).joined(separator: " ")
@@ -122,6 +130,8 @@ struct SayInAirPodsField: View {
     /// A136 (D220.3): the chosen catalog voice ("" = the server's own), kept to the next time.
     @AppStorage(SayText.voiceKey) private var storedVoice = ""
     @State private var showsVoices = false
+    /// A134 (Ke73 §2): "Fyll på" by the cost opens the credits sheet with the packs.
+    @State private var showsCredits = false
     /// A136 (D220.1): "Skriv i takt" instead of a tempo, kept to the next time.
     @AppStorage(SayText.inPaceKey) private var inPace = false
     @Environment(\.scenePhase) private var scenePhase
@@ -341,6 +351,7 @@ struct SayInAirPodsField: View {
         // A116: presented from outside the field's dark colour scheme, so the system's sheets look as usual.
         .sheet(isPresented: $isTakingPhotos) { camera.ignoresSafeArea() }
         .sheet(isPresented: $showsVoices) { SayVoicesSheet(model: model, chosen: $storedVoice) }
+        .sheet(isPresented: $showsCredits) { CreditsSheet(model: model) }
         .photosPicker(isPresented: $isPickingPhotos, selection: $photoItems, maxSelectionCount: 20, matching: .images)
         .onChange(of: photoItems) { _, items in Task { await addPhotos(items) } }
         .fileImporter(isPresented: $isImporting,
@@ -469,16 +480,43 @@ struct SayInAirPodsField: View {
                 .font(.footnote.weight(.semibold))
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.updatesFrequently)
+            // A134 (D218): the server said the credits do not cover it; the packs are one tap away.
+            if model.shop != nil, tooMany || refused.contains("krediter") {
+                Button(ShopText.refill) { showsCredits = true }
+                    .font(.footnote.weight(.semibold))
+                    .buttonStyle(.plain)
+                    .foregroundStyle(SayText.accent)
+                    .frame(minHeight: 32)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            }
         } else if readingAloudOff {
             Text(verbatim: CloudDrillAudio.unavailableLine).font(.footnote).opacity(0.7).fixedSize(horizontal: false, vertical: true)
         } else if let credits {
             let short = credits.cost > credits.left
-            Text(verbatim: SayText.creditsLine(cost: credits.cost, left: credits.left))
-                .font(short ? .footnote.weight(.semibold) : .footnote)
-                .monospacedDigit()
-                .opacity(short ? 1 : 0.7)
-                .frame(maxWidth: .infinity, alignment: typeSize.isAccessibilitySize ? .leading : .trailing)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            let line = SayText.costLine(cost: credits.cost, left: credits.left, subscription: model.quota?.subscription)
+            Group {
+                if short, model.shop != nil {
+                    // A134 (Ke73 §2): "120 krediter · du har 88 · Fyll på"; the last words open the packs.
+                    Button {
+                        showsCredits = true
+                    } label: {
+                        HStack(spacing: 4) {
+                            Text(verbatim: "\(line) ·").foregroundStyle(SayText.ink)
+                            Text(verbatim: ShopText.refill).foregroundStyle(SayText.accent)
+                        }
+                        .frame(minHeight: 32)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(line). \(ShopText.refill)")
+                } else {
+                    Text(verbatim: line)
+                }
+            }
+            .font(short ? .footnote.weight(.semibold) : .footnote)
+            .monospacedDigit()
+            .opacity(short ? 1 : 0.7)
+            .frame(maxWidth: .infinity, alignment: typeSize.isAccessibilitySize ? .leading : .trailing)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         } else if !isEmpty, model.quota?.isCredits != true {
             // A server that still counts questions.
             Text(verbatim: SayText.costLine(counts: counts, left: sameAsMade == nil ? model.quota?.left : nil, readingAloudOff: false))
