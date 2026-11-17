@@ -579,6 +579,28 @@ final class RepetitionModel {
 
     // MARK: Säg i AirPods (A115, D203)
 
+    /// A130: the text that was last given to "Säg i AirPods" and its exam. Kept here, not in the view: the field is
+    /// rebuilt when Start changes, and it must not forget what it has already saved.
+    private(set) var lastSaid: (text: String, drillID: UUID)?
+
+    /// A130 (D212): a Spela that did not open the player is never silent. The server's own words when it refused
+    /// (the month's questions, K64), with when they are filled up; else the sound's problem, else a plain line.
+    func sayRefusal(_ drill: Drill) -> String? {
+        guard !showsPlayer else { return nil }
+        let latest = store.drill(drill.id) ?? drill
+        return SaidText.refusalLine(problem: audio.problem(for: latest), quotaExceeded: quotaExceeded(latest),
+                                    refill: Self.refillLine(quota?.resets))
+    }
+
+    /// "Fylls på den 1 december." from the server's "2026-12-01".
+    nonisolated static func refillLine(_ resets: String?) -> String? {
+        let parts = (resets ?? "").split(separator: "-").compactMap { Int($0) }
+        guard parts.count == 3, (1...12).contains(parts[1]), (1...31).contains(parts[2]) else { return nil }
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.locale = Locale(identifier: "sv_SE")
+        return "Fylls på den \(parts[2]) \(calendar.monthSymbols[parts[1] - 1])."
+    }
+
     /// How the next text is read (set by `say`, used once by `read`).
     @ObservationIgnored private var sayOptions: RepetitionSession.SayOptions?
 
@@ -590,10 +612,17 @@ final class RepetitionModel {
     func say(_ text: String, repeatMinutes: Int?) async -> Drill? {
         let parts = SaidText.parts(text)
         guard !parts.isEmpty else { return nil }
+        // A130 (D212, Aron's phone 2026-11-17 13:48): the server refused the text (402) and every press on Spela made
+        // one more unstarted exam. The same text is the same exam: it is started again, never saved again.
+        if let last = lastSaid, last.text == text, let same = store.drill(last.drillID) {
+            await sayAgain(same, repeatMinutes: repeatMinutes)
+            return store.drill(same.id) ?? same
+        }
         var made = Drill.text(title: SaidText.title(text), summary: DrillSummary(subject: "", grade: "", covers: ""),
                               parts: parts.map { DrillItem.textPart($0, part: .para) })
         made.audioStarted = false // nothing is asked for or counted until it is started, just below
         let drill = save(made)
+        lastSaid = (text, drill.id)
         sayOptions = RepetitionSession.SayOptions(repeatMinutes: repeatMinutes)
         await start(drill)
         sayOptions = nil

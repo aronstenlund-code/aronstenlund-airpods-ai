@@ -38,7 +38,7 @@ enum RepetitionDemo {
                                       // A112 (D200): reading aloud is off for now, the text works as usual
                                       "repOffUnstarted", "repOffText", "repOffTextPlay",
                                       // A115 (D203, Ke69): Säg i AirPods
-                                      "repSayText", "repSayPlay", "repSayPlayOnce",
+                                      "repSayText", "repSayPlay", "repSayPlayOnce", "repSayRefused",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -234,7 +234,16 @@ enum RepetitionDemo {
             model.store.save(history)
             model.store.save(drill)
             model.quota = DrillQuota(used: 3, limit: 15, resets: "2026-12-01", serverLeft: 12, suggest: 12)
-            SayText.stagedForScreenshots = name == "repSayText" ? said : nil
+            SayText.stagedForScreenshots = name == "repSayText" || name == "repSayRefused" ? said : nil
+            // A130 (D212): the server refused Spela (402); its words and when the month is filled up.
+            SayText.stagedRefusal = name == "repSayRefused"
+                ? SaidText.refusalLine(problem: "Du har gjort 15 av 15 frågor med ljud den här månaden.", quotaExceeded: true,
+                                       refill: RepetitionModel.refillLine("2026-12-01"))
+                : nil
+            if name == "repSayRefused" {
+                model.quota = DrillQuota(used: 15, limit: 15, resets: "2026-12-01", serverLeft: 0, suggest: 0)
+                return
+            }
             guard name != "repSayText" else { return }
             let text = Drill.text(title: SaidText.title(said), summary: DrillSummary(subject: "", grade: "", covers: ""),
                                   parts: SaidText.parts(said).map { DrillItem.textPart($0, part: .para) })
@@ -359,7 +368,7 @@ enum RepetitionDemo {
                     .sheet(isPresented: .constant(true)) { CreditsSheet(model: model) }
             case "repSayPlay", "repSayPlayOnce": RepetitionPlayerView(model: model)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
-                 "repSayText", "repHomeCredits":
+                 "repSayText", "repSayRefused", "repHomeCredits":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)

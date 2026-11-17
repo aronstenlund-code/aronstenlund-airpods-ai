@@ -164,4 +164,54 @@ import Testing
         #expect(cloud.saves.isEmpty, "and not saved as a new exam on the server")
         #expect(audio.problem(for: drill) == nil)
     }
+
+    // MARK: A130 (D212): Aron's phone 13:48, Spela did nothing when the server said 402
+
+    @Test func aRefusedSpelaSaysTheServersWordsAndWhenItIsFilledUp() {
+        let k64 = "Du har gjort 14 av 15 frågor med ljud den här månaden."
+        #expect(SaidText.refusalLine(problem: k64, quotaExceeded: true, refill: "Fylls på den 1 december.")
+                == "Du har gjort 14 av 15 frågor med ljud den här månaden. Fylls på den 1 december.")
+        #expect(SaidText.refusalLine(problem: k64 + " Fylls på den 1 december.", quotaExceeded: true, refill: "Fylls på den 1 december.")
+                == k64 + " Fylls på den 1 december.", "not said twice")
+        #expect(SaidText.refusalLine(problem: nil, quotaExceeded: true, refill: nil) == "Du har inga frågor kvar den här månaden.")
+        #expect(SaidText.refusalLine(problem: nil, quotaExceeded: false, refill: "Fylls på den 1 december.")
+                == "Det gick inte att spela just nu. Försök igen om en stund.", "never silent")
+        #expect(RepetitionModel.refillLine("2026-12-01") == "Fylls på den 1 december.")
+        #expect(RepetitionModel.refillLine(nil) == nil)
+    }
+
+    @Test func theTextIsCountedWithTheServersNumber() {
+        let text = String(repeating: "a", count: 764)
+        #expect(SaidText.countsAs(text, perQuestion: 800) == 1)
+        #expect(SaidText.countsAs(text, perQuestion: 400) == 2, "the server's number decides, not the app's 800")
+        #expect(SaidText.countsAs(text, perQuestion: nil) == 1)
+    }
+
+    /// The server refuses the start (402). The player does not open, the line is the server's, and pressing Spela again
+    /// on the same text saves nothing more: one exam, however many presses.
+    @Test func pressingSpelaAgainOnARefusedTextMakesNoNewExam() async throws {
+        let folder = try A79A81RepetitionTests.folder("a130")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A107StartAudioTests.DeferredCloud()
+        cloud.quotaLeft = false
+        let audio = CloudDrillAudio(cloud: cloud, store: store, folder: folder, pollInterval: .milliseconds(1), maxPolls: 20)
+        let session = RepetitionSession(inputs: [], makeSource: { MockSource() }, makeTimer: { MockTimer() },
+                                        defaults: try #require(UserDefaults(suiteName: "a130-\(UUID())")),
+                                        activatesAudioSession: false)
+        let model = RepetitionModel(store: store, session: session, maker: MockDrillMaker(), audio: audio,
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+
+        let first = try #require(await model.say("1918: Vapenstillestånd den 11 november.", repeatMinutes: 10))
+        #expect(!model.showsPlayer, "nothing plays")
+        #expect(model.sayRefusal(first)?.hasPrefix("Du har inga frågor kvar den här månaden.") == true, "the server's words (K64)")
+        let second = try #require(await model.say("1918: Vapenstillestånd den 11 november.", repeatMinutes: 10))
+        _ = await model.say("1918: Vapenstillestånd den 11 november.", repeatMinutes: 10)
+        for _ in 0..<50 where audio.preparing.contains(first.id) { try? await Task.sleep(for: .milliseconds(2)) }
+
+        #expect(second.id == first.id)
+        #expect(store.drills.count == 1, "one exam on the phone")
+        #expect(cloud.saves.count == 1, "and one on the server, however many presses")
+        #expect(cloud.startCalls == 3, "each press asks again: the month may have been filled up")
+        #expect(model.sayRefusal(second) != nil)
+    }
 }

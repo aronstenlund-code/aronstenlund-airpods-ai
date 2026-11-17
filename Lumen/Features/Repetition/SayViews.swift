@@ -28,6 +28,8 @@ enum SayText {
     #if DEBUG
     /// The screenshots: a text already written in the field.
     static var stagedForScreenshots: String?
+    /// A130: the line after a refused Spela, for the screenshots.
+    static var stagedRefusal: String?
     #endif
 
     /// "10 min" … "1 timme" on the button.
@@ -70,8 +72,8 @@ struct SayInAirPodsField: View {
     let model: RepetitionModel
     @State private var text = ""
     @State private var isStarting = false
-    /// The exam made from the text that is in the field now, so Spela again plays the same sound (it costs nothing).
-    @State private var made: (text: String, drillID: UUID)?
+    /// A130 (D212): what the server said when Spela started nothing; cleared when the text changes.
+    @State private var refused: String?
     @AppStorage("say.repeatMinutes") private var storedMinutes = SayText.defaultRepeat
     private var minutes: Int { SayText.repeatMinutes(storedMinutes) }
     @AppStorage(RepetitionModel.tempoKey) private var tempo: Double = 1
@@ -90,11 +92,11 @@ struct SayInAirPodsField: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     private var chars: Int { SaidText.chars(text) }
-    private var counts: Int { SaidText.countsAs(text) }
+    private var counts: Int { SaidText.countsAs(text, perQuestion: model.quota?.prices?.read?.chars_per_question) }
     private var isEmpty: Bool { chars == 0 }
     /// The exam of this very text, if it was played before.
     private var sameAsMade: Drill? {
-        guard let made, made.text == text else { return nil }
+        guard let made = model.lastSaid, made.text == text else { return nil }
         return model.store.drill(made.drillID)
     }
     private var readingAloudOff: Bool { sameAsMade.map(model.isReadingAloudOff) ?? false }
@@ -142,7 +144,13 @@ struct SayInAirPodsField: View {
                 .opacity(0.7)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .fixedSize(horizontal: false, vertical: true)
-            if !isEmpty {
+            if let refused, !isEmpty {
+                // A130 (D212): Spela started nothing. The server's words, and when the month is filled up.
+                Text(verbatim: refused)
+                    .font(.footnote.weight(.semibold))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.updatesFrequently)
+            } else if !isEmpty {
                 Text(verbatim: SayText.costLine(counts: counts, left: sameAsMade == nil ? model.quota?.left : nil,
                                                  readingAloudOff: readingAloudOff))
                     .font(.footnote)
@@ -151,6 +159,7 @@ struct SayInAirPodsField: View {
             }
             controls
         }
+        .onChange(of: text) { refused = nil }
         .padding(16)
         .foregroundStyle(SayText.ink)
         .background(scheme == .dark ? SayText.fieldDark : SayText.field, in: RoundedRectangle(cornerRadius: 16))
@@ -158,7 +167,10 @@ struct SayInAirPodsField: View {
         .overlay { if scheme == .dark { RoundedRectangle(cornerRadius: 16).strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5) } }
         .environment(\.colorScheme, .dark) // the system's controls are dark inside the field, in light mode too
         #if DEBUG
-        .onAppear { if let staged = SayText.stagedForScreenshots, text.isEmpty { text = staged } }
+        .onAppear {
+            if let staged = SayText.stagedForScreenshots, text.isEmpty { text = staged }
+            if let line = SayText.stagedRefusal { Task { refused = line } } // after the text's own onChange
+        }
         #endif
         // A116: presented from outside the field's dark colour scheme, so the system's sheets look as usual.
         .sheet(isPresented: $isTakingPhotos) { camera.ignoresSafeArea() }
@@ -390,11 +402,12 @@ struct SayInAirPodsField: View {
         isStarting = true
         let text = self.text
         let minutes: Int? = self.minutes // A124: it always goes round for the chosen time
+        refused = nil
         Task {
-            if let again = sameAsMade {
-                await model.sayAgain(again, repeatMinutes: minutes)
-            } else if let drill = await model.say(text, repeatMinutes: minutes) {
-                made = (text, drill.id)
+            // A130: the model knows whether this text is already an exam (the same text never becomes two).
+            if let drill = await model.say(text, repeatMinutes: minutes) {
+                refused = model.sayRefusal(drill)
+                if let refused { AccessibilityNotification.Announcement(refused).post() }
             }
             isStarting = false
         }

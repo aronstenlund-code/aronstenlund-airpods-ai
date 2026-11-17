@@ -371,6 +371,19 @@ enum SaidText {
 
     /// D185: one question per started 800 characters.
     static func countsAs(_ text: String) -> Int { DrillTextDraft.countsAs(chars: chars(text)) }
+    /// A130 (D212): counted with the server's own number of characters per question (`/drill quota`, K82) when it is
+    /// known, so the line under the field says what the server will say.
+    static func countsAs(_ text: String, perQuestion: Int?) -> Int {
+        DrillTextDraft.countsAs(chars: chars(text), perQuestion: max(1, perQuestion ?? 800))
+    }
+
+    /// A130 (D212): what stands under the field when Spela did not start anything.
+    static func refusalLine(problem: String?, quotaExceeded: Bool, refill: String?) -> String {
+        let said = (problem ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        let base = said.isEmpty ? (quotaExceeded ? "Du har inga frågor kvar den här månaden." : "Det gick inte att spela just nu. Försök igen om en stund.") : said
+        guard quotaExceeded, let refill, !base.contains(refill) else { return base }
+        return "\(base) \(refill)"
+    }
 
     static func title(_ text: String) -> String {
         guard let first = parts(text).first else { return "Text" }
