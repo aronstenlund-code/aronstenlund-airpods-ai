@@ -31,4 +31,5 @@ vilket gav ett onödigt anrop till ElevenLabs som ändå skulle ha fått kvotfel
 
 ## Tester
 - `deno task test`: 672 av 672 gröna.
-- K90-livetestet efter textändringen och K91: se nedan.
+- **K90-livetestet igen, grönt 6 av 6** (körning 44119951267, efter deploy 44099460813 med texten och 44119539732 med K91),
+  med en ny kontroll av att 402-raden slutar på "Nya krediter den 1 december." och har hårt mellanslag i tusentalen.
