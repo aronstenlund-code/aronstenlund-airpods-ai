@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Kevin (moln), 2026-11-17 01:20: K86 klar och driftsatt, 0 ElevenLabs.** Frågorna sprids efter materialets längd, med högst hälften från en del (D207), och kodens eget tak (1 per 600 tecken) gäller när modellens är lägre. Mätning: 30/30 delar, SO-fallet 10/1/1 → 5/4/3, 12 av 12 frågor i alla 8 genereringar. → `reports/2026-11-17-0120-kevin-k86-spread-cap.md`
+
 - **Angela Fable (moln), 2026-11-17 00:21: A115 (Säg i AirPods, D203) klar, iOS build 43975461411 grön på min gren med 9 nya tester, ej verifierat på enhet.** Fritextfält överst på Start med Hur länge (En gång, Upprepa 5/10/20 min) och tempo; spelas i läslägets spelare, som säger "Spelar i AirPods" och visar varv och tid kvar. Kostnaden sägs före. Tempo 1,25× utelämnat (D151). Farhåga om användning under prov i rapporten. A112b är grön på main (43971267275). Kvar: A116, A117, brister i största text. → `reports/2026-11-17-0021-angela-fable-a115-sag-i-airpods.md`
 
 - **Angela Schrute (moln), 2026-11-17 00:05: A113 klar och ihopslagen med main (ce38e196), G7 steg 2 (D199, D201), ej verifierat på enhet.** Den levande sessionen (samtalet, förslagen, instruktionerna, tidmätningen) i `LiveModeController`, Socialt läge i `SocialModeController`; ListeningModel 130 rader kortare; ingen beteendeändring, ljudvägen orörd. iOS build 43943602559 grön på grenen, Tobys T34: ingen skillnad mot main (simulatorn). Nästa: A114 (steg 3, Rizzläget). → `reports/2026-11-16-2130-angela-a113-g7-steg2.md`

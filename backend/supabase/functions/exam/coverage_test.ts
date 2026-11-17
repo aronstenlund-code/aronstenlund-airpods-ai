@@ -1,6 +1,6 @@
 // K83 (D206): coverage of the whole material, in code. Invented material only, a scripted model.
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
-import { coverage, mergeCoverage, partCount, splitParts } from "./coverage.ts";
+import { coverage, mergeCoverage, partCount, placeQuestions, splitParts } from "./coverage.ts";
 import { DEFAULT_DRILL_CONFIG, handleDrill } from "./drill.ts";
 import type { LLMChunk, LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 
@@ -58,4 +58,73 @@ Deno.test("K83 handleDrill: the model asked only about the start; the end gets i
   assertEquals(items.length, 4, "the count is kept");
   assert(items.includes("Hur börjar en näringskedja?") && items.includes("Var bryts glukosen ned?"), JSON.stringify(items));
   assertEquals(calls.filter((c) => c === "part").length, 2);
+});
+
+Deno.test("K85 (Oscar O73): a word every part shares does not decide the part; a rare word does", () => {
+  const parts = [
+    "Kraft mäts i newton. Newtons lagar beskriver hur kraft och rörelse hänger ihop. Energi finns i många former.",
+    "Syror och baser kan neutralisera varandra. Energi frigörs vid neutralisation och salt bildas.",
+    "Energi kan inte förstöras. Energiprincipen gäller för alla system, energi omvandlas bara.",
+  ];
+  // "energi" is in every part; "newton" only in the first
+  assertEquals(placeQuestions(["Hur hänger energi och Newtons lagar ihop?"], parts), [0]);
+  assertEquals(placeQuestions(["Vad händer vid neutralisation av energi?"], parts), [1]);
+  assertEquals(placeQuestions(["Vad är energi?"], parts), [-1], "only a shared word: no part");
+});
+
+// ---------- K86 (D207) ----------
+import { allocate, codeCap, shares } from "./coverage.ts";
+
+Deno.test("K86 shares by length; at least one each; at most half from one part with three or more parts", () => {
+  assertEquals(shares([1000, 1000, 1000], 12), [4, 4, 4]);
+  assertEquals(shares([6000, 500, 500], 12), [6, 3, 3], "a long first part gets at most half");
+  assertEquals(shares([3000, 1000], 8), [6, 2], "two parts: by length, no half cap");
+  assertEquals(shares([1000, 1000, 1000, 1000], 3), [1, 1, 1, 0], "fewer questions than parts");
+  assertEquals(codeCap(3449, 12), 5);
+  assertEquals(codeCap(9000, 12), 12, "never more than asked");
+  assertEquals(codeCap(300, 12), 1);
+});
+
+Deno.test("K86 allocate: a part over its share keeps its first questions; the rest are dropped; the need is counted", () => {
+  const a = allocate([0, 0, 0, 0, 1, -1], [2, 2, 2]);
+  assertEquals(a.keep, [0, 1, 4]);
+  assertEquals(a.dropped, [2, 3, 5]);
+  assertEquals(a.need, [0, 1, 2]);
+});
+
+Deno.test("K86 handleDrill: 10/1/1 from the model becomes a spread by length (at most half from one part)", async () => {
+  const llm: LLMProvider = {
+    name: "fake",
+    model: "haiku",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      let out: unknown;
+      if (req.user.includes("<part>notes")) out = { notes: "" };
+      else if (req.user.includes("one part of a longer material")) {
+        const n = Number(/<count>(\d+)<\/count>/.exec(req.user)?.[1] ?? 1);
+        const topic = req.user.includes("Näringskedjor") ? "näringskedjan" : "cellandningen";
+        out = { questions: Array.from({ length: n }, (_, i) => `Vad gör steg ${i + 1} i ${topic}?`) };
+      } else if (req.user.includes("<questions>")) out = { questions: [] };
+      else {
+        const p1 = ["Var sker fotosyntesen?", "Vad fångar klorofyllet?", "Vart tar syret vägen?", "Vad bildar växten av koldioxid?", "Varför behöver växten ljus i kloroplasterna?",
+          "Vad är glukos i fotosyntesen?", "Varför släpps syret ut genom klyvöppningarna?", "Hur fångar klorofyllet ljusenergi?", "Varför är kloroplasterna gröna av klorofyll?", "Vad händer i kloroplasterna?"];
+        out = { summary: { subject: "Biologi", grade: "åk 8", covers: "x" }, questions_possible: 12, questions: [...p1, "Var sker cellandningen?", "Hur börjar en näringskedja?"] };
+      }
+      yield { type: "text", text: JSON.stringify(out) };
+      yield { type: "usage", inputTokens: 10, outputTokens: 5 };
+    },
+  };
+  const r = await handleDrill("drill", { text: TEXT, questions: 12, answers: false, subject: "Biologi", grade: "åk 8" }, llm, DEFAULT_DRILL_CONFIG);
+  const cov = (r.body.usage as Record<string, unknown>).coverage as { parts: number; max_share: number; after: number; target: number };
+  assertEquals(cov.parts, 3);
+  assertEquals(cov.after, 3);
+  assert(cov.max_share <= 6, `at most half: ${cov.max_share}`);
+  assertEquals((r.body.items as unknown[]).length, 12);
+});
+
+Deno.test("K86 near duplicates: the same question in other words is caught, different questions are not", async () => {
+  const { nearDuplicate } = await import("./coverage.ts");
+  assert(nearDuplicate("Varför är det kallare vid polerna än vid ekvatorn?", "Varför blir det kallare vid polerna än vid ekvatorn?"));
+  assert(nearDuplicate("Varför är klimatet i Skandinavien mildare än i Kanada på samma breddgrad?", "Hur gör Golfströmmen att Skandinavien får ett mildare klimat än Kanada på samma breddgrad?"));
+  assert(!nearDuplicate("Varför måste en reaktionsformel balanseras?", "Hur räknar man ut molmassan för vatten?"));
+  assert(!nearDuplicate("Varför går samma ström genom en seriekoppling?", "Varför fortsätter lamporna lysa i en parallellkoppling?"));
 });

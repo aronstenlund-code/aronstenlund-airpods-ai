@@ -31,10 +31,11 @@ for name, (subject, grade, text) in mats.items():
         runs.append({"status": st, "ms": round((time.perf_counter() - t0) * 1000), "coverage": u.get("coverage"), "cost": u.get("est_cost_usd"),
                      "questions": [i["question"] for i in j.get("items", [])]})
     out[name] = {"chars": len(text), "runs": runs}
-    print(name, len(text), [r["coverage"] for r in runs], flush=True)
+    print(name, len(text), [r["coverage"] for r in runs], [len(r["questions"]) for r in runs], flush=True)
 tot = [r["coverage"] for m in out.values() for r in m["runs"] if r.get("coverage")]
 out["summary"] = {"runs_with_parts": len(tot), "parts": sum(c["parts"] for c in tot), "covered_before": sum(c["before"] for c in tot),
                   "covered_after": sum(c["after"] for c in tot), "added": sum(c["added"] for c in tot),
+                  "max_share": [c.get("max_share") for c in tot], "questions": [len(r["questions"]) for m in mats for r in out[m]["runs"]],
                   "cost_usd": round(sum((r.get("cost") or 0) for m in mats for r in out[m]["runs"]), 4)}
 print(json.dumps(out["summary"]))
 p = os.path.join(HERE, "..", "reports", "qa", "data", time.strftime("%Y-%m-%d-%H%M%S") + "-k83-coverage.json")
