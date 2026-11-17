@@ -21,6 +21,7 @@ on:
           - o73_fetch_live.py
           - o73_coverage_live.py
           - o74_k86_live.py
+          - o75_k88_live.py
       args:
         description: "Arguments (optional, e.g. --fast)"
         required: false
