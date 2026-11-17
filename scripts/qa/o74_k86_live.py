@@ -4,7 +4,7 @@ Nytt hopsatt material: tre ämnen med olika längd (kort, mellan, lång), plus 1
 långa materialet med 8 texter. 2 körningar var, 12 frågor begärda (och 20 för takkontrollen på det korta).
 Kontroller per generering:
   spridning: med 3+ delar högst hälften av frågorna i en del (min egen placering, TF-IDF på fråga + kort svar)
-  tak: antal <= min(begärt, floor(tecken/600)), och inte färre än servern själv säger att materialet bär (rapporteras)
+  tak: min(begärt, floor(tecken/600)) <= antal <= begärt (D207: målet är max av modellens och kodens tak)
   utfyllnad: varje fråga har minst ett innehållsord ur materialet; inga dubbletter (samma ordmängd)"""
 import sys as _s, pathlib as _p
 _s.path.insert(0, str(_p.Path(__file__).resolve().parent))
@@ -76,7 +76,7 @@ for name, subject, material, asked in CASES:
         items = j.get("items") or []
         u = j.get("usage") or {}
         cost += float(u.get("est_cost_usd") or 0)
-        cap = min(asked, len(material) // 600)
+        cap = min(asked, len(material) // 600)  # D207: kodens tak; målet är max(modellens, kodens), högst det begärda
         k = max(2, min(6, len(items), round(len(material) / 1200))) if len(material) >= 1200 else 1
         parts = parts_of(material, k)
         per = [place(items, parts).count(i) for i in range(len(parts))] if items else []
@@ -84,16 +84,23 @@ for name, subject, material, asked in CASES:
         filler = [i["question"] for i in items if not (set(toks(i["question"] + " " + (i.get("short") or ""))) & mat)]
         keys = [frozenset(toks(i["question"])) for i in items]
         dups = len(keys) - len(set(keys))
+        near = [(items[a]["question"], items[b]["question"]) for a in range(len(keys)) for b in range(a + 1, len(keys))
+                if keys[a] and keys[b] and len(keys[a] & keys[b]) / min(len(keys[a]), len(keys[b])) >= 0.75]
         spread_ok = len(parts) < 3 or not items or max(per) <= len(items) / 2
-        cap_ok = len(items) <= cap
-        ok = spread_ok and cap_ok and not filler and not dups
+        cap_ok = cap <= len(items) <= asked
+        ok = spread_ok and cap_ok and not filler and not dups and not near
         total += 1
         fails += not ok
         print(f"{'ok   ' if ok else 'FEL  '}{name} #{r + 1}: {len(material)} tecken, begärt {asked}, fick {len(items)}, tak {cap}"
-              f" ({'ok' if cap_ok else 'ÖVER'}), delar {len(parts)} frågor per del {per} ({'ok' if spread_ok else 'över hälften'}),"
-              f" utfyllnad {len(filler)}, dubbletter {dups} | servern {u.get('coverage')} questions_possible {j.get('questions_possible') or (j.get('summary') or {}).get('questions_possible')}"
+              f" ({'ok' if cap_ok else 'UTANFÖR'}), delar {len(parts)} frågor per del {per} ({'ok' if spread_ok else 'över hälften'}),"
+              f" utfyllnad {len(filler)}, dubbletter {dups}, nästan lika {len(near)} | servern {u.get('coverage')} questions_possible {j.get('questions_possible') or (j.get('summary') or {}).get('questions_possible')}"
               f" | {round(float(u.get('est_cost_usd') or 0), 4)} USD", flush=True)
         for f in filler:
             print(f"     utfyllnad?: {f}", flush=True)
+        for a, b in near:
+            print(f"     nästan lika: {a} | {b}", flush=True)
+        pl = place(items, parts) if items else []
+        for d in range(len(parts)):
+            print(f"     del {d + 1}: " + " || ".join(items[i]["question"][:70] for i in range(len(items)) if pl[i] == d), flush=True)
 print(f"\n=== O74 {total - fails}/{total} ok, Claude {cost:.3f} USD")
 sys.exit(1 if fails else 0)

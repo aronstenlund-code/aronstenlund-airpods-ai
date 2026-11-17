@@ -389,3 +389,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   - På main är T28, T29 och T30 gröna. T27 fick ingen runner där, men var grön på main i 43944437395.
   - T24 är röd i båda, på kända testfel som inte rör de levande lägena: på grenen kom bilden inte in från fotobiblioteket, och på main låg systemets delningsblad kvar ("Close"). Båda är rättade i testet på main (dc30cd52, grön i 43956614068).
   - Socialt läge och den levande sessionen har inget flöde i nattflödet, så de är otestade här. **Verifierat i Simulator**, inte på enhet.
+
+- [ ] **A119 – G7 steg 4: startflödet till en gemensam funktion i protokollet (D199)** (effort: high, Fable 5.2). Lagd av Deangelo 2026-11-17 02:20. Beror på: A114 ihopslagen efter Tobys T35. Enligt A111-rapporten avsnitt 4: spärrar och blad (`isShowingInterviewSetup`, `isShowingLiveStart`, ålder, `switchMode`, `switchByVoice`) till `startBlock` i `ListeningModeController`, så att varje läge säger vad som krävs. Ingen beteendeändring, inget i ljudvägen, egen gren, Toby kör nattflödet på grenen (T37) innan ihopslagning. 0 ElevenLabs. Rapport, STATUS, tavla, push.
