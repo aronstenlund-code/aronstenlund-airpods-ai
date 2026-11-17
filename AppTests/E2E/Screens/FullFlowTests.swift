@@ -101,11 +101,9 @@ final class FullFlowTests: XCTestCase {
         guard tap(["Fortsätt"], "Fortsätt") else { return false }
         guard wait(["Fota sidor"], 10) != nil else { return miss("Nytt prov not shown after Fortsätt") }
         screen("nytt-prov", "Nytt prov, first time")
-        tap(["Fota sidor"], "Fota sidor")
-        systemAlerts()
-        pause(2)
-        screen("kamera", "Fota sidor (photo library in the Simulator)")
-        closePicker()
+        // Nightly 43839516709, runs 43975990247 and earlier: in the Simulator Fota sidor opens the photo library (there is no
+        // camera), and that library often stayed open over Nytt prov. The camera is only real on a device, so the step is
+        // left out here; Välj bilder below is the same library.
         guard pickPhoto() else { return false }
         lowerQuestions(to: 3)
         guard tap(["Skapa frågor"], "Skapa frågor") else { return false }
