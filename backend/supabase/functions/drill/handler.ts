@@ -273,6 +273,8 @@ export interface DrillDeps {
   now?: () => number;
   /** K55: waiting between tries when ElevenLabs is busy (tests pass a no-op). */
   sleep?: (ms: number) => Promise<void>;
+  /** K98 (D224): the account started its audio (Starta prov / Spela): an invitation is rewarded on the first one. */
+  onStarted?: (userId: string) => Promise<unknown>;
   /** K95 (D220): adds v3 tags for a style (Haiku); without it a styled file is made from the untagged text. */
   styler?: Styler;
   /** K49: Aron (OWNER_EMAIL, signed in by e-mail) shows a hidden publication again. */
@@ -1352,7 +1354,10 @@ export function createDrillHandler(deps: DrillDeps) {
       if (action === "start") {
         // K71 (D190): Starta prov makes the audio: everything still missing is queued and counted now
         const d = await owned(user.id, b?.id);
-        return await startAudio(user, d);
+        const r = await startAudio(user, d);
+        // K98: the first play rewards the one who invited this account (once; never blocks the answer)
+        if (r.status === 200 && deps.onStarted) await deps.onStarted(user.id).catch((e) => console.warn("invite_reward_failed", String(e).slice(0, 120)));
+        return r;
       }
       if (action === "cost") {
         // K92 (D215 punkt 8): what a save of this text would cost, without saving. Limited per account, so it is not

@@ -1,6 +1,6 @@
 /**
  * K94 (D213, D214, D218): an account's credits. In this order: an admin (K93) is never counted; an active weekly
- * subscription covers up to its week limit (drill_settings.subscription_week_chars, 40 000); then the month's free
+ * subscription covers up to its week limit (drill_settings.subscription_week_chars, 20 000 since D224); then the month's free
  * credits; then bought credits (credit_ledger). A charge that the free and bought credits together cannot pay is
  * refused and nothing is counted. The answer keeps the shape the handlers already use ({ok, used, lim}: remaining =
  * lim - used) and adds `wallet` for the app.
@@ -37,7 +37,7 @@ export function makeUseQuota(s: WalletStore) {
       return { ok: true, used: m.used, lim: m.used + BIG, unlimited: true };
     }
     const [m, bought, until, wlim] = await Promise.all([
-      s.monthly(u, 0), s.purchased(u).catch(() => 0), s.subscriptionUntil(u).catch(() => null), s.weekLimit().catch(() => 40_000),
+      s.monthly(u, 0), s.purchased(u).catch(() => 0), s.subscriptionUntil(u).catch(() => null), s.weekLimit().catch(() => 20_000),
     ]);
     const wk = until ? await s.week(u, 0, wlim) : { ok: true, used: 0 };
     const freeLeft = Math.max(0, m.lim - m.used);

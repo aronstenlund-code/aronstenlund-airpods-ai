@@ -43,3 +43,13 @@ Deno.test("K98 App Attest refuses: another challenge, another app, a development
   assertEquals(await reason(() => verifyAttestation(bad.keyId, bad.attestation, c, opts)), "nonce");
   await assertRejects(() => verifyAttestation(ok.keyId, Uint8Array.of(1, 2, 3), c, opts), InvalidAttestation);
 });
+
+Deno.test("K98 the real Apple App Attestation Root CA is pinned and parses", async () => {
+  const { appleAppAttestRoot, APPLE_APP_ATTEST_ROOT_SHA256 } = await import("./attest.ts");
+  const { parseCert, sha256Hex, signedBy } = await import("./x509.ts");
+  const der = appleAppAttestRoot();
+  assertEquals(await sha256Hex(der), APPLE_APP_ATTEST_ROOT_SHA256);
+  const c = parseCert(der);
+  assertEquals(c.curve, "P-384");
+  assertEquals(await signedBy(c, c), true);
+});
