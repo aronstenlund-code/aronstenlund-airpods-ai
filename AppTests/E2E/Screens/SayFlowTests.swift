@@ -9,6 +9,10 @@ import XCTest
 /// "Spelar i AirPods", with repetition "Varv 1 · … kvar av 5 min". Pause and skip with the press hook. Fake audio only
 /// (LUMEN_TEST_HEADER, D180: 0 ElevenLabs). Material (PDF, picture, link) and the credit label (A116, A117) come when
 /// they are on main. One Simulator (`scripts/apptest/t36.sh`). Never a device test.
+/// T46 (Deangelo 2026-11-17 18:10, A132/D215): Spela plays on the card on Start ("Spelar i AirPods", "M:SS kvar",
+/// Pausa/Fortsätt, Stoppa); the text on the card opens the player; the locked-phone line goes after the first Spela;
+/// a said text is not an exam but a capsule in "Senaste" that puts the text back (long press: Ta bort); the field stops
+/// growing at 5 rows. "At most one filled blue button" is a look, so only the screenshots show it.
 @MainActor
 final class SayFlowTests: XCTestCase {
     private var app: XCUIApplication!
@@ -39,12 +43,14 @@ final class SayFlowTests: XCTestCase {
         launch(header)
         guard section("Första starten till Start", { firstStart() }) else { return }
         guard section("Säg i AirPods: skriv en text", { writeText() }) else { return }
-        section("Spela en gång", { playOnce() })
-        section("Upprepa 5 min: varv 2", { repeatFive() })
+        section("Spela på kortet (A132)", { playOnCard() })
+        section("Spelaren från kortet: varv 2", { repeatInPlayer() })
         section("Pausa och hoppa (1 och 2 tryck)", { pauseAndSkip() })
+        section("Senaste lägger tillbaka texten, inget Nästa prov (A132)", { recentsPutBack() })
+        section("Fältet växer högst 5 rader (A132)", { fieldStopsGrowing() })
         section("Krediter, + och Klistra in länk (A116, A117)", { plusLinkAndCredits() })
         section("Nytt prov: Klistra in länk finns (A116)", { newDrillLinkRow() })
-        section("Ta bort uppläsningen", { cleanUp() })
+        section("Ta bort i Senaste", { cleanUp() })
     }
 
     // MARK: Steps
@@ -68,7 +74,7 @@ final class SayFlowTests: XCTestCase {
 
     private func writeText() -> Bool {
         guard field.waitForExistence(timeout: 10) else { return miss("no field 'Säg i AirPods' on Start") }
-        if let play = find(["Spela"]), play.isEnabled { note("Spela is tappable before any text (A115: grey without text)") }
+        if let play = find(Self.playLabels), play.isEnabled { note("Spela is tappable before any text (A115: grey without text)") }
         tapElement(field, "Säg i AirPods (the field)")
         pause(1)
         field.typeText(Self.text)
@@ -76,91 +82,123 @@ final class SayFlowTests: XCTestCase {
         let value = (field.value as? String) ?? ""
         log.append("T36 field value: \(value)")
         if !value.contains("Klorofyllet") { return miss("the text did not get into the field (value '\(value)')") }
-        if find(["Räknas som 1 fråga*", "Kostar *"]) == nil { note("no cost line under the text ('Räknas som 1 fråga …' or, A131, 'Kostar N krediter …')") }
+        // A132 (Ke72): the cost stands by the button as "120 krediter" (or "… · du har 88").
+        let cost = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.contains("krediter") && !$0.contains("kvar") }
+        log.append("T46 cost by the button: \(cost ?? "-")")
+        if cost == nil, find(["Räknas som 1 fråga*", "Kostar *"]) == nil { note("no cost by Spela ('N krediter', A132)") }
+        lockLineBefore = text(starting: "Du kan låsa telefonen") != nil
+        log.append("T46 the locked-phone line before the first Spela: \(lockLineBefore)")
+        if !lockLineBefore { note("no 'Du kan låsa telefonen. Det hörs i AirPods ändå.' before the first Spela (A132)") }
         log.append("T36 Hur länge: \(find(["Hur länge*"])?.label ?? "-"), tempo: \(find(["Tempo*"])?.label ?? "-")")
+        log.append("T46 the main button: \(find(Self.playLabels)?.label ?? "-")")
         screen("text", "Säg i AirPods with a text")
-        return waitEnabled(["Spela"], 5) || miss("Spela not tappable with a text")
+        return waitEnabled(Self.playLabels, 5) || miss("Spela i … not tappable with a text")
     }
 
-    private func openPlayer() -> Bool {
-        guard tap(["Spela"], "Spela") else { return false }
+    /// A132 (D215.6): Spela plays on the card on Start; the player over the whole screen opens only from the text.
+    static let playLabels = ["Spela i*", "Spela"]
+    /// The text on the playing card is a button with the whole text; Senaste's capsule is only its first 23 characters + "…".
+    static let cardText = [text, "Klorofyllet i bladen fångar ljuset.*"]
+
+    private var lockLineBefore = false
+
+    /// Taps "Spela i 10 min" and waits for the card's "Spelar i AirPods" (or "Gör ljudet …") on Start.
+    private func playFromCard() -> Bool {
+        guard tap(Self.playLabels, "Spela i …") else { return false }
         if wait(["Styr med dina AirPods"], 5) != nil {
             for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
-            tap(["Starta ändå", "Starta prov", "Spela"], "Start on the control check", quiet: true)
+            tap(["Starta ändå", "Starta prov", "Spela i*", "Spela"], "Start on the control check", quiet: true)
         }
-        // Run 44006955559: with fake audio a short text can be read through before this looks ("Klart · Slut på texten").
-        // Run 44100858965: the player was up ("Spelar i AirPods, Varv 1 · 8:53 kvar") but the element query did not see
-        // it in 30 s while the line ticks; read the tree instead, for up to 60 s.
+        // Run 44100858965: the lines tick every second; read the tree, for up to 60 s.
         let end = Date().addingTimeInterval(60)
         var up = false
         repeat {
-            up = text(starting: "Spelar i AirPods") != nil || text(starting: "Klart") != nil || text(starting: "Slut på texten") != nil
+            up = text(starting: "Spelar i AirPods") != nil || text(starting: "Gör ljudet") != nil || timeLeft() != nil
             if !up { pause(2) }
         } while !up && Date() < end
-        if up {
-            if text(starting: "Spelar i AirPods") == nil { log.append("T36 the player was already at the end: \(text(starting: "Klart") ?? "-")") }
-            return true
-        }
-        screen("ingen-spelare", "Spela did not open 'Spelar i AirPods'")
-        return miss("no 'Spelar i AirPods' in the player")
+        if up { return true }
+        screen("ingen-spelning", "Spela did not show 'Spelar i AirPods' on the card")
+        return miss("no 'Spelar i AirPods' on the card after Spela")
     }
 
-    private func playOnce() -> Bool {
-        guard openPlayer() else { return false }
-        screen("spelar", "Spelar i AirPods (En gång)")
-        // Once: the text ends by itself (fake audio, a few seconds); then 1 press is Börja om (D188) or it closes.
-        let end = Date().addingTimeInterval(60)
-        var ended = false
-        while Date() < end, !ended {
-            let texts = Self.labels(in: app.debugDescription, kind: "StaticText")
-            ended = texts.contains { $0.hasPrefix("Mening 2 av 2") || $0 == "Slut på texten" } || find(["Spelar i AirPods*"]) == nil
-            pause(2)
+    /// The card's time line, "7:32 kvar" or "7:32 kvar · pausad".
+    private func timeLeft() -> String? {
+        Self.labels(in: app.debugDescription, kind: "StaticText").first { label in
+            guard let range = label.range(of: " kvar") else { return false }
+            let clock = label[..<range.lowerBound]
+            return clock.contains(":") && clock.allSatisfy { $0.isNumber || $0 == ":" }
         }
-        log.append("T36 once: reached the end or closed: \(ended)")
-        // A124: after it there is no "En gång"; the text always goes round, so a lap 2 is expected then.
-        if find(["Hur länge, En gång"]) != nil, lapAtLeast(2) != nil { note("En gång shows 'Varv 2'") }
-        tap(["Avsluta"], "Avsluta", quiet: true)
+    }
+
+    private func stopOnCard() {
+        if !tap(["Stoppa"], "Stoppa", quiet: true) { tap(["Avsluta"], "Avsluta", quiet: true) }
         pause(2)
-        goToStart()
-        return true
     }
 
-    private func repeatFive() -> Bool {
-        // Run 43996745785: the field is empty after a played text, and an empty field's value is its placeholder.
-        if field.exists, !((field.value as? String) ?? "").contains("Klorofyllet") {
-            tapElement(field, "Säg i AirPods (again)")
-            pause(1)
-            field.typeText(Self.text)
-            pause(1)
-            log.append("T36 the field was empty after the first play; typed again")
+    /// T46: Spela stays on Start and plays on the card: "Spelar i AirPods", the time that is left, Pausa/Fortsätt, Stoppa.
+    /// The locked-phone line is gone after the first Spela.
+    private func playOnCard() -> Bool {
+        guard playFromCard() else { return false }
+        pause(2)
+        screen("spelar-kort", "Spelar i AirPods on the card (A132)")
+        var ok = true
+        let onStart = app.buttons.matching(NSPredicate(format: "label ==[c] 'Inställningar'")).firstMatch.exists
+        log.append("T46 Start still in front while playing: \(onStart)")
+        if !onStart { ok = miss("Spela opened something over Start (A132: it plays on the card)") }
+        let left = timeLeft()
+        log.append("T46 time left on the card: \(left ?? "-")")
+        if left == nil { ok = miss("no 'M:SS kvar' on the card while it plays") }
+        if find(["Stoppa"]) == nil { ok = miss("no Stoppa on the card") }
+        if text(starting: "Du kan låsa telefonen") != nil { ok = miss("the locked-phone line is still there after Spela") }
+        // The card's pause button: Pausa → "· pausad" → Fortsätt.
+        if tap(["Pausa"], "Pausa on the card") {
+            pause(2)
+            let pausedLine = timeLeft() ?? "-"
+            log.append("T46 after Pausa on the card: \(pausedLine)")
+            if !pausedLine.hasSuffix("pausad") { ok = miss("no '· pausad' after Pausa on the card ('\(pausedLine)')") }
+            screen("kort-pausad", "The card paused")
+            if !tap(["Fortsätt"], "Fortsätt on the card") { ok = false }
+            pause(2)
+        } else { ok = false }
+        return ok
+    }
+
+    /// The text on the card opens the player with the sentences; the text goes round (10 min), so lap 2 comes.
+    private func repeatInPlayer() -> Bool {
+        if timeLeft() == nil {
+            if !((field.value as? String) ?? "").contains("Klorofyllet") { retype() }
+            guard playFromCard() else { return false }
         }
-        // SayViews: the menu's label is "Hur länge, En gång" (A115).
-        guard tap(["Hur länge*", "En gång"], "Hur länge") else { return false }
-        // A124 (D210, Angela Fable): "En gång" and "Upprepa 5/10/20 min" go; the menu has 10 min … 55 min and 1 timme.
-        guard tap(["Upprepa 5 min", "5 min", "10 min"], "Upprepa 5 min (10 min after A124)") else { return false }
-        pause(1)
-        guard openPlayer() else { return false }
-        guard waitText(starting: "Varv 1", 20) else { screen("utan-varv", "No Varv 1 line"); return miss("no 'Varv 1 · … kvar av 5 min' line") }
-        log.append("T36 repeat: \(text(starting: "Varv 1") ?? "-")")
-        screen("varv-1", "Upprepa 5 min, Varv 1")
-        // The text is short and the fake audio has no length, so lap 2 should come long before the 5 minutes.
-        // Run 43998813563: the lap line ticks every second ("4:59 kvar"), so an element found by it can be gone when its
-        // label is read (XCTest stops the test). Read the text from the tree instead.
+        guard tap(Self.cardText, "the text on the card (opens the player)") else { return false }
+        guard waitText(starting: "Varv 1", 20) || lapAtLeast(1) != nil else { screen("utan-varv", "No Varv line"); return miss("the text on the card did not open the player with 'Varv 1'") }
+        log.append("T36 repeat: \(lapAtLeast(1) ?? "-")")
+        screen("varv-1", "The player from the card, Varv 1")
+        // Run 44009183791: with fake audio the laps go by in about a second, so any lap from 2 on counts.
         let end = Date().addingTimeInterval(150)
         var lap2: String?
-        // Run 44009183791: with fake audio the laps go by in about a second ("Varv 11", "Varv 21"), so any lap from 2 on counts.
         while lap2 == nil, Date() < end { lap2 = lapAtLeast(2); if lap2 == nil { pause(2) } }
         guard let lap2 else { return miss("no 'Varv 2' in 150 s (the text did not start again)") }
         log.append("T36 repeat: \(lap2)")
-        screen("varv-2", "Upprepa 5 min, Varv 2")
+        screen("varv-2", "The player, Varv 2")
         return true
     }
 
-    /// Still in the repeating player: 1 press pauses and goes on, 2 presses skip to the next sentence.
+    private func retype() {
+        tapElement(field, "Säg i AirPods (again)")
+        pause(1)
+        field.typeText(Self.text)
+        pause(1)
+    }
+
+    /// Still in the player: 1 press pauses and goes on, 2 presses skip to the next sentence.
     private func pauseAndSkip() -> Bool {
-        if find(["Spelar i AirPods*"]) == nil {
-            if field.exists, !((field.value as? String) ?? "").contains("Klorofyllet") { tapElement(field, "Säg i AirPods (again)"); pause(1); field.typeText(Self.text); pause(1) }
-            if !openPlayer() { return false }
+        if lapAtLeast(1) == nil, text(starting: "Mening ") == nil {
+            if timeLeft() == nil {
+                if !((field.value as? String) ?? "").contains("Klorofyllet") { retype() }
+                guard playFromCard() else { return false }
+            }
+            tap(Self.cardText, "the text on the card (opens the player)", quiet: true)
+            pause(2)
         }
         let pausedBefore = paused()
         Self.press(1); pause(3)
@@ -176,7 +214,72 @@ final class SayFlowTests: XCTestCase {
         screen("efter-tryck", "After 1, 1 and 2 presses")
         tap(["Avsluta"], "Avsluta", quiet: true)
         pause(2)
+        goToStart()
+        stopOnCard()
+        goToStart()
         return first != second || miss("two 1 presses did not toggle pause")
+    }
+
+    /// Senaste's capsules (buttons) for the test text: "Klorofyllet i bladen få…".
+    private func recentCapsules() -> [String] {
+        Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Klorofyllet") && $0.hasSuffix("…") }
+    }
+
+    private func clearField() {
+        let value = (field.value as? String) ?? ""
+        guard value.contains("Klorofyllet") || value.contains("rad") || value.localizedCaseInsensitiveContains("example") else { return }
+        tapElement(field, "Säg i AirPods (to clear it)", counted: false)
+        pause(0.5)
+        field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: value.count + 5))
+        pause(1)
+    }
+
+    /// T46: a said text is not an exam (no Nästa prov / Andra prov); a tap on its capsule in Senaste puts it back in the
+    /// field without playing it.
+    private func recentsPutBack() -> Bool {
+        goToStart()
+        pause(2)
+        var ok = true
+        let texts = Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Other")
+        let examHeads = texts.filter { ["nästa prov", "andra prov"].contains($0.lowercased()) }
+        log.append("T46 exam headings on Start after a said text: \(examHeads.isEmpty ? "none" : examHeads.joined(separator: ", "))")
+        if !examHeads.isEmpty { ok = miss("a said text shows as \(examHeads.joined(separator: "/")) (A132: only in Senaste)") }
+        let capsules = recentCapsules()
+        log.append("T46 Senaste: \(text(starting: "Senaste") != nil), capsules \(capsules)")
+        screen("senaste", "Start with Senaste after Stoppa")
+        guard !capsules.isEmpty else { return miss("no capsule for the text in Senaste") }
+        clearField()
+        log.append("T46 field before the capsule: \((field.value as? String)?.prefix(40) ?? "-")")
+        guard tap([capsules[0]], "the capsule in Senaste") else { return false }
+        pause(2)
+        let value = (field.value as? String) ?? ""
+        log.append("T46 field after the capsule: \(value.prefix(60))")
+        if !value.contains("Klorofyllet i bladen fångar ljuset") { ok = miss("the capsule did not put the text back in the field") }
+        if text(starting: "Spelar i AirPods") != nil || timeLeft() != nil { ok = miss("a tap on the capsule started playing (it should only put the text back)") }
+        screen("senaste-tillbaka", "The text back in the field from Senaste")
+        return ok
+    }
+
+    /// T46 (D215.4): while it is written in, the field grows to 5 rows and then scrolls inside.
+    private func fieldStopsGrowing() -> Bool {
+        clearField()
+        tapElement(field, "Säg i AirPods (rows)", counted: false)
+        pause(0.5)
+        let row = "Bladen fångar ljuset varje dag. "
+        var heights: [CGFloat] = []
+        for chunk in [2, 4, 8, 14] {
+            let have = ((field.value as? String) ?? "").components(separatedBy: row).count - 1
+            if chunk > have { field.typeText(String(repeating: row, count: chunk - have)) }
+            pause(1)
+            heights.append(field.frame.height)
+        }
+        log.append("T46 field heights at 2, 4, 8, 14 sentences: \(heights.map { String(format: "%.0f", $0) }.joined(separator: ", "))")
+        screen("falt-14", "The field with a long text (at most 5 rows)")
+        clearField()
+        guard let last = heights.last, heights.count == 4 else { return false }
+        if heights[0] >= last { note("the field did not grow at all (\(heights))") }
+        // 8 and 14 sentences are both well past 5 rows in a monospaced body font, so the height must have stopped.
+        return abs(heights[3] - heights[2]) <= 2 || miss("the field still grows past 5 rows (\(heights[2]) → \(heights[3]))")
     }
 
     /// A text on screen that starts with `prefix`, read from the tree (labels that change every second are not queried).
@@ -247,15 +350,15 @@ final class SayFlowTests: XCTestCase {
         guard value.localizedCaseInsensitiveContains("example") else { return miss("the page's text did not come into the field in 40 s") }
         let counts = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix("Räknas som") || $0.hasPrefix("Kostar") } ?? "-"
         log.append("T36 the line before playing the page: \(counts)")
-        guard openPlayer() else { return false }
+        guard playFromCard() else { return false }
         pause(3)
         // Run 44064540048: the text from the link was saved but never started (audio_started_at null, a 404 from /drill
         // first). Photograph the player and say whether it really plays (Spelar i AirPods or a lap).
-        screen("lank-spelar", "The player after Spela with the text from the link")
-        let playing = text(starting: "Spelar i AirPods") != nil || lapAtLeast(1) != nil
+        screen("lank-spelar", "The card after Spela with the text from the link")
+        let playing = text(starting: "Spelar i AirPods") != nil || timeLeft() != nil
         log.append("T36 the link text plays: \(playing)")
-        if !playing { note("the text from the link did not start playing (no 'Spelar i AirPods' and no lap)") }
-        tap(["Avsluta"], "Avsluta", quiet: true)
+        if !playing { note("the text from the link did not start playing (no 'Spelar i AirPods' and no time left)") }
+        stopOnCard()
         pause(2)
         goToStart()
         pause(5) // the quota is asked again after a sound is made
@@ -280,31 +383,23 @@ final class SayFlowTests: XCTestCase {
         !app.buttons.matching(NSPredicate(format: "label ==[c] 'Pausa'")).firstMatch.exists
     }
 
-    /// How many times the test text's title stands on Start (each card shows it).
-    private func titleCount() -> Int {
-        Self.labels(in: app.debugDescription, kind: "StaticText").filter { $0.hasPrefix("Klorofyllet i bladen") }.count
-    }
-
+    /// A132: a said text is removed with a long press on its capsule in Senaste ("Ta bort").
     private func cleanUp() -> Bool {
         goToStart()
         pause(2)
-        let before = titleCount()
-        // The text is saved as a reading (A115); its row on Start opens it like any reading (T28).
-        guard tap(["Texten", "Frågor och svar"], "Texten", quiet: true) else { note("the saved reading was not found on Start"); return true }
-        guard tap(["Mer"], "Mer") else { return false }
-        guard tap(["Ta bort texten", "Ta bort provet"], "Ta bort texten") else { return false }
+        let before = recentCapsules().count
+        guard before > 0, let capsule = find([recentCapsules()[0]]) else { note("no capsule in Senaste to remove"); return true }
+        capsule.press(forDuration: 1.2); testTaps += 1
+        guard tap(["Ta bort"], "Ta bort (long press in Senaste)") else { return false }
         pause(1)
-        if !confirmDestructive("Ta bort texten"), !confirmDestructive("Ta bort provet") { note("no confirmation button to tap") }
-        pause(3)
-        screen("borta", "After Ta bort texten")
-        // Angela Fable 13:30 (run 44064540048): a reading removed while the app still followed its sound came back as a
-        // new, unstarted exam after a 404. After 10 s Start must show fewer of it than before, not the same again.
-        goToStart()
+        _ = confirmDestructive("Ta bort")
+        // Angela Fable 13:30 (run 44064540048): a removed reading came back after a 404. Look again after 10 s.
         pause(10)
-        let after = titleCount()
-        log.append("T36 the text's title on Start: \(before) before Ta bort, \(after) 10 s after")
-        screen("borta-10s", "Start 10 s after Ta bort texten")
-        if before > 0, after >= before { return miss("the removed reading is back on Start after 10 s (\(before) → \(after))") }
+        goToStart()
+        let after = recentCapsules().count
+        log.append("T36 capsules for the text in Senaste: \(before) before Ta bort, \(after) 10 s after")
+        screen("borta-10s", "Start 10 s after Ta bort in Senaste")
+        if after >= before { return miss("the removed text is still (or back) in Senaste after 10 s (\(before) → \(after))") }
         return true
     }
 
