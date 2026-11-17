@@ -322,7 +322,18 @@ final class SayFlowTests: XCTestCase {
         // A131 (D213): with a server that counts characters the capsule says "1 236 krediter kvar" (U+00A0 between thousands).
         let ends = ["frågor kvar", "fråga kvar", "krediter kvar", "kredit kvar"]
         guard let line = all.first(where: { label in ends.contains { label.hasSuffix($0) } }) else { return nil }
-        return Int(line.prefix { $0.isNumber || $0 == " " || $0 == "\u{00A0}" }.filter(\.isNumber))
+        return Self.creditNumber(line)
+    }
+
+    /// "1 236 krediter kvar" → 1236; A139 (Angela Fable 20:58): "5,3k krediter kvar" → 5300 (rounded by the app, so a
+    /// change smaller than 100 is not seen above 1 000).
+    nonisolated static func creditNumber(_ line: String) -> Int? {
+        let head = line.prefix { $0.isNumber || $0 == " " || $0 == "\u{00A0}" || $0 == "," || $0 == "k" }
+        if head.contains("k") {
+            let number = head.filter { $0.isNumber || $0 == "," }.replacingOccurrences(of: ",", with: ".")
+            return Double(number).map { Int(($0 * 1000).rounded()) }
+        }
+        return Int(head.filter(\.isNumber))
     }
 
     /// A116: "+" in the field (Lägg till material) has Fota sidor, Välj bilder, Lägg till fil and Klistra in länk; a
