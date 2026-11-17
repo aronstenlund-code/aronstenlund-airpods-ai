@@ -120,3 +120,11 @@ Deno.test("K86 handleDrill: 10/1/1 from the model becomes a spread by length (at
   assert(cov.max_share <= 6, `at most half: ${cov.max_share}`);
   assertEquals((r.body.items as unknown[]).length, 12);
 });
+
+Deno.test("K86 near duplicates: the same question in other words is caught, different questions are not", async () => {
+  const { nearDuplicate } = await import("./coverage.ts");
+  assert(nearDuplicate("Varför är det kallare vid polerna än vid ekvatorn?", "Varför blir det kallare vid polerna än vid ekvatorn?"));
+  assert(nearDuplicate("Varför är klimatet i Skandinavien mildare än i Kanada på samma breddgrad?", "Hur gör Golfströmmen att Skandinavien får ett mildare klimat än Kanada på samma breddgrad?"));
+  assert(!nearDuplicate("Varför måste en reaktionsformel balanseras?", "Hur räknar man ut molmassan för vatten?"));
+  assert(!nearDuplicate("Varför går samma ström genom en seriekoppling?", "Varför fortsätter lamporna lysa i en parallellkoppling?"));
+});

@@ -1,6 +1,6 @@
 import { HttpError } from "../_shared/errors.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
-import { allocate, codeCap, coverage, partCount, placeQuestions, shares, splitParts } from "./coverage.ts";
+import { allocate, codeCap, coverage, nearDuplicate, partCount, placeQuestions, shares, splitParts } from "./coverage.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 
 /**
@@ -842,6 +842,8 @@ export async function handleDrill(
           const out: { q: string; part: number }[] = [];
           for (const q of parsePlan(r.text, n + 1).questions) {
             if (out.length >= n || leansOnMaterial(q) || seen.has(q.toLowerCase())) continue;
+            // the same question in other words as one already chosen (or another call's) is not a new question
+            if (chosen.some((c) => nearDuplicate(c.q, q)) || out.some((c) => nearDuplicate(c.q, q))) continue;
             seen.add(q.toLowerCase());
             out.push({ q, part: i });
           }
@@ -856,7 +858,7 @@ export async function handleDrill(
         for (const j of al.dropped) {
           if (chosen.length >= target) break;
           const q = cands[order[j]], part = placedAll[order[j]];
-          if (chosen.some((c) => c.q === q) || (pass && part >= 0 && per(part) >= capPer)) continue;
+          if (chosen.some((c) => c.q === q || nearDuplicate(c.q, q)) || (pass && part >= 0 && per(part) >= capPer)) continue;
           chosen.push({ q, part });
         }
       }

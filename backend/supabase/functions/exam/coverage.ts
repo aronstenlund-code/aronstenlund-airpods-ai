@@ -169,3 +169,15 @@ export function allocate(placed: number[], share: number[]): { keep: number[]; d
   });
   return { keep, dropped, need: share.map((s, i) => Math.max(0, s - have[i])) };
 }
+
+/**
+ * K86: two questions that ask the same thing in other words ("Varför är det kallare vid polerna?" / "Varför blir
+ * det kallare vid polerna?"): most of their content words are the same.
+ */
+export function nearDuplicate(a: string, b: string): boolean {
+  const x = stems(a), y = stems(b);
+  if (!x.size || !y.size) return a.trim().toLowerCase() === b.trim().toLowerCase();
+  let shared = 0;
+  for (const w of x) if (y.has(w)) shared++;
+  return shared / Math.min(x.size, y.size) >= 0.75 && shared >= 2;
+}
