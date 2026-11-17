@@ -428,7 +428,7 @@ import Testing
         #expect(standard.spokenKeyterms == ["kortare", "upprepa", "viska", "högre"])
         #expect(standard.startBlock() == nil && standard.startScreen() == nil, "the button starts Frågor directly")
         #expect(rig.model.modeController(for: .standard) === standard)
-        #expect(rig.model.modeController(for: .prov) == nil, "Provläge is step 6")
+        #expect(rig.model.modeController(for: .prov) === rig.model.provMode, "Provläge has its own since step 6c")
 
         // D80: only what the question gate would take is answered ahead, as an auto question.
         let ahead = standard.aheadRequest(for: "Vad är fotosyntes?")
@@ -503,6 +503,45 @@ import Testing
         rig.model.dismissPracticeResult()
         #expect(rig.model.practiceResult == nil)
         #expect(rig.provider.requests.isEmpty, "the run never goes through the answer pipeline")
+    }
+
+    /// D199 step 6c (A126): Provläge is `ProvModeController`. It holds the exam session, the practice exam and the
+    /// mini test (`MiniTestController`), and offers a turn to them in the order the model had: the practice exam
+    /// before the filler filter, then the mini test, then the exam session, then the ordinary turn to the tutor.
+    @Test func provlageIsItsOwnControllerAndKeepsTheTurnOrder() throws {
+        let rig = makeRig(events: [])
+        let prov = rig.model.provMode
+        #expect(prov.mode == .prov && prov.host === rig.model)
+        #expect(prov.exam === rig.model.examSession && prov.practice === rig.model.practiceExam)
+        #expect(prov.exam.host === rig.model && prov.practice.host === rig.model && prov.miniTest.host === rig.model)
+        #expect(prov.spokenKeyterms == rig.model.standardMode.spokenKeyterms)
+        #expect(prov.startBlock() == nil && prov.startScreen() == nil)
+        #expect(prov.aheadRequest(for: "Vad är fotosyntes?") == nil, "Provläge is not listening")
+        #expect(!prov.takesUnfiltered("ja") && !prov.takesInstruction("nästa", inProv: true), "no exercise is running")
+
+        var paper = ExamPaper()
+        paper.tasks = [ExamTask(no: "1", text: "Vad är 2 + 2?", points: .init(E: 1, C: 0, A: 0), answer: "4", assessment: ""),
+                       ExamTask(no: "2", text: "Lös x + 1 = 3.", points: .init(E: 1, C: 1, A: 0), answer: "2", assessment: "")]
+        prov.exam.begin(paper: paper)
+        prov.miniTest.begin(cards: [StudyCard(question: "Vad är en cell", answer: "Livets minsta del.", subject: nil, examDate: nil)])
+        #expect(prov.miniTest.isActive && rig.model.miniTest != nil && rig.model.hasRunningExercise)
+
+        // The mini test is asked before the exam session: "vet inte" skips its only card, and the test is over.
+        prov.turn("vet inte")
+        #expect(!prov.miniTest.isActive && rig.model.miniTest == nil)
+        #expect(prov.exam.isActive, "the exam session was not asked")
+
+        // Then the exam session: nothing is answered, only "Lumen, …" counts.
+        prov.turn("Vad är fotosyntes?")
+        #expect(rig.provider.requests.isEmpty)
+        #expect(prov.takesInstruction("uppgift två", inProv: false), "the exam session takes \"Lumen, …\" in any mode, as before")
+        #expect(rig.model.exam?.currentTask?.no == "2")
+
+        // The practice exam comes first of all, and only in Provläge for "Lumen, …".
+        prov.practice.begin(try #require(PracticeRun(paper: paper)))
+        #expect(prov.takesUnfiltered("nästa") && rig.model.practice?.index == 1)
+        #expect(prov.takesInstruction("förra", inProv: true) && rig.model.practice?.index == 0)
+        #expect(rig.provider.requests.isEmpty, "no exercise goes through the answer pipeline here")
     }
 
     /// D199 step 4 (A119): each mode says what the app must show before it starts; the model shows the sheet or

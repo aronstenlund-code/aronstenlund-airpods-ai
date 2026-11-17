@@ -103,12 +103,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     let examClient: ExamClient?
     /// D199 step 6a (A121): the exam session is `ExamSessionController` now; the checks here read it as before.
     var exam: ExamSession? { examSession.session }
-    let examSession = ExamSessionController()
+    var examSession: ExamSessionController { provMode.exam }
+    /// D199 step 6c (A126): Provläge behind `ListeningModeController`. It holds the parts that have left this file
+    /// (the exam session, the practice exam by voice, the mini test) and the order a turn is offered to them in.
+    let provMode = ProvModeController()
     /// A16: the practice exam read aloud one question at a time (K15), in Provläge.
     /// D199 step 6b (A125): the practice exam by voice is `PracticeExamController` now; the screen and the checks
     /// here read its run and its result as before.
     var practice: PracticeRun? { practiceExam.run }
-    let practiceExam = PracticeExamController()
+    var practiceExam: PracticeExamController { provMode.practice }
     /// A16: the last run's result for the listening screen (right, wrong, what to practise).
     var practiceResult: PracticeRun.Summary? { practiceExam.result }
     /// A16: right and wrong per concept from practice runs, sent as `concept_stats` in Provläge.
@@ -148,9 +151,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var isShowingExamSetup = false
     /// What Lumen has said of the current answer, for an interrupted turn (D81).
     private var spokenAnswer = ""
-    private(set) var miniTest: MiniTest?
-    /// The card whose answer the tutor is judging.
-    private var gradingCardID: UUID?
+    /// D199 step 6c (A126): the mini test is `MiniTestController` in `provMode` now; the checks here read it as before.
+    var miniTest: MiniTest? { provMode.miniTest.test }
     /// When the running Provläge session began, and the last one, so the mini test starts with its cards.
     private var provStartedAt: Date?
     private(set) var lastProvSessionStart: Date?
@@ -427,8 +429,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         interviewMode.host = self // D199
         liveMode.host = self
         standardMode.host = self
-        examSession.host = self
-        practiceExam.host = self
+        provMode.host = self
     }
 
     // MARK: - User actions
@@ -761,15 +762,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
     }
 
-    /// D199 step 4 (A119): the controller of a mode that has one. Provläge gets its own in step 6; until then it has
-    /// no start block.
+    /// D199 step 4 (A119): each mode's controller. None has a start block of its own but the three with a start
+    /// screen.
     func modeController(for mode: ConversationMode) -> (any ListeningModeController)? {
         switch mode {
         case .interview: interviewMode
         case .social: socialMode
         case .rizz: rizzMode
         case .standard: standardMode // D199 step 5
-        case .prov: nil
+        case .prov: provMode // D199 step 6c
         }
     }
 
@@ -1134,7 +1135,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// D83: `persona: "tutor"` + `persona_setup` with the profile, on every Provläge call.
-    private func tutorPersona() -> PersonaRequest? {
+    func tutorPersona() -> PersonaRequest? {
         var profile = studyProfile.profile
         if provAnswersOnly { profile.checkQuestions = StudyProfile.CheckQuestions.none } // D97: never quiz
         return profile.setupText().map { PersonaRequest(persona: "tutor", setup: $0) }
@@ -1247,42 +1248,25 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             }
             logTurn()
             if pendingToolConfirm != nil, toolConfirmTurn(text) { return } // A48: "ja" before the filler filter
-            if mode == .prov, practice != nil {
-                practiceExam.turn(text) // A16: before the filler filter, "ja" can be an answer (D199 step 6b)
-                return
-            }
+            // A16: the practice exam comes before the filler filter, "ja" can be an answer (D199 steps 6b and 6c).
+            if mode == .prov, provMode.takesUnfiltered(text) { return }
             if !mode.isLive, FillerFilter.isOnlyFiller(text) {
                 controller.log("\(mode.rawValue): filler only, not sent")
                 discardAhead(reason: "filler")
                 study.resumeListening()
                 return
             }
-            if mode == .prov, miniTest != nil {
-                miniTestAnswer(text)
-                return
-            }
-            if mode == .prov, exam != nil {
-                examSession.turn(text) // D199 step 6a. Auto off: only "Lumen, …" counts
-                return
-            }
             switch mode {
             case .interview: interviewMode.turn(text) // D199
             case .social: socialMode.turn(text) // D199 step 2
             case .rizz: rizzMode.turn(text) // D199 step 3
-            case .standard, .prov:
+            case .standard:
                 headMotion.stop() // answered with the voice
                 if silentQuiz?.awaitingAnswer == true { silentQuiz?.answered(); noteQuizAnswer() } // A20.2: "ja" / "nej" by voice; A38
-                if mode == .standard {
-                    standardMode.turn(text) // D199 step 5
-                    return
-                }
-                // A8.4: several questions in one breath are separate turns, each with its own answer.
-                var parts = QuestionSplitter.split(text)
-                let first = parts.isEmpty ? text : parts.removeFirst()
-                if !parts.isEmpty { controller.log("\(mode.rawValue): one turn split into \(parts.count + 1) parts") }
-                queueTurns(parts) // A21.1: turns heard while the last one was answered stay queued
-                activated(ActivationRequest(query: first, trigger: .tutor, language: language), persona: tutorPersona())
-                recordStudyTurn(first)
+                standardMode.turn(text) // D199 step 5
+            case .prov:
+                // D199 step 6c: the mini test, then the exam session, then the ordinary turn (`ordinaryProvTurn`).
+                provMode.turn(text)
             }
         case .stalled:
             liveMode.stalled()
@@ -1626,14 +1610,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// What follows the name when it is not a command. Socialt läge and Rizzläge: the D69 instruction path.
     /// The other modes: a question to Lumen.
     func instruct(_ text: String) {
-        if practice != nil, mode == .prov {
-            practiceExam.instruction(text) // A16: "Lumen, nästa" works as well as "nästa" (D199 step 6b)
-            return
-        }
-        if exam != nil {
-            examSession.instruction(text) // D84: in the exam session only exam commands count (D199 step 6a)
-            return
-        }
+        // A16: "Lumen, nästa" in the practice exam works as well as "nästa". D84: in the exam session only exam
+        // commands count (D199 steps 6a–6c).
+        if provMode.takesInstruction(text, inProv: mode == .prov) { return }
         if MiniTest.isCheckQuestionRequest(text), study.isActive, mode == .prov {
             // D86: one check question; the wearer's answer is an ordinary Provläge turn.
             activated(ActivationRequest(query: MiniTest.checkQuestionQuery(swedish: language == .swedish), trigger: .tutor, language: language),
@@ -2530,7 +2509,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             await startStudy()
             guard study.isActive else { return }
         }
-        miniTest = nil
+        provMode.miniTest.drop()
         examSession.begin(paper: examMaterials.paper) // D199 step 6a
     }
 
@@ -2547,7 +2526,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             await startStudy()
             guard study.isActive, mode == .prov else { return }
         }
-        miniTest = nil
+        provMode.miniTest.drop()
         examSession.drop() // D199 step 6a: as before, without a summary
         endSilentQuiz()
         practiceExam.begin(run) // D199 step 6b
@@ -2823,21 +2802,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// A Provläge answer becomes a card; during the mini test the answer is the tutor's verdict.
     private func studyCardOrGrade(_ turn: AnswerTurn) {
-        if let id = gradingCardID, var test = miniTest {
-            gradingCardID = nil
-            test.graded(turn.answer)
-            studyCards?.mark(id, right: test.results[id] ?? false)
-            noteQuizAnswer() // A38
-            // A43 (K33): the mini test's answers count in the study plan too, like the flip cards.
-            if let examID = currentExamID(), let plan = examPlans?.plans.first(where: { $0.id == examID }),
-               let card = test.cards.first(where: { $0.id == id }) {
-                studyHistory.record(FlipDeck.concept(for: card, topics: plan.topics), ok: test.results[id] ?? false, exam: examID)
-                studyHistory.save()
-            }
-            miniTest = test
-            askMiniTestQuestion()
-            return
-        }
+        if provMode.miniTest.graded(by: turn.answer) { return } // D199 step 6c: the tutor's verdict on a card
         // A38: an answer to Lumen's own check question in Förhör mig counts for the streak.
         if mode == .prov, study.isActive, turn.isOwnQuestion,
            let index = conversation.answers.firstIndex(where: { $0.id == turn.id }), index > 0,
@@ -2853,11 +2818,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private func provSessionEnded() {
         lastProvSessionStart = provStartedAt ?? lastProvSessionStart
         provStartedAt = nil
-        if miniTest != nil {
-            miniTest = nil
-            gradingCardID = nil
-            return
-        }
+        if provMode.miniTest.endWithSession() { return } // D199 step 6c
         guard let studyCards, let start = lastProvSessionStart,
               studyCards.current().contains(where: { $0.createdAt >= start }) else { return }
         fetchStudyCards(since: start)
@@ -2916,37 +2877,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             guard study.isActive else { return }
         }
         studyNotice = nil
-        miniTest = MiniTest(cards: cards)
-        gradingCardID = nil
-        controller.log("Mini test started (\(cards.count) cards)")
-        askMiniTestQuestion()
+        provMode.miniTest.begin(cards: cards) // D199 step 6c
     }
 
-    private func askMiniTestQuestion() {
-        guard let test = miniTest else { return }
-        if let question = test.question(swedish: language == .swedish) {
-            say(question)
-            return
-        }
-        say(test.summary(swedish: language == .swedish))
-        controller.log("Mini test done: \(test.rightCount) of \(test.cards.count)")
-        miniTest = nil
-    }
-
-    private func miniTestAnswer(_ text: String) {
-        guard var test = miniTest, let card = test.current else { return }
-        if MiniTest.isSkip(text) {
-            test.skip()
-            studyCards?.mark(card.id, right: false)
-            miniTest = test
-            study.resumeListening()
-            askMiniTestQuestion()
-            return
-        }
-        guard let query = test.gradingQuery(for: text, swedish: language == .swedish) else { return }
-        gradingCardID = card.id
-        activated(ActivationRequest(query: query, trigger: .tutor, language: language), persona: tutorPersona())
-    }
+    // The questions, the skip and the tutor's grading are `MiniTestController` in `ProvModeController.swift`.
 
     /// Item 8: saves the session's answers as a local note.
     @discardableResult
@@ -3154,9 +3088,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             request = ahead.request
             persona = ahead.persona
         case .prov:
-            guard study.isActive, study.phase == .listening, exam == nil, practice == nil, miniTest == nil else { return }
-            request = ActivationRequest(query: text, trigger: .tutor, language: language)
-            persona = tutorPersona()
+            guard let ahead = provMode.aheadRequest(for: text) else { return } // D199 step 6c
+            request = ahead.request
+            persona = ahead.persona
         case .interview:
             guard let ahead = interviewMode.aheadRequest(for: text) else { return } // D199
             request = ahead.request
@@ -3836,5 +3770,32 @@ extension ListeningModel: PracticeExamHost {
 
     func rememberPractice(_ fact: String) {
         memory.add(fact, kind: .fact, source: .automatic)
+    }
+}
+
+/// D199 step 6c (A126): what Provläge's controller and the mini test use (`ProvModeHost`, `MiniTestHost`): the
+/// model's own calls, unchanged.
+extension ListeningModel: ProvModeHost {
+    func markStudyCard(_ id: UUID, right: Bool) {
+        studyCards?.mark(id, right: right)
+    }
+
+    func recordInStudyPlan(_ card: StudyCard, right: Bool) {
+        guard let examID = currentExamID(), let plan = examPlans?.plans.first(where: { $0.id == examID }) else { return }
+        studyHistory.record(FlipDeck.concept(for: card, topics: plan.topics), ok: right, exam: examID)
+        studyHistory.save()
+    }
+
+    /// Provläge's ordinary turn: a question to the tutor.
+    func ordinaryProvTurn(_ text: String) {
+        headMotion.stop() // answered with the voice
+        if silentQuiz?.awaitingAnswer == true { silentQuiz?.answered(); noteQuizAnswer() } // A20.2: "ja" / "nej" by voice; A38
+        // A8.4: several questions in one breath are separate turns, each with its own answer.
+        var parts = QuestionSplitter.split(text)
+        let first = parts.isEmpty ? text : parts.removeFirst()
+        if !parts.isEmpty { controller.log("\(mode.rawValue): one turn split into \(parts.count + 1) parts") }
+        queueTurns(parts) // A21.1: turns heard while the last one was answered stay queued
+        activated(ActivationRequest(query: first, trigger: .tutor, language: language), persona: tutorPersona())
+        recordStudyTurn(first)
     }
 }
