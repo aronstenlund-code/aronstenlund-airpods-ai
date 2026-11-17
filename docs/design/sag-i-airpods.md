@@ -54,7 +54,9 @@ skanningslinjer, ASCII-konst, skrivmaskinsljud och glödeffekter. Resten av Prov
 | Kreditkapseln | {312} frågor kvar |
 | Bladet, rubrik | Frågor kvar · *knapp:* Klar |
 | Bladet, under siffran | frågor kvar den här månaden |
-| Bladet, rader | Vanlig fråga · 1 / Lite längre fråga · 1,5 / Mycket lång fråga · 2 / Läs upp eller Säg i AirPods · 1 per 800 tecken / Upprepa samma text · 0 |
+| Bladet, rader (så länge alla längdklasser kostar 1) | En fråga · 1 / Läs upp eller Säg i AirPods · 1 per 800 tecken / Upprepa samma text · 0 |
+| … när servern ger olika tal (K82) | Vanlig fråga · {1} / Lite längre fråga · {1,5} / Mycket lång fråga · {2} / Läs upp eller Säg i AirPods · 1 per 800 tecken / Upprepa samma text · 0 |
+| Platshållare vid största text | Skriv här |
 | Bladet, fotnot | Fylls på den 1 {december}. Prov som andra har delat eller publicerat kostar inget. |
 | Spelaren, överst | ● Spelar i AirPods |
 | Spelaren, rad | Varv {3} · {7:12} kvar av {10} min *(En gång: "Mening {2} av {5}")* |
