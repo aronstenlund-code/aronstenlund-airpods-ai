@@ -137,6 +137,11 @@ struct SayInAirPodsField: View {
                 }
                 .accessibilityElement(children: .combine)
             }
+            Text(verbatim: SayText.lockLine) // A122 (D209), Kelly: always, also with an empty field; the cost under it
+                .font(.footnote)
+                .opacity(0.7)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .fixedSize(horizontal: false, vertical: true)
             if !isEmpty {
                 Text(verbatim: SayText.costLine(counts: counts, left: sameAsMade == nil ? model.quota?.left : nil,
                                                  readingAloudOff: readingAloudOff))
@@ -145,11 +150,6 @@ struct SayInAirPodsField: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             controls
-            Text(verbatim: SayText.lockLine) // A122 (D209)
-                .font(.footnote)
-                .opacity(0.7)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(16)
         .foregroundStyle(SayText.ink)
