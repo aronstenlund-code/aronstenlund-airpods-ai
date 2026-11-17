@@ -109,7 +109,8 @@ final class SayFlowTests: XCTestCase {
             pause(2)
         }
         log.append("T36 once: reached the end or closed: \(ended)")
-        if find(["Varv 2*"]) != nil { note("En gång shows 'Varv 2'") }
+        // A124: after it there is no "En gång"; the text always goes round, so a lap 2 is expected then.
+        if find(["Hur länge, En gång"]) != nil, lapAtLeast(2) != nil { note("En gång shows 'Varv 2'") }
         tap(["Avsluta"], "Avsluta", quiet: true)
         pause(2)
         goToStart()
@@ -127,7 +128,8 @@ final class SayFlowTests: XCTestCase {
         }
         // SayViews: the menu's label is "Hur länge, En gång" (A115).
         guard tap(["Hur länge*", "En gång"], "Hur länge") else { return false }
-        guard tap(["Upprepa 5 min", "5 min"], "Upprepa 5 min") else { return false }
+        // A124 (D210, Angela Fable): "En gång" and "Upprepa 5/10/20 min" go; the menu has 10 min … 55 min and 1 timme.
+        guard tap(["Upprepa 5 min", "5 min", "10 min"], "Upprepa 5 min (10 min after A124)") else { return false }
         pause(1)
         guard openPlayer() else { return false }
         guard waitText(starting: "Varv 1", 20) else { screen("utan-varv", "No Varv 1 line"); return miss("no 'Varv 1 · … kvar av 5 min' line") }
