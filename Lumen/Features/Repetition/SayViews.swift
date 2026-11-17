@@ -500,8 +500,11 @@ struct SayInAirPodsField: View {
                     Button {
                         showsCredits = true
                     } label: {
-                        HStack(spacing: 4) {
-                            Text(verbatim: "\(line) ·").foregroundStyle(SayText.ink)
+                        // With the largest text the two stand on a row each (no "·" left hanging at a line's end).
+                        let big = typeSize.isAccessibilitySize
+                        let layout = big ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2)) : AnyLayout(HStackLayout(spacing: 4))
+                        layout {
+                            Text(verbatim: big ? line : "\(line) ·").foregroundStyle(SayText.ink)
                             Text(verbatim: ShopText.refill).foregroundStyle(SayText.accent)
                         }
                         .frame(minHeight: 32)
