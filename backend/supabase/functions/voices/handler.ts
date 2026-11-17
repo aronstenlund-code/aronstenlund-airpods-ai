@@ -15,6 +15,8 @@ export interface CatalogVoice {
   language?: string | null;
   preview_url?: string | null;
   description?: string | null;
+  /** K99 (D223): a voice under review (caricatures): shown only to admin until Aron approves it */
+  review?: boolean | null;
 }
 
 export interface VoicesDeps {
@@ -24,8 +26,10 @@ export interface VoicesDeps {
   defaultVoiceId: string | null;
   /** K96: the curated list (voice_catalog, 12–20 voices that read Swedish); empty until filled */
   catalog?: () => Promise<CatalogVoice[]>;
+  /** K99: admin (credit_admins) also sees voices under review */
+  isAdmin?: (userId: string) => Promise<boolean>;
   /** K96: ElevenLabs' voice library (GET /v1/shared-voices, language sv): no credits */
-  searchLibrary?: (q: { search?: string; accent?: string; gender?: string; page?: number }) => Promise<CatalogVoice[]>;
+  searchLibrary?: (q: { search?: string; accent?: string; gender?: string; page?: number; anyLanguage?: boolean }) => Promise<CatalogVoice[]>;
 }
 
 const clip = (v: string | null, n: number) => (v ?? "").replace(/[^\p{L}\p{N} _.'-]/gu, "").slice(0, n);
@@ -60,13 +64,17 @@ export function createVoicesHandler(deps: VoicesDeps): (req: Request) => Promise
             accent: clip(url.searchParams.get("accent"), 30) || undefined,
             gender: clip(url.searchParams.get("gender"), 10) || undefined,
             page: Math.max(0, Math.min(20, Number(url.searchParams.get("page")) || 0)),
+            // K99: accents (a Chinese or Indian voice) are found among voices of other languages too
+            ...(url.searchParams.get("lang") === "any" ? { anyLanguage: true } : {}),
           }).catch((e) => (console.warn("voice_library_failed", String(e).slice(0, 120)), [] as CatalogVoice[]))
           : [];
         return new Response(JSON.stringify({ library: found, selectable: false }), {
           status: 200, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "private, max-age=300", ...CORS_HEADERS },
         });
       }
-      const catalog = deps.catalog ? await deps.catalog().catch(() => [] as CatalogVoice[]) : [];
+      const all = deps.catalog ? await deps.catalog().catch(() => [] as CatalogVoice[]) : [];
+      const admin = all.some((v) => v.review) && deps.isAdmin ? await deps.isAdmin(user.id).catch(() => false) : false;
+      const catalog = all.filter((v) => !v.review || admin);
       return new Response(
         JSON.stringify({
           voices: deps.voices.map((v) => ({ name: v.name, id: v.id })),

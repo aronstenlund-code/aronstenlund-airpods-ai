@@ -5,7 +5,7 @@ import { questionKey } from "./length.ts";
 import { runWithTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
-function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean; styler?: (t: string, s: string) => Promise<string | null> } = {}) {
+function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean; styler?: (t: string, s: string) => Promise<string | null>; catalog?: { voice_id: string; name: string }[]; picker?: (s: string, v: { voice_id: string }[]) => Promise<{ voice_id: string; reason: string } | null> } = {}) {
   let busy = opts.busy ?? 0;
   let out = !!opts.outOfCredits; // K78: credits can come back
   const quota = new Map<string, number>();
@@ -143,7 +143,8 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
       return Promise.resolve();
     },
     settings: () => Promise.resolve({ length_normal_max: 100, length_longer_max: 200 }),
-    voiceAllowed: (id: string) => Promise.resolve(id === "CatalogVoice01"), // K96
+    voiceAllowed: (id: string) => Promise.resolve(id === "CatalogVoice01" || (opts.catalog ?? []).some((v) => v.voice_id === id)), // K96
+    catalogVoices: () => Promise.resolve(opts.catalog ?? []), // K99
     tryCredits: (u: string, keys: string[]) => Promise.resolve(keys.filter((k) => credits.has(`${u}|${k}`))),
     dropTryCredits: (u: string, keys: string[]) => {
       for (const k of keys) credits.delete(`${u}|${k}`);
@@ -157,6 +158,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
       authenticate: () => Promise.resolve(owner ? { id: user, isAnonymous: false, email: "owner@example.com", amr: ["otp"] } : { id: user, isAnonymous: true }),
       ownerEmails: ["owner@example.com"],
       styler: opts.styler,
+      voicePicker: opts.picker,
       analysis: (r) => {
         logged.push(...r);
         return Promise.resolve();
@@ -330,7 +332,7 @@ Deno.test("K47 R5c: import copies questions, answers and audio with 0 new charac
   const orig = await (await w.h("u1")(post({ action: "get", id: a.drill.id }))).json();
   assertEquals(orig.items[0].question, ITEMS[0].question);
   // the photos and documents are never part of a drill, so nothing else can be shared
-  assertEquals(Object.keys(b.drill).sort(), ["audio_started", "covers", "created_at", "grade", "id", "kind", "long_words", "shared_from", "style", "subject", "title", "updated_at", "voice_id", "voice_model"]);
+  assertEquals(Object.keys(b.drill).sort(), ["audio_started", "covers", "created_at", "grade", "id", "kind", "long_words", "mix_voices", "shared_from", "style", "subject", "title", "updated_at", "voice_id", "voice_model"]);
   assertEquals((await w.h("u3")(post({ action: "import", code: "nosuchcode1" }))).status, 404);
   assertEquals((await (await w.h("u2")(post({ action: "import", code: `earmind://prov/${code}` }))).json()).new_chars, 0);
 });
@@ -1086,4 +1088,39 @@ Deno.test("K96 (D220): a drill's voice from the catalog, locked at the first sav
   assertEquals((await w.h("u1")(post({ action: "save", drill: { id: a.drill.id }, items: ITEMS }))).status, 200, "kept when not sent");
   assertEquals((await w.h("u3")(post({ action: "save", drill: { voice_id: "NotInCatalog01" }, items: ITEMS }))).status, 400);
   assertEquals((await w.h("u3")(post({ action: "save", drill: { voice_id: "x y" }, items: ITEMS }))).status, 400);
+});
+
+// ---------- K99 (D223): mixed voices and the AI's choice ----------
+const CAT = [{ voice_id: "VoiceAnnaSv0001", name: "Anna" }, { voice_id: "VoiceKinesSv002", name: "Kines" }, { voice_id: "VoiceHindiSv003", name: "Hindi" }];
+Deno.test("K99 mix_voices: each part gets a catalog voice by lot, kept on later saves; the same each time; cost counts it", async () => {
+  const w = world({ catalog: CAT });
+  const parts = ["Första meningen här.", "Andra meningen här.", "Tredje meningen här.", "Fjärde meningen här.", "Femte meningen här.", "Sjätte meningen här."].map((text) => ({ kind: "para", text }));
+  const c = await (await w.h("u1")(post({ action: "cost", drill: { kind: "text", mix_voices: true }, items: parts }))).json();
+  const a = await (await w.h("u1")(post({ action: "save", defer_audio: true, drill: { kind: "text", mix_voices: true }, items: parts }))).json();
+  assertEquals([a.drill.mix_voices, c.cost, a.cost], [true, parts.reduce((n, p) => n + p.text.length, 0), parts.reduce((n, p) => n + p.text.length, 0)]);
+  const voices = a.items.map((i: { voice_id?: string }) => i.voice_id);
+  assert(voices.every((v: string) => CAT.some((x) => x.voice_id === v)));
+  assert(new Set(voices).size >= 2, `mixed: ${voices}`);
+  // start makes each part with its own voice; a later save keeps the voices (no new audio)
+  const st = await (await w.h("u1")(post({ action: "start", id: a.drill.id }))).json();
+  assertEquals(st.items.map((i: { voice_id?: string }) => i.voice_id), voices);
+  const files = [...w.audio.values()].filter((f) => f.kind === "text");
+  assert(new Set(files.map((f) => f.voice_id)).size >= 2);
+  const again = await (await w.h("u1")(post({ action: "save", drill: { id: a.drill.id }, items: st.items.map((i: { id: string; text: string }) => ({ id: i.id, kind: "para", text: i.text })) }))).json();
+  assertEquals([again.cost, again.items.map((i: { voice_id?: string }) => i.voice_id)], [0, voices]);
+});
+
+Deno.test("K99 the AI picks a catalog voice for a style when none is chosen; a voice not in the list is ignored; a chosen voice wins", async () => {
+  const asked: string[] = [];
+  const w = world({ catalog: CAT, picker: (s) => (asked.push(s), Promise.resolve({ voice_id: "VoiceKinesSv002", reason: "Lugn och tydlig röst." })) });
+  const text = [{ kind: "para", text: "Klorofyll fångar ljus." }];
+  const c = await (await w.h("u1")(post({ action: "cost", drill: { kind: "text", style: "Lugnt" }, items: text }))).json();
+  assertEquals([c.voice_id, c.voice_reason], ["VoiceKinesSv002", "Lugn och tydlig röst."]);
+  const a = await (await w.h("u1")(post({ action: "save", drill: { kind: "text", style: "Lugnt" }, items: text }))).json();
+  assertEquals([a.drill.voice_id, a.voice_reason], ["VoiceKinesSv002", "Lugn och tydlig röst."]);
+  const own = await (await w.h("u2")(post({ action: "save", drill: { kind: "text", style: "Lugnt", voice_id: "VoiceAnnaSv0001" }, items: text }))).json();
+  assertEquals([own.drill.voice_id, own.voice_reason], ["VoiceAnnaSv0001", undefined]);
+  const w2 = world({ catalog: CAT, picker: () => Promise.resolve({ voice_id: "MadeUpVoice0001", reason: "x" }) });
+  const b = await (await w2.h("u1")(post({ action: "save", drill: { kind: "text", style: "Glatt" }, items: text }))).json();
+  assertEquals(b.drill.voice_id, null, "a voice not in the catalog is never used");
 });

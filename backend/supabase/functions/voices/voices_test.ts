@@ -88,3 +88,16 @@ Deno.test("K96 (D220): the catalog with previews; the library search is only a l
   for (let i = 0; i < 9; i++) last = (await h(new Request("http://x/voices?library=1"))).status;
   assertEquals([last, (await h(new Request("http://x/voices?library=1"))).status], [200, 429]);
 });
+
+Deno.test("K99 (D223): voices under review are shown only to admin", async () => {
+  const { createVoicesHandler } = await import("./handler.ts");
+  const { MemoryRateLimiter } = await import("../_shared/ratelimit.ts");
+  const mk = (admin: boolean) => createVoicesHandler({
+    authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
+    rateLimiter: new MemoryRateLimiter(), voices: [], defaultVoiceId: null,
+    catalog: () => Promise.resolve([{ voice_id: "AAAAAAAAAAAA", name: "Sara" }, { voice_id: "BBBBBBBBBBBB", name: "Pirat", review: true }]),
+    isAdmin: () => Promise.resolve(admin),
+  });
+  assertEquals((await (await mk(false)(new Request("http://x/voices"))).json()).catalog.map((v: { name: string }) => v.name), ["Sara"]);
+  assertEquals((await (await mk(true)(new Request("http://x/voices"))).json()).catalog.map((v: { name: string }) => v.name), ["Sara", "Pirat"]);
+});
