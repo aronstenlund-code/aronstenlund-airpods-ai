@@ -65,3 +65,4 @@ K90 kostar Säg-texten nu **744 krediter** (764 minus rubriken, som redan har lj
 ## Kvar
 - Appen (A131): visa kapseln och raderna från `cost` och `remaining`, och visa 402-texten under fältet.
 - Oscar (O76) testar.
+- Tillägg 15:10: 402-raden följer Kellys Ke71 ordagrant: "Nya krediter den 1 december." och tusental med hårt mellanslag ("2 011"), också i /exam:s 402. Test 671/671.
