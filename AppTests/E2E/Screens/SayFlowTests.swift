@@ -269,8 +269,15 @@ final class SayFlowTests: XCTestCase {
         !app.buttons.matching(NSPredicate(format: "label ==[c] 'Pausa'")).firstMatch.exists
     }
 
+    /// How many times the test text's title stands on Start (each card shows it).
+    private func titleCount() -> Int {
+        Self.labels(in: app.debugDescription, kind: "StaticText").filter { $0.hasPrefix("Klorofyllet i bladen") }.count
+    }
+
     private func cleanUp() -> Bool {
         goToStart()
+        pause(2)
+        let before = titleCount()
         // The text is saved as a reading (A115); its row on Start opens it like any reading (T28).
         guard tap(["Texten", "Frågor och svar"], "Texten", quiet: true) else { note("the saved reading was not found on Start"); return true }
         guard tap(["Mer"], "Mer") else { return false }
@@ -279,6 +286,14 @@ final class SayFlowTests: XCTestCase {
         if !confirmDestructive("Ta bort texten"), !confirmDestructive("Ta bort provet") { note("no confirmation button to tap") }
         pause(3)
         screen("borta", "After Ta bort texten")
+        // Angela Fable 13:30 (run 44064540048): a reading removed while the app still followed its sound came back as a
+        // new, unstarted exam after a 404. After 10 s Start must show fewer of it than before, not the same again.
+        goToStart()
+        pause(10)
+        let after = titleCount()
+        log.append("T36 the text's title on Start: \(before) before Ta bort, \(after) 10 s after")
+        screen("borta-10s", "Start 10 s after Ta bort texten")
+        if before > 0, after >= before { return miss("the removed reading is back on Start after 10 s (\(before) → \(after))") }
         return true
     }
 
