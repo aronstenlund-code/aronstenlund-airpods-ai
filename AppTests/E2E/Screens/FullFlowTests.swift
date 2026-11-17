@@ -104,7 +104,7 @@ final class FullFlowTests: XCTestCase {
         // Nightly 43839516709, runs 43975990247 and earlier: in the Simulator Fota sidor opens the photo library (there is no
         // camera), and that library often stayed open over Nytt prov. The camera is only real on a device, so the step is
         // left out here; Välj bilder below is the same library.
-        guard pickPhoto() else { return false }
+        guard pickPhoto() || materialFallback() else { return false }
         lowerQuestions(to: 3)
         guard tap(["Skapa frågor"], "Skapa frågor") else { return false }
         guard wait(["Ser rätt ut"], 180) != nil else { return miss("Stämmer det här? not shown in 180 s") }
@@ -698,13 +698,27 @@ final class FullFlowTests: XCTestCase {
 
     // MARK: Helpers
 
-    private func launch(_ value: String) {
+    private func launch(_ value: String, material: String? = nil) {
         app?.terminate()
         app = XCUIApplication()
         app.launchArguments += ["-AppleLanguages", "(sv)", "-AppleLocale", "sv_SE"]
         app.launchEnvironment["LUMEN_TEST_HEADER"] = value
+        if let material { app.launchEnvironment["LUMEN_TEST_MATERIAL"] = material } // Angela Schrute's dbedcd6, Debug
         app.launch()
-        log.append("launched with LUMEN_TEST_HEADER=\(value)")
+        log.append("launched with LUMEN_TEST_HEADER=\(value)\(material == nil ? "" : " and LUMEN_TEST_MATERIAL")")
+    }
+
+    static let fallbackMaterial = "Fotosyntesen sker i bladens kloroplaster. Växten tar upp koldioxid och vatten och gör socker med hjälp av solljus. Sockret används som energi och byggmaterial."
+
+    /// Runs 43975990247 and 44034030918: the Simulator's photo library sometimes stays empty, also when opened again.
+    /// Then the app is started again with the test hook's text as material (the photo step is the library's, not EarMind's).
+    private func materialFallback() -> Bool {
+        note("Välj bilder: the photo library gave no picture twice; text material from LUMEN_TEST_MATERIAL instead")
+        closePicker()
+        launch(header, material: Self.fallbackMaterial)
+        if wait(["Välkommen till EarMind"], 10) != nil { tap(["Fortsätt"], "Fortsätt (again)", counted: false) }
+        if wait(["Fota sidor"], 8) == nil { guard tap(["Nytt prov"], "Nytt prov (material from the hook)", counted: false) else { return false } }
+        return waitEnabled(["Skapa frågor"], 10) || miss("Skapa frågor not tappable with the hook's material")
     }
 
     private func relaunchToStart(keepHeader: Bool = false) {
