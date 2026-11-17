@@ -34,7 +34,14 @@ enum CreditsText {
     /// What costs what: the classes the server names, reading aloud per so many characters, and repeating for nothing.
     static func rows(_ prices: DrillPrices?) -> [Row] {
         guard let prices else { return [] }
-        var rows = prices.classes.map { Row(title: className($0.name), value: number($0.questions)) }
+        // Kelly (review of A117): while every length costs the same, one row says it; the three come back when the
+        // server's numbers differ.
+        var rows: [Row]
+        if let first = prices.classes.first, prices.classes.allSatisfy({ $0.questions == first.questions }) {
+            rows = [Row(title: "En fråga", value: number(first.questions))]
+        } else {
+            rows = prices.classes.map { Row(title: className($0.name), value: number($0.questions)) }
+        }
         if let read = prices.read {
             rows.append(Row(title: "Läs upp eller Säg i AirPods", value: "1 per \(read.chars_per_question) tecken"))
         }
@@ -120,6 +127,6 @@ struct CreditsSheet: View {
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } } }
             .task { await model.refreshQuota() }
         }
-        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium, .large]) // the largest text needs the whole height
+        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium]) // the largest text needs the whole height
     }
 }

@@ -109,7 +109,7 @@ struct SayInAirPodsField: View {
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             HStack(alignment: .top, spacing: 8) { // the empty field keeps three rows: the mark stands at the first
                 Text(verbatim: "›").foregroundStyle(SayText.accent).accessibilityHidden(true)
-                TextField("", text: $text, prompt: Text(typeSize.isAccessibilitySize ? "Skriv eller klistra in" : "Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(0.45)),
+                TextField("", text: $text, prompt: Text(typeSize.isAccessibilitySize ? "Skriv här" : "Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(0.45)),
                           axis: .vertical)
                     .lineLimit(typeSize.isAccessibilitySize ? 2...6 : 3...8)
                     .focused($focused)
@@ -169,62 +169,91 @@ struct SayInAirPodsField: View {
         }
     }
 
+    /// Kelly (review of A115–A117): the row as it fits. One row; else the small buttons on a row and Spela last; else
+    /// every button on a row of its own. Nothing is cut with "…".
     private var controls: some View {
-        // Ke69 §3.8: with the largest text the small buttons are one row and Spela a row of its own.
-        let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10))
-            : AnyLayout(HStackLayout(spacing: 8))
-        return layout {
+        ViewThatFits(in: .horizontal) {
             HStack(spacing: 8) {
-                Menu {
-                    Button("Fota sidor", systemImage: "camera") { takePhotos() }
-                    Button("Välj bilder", systemImage: "photo") { isPickingPhotos = true }
-                    Button("Lägg till fil", systemImage: "doc") { isImporting = true }
-                    Button("Klistra in länk", systemImage: "link") {
-                        link = ""
-                        askingLink = true
-                    }
-                } label: {
-                    Image(systemName: "plus")
-                }
-                .accessibilityLabel("Lägg till material")
-                .disabled(isReadingMaterial)
-                Menu {
-                    Picker("Hur länge", selection: $minutes) {
-                        Text("En gång").tag(0)
-                        ForEach(SayText.repeats, id: \.self) { Text("Upprepa \($0) min").tag($0) }
-                    }
-                } label: {
-                    Label(SayText.howLong(minutes), systemImage: "repeat").lineLimit(1)
-                }
-                .accessibilityLabel("Hur länge, \(minutes == 0 ? "En gång" : "Upprepa \(minutes) minuter")")
-                Menu {
-                    Picker("Tempo", selection: $tempo) {
-                        ForEach(SayText.tempos, id: \.self) { Text(verbatim: SayText.tempo($0)).tag($0) }
-                    }
-                } label: {
-                    Text(verbatim: SayText.tempo(tempo)).monospacedDigit()
-                }
-                .accessibilityLabel("Tempo, \(SayText.tempo(tempo))")
+                addMenu
+                howLongMenu
+                tempoMenu
+                Spacer(minLength: 8)
+                playButton(wide: false)
             }
-            .buttonStyle(.bordered)
-            .controlSize(.small)
-            .dynamicTypeSize(...DynamicTypeSize.accessibility1) // as the app's other bars ("En gång" broke on three rows)
-            if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
-            Button {
-                play()
-            } label: {
-                HStack(spacing: 6) {
-                    if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: "play.fill").accessibilityHidden(true) }
-                    Text("Spela")
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 8) {
+                    addMenu
+                    howLongMenu
+                    tempoMenu
                 }
-                .font(.subheadline.weight(.semibold))
-                .frame(maxWidth: typeSize.isAccessibilitySize ? .infinity : nil)
+                playButton(wide: true)
             }
-            .buttonStyle(.borderedProminent)
-            .tint(SayText.accent)
-            .foregroundStyle(Color.black)
-            .disabled(isEmpty || isStarting || tooMany)
+            VStack(alignment: .leading, spacing: 10) {
+                addMenu
+                howLongMenu
+                tempoMenu
+                playButton(wide: true)
+            }
         }
+    }
+
+    private var addMenu: some View {
+        Menu {
+            Button("Fota sidor", systemImage: "camera") { takePhotos() }
+            Button("Välj bilder", systemImage: "photo") { isPickingPhotos = true }
+            Button("Lägg till fil", systemImage: "doc") { isImporting = true }
+            Button("Klistra in länk", systemImage: "link") {
+                link = ""
+                askingLink = true
+            }
+        } label: {
+            Image(systemName: "plus")
+        }
+        .accessibilityLabel("Lägg till material")
+        .disabled(isReadingMaterial)
+        .smallSayControl()
+    }
+
+    private var howLongMenu: some View {
+        Menu {
+            Picker("Hur länge", selection: $minutes) {
+                Text("En gång").tag(0)
+                ForEach(SayText.repeats, id: \.self) { Text("Upprepa \($0) min").tag($0) }
+            }
+        } label: {
+            Label(SayText.howLong(minutes), systemImage: "repeat").lineLimit(1).fixedSize()
+        }
+        .accessibilityLabel("Hur länge, \(minutes == 0 ? "En gång" : "Upprepa \(minutes) minuter")")
+        .smallSayControl()
+    }
+
+    private var tempoMenu: some View {
+        Menu {
+            Picker("Tempo", selection: $tempo) {
+                ForEach(SayText.tempos, id: \.self) { Text(verbatim: SayText.tempo($0)).tag($0) }
+            }
+        } label: {
+            Text(verbatim: SayText.tempo(tempo)).monospacedDigit().lineLimit(1).fixedSize()
+        }
+        .accessibilityLabel("Tempo, \(SayText.tempo(tempo))")
+        .smallSayControl()
+    }
+
+    private func playButton(wide: Bool) -> some View {
+        Button {
+            play()
+        } label: {
+            HStack(spacing: 6) {
+                if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: "play.fill").accessibilityHidden(true) }
+                Text("Spela").lineLimit(1).fixedSize()
+            }
+            .font(.subheadline.weight(.semibold))
+            .frame(maxWidth: wide ? .infinity : nil)
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(SayText.accent)
+        .foregroundStyle(Color.black)
+        .disabled(isEmpty || isStarting || tooMany)
     }
 
     // MARK: A116, material into the field
@@ -350,5 +379,14 @@ struct SayInAirPodsField: View {
             }
             isStarting = false
         }
+    }
+}
+
+private extension View {
+    /// The field's small buttons: bordered, small, and growing no further than the app's other bars.
+    func smallSayControl() -> some View {
+        buttonStyle(.bordered)
+            .controlSize(.small)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
 }

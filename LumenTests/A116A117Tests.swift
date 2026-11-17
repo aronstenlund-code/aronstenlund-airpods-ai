@@ -59,14 +59,22 @@ import Testing
         #expect(CreditsText.rows(quota.prices).isEmpty)
     }
 
-    @Test func theRowsSayWhatTheServersTableSays() throws {
+    @Test func oneRowWhileEveryLengthCostsTheSame() throws {
         let quota = try JSONDecoder().decode(DrillQuota.self, from: Data(Self.quotaJSON.utf8))
+        let rows = CreditsText.rows(quota.prices)
+        // Today every question with new sound counts as 1 (K82); the table decides, not the app.
+        #expect(rows.map(\.title) == ["En fråga", "Läs upp eller Säg i AirPods", "Upprepa samma text"])
+        #expect(rows.map(\.value) == ["1", "1 per 800 tecken", "0"])
+    }
+
+    @Test func theThreeLengthsComeBackWhenTheServersNumbersDiffer() throws {
+        var quota = try JSONDecoder().decode(DrillQuota.self, from: Data(Self.quotaJSON.utf8))
+        quota.prices?.classes[1].questions = 1.5
+        quota.prices?.classes[2].questions = 2
         let rows = CreditsText.rows(quota.prices)
         #expect(rows.map(\.title) == ["Vanlig fråga", "Lite längre fråga", "Mycket lång fråga", "Läs upp eller Säg i AirPods",
                                       "Upprepa samma text"])
-        // Today every question with new sound counts as 1 (K82); the table decides, not the app.
-        #expect(rows.map(\.value) == ["1", "1", "1", "1 per 800 tecken", "0"])
-        #expect(CreditsText.number(1.5) == "1,5")
+        #expect(rows.map(\.value) == ["1", "1,5", "2", "1 per 800 tecken", "0"])
     }
 
     @Test func theSheetSaysWhenItIsFilledUp() {
