@@ -101,11 +101,9 @@ final class FullFlowTests: XCTestCase {
         guard tap(["Fortsätt"], "Fortsätt") else { return false }
         guard wait(["Fota sidor"], 10) != nil else { return miss("Nytt prov not shown after Fortsätt") }
         screen("nytt-prov", "Nytt prov, first time")
-        tap(["Fota sidor"], "Fota sidor")
-        systemAlerts()
-        pause(2)
-        screen("kamera", "Fota sidor (photo library in the Simulator)")
-        closePicker()
+        // Nightly 43839516709, runs 43975990247 and earlier: in the Simulator Fota sidor opens the photo library (there is no
+        // camera), and that library often stayed open over Nytt prov. The camera is only real on a device, so the step is
+        // left out here; Välj bilder below is the same library.
         guard pickPhoto() else { return false }
         lowerQuestions(to: 3)
         guard tap(["Skapa frågor"], "Skapa frågor") else { return false }
@@ -485,8 +483,20 @@ final class FullFlowTests: XCTestCase {
     private func recordOwnAnswer() -> Bool {
         goToStart()
         guard wait(["Nytt prov", "Fler lägen"], 20) != nil else { return miss("Start not shown") }
+        // Angela Fable 03:06: since A115 the field at the top pushes the last row "Fler lägen" about 170 pt down, behind
+        // the fixed bottom row (Nytt prov / Öppna länk), so a tap there lands on the bottom row. Scroll the list first.
+        app.swipeUp()
+        pause(1)
         guard tap(["Fler lägen"], "Fler lägen") else { return false }
         pause(2)
+        // Run 43987495095 (A115 on Start): the tap left Start in front once. Tap again if the modes page is not there.
+        if find(["Läge:*", "Provläge*"]) == nil {
+            note("Fler lägen: the first tap did not open the page")
+            app.swipeUp()
+            pause(1)
+            tap(["Fler lägen"], "Fler lägen (again)", counted: false)
+            pause(3)
+        }
         screen("fler-lagen", "Fler lägen")
         // Run 43649698914: Fler lägen shows "Läge: Standardläge. Byt läge"; Provläge is in that sheet.
         if find(["Provläge*"]) == nil { tap(["Läge:*", "Byt"], "Byt läge") ; pause(2); screen("lagen", "Byt läge", counts: false) }
