@@ -131,7 +131,9 @@ if not DAY_ONLY:
     ed = p1 + [("para", text(90))]
     s4, j4, _ = call(tbody("cost", ed, did=d1), A)
     c4 = count(A)
+    q4a = quota(A)
     s4s, j4s, _ = call(tbody("save", ed, did=d1), A)
+    q4b = quota(A)
     check("4 ändring med drill.id: cost 90 = save, inget nytt prov av förhandsvisningen",
           j4.get("cost") == 90 and j4s.get("cost") == 90 and c4 == 1 and q4b["used"] - q4a["used"] == 90,  # startat prov: save köar direkt, audio.cost 0, cost = det som dras
           {"cost": [s4, cv(j4)], "prov efter cost": c4, "save": [s4s, sv(j4s)], "kvot före/efter save": [q4a, q4b]})
