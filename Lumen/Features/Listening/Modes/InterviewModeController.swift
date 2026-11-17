@@ -52,7 +52,7 @@ final class InterviewModeController: ListeningModeController {
     func startBlock() -> ModeStartBlock? { settings.hasInterviewSetup ? nil : .interviewSetup }
 
     /// The mode button always opens the setup first (D72).
-    func startScreen() -> ModeStartBlock { .interviewSetup }
+    func startScreen() -> ModeStartBlock? { .interviewSetup }
 
     /// Likely questions and model answers from the role or job ad. Long, so it is shown, not spoken.
     func prepare() {

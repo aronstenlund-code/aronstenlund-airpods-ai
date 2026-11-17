@@ -21,8 +21,9 @@ protocol ListeningModeController: AnyObject {
     /// D199 step 4 (A119): what the app must show before this mode can start by "Byt läge" or by voice; nil when
     /// nothing is missing.
     func startBlock() -> ModeStartBlock?
-    /// D199 step 4: the screen the mode button opens before the mode starts (every time, D72).
-    func startScreen() -> ModeStartBlock
+    /// D199 step 4: the screen the mode button opens before the mode starts (every time, D72); nil for a mode whose
+    /// button starts it directly (Frågor, step 5).
+    func startScreen() -> ModeStartBlock?
 }
 
 /// D199 step 4 (A119): what a mode needs from the user in the app before it starts. Each mode says its own; the model
