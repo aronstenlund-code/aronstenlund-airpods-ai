@@ -101,7 +101,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// D84: the practice exam inside Provläge, its uploaded paper and Kevin's `/exam`.
     let examMaterials: ExamMaterials?
     let examClient: ExamClient?
-    private(set) var exam: ExamSession?
+    /// D199 step 6a (A121): the exam session is `ExamSessionController` now; the checks here read it as before.
+    var exam: ExamSession? { examSession.session }
+    let examSession = ExamSessionController()
     /// A16: the practice exam read aloud one question at a time (K15), in Provläge.
     private(set) var practice: PracticeRun?
     /// A16: the last run's result for the listening screen (right, wrong, what to practise).
@@ -140,7 +142,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A19.2: the id of the session-end call ("avsluta" in Provläge): its answer is the summary.
     @ObservationIgnored private var summaryRequestID: UUID?
     @ObservationIgnored private var summaryTimeout: Task<Void, Never>?
-    private var examTimer: Task<Void, Never>?
     var isShowingExamSetup = false
     /// What Lumen has said of the current answer, for an interrupted turn (D81).
     private var spokenAnswer = ""
@@ -423,6 +424,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         interviewMode.host = self // D199
         liveMode.host = self
         standardMode.host = self
+        examSession.host = self
     }
 
     // MARK: - User actions
@@ -1191,7 +1193,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func endStudy(bySilence: Bool) {
         guard study.isActive || bySilence else { return }
         let endedProv = mode == .prov
-        if endedProv, exam != nil { finishExam(speak: false) }
+        if endedProv, exam != nil { examSession.end(speak: false) }
         if endedProv, practice != nil { finishPractice(speak: false) }
         study.stop()
         if endedProv { provSessionEnded() }
@@ -1256,8 +1258,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 return
             }
             if mode == .prov, exam != nil {
-                controller.log("Provsession: not a command, not answered") // Auto off: only "Lumen, …" counts
-                study.resumeListening()
+                examSession.turn(text) // D199 step 6a. Auto off: only "Lumen, …" counts
                 return
             }
             switch mode {
@@ -1626,7 +1627,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         if exam != nil {
-            examCommand(text) // D84: in the exam session only exam commands count
+            examSession.instruction(text) // D84: in the exam session only exam commands count (D199 step 6a)
             return
         }
         if MiniTest.isCheckQuestionRequest(text), study.isActive, mode == .prov {
@@ -2526,109 +2527,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             guard study.isActive else { return }
         }
         miniTest = nil
-        exam = ExamSession(paper: examMaterials.paper)
-        controller.log("Provsession started (\(examMaterials.paper.tasks.count) tasks)")
-        say(language == .swedish
-            ? "Provsession, \(examMaterials.paper.tasks.count) uppgifter. Säg Lumen, uppgift ett. Eller Lumen, starta provtid nittio minuter."
-            : "Exam session, \(examMaterials.paper.tasks.count) tasks. Say Lumen, task one.")
+        examSession.begin(paper: examMaterials.paper) // D199 step 6a
     }
 
-    private func examCommand(_ text: String) {
-        guard var session = exam else { return }
-        if let speakers, speakers.profiles.isEnrolled, speakers.identity(near: Date())?.isOther == true {
-            controller.log("Provsession: a command in someone else's voice, ignored")
-            return
-        }
-        guard let command = ExamSession.command(text) else {
-            say("Säg uppgift, ledtråd, rätta, nästa, starta provtid eller hur gick det.")
-            return
-        }
-        switch command {
-        case .task(let no):
-            if let task = session.go(to: no) { say(ExamSession.spoken(task)) } else { say("Hittar ingen uppgift \(no).") }
-        case .next:
-            if let task = session.next() { say(ExamSession.spoken(task)) } else { say("Det var sista uppgiften.") }
-        case .hint:
-            guard let task = session.currentTask, let level = session.nextHintLevel(), let examClient else {
-                say("Säg först vilken uppgift, till exempel uppgift tre.")
-                return
-            }
-            Task { [weak self] in
-                let hint = await examClient.hint(task: task, level: level)
-                self?.say(hint ?? "Jag fick ingen ledtråd just nu.")
-            }
-        case .grade(let answer):
-            guard let task = session.currentTask, let examClient else {
-                say("Säg först vilken uppgift, till exempel uppgift tre.")
-                return
-            }
-            Task { [weak self] in
-                guard let graded = await examClient.grade(task: task, answer: answer) else {
-                    self?.say("Jag kunde inte rätta just nu.")
-                    return
-                }
-                guard let self, var current = self.exam else { return }
-                current.graded(graded.points)
-                self.exam = current
-                self.noteQuizAnswer() // A38
-                let got = ExamSession.number(graded.points.total)
-                let of = ExamSession.number((graded.max ?? task.points).total)
-                self.say("\(got) av \(of) poäng. \(graded.feedback)")
-                self.controller.log("Provsession: task \(task.no) graded \(got)/\(of)")
-            }
-        case .startTimer(let minutes):
-            session.startTimer(minutes: minutes, at: Date())
-            say("Provtid \(minutes) minuter. Lycka till.")
-            startExamTimer()
-        case .howDidItGo:
-            speakExamSummary(of: session)
-        case .end:
-            exam = session
-            finishExam(speak: true)
-            return
-        }
-        exam = session
-    }
-
-    private func startExamTimer() {
-        examTimer?.cancel()
-        examTimer = Task { [weak self] in
-            while !Task.isCancelled {
-                try? await Task.sleep(for: .seconds(10))
-                guard let self, var session = self.exam, !Task.isCancelled else { return }
-                if let warning = session.warning(at: Date()) { self.say(warning) }
-                self.exam = session
-                if session.minutesLeft(at: Date()) == 0 { return }
-            }
-        }
-    }
-
-    private func speakExamSummary(of session: ExamSession) {
-        let results = session.resultList
-        guard !results.isEmpty else {
-            say("Inga uppgifter rättade än. Säg rätta och ditt svar.")
-            return
-        }
-        guard let examClient else { return }
-        let boundaries = session.paper.boundaries
-        Task { [weak self] in
-            let summary = await examClient.summary(results: results, boundaries: boundaries)
-            self?.say(summary?.spoken ?? "Jag kunde inte räkna ihop just nu.")
-        }
-    }
-
-    /// The exam is over: the tasks without full marks go to Minne as kinds of tasks to practise.
-    private func finishExam(speak: Bool) {
-        examTimer?.cancel()
-        examTimer = nil
-        guard let session = exam else { return }
-        exam = nil
-        let weak = session.weakTaskTypes()
-        for fact in weak { memory.add(fact, kind: .fact, source: .automatic) }
-        if !weak.isEmpty { refreshKeyterms() }
-        controller.log("Provsession ended · \(session.results.count) graded · \(weak.count) kinds of task to practise saved")
-        if speak { speakExamSummary(of: session) }
-    }
+    // The commands, the exam time and the summary are `ExamSessionController` (D199 step 6a).
 
     // MARK: - The practice exam by voice (A16, K15)
 
@@ -2642,7 +2544,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             guard study.isActive, mode == .prov else { return }
         }
         miniTest = nil
-        exam = nil
+        examSession.drop() // D199 step 6a: as before, without a summary
         endSilentQuiz()
         practiceResult = nil
         practice = run
@@ -4007,5 +3909,18 @@ extension ListeningModel: StandardModeHost {
     func playMoreTone() {
         guard speaker.settings.moreTone else { return }
         try? controller.playback.playTestTone(frequency: 1_320, duration: 0.12)
+    }
+}
+
+/// D199 step 6a (A121): what the exam session uses (`ExamSessionHost`): the model's own calls, unchanged.
+extension ListeningModel: ExamSessionHost {
+    func isSomeoneElseSpeakingNow() -> Bool {
+        guard let speakers, speakers.profiles.isEnrolled else { return false }
+        return speakers.identity(near: Date())?.isOther == true
+    }
+
+    func rememberToPractise(_ facts: [String]) {
+        for fact in facts { memory.add(fact, kind: .fact, source: .automatic) }
+        if !facts.isEmpty { refreshKeyterms() }
     }
 }
