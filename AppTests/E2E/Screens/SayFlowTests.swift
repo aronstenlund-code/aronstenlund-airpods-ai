@@ -354,8 +354,12 @@ final class SayFlowTests: XCTestCase {
     /// "1 236 krediter kvar" → 1236; A139 (Angela Fable 20:58): "5,3k krediter kvar" → 5300 (rounded by the app, so a
     /// change smaller than 100 is not seen above 1 000).
     nonisolated static func creditNumber(_ line: String) -> Int? {
-        let head = line.prefix { $0.isNumber || $0 == " " || $0 == "\u{00A0}" || $0 == "," || $0 == "k" }
-        if head.contains("k") {
+        // Run 44168262433: "1 500 krediter kvar" was read as 1 500 000, since the k of "krediter" was taken; a k counts
+        // only right after a digit ("5,3k").
+        var head = String(line.prefix { $0.isNumber || $0 == " " || $0 == "\u{00A0}" || $0 == "," })
+        let rest = line.dropFirst(head.count)
+        if rest.hasPrefix("k "), head.last?.isNumber == true { head += "k" }
+        if head.hasSuffix("k") {
             let number = head.filter { $0.isNumber || $0 == "," }.replacingOccurrences(of: ",", with: ".")
             return Double(number).map { Int(($0 * 1000).rounded()) }
         }
