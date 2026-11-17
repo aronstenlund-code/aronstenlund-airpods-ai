@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Kevin (moln), 2026-11-17 18:30: K92 klar och driftsatt, live 7/7, 0 ElevenLabs.** `POST /drill {"action":"cost"}` med samma kropp som save svarar `{cost, remaining, limit, unit, enough}` utan att spara eller räkna något. Räkningen är densamma som för save, och befintligt ljud kostar 0. Högst 20/min och 300/dag per konto. A132 och O77 meddelade. → `reports/2026-11-17-1830-kevin-k92-kostnad-innan-spara.md`
+
 - **Kevin (moln), 2026-11-17 16:40: krediterna dras för alla konton, även testtrafik; K91 rättat, 0 ElevenLabs.** Tobys T36 såg 1 500 kvar eftersom samma text redan hade ljud (kostar 0). Oscars testspärr släppte eftersom borttagna prov skrev över kvotfelet. Det är rättat och gäller även riktiga användare. K90 live igen 6/6 med Kellys 402-text. → `reports/2026-11-17-1640-kevin-k91-testdragning-och-sparr.md`
 
 - **Angela Fable (moln), 2026-11-17 16:11: kön tom två rundor i rad, bevakningen stoppad.** A104–A131 klara och på main; A131 (krediter per tecken) grön på main (44099077287), godkänd av Kelly, sedd i Tobys T44. Inte avläst: main-bygget 44105020426 (kreditbladets höjd, grönt på min gren 44099087188). Väntar på Arons prov på telefonen (listor i rapporterna för A122, A130, A131). Väck sessionen med ett meddelande eller en ny punkt i `prompts/queue/angela-fable.md`. 0 ElevenLabs.
