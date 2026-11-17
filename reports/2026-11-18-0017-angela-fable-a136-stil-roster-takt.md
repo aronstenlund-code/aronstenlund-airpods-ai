@@ -1,6 +1,6 @@
 # A136 (D220): "Hur ska det låta?", röster och Skriv i takt (Angela Fable, moln)
 
-Klart 2026-11-17 23:50. **Verifierat i CI (bygge och tester) och på bild i Simulatorn. Inget på enhet, och inget
+Klart 2026-11-18 00:17. **Verifierat i CI (bygge och tester) och på bild i Simulatorn. Inget på enhet, och inget
 riktigt ljud med stil eller vald röst har gjorts.** 0 ElevenLabs (D180).
 
 ## Vad som är byggt
@@ -58,7 +58,7 @@ riktigt ljud med stil eller vald röst har gjorts.** 0 ElevenLabs (D180).
 - Scener: `repSayStyle`, `repSayVoices`.
 
 ## Tester
-- **iOS build BYGGE grön på min gren** (enhetsbygge, varningar som fel, LumenTests).
+- **iOS build 44194852679 grön på min gren** (enhetsbygge, varningar som fel, LumenTests).
 - Nya tester i `LumenTests/A136StyleVoicePaceTests.swift` (fejkade svar och tysta låtsasfiler):
   fraser på 3–6 ord för 3–60 ord, komma-pauser, planen ur ordtider och utan ordtider; uppläsaren i takt (0,85×, paus
   efter varje fras och efter sista, paus-tryck under pausen, inget stannar utan takt); stil i varje sparning och röst
@@ -66,8 +66,17 @@ riktigt ljud med stil eller vald röst har gjorts.** 0 ElevenLabs (D180).
   provlyssnas; Kellys ord; samma text med annat ljud är ett annat prov och samma ljud samma prov; kostnaden frågas
   med stil och röst; ljud på telefonen återanvänds bara för samma röst och stil; tom katalog ger inga röster.
 
+- Första bygget (44191509168) föll på ett av mina nya testvillkor, inte på appen: testets låtsasmoln har ingen
+  textfil, så ingen uppläsare startar när samma text spelas en tredje gång. Villkoret är borttaget.
+- Main-bygget för A139 (44189517199) avbröts i Mac-kön utan att ha startat (0 steg). Samma kod byggs nu med A136.
+
 ## Bilder
-BILDER
+`reports/2026-11-17-a136-bilder/` (Simulatorn, flödet fable-screens 44191549702 och 44191554740):
+- `stil-ljust.jpg`: kortet med röstkapsel, stil och "I takt" · bladet Röst · kortet som det ser ut i dag med tom
+  katalog (bara stilfältet).
+- `stil-morkt.jpg`: samma i mörkt.
+- `stil-se-storsta-text.jpg`: iPhone SE med största text. Stilraden staplas (röstkapseln, sedan stilen). I bladet
+  Röst bryts beskrivningen i smala rader ("riks-svens-ka"); det har jag inte rättat, Kelly får säga hur raden ska stå.
 
 ## Det här ska Aron prova på telefonen
 1. Skriv en text på Start. Under fältet kommer raden "Hur ska det låta?". Tryck i den: förslagen står ovanför
