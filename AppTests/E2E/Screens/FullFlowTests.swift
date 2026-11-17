@@ -483,11 +483,17 @@ final class FullFlowTests: XCTestCase {
     private func recordOwnAnswer() -> Bool {
         goToStart()
         guard wait(["Nytt prov", "Fler lägen"], 20) != nil else { return miss("Start not shown") }
+        // Angela Fable 03:06: since A115 the field at the top pushes the last row "Fler lägen" about 170 pt down, behind
+        // the fixed bottom row (Nytt prov / Öppna länk), so a tap there lands on the bottom row. Scroll the list first.
+        app.swipeUp()
+        pause(1)
         guard tap(["Fler lägen"], "Fler lägen") else { return false }
         pause(2)
         // Run 43987495095 (A115 on Start): the tap left Start in front once. Tap again if the modes page is not there.
         if find(["Läge:*", "Provläge*"]) == nil {
             note("Fler lägen: the first tap did not open the page")
+            app.swipeUp()
+            pause(1)
             tap(["Fler lägen"], "Fler lägen (again)", counted: false)
             pause(3)
         }
