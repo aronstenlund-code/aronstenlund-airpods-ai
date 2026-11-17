@@ -31,3 +31,16 @@ Under vägen rättade jag fem testfel, inga appfel:
 - "Klistra in länk" i Nytt prov.
 - Kapseln "N frågor kvar" och raden "Räknas som n av dina m frågor kvar" före start. Enligt Angela Fable syns kapseln med falskt ljud så länge appens Testläge är av. Kontrollen är att talet minskar efter Starta prov.
 - Att lägga in en PDF via "Lägg till fil" går troligen inte i simulatorn, eftersom systemets filväljare inte går att styra. Det skrivs då som en begränsning.
+
+## Tillägg 05:50: del 2 grön (A116, A117)
+Körning 44015377071 är **grön i alla 8 delar** (**verifierat i Simulator**, appen från main med A116–A118).
+- **Plusmenyn:** "+" i Säg-fältet ("Lägg till material") har Fota sidor, Välj bilder, Lägg till fil och Klistra in länk.
+- **Klistra in länk:** med https://example.com lade servern in sidans text i fältet (fetch-url, inte ElevenLabs).
+- **Kapseln:** "N frågor kvar" visade **15 före och 14 efter** att den nya texten spelats. Raden före start sa "Räknas som 1 fråga. Upprepningar kostar inget." Varningen kommer alltså före, och talet går ner med en.
+- **Nytt prov:** raden "Klistra in länk" finns under Material.
+
+Två saker är inte testade:
+- **Lägg till fil (PDF):** systemets filväljare går inte att styra från UI-testet i simulatorn. Det är otestat här och behöver telefonen eller ett enhetstest.
+- **En bild via "+":** samma bibliotek som "Välj bilder", som T24 redan testar. Ingen egen kontroll.
+
+T36 ligger i nattflödet från och med i natt.

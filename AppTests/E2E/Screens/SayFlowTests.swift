@@ -42,6 +42,8 @@ final class SayFlowTests: XCTestCase {
         section("Spela en gång", { playOnce() })
         section("Upprepa 5 min: varv 2", { repeatFive() })
         section("Pausa och hoppa (1 och 2 tryck)", { pauseAndSkip() })
+        section("Krediter, + och Klistra in länk (A116, A117)", { plusLinkAndCredits() })
+        section("Nytt prov: Klistra in länk finns (A116)", { newDrillLinkRow() })
         section("Ta bort uppläsningen", { cleanUp() })
     }
 
@@ -185,6 +187,74 @@ final class SayFlowTests: XCTestCase {
         let end = Date().addingTimeInterval(timeout)
         repeat { if text(starting: prefix) != nil { return true }; pause(1) } while Date() < end
         return false
+    }
+
+    /// A117: the capsule "N frågor kvar" (Testläge off), as a number.
+    private func creditsLeft() -> Int? {
+        let tree = app.debugDescription
+        let all = Self.labels(in: tree, kind: "Button") + Self.labels(in: tree, kind: "StaticText")
+        guard let line = all.first(where: { $0.hasSuffix("frågor kvar") || $0.hasSuffix("fråga kvar") }) else { return nil }
+        return Int(line.prefix { $0.isNumber || $0 == " " }.filter(\.isNumber))
+    }
+
+    /// A116: "+" in the field (Lägg till material) has Fota sidor, Välj bilder, Lägg till fil and Klistra in länk; a
+    /// link puts the page's text in the field. A117: the capsule before and after a new text is played.
+    private func plusLinkAndCredits() -> Bool {
+        goToStart()
+        pause(3)
+        let before = creditsLeft()
+        log.append("T36 credits before: \(before.map(String.init) ?? "no capsule")")
+        if before == nil { note("no 'N frågor kvar' capsule on Start (A117; Testläge is off in the test)") }
+        guard tap(["Lägg till material"], "+ (Lägg till material)") else { return false }
+        pause(1)
+        let items = ["Fota sidor", "Välj bilder", "Lägg till fil", "Klistra in länk"]
+        let missing = items.filter { find([$0]) == nil }
+        log.append("T36 + menu: missing \(missing.isEmpty ? "none" : missing.joined(separator: ", "))")
+        screen("plus-meny", "The + menu (A116)")
+        if !missing.isEmpty { note("the + menu lacks \(missing.joined(separator: ", "))") }
+        guard tap(["Klistra in länk"], "Klistra in länk") else { return false }
+        let linkField = app.alerts.firstMatch.textFields.firstMatch
+        guard linkField.waitForExistence(timeout: 5) else { return miss("no field in 'Klistra in länk'") }
+        tapElement(linkField, "the link field", counted: false)
+        linkField.typeText("https://example.com")
+        guard tap(["Lägg till"], "Lägg till") else { return false }
+        // The server reads the page (fetch-url, no ElevenLabs); example.com says "Example Domain".
+        let end = Date().addingTimeInterval(40)
+        var value = ""
+        while Date() < end {
+            value = (field.value as? String) ?? ""
+            if value.localizedCaseInsensitiveContains("example") { break }
+            if app.alerts.firstMatch.exists, find(["Okej", "OK"]) != nil {
+                log.append("T36 link alert: \(app.alerts.firstMatch.label)")
+                tap(["Okej", "OK"], "OK (link alert)", counted: false)
+            }
+            pause(2)
+        }
+        log.append("T36 field after the link: \(value.prefix(120))")
+        screen("lank", "The field after Klistra in länk")
+        guard value.localizedCaseInsensitiveContains("example") else { return miss("the page's text did not come into the field in 40 s") }
+        let counts = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix("Räknas som") } ?? "-"
+        log.append("T36 the line before playing the page: \(counts)")
+        guard openPlayer() else { return false }
+        pause(3)
+        tap(["Avsluta"], "Avsluta", quiet: true)
+        pause(2)
+        goToStart()
+        pause(5) // the quota is asked again after a sound is made
+        let after = creditsLeft()
+        log.append("T36 credits after playing the page: \(after.map(String.init) ?? "no capsule") (before \(before.map(String.init) ?? "-"))")
+        if let before, let after, after >= before { note("the capsule did not go down after a new text was played (\(before) → \(after))") }
+        return true
+    }
+
+    private func newDrillLinkRow() -> Bool {
+        goToStart()
+        guard tap(["Nytt prov"], "Nytt prov") else { return false }
+        let row = wait(["Klistra in länk"], 8) != nil
+        screen("nytt-prov-lank", "Nytt prov with Klistra in länk (A116)")
+        closeSheet()
+        goToStart()
+        return row || miss("no 'Klistra in länk' under Material in Nytt prov")
     }
 
     private func paused() -> Bool {
