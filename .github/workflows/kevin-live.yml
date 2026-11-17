@@ -28,6 +28,7 @@ on:
           - k83-coverage.py
           - k88-live.py
           - k90-live.py
+          - k93-live.py
       args:
         description: "Arguments (optional)"
         required: false
