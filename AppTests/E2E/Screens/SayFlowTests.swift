@@ -76,7 +76,7 @@ final class SayFlowTests: XCTestCase {
         let value = (field.value as? String) ?? ""
         log.append("T36 field value: \(value)")
         if !value.contains("Klorofyllet") { return miss("the text did not get into the field (value '\(value)')") }
-        if find(["Räknas som 1 fråga*"]) == nil { note("no line 'Räknas som 1 fråga. Upprepningar kostar inget.' under the text") }
+        if find(["Räknas som 1 fråga*", "Kostar *"]) == nil { note("no cost line under the text ('Räknas som 1 fråga …' or, A131, 'Kostar N krediter …')") }
         log.append("T36 Hur länge: \(find(["Hur länge*"])?.label ?? "-"), tempo: \(find(["Tempo*"])?.label ?? "-")")
         screen("text", "Säg i AirPods with a text")
         return waitEnabled(["Spela"], 5) || miss("Spela not tappable with a text")
@@ -195,8 +195,10 @@ final class SayFlowTests: XCTestCase {
     private func creditsLeft() -> Int? {
         let tree = app.debugDescription
         let all = Self.labels(in: tree, kind: "Button") + Self.labels(in: tree, kind: "StaticText")
-        guard let line = all.first(where: { $0.hasSuffix("frågor kvar") || $0.hasSuffix("fråga kvar") }) else { return nil }
-        return Int(line.prefix { $0.isNumber || $0 == " " }.filter(\.isNumber))
+        // A131 (D213): with a server that counts characters the capsule says "1 236 krediter kvar" (U+00A0 between thousands).
+        let ends = ["frågor kvar", "fråga kvar", "krediter kvar", "kredit kvar"]
+        guard let line = all.first(where: { label in ends.contains { label.hasSuffix($0) } }) else { return nil }
+        return Int(line.prefix { $0.isNumber || $0 == " " || $0 == "\u{00A0}" }.filter(\.isNumber))
     }
 
     /// A116: "+" in the field (Lägg till material) has Fota sidor, Välj bilder, Lägg till fil and Klistra in länk; a
@@ -235,7 +237,7 @@ final class SayFlowTests: XCTestCase {
         log.append("T36 field after the link: \(value.prefix(120))")
         screen("lank", "The field after Klistra in länk")
         guard value.localizedCaseInsensitiveContains("example") else { return miss("the page's text did not come into the field in 40 s") }
-        let counts = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix("Räknas som") } ?? "-"
+        let counts = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix("Räknas som") || $0.hasPrefix("Kostar") } ?? "-"
         log.append("T36 the line before playing the page: \(counts)")
         guard openPlayer() else { return false }
         pause(3)
@@ -252,6 +254,7 @@ final class SayFlowTests: XCTestCase {
         let after = creditsLeft()
         log.append("T36 credits after playing the page: \(after.map(String.init) ?? "no capsule") (before \(before.map(String.init) ?? "-"))")
         if let before, let after, after >= before { note("the capsule did not go down after a new text was played (\(before) → \(after))") }
+        if let before, let after { log.append("T36 the capsule went down by \(before - after) (A131: the text's characters when the server counts credits)") }
         return true
     }
 
