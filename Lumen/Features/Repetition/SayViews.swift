@@ -320,6 +320,16 @@ struct SayInAirPodsField: View {
         }
         .font(.body.monospaced())
         .dynamicTypeSize(...DynamicTypeSize.accessibility3) // the field stays a field on a small screen
+        // Ke72 §2: without focus the three rows fade downwards, so a longer text is seen to go on.
+        .mask {
+            if focused || isEmpty {
+                Rectangle()
+            } else {
+                LinearGradient(stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.62),
+                                       .init(color: .black.opacity(0.25), location: 1)],
+                               startPoint: .top, endPoint: .bottom)
+            }
+        }
         if isReadingMaterial || materialNote != nil {
             HStack(spacing: 8) {
                 if isReadingMaterial { ProgressView().controlSize(.small) }

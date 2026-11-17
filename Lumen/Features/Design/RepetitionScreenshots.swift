@@ -263,6 +263,12 @@ enum RepetitionDemo {
             model.store.save(history)
             model.store.save(drill)
             model.quota = quotaWithPrices
+            if name == "repHomeCredits" { // Kelly G4 (A132): Start is shown in credits now (D213)
+                var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
+                credits.unit = "chars"
+                credits.remaining = 1236
+                model.quota = credits
+            }
             return
         }
         if name.hasPrefix("repSay") { // A115 (D203)
