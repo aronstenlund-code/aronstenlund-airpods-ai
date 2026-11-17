@@ -191,6 +191,12 @@ final class SayFlowTests: XCTestCase {
 
     private func goToStart() {
         for _ in 0..<6 {
+            // A109: "Vill du ha en påminnelse?" after the first finished exam or reading (run 43990919797).
+            if find(["Vill du ha en påminnelse?"]) != nil, let notNow = find(["Inte nu"]), notNow.isHittable {
+                tapElement(notNow, "Inte nu (reminder question)", counted: false)
+                pause(1)
+                continue
+            }
             if atStart() { return }
             if app.alerts.firstMatch.exists {
                 let alert = app.alerts.firstMatch
