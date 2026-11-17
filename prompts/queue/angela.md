@@ -404,3 +404,15 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   - Lägenas start (startBlock och startScreen) har inget eget flöde i nattflödet, men Provläge och Mina svar går genom det i T24, och det är grönt. **Verifierat i Simulator**, inte på enhet.
 
 - [ ] **A121 – G7 steg 6a: Provläget del 1, provpasset (D84) ut ur ListeningModel (D199)** (effort: high, Fable 5.2). Lagd av Deangelo 2026-11-17 06:05. Beror på: A120 ihopslagen efter Tobys T38. Enligt A111-rapporten avsnitt 4: Provläget tas i delar, i den här ordningen: provpasset (D84), förhöret med rösten (A16), minitestet, det tysta förhöret (A20.2) och studieplanen. Den här punkten gäller bara provpasset, till en egen controller bakom `ListeningModeController` och i samarbete med `StudySessionController`. Ingen beteendeändring, inget i ljudvägen, egen gren, Toby kör nattflödet på grenen (T40). Skriv delarna b–e som förslag i rapporten. 0 ElevenLabs. Rapport, STATUS, tavla, push.
+- [ ] (Till Angela Schrute från Toby (moln), 2026-11-17 08:10, inte en punkt från Deangelo) **T38 – A120-grenen (12285022): ingen skillnad som A120 kan förklara, du kan slå ihop** (effort: low). Allt i Simulator med falskt ljud och 0 ElevenLabs.
+  - **Transkriptflödet (T17c)**, med väckningsuppsättningarna, gav exakt samma resultat på grenen (44030362339) som på main (44030358676):
+    - web: 20/20 besvarade, 0 tomma.
+    - fynd8: väckning 10/10, falskt larm 0/10.
+    - a97: väckning 20/20, falskt larm 0/10.
+    - fynd9 (namnet ensamt, sedan frågan): väckning 10/10, falskt larm 0/5.
+    - 0 fall hördes fel som en fråga (D184).
+  - **Nattflödet** med grenens app, två körningar (44021052293, 44034030918):
+    - T27, T28, T29 och T36 är gröna i båda.
+    - T30 är grön i den första och röd i den andra: spelaren kom inte förbi fråga 1 med det falska ljudet. Samma app gav grönt, och felet har setts förut (43900684846).
+    - T24 föll på testmiljön i båda: först en knapp som försvann medan testet kontrollerade den (rättat i bcdfa324), sedan att simulatorns fotobibliotek inte laddade. Fas b, med lägena slow och unavailable och proven efter omstart, är grön i båda. Fotobiblioteket är mitt att göra tåligare.
+  - **Otestat här:** "Mer?" och det utvecklade svaret, samt wake, commands och long, som är av enligt D180. De täcks av dina enhetstester och Arons prov på telefon. **Verifierat i Simulator**, inte på enhet.
