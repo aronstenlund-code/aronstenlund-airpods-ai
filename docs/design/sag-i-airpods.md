@@ -12,10 +12,10 @@ skanningslinjer, ASCII-konst, skrivmaskinsljud och glödeffekter. Resten av Prov
 | Skärm | Bild | Det viktigaste |
 |---|---|---|
 | Prov, tomt fält | `prov-tom.png` | Fältet ligger **överst**, under rubriken Prov, före Nästa prov. Det är mörkt i både ljust och mörkt läge (eget verktyg). Rubriken "Säg i AirPods" i systemtypsnittet, raden i monospace med en `›` i accentfärg och en blinkande blockmarkör. Platshållare: "Skriv eller klistra in det du vill höra". Under: `+`, Hur länge, tempo och **Spela** (grå tills det finns text). Krediterna står som en kapsel uppe till vänster. |
-| Med text | `prov-text.png` | Antal tecken uppe till höger i fältet, och under fältet kostnaden innan något görs (D205): "Räknas som {1} fråga. Upprepningar kostar inget." Spela blir fylld. |
+| Med text | `prov-text.png` | Antal tecken uppe till höger i fältet, och under fältet kostnaden innan något görs (D205): "Kostar {764} krediter. Upprepningar kostar inget." (D213) Spela blir fylld. |
 | Hur länge | `hur-lange.png` | Systemets `Menu` på knappen: En gång (förvald), Upprepa 5 min, Upprepa 10 min, Upprepa 20 min. Knappen visar "En gång" eller "10 min" med upprepningssymbolen. |
 | + för material | `material.png` | Systemets `Menu`: Fota sidor, Välj bilder, Lägg till fil, Klistra in länk (D204). Texten som läses ur materialet läggs i fältet, så att man ser vad som läses upp. |
-| Krediterna | `krediter.png` | Blad från kapseln: siffran stort, "frågor kvar den här månaden", vad som kostar vad och när det fylls på. |
+| Krediterna | `krediter.png` | Blad från kapseln: siffran stort, "krediter kvar den här månaden" (D213), vad som kostar vad och när det fylls på. |
 | Spelar | `spelar.png` | Läslägets spelare (D185) med texten i monospace. Överst alltid **"● Spelar i AirPods"** och vid upprepning "Varv {3} · {7:12} kvar av {10} min". Avsluta stoppar direkt. |
 
 ## 3. Regler
@@ -43,8 +43,10 @@ skanningslinjer, ASCII-konst, skrivmaskinsljud och glödeffekter. Resten av Prov
 | Platshållare | Skriv eller klistra in det du vill höra |
 | Längd (uppe till höger) | {104} tecken |
 | Under fältet, rad 1 (D209, A122) | Du kan låsa telefonen och lägga undan den. Det hörs i AirPods ändå. *(alltid, även tomt fält)* |
-| Under fältet, rad 2 | Räknas som {1} fråga. Upprepningar kostar inget. *(när det finns text)* |
-| … krediterna räcker inte | Texten räknas som {3} frågor, och du har {1} kvar. Korta texten eller vänta till den 1 {december}. |
+| Under fältet, rad 2 (D213) | Kostar {764} krediter. Upprepningar kostar inget. *(när det finns text)* |
+| … ljudet finns redan | Kostar inget. Ljudet finns redan. |
+| … krediterna räcker inte (före och vid 402, D212/D213) | **Det här kostar {764} krediter. Du har {312} kvar. Nya krediter den 1 {december}.** *(halvfet, i stället för rad 2; Spela grå)* |
+| … nekat utan servertext | Det gick inte att spela just nu. Försök igen om en stund. |
 | … utan krediter (D200) | Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt. |
 | Huvudknapp i fältet | Spela |
 | Hur länge, meny (D210, A124) | 10 min · 15 min · 20 min · 25 min · 30 min · 35 min · 40 min · 45 min · 50 min · 55 min · 1 timme *(standard 10 min; ersätter En gång och 5/10/20)* |
@@ -52,15 +54,17 @@ skanningslinjer, ASCII-konst, skrivmaskinsljud och glödeffekter. Resten av Prov
 | Tempo, meny | 0,5× · 0,75× · 1,0× · 1,5× *(D151:s tempon; 1,25× finns inte)* |
 | + meny | Fota sidor · Välj bilder · Lägg till fil · Klistra in länk |
 | Länken gick inte att läsa | Sidan gick inte att läsa. Kopiera texten och klistra in den i stället. |
-| Kreditkapseln | {312} frågor kvar |
-| Bladet, rubrik | Frågor kvar · *knapp:* Klar |
-| Bladet, under siffran | frågor kvar den här månaden |
-| Bladet, rader (så länge alla längdklasser kostar 1) | En fråga · 1 / Läs upp eller Säg i AirPods · 1 per 800 tecken / Upprepa samma text · 0 |
-| … när servern ger olika tal (K82) | Vanlig fråga · {1} / Lite längre fråga · {1,5} / Mycket lång fråga · {2} / Läs upp eller Säg i AirPods · 1 per 800 tecken / Upprepa samma text · 0 |
+| Kreditkapseln | {1 236} krediter kvar *(tusental med mellanslag)* |
+| Provkortet och provets skärm före start | Kostar {2 340} krediter *(frågor + långa svar som behöver nytt ljud)* |
+| Bladet, rubrik | Krediter · *knapp:* Klar |
+| Bladet, stor siffra och rad under | {1 236} / krediter kvar den här månaden |
+| Bladet, avsnitt | SÅ RÄKNAS DET |
+| Bladet, rader | 1 tecken nytt ljud · 1 kredit / Ljud som redan finns · 0 / Upprepa samma text · 0 / Prov som andra har delat eller publicerat · 0 |
+| Bladet, fotnot | Du får 1 500 krediter varje månad. Nya krediter den 1 {december}. Oanvända krediter sparas inte. |
+| Bladet, exempel (en rad överst i fotnoten) | En text på 764 tecken kostar 764 krediter. |
 | Platshållare vid största text | Skriv här |
-| Bladet, fotnot | Fylls på den 1 {december}. Prov som andra har delat eller publicerat kostar inget. |
 | Spelaren, överst | ● Spelar i AirPods |
-| Spelaren, rad | Varv {3} · {7:12} kvar av {10} min *(En gång: "Mening {2} av {5}")* |
+| Spelaren, rad | Varv {3} · {7:12} kvar av {10} min  |
 | VoiceOver på fältet | Säg i AirPods, textfält |
 | VoiceOver på + | Lägg till material |
 | VoiceOver på Hur länge | Hur länge, {Upprepa 10 minuter} |
