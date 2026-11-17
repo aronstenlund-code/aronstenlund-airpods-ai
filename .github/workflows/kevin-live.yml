@@ -28,6 +28,10 @@ on:
           - k83-coverage.py
           - k88-live.py
           - k90-live.py
+          - k93-live.py
+          - k94-apple-root.py
+          - qa/o79_quality.py
+          - k98-attest-root.py
       args:
         description: "Arguments (optional)"
         required: false
@@ -49,6 +53,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Pillow (O79's photo material)
+        run: pip install --quiet Pillow
       - name: Run
         env:
           SCRIPT: ${{ inputs.script }}

@@ -1,3 +1,4 @@
+import { wordsToNumber } from "../answer/svnum.ts";
 import { HttpError } from "../_shared/errors.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
 import { allocate, codeCap, coverage, nearDuplicate, partCount, placeQuestions, shares, splitParts } from "./coverage.ts";
@@ -71,10 +72,10 @@ When the material cannot be read at all (blurred, cut off, a screen photo you ca
   - written as it is said: no symbols, formulas, units or abbreviations as signs ("syre", not "O2"; "kubikdecimeter", not "dm³"; "procent", not "%");
   - tests understanding, not only recall: at least three of every four questions ask why, how, what happens if, or compare ("Varför behövs klorofyll?", "Hur bildas en näringsväv?", "Vad händer om pH sjunker?", "Skillnad mellan väder och klimat?"); "Vad är X?", "Vad betyder X?" or "Vilka ...?" at most one in five, only for a key term the material defines;
   - is answered by the material (never a question the material does not cover, never a fact from outside it);
-  - asks "Varför ...?" only when the material itself states the cause or the reason (a "because", "därför att", "eftersom", "leder till", "beror på" or an explained mechanism); a fact stated with no reason ("tredje ståndet betalade nästan alla skatter", "taking the train is better than flying") gets "Vad ...?", "Hur ...?" or "Vilka följder ...?" instead; when the material only states that something is so (a rule, a law, a definition), ask "Vad ...?" or "Hur ...?" instead (O63: "Varför bestämmer antalet protoner vilket grundämne atomen är?" has no answer in a material that only says it; the answer becomes circular);
+  - asks "Varför ...?" only when the material itself states the cause or the reason (K97, O79: "Varför fick Gustav Vasa med sig bönderna?" is wrong when the material only says that they joined him) (a "because", "därför att", "eftersom", "leder till", "beror på" or an explained mechanism); a fact stated with no reason ("tredje ståndet betalade nästan alla skatter", "taking the train is better than flying") gets "Vad ...?", "Hur ...?" or "Vilka följder ...?" instead; when the material only states that something is so (a rule, a law, a definition), ask "Vad ...?" or "Hur ...?" instead (O63: "Varför bestämmer antalet protoner vilket grundämne atomen är?" has no answer in a material that only says it; the answer becomes circular);
   - never claims anything the material does not say or that contradicts it (O63: "Varför kallas medierna den fjärde statsmakten?" when the material says "tredje");
   - a real exam question a teacher would ask: no yes/no, no multiple choice, no "enligt texten", no page or task numbers, no question about the material itself;
-  - different from every other question (no two that ask the same thing).
+  - different from every other question (no two that ask the same thing). K97 (O79): before you return, compare every pair: when the material gives two questions the same answer (the same fact, cause or effect in other words: "Varför kan ljud inte spridas i vakuum?" and "Varför är det tyst i rymden?"; "Varför får de med fasta inkomster det sämre?" and "Varför får pensionärer det sämre?"), keep only the better one and ask about something else the material says.
 - When <correction> is given, it is the student's correction of your reading (subject, grade or what the exam covers): follow it.
 No markdown, no other text.`;
 
@@ -82,12 +83,13 @@ export const SYSTEM_PROMPT_DRILL_ANSWERS =
   `You write the answers a Swedish student will listen to in their AirPods while revising for an exam. You get <context> (subject and grade), <notes> (the study material), <long_words>, <questions> (JSON: id and question) and maybe <language> and <may_fix>. Return ONLY a JSON object {"answers": [{"id": "q1", "short": "...", "rest": "..."}]} with one entry per question, in the same order.
 - Language (D182): write in <language> when it is given (a language exam: the questions are in that language too); else in Swedish.
 - When <may_fix> is given and a question cannot be answered well from the notes, put a better question in "question" and answer that one: a question with a claim the notes contradict gets the notes' fact ("fjärde statsmakten" -> "tredje statsmakten" when the notes say so); a "Varför ...?" whose cause the notes do not give becomes a "Vad ...?" or "Hur ...?" question the notes answer. Otherwise leave "question" out.
+- K97 (O79): never invent a cause, motive or reason the notes do not give ("bönderna var missnöjda med danskarnas styre", "för att göra makten säker för släkten", "kriget mot Danmark" when the notes only say "efter kriget"). A why-question whose cause the notes do not state: with <may_fix>, ask a "Vad ...?" or "Hur ...?" question the notes answer; without it, answer only with what the notes do say about it, and say plainly that the reason is not known from this ("Varför det blev så är inte känt här, men ..."; in English "Why is not explained here, but ...") rather than guess; never name the notes, a material or what you have ("the notes do not say", "det material jag har" are wrong). School knowledge may fill out a mechanism the notes name, never supply a cause they leave out.
 - Never answer a why-question by repeating its claim ("Det beror på att sidorna alltid har just det sambandet", "De ansåg att makten skulle komma från folket"): give the reason, or (with <may_fix>) ask a better question.
 - "short": the short answer (D162): ONE sentence, two only when one cannot hold it, at most 25 words, that on its own is a full, correct A-level answer: it states the answer itself (the cause, the mechanism, the fact, the difference), never an introduction that only names the topic. Wrong: "Fotosyntes är en viktig process i växterna." Right: "Växten använder ljusenergi för att bygga glukos av koldioxid och vatten, och syre blir över."
 - "rest": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: it builds on the short answer with the concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Never repeat or rephrase the short answer. Short + rest together are about <long_words> words or fewer (count them); go over only when the answer would otherwise miss a concept or connection an A-level answer needs, and then by at most a fifth. Never pad an answer to reach the number.
 - The grade never lowers the quality; it only decides which concepts are reasonable (no university concepts in åk 7-9).
-- Base the answers on <notes>. Add school knowledge only where the notes are too thin, only facts you are certain of (textbook-level, widely known), and never contradict the notes; leave out a detail rather than guess it (O55: "stäppgräs har korta rötter" was wrong). Every fact must be correct: work every number out before you write it. Never add history, causes or examples the question did not ask for. Never add a general rule about a whole group ("alla", "alltid", "aldrig", "inga", "kan alltså vara") that the notes do not state (O63: "Alla föreningar kan alltså vara molekyler" is wrong: salt is a compound but not molecules).
-- The text is read aloud: plain spoken sentences, no markdown, lists, headings, brackets, abbreviations or symbols. Write numbers, years, decimals, formulas and symbols in words ("koldioxid", not "CO2"; "pi", not "π"; "arton hundrafemtio", not "1850"). Never mention the notes, the material, the text, the book, the exam or the grade: the student only hears the answer ("i materialet", "enligt texten" are wrong).
+- Base the answers on <notes>. K97 (O79): never add a cause, motive, mechanism, consequence, advice or general claim the notes do not give ("efter blodbadet var han själv i fara", "Latin förstod bara de lärda", "banker utgår från styrräntan", "sänk volymen i hörlurarna" are wrong when the notes do not say them); when the notes give no reason, say so in a few words instead of explaining. School knowledge only to name or define a concept the notes use, only facts you are certain of (textbook-level), and never contradict the notes; leave out a detail rather than guess it (O55: "stäppgräs har korta rötter" was wrong). Every fact must be correct: work every number out before you write it. Never add history, causes or examples the question did not ask for. Never add a general rule about a whole group ("alla", "alltid", "aldrig", "inga", "kan alltså vara") that the notes do not state (O63: "Alla föreningar kan alltså vara molekyler" is wrong: salt is a compound but not molecules).
+- The text is read aloud: plain spoken sentences, no markdown, lists, headings, brackets, abbreviations or symbols. K97 (O79): write numbers, years, dates, decimals and percentages with digits exactly as the notes have them ("1527", "85 decibel", "340 meter per sekund", "2 procent", "den 6 juni 1523"): the voice turns them into words, and digits are never mixed up. Write formulas and symbols in words ("koldioxid", not "CO2"; "pi", not "π"). Never mention the notes, the material, the text, the book, the exam or the grade: the student only hears the answer ("i materialet", "enligt texten" are wrong).
 - "display" (K66): the student also sees the text on screen, where 1850, 3,14, a² + b², CO₂ and 25 % are easier to read than words. When the question, "short" or "rest" has a number, year, decimal, formula, unit or symbol written as words, also return "display": {"question": "...", "short": "...", "rest": "..."} with the same sentences written as a textbook prints them, and only the fields that differ. Every year, date, percent, decimal, measurement and number above twelve gets its digits there ("den fjortonde juli sjuttonhundraåttionio" -> "den 14 juli 1789", "fyra procent" -> "4 %", "eighteen fifty" -> "1850", "one point two degrees" -> "1.2 degrees"); only small counts in running text stay words ("två orsaker"). Division is "/" or a fraction on screen ("s / t") and "delat med" / "divided by" in the spoken text. No numbers or formulas: leave "display" out.
 No other text.`;
 
@@ -227,6 +229,7 @@ export const SYSTEM_PROMPT_DRILL_SHORTEN =
 - Never make a question longer for any other reason. Filler that adds nothing may go ("i naturen", "egentligen").
 - The question must still ask the same thing: a why-question stays a why-question, the same concept, the same numbers in a calculation.
 - A calculation question keeps its numbers and units, written as words or plain digits as given; never symbols.
+- K97 (O79): with <material>, read it first: two questions are the same when the material gives them the same answer. Two questions whose answers would be the same (the same fact, cause or effect asked in other words: "Hur påverkar inflation hushållens köpkraft?" and "Vad händer med köpkraften när inflationen stiger?"; "Varför får personer med fasta inkomster det sämre?" and "Varför får pensionärer med fast pension det sämre?"): return the LATER one as {"i": N, "drop": true}. Only when a student would give the same answer to both; two questions on one topic that ask different things both stay.
 No other text.`;
 
 /**
@@ -239,7 +242,8 @@ export async function shortenQuestions(
   questions: string[],
   exam: DrillSummary,
   signal?: AbortSignal,
-): Promise<{ questions: string[]; usage: StepUsage | null }> {
+  material = "",
+): Promise<{ questions: string[]; usage: StepUsage | null; dropped?: number }> {
   const lang = examLanguage(exam.subject);
   const long = questions.map((q, i) => ({ i, q }));
   if (!long.length) return { questions, usage: null };
@@ -247,7 +251,8 @@ export async function shortenQuestions(
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_SHORTEN,
       user: `<exam>${sanitizeTagged(`${contextLine(exam.subject, exam.grade)}. ${exam.covers}`)}</exam>
-<questions>${sanitizeTagged(JSON.stringify(long))}</questions>${lang ? `
+<questions>${sanitizeTagged(JSON.stringify(long))}</questions>${material ? `
+<material>${sanitizeTagged(material.slice(0, 6000))}</material>` : ""}${lang ? `
 <language>${lang}</language>` : ""}`,
       maxTokens: 300 + long.length * (lang ? 60 : 30),
       cacheSystem: true,
@@ -257,8 +262,14 @@ export async function shortenQuestions(
     }, cfg.planPriceIn, cfg.planPriceOut);
     const out = [...questions];
     const j = firstJson(r.text);
+    const drop = new Set<number>();
     for (const x of Array.isArray(j?.questions) ? j!.questions as Record<string, unknown>[] : []) {
       const i = Number(x?.i);
+      // K97 (O79): a question with the same answer as an earlier one goes (never the first, at most a third)
+      if (x?.drop === true && Number.isInteger(i) && i > 0 && i < out.length) {
+        drop.add(i);
+        continue;
+      }
       const q = cleanQuestion(x?.q);
       if (!Number.isInteger(i) || i < 0 || i >= out.length || !q) continue;
       // K52 live: rewrites that only made questions longer cost R3 (65 % at most five words). A longer rewrite is kept
@@ -270,7 +281,9 @@ export async function shortenQuestions(
       if (words(q) >= 2 && (words(q) <= words(out[i]) + (mayGrow ? 2 : 0) || (translated && words(q) <= words(out[i]) * 2 + 2)) && !leansOnMaterial(q) &&
         !out.some((o, k) => k !== i && o.toLowerCase() === q.toLowerCase())) out[i] = q;
     }
-    return { questions: out, usage: r.usage };
+    const gone = [...drop].sort((a, b) => a - b).slice(0, Math.floor(out.length / 3));
+    const kept = out.filter((_, i) => !gone.includes(i));
+    return { questions: kept.length ? kept : out, usage: r.usage, dropped: kept.length ? gone.length : 0 };
   } catch (e) {
     console.warn("drill_shorten_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
     return { questions, usage: null };
@@ -316,7 +329,7 @@ export function isIntroShort(short: string): boolean {
 /** K66 (O63): the answer points at the material, which the student never hears ("i materialet", "enligt texten"). */
 export function mentionsMaterial(s: string): boolean {
   // K67 (O64 punkt 3): on every exam language (D182)
-  return /(?<![\p{L}])(?:materialet|i texten|enligt texten|texten säger|anteckningarna|enligt boken|i boken|the material|the notes|the text|in the text|the passage|the reading|el material|las notas|el texto|das material|die notizen|im text|der text|le matériel|les notes|le texte|dans le texte)(?![\p{L}])/iu.test(s);
+  return /(?<![\p{L}])(?:materialet|i texten|enligt texten|texten säger|anteckningarna|notes säger|enligt notes|i notes|det material jag har|det jag har|i mitt material|the notes do not|my notes|enligt boken|i boken|the material|the notes|the text|in the text|the passage|the reading|el material|las notas|el texto|das material|die notizen|im text|der text|le matériel|les notes|le texte|dans le texte)(?![\p{L}])/iu.test(s);
 }
 
 /**
@@ -337,6 +350,35 @@ function screenText(v: unknown, spoken: string, max: number): string | undefined
   const s = spokenText(v, max);
   if (!s || s === spoken || s.length > spoken.length * 1.5 + 20 || s.length < spoken.length * 0.25) return undefined;
   return s;
+}
+
+const TEENS: Record<string, number> = { tio: 10, elva: 11, tolv: 12, tretton: 13, fjorton: 14, femton: 15, sexton: 16, sjutton: 17, arton: 18, nitton: 19, tjugo: 20 };
+const YEAR_WORDS = new RegExp(
+  `(?<!\\p{L})(${Object.keys(TEENS).join("|")})\\s?hundra(?:\\s?(\\p{L}+))?(?!\\p{L})|(?<!\\p{L})tvåtusen(?:\\s?(\\p{L}+))(?!\\p{L})`, "giu");
+
+/**
+ * K97 (O79 F4): a year written in words in the shown text becomes digits ("femton hundra tjugosju" and
+ * "femtonhundratjugosju" -> "1527", "tvåtusentjugotvå" -> "2022"). Only year shapes (10–20 hundred, two thousand and
+ * a number below 100), so amounts ("femhundra kronor") stay as they are. The spoken text keeps its words.
+ */
+export function yearsToDigits(text: string): string {
+  return text.replace(YEAR_WORDS, (m, head?: string, tail?: string, tail2?: string) => {
+    if (head) {
+      const h = TEENS[head.toLowerCase()];
+      if (!tail) return String(h * 100);
+      const t = wordsToNumber(tail);
+      if (t !== null && t >= 1 && t < 100) return String(h * 100 + t);
+      // "sextonhundratalet" -> "1600-talet", "artonhundrasjuttiotalet" -> "1870-talet"
+      const dec = /^(\p{L}*?)(tal(?:et|s)?)$/iu.exec(tail);
+      if (dec) {
+        const n = dec[1] ? wordsToNumber(dec[1]) : 0;
+        if (n !== null && n >= 0 && n < 100) return `${h * 100 + n}-${dec[2]}`;
+      }
+      return m; // anything else ("femtonhundra år" as a length of time) keeps its words
+    }
+    const t = tail2 ? wordsToNumber(tail2) : null;
+    return t !== null && t >= 1 && t < 100 ? String(2000 + t) : m;
+  });
 }
 
 export function parseAnswers(text: string, strict = false): Map<string, { short: string; long: string; question?: string; screen?: Screen }> {
@@ -482,6 +524,13 @@ export async function answerItems(
       const out: DrillItem = { ...it, question: a.question ?? it.question, short: a.short, long: a.long };
       // the display question belongs to the question that was answered; dropped when it was fixed without one
       const screen: Screen = { ...(a.screen ?? {}) };
+      // K97 (O79 F4): years in words on screen become digits, also when the model gave no display text
+      for (const k of ["short", "long"] as const) {
+        const shown = yearsToDigits(screen[k] ?? out[k]!);
+        if (shown !== out[k]) screen[k] = shown;
+      }
+      const sq = yearsToDigits(screen.question ?? out.question);
+      if (sq !== out.question) screen.question = sq;
       if (screen.question && (screen.question === out.question || (a.question && screen.question === it.question))) delete screen.question;
       if (Object.keys(screen).length) out.screen = screen;
       return out;
@@ -788,7 +837,7 @@ export async function handleDrill(
     const possible = Math.max(1, Math.min(count, p.questionsPossible ?? count, p.questions.length));
     const summary = { subject: p.summary.subject || subjectIn, grade: gradeIn && !correction ? gradeIn : p.summary.grade || gradeIn, covers: p.summary.covers };
     const [sh, notesRun] = await Promise.all([
-      shortenQuestions(provider, cfg, p.questions, summary, signal),
+      shortenQuestions(provider, cfg, p.questions, summary, signal, text),
       notesCall.catch(async () => await runLLM(provider, planReq(PART_NOTES, 3500), cfg.planPriceIn, cfg.planPriceOut)), // once more
     ]);
     // the notes call's reply; an old-style reply with notes in the questions call is kept (never both empty)
@@ -829,6 +878,8 @@ export async function handleDrill(
               `<count>${n + 1}</count>`,
               `<material>\n${sanitizeTagged(parts[i])}\n</material>`,
               k > 1 ? "Read the material above (one part of a longer material: ask only about this part)." : "Read the material above.",
+              // K97 (O79): the questions already chosen, so this part's questions never ask the same thing again
+              chosen.length ? `<already_asked>${sanitizeTagged(JSON.stringify(chosen.map((c) => c.q)))}</already_asked>\nNever ask anything these questions already ask, in any words; a question whose answer would be the same as one of theirs is wrong.` : "",
               PART_QUESTIONS,
             ].filter(Boolean).join("\n"),
             maxTokens: 300 + (n + 1) * 80,

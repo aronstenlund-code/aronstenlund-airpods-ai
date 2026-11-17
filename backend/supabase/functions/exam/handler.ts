@@ -103,7 +103,7 @@ export interface ExamDeps {
   /** K53: the private bucket for uploaded photos. */
   material?: MaterialStore | null;
   /** K61 (D175): the month's generated questions (used, limit); "drill" never makes more than are left. */
-  quota?: (userId: string) => Promise<{ used: number; lim: number }>;
+  quota?: (userId: string) => Promise<{ used: number; lim: number; unlimited?: boolean; wallet?: unknown }>;
 }
 
 const MONTHS = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
@@ -368,11 +368,11 @@ export function createExamHandler(deps: ExamDeps) {
         delete req0._max_questions;
         // K90 (D213): the quota is credits (characters of new audio); none left = say so before any work. The number
         // of questions is not capped by it (what the audio costs is told at save: cost)
-        let quota: { unit: "chars"; used: number; limit: number; left: number; remaining: number; per: "month"; resets: string } | null = null;
+        let quota: { unit: "chars"; used: number; limit: number; left: number; remaining: number; per: "month"; resets: string; unlimited?: boolean } | null = null;
         if ((action === "drill" || action === "read") && deps.quota) {
           const q = await deps.quota(user.id);
           const left = Math.max(0, q.lim - q.used);
-          quota = { unit: "chars", used: q.used, limit: q.lim, left, remaining: left, per: "month", resets: monthResets(Date.now()) };
+          quota = { unit: "chars", used: q.used, limit: q.lim, left, remaining: left, per: "month", resets: monthResets(Date.now()), ...(q.unlimited ? { unlimited: true } : {}), ...(q.wallet ? (q.wallet as Record<string, unknown>) : {}) };
           if (left <= 0) {
             return json({
               error: { code: "quota_exceeded", message: `Du har inga krediter kvar den här månaden. Nya krediter den ${resetsDay(Date.now())}. Andras prov är gratis.`, fallback: false },

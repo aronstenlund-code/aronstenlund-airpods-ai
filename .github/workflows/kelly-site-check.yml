@@ -41,6 +41,7 @@ jobs:
             echo "h1: $(grep -o '<h1[^>]*>[^<]*' page.html | sed 's/<h1[^>]*>//')"
             echo "canonical: $(grep -o '<link rel="canonical" href="[^"]*' page.html | sed 's/.*href="//')"
             echo "og:image: $(grep -o 'property="og:image" content="[^"]*' page.html | sed 's/.*content="//')"
+            echo "Ke74-steget (Skriv det du vill höra): $(grep -c 'Skriv det du vill höra' page.html || true)"
             echo "Earmind (litet m) i sidan: $(grep -c 'Earmind' page.html || true)"
             echo "== og image"
             img=$(grep -o 'property="og:image" content="[^"]*' page.html | sed 's/.*content="//')

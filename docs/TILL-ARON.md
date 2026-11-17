@@ -34,8 +34,17 @@ Kortast möjligt. Svara "ja"/"nej"/eget val i chatten med Deangelo.
 ## 25. ~~Din egen gräns~~ Klart: Aron 18:33 "gör så att jag alltid har krediter som admin" (D216, K93) (2026-11-17 13:55)
 Du har gjort 14 av 15 frågor med ljud den här månaden, så appen nekar mer ljud tills 1 december. ElevenLabs har krediter igen. Vill du att ditt eget konto inte har någon månadsgräns? Svara ja eller nej, så gör Kevin det. Det kostar bara ElevenLabs-krediter när du själv använder appen.
 
-## 26. Priser (D214), förslag från Deangelo 2026-11-17 14:20
+## 26. ~~Priser~~ Bestämt av Aron 21:08 (D224): 79 kr/vecka, 20 000 tecken, 5 000 välkomstkrediter, inbjudan 2 000 (förslaget nedan gäller i övrigt)
 - 100 krediter 10 kr, 500 för 39 kr, 2 000 för 110 kr.
 - Prenumeration 80 kr i veckan, obegränsat med en dold gräns för rimlig användning på 40 000 tecken i veckan.
 - Varje nytt konto får 10 000 krediter första gången, så att man hinner prova ett helt prov. Därefter 1 500 i månaden.
 - Svara ja, eller ändra siffrorna.
+
+## 27. Betalningen i App Store Connect (D218), 2026-11-17 20:25
+Appen och servern byggs nu för köp med StoreKit, men produkterna måste finnas i App Store Connect innan de går att köpa på riktigt. Det kräver dig: avtalet för betalda appar (Paid Apps Agreement med bank och skatt) och de fyra produkterna. Vi säger till när det behövs och öppnar sidan åt dig. Inget kostar något innan dess.
+
+## 28. Får vi lyssna på taggarna en gång? (D220), 2026-11-17 20:40
+För att veta att taggarna (lugnt, tydligt, viskande) och en skånsk röst faktiskt låter bra måste vi göra riktigt ljud en gång. Ett A/B-test med 6 korta texter kostar ungefär 2 000 ElevenLabs-krediter. Svara ja eller nej. Utan ja testas bara att texten blir rätt, inte hur den låter.
+
+## 29. När det passar: prova lyssnarlägena med AirPods (D221)
+Fem omstruktureringar av lyssnarlägena (Frågor, Provläge med rösten, minitestet, det tysta förhöret, studieplanen) är bara testade i simulatorn. Provlistorna står i rapporterna för A120, A125, A126, A127 och A128. Ingen brådska; de två sista stegen med högre risk väntar tills du har provat.

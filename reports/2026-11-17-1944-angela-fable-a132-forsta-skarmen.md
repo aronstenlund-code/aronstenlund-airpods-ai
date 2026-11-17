@@ -43,6 +43,20 @@ noterar det och har inte byggt något som döljer uppspelningen.
 - **Bilder** i `reports/2026-11-17-a132-bilder/` (grenarna `fable/screens-a132-17pro-2`, `-17pro-4`,
   `-se-xxxl-4`): tomt, med text, krediterna räcker inte, Senaste, bara Säg-texter, spelar; SE med största text.
 
+## Uppföljning 20:57: punkt 8 och A133 är gjorda
+- **Main-bygget för punkt 1–7 blev grönt: iOS build 44151043267.**
+- **Punkt 8 (K92):** 0,7 s efter sista tangenten frågar fältet servern vad texten kostar (`action: "cost"`, samma kropp
+  som en sparning; inget sparas, startas eller räknas). Svaret visas som "N krediter". Tills servern har svarat, eller
+  om den inte svarar, står ingenting där, och servern svarar ändå vid Spela. Appen räknar inte längre tecken själv.
+- **A133 (D216):** säger kvotsvaret `unlimited: true` (Kevins K93) visar kapseln "Obegränsat", ingen kostnad visas,
+  Spela blir aldrig grå och provkorten säger inget om kostnad. Bladet visar "Obegränsat" och "Det här kontot har ingen
+  gräns" (mina ord).
+- **Tester:** kostnaden före Spela frågas av servern utan att något sparas; ett konto utan gräns får "Obegränsat".
+  iOS build 44160372719 grön på min gren.
+- **Bilder:** `reports/2026-11-17-a132-bilder/17pro-ljust-k92-a133.jpg` och `…-morkt-…` (gren
+  `fable/screens-a133-17pro-1`).
+- **Otestat:** inget riktigt `cost`- eller `unlimited`-svar har gått genom appen.
+
 ## Otestat (antaganden)
 - "Klistra in", fältets 5 rader med fokus och menyn "Spela i" finns inte på bild (Toby tar dem i T46).
 - En SE-bild i omgång 2 visade iOS hemskärm i stället för appen; i omgång 4 visar alla SE-bilder appen. Om det var

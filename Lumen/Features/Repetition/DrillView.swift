@@ -351,6 +351,7 @@ struct DrillView: View {
     /// Nil for a started exam and while the quota is not known.
     private func startCost(_ drill: Drill) -> (line: String, tooMany: Bool)? {
         guard model.awaitsAudioStart(drill), !model.isReadingAloudOff(drill), let quota = model.quota else { return nil }
+        if quota.isUnlimited { return nil } // A133 (D216): no cost is said to an account without a limit
         if quota.isCredits { // A131 (D213, K90): the server's number, in credits; nothing is counted here
             guard let cost = drill.startCost else { return nil }
             if cost > quota.left {
@@ -391,6 +392,11 @@ struct DrillView: View {
                 // A107 (D190): the sound is made at Starta prov; no "Ljud: 0 av N" that looks stuck.
                 Text(verbatim: facts)
                 Text(verbatim: model.isStartingAudio(drill) ? "Gör ljudet …" : "Ljudet görs när du startar provet.")
+            } else if drill.audioTrimmed == true {
+                // A135 (Angela Schrute): the sound was removed from the phone for space and is fetched again at Starta
+                // prov. No counter that stands still.
+                Text(verbatim: facts)
+                Text(verbatim: "Ljudet hämtas när du startar provet.")
             } else if model.quotaExceeded(drill) {
                 // Kelly Ke64 T1: nothing more is made this month, so no counter and no bar that seem to move.
                 Text(verbatim: facts)

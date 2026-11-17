@@ -162,6 +162,31 @@ import Testing
         #expect(reloaded.plans.isEmpty)
     }
 
+    /// D215 (A132): a text said in "Säg i AirPods" is no exam. It is not a plan in Provläge, and one that became a
+    /// plan before D215 leaves the list.
+    @Test func aSaidTextIsNoExamInProvlage() throws {
+        let plans = try store()
+        let exam = A79A81RepetitionTests.bio(1)
+        var said = Drill.text(title: SaidText.title("Hej hej hooooo"), summary: DrillSummary(subject: "", grade: "", covers: ""),
+                              parts: [DrillItem.textPart("Hej hej hooooo", part: .para)])
+        said.said = true
+        plans.sync(with: [exam, said])
+        #expect(plans.plans.map(\.drillID) == [exam.id], "only the exam is a plan")
+
+        // A said text saved before the mark existed is known by its title and is no plan either.
+        var unmarked = said
+        unmarked.said = nil
+        #expect(unmarked.isSaid)
+        plans.sync(with: [exam, unmarked])
+        #expect(plans.plans.map(\.drillID) == [exam.id])
+
+        // A reading text made in "Läs upp en text" is still an exam.
+        let reading = Drill.text(title: "Kapitel 4", summary: A79A81RepetitionTests.summary,
+                                 parts: [DrillItem.textPart("Cellen är livets minsta del.", part: .para)])
+        plans.sync(with: [exam, reading])
+        #expect(Set(plans.plans.compactMap(\.drillID)) == [exam.id, reading.id])
+    }
+
     @Test func plansSavedBeforeD189StillLoad() throws {
         let json = #"[{"id":"6F9619FF-8B86-D011-B42D-00C04FC964FF","area":"no","subject":"Biologi","date":800000000,"course":"","topics":""}]"#
         let plans = try JSONDecoder().decode([ExamPlan].self, from: Data(json.utf8))
