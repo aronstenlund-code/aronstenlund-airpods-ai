@@ -123,4 +123,23 @@ import Testing
         #expect(!saved.awaitsAudioStart && saved.serverID == "srv-1")
         #expect(audio.problem(for: saved) == nil)
     }
+
+    // MARK: A129 (D211, K88): the exam's own id on the first save
+
+    @Test func theFirstSaveCarriesTheExamsOwnIdAndLaterSavesTheServers() throws {
+        var questions = A79A81RepetitionTests.bio(2)
+        let first = try #require(DrillCloudClient.saveBody(questions)["drill"] as? [String: Any])
+        #expect(first["client_id"] as? String == questions.id.uuidString.lowercased())
+        #expect(first["id"] == nil)
+        let again = try #require(DrillCloudClient.saveBody(questions)["drill"] as? [String: Any])
+        #expect(again["client_id"] as? String == first["client_id"] as? String, "the same exam says the same id every time")
+
+        let text = Drill.text(title: "T", summary: A79A81RepetitionTests.summary, parts: [DrillItem.textPart("En mening.", part: .para)])
+        let said = try #require(DrillCloudClient.saveBody(text)["drill"] as? [String: Any])
+        #expect(said["client_id"] as? String == text.id.uuidString.lowercased(), "also a text from Säg i AirPods")
+
+        questions.serverID = "srv-1"
+        let later = try #require(DrillCloudClient.saveBody(questions)["drill"] as? [String: Any])
+        #expect(later["id"] as? String == "srv-1" && later["client_id"] == nil, "K88: not used once the server's id is known")
+    }
 }

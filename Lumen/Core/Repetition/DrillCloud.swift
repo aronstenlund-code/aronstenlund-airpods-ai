@@ -272,6 +272,9 @@ final class DrillCloudClient: DrillCloudSyncing {
         var info: [String: Any] = ["title": drill.title, "subject": drill.summary.subject, "grade": drill.summary.grade,
                                    "covers": String(drill.summary.covers.prefix(400)), "long_words": drill.longWords]
         if let id = drill.serverID { info["id"] = id }
+        // A129 (D211, K88): the exam's own id on the first save. The same id again from this account, also two saves
+        // at once, gives the exam that is already there, so one exam can never become two on the server.
+        if drill.serverID == nil { info["client_id"] = drill.id.uuidString.lowercased() }
         if drill.serverID == nil, let voice = drill.voiceModel { info["voice_model"] = voice } // K50: locked after
         // A107 (D190, K71): saving never makes sound; Starta prov does. After the start the server makes only the
         // changed files (D144), with or without the flag.
