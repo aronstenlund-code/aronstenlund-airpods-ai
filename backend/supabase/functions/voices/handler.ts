@@ -5,12 +5,30 @@ import { type Voice } from "../tts/voices.ts";
 
 export const VOICES_LIMITS: Limits = { perMinute: 30, perDay: 1000, globalPerDay: 20000 };
 
+/** K96 (D220): a voice the app may offer, with ElevenLabs' free preview (playing it costs no credits). */
+export interface CatalogVoice {
+  voice_id: string;
+  name: string;
+  gender?: string | null;
+  age?: string | null;
+  accent?: string | null;
+  language?: string | null;
+  preview_url?: string | null;
+  description?: string | null;
+}
+
 export interface VoicesDeps {
   authenticate: Authenticator;
   rateLimiter: RateLimiter;
   voices: Voice[];
   defaultVoiceId: string | null;
+  /** K96: the curated list (voice_catalog, 12–20 voices that read Swedish); empty until filled */
+  catalog?: () => Promise<CatalogVoice[]>;
+  /** K96: ElevenLabs' voice library (GET /v1/shared-voices, language sv): no credits */
+  searchLibrary?: (q: { search?: string; accent?: string; gender?: string; page?: number }) => Promise<CatalogVoice[]>;
 }
+
+const clip = (v: string | null, n: number) => (v ?? "").replace(/[^\p{L}\p{N} _.'-]/gu, "").slice(0, n);
 
 /** GET /voices -> { voices: [{name,id}], default_id }. Names and ids only; no secrets, no API calls. */
 export function createVoicesHandler(deps: VoicesDeps): (req: Request) => Promise<Response> {
@@ -31,10 +49,30 @@ export function createVoicesHandler(deps: VoicesDeps): (req: Request) => Promise
         });
       }
       const def = deps.defaultVoiceId ?? deps.voices[0]?.id ?? null;
+      const url = new URL(req.url);
+      if (url.searchParams.get("library") === "1") {
+        // K96: search ElevenLabs' library (Swedish); a voice found here is not usable before it is in the catalog
+        const lr = await enforceLimits(deps.rateLimiter, "voices_library", user.id, { perMinute: 10, perDay: 100, globalPerDay: 10_000 });
+        if (!lr.allowed) throw new HttpError(429, "rate_limited", "Too many requests", { retryAfterSec: lr.retryAfterSec });
+        const found = deps.searchLibrary
+          ? await deps.searchLibrary({
+            search: clip(url.searchParams.get("search"), 40) || undefined,
+            accent: clip(url.searchParams.get("accent"), 30) || undefined,
+            gender: clip(url.searchParams.get("gender"), 10) || undefined,
+            page: Math.max(0, Math.min(20, Number(url.searchParams.get("page")) || 0)),
+          }).catch((e) => (console.warn("voice_library_failed", String(e).slice(0, 120)), [] as CatalogVoice[]))
+          : [];
+        return new Response(JSON.stringify({ library: found, selectable: false }), {
+          status: 200, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "private, max-age=300", ...CORS_HEADERS },
+        });
+      }
+      const catalog = deps.catalog ? await deps.catalog().catch(() => [] as CatalogVoice[]) : [];
       return new Response(
         JSON.stringify({
           voices: deps.voices.map((v) => ({ name: v.name, id: v.id })),
           default_id: def,
+          // K96 (D220): choose one with save's drill.voice_id; it is locked for that text (D151)
+          ...(deps.catalog ? { catalog } : {}),
         }),
         {
           status: 200,

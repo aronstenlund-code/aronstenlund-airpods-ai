@@ -3,6 +3,8 @@ import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { useQuotaFromDb } from "../_shared/wallet_db.ts";
+import { providerFromEnv } from "../answer/llm/factory.ts";
+import { haikuStyler } from "./style.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
 import { secret } from "../_shared/secrets.ts";
 import { parseVoices } from "../tts/voices.ts";
@@ -11,6 +13,7 @@ import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type Pu
 
 const env = Deno.env;
 const db = restDbFromEnv();
+const stylerProvider = providerFromEnv(Deno.env);
 const base = env.get("SUPABASE_URL")!.replace(/\/+$/, "");
 const key = env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const xi = secret(env, "ELEVENLABS_API_KEY");
@@ -65,6 +68,8 @@ Deno.serve(withCors(withTestMode("drill",
   createDrillHandler({
     authenticate: createJwtAuthenticator({ supabaseUrl: base, hs256Secret: env.get("SUPABASE_JWT_SECRET") }),
     rateLimiter: new SupabaseRateLimiter(db),
+    // K95 (D220): Haiku adds v3 tags for "Hur ska det låta?" (only for files that are made new)
+    styler: stylerProvider ? haikuStyler(stylerProvider) : undefined,
     model,
     voiceId: secret(env, "ELEVENLABS_VOICE_ID") ?? parseVoices(env.get("ELEVENLABS_VOICES")).voices[0]?.id ?? null,
     usdPer1kChars: 0.08,
@@ -173,6 +178,8 @@ Deno.serve(withCors(withTestMode("drill",
         return hashes.filter((h) => out.has(h));
       },
       // ---------- K61 ----------
+      // K96 (D220): a voice may be chosen only from the curated catalog
+      voiceAllowed: async (id) => ((await db.select("voice_catalog", `select=voice_id&voice_id=eq.${encodeURIComponent(id)}&enabled=eq.true&limit=1`).catch(() => [])) as unknown[]).length > 0,
       settings: async () => Object.fromEntries(((await db.select("drill_settings", "select=key,value")) as { key: string; value: number }[]).map((r) => [r.key, Number(r.value)])),
       tryCredits: async (u, keys) => {
         if (!keys.length) return [];

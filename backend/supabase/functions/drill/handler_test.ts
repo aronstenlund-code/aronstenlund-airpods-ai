@@ -5,7 +5,7 @@ import { questionKey } from "./length.ts";
 import { runWithTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
-function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean } = {}) {
+function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean; styler?: (t: string, s: string) => Promise<string | null> } = {}) {
   let busy = opts.busy ?? 0;
   let out = !!opts.outOfCredits; // K78: credits can come back
   const quota = new Map<string, number>();
@@ -143,6 +143,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
       return Promise.resolve();
     },
     settings: () => Promise.resolve({ length_normal_max: 100, length_longer_max: 200 }),
+    voiceAllowed: (id: string) => Promise.resolve(id === "CatalogVoice01"), // K96
     tryCredits: (u: string, keys: string[]) => Promise.resolve(keys.filter((k) => credits.has(`${u}|${k}`))),
     dropTryCredits: (u: string, keys: string[]) => {
       for (const k of keys) credits.delete(`${u}|${k}`);
@@ -155,6 +156,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
     createDrillHandler({
       authenticate: () => Promise.resolve(owner ? { id: user, isAnonymous: false, email: "owner@example.com", amr: ["otp"] } : { id: user, isAnonymous: true }),
       ownerEmails: ["owner@example.com"],
+      styler: opts.styler,
       analysis: (r) => {
         logged.push(...r);
         return Promise.resolve();
@@ -328,7 +330,7 @@ Deno.test("K47 R5c: import copies questions, answers and audio with 0 new charac
   const orig = await (await w.h("u1")(post({ action: "get", id: a.drill.id }))).json();
   assertEquals(orig.items[0].question, ITEMS[0].question);
   // the photos and documents are never part of a drill, so nothing else can be shared
-  assertEquals(Object.keys(b.drill).sort(), ["audio_started", "covers", "created_at", "grade", "id", "kind", "long_words", "shared_from", "subject", "title", "updated_at", "voice_model"]);
+  assertEquals(Object.keys(b.drill).sort(), ["audio_started", "covers", "created_at", "grade", "id", "kind", "long_words", "shared_from", "style", "subject", "title", "updated_at", "voice_id", "voice_model"]);
   assertEquals((await w.h("u3")(post({ action: "import", code: "nosuchcode1" }))).status, 404);
   assertEquals((await (await w.h("u2")(post({ action: "import", code: `earmind://prov/${code}` }))).json()).new_chars, 0);
 });
@@ -1020,4 +1022,68 @@ Deno.test("K93 (D216): an admin is never charged or refused; quota, list and cos
   // another account: as before
   assertEquals((await w.h("u1")(post({ action: "save", items: [{ question: "Vad är en vulkan?", short: "Ett berg med magma.", long: "Ett berg med magma. Mer." }] }))).status, 402);
   assertEquals((await (await w.h("u1")(post({ action: "quota" }))).json()).unlimited, undefined);
+});
+
+// ---------- K95 (D220): "Hur ska det låta?" ----------
+Deno.test("K95 style: words checked in code, only allowed tags, offsets mapped, tags are not words", async () => {
+  const { checkTagged, mapOffset, stripTags, cleanStyle } = await import("./style.ts");
+  const spoken = "Växter bildar glukos. Det kräver ljus.";
+  assertEquals(checkTagged(spoken, "[calm] Växter bildar glukos. [short pause] Det kräver ljus."), "[calm] Växter bildar glukos. [short pause] Det kräver ljus.");
+  assertEquals(checkTagged(spoken, "[Calm] Växter bildar glukos. Det kräver ljus."), "[calm] Växter bildar glukos. Det kräver ljus.", "lower case");
+  assertEquals(checkTagged(spoken, "[skånsk dialekt] Växter bildar glukos. Det kräver ljus."), "Växter bildar glukos. Det kräver ljus.", "a tag not on the list is dropped");
+  assertEquals(checkTagged(spoken, "[calm] Växter gör glukos. Det kräver ljus."), null, "a changed word: refused");
+  assertEquals(checkTagged(spoken, "[calm] Växter bildar glukos. Det kräver ljus. Mer."), null, "an added word: refused");
+  assertEquals(checkTagged(spoken, "Växter [bildar glukos. Det kräver ljus."), null, "a loose bracket: refused");
+  const tagged = "[calm] Växter bildar glukos. [short pause] Det kräver ljus.";
+  assertEquals(stripTags(tagged).plain, spoken);
+  const end1 = spoken.indexOf(".") + 1;
+  assertEquals(tagged.slice(0, mapOffset(tagged, end1)).endsWith("glukos."), true);
+  assertEquals(mapOffset(tagged, spoken.length), tagged.length);
+  assertEquals(cleanStyle("  Lugnt,\n  tydligt  " + "x".repeat(100)).length, 80);
+  const { timings } = await import("./handler.ts");
+  const t = "[calm] Hej då";
+  const st = [...t].map((_, i) => i / 10), en = [...t].map((_, i) => i / 10 + 0.05);
+  assertEquals(timings(t, st, en).words.length, 2, "[calm] is not a word");
+});
+
+Deno.test("K95 style: v3, tags only on new files, the same text and style again costs 0, another style is new; untagged without a styler", async () => {
+  const asked: string[] = [];
+  const styler = (t: string, s: string) => (asked.push(`${s}|${t}`), Promise.resolve(`[calm] ${t}`));
+  const w = world({ styler });
+  const text = [{ kind: "para", text: "Klorofyll fångar ljus. Växten bildar glukos." }];
+  const a = await (await w.h("u1")(post({ action: "save", drill: { kind: "text", style: "Lugnt och tydligt" }, items: text }))).json();
+  assertEquals([a.drill.voice_model, a.drill.style, a.cost], ["eleven_v3", "Lugnt och tydligt", text[0].text.length]);
+  assertEquals(asked.length, 1);
+  const f = [...w.audio.values()].find((x) => x.kind === "text")!;
+  assert(f.text.startsWith("[calm] "), f.text);
+  assertEquals(f.model, "eleven_v3");
+  // the same text and style on another account: the file exists, no Haiku, 0 credits
+  const b = await (await w.h("u2")(post({ action: "save", drill: { kind: "text", style: "Lugnt och tydligt" }, items: text }))).json();
+  assertEquals([b.cost, asked.length], [0, 1]);
+  // the cost before saving counts the style, without Haiku
+  assertEquals((await (await w.h("u3")(post({ action: "cost", drill: { kind: "text", style: "Glatt" }, items: text }))).json()).cost, text[0].text.length);
+  assertEquals(asked.length, 1);
+  // another style = new audio
+  const c = await (await w.h("u3")(post({ action: "save", drill: { kind: "text", style: "Glatt" }, items: text }))).json();
+  assertEquals([c.cost, asked.length], [text[0].text.length, 2]);
+  // a styler that changes words is not trusted: the untagged text is voiced
+  const w2 = world({ styler: () => Promise.resolve(null) });
+  await w2.h("u1")(post({ action: "save", drill: { kind: "text", style: "Viskande" }, items: text }));
+  assertEquals([...w2.audio.values()].find((x) => x.kind === "text")!.text, "Klorofyll fångar ljus. Växten bildar glukos.");
+  // a drill locked to another voice cannot get a style
+  const d = await (await w.h("u4")(post({ action: "save", drill: { voice_model: "A" }, items: ITEMS }))).json();
+  assertEquals((await w.h("u4")(post({ action: "save", drill: { id: d.drill.id, style: "Lugnt" }, items: ITEMS }))).status, 409);
+});
+
+Deno.test("K96 (D220): a drill's voice from the catalog, locked at the first save; its own files; not in the catalog = 400", async () => {
+  const w = world();
+  const a = await (await w.h("u1")(post({ action: "save", drill: { voice_id: "CatalogVoice01" }, items: ITEMS }))).json();
+  assertEquals(a.drill.voice_id, "CatalogVoice01");
+  assert([...w.audio.values()].filter((f) => f.kind !== "question" || f.seq !== -1).some((f) => f.voice_id === "CatalogVoice01"));
+  const b = await (await w.h("u2")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals(b.cost, cost(ITEMS), "another voice = other files");
+  assertEquals((await w.h("u1")(post({ action: "save", drill: { id: a.drill.id, voice_id: "OtherVoice0002" }, items: ITEMS }))).status, 409);
+  assertEquals((await w.h("u1")(post({ action: "save", drill: { id: a.drill.id }, items: ITEMS }))).status, 200, "kept when not sent");
+  assertEquals((await w.h("u3")(post({ action: "save", drill: { voice_id: "NotInCatalog01" }, items: ITEMS }))).status, 400);
+  assertEquals((await w.h("u3")(post({ action: "save", drill: { voice_id: "x y" }, items: ITEMS }))).status, 400);
 });

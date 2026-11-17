@@ -24,6 +24,7 @@ on:
           - o75_k88_live.py
           - o76_k90_live.py
           - o77_k92_live.py
+          - o79_quality.py
       args:
         description: "Arguments (optional, e.g. --fast)"
         required: false

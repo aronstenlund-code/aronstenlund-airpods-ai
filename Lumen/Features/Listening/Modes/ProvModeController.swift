@@ -193,9 +193,197 @@ final class SilentQuizController {
     }
 }
 
+/// D199 step 6e (A128): what the study plan uses of `ListeningModel`: the model's own calls, unchanged. The history
+/// of what was right and wrong, the quiz days and the streak (A38) are still the model's; the plan reads them here.
+@MainActor
+protocol StudyPlanHost: ListeningModeHost {
+    var mode: ConversationMode { get }
+    var isListening: Bool { get }
+    var conversation: Conversation { get }
+    var voiceIsSpeaking: Bool { get }
+    var hasPendingSpeech: Bool { get }
+    var examPlans: ExamPlanStore? { get }
+    /// Kevin's `/study-plan`. Nil: no plan.
+    var studyPlanClient: StudyPlanClient? { get }
+    /// A38: the streak as the model last counted it.
+    var streak: QuizDays.Streak { get }
+    /// A38: the days with a quiz answer (yyyy-MM-dd).
+    var quizDayList: [String] { get }
+    /// An exam session, a practice exam or a mini test runs: no summary then.
+    var examOrTestIsRunning: Bool { get }
+    /// When the running Provläge session began.
+    var provSessionStart: Date? { get }
+    /// A38: the streak is counted again, and the widget follows (A44).
+    func refreshStreak()
+    /// A19 (K17): what came up for the exam, right or wrong, per concept.
+    func planHistory(for examID: UUID) -> [String: [StudyHistory.Entry]]
+    func updateWidget(now: Date)
+    func say(_ line: String)
+    func tutorPersona() -> PersonaRequest?
+    /// A19.2: the summary is kept as a study card and, with the session, as a note.
+    func saveSummary(_ answer: String)
+    /// A19.3: the link is put on the answer and in Historik.
+    func attach(_ link: LearningLink, to turn: AnswerTurn)
+    /// Ends the mode and the microphone.
+    func endSessionNow() async
+}
+
+/// A19 (A128, D199 step 6e): the study plan. Moved unchanged out of `ListeningModel`: today's plan per exam from
+/// Kevin's `/study-plan` (K17) and the local reminders made of it (`LumenNotifications`, A38), the plan's question
+/// when Provläge starts ("I går missade du … Ska vi ta dem nu?"), the summary at "avsluta" (A19.2: one last call
+/// whose answer ends the session), and the link sent with an answer (A19.3, K19).
+@MainActor
+@Observable
+final class StudyPlanController {
+    @ObservationIgnored weak var host: (any StudyPlanHost)?
+    /// A19: today's plan per exam, from `/study-plan`.
+    private(set) var plans: [UUID: StudyPlanAPI.ExamPlanReply] = [:]
+    @ObservationIgnored private var promptSaid: Set<String> = []
+    /// A19: "Påminn mig om passen" on Start: iOS asks once, then the plan's days are reminders at 16:00.
+    private(set) var canAskForReminders = false
+    /// A19.2: the id of the session-end call ("avsluta" in Provläge): its answer is the summary.
+    @ObservationIgnored private var summaryRequestID: UUID?
+    @ObservationIgnored private var summaryTimeout: Task<Void, Never>?
+
+    /// A19.2: the session's summary was asked for and has not ended the session yet.
+    var isSummarizing: Bool { summaryRequestID != nil }
+
+    /// A19.2: this call is the session-end call (`context.session_end`).
+    func isSummary(_ request: ActivationRequest) -> Bool { request.id == summaryRequestID }
+
+    // MARK: - Today's plan and the reminders
+
+    /// Asks `/study-plan` for every upcoming exam: what is due today, and the days up to the exam (local reminders).
+    func refresh(askForReminders: Bool = false) async {
+        guard let host else { return }
+        host.refreshStreak()
+        #if DEBUG
+        if ScreenshotStage.requested != nil { return } // A43: the staged plan, not the live one (the Simulator has network)
+        #endif
+        let upcoming = host.examPlans?.upcomingDated() ?? [] // D189: a plan needs a real date
+        guard let studyPlanClient = host.studyPlanClient, !upcoming.isEmpty || !host.quizDayList.isEmpty else { return }
+        let exams = upcoming.prefix(10).map { plan in
+            StudyPlanAPI.ExamIn(name: plan.name, date: StudyHistory.day(plan.date),
+                                concepts: StudyPlanAPI.concepts(history: host.planHistory(for: plan.id),
+                                                                topics: StudyPlanAPI.topics(plan.topics)))
+        }
+        let request = StudyPlanAPI.Request(today: StudyHistory.day(Date()), exams: Array(exams), quiz_days: host.quizDayList)
+        guard let reply = await studyPlanClient.plan(request) else {
+            host.modeLog("Study plan: no reply")
+            return
+        }
+        var byExam: [UUID: StudyPlanAPI.ExamPlanReply] = [:]
+        var planDays: [String: [String]] = [:]
+        for (plan, answer) in zip(upcoming.prefix(10), reply.exams) {
+            byExam[plan.id] = answer
+            for day in answer.plan where planDays[day.date] == nil && !day.concepts.isEmpty { planDays[day.date] = day.concepts }
+        }
+        plans = byExam
+        host.updateWidget(now: Date()) // A44: the readiness too
+        // A38: one reminder a day at the chosen time (K31's text today, a countdown on the other days).
+        let daily = LumenNotifications.days(today: Date(), note: reply.notification, doneToday: host.streak.doneToday,
+                                            exams: upcoming.map { (name: $0.name, date: $0.date) }, plan: planDays)
+        host.modeLog("Study plan: \(byExam.count) exams, streak \(host.streak.current), \(daily.count) reminders")
+        await LumenNotifications.scheduleDaily(daily, ask: askForReminders)
+        let status = await LumenNotifications.status()
+        canAskForReminders = !daily.isEmpty && LumenNotifications.remindersOn && status == .notDetermined
+    }
+
+    /// A43 (K33): how ready the student is for the exam, when the backend could count it.
+    func readiness(for plan: ExamPlan) -> StudyPlanAPI.Readiness? {
+        // Nothing practised yet: no ring (a new exam at "0 %" says nothing and discourages).
+        guard let readiness = plans[plan.id]?.readiness, readiness.readyPct != nil, (readiness.practiced ?? 1) > 0 else { return nil }
+        return readiness
+    }
+
+    /// "I dag: 10 min Biologi (cellandning, klorofyll)" when the plan has a pass today.
+    func todayLine(for plan: ExamPlan) -> String? {
+        let today = StudyHistory.day(Date())
+        guard let day = plans[plan.id]?.plan.first(where: { $0.date == today }) else { return nil }
+        return StudyPlanAPI.todayLine(subject: plan.subject, day: day)
+    }
+
+    /// A19 (K17): "I går missade du cellandning och mitos. Ska vi ta dem nu?", once a day per exam.
+    func sayPrompt(for plan: ExamPlan) {
+        guard let host, host.study.isActive, host.mode == .prov, let prompt = plans[plan.id]?.prompt, !prompt.isEmpty else { return }
+        let key = plan.id.uuidString + StudyHistory.day(Date())
+        guard !promptSaid.contains(key) else { return }
+        promptSaid.insert(key)
+        host.modeLog("Provläge: the study plan's question (A19)")
+        host.say(prompt)
+    }
+
+    #if DEBUG
+    /// A38/A43: the plan's reply for the Simulator screenshots (no network there).
+    func stage(_ plan: ExamPlan, reply: StudyPlanAPI.ExamPlanReply) {
+        plans[plan.id] = reply
+    }
+    #endif
+
+    // MARK: - The summary at "avsluta" (A19.2)
+
+    /// "avsluta" in Provläge after real questions: one last call says the summary, then Lumen stops.
+    func summarizeBeforeEnding() -> Bool {
+        guard let host, host.study.isActive, host.mode == .prov, host.isListening, !host.examOrTestIsRunning,
+              summaryRequestID == nil, let start = host.provSessionStart,
+              host.conversation.answers.filter({ $0.createdAt >= start && $0.isOwnQuestion && $0.interrupted != true }).count >= 2 else {
+            return false
+        }
+        let request = ActivationRequest(query: "avsluta", trigger: .tutor, language: host.language)
+        summaryRequestID = request.id
+        host.modeLog("Provläge: the session's summary before ending (A19)")
+        summaryTimeout?.cancel()
+        summaryTimeout = Task { [weak self] in
+            try? await Task.sleep(for: .seconds(45))
+            guard !Task.isCancelled else { return }
+            self?.endAfterSummary(reason: "no summary within 45 s")
+        }
+        host.activated(request, persona: host.tutorPersona())
+        return true
+    }
+
+    /// The summary is spoken: kept as a study card and with the session in Anteckningar, then Provläge ends.
+    func summaryArrived(_ turn: AnswerTurn) {
+        summaryTimeout?.cancel()
+        host?.saveSummary(turn.answer)
+        host?.modeLog("Provläge: summary saved as a study card and a note (A19)")
+        Task { [weak self] in
+            for _ in 0..<1_200 {
+                guard let self, let host = self.host, self.summaryRequestID != nil else { return }
+                if !host.voiceIsSpeaking, !host.hasPendingSpeech { break }
+                try? await Task.sleep(for: .milliseconds(50))
+            }
+            self?.endAfterSummary(reason: "summary spoken")
+        }
+    }
+
+    func endAfterSummary(reason: String) {
+        guard summaryRequestID != nil else { return }
+        summaryRequestID = nil
+        summaryTimeout?.cancel()
+        host?.modeLog("Provläge ends: \(reason) (A19)")
+        Task { [weak self] in await self?.host?.endSessionNow() }
+    }
+
+    /// "Avsluta" again while the summary is on its way: no summary, the session ends at once.
+    func cancelSummary() {
+        summaryRequestID = nil
+        summaryTimeout?.cancel()
+    }
+
+    // MARK: - The link sent with an answer (A19.3, K19)
+
+    /// The link is on the answer, in Historik, and a notification (the phone is in the pocket).
+    func linkArrived(_ link: LearningLink, for turn: AnswerTurn) {
+        host?.attach(link, to: turn)
+        host?.modeLog("Link sent: \(link.sourceName) (A19)")
+        Task { await LumenNotifications.sendLink(link) }
+    }
+}
+
 /// D199 step 6c (A126): what Provläge's controller uses of `ListeningModel`, beside what its parts use.
 @MainActor
-protocol ProvModeHost: ExamSessionHost, PracticeExamHost, MiniTestHost, SilentQuizHost {
+protocol ProvModeHost: ExamSessionHost, PracticeExamHost, MiniTestHost, SilentQuizHost, StudyPlanHost {
     /// Provläge's ordinary turn: a question to the tutor, split when several were asked in one breath (A8.4). Still
     /// the model's, with the tutor's persona, the last turns and the queue it shares with Frågor.
     func ordinaryProvTurn(_ text: String)
@@ -204,14 +392,14 @@ protocol ProvModeHost: ExamSessionHost, PracticeExamHost, MiniTestHost, SilentQu
 }
 
 /// D36 (A126, D199 step 6c): Provläge behind `ListeningModeController`. It holds Provläge's parts that have left
-/// `ListeningModel` (the exam session, the practice exam by voice, the mini test, the silent quiz) and the order a
-/// turn is offered to them in, which is the order the model had:
+/// `ListeningModel` (the exam session, the practice exam by voice, the mini test, the silent quiz, the study plan)
+/// and the order a turn is offered to them in, which is the order the model had:
 /// 1. the practice exam, before the filler filter ("ja" can be an answer, A16);
 /// 2. the mini test;
 /// 3. the exam session (nothing is answered, only "Lumen, …" counts);
 /// 4. the ordinary turn to the tutor.
 ///
-/// The ordinary turn, the tutor's persona and the study plan are still in the model.
+/// The ordinary turn and the tutor's persona are still in the model.
 /// `StudySessionController` decides when a turn ends, as before.
 @MainActor
 final class ProvModeController: ListeningModeController {
@@ -223,6 +411,7 @@ final class ProvModeController: ListeningModeController {
             practice.host = host
             miniTest.host = host
             silentQuiz.host = host
+            studyPlan.host = host
         }
     }
     /// D84: the exam session with the uploaded practice exam (step 6a).
@@ -234,6 +423,9 @@ final class ProvModeController: ListeningModeController {
     /// A20.2: the silent quiz, answered with a nod or a shake (step 6d). It is no part of the turn's order: its
     /// questions and answers are ordinary turns to the tutor.
     let silentQuiz = SilentQuizController()
+    /// A19: the study plan (today's plan, the reminders, the summary at "avsluta", the links), step 6e. Start reads
+    /// it too, outside a running Provläge.
+    let studyPlan = StudyPlanController()
 
     /// A14: Provläge has the same short words as Frågor.
     var spokenKeyterms: [String] { StandardModeController.spokenKeyterms }
