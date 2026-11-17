@@ -19,7 +19,8 @@
 ## Tester
 - `deno task test`: 673 av 673 gröna, varav 1 nytt test (samma kostnad som den följande save, inget sparat, köat,
   uppläst eller räknat, befintligt ljud 0, frågor och textdelar, och anrop nummer 21 i minuten ger 429).
-- Livetest: `scripts/k90-live.py` har fått en kontroll av förhandsvisningen (resultat nedan).
+- **Livetest grönt, 7 av 7** (`kevin-live.yml` körning 44133608937, testkonto, efter deploy 44133225380): förhandsvisningen
+  gav samma `cost` som den följande save/start (72), `remaining` 1500 och `enough: true`, och listan hade fortfarande 0 prov.
 
 ## Kvar
 - Angela Fable (A132): visa `cost` från `action:"cost"` vid Spela ("120 krediter") och ersätt appens egen uppskattning.
