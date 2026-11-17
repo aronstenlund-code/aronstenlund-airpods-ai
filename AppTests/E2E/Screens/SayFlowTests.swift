@@ -86,7 +86,11 @@ final class SayFlowTests: XCTestCase {
             for n in 1...3 { if let skip = wait(["Hoppa över"], 15) { tapElement(skip, "Hoppa över \(n) (no AirPods)", counted: false) } }
             tap(["Starta ändå", "Starta prov", "Spela"], "Start on the control check", quiet: true)
         }
-        if wait(["Spelar i AirPods*"], 30) != nil { return true }
+        // Run 44006955559: with fake audio a short text can be read through before this looks ("Klart · Slut på texten").
+        if wait(["Spelar i AirPods*", "Klart*", "Slut på texten"], 30) != nil {
+            if find(["Spelar i AirPods*"]) == nil { log.append("T36 the player was already at the end: \(text(starting: "Klart") ?? "-")") }
+            return true
+        }
         screen("ingen-spelare", "Spela did not open 'Spelar i AirPods'")
         return miss("no 'Spelar i AirPods' in the player")
     }
@@ -99,7 +103,7 @@ final class SayFlowTests: XCTestCase {
         var ended = false
         while Date() < end, !ended {
             let texts = Self.labels(in: app.debugDescription, kind: "StaticText")
-            ended = texts.contains { $0.hasPrefix("Mening 2 av 2") } || find(["Spelar i AirPods*"]) == nil
+            ended = texts.contains { $0.hasPrefix("Mening 2 av 2") || $0 == "Slut på texten" } || find(["Spelar i AirPods*"]) == nil
             pause(2)
         }
         log.append("T36 once: reached the end or closed: \(ended)")
