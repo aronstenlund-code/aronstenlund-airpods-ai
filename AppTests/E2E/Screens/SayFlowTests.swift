@@ -267,17 +267,21 @@ final class SayFlowTests: XCTestCase {
         pause(0.5)
         let row = "Bladen fångar ljuset varje dag. "
         var heights: [CGFloat] = []
-        for chunk in [2, 4, 8, 14] {
+        // Run 44151565954: all four heights were 108 with no keyboard, i.e. the field had lost focus (3 rows by design).
+        // Measure only while it is written in: tap it again when the keyboard is gone.
+        for chunk in [1, 3, 8, 14] {
+            if app.keyboards.count == 0 { tapElement(field, "Säg i AirPods (focus again)", counted: false); pause(1) }
             let have = ((field.value as? String) ?? "").components(separatedBy: row).count - 1
             if chunk > have { field.typeText(String(repeating: row, count: chunk - have)) }
             pause(1)
+            log.append("T46 \(chunk) sentences: keyboard \(app.keyboards.count > 0), height \(Int(field.frame.height)), \(((field.value as? String) ?? "").count) characters")
             heights.append(field.frame.height)
         }
-        log.append("T46 field heights at 2, 4, 8, 14 sentences: \(heights.map { String(format: "%.0f", $0) }.joined(separator: ", "))")
+        log.append("T46 field heights at 1, 3, 8, 14 sentences: \(heights.map { String(format: "%.0f", $0) }.joined(separator: ", "))")
         screen("falt-14", "The field with a long text (at most 5 rows)")
         clearField()
         guard let last = heights.last, heights.count == 4 else { return false }
-        if heights[0] >= last { note("the field did not grow at all (\(heights))") }
+        if heights[0] >= last { return miss("the field did not grow while written in (\(heights))") }
         // 8 and 14 sentences are both well past 5 rows in a monospaced body font, so the height must have stopped.
         return abs(heights[3] - heights[2]) <= 2 || miss("the field still grows past 5 rows (\(heights[2]) → \(heights[3]))")
     }
@@ -607,6 +611,16 @@ final class SayFlowTests: XCTestCase {
         guard var element = wait(labels, quiet ? 1.5 : 6) else {
             if !quiet { log.append("MISS: \(step): '\(labels[0])' not found") }
             return false
+        }
+        // Run 44151565954 (A132): the card's Pausa and its text were on screen but not "hittable" to XCTest; swiping
+        // only scrolled the page away. An element that is inside the window is tapped at its centre, and said so.
+        let frame = element.frame
+        if !element.isHittable, !frame.isEmpty, app.windows.firstMatch.frame.contains(CGPoint(x: frame.midX, y: frame.midY)) {
+            log.append("NOT HITTABLE (tapped at its centre): \(step): '\(element.label)' at \(Int(frame.midX)),\(Int(frame.midY))")
+            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            if counted { taps += 1 } else { testTaps += 1 }
+            log.append(String(format: "%@ at %6.1f s: %@ (centre)", counted ? "TAP \(taps)" : "TEST TAP", Date().timeIntervalSince(started), step))
+            return true
         }
         var swipes = 0
         while !element.isHittable, swipes < 6 {
