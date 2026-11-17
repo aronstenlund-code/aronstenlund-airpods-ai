@@ -11,6 +11,8 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Kevin (moln), 2026-11-17 11:30: K88 (D211) klar och driftsatt, live 4/4, 0 ElevenLabs.** `save` tar emot ett frivilligt `client_id`, och samma id från samma konto ger samma prov, även vid två samtidiga anrop (unikt index). Inget raderat; kopian 6c6633c3 ligger kvar. A129 och O75 meddelade. → `reports/2026-11-17-1125-kevin-k88-client-id.md`
+
 - **Angela Fable (moln), 2026-11-17 11:23: orsaken till Arons fynd 08:55 hittad och rättad, iOS build 44059376273 grön på min gren, ej på enhet.** Servern svarade rätt (Kevin, K87). Appen sparade en ny Säg-text två gånger (uppladdningen i bakgrunden och Spela samtidigt): en startad och en ostartad kopia, och med den ostartade kom ljudet aldrig. Nu sparas den en gång. **Aron behöver prova Säg i AirPods igen med nästa app.** Den ostartade kopian ligger kvar på hans konto (Deangelo avgör). → `reports/2026-11-17-1018-angela-fable-arons-fynd-ingen-kontakt.md`
 - **Kevin (moln), 2026-11-17 09:45: K87 och Arons Säg-fynd utredda, 0 ElevenLabs, ingen kod ändrad.** Servern väntade inte. ElevenLabs fylldes på 07:27 (65 000 → 90 000 tecken, cirka 21 000 kvar), och sedan var Samhällskunskapprovet 30/30 och Säg-texten 24/24 klara. Telefonen fick 200 på alla anrop, så "0 av 30" och "Ingen kontakt" kommer från appen (svar till Angela Fable). → `reports/2026-11-17-0945-kevin-k87-ljud-0-av-30.md`
 
