@@ -193,11 +193,11 @@ import Testing
         var said = Drill.text(title: SaidText.title("Hej hej hooooo"), summary: DrillSummary(subject: "", grade: "", covers: ""),
                               parts: [DrillItem.textPart("Hej hej hooooo", part: .para)])
         said.said = true
-        let saved = model.save(said) // saved after the exam, so it is the last one in the list
-        #expect(saved.isSaid && model.drills.last?.id == saved.id)
+        let saved = model.save(said)
+        #expect(saved.isSaid && model.drills.first?.id == saved.id, "the list is newest first")
 
         await model.reschedulePracticeReminders()
-        #expect(reminders.scheduled.last?.drillID == drill.id, "nothing practised: the latest exam, not the said text")
+        #expect(reminders.scheduled.last?.drillID == drill.id, "nothing practised: the exam, not the said text")
 
         model.practice.read(seconds: 130, in: saved.id) // the said text was listened to last
         #expect(model.practice.lastDrillID == saved.id)
@@ -205,9 +205,15 @@ import Testing
         #expect(reminders.scheduled.last?.drillID == drill.id)
         #expect(reminders.scheduled.last?.title == drill.title)
 
-        model.practice.questionPlayed(in: drill.id) // an exam practised last is still the reminder's exam
+        model.practice.questionPlayed(in: drill.id) // an exam practised last is the reminder's exam
         await model.reschedulePracticeReminders()
         #expect(reminders.scheduled.last?.drillID == drill.id)
+
+        // With the said text practised last again, the reminder is for the newest exam.
+        let newer = model.save(A79A81RepetitionTests.bio(2))
+        model.practice.read(seconds: 10, in: saved.id)
+        await model.reschedulePracticeReminders()
+        #expect(reminders.scheduled.last?.drillID == newer.id)
     }
 
     @Test func readingTimeIsCountedOnlyWhileReading() throws {

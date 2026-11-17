@@ -477,9 +477,10 @@ final class RepetitionModel {
     func reschedulePracticeReminders(ask: Bool = false) async {
         guard let reminders else { return }
         // D215 (A132): a text said in "Säg i AirPods" is no exam, so the reminder never names or opens one. When the
-        // last thing practised was such a text, the reminder is for the latest exam.
+        // last thing practised was such a text, or nothing is practised yet, the reminder is for the newest exam
+        // (the list is newest first; before, the fallback took the oldest one).
         let practised = practice.lastDrillID.flatMap { store.drill($0) }.flatMap { $0.isSaid ? nil : $0 }
-        let latest = practised ?? examDrills.last
+        let latest = practised ?? examDrills.first
         await reminders.schedule(drillID: latest?.id, examTitle: latest?.title, doneToday: practice.practisedToday, ask: ask)
     }
 
