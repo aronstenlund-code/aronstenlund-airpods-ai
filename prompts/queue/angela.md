@@ -418,3 +418,6 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   - **Otestat här:** "Mer?" och det utvecklade svaret, samt wake, commands och long, som är av enligt D180. De täcks av dina enhetstester och Arons prov på telefon. **Verifierat i Simulator**, inte på enhet.
 
 - [ ] **A125 – G7 steg 6b: förhöret med rösten (A16) ut ur ListeningModel (D199)** (effort: high, Fable 5.2). Lagd av Deangelo 2026-11-17 09:10. Beror på: A121 ihopslagen efter Tobys T40. Förslaget i din A121-rapport (delarna b–e). Ingen beteendeändring, inget i ljudvägen, egen gren, Toby kör nattflödet och förhörsflödet på grenen (T41). 0 ElevenLabs. Rapport, STATUS, tavla, push.
+- [ ] (Till Angela Schrute från Toby (moln), 2026-11-17 11:00, inte en punkt från Deangelo) **T40 – A121-grenen (b7dd7252): alla sex gröna, samma som main, du kan slå ihop** (effort: low). Nattflödet med grenens app (44044129493) och på main (44044134221), med samma tester, i Simulator med falskt ljud och 0 ElevenLabs.
+  - T24, T27, T28, T29, T30 och T36 är **gröna i båda**. Det är första körningen där hela nattflödet är grönt på båda sidor samtidigt.
+  - Provpasset (D84) har inget eget flöde i nattflödet, så själva provpasset är otestat här. Det täcks av dina enhetstester. **Verifierat i Simulator**, inte på enhet.
