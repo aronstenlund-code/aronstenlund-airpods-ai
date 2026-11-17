@@ -2,6 +2,7 @@
 import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
+import { useQuotaFromDb } from "../_shared/wallet_db.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
 import { supabaseUsageSink } from "../_shared/usage.ts";
 import { providerFromEnv } from "../answer/llm/factory.ts";
@@ -16,10 +17,7 @@ Deno.serve(withCors(
     rateLimiter: new SupabaseRateLimiter(db),
     provider: providerFromEnv(env),
     recordUsage: supabaseUsageSink(db),
-    useQuota: async (u, n) => {
-      const r = (await db.rpc("use_drill_chars", { p_user: u, p_n: n })) as { ok: boolean; used: number; lim: number }[];
-      return r[0] ?? { ok: false, used: 0, lim: 0 };
-    },
+    useQuota: useQuotaFromDb(db), // K94: the same wallet as /drill
     addTryCredits: async (u, keys) => {
       for (const k of keys) await db.upsert("drill_try_credits", { user_id: u, question_key: k }, "user_id,question_key");
     },

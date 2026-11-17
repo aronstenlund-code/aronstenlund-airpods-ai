@@ -57,3 +57,6 @@ verify_jwt = false                 # does its own strict service-role check (new
 
 [functions.debug-audio]
 verify_jwt = false                 # K43 test-mode audio; code verifies the user JWT; ?action=purge needs no login (only > 14 days)
+
+[functions.purchase]
+verify_jwt = false                 # K94: App Store Server Notifications carry no user; verify checks the JWT in code
