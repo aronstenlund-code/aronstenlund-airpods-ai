@@ -25,8 +25,8 @@ skanningslinjer, ASCII-konst, skrivmaskinsljud och glödeffekter. Resten av Prov
    metadata samma färg med 42–55 % opacitet. Kontrast text/bakgrund > 14:1.
 3. **Typsnitt:** `.monospaced` design av systemets typsnitt (SF Mono) i fältet och i spelarens text, body-storlek, följer
    Dynamic Type. Rubriken "Säg i AirPods" och knapparna i vanlig SF Pro.
-4. **Tempo** är en knapp med siffran (`1,0×`) som öppnar en meny: 0,5× · 0,75× · 1,0× · 1,25× · 1,5× (samma gränser som
-   Inställningar, 0,50–1,5). Den sparas till nästa gång.
+4. **Tempo** är en knapp med siffran (`1,0×`) som öppnar en meny: 0,5× · 0,75× · 1,0× · 1,5× (ett urval av D151:s
+   tempon, samma som Inställningar; 1,25× finns inte). Den sparas till nästa gång.
 5. **Synligt och ärligt (CLAUDE.md, D203):** inget spelas utan att spelaren visas, raden "Spelar i AirPods" syns hela
    tiden, och upprepningen slutar när tiden är slut. Ingen schemaläggning, ingen ikon eller namn som får appen att se ut
    som något annat.
@@ -48,13 +48,15 @@ skanningslinjer, ASCII-konst, skrivmaskinsljud och glödeffekter. Resten av Prov
 | Huvudknapp i fältet | Spela |
 | Hur länge, meny | En gång · Upprepa 5 min · Upprepa 10 min · Upprepa 20 min |
 | Hur länge, knappen | En gång · {10} min |
-| Tempo, meny | 0,5× · 0,75× · 1,0× · 1,25× · 1,5× |
+| Tempo, meny | 0,5× · 0,75× · 1,0× · 1,5× *(D151:s tempon; 1,25× finns inte)* |
 | + meny | Fota sidor · Välj bilder · Lägg till fil · Klistra in länk |
 | Länken gick inte att läsa | Sidan gick inte att läsa. Kopiera texten och klistra in den i stället. |
 | Kreditkapseln | {312} frågor kvar |
 | Bladet, rubrik | Frågor kvar · *knapp:* Klar |
 | Bladet, under siffran | frågor kvar den här månaden |
-| Bladet, rader | Vanlig fråga · 1 / Lite längre fråga · 1,5 / Mycket lång fråga · 2 / Läs upp eller Säg i AirPods · 1 per 800 tecken / Upprepa samma text · 0 |
+| Bladet, rader (så länge alla längdklasser kostar 1) | En fråga · 1 / Läs upp eller Säg i AirPods · 1 per 800 tecken / Upprepa samma text · 0 |
+| … när servern ger olika tal (K82) | Vanlig fråga · {1} / Lite längre fråga · {1,5} / Mycket lång fråga · {2} / Läs upp eller Säg i AirPods · 1 per 800 tecken / Upprepa samma text · 0 |
+| Platshållare vid största text | Skriv här |
 | Bladet, fotnot | Fylls på den 1 {december}. Prov som andra har delat eller publicerat kostar inget. |
 | Spelaren, överst | ● Spelar i AirPods |
 | Spelaren, rad | Varv {3} · {7:12} kvar av {10} min *(En gång: "Mening {2} av {5}")* |

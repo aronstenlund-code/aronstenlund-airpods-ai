@@ -31,6 +31,8 @@ struct SentenceText: UIViewRepresentable {
     var current: Int? = nil
     var paused = false
     var large = false
+    /// A115 (Ke69): the text of "Säg i AirPods" in the system's monospaced type, in the body size.
+    var monospaced = false
     var scrolls = false
     var follows: Binding<Bool>? = nil
     let onTap: (Int) -> Void
@@ -65,7 +67,9 @@ struct SentenceText: UIViewRepresentable {
         coordinator.onTap = onTap
         coordinator.follows = follows
         let size = context.environment.dynamicTypeSize
-        if coordinator.parts != parts || coordinator.typeSize != size || coordinator.large != large {
+        if coordinator.parts != parts || coordinator.typeSize != size || coordinator.large != large
+            || coordinator.monospaced != monospaced {
+            coordinator.monospaced = monospaced
             coordinator.parts = parts
             coordinator.typeSize = size
             coordinator.large = large
@@ -100,6 +104,7 @@ struct SentenceText: UIViewRepresentable {
         var parts: [ReadingParagraph] = []
         var typeSize: DynamicTypeSize?
         var large = false
+        var monospaced = false
         var shown: Shown?
         var onTap: ((Int) -> Void)?
         var follows: Binding<Bool>?
@@ -109,7 +114,11 @@ struct SentenceText: UIViewRepresentable {
         private var ranges: [NSRange] = []
         private var headings: Set<Int> = []
 
-        private var bodyFont: UIFont { UIFont.preferredFont(forTextStyle: large ? .title3 : .body) }
+        private var bodyFont: UIFont {
+            let font = UIFont.preferredFont(forTextStyle: large && !monospaced ? .title3 : .body)
+            guard monospaced, let mono = font.fontDescriptor.withDesign(.monospaced) else { return font }
+            return UIFont(descriptor: mono, size: font.pointSize)
+        }
         private var currentFont: UIFont { Self.weighted(bodyFont, .semibold) }
         private var headingFont: UIFont { Self.weighted(UIFont.preferredFont(forTextStyle: large ? .title2 : .title3), .bold) }
 
@@ -248,6 +257,38 @@ struct ReadingPlayerView: View {
 
     private var place: String { "Mening \(min(reader.sentenceIndex + 1, reader.sentenceCount)) av \(reader.sentenceCount)" }
 
+    /// A115 (D203, Ke69 `spelar.png`): a text from "Säg i AirPods". The player says that it plays, all the time it
+    /// does, and how much is left of the repetition.
+    private var isSaying: Bool { session.saying != nil }
+
+    /// "● Spelar i AirPods" while sound is playing; otherwise what is true instead.
+    @ViewBuilder
+    private var sayingIndicator: some View {
+        let plays = reader.phase == .reading && !reader.isPaused
+        HStack(spacing: 6) {
+            // Kelly S1: not red (red is recording in iOS, and the microphone is not used): the accent colour.
+            Circle().fill(plays ? Color.accentColor : Color.secondary).frame(width: 8, height: 8).accessibilityHidden(true)
+            Text(plays ? "Spelar i AirPods" : reader.isAtEnd ? "Klart" : reader.isPaused ? "Pausad" : "Spelar inte")
+                .font(.subheadline.weight(.semibold))
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+    }
+
+    /// "Varv 3 · 7:12 kvar av 10 min" while it repeats, else "Mening 2 av 5".
+    @ViewBuilder
+    private var placeLine: some View {
+        if let minutes = session.saying?.repeatMinutes {
+            TimelineView(.periodic(from: .now, by: 1)) { _ in
+                let left = session.repeatSecondsLeft
+                Text(verbatim: left > 0 ? "Varv \(session.readingLap) · \(SayText.clock(left)) kvar av \(minutes) min"
+                                        : "Varv \(session.readingLap) · sista varvet")
+            }
+        } else {
+            Text(verbatim: place)
+        }
+    }
+
     private var top: some View {
         VStack(spacing: 10) {
             ZStack {
@@ -265,8 +306,9 @@ struct ReadingPlayerView: View {
                 }
             }
             VStack(spacing: 8) {
+                if isSaying { sayingIndicator }
                 HStack(alignment: .firstTextBaseline) {
-                    Text(verbatim: place).monospacedDigit()
+                    placeLine.monospacedDigit()
                     Spacer(minLength: 8)
                     if let heading = reader.currentHeading, !typeSize.isAccessibilitySize {
                         Text(verbatim: heading).lineLimit(1)
@@ -292,6 +334,7 @@ struct ReadingPlayerView: View {
     private var text: some View {
         SentenceText(parts: reader.parts, current: reader.sentenceIndex, paused: reader.isPaused,
                      large: !typeSize.isAccessibilitySize, // the largest sizes: the body size is already big
+                     monospaced: isSaying,
                      scrolls: true, follows: $follows) { sentence in
             follows = true
             session.read(from: sentence)

@@ -530,10 +530,42 @@ final class RepetitionModel {
         if let publishing, drill.fromPublication != nil, let serverID = drill.serverID {
             Task { await publishing.played(drillID: serverID) }
         }
-        session.startReading(drill, at: sentence, tempo: tempo) { part in
+        let saying = sayOptions
+        sayOptions = nil
+        session.startReading(drill, at: sentence, tempo: tempo, saying: saying) { part in
             audio.reading(for: store.drill(id) ?? drill, part: part)
         }
         showsPlayer = true
+    }
+
+    // MARK: Säg i AirPods (A115, D203)
+
+    /// How the next text is read (set by `say`, used once by `read`).
+    @ObservationIgnored private var sayOptions: RepetitionSession.SayOptions?
+
+    /// A115 (D203): the free text on Start. Saved as a text read aloud exactly as written (one part per paragraph),
+    /// then started like any text: Starta prov asks for the sound, the month's questions are counted per started 800
+    /// characters (D185), and repeating the same sound costs nothing. Without credits the text is shown and nothing is
+    /// counted (D200). Always with the player on the screen; nothing is scheduled and nothing plays hidden.
+    @discardableResult
+    func say(_ text: String, repeatMinutes: Int?) async -> Drill? {
+        let parts = SaidText.parts(text)
+        guard !parts.isEmpty else { return nil }
+        var made = Drill.text(title: SaidText.title(text), summary: DrillSummary(subject: "", grade: "", covers: ""),
+                              parts: parts.map { DrillItem.textPart($0, part: .para) })
+        made.audioStarted = false // nothing is asked for or counted until it is started, just below
+        let drill = save(made)
+        sayOptions = RepetitionSession.SayOptions(repeatMinutes: repeatMinutes)
+        await start(drill)
+        sayOptions = nil
+        return store.drill(drill.id) ?? drill
+    }
+
+    /// A115: Spela on the same text again: the sound that is already made, from the beginning. Costs nothing.
+    func sayAgain(_ drill: Drill, repeatMinutes: Int?) async {
+        sayOptions = RepetitionSession.SayOptions(repeatMinutes: repeatMinutes)
+        await start(store.drill(drill.id) ?? drill, at: 0)
+        sayOptions = nil
     }
 
     /// The part sentence number `sentence` is in.

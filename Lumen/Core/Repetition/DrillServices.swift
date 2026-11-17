@@ -70,6 +70,36 @@ protocol DrillMaking: AnyObject, Sendable {
     func documentText(docx: Data) async throws(DrillMakingError) -> String
     /// A105 (D185, K70): Läs upp texten: the material cleaned for reading aloud, in parts.
     func readText(_ material: DrillMaterial, subject: String?, grade: String?, title: String?) async throws(DrillMakingError) -> DrillTextDraft
+    /// A116 (D204, K81): a web page's readable text, fetched by the server.
+    func fetchPage(_ address: String) async throws(DrillMakingError) -> FetchedPage
+}
+
+/// A116 (D204, Kevin's K81 `fetch-url`): a web page read by the server (only http/https, never an internal address,
+/// at most 2 MB and 40 000 characters of readable text). The text then goes to `/exam` like a document's text.
+struct FetchedPage: Decodable, Sendable, Equatable {
+    var url: String?
+    var title: String?
+    var text: String
+    var chars: Int?
+    var truncated: Bool?
+
+    /// What the user pasted, as an address the server takes: "example.com/sida" gets https in front.
+    static func address(_ pasted: String) -> String? {
+        let trimmed = pasted.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty, !trimmed.contains(" ") else { return nil }
+        let lower = trimmed.lowercased()
+        let full = lower.hasPrefix("http://") || lower.hasPrefix("https://") ? trimmed : "https://" + trimmed
+        guard let url = URL(string: full), let host = url.host, host.contains(".") else { return nil }
+        return full
+    }
+
+    /// Ke69: said when the page could not be read and the server gave no words of its own.
+    static let unreadableLine = "Sidan gick inte att läsa. Kopiera texten och klistra in den i stället."
+}
+
+extension DrillMaking {
+    /// A116: only the real client reads pages; the mocks say no.
+    func fetchPage(_ address: String) async throws(DrillMakingError) -> FetchedPage { throw .server("fetch-url not available") }
 }
 
 @MainActor
@@ -298,6 +328,43 @@ final class DrillClient: DrillMaking {
         let reply = try await call(["action": "doc_text", "data": docx.base64EncodedString()], timeout: 60)
         guard let text = reply.text, !text.isEmpty else { throw .server("no text") }
         return text
+    }
+
+    /// A116 (D204, K81): `POST /functions/v1/fetch-url {"url"}`. The server's refusals carry Swedish words for the user
+    /// (`url_blocked`, `url_unreachable`, `url_too_large`, `url_not_text`, `url_empty`, `rate_limited`).
+    func fetchPage(_ address: String) async throws(DrillMakingError) -> FetchedPage {
+        let payload: Data
+        do {
+            payload = try JSONSerialization.data(withJSONObject: ["url": address])
+        } catch {
+            throw .server("could not encode")
+        }
+        do {
+            let token = try await auth.accessToken()
+            var request = URLRequest(url: config.examURL.deletingLastPathComponent().appending(path: "fetch-url"))
+            request.httpMethod = "POST"
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+            request.markTestTraffic()
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.timeoutInterval = 30
+            request.httpBody = payload
+            let (response, data) = try await http.data(for: request)
+            guard response.statusCode == 200 else {
+                Log.repetition.error("fetch-url: HTTP \(response.statusCode, privacy: .public)")
+                throw Self.refusal(status: response.statusCode, data: data)
+            }
+            let page = try JSONDecoder().decode(FetchedPage.self, from: data)
+            Log.repetition.info("fetch-url: 200, \(page.text.count, privacy: .public) characters")
+            return page
+        } catch let error as DrillMakingError {
+            throw error
+        } catch let error as URLError {
+            if !NetworkStatus.shared.isOnline || error.code == .notConnectedToInternet { throw .offline }
+            throw .server("URLError \(error.code.rawValue)")
+        } catch {
+            throw .server(error.localizedDescription)
+        }
     }
 
     /// K67: true only when every question still is the one `drill` made for that id.

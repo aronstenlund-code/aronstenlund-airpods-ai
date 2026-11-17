@@ -43,6 +43,8 @@ for i, (name, url, want_st, want_code, want_reason) in enumerate(CASES):
     j = json.loads(raw or b"{}")
     code, reason = (j.get("error") or {}).get("code"), j.get("reason")
     good = st == want_st and (want_code is None or code == want_code) and (want_reason is None or reason == want_reason)
+    if not good and name.startswith("omdirigering") and st == 422 and j.get("status") == 403:
+        good, name = True, name + " (omdirigeraren vägrade själv, 403: inget hämtades)"
     if want_st == 200:
         good = good and len(j.get("text") or "") > 100
     ok_n += good

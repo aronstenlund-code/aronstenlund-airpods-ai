@@ -90,6 +90,7 @@ struct RepetitionHomeSection: View {
         .onChange(of: model.asksForReminders) { offerReminder() }
         .onAppear { offerReminder() }
         .task { model.prepareAllAudio() }
+        .task { await model.refreshQuota() } // A117: the capsule's number
     }
 
     @ToolbarContentBuilder
@@ -100,6 +101,11 @@ struct RepetitionHomeSection: View {
                     .tint(.orange) // D140: the test mode's orange, as text only (SYSTEM §0.3)
                     .accessibilityLabel("Testläget är på. Öppna inställningar")
             }
+        }
+        if !testModeOn, model.quota != nil {
+            // A117 (D205, Ke69): the month's questions, where one can see them. (With the test mode on, its word
+            // stands here.)
+            ToolbarItem(placement: .topBarLeading) { CreditsCapsule(model: model) }
         }
         ToolbarItem(placement: .topBarTrailing) {
             Button(action: onSettings) {
@@ -163,7 +169,10 @@ struct RepetitionHomeSection: View {
     private var emptyState: some View {
         GeometryReader { proxy in
             ScrollView {
-                emptyContent.frame(maxWidth: .infinity, minHeight: proxy.size.height)
+                VStack(spacing: 0) {
+                    sayField.padding(.horizontal, 16).padding(.top, 8)
+                    emptyContent.frame(maxWidth: .infinity, minHeight: max(0, proxy.size.height - 220))
+                }
             }
             .scrollBounceBehavior(.basedOnSize)
         }
@@ -173,7 +182,8 @@ struct RepetitionHomeSection: View {
         ContentUnavailableView {
             Label("Kom förberedd till provet", systemImage: "book.closed") // A86 (Aron 22:19)
         } description: {
-            Text("Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods.")
+            // Kelly Ke67: the reading mode is named too, in the same words as the demo page.
+            Text("Fota ditt material. EarMind gör frågor och svar, eller läser upp texten, i dina AirPods.")
         } actions: {
             Button {
                 isCreating = true
@@ -202,8 +212,18 @@ struct RepetitionHomeSection: View {
 
     // MARK: With exams
 
+    /// A115 (D203, Ke69): "Säg i AirPods" is the first thing on Start, above Nästa prov.
+    private var sayField: some View {
+        SayInAirPodsField(model: model)
+    }
+
     private var examList: some View {
         List {
+            Section {
+                sayField
+                    .listRowInsets(EdgeInsets())
+                    .listRowBackground(Color.clear)
+            }
             if let next = model.drills.first {
                 Section {
                     nextExam(next)
