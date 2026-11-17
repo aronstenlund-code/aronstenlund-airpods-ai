@@ -239,6 +239,12 @@ final class SayFlowTests: XCTestCase {
         log.append("T36 the line before playing the page: \(counts)")
         guard openPlayer() else { return false }
         pause(3)
+        // Run 44064540048: the text from the link was saved but never started (audio_started_at null, a 404 from /drill
+        // first). Photograph the player and say whether it really plays (Spelar i AirPods or a lap).
+        screen("lank-spelar", "The player after Spela with the text from the link")
+        let playing = find(["Spelar i AirPods*"]) != nil || lapAtLeast(1) != nil
+        log.append("T36 the link text plays: \(playing)")
+        if !playing { note("the text from the link did not start playing (no 'Spelar i AirPods' and no lap)") }
         tap(["Avsluta"], "Avsluta", quiet: true)
         pause(2)
         goToStart()
