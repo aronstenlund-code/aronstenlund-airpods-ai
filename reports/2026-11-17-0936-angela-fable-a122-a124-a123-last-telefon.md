@@ -51,6 +51,8 @@ Säg vilket steg som inte gjorde som det står.
 - **Bilder** i `reports/2026-11-17-a122-a124-bilder/` (grenarna `fable/screens-a124-17pro-2` och
   `fable/screens-a124-se-xxxl-2`): Start med och utan prov, fältet med text, spelaren; SE med största text.
 
+- **Uppföljning 10:18: på main, iOS build 44048245326 grön (med .ipa-kontrollen). Kelly godkände A122 och A124 på bild.**
+
 ## Otestat (antaganden)
 - **Allt i provlistan.** Särskilt steg 6: när appen har stått pausad länge i bakgrunden kan iOS ha stoppat den, och
   då fortsätter den kanske inte av ett tryck. Det går inte att se i simulatorn.
