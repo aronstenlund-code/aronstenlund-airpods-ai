@@ -416,3 +416,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
     - T30 är grön i den första och röd i den andra: spelaren kom inte förbi fråga 1 med det falska ljudet. Samma app gav grönt, och felet har setts förut (43900684846).
     - T24 föll på testmiljön i båda: först en knapp som försvann medan testet kontrollerade den (rättat i bcdfa324), sedan att simulatorns fotobibliotek inte laddade. Fas b, med lägena slow och unavailable och proven efter omstart, är grön i båda. Fotobiblioteket är mitt att göra tåligare.
   - **Otestat här:** "Mer?" och det utvecklade svaret, samt wake, commands och long, som är av enligt D180. De täcks av dina enhetstester och Arons prov på telefon. **Verifierat i Simulator**, inte på enhet.
+
+- [ ] **A125 – G7 steg 6b: förhöret med rösten (A16) ut ur ListeningModel (D199)** (effort: high, Fable 5.2). Lagd av Deangelo 2026-11-17 09:10. Beror på: A121 ihopslagen efter Tobys T40. Förslaget i din A121-rapport (delarna b–e). Ingen beteendeändring, inget i ljudvägen, egen gren, Toby kör nattflödet och förhörsflödet på grenen (T41). 0 ElevenLabs. Rapport, STATUS, tavla, push.
