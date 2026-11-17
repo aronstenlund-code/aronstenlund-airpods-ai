@@ -749,7 +749,7 @@ export function createDrillHandler(deps: DrillDeps) {
    * counted (the text can be edited for free until Starta prov). After start, a save queues only what changed (hashes).
    * `queue` = true is the start itself (and an old app without the flag: as before, the audio is made at save).
    */
-  async function saveDrill(user: { id: string }, b: Record<string, unknown> | null, queueNow: boolean): Promise<Response> {
+  async function saveDrill(user: { id: string }, b: Record<string, unknown> | null, queueNow: boolean, dry = false): Promise<Response> {
     const di = (b?.drill ?? {}) as Record<string, unknown>;
     const rawItems = Array.isArray(b?.items) ? b!.items as Record<string, unknown>[] : [];
     if (!rawItems.length) throw new HttpError(400, "invalid_request", "items: at least one question");
@@ -763,12 +763,12 @@ export function createDrillHandler(deps: DrillDeps) {
     if (di.client_id !== undefined && di.client_id !== null && clientIdOf(di.client_id) === null) {
       throw new HttpError(400, "invalid_request", "drill.client_id must be a UUID");
     }
-    if (clientId && deps.db.drillByClient) {
+    if (clientId && deps.db.drillByClient && !dry) {
       const same = await deps.db.drillByClient(user.id, clientId);
       if (same) return await alreadySaved(same);
     }
     if (di.id !== undefined && di.id !== null) existing = await owned(user.id, di.id);
-    else if ((await deps.db.drills(user.id)).length >= DRILL_STORE_LIMITS.drillsPerUser) {
+    else if (!dry && (await deps.db.drills(user.id)).length >= DRILL_STORE_LIMITS.drillsPerUser) {
       throw new HttpError(409, "too_many_drills", "Du har många prov sparade. Ta bort några gamla först.");
     }
     const lw = Math.round(Number(di.long_words));
@@ -873,6 +873,12 @@ export function createDrillHandler(deps: DrillDeps) {
     const failed = existingAudio.filter((a) => a.status === "failed").map((a) => a.hash);
     const fresh = [...files.values()].filter((f) => !have.has(f.hash));
     const newChars = fresh.reduce((n, f) => n + f.text.length, 0);
+    if (dry) {
+      // K92 (D215 punkt 8): the cost before saving, counted exactly as the save would; nothing written or queued
+      const q = await deps.db.useQuota(user.id, 0);
+      const c = creditCost(displayChars(rows), fresh.map((f) => f.hash));
+      return json({ cost: c, remaining: Math.max(0, q.lim - q.used), limit: q.lim, unit: "chars", enough: c <= q.lim - q.used });
+    }
     // K78 (D200): ElevenLabs has just said it has no credits: nothing is sent, nothing is counted, the drill stays as
     // text (not started) and the app is told; the next Starta prov once credits are back makes the audio as usual
     const out = queue && (fresh.length > 0 || failed.length > 0) && await creditsOut();
@@ -1302,6 +1308,13 @@ export function createDrillHandler(deps: DrillDeps) {
         // K71 (D190): Starta prov makes the audio: everything still missing is queued and counted now
         const d = await owned(user.id, b?.id);
         return await startAudio(user, d);
+      }
+      if (action === "cost") {
+        // K92 (D215 punkt 8): what a save of this text would cost, without saving. Limited per account, so it is not
+        // a way to ask which texts already have audio (D144: any account's audio is free)
+        const rl = await enforceLimits(deps.rateLimiter, "drill_cost", user.id, { perMinute: 20, perDay: 300, globalPerDay: 300_000 }, 1);
+        if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många förhandsvisningar just nu. Vänta en stund.", { retryAfterSec: rl.retryAfterSec });
+        return await saveDrill(user, b, false, true);
       }
       if (action !== "save") throw new HttpError(400, "invalid_request", "unknown action");
       return await saveDrill(user, b, false);
