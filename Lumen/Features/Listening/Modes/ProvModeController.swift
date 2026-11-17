@@ -93,9 +93,109 @@ final class MiniTestController {
     }
 }
 
+/// D199 step 6d (A127): what the silent quiz uses of `ListeningModel`: the model's own calls, unchanged. The head
+/// tracking (`HeadMotionListener`) is the model's; the quiz only asks it to listen or to stop.
+@MainActor
+protocol SilentQuizHost: ListeningModeHost {
+    var mode: ConversationMode { get }
+    var conversation: Conversation { get }
+    var headMotion: HeadMotionListener { get }
+    func say(_ line: String)
+    /// A38 (K31): a quiz answer today, for the streak.
+    func noteQuizAnswer(at date: Date)
+    /// D83: the tutor's persona, for the quiz's questions and the answers to them.
+    func tutorPersona() -> PersonaRequest?
+    /// A9.1: "förhör mig" was used, so it is never tipped.
+    func markQuizUsed()
+}
+
+/// A20.2 (A127, D199 step 6d): the silent quiz inside Provläge. Moved unchanged out of `ListeningModel`: Lumen asks
+/// yes-or-no questions, a nod answers "ja" and a shake "nej" (the voice works too), and after ten questions or two
+/// missed answers in a row the result is said. The questions and the verdicts come through the ordinary answer
+/// pipeline; after each of Lumen's lines the model tells the quiz that it has spoken (`afterSpeech`).
+@MainActor
+@Observable
+final class SilentQuizController {
+    @ObservationIgnored weak var host: (any SilentQuizHost)?
+    /// The running quiz. Nil: not running.
+    private(set) var quiz: SilentQuiz?
+    /// How many answers the conversation had when the quiz last counted one.
+    @ObservationIgnored private var seenAnswers = 0
+
+    var isActive: Bool { quiz != nil }
+
+    func start() {
+        guard let host, host.study.isActive, host.mode == .prov, quiz == nil else { return }
+        quiz = SilentQuiz()
+        seenAnswers = host.conversation.answers.count
+        host.modeLog("Silent quiz started (A20)")
+        host.markQuizUsed()
+        host.activated(ActivationRequest(query: SilentQuiz.questionRequest, trigger: .tutor, language: host.language),
+                       persona: host.tutorPersona())
+        // After `activated` (it interrupts speech): the start line plays before the first question arrives.
+        host.say(SilentQuiz.startLine)
+        if !host.headMotion.isAvailable { host.say(SilentQuiz.noHeadTrackingLine) }
+    }
+
+    func end(speak: Bool = true) {
+        guard let ended = quiz else { return }
+        quiz = nil
+        host?.headMotion.stop()
+        host?.modeLog("Silent quiz ended: \(ended.summary) (A20)")
+        if speak { host?.say(ended.summary) }
+    }
+
+    /// A20.2: "ja" / "nej" by voice is the answer the quiz waits for; A38: it counts for the streak.
+    func answeredByVoice() {
+        guard quiz?.awaitingAnswer == true else { return }
+        quiz?.answered()
+        host?.noteQuizAnswer(at: Date())
+    }
+
+    /// After Lumen spoke in the quiz: count the new answer once, then wait for a nod or a shake.
+    func afterSpeech() {
+        guard let host, var current = quiz, host.study.isActive, host.mode == .prov else { return }
+        let count = host.conversation.answers.count
+        if count > seenAnswers, let answer = host.conversation.answers.last?.answer {
+            seenAnswers = count
+            current.lumenSaid(answer)
+            quiz = current
+        }
+        if current.graded >= SilentQuiz.questions || current.isFinished {
+            end()
+            return
+        }
+        if current.awaitingAnswer { listenForAnswer() }
+    }
+
+    private func listenForAnswer() {
+        guard let host, host.headMotion.isAvailable else { return } // the voice answers ("ja" / "nej")
+        host.headMotion.listen(for: SilentQuiz.answerWindow) { [weak self] gesture in
+            guard let self, let host = self.host, self.quiz?.awaitingAnswer == true else { return }
+            self.quiz?.answered()
+            host.noteQuizAnswer(at: Date()) // A38
+            let text = gesture == .nod ? "Ja" : "Nej"
+            host.modeLog("Silent quiz: \(gesture == .nod ? "nod" : "shake") → \(text) (A20)")
+            host.activated(ActivationRequest(query: text, trigger: .tutor, language: host.language), persona: host.tutorPersona())
+        }
+        let asked = quiz?.asked
+        Task { [weak self] in
+            try? await Task.sleep(for: .seconds(SilentQuiz.answerWindow + 0.3))
+            guard let self, var current = self.quiz, current.awaitingAnswer, current.asked == asked else { return }
+            current.missed()
+            self.quiz = current
+            if current.isFinished {
+                self.end()
+            } else {
+                self.host?.say(SilentQuiz.nudgeLine)
+            }
+        }
+    }
+}
+
 /// D199 step 6c (A126): what Provläge's controller uses of `ListeningModel`, beside what its parts use.
 @MainActor
-protocol ProvModeHost: ExamSessionHost, PracticeExamHost, MiniTestHost {
+protocol ProvModeHost: ExamSessionHost, PracticeExamHost, MiniTestHost, SilentQuizHost {
     /// Provläge's ordinary turn: a question to the tutor, split when several were asked in one breath (A8.4). Still
     /// the model's, with the tutor's persona, the last turns and the queue it shares with Frågor.
     func ordinaryProvTurn(_ text: String)
@@ -104,14 +204,14 @@ protocol ProvModeHost: ExamSessionHost, PracticeExamHost, MiniTestHost {
 }
 
 /// D36 (A126, D199 step 6c): Provläge behind `ListeningModeController`. It holds Provläge's parts that have left
-/// `ListeningModel` (the exam session, the practice exam by voice, the mini test) and the order a turn is offered to
-/// them in, which is the order the model had:
+/// `ListeningModel` (the exam session, the practice exam by voice, the mini test, the silent quiz) and the order a
+/// turn is offered to them in, which is the order the model had:
 /// 1. the practice exam, before the filler filter ("ja" can be an answer, A16);
 /// 2. the mini test;
 /// 3. the exam session (nothing is answered, only "Lumen, …" counts);
 /// 4. the ordinary turn to the tutor.
 ///
-/// The ordinary turn, the tutor's persona, the silent quiz and the study plan are still in the model.
+/// The ordinary turn, the tutor's persona and the study plan are still in the model.
 /// `StudySessionController` decides when a turn ends, as before.
 @MainActor
 final class ProvModeController: ListeningModeController {
@@ -122,6 +222,7 @@ final class ProvModeController: ListeningModeController {
             exam.host = host
             practice.host = host
             miniTest.host = host
+            silentQuiz.host = host
         }
     }
     /// D84: the exam session with the uploaded practice exam (step 6a).
@@ -130,6 +231,9 @@ final class ProvModeController: ListeningModeController {
     let practice = PracticeExamController()
     /// D81: the mini test (step 6c).
     let miniTest = MiniTestController()
+    /// A20.2: the silent quiz, answered with a nod or a shake (step 6d). It is no part of the turn's order: its
+    /// questions and answers are ordinary turns to the tutor.
+    let silentQuiz = SilentQuizController()
 
     /// A14: Provläge has the same short words as Frågor.
     var spokenKeyterms: [String] { StandardModeController.spokenKeyterms }
