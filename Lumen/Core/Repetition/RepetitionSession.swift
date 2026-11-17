@@ -305,9 +305,16 @@ final class RepetitionSession {
         return (reader.currentHeading ?? title, "EarMind · \(title) · mening \(n) av \(reader.sentenceCount)")
     }
 
+    /// A122 (D209): "Säg i AirPods" on the Lock Screen. Title = "EarMind · Säg i AirPods"; artist = the text's first
+    /// words, with the lap when it repeats ("Fotosyntes … · varv 2"). It changes only with the lap.
+    static func sayingNowPlaying(title: String, lap: Int, repeats: Bool) -> (title: String, artist: String) {
+        ("EarMind · Säg i AirPods", repeats ? "\(title) · varv \(lap)" : title)
+    }
+
     private func updateNowPlaying() {
         if activatesAudioSession, let reader, let drill {
-            let shown = Self.readingNowPlaying(reader, title: drill.title)
+            let shown = saying.map { Self.sayingNowPlaying(title: drill.title, lap: readingLap, repeats: $0.repeatMinutes != nil) }
+                ?? Self.readingNowPlaying(reader, title: drill.title)
             MPNowPlayingInfoCenter.default().nowPlayingInfo = [
                 MPMediaItemPropertyTitle: shown.title,
                 MPMediaItemPropertyArtist: shown.artist,

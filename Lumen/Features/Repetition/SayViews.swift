@@ -46,6 +46,10 @@ enum SayText {
     }
 
     /// The line under the field: what the text counts as, or why it cannot be played now.
+    /// A122 (D209, Aron 2026-11-17): the phone does not have to be out. The player goes on with the screen locked
+    /// (background audio) and is steered from the Lock Screen and the AirPods.
+    static let lockLine = "Du kan låsa telefonen och lägga undan den. Det hörs i AirPods ändå."
+
     static func costLine(counts: Int, left: Int?, readingAloudOff: Bool) -> String {
         if readingAloudOff { return CloudDrillAudio.unavailableLine }
         if let left, counts > left {
@@ -135,6 +139,10 @@ struct SayInAirPodsField: View {
                     .fixedSize(horizontal: false, vertical: true)
             }
             controls
+            Text(verbatim: SayText.lockLine) // A122 (D209)
+                .font(.footnote)
+                .opacity(0.7)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(16)
         .foregroundStyle(SayText.ink)
