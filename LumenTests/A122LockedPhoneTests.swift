@@ -142,4 +142,26 @@ import Testing
         let later = try #require(DrillCloudClient.saveBody(questions)["drill"] as? [String: Any])
         #expect(later["id"] as? String == "srv-1" && later["client_id"] == nil, "K88: not used once the server's id is known")
     }
+
+    /// Toby T36 (2026-11-17): a text that was removed while its sound was followed came back as a new, unstarted exam.
+    /// The question on its way got 404 and the phone's (removed) copy was saved again. Removed stays removed.
+    @Test func anExamRemovedWhileItsSoundIsFollowedDoesNotComeBack() async throws {
+        let folder = try A79A81RepetitionTests.folder("a122-removed")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A107StartAudioTests.DeferredCloud()
+        let audio = CloudDrillAudio(cloud: cloud, store: store, folder: folder, pollInterval: .milliseconds(1), maxPolls: 20)
+        var drill = A79A81RepetitionTests.bio(2)
+        drill.serverID = "srv-1"
+        drill.audioStarted = nil // started: its sound is followed with `status`
+        store.save(drill)
+        cloud.onStatus = { store.delete(drill.id) } // the user removes it while the question is on its way
+        cloud.statusError = .refused(status: 404, code: "not_found", message: "Provet finns inte.")
+
+        await audio.prepare(drill)
+
+        #expect(cloud.statusCalls == 1)
+        #expect(store.drill(drill.id) == nil, "it is not put back on the phone")
+        #expect(cloud.saves.isEmpty, "and not saved as a new exam on the server")
+        #expect(audio.problem(for: drill) == nil)
+    }
 }

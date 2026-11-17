@@ -40,7 +40,17 @@ import Testing
             items = drill.items
             return view()
         }
-        func status(id: String) async throws(DrillCloudError) -> DrillCloudView { statusCalls += 1; return view() }
+        /// Run when `status` is asked (a test removes the exam here, as the user does while the question is on its way).
+        var onStatus: (() -> Void)?
+        /// What `status` answers instead of the view (404 once the exam is gone on the server).
+        var statusError: DrillCloudError?
+
+        func status(id: String) async throws(DrillCloudError) -> DrillCloudView {
+            statusCalls += 1
+            onStatus?()
+            if let statusError { throw statusError }
+            return view()
+        }
         func start(id: String) async throws(DrillCloudError) -> DrillCloudView {
             startCalls += 1
             guard quotaLeft else {

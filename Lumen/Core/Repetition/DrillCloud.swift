@@ -613,6 +613,13 @@ final class CloudDrillAudio: DrillAudioProviding {
             } catch {
                 // Kevin K87 (2): a request that was cancelled is not "Ingen kontakt"; nothing is said for it.
                 if Task.isCancelled { return }
+                // Toby T36 (2026-11-17, Kevin's log): a text was removed while its sound was still followed. The
+                // question that was on its way came back 404, and "not on the server: keep the phone's copy" (T24 L5)
+                // put the removed exam back and saved it as a new one. What the user has removed stays removed.
+                guard store.drill(drill.id) != nil else {
+                    problems[drill.id] = nil
+                    return
+                }
                 if case .offline = error, !NetworkStatus.shared.isOnline {
                     // A103: on the underground. Say it, then go on by itself when the network is back.
                     problems[drill.id] = Self.waitingForNetworkLine
