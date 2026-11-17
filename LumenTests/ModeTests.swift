@@ -568,6 +568,42 @@ import Testing
         #expect(!quiz.isActive && rig.model.silentQuiz == nil, "leaving Provläge ends the quiz, as before")
     }
 
+    /// D199 step 6e (A128): the study plan (today's plan, the reminders, the summary at "avsluta", the links) is
+    /// `StudyPlanController`, a part of `provMode`. Start still reads the plan through the model.
+    @Test func theStudyPlanIsItsOwnController() async {
+        let rig = makeRig(events: [])
+        let plan = rig.model.provMode.studyPlan
+        #expect(plan.host === rig.model && plan.plans.isEmpty)
+        #expect(!plan.isSummarizing && !rig.model.canAskForReminders)
+
+        // A19.2: the summary is only for a Provläge that runs and has had real questions.
+        #expect(!plan.summarizeBeforeEnding(), "no Provläge runs: nothing to summarise")
+        #expect(!plan.isSummary(ActivationRequest(query: "avsluta", trigger: .tutor, language: .swedish)))
+        plan.endAfterSummary(reason: "test") // no summary is on its way: nothing ends
+        plan.cancelSummary()
+        #expect(!plan.isSummarizing && rig.provider.requests.isEmpty)
+
+        // A19: without Kevin's /study-plan (the rig has no client) there is no plan and nothing is asked.
+        await rig.model.refreshStudyPlan()
+        #expect(plan.plans.isEmpty && !rig.model.canAskForReminders)
+
+        // A43: Start reads the readiness and today's line from the plan, through the model.
+        let exam = ExamPlan(grade: .y9, area: .no, subject: "Biologi", date: Date().addingTimeInterval(5 * 86_400), topics: "fotosyntes")
+        #expect(rig.model.readiness(for: exam) == nil && rig.model.todayLine(for: exam) == nil)
+        #if DEBUG // the staging is for the Simulator screenshots, in Debug builds only
+        let today = StudyHistory.day(Date())
+        let reply = StudyPlanAPI.ExamPlanReply(
+            name: exam.name, date: StudyHistory.day(exam.date), daysLeft: 5, prompt: "I går missade du mitos. Ska vi ta det nu?",
+            plan: [StudyPlanAPI.Day(date: today, minutes: 10, concepts: ["cellandning", "mitos"], note: nil)],
+            readiness: StudyPlanAPI.Readiness(readyPct: 68, practiced: 7, total: 12, weakest: [], explain: ""))
+        plan.stage(exam, reply: reply)
+        #expect(rig.model.readiness(for: exam)?.readyPct == 68)
+        #expect(rig.model.todayLine(for: exam) == StudyPlanAPI.todayLine(subject: "Biologi", day: reply.plan[0]))
+        plan.sayPrompt(for: exam)
+        #expect(rig.apple.calls.isEmpty, "the plan's question is only said in a Provläge that runs")
+        #endif
+    }
+
     /// D199 step 4 (A119): each mode says what the app must show before it starts; the model shows the sheet or
     /// says the line. The same checks as before the move.
     @Test func eachModeSaysWhatItNeedsBeforeItStarts() async {
