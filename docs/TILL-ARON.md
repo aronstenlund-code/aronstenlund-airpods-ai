@@ -31,7 +31,7 @@ Kortast möjligt. Svara "ja"/"nej"/eget val i chatten med Deangelo.
 | 23 | ~~(klart 2026-11-17 08:28: Aron raderade phawadee-thai, Deangelo skapade projektet earmind (rot site/), https://earmind.vercel.app svarar med EarMind-sidan och väntelistan)~~ **Demosidan på Vercel (D202).** (1) Vilken Vercel-plan har du? Hobby är bara för icke-kommersiellt bruk, och EarMind är kommersiellt. Pro kostar 20 USD i månaden. (2) Skapa projektet (bara du kan koppla ditt Vercel-konto): vercel.com → Add New… → Project → Import "aronstenlund-airpods-ai" → Root Directory: `site` → Framework Preset: Other → Deploy. Skriv sedan adressen (t.ex. earmind-xxx.vercel.app) till Deangelo. Kelly och Kevin gör resten. |
 | 24 | **"Spela om 10 minuter" (D210).** Jag byggde det som spela upp igen och igen i 10 min till 1 timme. Om du menade att uppspelningen ska starta först om 10–60 minuter, med telefonen låst: det bygger vi inte. Det är dold, tidsinställd uppspelning, och kombinerat med förebilden Spicker blir det ett fuskverktyg för prov. Det strider mot projektets regler (CLAUDE.md), och App Store skulle stoppa appen. Säg till om du menade något annat. |
 
-## 25. Din egen gräns (nu 1 500 krediter i månaden, D213) (2026-11-17 13:55)
+## 25. ~~Din egen gräns~~ Klart: Aron 18:33 "gör så att jag alltid har krediter som admin" (D216, K93) (2026-11-17 13:55)
 Du har gjort 14 av 15 frågor med ljud den här månaden, så appen nekar mer ljud tills 1 december. ElevenLabs har krediter igen. Vill du att ditt eget konto inte har någon månadsgräns? Svara ja eller nej, så gör Kevin det. Det kostar bara ElevenLabs-krediter när du själv använder appen.
 
 ## 26. Priser (D214), förslag från Deangelo 2026-11-17 14:20
