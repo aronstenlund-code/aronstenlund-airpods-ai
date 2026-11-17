@@ -210,6 +210,7 @@ struct SayInAirPodsField: View {
             Text(waiting ? "Gör ljudet …" : "Spelar i AirPods").font(.footnote.weight(.semibold))
         }
         .foregroundStyle(SayText.accent)
+        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .accessibilityElement(children: .combine)
         Button {
             model.showsPlayer = true
@@ -245,8 +246,13 @@ struct SayInAirPodsField: View {
                     .minimumScaleFactor(0.7)
             }
             Spacer(minLength: 8)
-            Button("Stoppa") { model.end() }
-                .foregroundStyle(SayText.accent)
+            Button {
+                model.end()
+            } label: {
+                Text("Stoppa").font(.body).lineLimit(1).fixedSize()
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(SayText.accent)
         }
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
@@ -433,19 +439,25 @@ struct SayInAirPodsField: View {
             Button {
                 if let pasted = UIPasteboard.general.string { text = String(pasted.prefix(SaidText.maxChars)) }
             } label: {
-                Text("Klistra in").font(.subheadline.weight(.semibold)).lineLimit(1).fixedSize()
+                Text("Klistra in").font(.subheadline.weight(.semibold)).lineLimit(1)
+                    .fixedSize(horizontal: !wide, vertical: false)
+                    .minimumScaleFactor(0.6)
                     .frame(maxWidth: wide ? .infinity : nil)
             }
             .buttonStyle(.bordered)
             .buttonBorderShape(.capsule)
             .tint(SayText.accent)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         } else {
             Button {
                 play()
             } label: {
                 HStack(spacing: 6) {
                     if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: "play.fill").accessibilityHidden(true) }
-                    Text(verbatim: SayText.playTitle(minutes)).lineLimit(1).fixedSize()
+                    // In a row of its own (the largest text) it may shrink; it must never be wider than the card.
+                    Text(verbatim: SayText.playTitle(minutes)).lineLimit(1)
+                        .fixedSize(horizontal: !wide, vertical: false)
+                        .minimumScaleFactor(0.6)
                 }
                 .font(.subheadline.weight(.semibold))
                 .frame(maxWidth: wide ? .infinity : nil)
@@ -455,6 +467,7 @@ struct SayInAirPodsField: View {
             .tint(SayText.accent)
             .foregroundStyle(Color.black)
             .disabled(isEmpty || isStarting || tooMany)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility1) // as the small buttons beside it
         }
     }
 

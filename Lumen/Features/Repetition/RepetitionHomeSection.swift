@@ -288,6 +288,8 @@ struct RepetitionHomeSection: View {
         // scroll it clear of the bar.
         .listSectionSpacing(.compact)
         .contentMargins(.bottom, 24, for: .scrollContent)
+        // A132 (D215.7, Ke72): without the large heading the card stands right under the capsule.
+        .contentMargins(.top, 4, for: .scrollContent)
     }
 
     /// "Nästa prov": the name, one line of facts and the screen's one filled button.
