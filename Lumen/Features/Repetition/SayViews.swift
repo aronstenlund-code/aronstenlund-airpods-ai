@@ -102,6 +102,16 @@ enum SayText {
         return all
     }
 
+    /// A136 (Kelly's review): what a capsule in "Senaste" says after the text: the style's first word, else the name
+    /// of the chosen voice. Nil for a text with the server's own voice and no style.
+    static func soundMark(_ drill: Drill, voices: [SayVoice]) -> String? {
+        if let style = Drill.cleanStyle(drill.style), let word = style.split(whereSeparator: { $0 == " " || $0 == "," }).first {
+            return String(word)
+        }
+        guard let id = drill.voiceID else { return nil }
+        return voices.first { $0.voice_id == id }?.name
+    }
+
     /// A132 (Ke72): a said text as a capsule under the field: its beginning, at most about 24 characters.
     static func capsule(_ text: String) -> String {
         let flat = text.split(whereSeparator: \.isNewline).joined(separator: " ")
@@ -254,7 +264,15 @@ struct SayInAirPodsField: View {
                             style = drill.style ?? ""
                             storedVoice = drill.voiceID ?? ""
                         } label: {
-                            Text(verbatim: SayText.capsule(drill.saidText)).font(.footnote).lineLimit(1)
+                            // Kelly (review of A136): the text is cut first; what tells two sounds apart stays.
+                            HStack(spacing: 4) {
+                                Text(verbatim: SayText.capsule(drill.saidText))
+                                if let mark = SayText.soundMark(drill, voices: model.sayVoices) {
+                                    Text(verbatim: "· \(mark)").foregroundStyle(.secondary)
+                                }
+                            }
+                            .font(.footnote)
+                            .lineLimit(1)
                         }
                         .buttonStyle(.bordered)
                         .buttonBorderShape(.capsule)

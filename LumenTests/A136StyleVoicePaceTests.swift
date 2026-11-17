@@ -150,6 +150,15 @@ import Testing
         // Ke75 §2: a suggestion is written alone, or after a comma when there is text already.
         #expect(SaySound.adding("Lugnt", to: "") == "Lugnt" && SaySound.adding("Glatt", to: "Lugnt ") == "Lugnt, glatt")
         #expect(SaySound.adding("Viskande", to: "Lugnt,") == "Lugnt, viskande")
+        #expect(SayVoicesSheet.notInCatalog == "Kan bara provlyssnas")
+        // Kelly's review: a capsule in Senaste says the style's first word, else the chosen voice's name.
+        var said = Drill.text(title: "T", summary: A79A81RepetitionTests.summary, parts: [DrillItem.textPart("En rad.", part: .para)])
+        let voices = [SayVoice(voice_id: "nils000000000004", name: "Nils")]
+        #expect(SayText.soundMark(said, voices: voices) == nil)
+        said.voiceID = "nils000000000004"
+        #expect(SayText.soundMark(said, voices: voices) == "Nils" && SayText.soundMark(said, voices: []) == nil)
+        said.style = "Lugnt, som en lärare"
+        #expect(SayText.soundMark(said, voices: voices) == "Lugnt", "the style goes before the voice")
     }
 
     // MARK: Säg i AirPods with a sound
