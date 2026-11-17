@@ -75,8 +75,7 @@ final class SayFlowTests: XCTestCase {
     private func writeText() -> Bool {
         guard field.waitForExistence(timeout: 10) else { return miss("no field 'Säg i AirPods' on Start") }
         if let play = find(Self.playLabels), play.isEnabled { note("Spela is tappable before any text (A115: grey without text)") }
-        tapElement(field, "Säg i AirPods (the field)")
-        pause(1)
+        guard focusField("Säg i AirPods (the field)") else { return miss("the field got no keyboard after 3 taps") }
         field.typeText(Self.text)
         pause(1)
         let value = (field.value as? String) ?? ""
@@ -183,9 +182,20 @@ final class SayFlowTests: XCTestCase {
         return true
     }
 
+    /// Run 44159967813 (slow Simulator, 112 s to Start): typeText failed with "Neither element nor any descendant has
+    /// keyboard focus" after one tap. Tap until the keyboard is up, at most 3 times.
+    @discardableResult
+    private func focusField(_ step: String, counted: Bool = true) -> Bool {
+        for n in 0..<3 {
+            tapElement(field, n == 0 ? step : "\(step), again", counted: counted && n == 0)
+            let end = Date().addingTimeInterval(4)
+            repeat { if app.keyboards.count > 0 { pause(0.5); return true }; pause(0.5) } while Date() < end
+        }
+        return false
+    }
+
     private func retype() {
-        tapElement(field, "Säg i AirPods (again)")
-        pause(1)
+        guard focusField("Säg i AirPods (again)") else { return }
         field.typeText(Self.text)
         pause(1)
     }
@@ -228,8 +238,7 @@ final class SayFlowTests: XCTestCase {
     private func clearField() {
         let value = (field.value as? String) ?? ""
         guard value.contains("Klorofyllet") || value.contains("rad") || value.localizedCaseInsensitiveContains("example") else { return }
-        tapElement(field, "Säg i AirPods (to clear it)", counted: false)
-        pause(0.5)
+        guard focusField("Säg i AirPods (to clear it)", counted: false) else { return }
         field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: value.count + 5))
         pause(1)
     }
@@ -270,7 +279,7 @@ final class SayFlowTests: XCTestCase {
         // Run 44151565954: all four heights were 108 with no keyboard, i.e. the field had lost focus (3 rows by design).
         // Measure only while it is written in: tap it again when the keyboard is gone.
         for chunk in [1, 3, 8, 14] {
-            if app.keyboards.count == 0 { tapElement(field, "Säg i AirPods (focus again)", counted: false); pause(1) }
+            if app.keyboards.count == 0, !focusField("Säg i AirPods (focus again)", counted: false) { return miss("the field got no keyboard") }
             let have = ((field.value as? String) ?? "").components(separatedBy: row).count - 1
             if chunk > have { field.typeText(String(repeating: row, count: chunk - have)) }
             pause(1)
