@@ -474,6 +474,37 @@ import Testing
         #expect(!exam.isActive && rig.model.exam == nil)
     }
 
+    /// D199 step 6b (A125): the practice exam by voice inside Provläge (A16) is `PracticeExamController`. The screen
+    /// still reads the run and its result through `model.practice` and `model.practiceResult`.
+    @Test func thePracticeExamIsItsOwnController() throws {
+        let rig = makeRig(events: [])
+        let practice = rig.model.practiceExam
+        #expect(practice.mode == .prov && practice.host === rig.model)
+        #expect(!practice.isActive && rig.model.practice == nil && rig.model.practiceResult == nil)
+        #expect(practice.spokenKeyterms == rig.model.standardMode.spokenKeyterms)
+        #expect(practice.startBlock() == nil && practice.startScreen() == nil)
+
+        var paper = ExamPaper()
+        paper.tasks = [ExamTask(no: "1", text: "Vad är 2 + 2?", points: .init(E: 1, C: 0, A: 0), answer: "4", assessment: ""),
+                       ExamTask(no: "2", text: "Lös x + 1 = 3.", points: .init(E: 1, C: 1, A: 0), answer: "2", assessment: "")]
+        practice.begin(try #require(PracticeRun(paper: paper)))
+        #expect(practice.isActive && rig.model.practice?.index == 0, "the model reads the controller's run")
+        #expect(rig.model.hasRunningExercise)
+        #expect(practice.aheadRequest(for: "Vad är fotosyntes?") == nil, "nothing is answered ahead in the run")
+
+        practice.turn("nästa")
+        #expect(rig.model.practice?.index == 1)
+        practice.instruction("förra") // A16: "Lumen, förra" works as well as "förra"
+        #expect(rig.model.practice?.index == 0)
+
+        practice.turn("avsluta provet")
+        #expect(!practice.isActive && rig.model.practice == nil)
+        #expect(rig.model.practiceResult != nil, "the result stays on the listening screen")
+        rig.model.dismissPracticeResult()
+        #expect(rig.model.practiceResult == nil)
+        #expect(rig.provider.requests.isEmpty, "the run never goes through the answer pipeline")
+    }
+
     /// D199 step 4 (A119): each mode says what the app must show before it starts; the model shows the sheet or
     /// says the line. The same checks as before the move.
     @Test func eachModeSaysWhatItNeedsBeforeItStarts() async {

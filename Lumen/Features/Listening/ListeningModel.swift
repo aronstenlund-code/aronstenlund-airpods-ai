@@ -105,9 +105,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var exam: ExamSession? { examSession.session }
     let examSession = ExamSessionController()
     /// A16: the practice exam read aloud one question at a time (K15), in Provläge.
-    private(set) var practice: PracticeRun?
+    /// D199 step 6b (A125): the practice exam by voice is `PracticeExamController` now; the screen and the checks
+    /// here read its run and its result as before.
+    var practice: PracticeRun? { practiceExam.run }
+    let practiceExam = PracticeExamController()
     /// A16: the last run's result for the listening screen (right, wrong, what to practise).
-    private(set) var practiceResult: PracticeRun.Summary?
+    var practiceResult: PracticeRun.Summary? { practiceExam.result }
     /// A16: right and wrong per concept from practice runs, sent as `concept_stats` in Provläge.
     @ObservationIgnored private var conceptStats = ConceptStats.load()
     /// A19 (K17): what came up per exam and concept, right or wrong, for `/study-plan`.
@@ -425,6 +428,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         liveMode.host = self
         standardMode.host = self
         examSession.host = self
+        practiceExam.host = self
     }
 
     // MARK: - User actions
@@ -1194,7 +1198,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         guard study.isActive || bySilence else { return }
         let endedProv = mode == .prov
         if endedProv, exam != nil { examSession.end(speak: false) }
-        if endedProv, practice != nil { finishPractice(speak: false) }
+        if endedProv, practice != nil { practiceExam.finish(speak: false) }
         study.stop()
         if endedProv { provSessionEnded() }
         handsFreeEnded()
@@ -1244,7 +1248,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             logTurn()
             if pendingToolConfirm != nil, toolConfirmTurn(text) { return } // A48: "ja" before the filler filter
             if mode == .prov, practice != nil {
-                practiceTurn(text) // A16: before the filler filter, "ja" can be an answer
+                practiceExam.turn(text) // A16: before the filler filter, "ja" can be an answer (D199 step 6b)
                 return
             }
             if !mode.isLive, FillerFilter.isOnlyFiller(text) {
@@ -1610,7 +1614,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         if practice != nil {
-            finishPractice(speak: true) // A16: the first "avsluta" ends the practice exam with its result
+            practiceExam.finish(speak: true) // A16: the first "avsluta" ends the practice exam with its result
             return
         }
         if summarizeBeforeEnding() { return } // A19.2: the summary first, then Lumen stops
@@ -1623,7 +1627,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// The other modes: a question to Lumen.
     func instruct(_ text: String) {
         if practice != nil, mode == .prov {
-            practiceTurn(text) // A16: "Lumen, nästa" works as well as "nästa"
+            practiceExam.instruction(text) // A16: "Lumen, nästa" works as well as "nästa" (D199 step 6b)
             return
         }
         if exam != nil {
@@ -2546,118 +2550,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         miniTest = nil
         examSession.drop() // D199 step 6a: as before, without a summary
         endSilentQuiz()
-        practiceResult = nil
-        practice = run
-        controller.log("Practice exam started (\(run.count) questions)")
-        say("Provfrågor, \(run.count) frågor. Svara högt. Säg nästa, förra, fråga sju, hoppa över eller upprepa. "
-            + run.spokenQuestion)
+        practiceExam.begin(run) // D199 step 6b
     }
 
-    /// What the student said during the run: Kevin's navigation (ported, `PracticeNav`), else an answer to grade.
-    private func practiceTurn(_ text: String) {
-        guard var run = practice else { return }
-        study.resumeListening() // the turn is handled here; Lumen's next words are spoken with `say`
-        if run.isGrading {
-            controller.log("Practice exam: still grading, not heard as an answer")
-            return
-        }
-        let nav = PracticeNav.decide(text, current: run.index, nos: run.nos)
-        controller.log("Practice exam: \(nav)")
-        switch nav {
-        case .next(let index):
-            guard index != run.index else {
-                say("Det var sista frågan. Säg resultatet, eller avsluta.")
-                return
-            }
-            run.move(to: index)
-            practice = run
-            say(run.spokenQuestion)
-        case .go(let index), .previous(let index), .repeatQuestion(let index):
-            run.move(to: index)
-            practice = run
-            say(run.spokenQuestion)
-        case .skip(let index):
-            run.skip()
-            practice = run
-            guard index != run.index else {
-                finishPractice(speak: true)
-                return
-            }
-            run.move(to: index)
-            practice = run
-            say(run.spokenQuestion)
-        case .stop:
-            finishPractice(speak: true)
-        case .results:
-            say(run.spokenSummary)
-        case .answer:
-            gradePractice(text, in: run)
-        }
-    }
-
-    private func gradePractice(_ answer: String, in run: PracticeRun) {
-        guard let examClient else {
-            say("Jag kan inte rätta just nu.")
-            return
-        }
-        var run = run
-        run.isGrading = true
-        practice = run
-        let task = run.task
-        controller.log("Practice exam: question \(task.no) answered, grading")
-        Task { [weak self] in
-            let graded = await examClient.grade(task: task, answer: answer, practice: true)
-            guard let self, var current = self.practice, current.task.no == task.no else { return }
-            current.isGrading = false
-            guard let graded else {
-                self.practice = current
-                self.say("Jag kunde inte rätta just nu. Säg svaret igen, eller nästa.")
-                return
-            }
-            let max = (graded.max ?? task.points).total
-            current.graded(points: graded.points.total, max: max)
-            self.noteQuizAnswer() // A38
-            let right = current.outcomes[task.no]?.isRight ?? false
-            if let topic = task.topic, !topic.isEmpty {
-                self.conceptStats.record(topic, right: right)
-                self.conceptStats.save()
-                if let exam = self.currentExamID() { // A19: the study plan's history
-                    self.studyHistory.record(topic, ok: right, exam: exam)
-                    self.studyHistory.save()
-                }
-            }
-            current.lastFeedback = graded.feedback
-            current.lastFeedbackNo = task.no
-            var spoken = graded.feedback
-            if task.isOwnAnswer, !right { spoken += " Provet hade inget facit, så det rätta svaret är EarMinds eget." }
-            self.controller.log("Practice exam: question \(task.no) graded \(graded.points.total)/\(max)")
-            if let next = current.nextOpenIndex {
-                current.move(to: next)
-                self.practice = current
-                self.say(spoken + " " + current.spokenQuestion)
-            } else {
-                self.practice = current
-                self.say(spoken)
-                self.finishPractice(speak: true)
-            }
-        }
-    }
-
-    /// The run is over: the result is said and stays on the listening screen; what went wrong goes to Minne.
-    func finishPractice(speak: Bool) {
-        guard let run = practice else { return }
-        practice = nil
-        practiceResult = run.summary
-        let practise = run.summary.practise
-        if !practise.isEmpty {
-            memory.add("Provfrågor: öva på " + PracticeRun.list(Array(practise.prefix(5))), kind: .fact, source: .automatic)
-        }
-        controller.log("Practice exam ended · \(run.outcomes.count) graded · \(practise.count) to practise")
-        if speak { say(run.spokenSummary) }
-    }
+    // The turn, the grading and the result are `PracticeExamController` (D199 step 6b).
 
     func dismissPracticeResult() {
-        practiceResult = nil
+        practiceExam.dismissResult()
     }
 
     #if DEBUG
@@ -2667,8 +2566,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func stagePracticeForScreenshot(_ run: PracticeRun?, result: PracticeRun.Summary?) {
         screenshotShows = .prov
-        practice = run
-        practiceResult = result
+        practiceExam.stage(run, result: result)
     }
     #endif
 
@@ -3922,5 +3820,21 @@ extension ListeningModel: ExamSessionHost {
     func rememberToPractise(_ facts: [String]) {
         for fact in facts { memory.add(fact, kind: .fact, source: .automatic) }
         if !facts.isEmpty { refreshKeyterms() }
+    }
+}
+
+/// D199 step 6b (A125): what the practice exam by voice uses (`PracticeExamHost`): the model's own calls, unchanged.
+extension ListeningModel: PracticeExamHost {
+    func recordConcept(_ topic: String, right: Bool) {
+        conceptStats.record(topic, right: right)
+        conceptStats.save()
+        if let exam = currentExamID() { // A19: the study plan's history
+            studyHistory.record(topic, ok: right, exam: exam)
+            studyHistory.save()
+        }
+    }
+
+    func rememberPractice(_ fact: String) {
+        memory.add(fact, kind: .fact, source: .automatic)
     }
 }
