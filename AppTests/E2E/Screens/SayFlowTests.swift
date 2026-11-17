@@ -115,9 +115,18 @@ final class SayFlowTests: XCTestCase {
             up = text(starting: "Spelar i AirPods") != nil || text(starting: "Gör ljudet") != nil || timeLeft() != nil
             if !up { pause(2) }
         } while !up && Date() < end
-        if up { return true }
+        if up { answerReminder(); return true }
         screen("ingen-spelning", "Spela did not show 'Spelar i AirPods' on the card")
         return miss("no 'Spelar i AirPods' on the card after Spela")
+    }
+
+    /// Run 44163010444: "Vill du ha en påminnelse?" (A109) comes up a few seconds after the first Spela and covers the
+    /// card, so the card's Pausa and text got no taps. Wait for it a moment and answer Inte nu.
+    private func answerReminder() {
+        guard wait(["Vill du ha en påminnelse?"], 6) != nil else { return }
+        log.append("T46 the reminder question came up over the playing card")
+        if let notNow = find(["Inte nu"]) { tapElement(notNow, "Inte nu (reminder question)", counted: false) }
+        pause(1.5)
     }
 
     /// The card's time line, "7:32 kvar" or "7:32 kvar · pausad".
@@ -235,12 +244,22 @@ final class SayFlowTests: XCTestCase {
         Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Klorofyllet") && $0.hasSuffix("…") }
     }
 
+    /// Run 44163010444: the deletes did nothing (110 characters after "clearing" 78): a tap puts the cursor where it lands.
+    /// Put it at the end first (bottom right of the field), then delete; check, and say so if text is left.
     private func clearField() {
         let value = (field.value as? String) ?? ""
-        guard value.contains("Klorofyllet") || value.contains("rad") || value.localizedCaseInsensitiveContains("example") else { return }
+        guard value.contains("Klorofyllet") || value.contains("Bladen") || value.localizedCaseInsensitiveContains("example") else { return }
         guard focusField("Säg i AirPods (to clear it)", counted: false) else { return }
-        field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: value.count + 5))
-        pause(1)
+        for _ in 0..<2 {
+            field.coordinate(withNormalizedOffset: CGVector(dx: 0.97, dy: 0.95)).tap(); testTaps += 1
+            pause(0.5)
+            let now = (field.value as? String) ?? ""
+            field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: now.count + 5))
+            pause(1)
+            let left = (field.value as? String) ?? ""
+            if !(left.contains("Klorofyllet") || left.contains("Bladen") || left.localizedCaseInsensitiveContains("example")) { return }
+        }
+        log.append("clearField: text left in the field: \(((field.value as? String) ?? "").prefix(40))")
     }
 
     /// T46: a said text is not an exam (no Nästa prov / Andra prov); a tap on its capsule in Senaste puts it back in the
@@ -275,9 +294,16 @@ final class SayFlowTests: XCTestCase {
         tapElement(field, "Säg i AirPods (rows)", counted: false)
         pause(0.5)
         let row = "Bladen fångar ljuset varje dag. "
+        if !((field.value as? String) ?? "").isEmpty, ((field.value as? String) ?? "").contains("Klorofyllet") { return miss("the field could not be cleared before measuring") }
         var heights: [CGFloat] = []
         // Run 44151565954: all four heights were 108 with no keyboard, i.e. the field had lost focus (3 rows by design).
         // Measure only while it is written in: tap it again when the keyboard is gone.
+        // A short word first (one row: the field shows its 3-row minimum), then past 5 rows.
+        if app.keyboards.count == 0 { focusField("Säg i AirPods (rows)", counted: false) }
+        field.typeText("Hej")
+        pause(1)
+        let short = field.frame.height
+        log.append("T46 'Hej': height \(Int(short)), \(((field.value as? String) ?? "").count) characters")
         for chunk in [1, 3, 8, 14] {
             if app.keyboards.count == 0, !focusField("Säg i AirPods (focus again)", counted: false) { return miss("the field got no keyboard") }
             let have = ((field.value as? String) ?? "").components(separatedBy: row).count - 1
@@ -290,7 +316,7 @@ final class SayFlowTests: XCTestCase {
         screen("falt-14", "The field with a long text (at most 5 rows)")
         clearField()
         guard let last = heights.last, heights.count == 4 else { return false }
-        if heights[0] >= last { return miss("the field did not grow while written in (\(heights))") }
+        if short >= last { return miss("the field did not grow while written in ('Hej' \(Int(short)), 14 sentences \(Int(last)))") }
         // 8 and 14 sentences are both well past 5 rows in a monospaced body font, so the height must have stopped.
         return abs(heights[3] - heights[2]) <= 2 || miss("the field still grows past 5 rows (\(heights[2]) → \(heights[3]))")
     }
