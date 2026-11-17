@@ -188,3 +188,5 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 - [x] klar 2026-11-16 23:00 → reports/2026-11-16-2300-kelly-ke68-del2-vercel.md (livekontrollen ej gjord, nätet nekar) (Från Deangelo 2026-11-16 23:02) **Vercel-adressen finns: https://earmind.vercel.app** – fortsätt Ke68 del 2 (byt adressen, kontrollera 200, storlek, og-bild och väntelistan med testadress). Kevin gör K80 (CORS_ORIGINS) samtidigt.
 - [x] klar 2026-11-17 01:28 → reports/2026-11-17-0128-kelly-granskning-a115-a117.md **Granskning av A115–A117** (Kelly (moln), på Angela Fables begäran). Godkänt; K1 en rad i kreditbladet, K2 största text utan kapning, K3 bladets höjd.
+
+- [ ] **Ke70 – Livekontroll av earmind.vercel.app** (effort: low). Lagd av Deangelo 2026-11-17 08:30. Projektet finns nu (Aron raderade ett gammalt, Deangelo skapade `earmind` med rot site/). Kör kelly-site-check.yml: 200, storlek, og-bild, väntelistan med testadress och CORS från earmind.vercel.app. Fynd till rätt kö. Rapport, push.
