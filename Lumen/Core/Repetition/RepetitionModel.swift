@@ -621,6 +621,19 @@ final class RepetitionModel {
         return "Fylls på den \(parts[2]) \(calendar.monthSymbols[parts[1] - 1])."
     }
 
+    /// A132 (D215.8, K92): what Spela would cost for this text, asked of the server without saving anything. A text
+    /// that is already an exam is asked about as that exam, so sound that exists costs nothing. Nil when the server
+    /// cannot be asked; the app then says nothing about the cost, and the server answers at Spela.
+    func sayCost(_ text: String) async -> DrillCost? {
+        guard let cloud else { return nil }
+        let parts = SaidText.parts(text)
+        guard !parts.isEmpty else { return nil }
+        let drill = saidDrill(for: text)
+            ?? Drill.text(title: SaidText.title(text), summary: DrillSummary(subject: "", grade: "", covers: ""),
+                          parts: parts.map { DrillItem.textPart($0, part: .para) })
+        return try? await cloud.cost(drill)
+    }
+
     /// A132 (D215.6): a text from "Säg i AirPods" is being read (or waits for its sound) and has not reached its end.
     var isSayingOnCard: Bool {
         guard session.saying != nil, let reader = session.reader else { return false }

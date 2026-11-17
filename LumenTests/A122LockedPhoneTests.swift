@@ -341,4 +341,37 @@ import Testing
         #expect(SayText.capsule("HISTORIA – 1880–1918\nNationalism = stark kärlek") == "HISTORIA – 1880–1918 Na…")
         #expect(SayText.capsule("HISTORIA – 1880–1918\nNationalism = stark kärlek").count <= 24)
     }
+
+    // MARK: A132 (D215.8, K92): the cost before Spela is the server's; A133 (D216): an account without a limit
+
+    @Test func theCostBeforeSpelaIsAskedOfTheServerWithoutSavingAnything() async throws {
+        let folder = try A79A81RepetitionTests.folder("k92")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A107StartAudioTests.DeferredCloud()
+        cloud.costAnswer = try JSONDecoder().decode(DrillCost.self, from: Data(#"{"cost":744,"remaining":1236,"limit":1500,"unit":"chars","enough":true}"#.utf8))
+        let audio = CloudDrillAudio(cloud: cloud, store: store, folder: folder, pollInterval: .milliseconds(1), maxPolls: 20)
+        let session = RepetitionSession(inputs: [], makeSource: { MockSource() }, makeTimer: { MockTimer() },
+                                        defaults: try #require(UserDefaults(suiteName: "k92-\(UUID())")),
+                                        activatesAudioSession: false)
+        let model = RepetitionModel(store: store, session: session, maker: MockDrillMaker(), audio: audio,
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+
+        let answer = try #require(await model.sayCost("HISTORIA – 1880–1918\nNationalism = stark kärlek till den egna nationen."))
+        #expect(answer.cost == 744 && answer.remaining == 1236, "the server's number, not the app's count of characters")
+        #expect(cloud.costAsked.count == 1 && cloud.costAsked[0].isText && cloud.costAsked[0].items.count == 2)
+        #expect(store.drills.isEmpty && cloud.saves.isEmpty && cloud.startCalls == 0, "nothing is saved, started or counted")
+        #expect(DrillCloudClient.saveBody(cloud.costAsked[0])["items"] != nil, "the same body as save")
+        #expect(await model.sayCost("   ") == nil)
+
+        cloud.costAnswer = nil // a server without K92, or no network: nothing is said, and Spela asks the server
+        #expect(await model.sayCost("En text.") == nil)
+    }
+
+    @Test func anAccountWithoutALimitIsToldObegransat() throws {
+        let quota = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"unit":"chars","limit":1500,"used":9000,"remaining":0,"unlimited":true,"resets":"2026-12-01"}"#.utf8))
+        #expect(quota.isUnlimited && quota.left > 1_000_000 && !quota.isUsedUp, "nothing is refused for lack of credits")
+        #expect(CreditsText.capsule(quota) == "Obegränsat")
+        let usual = try JSONDecoder().decode(DrillQuota.self, from: Data(Self.creditsJSON.utf8))
+        #expect(!usual.isUnlimited && CreditsText.capsule(usual) == "1\u{00A0}236 krediter kvar")
+    }
 }

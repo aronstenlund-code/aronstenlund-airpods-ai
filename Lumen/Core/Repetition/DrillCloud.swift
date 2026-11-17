@@ -158,9 +158,12 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     var remaining: Int? = nil
     /// K90: "1 december", the day the credits are new.
     var resets_day: String? = nil
+    /// K93 (D216): this account has no limit (the owner's). The capsule says "Obegränsat" and nothing is refused.
+    var unlimited: Bool? = nil
+    var isUnlimited: Bool { unlimited == true }
 
     enum CodingKeys: String, CodingKey {
-        case used, limit, per, resets, suggest, prices, unit, remaining, resets_day
+        case used, limit, per, resets, suggest, prices, unit, remaining, resets_day, unlimited
         case serverLeft = "left"
     }
 
@@ -191,6 +194,7 @@ struct DrillQuota: Decodable, Sendable, Equatable {
         prices = try? c.decodeIfPresent(DrillPrices.self, forKey: .prices)
         unit = try? c.decodeIfPresent(String.self, forKey: .unit)
         resets_day = try? c.decodeIfPresent(String.self, forKey: .resets_day)
+        unlimited = try? c.decodeIfPresent(Bool.self, forKey: .unlimited)
     }
 
     init(used: Int, limit: Int, per: String? = nil, resets: String? = nil, serverLeft: Int? = nil, suggest: Int? = nil) {
@@ -202,7 +206,7 @@ struct DrillQuota: Decodable, Sendable, Equatable {
         self.suggest = suggest
     }
 
-    var left: Int { max(0, remaining ?? serverLeft ?? (limit - used)) }
+    var left: Int { isUnlimited ? Int.max / 2 : max(0, remaining ?? serverLeft ?? (limit - used)) }
 
     /// D175: Nytt prov proposes at most what is left, never more than 20 (D146); at least 1 while any is left.
     var suggestedQuestions: Int {
@@ -293,9 +297,22 @@ protocol DrillCloudSyncing: AnyObject, Sendable {
     func accountID() async -> String?
     /// K71 (D190): Starta prov: the server makes every missing file in play order and counts the month's quota now.
     func start(id: String) async throws(DrillCloudError) -> DrillCloudView
+    /// K92 (D215.8): what saving and starting this exam would cost, counted by the server exactly as `save` would.
+    /// Nothing is saved, queued or counted.
+    func cost(_ drill: Drill) async throws(DrillCloudError) -> DrillCost
+}
+
+/// K92: `{cost, remaining, limit, unit, enough}`.
+struct DrillCost: Decodable, Sendable, Equatable {
+    var cost: Int
+    var remaining: Int? = nil
+    var limit: Int? = nil
+    var enough: Bool? = nil
 }
 
 extension DrillCloudSyncing {
+    /// A server (or a mock) without K92 has no answer; the app then says nothing about the cost before Spela.
+    func cost(_ drill: Drill) async throws(DrillCloudError) -> DrillCost { throw .offline("no cost preview") }
     func accountID() async -> String? { nil }
     /// Mocks written before K71: a started exam is what `status` says.
     func start(id: String) async throws(DrillCloudError) -> DrillCloudView { try await status(id: id) }
@@ -370,6 +387,13 @@ final class DrillCloudClient: DrillCloudSyncing {
         let reply: Reply = try await call(["action": "list"], timeout: 20)
         lastQuota = reply.quota
         return reply.drills
+    }
+
+    /// K92 (D215.8): the same body as `save`, with the action `cost`.
+    func cost(_ drill: Drill) async throws(DrillCloudError) -> DrillCost {
+        var body = Self.saveBody(drill)
+        body["action"] = "cost"
+        return try await call(body, timeout: 15)
     }
 
     /// K61 (D175): `/drill quota` → used, limit, left, suggest.

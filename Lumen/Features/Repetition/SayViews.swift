@@ -30,6 +30,8 @@ enum SayText {
     static var stagedForScreenshots: String?
     /// A130: the line after a refused Spela, for the screenshots.
     static var stagedRefusal: String?
+    /// A132: the server's cost, for the screenshots (no server there).
+    static var stagedCost: Int?
     #endif
 
     /// "10 min" … "1 timme" on the button.
@@ -94,6 +96,8 @@ struct SayInAirPodsField: View {
     @AppStorage(SayText.hasPlayedKey) private var hasPlayed = false
     /// Ke72: the clipboard has text (asked without reading it, so the system shows no notice).
     @State private var clipboardHasText = false
+    /// K92: the server's answer for the text it was asked about.
+    @State private var asked: (text: String, cost: Int, left: Int?)?
     @Environment(\.scenePhase) private var scenePhase
     @AppStorage("say.repeatMinutes") private var storedMinutes = SayText.defaultRepeat
     private var minutes: Int { SayText.repeatMinutes(storedMinutes) }
@@ -127,15 +131,27 @@ struct SayInAirPodsField: View {
         return counts > quota.left
     }
 
-    /// A131 (D213, K90): the month in credits. The cost is the server's for a text it has seen (`startCost`; 0 when
-    /// the sound exists). For a text that is still being written no call has been made, so the line says the
-    /// number of characters, which is the server's own unit (1 credit = 1 shown character of new sound).
+    /// A131 (D213), A132 (D215.8, K92): the month in credits, and what Spela costs as the server says it: asked a
+    /// moment after the typing stops, without saving anything (`cost`). A text that is already an exam and started
+    /// costs 0. While the server has not answered, nothing is said (Ke72), and the server answers at Spela anyway.
+    /// A133 (D216): an account without a limit is told no cost.
     private var credits: (cost: Int, left: Int, resetsDay: String?)? {
-        guard let quota = model.quota, quota.isCredits, !isEmpty else { return nil }
-        let cost: Int
-        let written = SaidText.creditChars(text)
-        if let same = sameAsMade { cost = model.awaitsAudioStart(same) ? same.startCost ?? written : 0 } else { cost = written }
-        return (cost, quota.left, quota.resetsDay)
+        guard let quota = model.quota, quota.isCredits, !quota.isUnlimited, !isEmpty else { return nil }
+        #if DEBUG
+        if let staged = SayText.stagedCost { return (staged, quota.left, quota.resetsDay) }
+        #endif
+        if let same = sameAsMade, !model.awaitsAudioStart(same) { return (0, quota.left, quota.resetsDay) }
+        if let asked, asked.text == text { return (asked.cost, asked.left ?? quota.left, quota.resetsDay) }
+        if let known = sameAsMade?.startCost { return (known, quota.left, quota.resetsDay) }
+        return nil
+    }
+
+    /// K92: asks the server what this text costs, 0.7 s after the last key (at most 20 a minute there).
+    private func askCost(for text: String) async {
+        guard model.quota?.isCredits == true, model.quota?.isUnlimited != true, SaidText.chars(text) > 0 else { return }
+        try? await Task.sleep(for: .milliseconds(700))
+        guard !Task.isCancelled, let answer = await model.sayCost(text), !Task.isCancelled else { return }
+        asked = (text, answer.cost, answer.remaining)
     }
 
     var body: some View {
@@ -143,6 +159,7 @@ struct SayInAirPodsField: View {
             card
             if playing == nil { recents }
         }
+        .task(id: text) { await askCost(for: text) } // cancelled and asked again when the text changes
         .onAppear { lookAtClipboard(); setStage() }
         .onChange(of: scenePhase) { _, phase in if phase == .active { lookAtClipboard() } }
         .onReceive(NotificationCenter.default.publisher(for: UIPasteboard.changedNotification)) { _ in lookAtClipboard() }
