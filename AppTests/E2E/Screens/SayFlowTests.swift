@@ -136,7 +136,8 @@ final class SayFlowTests: XCTestCase {
         // label is read (XCTest stops the test). Read the text from the tree instead.
         let end = Date().addingTimeInterval(150)
         var lap2: String?
-        while lap2 == nil, Date() < end { lap2 = text(starting: "Varv 2"); if lap2 == nil { pause(2) } }
+        // Run 44009183791: with fake audio the laps go by in about a second ("Varv 11", "Varv 21"), so any lap from 2 on counts.
+        while lap2 == nil, Date() < end { lap2 = lapAtLeast(2); if lap2 == nil { pause(2) } }
         guard let lap2 else { return miss("no 'Varv 2' in 150 s (the text did not start again)") }
         log.append("T36 repeat: \(lap2)")
         screen("varv-2", "Upprepa 5 min, Varv 2")
@@ -169,6 +170,15 @@ final class SayFlowTests: XCTestCase {
     /// A text on screen that starts with `prefix`, read from the tree (labels that change every second are not queried).
     private func text(starting prefix: String) -> String? {
         Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix(prefix) }
+    }
+
+    /// The lap line ("Varv n · … kvar av 5 min") when n is at least `minimum`.
+    private func lapAtLeast(_ minimum: Int) -> String? {
+        Self.labels(in: app.debugDescription, kind: "StaticText").first { label in
+            guard label.hasPrefix("Varv ") else { return false }
+            let number = label.dropFirst(5).prefix { $0.isNumber }
+            return (Int(number) ?? 0) >= minimum
+        }
     }
 
     private func waitText(starting prefix: String, _ timeout: TimeInterval) -> Bool {
