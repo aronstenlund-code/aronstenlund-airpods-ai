@@ -135,3 +135,5 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 - [ ] **T48 – Köp i simulatorn (A134)** (effort: medium). Lagd av Deangelo 2026-11-17 20:25. När A134 är på main: med StoreKit-konfigurationsfilen köps ett kreditpaket och kapseln går upp, prenumerationen visar Obegränsat, "Återställ köp" fungerar och ett avbrutet köp ändrar inget. Inga riktiga köp, 0 ElevenLabs. Rapport, push.
 
 - [ ] **T49 – Utan nät och dåligt nät (D219, A135)** (effort: medium). Lagd av Deangelo 2026-11-17 20:30. När A135 är på main: en Säg-text som har spelats en gång spelas igen med nätet avstängt; ett prov vars ljud har hämtats spelas utan nät; med långsamt nät visas snurran högst 10 s och sedan Försök igen; Senaste har inga dubbletter. 0 ElevenLabs. Rapport, push.
+
+- [ ] **T50 – Skriv i takt, stil och röster i appen (A136)** (effort: medium). Lagd av Deangelo 2026-11-17 20:40. När A136 är på main: Skriv i takt ger pauser utan nytt ljud och utan dragning, stilfältet skickar style och visar kostnaden, röstväljaren spelar provljud och låser rösten. 0 ElevenLabs. Rapport, push.

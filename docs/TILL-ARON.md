@@ -42,3 +42,6 @@ Du har gjort 14 av 15 frågor med ljud den här månaden, så appen nekar mer lj
 
 ## 27. Betalningen i App Store Connect (D218), 2026-11-17 20:25
 Appen och servern byggs nu för köp med StoreKit, men produkterna måste finnas i App Store Connect innan de går att köpa på riktigt. Det kräver dig: avtalet för betalda appar (Paid Apps Agreement med bank och skatt) och de fyra produkterna. Vi säger till när det behövs och öppnar sidan åt dig. Inget kostar något innan dess.
+
+## 28. Får vi lyssna på taggarna en gång? (D220), 2026-11-17 20:40
+För att veta att taggarna (lugnt, tydligt, viskande) och en skånsk röst faktiskt låter bra måste vi göra riktigt ljud en gång. Ett A/B-test med 6 korta texter kostar ungefär 2 000 ElevenLabs-krediter. Svara ja eller nej. Utan ja testas bara att texten blir rätt, inte hur den låter.
