@@ -48,6 +48,16 @@ svarar med kostnaden utan att spara.
   krediter den 1 december." med grå Spela; bladet "Krediter". SE med största text: körningen var inte klar när detta
   skrevs.
 
+## Uppföljning 15:36
+- **På main: iOS build 44099077287 grön.** Kreditbladet är 72 % högt så att fotnoten ryms (44099087188 grön på min
+  gren, nu på main).
+- **Kelly har godkänt orden** (`reports/2026-11-17-1500-kelly-granskning-a131.md`).
+- **Kevins livetest (5 av 5) bekräftar fältnamnen**: `quota {unit, limit, used, remaining, resets, resets_day, left}`,
+  402 med `error.message`, `cost`, `remaining`, `limit`; save och start svarar `cost` och `audio.cost`.
+- **Serverns 402-rad följer nu Kellys ord** ("… Nya krediter den 1 december.", tusental med mellanslag).
+- **SE med största text** (`fable/screens-a131-se-xxxl-2`): kapseln och bladet i full höjd ser rätt ut; raden om att
+  krediterna inte räcker ligger under skärmens kant och nås genom att rulla.
+
 ## Otestat (antaganden)
 - Fältnamnen är Kevins från meddelandet 14:38 (`unit`, `remaining`, `resets_day`, `cost`, `audio.cost`,
   `refunded_credits`); inget riktigt svar har avkodats av appen.
