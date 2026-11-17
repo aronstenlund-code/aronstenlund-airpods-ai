@@ -124,12 +124,17 @@ final class SayFlowTests: XCTestCase {
         guard tap(["Upprepa 5 min", "5 min"], "Upprepa 5 min") else { return false }
         pause(1)
         guard openPlayer() else { return false }
-        guard wait(["Varv 1*"], 20) != nil else { screen("utan-varv", "No Varv 1 line"); return miss("no 'Varv 1 · … kvar av 5 min' line") }
-        log.append("T36 repeat: \(find(["Varv 1*"])?.label ?? "-")")
+        guard waitText(starting: "Varv 1", 20) else { screen("utan-varv", "No Varv 1 line"); return miss("no 'Varv 1 · … kvar av 5 min' line") }
+        log.append("T36 repeat: \(text(starting: "Varv 1") ?? "-")")
         screen("varv-1", "Upprepa 5 min, Varv 1")
         // The text is short and the fake audio has no length, so lap 2 should come long before the 5 minutes.
-        guard let lap2 = wait(["Varv 2*"], 150) else { return miss("no 'Varv 2' in 150 s (the text did not start again)") }
-        log.append("T36 repeat: \(lap2.label)")
+        // Run 43998813563: the lap line ticks every second ("4:59 kvar"), so an element found by it can be gone when its
+        // label is read (XCTest stops the test). Read the text from the tree instead.
+        let end = Date().addingTimeInterval(150)
+        var lap2: String?
+        while lap2 == nil, Date() < end { lap2 = text(starting: "Varv 2"); if lap2 == nil { pause(2) } }
+        guard let lap2 else { return miss("no 'Varv 2' in 150 s (the text did not start again)") }
+        log.append("T36 repeat: \(lap2)")
         screen("varv-2", "Upprepa 5 min, Varv 2")
         return true
     }
@@ -155,6 +160,17 @@ final class SayFlowTests: XCTestCase {
         tap(["Avsluta"], "Avsluta", quiet: true)
         pause(2)
         return first != second || miss("two 1 presses did not toggle pause")
+    }
+
+    /// A text on screen that starts with `prefix`, read from the tree (labels that change every second are not queried).
+    private func text(starting prefix: String) -> String? {
+        Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix(prefix) }
+    }
+
+    private func waitText(starting prefix: String, _ timeout: TimeInterval) -> Bool {
+        let end = Date().addingTimeInterval(timeout)
+        repeat { if text(starting: prefix) != nil { return true }; pause(1) } while Date() < end
+        return false
     }
 
     private func paused() -> Bool {
