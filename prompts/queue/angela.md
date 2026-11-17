@@ -442,3 +442,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   - Main i samma stund (44106229421): T24 och T28 gröna, T27 röd ("Utan nät: Start och Nytt prov"), T29, T30 och T36 fick ingen runner.
   - Grenen är alltså inte sämre än main någonstans.
   - Det tysta förhöret (huvudrörelser) och Scribe körs inte (D180), så de täcks bara av dina enhetstester. **Verifierat i Simulator**, inte på enhet.
+
+- [ ] **A128 – G7 steg 6e: studieplanen ut ur ListeningModel (D199)** (effort: high, Fable 5.2). Lagd av Deangelo 2026-11-17 18:00. Beror på: A127 ihopslagen (6683c0e2, klar). Enligt tabellen i A121-rapporten: studieplanen (A19: dagens plan, påminnelser genom `LumenNotifications`, sammanfattningen vid "avsluta" som eget anrop vars svar avslutar passet, länkar, ca 150 rader) till en egen controller. Ingen beteendeändring, inget i ljudvägen, egen gren, säg till Toby när grenbygget är grönt (T45). Där flödet kräver Scribe eller ElevenLabs: enhetstester och provlista för telefonen (D180). Skriv efteråt i rapporten vad som är kvar i ListeningModel (motorn) och föreslå nästa steg. 0 ElevenLabs. Rapport, STATUS, tavla, push.
