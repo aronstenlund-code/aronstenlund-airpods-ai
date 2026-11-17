@@ -133,8 +133,8 @@ if not DAY_ONLY:
     c4 = count(A)
     s4s, j4s, _ = call(tbody("save", ed, did=d1), A)
     check("4 ändring med drill.id: cost 90 = save, inget nytt prov av förhandsvisningen",
-          j4.get("cost") == 90 and j4s.get("cost") == 90 and c4 == 1,  # startat prov: save köar direkt, audio.cost 0, cost = det som dras
-          {"cost": [s4, cv(j4)], "prov efter cost": c4, "save": [s4s, sv(j4s)]})
+          j4.get("cost") == 90 and j4s.get("cost") == 90 and c4 == 1 and q4b["used"] - q4a["used"] == 90,  # startat prov: save köar direkt, audio.cost 0, cost = det som dras
+          {"cost": [s4, cv(j4)], "prov efter cost": c4, "save": [s4s, sv(j4s)], "kvot före/efter save": [q4a, q4b]})
 
     # 5: frågeprov och blanktecken
     C = T.signup(True)[0]
