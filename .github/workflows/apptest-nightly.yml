@@ -1,4 +1,4 @@
-name: Apptest nightly (T24, T27, T28, T29, T30)
+name: Apptest nightly (T24, T27, T28, T29, T30, T36)
 
 # T31 (Toby (moln), Deangelo 2026-11-15 22:15): every night about 03:00 Swedish time, without any session awake, the
 # repetition flow's app tests run in the Simulator with fake audio only (D180: LUMEN_TEST_HEADER / x-earmind-test,
@@ -34,6 +34,7 @@ jobs:
           - { id: T28, title: "läsläget", script: reading.sh, out: reading }
           - { id: T29, title: "A107 redigera och Starta prov", script: a107.sh, out: a107 }
           - { id: T30, title: "streak och påminnelse", script: t30.sh, out: t30 }
+          - { id: T36, title: "Säg i AirPods", script: t36.sh, out: t36 }
     steps:
       - uses: actions/checkout@v5
         with:
@@ -126,7 +127,7 @@ jobs:
           {
             echo "# $TITLE $(TZ=Europe/Stockholm date +%H:%M) (simulatorn, inte enhet, falskt ljud, 0 ElevenLabs)"
             echo
-            for id in T24 T27 T28 T29 T30; do cat "status/$id.md" 2>/dev/null || echo "- **$id**: ingen status (jobbet startade inte)"; done
+            for id in T24 T27 T28 T29 T30 T36; do cat "status/$id.md" 2>/dev/null || echo "- **$id**: ingen status (jobbet startade inte)"; done
           } > "$FILE"
           cat "$FILE"
           git config user.name "github-actions[bot]"
