@@ -40,6 +40,9 @@ Kreditkapseln läses om när spelaren stängs (Tobys iakttagelse i T36).
 **iOS build 44059376273 grön på min gren**, med testet `aNewTextThatIsStartedAtOnceIsSavedOnce` (uppladdningen och
 starten körs samtidigt mot en server som svarar med fördröjning: en sparning, en start, ingen felrad).
 
+**Uppföljning 12:27: på main, iOS build 44064423646 grön. Tobys T36 mot main (44064540048): varje Spela gav exakt
+ett prov på servern.**
+
 **Inte belagt:** exakt var raden "Ingen kontakt" kom ifrån den gången. Det finns ingen logg från telefonen.
 **Aron behöver prova igen** med nästa app: skriv en ny text i Säg i AirPods och tryck Spela. Det ska höras inom
 några sekunder.
