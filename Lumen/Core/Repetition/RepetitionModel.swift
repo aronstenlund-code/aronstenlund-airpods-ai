@@ -222,6 +222,20 @@ final class RepetitionModel {
 
     var drills: [Drill] { store.drills }
 
+    /// A132 (D215, Aron's screenshot 13:48): the exams on Start. A text from "Säg i AirPods" is not one of them.
+    var examDrills: [Drill] { store.drills.filter { !$0.isSaid } }
+    /// A132: the texts from "Säg i AirPods", for "Senaste" under the field.
+    var saidDrills: [Drill] { store.drills.filter(\.isSaid) }
+    /// A132: the said text that is exactly this text (the same lines), if there is one. The same text is never saved
+    /// twice, also when it was put back from "Senaste".
+    func saidDrill(for text: String) -> Drill? {
+        // The server cleans the blanks in each line (K90), so the words decide.
+        let plain: (String) -> String = { $0.split(whereSeparator: \.isWhitespace).joined(separator: " ") }
+        let parts = SaidText.parts(text).map(plain)
+        guard !parts.isEmpty else { return nil }
+        return saidDrills.first { $0.items.map { plain($0.long) } == parts }
+    }
+
     // MARK: Making (A79)
 
     func make(_ material: DrillMaterial, settings: DrillSettings, correction: String? = nil,
@@ -617,13 +631,14 @@ final class RepetitionModel {
         guard !parts.isEmpty else { return nil }
         // A130 (D212, Aron's phone 2026-11-17 13:48): the server refused the text (402) and every press on Spela made
         // one more unstarted exam. The same text is the same exam: it is started again, never saved again.
-        if let last = lastSaid, last.text == text, let same = store.drill(last.drillID) {
+        if let same = saidDrill(for: text) ?? lastSaid.flatMap({ $0.text == text ? store.drill($0.drillID) : nil }) {
             await sayAgain(same, repeatMinutes: repeatMinutes)
             return store.drill(same.id) ?? same
         }
         var made = Drill.text(title: SaidText.title(text), summary: DrillSummary(subject: "", grade: "", covers: ""),
                               parts: parts.map { DrillItem.textPart($0, part: .para) })
         made.audioStarted = false // nothing is asked for or counted until it is started, just below
+        made.said = true // A132 (D215): kept as "Senaste" under the field, never as an exam on Start
         let drill = save(made)
         lastSaid = (text, drill.id)
         sayOptions = RepetitionSession.SayOptions(repeatMinutes: repeatMinutes)

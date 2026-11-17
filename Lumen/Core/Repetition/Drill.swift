@@ -37,6 +37,21 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     /// started). Nil = started, or an exam from before K71. Starta prov starts it (`RepetitionModel.startAudio`).
     var audioStarted: Bool?
 
+    /// A132 (D215): a text from "Säg i AirPods". It is never "Nästa prov" and never among "Andra prov"; it is kept as
+    /// "Senaste" under the field.
+    var said: Bool?
+
+    /// A132: said in the field. A text saved before the mark existed is known by what the field made of it: a text
+    /// without subject and grade, named after its own first words.
+    var isSaid: Bool {
+        if let said { return said }
+        guard isText, summary.subject.isEmpty, summary.grade.isEmpty, summary.covers.isEmpty, !items.isEmpty else { return false }
+        return title == SaidText.title(saidText)
+    }
+
+    /// A132: the text as it was written in the field (one line per part).
+    var saidText: String { items.map(\.long).joined(separator: "\n") }
+
     /// A131 (D213, K90): what Starta prov costs in credits, as the server last said it. Never counted in the app.
     var startCost: Int?
 

@@ -96,8 +96,7 @@ struct SayInAirPodsField: View {
     private var isEmpty: Bool { chars == 0 }
     /// The exam of this very text, if it was played before.
     private var sameAsMade: Drill? {
-        guard let made = model.lastSaid, made.text == text else { return nil }
-        return model.store.drill(made.drillID)
+        model.saidDrill(for: text) // A132: also a text put back from "Senaste"
     }
     private var readingAloudOff: Bool { sameAsMade.map(model.isReadingAloudOff) ?? false }
     /// The month does not cover the text (only a new text counts; the same sound again is free).
@@ -119,6 +118,48 @@ struct SayInAirPodsField: View {
     }
 
     var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            card
+            recents
+        }
+    }
+
+    /// A132 (D215): "Senaste". The texts that have been said, newest first; a tap puts the text back in the field.
+    /// They are not exams: they are never "Nästa prov" and never among "Andra prov".
+    @ViewBuilder
+    private var recents: some View {
+        let said = Array(model.saidDrills.prefix(3))
+        if !said.isEmpty {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Senaste")
+                    .font(.footnote.weight(.semibold))
+                    .foregroundStyle(.secondary)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 4)
+                ForEach(said) { drill in
+                    Button {
+                        text = String(drill.saidText.prefix(SaidText.maxChars))
+                    } label: {
+                        Text(verbatim: drill.saidText.replacingOccurrences(of: "\n", with: " "))
+                            .lineLimit(1)
+                            .foregroundStyle(Color.primary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal, 16)
+                            .padding(.vertical, 10)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint("Lägger tillbaka texten i fältet")
+                    .contextMenu {
+                        Button("Ta bort", systemImage: "trash", role: .destructive) { model.delete(drill) }
+                    }
+                    if drill.id != said.last?.id { Divider().padding(.leading, 16) }
+                }
+            }
+        }
+    }
+
+    private var card: some View {
         VStack(alignment: .leading, spacing: 10) {
             // With the largest text the heading and the count are two rows (they were squeezed side by side on SE).
             let header = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2))
@@ -135,7 +176,8 @@ struct SayInAirPodsField: View {
                 Text(verbatim: "›").foregroundStyle(SayText.accent).accessibilityHidden(true)
                 TextField("", text: $text, prompt: Text(typeSize.isAccessibilitySize ? "Skriv här" : "Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(0.45)),
                           axis: .vertical)
-                    .lineLimit(typeSize.isAccessibilitySize ? 2...6 : 3...8)
+                    // A132 (D215): at most 5 rows, then it scrolls inside; 3 rows when it is not being written in.
+                    .lineLimit(focused ? (typeSize.isAccessibilitySize ? 2...5 : 3...5) : (typeSize.isAccessibilitySize ? 2...3 : 3...3))
                     .focused($focused)
                     .tint(SayText.accent)
                     .accessibilityLabel("Säg i AirPods, textfält")

@@ -36,13 +36,16 @@ struct RepetitionHomeSection: View {
 
     var body: some View {
         Group {
-            if model.drills.isEmpty { emptyState } else { examList }
+            if model.examDrills.isEmpty { emptyState } else { examList }
         }
+        // A132 (D215): no large "Prov" heading; the capsule and the gear are enough, and the room goes to the field.
+        // The name stays for VoiceOver and for the way back from the screens that are pushed.
         .navigationTitle("Prov")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar { ToolbarItem(placement: .principal) { Color.clear.frame(width: 1, height: 1).accessibilityHidden(true) } }
         .safeAreaInset(edge: .bottom) { // Kelly S3: a fixed row, nothing floats over the text
             // A100: without an exam the row only held Fler lägen, which a new user does not see yet.
-            if !model.drills.isEmpty || showsMoreModes { bottomRow }
+            if !model.examDrills.isEmpty || showsMoreModes { bottomRow }
         }
         .toolbar { barItems }
         .sheet(isPresented: $isCreating) {
@@ -115,7 +118,7 @@ struct RepetitionHomeSection: View {
                 Label("Inställningar", systemImage: "gearshape")
             }
         }
-        if typeSize.isAccessibilitySize, !model.drills.isEmpty {
+        if typeSize.isAccessibilitySize, !model.examDrills.isEmpty {
             // Kelly S3: with the accessibility sizes the bottom row has room for Nytt prov only.
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
@@ -132,7 +135,7 @@ struct RepetitionHomeSection: View {
     /// (in iOS 26 the toolbar's buttons lay over the text and over Starta prov, CI 43531494112).
     private var bottomRow: some View {
         HStack(spacing: 12) {
-            if model.drills.isEmpty {
+            if model.examDrills.isEmpty {
                 Spacer(minLength: 0)
                 Button(action: onMoreModes) {
                     Text("Fler lägen · Beta")
@@ -227,7 +230,7 @@ struct RepetitionHomeSection: View {
                     .listRowInsets(EdgeInsets())
                     .listRowBackground(Color.clear)
             }
-            if let next = model.drills.first {
+            if let next = model.examDrills.first {
                 Section {
                     nextExam(next)
                     // Kelly Ke64 L2: a text has no questions.
@@ -246,9 +249,9 @@ struct RepetitionHomeSection: View {
                 }
             }
 
-            if model.drills.count > 1 {
+            if model.examDrills.count > 1 {
                 Section("Andra prov") {
-                    ForEach(model.drills.dropFirst()) { drill in otherExam(drill) }
+                    ForEach(model.examDrills.dropFirst()) { drill in otherExam(drill) }
                 }
             }
 

@@ -286,4 +286,45 @@ import Testing
         #expect(store.drills.isEmpty, "no card on Start for a text that was refused")
         #expect(cloud.startCalls == 0)
     }
+
+    // MARK: A132 (D215): a said text is "Senaste" under the field, never an exam on Start
+
+    @Test func aSaidTextIsNotAnExamOnStart() async throws {
+        let folder = try A79A81RepetitionTests.folder("a132")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A107StartAudioTests.DeferredCloud()
+        let audio = CloudDrillAudio(cloud: cloud, store: store, folder: folder, pollInterval: .milliseconds(1), maxPolls: 20)
+        let session = RepetitionSession(inputs: [], makeSource: { MockSource() }, makeTimer: { MockTimer() },
+                                        defaults: try #require(UserDefaults(suiteName: "a132-\(UUID())")),
+                                        activatesAudioSession: false)
+        let model = RepetitionModel(store: store, session: session, maker: MockDrillMaker(), audio: audio,
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+        store.save(A79A81RepetitionTests.bio(2))
+
+        let text = "HISTORIA – 1880–1918\nNationalism = stark kärlek till den egna nationen."
+        let said = try #require(await model.say(text, repeatMinutes: 10))
+        model.end()
+        #expect(model.examDrills.map(\.title) == ["Bio"], "Nästa prov and Andra prov are exams only")
+        #expect(model.saidDrills.map(\.id) == [said.id], "the text is under Senaste")
+        #expect(model.saidDrills.first?.saidText == text, "a tap puts exactly this back in the field")
+        #expect(model.saidDrill(for: "  HISTORIA – 1880–1918 \n\nNationalism = stark kärlek till den egna nationen.\n")?.id == said.id)
+
+        // Put back from Senaste and played again: the same exam, nothing new on the phone or the server.
+        let again = try #require(await model.say(text, repeatMinutes: 10))
+        model.end()
+        for _ in 0..<50 where audio.preparing.contains(said.id) { try? await Task.sleep(for: .milliseconds(2)) }
+        #expect(again.id == said.id && store.drills.count == 2 && cloud.saves.count == 1)
+    }
+
+    /// Aron's phone had said texts from before the mark existed: they are known by what the field made of them.
+    @Test func aTextSaidBeforeTheMarkExistedIsKnown() {
+        let text = "HISTORIA – 1880–1918\nNationalism = stark kärlek till den egna nationen."
+        let old = Drill.text(title: SaidText.title(text), summary: DrillSummary(subject: "", grade: "", covers: ""),
+                             parts: SaidText.parts(text).map { DrillItem.textPart($0, part: .para) })
+        #expect(old.said == nil && old.isSaid)
+        let reading = Drill.text(title: "Fotosyntes", summary: A79A81RepetitionTests.summary,
+                                 parts: [DrillItem.textPart("Växter gör socker.", part: .para)])
+        #expect(!reading.isSaid, "a text made in Nytt prov is an exam")
+        #expect(!A79A81RepetitionTests.bio(2).isSaid)
+    }
 }

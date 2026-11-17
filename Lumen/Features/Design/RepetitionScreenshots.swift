@@ -41,6 +41,8 @@ enum RepetitionDemo {
                                       "repSayText", "repSayPlay", "repSayPlayOnce", "repSayRefused",
                                       // A131 (D213, Ke71): the month in credits
                                       "repSayCredits", "repSayCreditsShort", "repCreditsSheet",
+                                      // A132 (D215): said texts are "Senaste" under the field, not exams
+                                      "repHomeSaid", "repHomeSaidOnly",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -226,6 +228,25 @@ enum RepetitionDemo {
                 try? WAVWriter.write(samples: silence, sampleRate: 16_000, to: audio.url(text: text))
             }
         }
+        if name == "repHomeSaid" || name == "repHomeSaidOnly" { // A132 (D215)
+            if name == "repHomeSaid" {
+                model.store.save(history)
+                model.store.save(drill)
+            }
+            for text in ["HISTORIA – 1880–1918\nNationalism = stark kärlek till den egna nationen.", said] {
+                var made = Drill.text(title: SaidText.title(text), summary: DrillSummary(subject: "", grade: "", covers: ""),
+                                      parts: SaidText.parts(text).map { DrillItem.textPart($0, part: .para) })
+                made.said = true
+                model.store.save(made)
+            }
+            var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = 1236
+            model.quota = credits
+            SayText.stagedForScreenshots = nil
+            SayText.stagedRefusal = nil
+            return
+        }
         if name == "repSayCredits" || name == "repSayCreditsShort" || name == "repCreditsSheet" { // A131 (D213)
             model.store.save(history)
             model.store.save(drill)
@@ -382,7 +403,8 @@ enum RepetitionDemo {
                     .sheet(isPresented: .constant(true)) { CreditsSheet(model: model) }
             case "repSayPlay", "repSayPlayOnce": RepetitionPlayerView(model: model)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
-                 "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort":
+                 "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
+                 "repHomeSaid", "repHomeSaidOnly":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)
