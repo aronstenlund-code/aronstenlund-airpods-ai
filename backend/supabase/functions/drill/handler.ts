@@ -7,6 +7,7 @@ import { wordsToNumber } from "../answer/svnum.ts";
 import { pronounce } from "../tts/handler.ts";
 import { sentenceTimes, TEXT_LIMITS, voicedPart } from "./text.ts";
 import { polishVoice, preVoice, V4_MODEL, VOICE_RULES_VERSION, withPauseTag } from "./voicerules.ts";
+import { type QuotaAnswer, walletFields } from "../_shared/wallet.ts";
 import { textLanguage } from "../exam/read.ts";
 import { composeLong, examLanguage, spokenText } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
@@ -188,7 +189,7 @@ export interface DrillDb {
   requeue(hashes: string[]): Promise<void>;
   /** K50: adds n generated questions when within the limit (n = 0 only reads); atomic in the database. */
   /** K93 (D216): an admin (credit_admins) answers unlimited, is never counted and never refused (lim = used + a large number). */
-  useQuota(userId: string, n: number): Promise<{ ok: boolean; used: number; lim: number; unlimited?: boolean }>;
+  useQuota(userId: string, n: number): Promise<QuotaAnswer>;
   /** K78 (D200): gives back n questions counted for audio that could not be made (never below 0). */
   refundQuota?(userId: string, n: number): Promise<void>;
   /** K78: a real file failed for lack of ElevenLabs credits since this time (then nothing new is sent now). */
@@ -878,7 +879,7 @@ export function createDrillHandler(deps: DrillDeps) {
       // K92 (D215 punkt 8): the cost before saving, counted exactly as the save would; nothing written or queued
       const q = await deps.db.useQuota(user.id, 0);
       const c = creditCost(displayChars(rows), fresh.map((f) => f.hash));
-      return json({ cost: c, remaining: Math.max(0, q.lim - q.used), limit: q.lim, unit: "chars", enough: c <= q.lim - q.used, ...(q.unlimited ? { unlimited: true } : {}) });
+      return json({ cost: c, remaining: Math.max(0, q.lim - q.used), limit: q.lim, unit: "chars", enough: c <= q.lim - q.used, ...(q.unlimited ? { unlimited: true } : {}), ...walletFields(q) });
     }
     // K78 (D200): ElevenLabs has just said it has no credits: nothing is sent, nothing is counted, the drill stays as
     // text (not started) and the app is told; the next Starta prov once credits are back makes the audio as usual
@@ -1043,6 +1044,7 @@ export function createDrillHandler(deps: DrillDeps) {
         return json({
           unit: "chars", limit: q.lim, used: q.used, remaining: left, resets: nextMonthStart(now()), resets_day: resetsDay(now()),
           ...(q.unlimited ? { unlimited: true } : {}), // K93 (D216): the capsule says "Obegränsat"
+          ...walletFields(q), // K94 (D218): monthly_free, purchased, subscription
           // kept for older apps (K61/K82): left is now credits; suggest is how many questions Nytt prov may offer
           left, suggest: left > 0 ? 20 : 0, per: "month",
           prices: {
@@ -1064,7 +1066,7 @@ export function createDrillHandler(deps: DrillDeps) {
         const doneSet = new Set((hashes.length ? await deps.db.audio(hashes) : []).filter((a) => a.status === "done").map((a) => a.hash));
         const q = await deps.db.useQuota(user.id, 0);
         return json({
-          quota: { unit: "chars", used: q.used, limit: q.lim, left: Math.max(0, q.lim - q.used), remaining: Math.max(0, q.lim - q.used), per: "month", resets: nextMonthStart(now()), ...(q.unlimited ? { unlimited: true } : {}) },
+          quota: { unit: "chars", used: q.used, limit: q.lim, left: Math.max(0, q.lim - q.used), remaining: Math.max(0, q.lim - q.used), per: "month", resets: nextMonthStart(now()), ...(q.unlimited ? { unlimited: true } : {}), ...walletFields(q) },
           drills: drills.map((d) => {
             const its = items.filter((i) => i.drill_id === d.id);
             const hs = [...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))];
