@@ -2,6 +2,7 @@ import AVFAudio
 import Foundation
 import MediaPlayer
 import Observation
+import UIKit
 
 /// Settings for a new exam (D146): number of questions and the long answers' length.
 struct DrillSettings: Equatable, Sendable {
@@ -338,8 +339,33 @@ final class RepetitionModel {
                 Log.repetition.info("Drill list: \(error.userMessage, privacy: .public)")
             }
         }
-        for drill in store.drills where !audio.hasAllSound(drill) || drill.needsUpload == true { prepareAudio(drill) }
+        askForMissingSound()
         await reschedulePracticeReminders() // A108: the week ahead, today only if not practised
+    }
+
+    /// The sound of every exam that is not ready, and the exams with changes to send. Safe to call again: an exam that
+    /// is already being followed is left alone.
+    private func askForMissingSound() {
+        for drill in store.drills where !audio.hasAllSound(drill) || drill.needsUpload == true { prepareAudio(drill) }
+    }
+
+    /// Aron's phone 2026-11-17 (Kevin's K87, point 4): the card said "Ljud: 0 av 30 klara" while the server had had
+    /// all 30 files for minutes. The sound was asked for when Start appeared and when the network came back; once
+    /// that had ended (the voice service was out, a file failed, 20 minutes had passed) nothing asked again while the
+    /// app stayed open, so the counter stood still until a restart. Coming back to the app asks again.
+    func appBecameActive() {
+        askForMissingSound()
+    }
+
+    @ObservationIgnored private var foregroundObserver: (any NSObjectProtocol)?
+
+    /// The app's own start (`AppContainer`): from now on, coming back to the app asks for the sound that is missing.
+    func watchForeground() {
+        guard foregroundObserver == nil else { return }
+        foregroundObserver = NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification,
+                                                                    object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.appBecameActive() }
+        }
     }
 
     /// Toby T27/T31: the phone's exam that the server already has but the phone does not know it has (no server id

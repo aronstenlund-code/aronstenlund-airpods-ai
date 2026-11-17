@@ -83,6 +83,38 @@ import Testing
         #expect(audio.isReadingAloudOff(after))
     }
 
+    /// Aron's phone 2026-11-17 (Kevin's K87, point 4): the credits were back and the server had every file, but the
+    /// card still said "Ljud: 0 av 30 klara": nothing asked the server again while the app stayed open. Coming back
+    /// to the app asks again, and the sound comes without a restart.
+    @Test func comingBackToTheAppAsksAgainForTheSoundThatWasNotMade() async throws {
+        let (audio, store, drill, cloud) = try rig(Self.view(started: true), started: true)
+        let session = RepetitionSession(inputs: [], makeSource: { A78RepetitionTests.MockSource() },
+                                        makeTimer: { A78RepetitionTests.MockTimer() },
+                                        defaults: try #require(UserDefaults(suiteName: "k87-\(UUID())")),
+                                        activatesAudioSession: false)
+        let model = RepetitionModel(store: store, session: session, maker: MockDrillMaker(), audio: audio,
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+        await audio.prepare(drill)
+        #expect(model.isReadingAloudOff(drill) && model.progress(drill).ready == 0, "the credits are out: nothing is followed")
+
+        // The credits are back and the server has made every file. The app was open the whole time.
+        let file = { (name: String) in
+            DrillCloudView.File(status: "done", url: "https://x.supabase.co/storage/v1/object/sign/drill_audio/ab/\(name).mp3?t=1",
+                                duration_ms: 3000, short_end_ms: nil)
+        }
+        var done = T24FindingsTests.view([(file("q0"), file("l0")), (file("q1"), file("l1"))], failed: 0)
+        done.drill.audio_started = true
+        done.audio = .init(done: 4, total: 4, failed: 0)
+        cloud.views["srv"] = done
+        #expect(model.progress(drill).ready == 0, "nothing asks by itself")
+
+        model.appBecameActive()
+        let came = await waitUntil { model.progress(store.drill(drill.id) ?? drill).ready == 4 }
+        #expect(came, "back in the app: the server is asked again and the files are downloaded")
+        #expect(audio.problem(for: drill) == nil && !model.isReadingAloudOff(drill))
+        #expect(model.canStart(store.drill(drill.id) ?? drill), "Starta prov is on again")
+    }
+
     @Test func whenTheCreditsAreBackTheLineIsGone() async throws {
         let (audio, store, drill, cloud) = try rig(Self.view(started: false), started: false)
         await audio.prepare(drill)

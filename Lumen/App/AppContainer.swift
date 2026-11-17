@@ -166,6 +166,7 @@ final class AppContainer {
             if listening?.isActiveSession == true { await listening?.endSession() }
         }
         listening.repetition = repetitionModel
+        repetitionModel.watchForeground() // K87: back in the app, the sound that is missing is asked for again
         // A108 (D194): a tap on the practice reminder opens the latest exam on Start.
         LumenNotifications.openDrill = { [weak repetitionModel] id in repetitionModel?.openDrill = id }
         repetitionModel.reminders = LivePracticeReminders() // also in the mock mode, for Toby's T30
