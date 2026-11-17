@@ -27,6 +27,8 @@ jobs:
     timeout-minutes: 110
     strategy:
       fail-fast: false
+      # T47 (D217): at most two macOS runners at once, so the iOS builds of the other sessions are not queued 20–30 min.
+      max-parallel: 2
       matrix:
         include:
           - { id: T24, title: "hela repetitionsflödet", script: fullflow.sh, out: fullflow }
