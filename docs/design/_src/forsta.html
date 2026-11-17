@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<title>Ke72 Första skärmen</title>
+<!-- Kelly (moln), Ke69 (D203–D205), 2026-11-16. Säg i AirPods i samma iOS-stil som Ke53 (apple.html): systemets listor, blad, knappar och färger.
+     Typsnittet här är datorns systemtypsnitt (på Windows Segoe UI); i appen är det SF Pro med Dynamic Type.
+     Rendera: node docs/design/_src/forsta-render.js  → docs/design/bilder/forsta/<id>.png (ljust | mörkt). -->
+<style>
+  /* iOS semantiska färger (UIKit), ljust och mörkt. Accent = appens AccentColor. */
+  .light { --bg:#FFFFFF; --gbg:#F2F2F7; --cell:#FFFFFF; --label:#000000; --sec:rgba(60,60,67,.6); --ter:rgba(60,60,67,.3);
+           --sep:rgba(60,60,67,.29); --fill:rgba(120,120,128,.12); --fill2:rgba(120,120,128,.16); --tint:#2346C8; --ontint:#FFFFFF;
+           --tintsoft:rgba(35,70,200,.12); --red:#FF3B30; --green:#34C759; --bar:rgba(249,249,249,.94); --stage:#E5E5EA; }
+  .dark  { --bg:#000000; --gbg:#000000; --cell:#1C1C1E; --label:#FFFFFF; --sec:rgba(235,235,245,.6); --ter:rgba(235,235,245,.3);
+           --sep:rgba(84,84,88,.6); --fill:rgba(118,118,128,.24); --fill2:rgba(118,118,128,.32); --tint:#7F9BFF; --ontint:#0B1230;
+           --tintsoft:rgba(127,155,255,.18); --red:#FF453A; --green:#30D158; --bar:rgba(22,22,24,.94); --stage:#1A1A1C; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: -apple-system, "SF Pro Text", system-ui, "Segoe UI", sans-serif; background: #ccc; -webkit-font-smoothing: antialiased; }
+  .pair { display: flex; width: 900px; }
+  .side { flex: 1; background: var(--stage); color: var(--label); padding: 24px 0 20px; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .tag { font-weight: 700; font-size: 16px; color: var(--tint); }
+  .cap { font-size: 13px; color: var(--sec); max-width: 390px; text-align: center; line-height: 1.38; }
+  .phone { width: 375px; height: 812px; border-radius: 40px; overflow: hidden; background: var(--bg); position: relative; display: flex; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,.2); }
+  .phone.g { background: var(--gbg); }
+  .status { height: 50px; display: flex; justify-content: space-between; align-items: center; padding: 6px 32px 0; font-weight: 600; font-size: 16px; flex: none; }
+  .nav { height: 44px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; flex: none; font-size: 17px; }
+  .nav .t { font-weight: 600; } .nav a { color: var(--tint); display: flex; align-items: center; gap: 2px; }
+  .nav a.b { font-weight: 600; }
+  .lt { font-size: 34px; font-weight: 700; letter-spacing: .01em; padding: 2px 16px 8px; flex: none; }
+  .content { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+  .sh { font-size: 13px; color: var(--sec); text-transform: uppercase; padding: 18px 32px 7px; }
+  .sh.big { text-transform: none; font-size: 20px; font-weight: 700; color: var(--label); padding: 20px 20px 8px; }
+  .sf { font-size: 13px; color: var(--sec); padding: 7px 32px 0; line-height: 1.35; }
+  .sec { margin: 0 16px; background: var(--cell); border-radius: 10px; overflow: hidden; }
+  .row { display: flex; align-items: center; gap: 12px; min-height: 44px; padding: 10px 16px; position: relative; font-size: 17px; }
+  .row + .row::before { content: ""; position: absolute; top: 0; right: 0; left: var(--inset, 16px); border-top: .5px solid var(--sep); }
+  .row.ic { --inset: 60px; }
+  .row .v { margin-left: auto; color: var(--sec); display: flex; align-items: center; gap: 6px; }
+  .row .sub { font-size: 15px; color: var(--sec); margin-top: 1px; }
+  .chev { width: 8px; height: 13px; flex: none; }
+  .sym { width: 29px; height: 29px; border-radius: 7px; display: grid; place-items: center; flex: none; color: #fff; }
+  .sym svg, .ico { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .tintc { color: var(--tint); }
+  .btnp { display: flex; align-items: center; justify-content: center; gap: 8px; height: 50px; border-radius: 25px; background: var(--tint); color: var(--ontint); font-size: 17px; font-weight: 600; }
+  .btnp.dis { background: var(--fill); color: var(--ter); }
+  .btns { display: flex; align-items: center; justify-content: center; gap: 8px; height: 50px; border-radius: 25px; background: var(--fill); color: var(--tint); font-size: 17px; font-weight: 600; }
+  .btnt { color: var(--tint); font-size: 17px; text-align: center; padding: 6px; }
+  .bottom { margin-top: auto; padding: 10px 16px 34px; display: flex; flex-direction: column; gap: 8px; background: var(--bar); border-top: .5px solid var(--sep); }
+  .g .bottom { background: color-mix(in srgb, var(--gbg) 94%, transparent); }
+  .note { font-size: 13px; color: var(--sec); text-align: center; }
+  .cu { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 40px 60px; gap: 8px; }
+  .cu .big { width: 64px; height: 64px; color: var(--sec); }
+  .cu h2 { font-size: 22px; font-weight: 700; margin-top: 6px; }
+  .cu p { font-size: 15px; color: var(--sec); line-height: 1.35; }
+  .tb { display: flex; justify-content: space-between; align-items: center; padding: 10px 20px 34px; font-size: 17px; color: var(--tint); background: var(--bar); border-top: .5px solid var(--sep); }
+  .tb span { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+  .seg { display: flex; background: var(--fill); border-radius: 9px; padding: 2px; width: 100%; }
+  .seg span { flex: 1; text-align: center; font-size: 13px; font-weight: 500; padding: 6px 0; border-radius: 7px; }
+  .seg .on { background: var(--cell); box-shadow: 0 3px 8px rgba(0,0,0,.12); font-weight: 600; }
+  .dark .seg .on { background: #636366; }
+  .stepper { display: flex; background: var(--fill); border-radius: 8px; }
+  .stepper span { width: 46px; height: 32px; display: grid; place-items: center; font-size: 22px; color: var(--label); }
+  .stepper span + span { border-left: .5px solid var(--sep); }
+  .thumbs { display: flex; gap: 8px; padding: 12px 16px; }
+  .th { width: 46px; height: 60px; border-radius: 6px; background: #EFEBE2; border: .5px solid var(--sep); }
+  .dark .th { background: #3A3A3C; }
+  .num { color: var(--sec); width: 18px; font-variant-numeric: tabular-nums; font-size: 15px; }
+  .q .t { font-weight: 600; } .q .sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+  .tbicons { display: flex; gap: 20px; color: var(--tint); }
+  .player { flex: 1; display: flex; flex-direction: column; padding: 0 24px; }
+  .pm { display: flex; justify-content: space-between; font-size: 15px; color: var(--sec); font-weight: 500; }
+  .pbar { height: 4px; border-radius: 2px; background: var(--fill2); margin-top: 8px; } .pbar i { display: block; width: 32%; height: 100%; border-radius: 2px; background: var(--label); }
+  .bq { font-size: 34px; font-weight: 700; text-align: center; line-height: 1.15; margin-top: 70px; letter-spacing: -.01em; }
+  .ring { width: 96px; height: 96px; margin: 32px auto 0; position: relative; }
+  .ring svg { width: 96px; height: 96px; transform: rotate(-90deg); }
+  .ring b { position: absolute; inset: 0; display: grid; place-items: center; font-size: 34px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .hintbig { text-align: center; font-size: 17px; font-weight: 600; margin-top: 26px; }
+  .taps { display: flex; justify-content: center; gap: 22px; font-size: 13px; color: var(--sec); margin-top: auto; padding-bottom: 14px; }
+  .end { margin: 0 24px 34px; }
+  .ctl-ill { width: 132px; height: 132px; border-radius: 50%; background: var(--tintsoft); display: grid; place-items: center; margin: 40px auto 0; color: var(--tint); }
+  .dots { display: flex; gap: 6px; } .dots i { width: 14px; height: 14px; border-radius: 50%; background: currentColor; }
+  .check { width: 22px; height: 22px; border-radius: 50%; background: var(--green); display: grid; place-items: center; color: #fff; font-size: 13px; font-weight: 700; flex: none; }
+  .ring0 { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--ter); flex: none; }
+  .spin { width: 22px; height: 22px; border-radius: 50%; border: 2.5px solid var(--fill2); border-top-color: var(--sec); flex: none; }
+  .badge { font-size: 13px; color: var(--sec); }
+  /* Ke69: terminalfältet. Alltid mörkt (även i ljust läge), monospace, en blinkande blockmarkör i accentfärgen.
+     Inget grönt, inga skanningslinjer, ingen ASCII-konst: Apple-rent, som Terminal och Xcode-konsolen. */
+  .term { margin: 0 16px; background: #101319; border-radius: 16px; padding: 14px 14px 12px; color: #E7E9EF;
+          box-shadow: inset 0 0 0 .5px rgba(255,255,255,.08); }
+  .dark .term { background: #15181F; }
+  .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; }
+  .term .tl { display: flex; justify-content: space-between; align-items: center; font-size: 13px; color: rgba(231,233,239,.55); margin-bottom: 8px; }
+  .term .tl b { color: #E7E9EF; font-weight: 600; font-family: -apple-system, system-ui, "Segoe UI", sans-serif; font-size: 15px; letter-spacing: 0; }
+  .term .input { min-height: 66px; font-size: 15px; line-height: 1.5; }
+  .term .ph { color: rgba(231,233,239,.42); }
+  .term .pr { color: #7F9BFF; margin-right: 6px; }
+  .cur { display: inline-block; width: 9px; height: 18px; background: #7F9BFF; vertical-align: -3px; margin-left: 1px; border-radius: 1px; }
+  .term .bar { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  .tchip { white-space: nowrap; display: inline-flex; align-items: center; gap: 5px; height: 32px; padding: 0 11px; border-radius: 16px; background: rgba(255,255,255,.09); color: #E7E9EF; font-size: 14px; font-weight: 500; }
+  .tchip.icon { width: 32px; padding: 0; justify-content: center; font-size: 20px; font-weight: 400; }
+  .tgo { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: 17px; background: #7F9BFF; color: #0B1230; font-size: 15px; font-weight: 600; }
+  .tgo.dis { background: rgba(255,255,255,.12); color: rgba(231,233,239,.4); }
+  .term .meta { font-size: 12px; color: rgba(231,233,239,.55); margin-top: 8px; }
+  .cred { display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 11px; border-radius: 15px; background: var(--fill); color: var(--label); font-size: 14px; font-weight: 500; }
+  .menu { position: absolute; background: var(--cell); border-radius: 13px; box-shadow: 0 12px 40px rgba(0,0,0,.25); width: 236px; overflow: hidden; }
+  .dark .menu { background: #2C2C2E; }
+  .menu .mi { display: flex; justify-content: space-between; align-items: center; padding: 11px 16px; font-size: 17px; }
+  .menu .mi + .mi { border-top: .5px solid var(--sep); }
+  .menu .mi .ico { color: var(--label); }
+  .menu .chk { color: var(--tint); width: 18px; }
+  .dim { position: absolute; inset: 0; background: rgba(0,0,0,.08); }
+  .live { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 600; color: var(--tint); }
+  .live i { width: 8px; height: 8px; border-radius: 50%; background: var(--tint); }
+  /* Ke72 (D215) */
+  .fs-top { display:flex; justify-content:space-between; align-items:center; padding: 4px 16px 10px; flex:none; }
+  .card2 { margin: 0 16px; background:#101319; border-radius:18px; padding:14px 14px 12px; color:#E7E9EF; box-shadow: inset 0 0 0 .5px rgba(255,255,255,.08); }
+  .dark .card2 { background:#15181F; }
+  .card2 .live { color:#7F9BFF; margin-bottom:8px; } .card2 .live i { background:#7F9BFF; }
+  .fld { font-family: ui-monospace,"SF Mono",Menlo,Consolas,monospace; font-size:16px; line-height:1.5; position:relative; }
+  .fld .ph { color: rgba(231,233,239,.42); }
+  .fld .pr { color:#7F9BFF; margin-right:6px; }
+  .fld.clip { overflow:hidden; }
+  .fld.fade::after { content:""; position:absolute; left:0; right:0; bottom:0; height:22px; background: linear-gradient(transparent, #101319); }
+  .dark .fld.fade::after { background: linear-gradient(transparent, #15181F); }
+  .sbar { position:absolute; right:-6px; top:4px; width:3px; height:46px; border-radius:2px; background: rgba(231,233,239,.35); }
+  .hint { font-size:13px; color: rgba(231,233,239,.55); margin-top:8px; }
+  .row2 { display:flex; align-items:center; gap:8px; margin-top:12px; }
+  .ic { display:inline-flex; align-items:center; justify-content:center; height:34px; min-width:34px; padding:0 10px; border-radius:17px; background: rgba(255,255,255,.10); color:#E7E9EF; font-size:15px; font-weight:500; white-space:nowrap; }
+  .ic.sq { padding:0; width:34px; font-size:20px; font-weight:400; }
+  .go { margin-left:auto; display:inline-flex; align-items:center; gap:6px; height:38px; padding:0 16px; border-radius:19px; background:#7F9BFF; color:#0B1230; font-size:16px; font-weight:600; white-space:nowrap; }
+  .go.dis { background: rgba(255,255,255,.12); color: rgba(231,233,239,.4); }
+  .cost { margin-left:auto; text-align:right; font-size:13px; color: rgba(231,233,239,.6); margin-top:10px; }
+  .cost.warn { color:#E7E9EF; font-weight:600; }
+  .chips { display:flex; gap:8px; padding: 10px 16px 0; overflow:hidden; }
+  .chips span { flex:none; max-width: 170px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; height:32px; line-height:32px; padding:0 12px; border-radius:16px; background: var(--cell); font-size:14px; color: var(--label); box-shadow: inset 0 0 0 .5px var(--sep); }
+  .chips b { flex:none; font-size:13px; color:var(--sec); font-weight:500; line-height:32px; }
+  .btnt2 { display:flex; align-items:center; justify-content:center; gap:8px; height:50px; border-radius:25px; background: var(--tintsoft); color: var(--tint); font-size:17px; font-weight:600; }
+  .pp { width:38px; height:38px; border-radius:50%; background:#7F9BFF; color:#0B1230; display:grid; place-items:center; flex:none; }
+  .ann { position:absolute; right:10px; font-size:11px; font-weight:700; color:#fff; background:#E5484D; border-radius:9px; padding:2px 7px; }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="chev" viewBox="0 0 8 13"><path d="M1.5 1.5 6.5 6.5 1.5 11.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="back" viewBox="0 0 12 20"><path d="M10 2 2 10l8 8" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="plus" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="currentColor"/><path d="M12 7v10M7 12h10" stroke="var(--bar)" stroke-width="2.2" stroke-linecap="round"/></symbol>
+  <symbol id="play" viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z" fill="currentColor"/></symbol>
+  <symbol id="playc" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="currentColor"/><path d="M9.5 7.5v9l7.5-4.5z" fill="var(--cell)"/></symbol>
+  <symbol id="share" viewBox="0 0 24 24"><path d="M12 3v12M8 7l4-4 4 4M7 10H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1h-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="7.5" cy="12" r="1.4" fill="currentColor"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/><circle cx="16.5" cy="12" r="1.4" fill="currentColor"/></symbol>
+  <symbol id="gear" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z" fill="none" stroke="currentColor" stroke-width="1.8"/></symbol>
+  <symbol id="cam" viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13.5" r="3.5"/></symbol>
+  <symbol id="photo" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="15" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16l-5-5-8 8"/></symbol>
+  <symbol id="txt" viewBox="0 0 24 24"><path d="M5 6h14M5 11h14M5 16h9"/></symbol>
+  <symbol id="doc" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></symbol>
+  <symbol id="book" viewBox="0 0 24 24"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 19V5M8 7h7"/></symbol>
+  <symbol id="wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 10v4"/></symbol>
+  <symbol id="school" viewBox="0 0 24 24"><path d="M3 21h18M5 21V10l7-5 7 5v11M10 21v-5h4v5"/></symbol>
+  <symbol id="link" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></symbol>
+  <symbol id="pause" viewBox="0 0 24 24"><rect x="6" y="4.5" width="4" height="15" rx="1.2" fill="currentColor"/><rect x="14" y="4.5" width="4" height="15" rx="1.2" fill="currentColor"/></symbol>
+  <symbol id="prev" viewBox="0 0 24 24"><path d="M11.5 6v12L3 12zM21 6v12l-8.5-6z" fill="currentColor"/></symbol>
+  <symbol id="next" viewBox="0 0 24 24"><path d="M12.5 6v12L21 12zM3 6v12l8.5-6z" fill="currentColor"/></symbol>
+  <symbol id="rep" viewBox="0 0 24 24"><path d="M17 2l3 3-3 3M4 11V9a4 4 0 0 1 4-4h12M7 22l-3-3 3-3M20 13v2a4 4 0 0 1-4 4H4"/></symbol>
+  <symbol id="timer" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M9.5 2.5h5"/></symbol>
+</svg>
+<div id="screens"></div>
+<script>
+const I = (id, cls = 'ico', st = '') => `<svg class="${cls}" style="${st}"><use href="#${id}"/></svg>`;
+const chev = `<svg class="chev" style="color:var(--ter)"><use href="#chev"/></svg>`;
+const status = `<div class="status"><span>9:41</span><span>●●●</span></div>`;
+const back = t => `<a>${I('back', 'ico', 'width:12px;height:20px;stroke:none')}${t}</a>`;
+const S = []; const add = (id, tag, cap, f) => S.push({ id, tag, cap, f });
+
+const SAMPLE = 'Fotosyntes: koldioxid + vatten + ljus blir socker och syre. Cellandning: socker + syre blir energi, koldioxid och vatten.';
+const LONG = '1914: Skotten i Sarajevo. Österrike-Ungern förklarar krig mot Serbien.\n\n1916: Slaget vid Somme. Över en miljon döda eller sårade.\n\n1917: USA går med i kriget. Revolution i Ryssland.\n\n1918: Vapenstillestånd den 11 november. Kriget tar slut.\n\nKonsekvenser: Tyskland förlorar, flera imperier faller och Europa försvagas ekonomiskt. USA blir en starkare stormakt.';
+const topBar = (cred = '1 236 krediter kvar') => `<div class="fs-top"><span class="cred">${cred}</span><span class="tbicons">${I('gear', 'ico', 'width:22px;height:22px;stroke:none')}</span></div>`;
+const row = ({ go = true, label = 'Spela i 10 min', paste = false } = {}) => paste ? `<div class="row2"><span class="ic sq">+</span><span class="ic" aria-label="Hur länge">${I('timer', 'ico', 'width:17px;height:17px')}</span><span class="ic">1,0×</span><span class="go" style="background:rgba(127,155,255,.18);color:#AFC0FF">Klistra in</span></div>` : `<div class="row2"><span class="ic sq">+</span><span class="ic" aria-label="Hur länge">${I('timer', 'ico', 'width:17px;height:17px')}</span><span class="ic">1,0×</span><span class="go${go ? '' : ' dis'}">${I('play', 'ico', 'width:13px;height:13px;stroke:none')}${label}</span></div>`;
+const field = (t, rows = 3, opts = {}) => `<div class="fld clip${opts.fade ? ' fade' : ''}" style="max-height:${rows * 24}px;${opts.min ? 'min-height:' + rows * 24 + 'px' : ''}">${t ? `<span class="pr">›</span>${t.replace(/\n/g, '<br>')}${opts.cur ? '<span class="cur"></span>' : ''}` : `<span class="pr">›</span><span class="ph">Skriv eller klistra in det du vill höra</span>${opts.cur ? '' : ''}`}${opts.bar ? '<span class="sbar"></span>' : ''}</div>`;
+const nasta = (filled) => `<div class="sh">Nästa prov</div><div class="sec" style="padding:14px 16px 16px"><div style="font-size:22px;font-weight:700">Biologiprovet</div><div style="font-size:15px;color:var(--sec);margin-top:2px">5 frågor · cirka 1 min per varv</div>
+  ${filled ? `<div class="btnp" style="margin-top:14px">${I('play', 'ico', 'width:16px;height:16px;stroke:none')}Starta prov</div>` : `<div class="btnt2" style="margin-top:14px">${I('play', 'ico', 'width:16px;height:16px;stroke:none')}Starta prov</div>`}</div>`;
+const tb = `<div class="tb"><span>${I('plus', 'ico', 'width:24px;height:24px;stroke:none')}Nytt prov</span><span style="font-weight:400">Öppna länk</span></div>`;
+const senaste = `<div class="chips"><b>Senaste</b><span>HISTORIA – 1880–1918: 1914 Skotten i Sarajevo</span><span>Glosor v. 47</span><span>Fotosyntes</span></div>`;
+
+add('tom', '1 · Tomt fält, första gången', 'Ingen rubrik "Prov". Kortet är det första man ser, med markören redo. Är urklippet inte tomt står Klistra in (tonad) där Spela annars står; annars en grå Spela. Raden om låst telefon visas tills man har tryckt Spela en gång. Spela är grå, så Starta prov är den enda fyllda knappen.',
+  () => `<div class="phone g">${status}${topBar()}<div class="content">
+  <div class="card2">${field('', 3, { min: true })}<div class="hint">Du kan låsa telefonen. Det hörs i AirPods ändå.</div>${row({ go: false, paste: true })}</div>
+  ${nasta(true)}</div>${tb}</div>`);
+
+add('text', '2 · Med text', 'Spela är fylld och säger själv hur länge: "Spela i 10 min" kan bara läsas som i tio minuter. Kostnaden är två ord ovanför knappen. Starta prov blir tonad. Raden om låst telefon är borta efter första gången.',
+  () => `<div class="phone g">${status}${topBar()}<div class="content">
+  <div class="card2">${field(SAMPLE, 3, { min: true })}<div class="cost">120 krediter</div>${row()}</div>
+  ${senaste}${nasta(false)}</div>${tb}</div>`);
+
+add('lang', '3 · Lång text, när man skriver', 'Fältet växer till högst 5 rader och skrollar sedan inuti (skrollist till höger). Utan fokus visar det 3 rader och tonar ut nedåt.',
+  () => `<div class="phone g">${status}${topBar()}<div class="content">
+  <div class="card2">${field(LONG, 5, { bar: true, cur: true })}<div class="cost">764 krediter</div>${row()}</div>
+  <div class="card2" style="margin-top:12px;opacity:.95">${field(LONG, 3, { fade: true })}<div class="cost">764 krediter</div>${row()}</div>
+  </div>${tb}</div>`);
+
+add('hur-lange', '4 · Hur länge', 'Klocksymbolen öppnar systemets meny med rubriken "Spela i". Valet syns sedan i knappen. Ingen "⟲ 10 min" som kan läsas som om tio minuter.',
+  () => `<div class="phone g" style="position:relative">${status}${topBar()}<div class="content">
+  <div class="card2">${field(SAMPLE, 3, { min: true })}<div class="cost">120 krediter</div>${row({ label: 'Spela i 15 min' })}</div>${nasta(false)}</div>
+  <div class="dim"></div><div class="menu" style="left:60px;top:250px;width:200px"><div class="mi" style="font-size:13px;color:var(--sec);padding:8px 16px">Spela i</div>
+   <div class="mi">10 min<span class="chk"></span></div><div class="mi">15 min<span class="chk">✓</span></div><div class="mi">20 min<span class="chk"></span></div><div class="mi">30 min<span class="chk"></span></div><div class="mi" style="color:var(--sec)">… 55 min, 1 timme</div></div>${tb}</div>`);
+
+add('spelar', '5 · Spelar', 'Kortet visar att det spelas, tiden som är kvar och ⏸ direkt. Stoppa slutar. Tryck på texten öppnar spelaren med meningarna. Inget annat ändras på skärmen.',
+  () => `<div class="phone g">${status}${topBar()}<div class="content">
+  <div class="card2"><div class="live"><i></i>Spelar i AirPods</div>${field(SAMPLE, 3, { fade: true })}
+   <div class="row2"><span class="pp">${I('pause', 'ico', 'width:16px;height:16px;stroke:none')}</span><span style="font-size:17px;font-weight:600;font-variant-numeric:tabular-nums">7:32 kvar</span><span style="margin-left:auto;color:#7F9BFF;font-size:16px">Stoppa</span></div></div>
+  ${nasta(false)}</div>${tb}</div>`);
+
+add('krediter', '6 · Krediterna räcker inte', 'Samma plats som kostnaden, halvfet: vad det kostar och vad man har. Spela är grå. Kapseln öppnar bladet med resten.',
+  () => `<div class="phone g">${status}${topBar('88 krediter kvar')}<div class="content">
+  <div class="card2">${field(SAMPLE, 3, { min: true })}<div class="cost warn">120 krediter · du har 88</div>${row({ go: false })}</div>
+  ${nasta(true)}</div>${tb}</div>`);
+
+add('senaste', '7 · Senaste', 'Säg-texter blir aldrig Nästa prov eller Andra prov. De tre senaste ligger som en rad under kortet; ett tryck lägger tillbaka texten i fältet. Svep åt vänster på raden för fler.',
+  () => `<div class="phone g">${status}${topBar()}<div class="content">
+  <div class="card2">${field('', 3, { min: true })}${row({ go: false })}</div>${senaste}
+  ${nasta(true)}<div class="sh">Andra prov</div><div class="sec"><div class="row"><div>Historiaprovet<div class="sub">12 frågor · ljud klart</div></div></div></div></div>${tb}</div>`);
+
+add('se', '8 · iPhone SE, största text', 'Knapparna staplas: + , klockan och tempo på en rad, Spela i full bredd under. Kostnaden står ovanför Spela. Inget kapas.',
+  () => `<div class="phone g" style="font-size:24px">${status}${topBar()}<div class="content">
+  <div class="card2"><div class="fld clip" style="font-size:26px;max-height:120px;line-height:1.5"><span class="pr">›</span>Fotosyntes: koldioxid + vatten</div>
+   <div class="row2"><span class="ic sq" style="height:44px;width:44px">+</span><span class="ic" style="height:44px;min-width:44px">${I('timer', 'ico', 'width:22px;height:22px')}</span><span class="ic" style="height:44px;font-size:20px">1,0×</span></div>
+   <div class="cost" style="font-size:18px">120 krediter</div>
+   <div class="go" style="margin:8px 0 0;width:100%;justify-content:center;height:54px;font-size:22px">${I('play', 'ico', 'width:18px;height:18px;stroke:none')}Spela i 10 min</div></div>
+  </div>${tb}</div>`);
+
+const root = document.getElementById('screens');
+for (const s of S) {
+  const side = th => `<div class="side ${th}"><div class="tag">${s.tag}</div>${s.f(th === 'dark')}<div class="cap">${s.cap}</div></div>`;
+  root.insertAdjacentHTML('beforeend', `<section class="pair" id="${s.id}">${side('light')}${side('dark')}</section>`);
+}
+</script>
+</body>
+</html>
