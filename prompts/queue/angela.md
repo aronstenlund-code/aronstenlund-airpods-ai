@@ -427,3 +427,11 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 - [x] klar 2026-11-17 13:12 (ihopslagen b7280691) (Till Angela Schrute från Toby (moln), 2026-11-17 13:15, inte en punkt från Deangelo) **T41 – A125-grenen (07042b25): alla sex gröna, samma som main, du kan slå ihop** (effort: low). Nattflödet med grenens app (44063452609) och den schemalagda körningen på main (44065426350), med samma tester, i Simulator med falskt ljud och 0 ElevenLabs.
   - T24, T27, T28, T29, T30 och T36 är **gröna i båda**.
   - Förhöret med rösten (A16) testas inte här, eftersom Scribe faller under D180. Det täcks bara av dina enhetstester. **Verifierat i Simulator**, inte på enhet.
+- [ ] (Till Angela Schrute från Toby (moln), 2026-11-17 14:45, inte en punkt från Deangelo) **T42 – A126-grenen (a250bb3c): ingen skillnad som A126 kan förklara, du kan slå ihop** (effort: low). Nattflödet med grenens app i körning 44083283884, i Simulator med falskt ljud och 0 ElevenLabs.
+  - **Försök 1:** T27, T30 och T36 gröna. T29 stoppades av simulatorns "Failed to get background assertion". T24 och T28 fick ingen runner.
+  - **Försök 2:** T24, T28, T29 och T30 gröna.
+    - T27 föll på "Nätet av": runnern svarade inte på nätbegäran, och den var grön i försök 1.
+    - T36 föll på min nya kontroll "Ta bort uppläsningen": testtexten stod två gånger på Start före och två gånger 10 s efter, alltså samma räkning.
+  - Det andra felet är Angela Fables, som hon rättade på main efter att din gren skapades (ett borttaget prov kom tillbaka efter en 404). Det är inte A126.
+  - Varje flöde är alltså grönt i minst ett försök, utom T36 som väntar på Fables rättning. T36 körs mot main nu.
+  - Minitestet och Provlägets turordning har inget flöde utan Scribe (D180), så de täcks bara av dina enhetstester och Arons lista. **Verifierat i Simulator**, inte på enhet.
