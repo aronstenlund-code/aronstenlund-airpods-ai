@@ -92,6 +92,16 @@ enum SayText {
         return ShopText.weekIsOut(subscription) ? creditsLine(cost: cost, left: left) : ShopText.included
     }
 
+    /// A134 (Ke73 §2): "120 krediter · du har 88 · Fyll på" as one text, the last words in the accent colour.
+    static func refillLine(_ line: String) -> AttributedString {
+        var all = AttributedString("\(line) · ")
+        all.foregroundColor = ink
+        var link = AttributedString(ShopText.refill)
+        link.foregroundColor = accent
+        all.append(link)
+        return all
+    }
+
     /// A132 (Ke72): a said text as a capsule under the field: its beginning, at most about 24 characters.
     static func capsule(_ text: String) -> String {
         let flat = text.split(whereSeparator: \.isNewline).joined(separator: " ")
@@ -500,14 +510,11 @@ struct SayInAirPodsField: View {
                     Button {
                         showsCredits = true
                     } label: {
-                        // With the largest text the two stand on a row each (no "·" left hanging at a line's end).
-                        let big = typeSize.isAccessibilitySize
-                        let layout = big ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2)) : AnyLayout(HStackLayout(spacing: 4))
-                        layout {
-                            Text(verbatim: big ? line : "\(line) ·").foregroundStyle(SayText.ink)
-                            Text(verbatim: ShopText.refill).foregroundStyle(SayText.accent)
-                        }
-                        .frame(minHeight: 32)
+                        // Kelly (review of A134): one text that flows, so "Fyll på" breaks like any word.
+                        Text(SayText.refillLine(line))
+                            .multilineTextAlignment(typeSize.isAccessibilitySize ? .leading : .trailing)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(minHeight: 32)
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("\(line). \(ShopText.refill)")

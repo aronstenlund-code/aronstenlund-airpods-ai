@@ -118,9 +118,10 @@ struct CreditsSheet: View {
                                 .multilineTextAlignment(.center)
                         }
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
+                        .padding(.bottom, 8)
                         .accessibilityElement(children: .combine)
                         .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 16))
                     }
                     // A134 (D218), A141 (D224): the packs, the weekly card and the invitation.
                     if quota.isCredits, !quota.isUnlimited, let shop = model.shop {
@@ -156,6 +157,7 @@ struct CreditsSheet: View {
                     }
                 }
             }
+            .contentMargins(.top, 8, for: .scrollContent) // Kelly (review of A134): the number stands right under the title
             .navigationTitle(model.quota?.isCredits == true ? "Krediter" : "Frågor kvar")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } } }
