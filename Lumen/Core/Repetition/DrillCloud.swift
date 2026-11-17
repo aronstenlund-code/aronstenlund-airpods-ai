@@ -853,7 +853,9 @@ final class CloudDrillAudio: DrillAudioProviding {
                 if case .refused(_, let code, _) = error, code == "quota_exceeded" {
                     quotaExceeded.insert(drill.id) // A84: the way to others' exams is shown
                 }
-                if case .refused(let status, let code, _) = error, Self.isUnavailable(code) || status == 503 {
+                // A136 (K96): a 400 `voice_unavailable` is about the chosen catalog voice (not offered any more), not
+                // about reading aloud being off; the server's own words are said then.
+                if case .refused(let status, let code, _) = error, (Self.isUnavailable(code) && status != 400) || status == 503 {
                     problems[drill.id] = Self.unavailableLine // K62
                 } else if case .refused(_, let code, _) = error, code == "rate_limited" {
                     // Ke50 §13: K46's daily limit for new sound.

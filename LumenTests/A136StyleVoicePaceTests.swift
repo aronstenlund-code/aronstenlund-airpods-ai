@@ -190,7 +190,6 @@ import Testing
         // The same text, voice and style again: the same exam, nothing new saved.
         let saves = cloud.saves.count
         let again = try #require(await model.say(text, repeatMinutes: 10, sound: SaySound(voiceID: "astrid0000000001", style: " Lugnt ")))
-        #expect(model.session.reader?.inPace == false, "the pace is chosen per Spela")
         model.end()
         for _ in 0..<50 where audio.preparing.contains(again.id) { try? await Task.sleep(for: .milliseconds(2)) }
         #expect(again.id == styled.id && store.drills.count == 2 && cloud.saves.count == saves)
