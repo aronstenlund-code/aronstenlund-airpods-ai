@@ -485,6 +485,12 @@ final class FullFlowTests: XCTestCase {
         guard wait(["Nytt prov", "Fler lägen"], 20) != nil else { return miss("Start not shown") }
         guard tap(["Fler lägen"], "Fler lägen") else { return false }
         pause(2)
+        // Run 43987495095 (A115 on Start): the tap left Start in front once. Tap again if the modes page is not there.
+        if find(["Läge:*", "Provläge*"]) == nil {
+            note("Fler lägen: the first tap did not open the page")
+            tap(["Fler lägen"], "Fler lägen (again)", counted: false)
+            pause(3)
+        }
         screen("fler-lagen", "Fler lägen")
         // Run 43649698914: Fler lägen shows "Läge: Standardläge. Byt läge"; Provläge is in that sheet.
         if find(["Provläge*"]) == nil { tap(["Läge:*", "Byt"], "Byt läge") ; pause(2); screen("lagen", "Byt läge", counts: false) }
