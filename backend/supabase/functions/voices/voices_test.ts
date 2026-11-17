@@ -65,3 +65,26 @@ Deno.test("GET /voices: auth required, GET only, empty list is fine", async () =
   const empty = await createVoicesHandler(deps({ voices: [] }))(get());
   assertEquals(await empty.json(), { voices: [], default_id: null });
 });
+
+Deno.test("K96 (D220): the catalog with previews; the library search is only a list (not selectable), limited", async () => {
+  const { createVoicesHandler } = await import("./handler.ts");
+  const { MemoryRateLimiter } = await import("../_shared/ratelimit.ts");
+  const asked: unknown[] = [];
+  const h = createVoicesHandler({
+    authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
+    rateLimiter: new MemoryRateLimiter(),
+    voices: [{ name: "Anna", id: "AAAAAAAAAAAA" }],
+    defaultVoiceId: null,
+    catalog: () => Promise.resolve([{ voice_id: "BBBBBBBBBBBB", name: "Sara", gender: "female", accent: "swedish", language: "sv", preview_url: "https://example.invalid/p.mp3" }]),
+    searchLibrary: (q) => (asked.push(q), Promise.resolve([{ voice_id: "CCCCCCCCCCCC", name: "Erik", accent: "scanian", preview_url: "https://example.invalid/e.mp3" }])),
+  });
+  const a = await (await h(new Request("http://x/voices"))).json();
+  assertEquals(a.catalog[0].name, "Sara");
+  assertEquals(a.voices[0].name, "Anna", "the old list is kept");
+  const b = await (await h(new Request("http://x/voices?library=1&search=sk%C3%A5nsk%3Cscript%3E&accent=scanian"))).json();
+  assertEquals([b.library[0].name, b.selectable], ["Erik", false]);
+  assertEquals(asked[0], { search: "skånskscript", accent: "scanian", gender: undefined, page: 0 }, "the search words are cleaned");
+  let last = 200;
+  for (let i = 0; i < 9; i++) last = (await h(new Request("http://x/voices?library=1"))).status;
+  assertEquals([last, (await h(new Request("http://x/voices?library=1"))).status], [200, 429]);
+});

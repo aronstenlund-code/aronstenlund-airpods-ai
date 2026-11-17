@@ -29,7 +29,7 @@ När jag läste koden hittade jag ett tredje fel, som är mitt eget från A108:
   när Säg-texten övades sist, och det nyaste provet när det finns flera.
 - **Mitt första test var fel:** det antog att listan var sorterad med äldsta först. Det hade fallit i CI. Det är
   rättat i add68438, och bygget för d01713d3 hann aldrig köra.
-- **CI:** iOS build 44151590219 på main (add68438) — resultatet står nedan.
+- **CI: iOS build 44151590219 grön** på main (add68438), med båda de nya testerna. *Verifierat i CI.*
 - 0 ElevenLabs. Inget är provat på telefon.
 
 ## 4. Vad Aron kan prova på telefon
