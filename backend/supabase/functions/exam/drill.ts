@@ -1,6 +1,6 @@
 import { HttpError } from "../_shared/errors.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
-import { coverage, mergeCoverageParts, partCount, splitParts } from "./coverage.ts";
+import { allocate, codeCap, coverage, partCount, placeQuestions, shares, splitParts } from "./coverage.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 
 /**
@@ -793,46 +793,78 @@ export async function handleDrill(
     ]);
     // the notes call's reply; an old-style reply with notes in the questions call is kept (never both empty)
     p.notes = clean(firstJson(notesRun.text)?.notes, DRILL_LIMITS.notes) || p.notes;
-    let qs = trimQuestions(sh.questions, possible);
     const steps = [...transcribed, plan.usage, notesRun.usage, ...(sh.usage ? [sh.usage] : [])];
-    // K83 (D206): every part of the material gets a question, checked in code (the material's own text when there
-    // is one, else the notes, which follow the material's order); a part without one gets a call of its own
+    // K83 (D206) + K86 (D207): the questions are spread over the whole material, decided in code. The material's own
+    // text (else the notes, which follow its order) is cut into equal parts; each part gets a share by its length
+    // (at most half from one part when there are three or more); the code's own cap (1 per 600 characters, at most
+    // what was asked) applies when the model's questions_possible is lower. Step 1's spare candidates fill the shares
+    // first; a part still short gets a call of its own. Every question passes the same checks (cleanQuestion, no
+    // question that leans on the material, no duplicate).
     const material = (text || p.notes || "").trim();
-    let cov: { parts: number; before: number; after: number; added: number } | null = null;
-    const k = partCount(material.length, qs.length);
-    if (k > 1) {
-      const parts = splitParts(material, k);
-      const c = coverage(qs, parts);
-      cov = { parts: c.parts, before: c.covered, after: c.covered, added: 0 };
-      if (c.missing.length) {
-        const extra = (await Promise.all(c.missing.map(async (i) => {
+    const before = trimQuestions(sh.questions, possible);
+    const target = material ? Math.max(possible, codeCap(material.length, count)) : possible;
+    const k = partCount(material.length, target);
+    const parts = k > 1 ? splitParts(material, k) : [material];
+    let qs = before;
+    let cov: { parts: number; before: number; after: number; added: number; target: number; max_share: number } | null = null;
+    if (material && (k > 1 || target > before.length)) {
+      const weak = (q: string) => (leansOnMaterial(q) ? 2 : 0) + (isRecall(q) ? 1 : 0);
+      // candidates: step 1's (shortened) questions, the weak ones last within their part
+      const cands = sh.questions.filter((q) => !leansOnMaterial(q));
+      const placedAll = k > 1 ? placeQuestions(cands, parts) : cands.map(() => 0);
+      const order = cands.map((_, i) => i).sort((x, y) => (placedAll[x] - placedAll[y]) || (weak(cands[x]) - weak(cands[y])) || (x - y));
+      const share = shares(parts.map((t) => t.length), target);
+      const al = allocate(order.map((i) => placedAll[i]), share);
+      const chosen: { q: string; part: number }[] = al.keep.map((j) => ({ q: cands[order[j]], part: placedAll[order[j]] }));
+      const seen = new Set(chosen.map((c) => c.q.toLowerCase()));
+      const beforeCovered = k > 1 ? coverage(before, parts).covered : 1;
+      let added = 0;
+      const short = al.need.map((n, i) => ({ n, i })).filter((x) => x.n > 0);
+      if (short.length) {
+        const got = await Promise.all(short.map(async ({ n, i }) => {
           const r = await runLLM(provider, {
             system: SYSTEM_PROMPT_DRILL_PLAN,
             user: [
               (summary.subject || summary.grade) && `<context>${sanitizeTagged(contextLine(summary.subject, summary.grade))}</context>`,
-              `<count>2</count>`,
+              `<count>${n + 1}</count>`,
               `<material>\n${sanitizeTagged(parts[i])}\n</material>`,
-              "Read the material above (one part of a longer material: ask only about this part).",
+              k > 1 ? "Read the material above (one part of a longer material: ask only about this part)." : "Read the material above.",
               PART_QUESTIONS,
             ].filter(Boolean).join("\n"),
-            maxTokens: 600,
+            maxTokens: 300 + (n + 1) * 80,
             cacheSystem: true,
             model: cfg.planModel,
             timeoutMs: 60_000,
             signal,
           }, cfg.planPriceIn, cfg.planPriceOut).catch(() => null);
-          if (!r) return null;
+          if (!r) return [];
           steps.push(r.usage);
-          const q = parsePlan(r.text, 4).questions.find((x) => !qs.some((y) => y.toLowerCase() === x.toLowerCase()));
-          return q ? { part: i, question: q } : null;
-        }))).filter((x): x is { part: number; question: string } => !!x);
-        if (extra.length) {
-          const m = mergeCoverageParts(qs, c.placed, extra, Math.max(qs.length, possible));
-          qs = m.questions;
-          // a question written from a part covers that part, even if its words also match a neighbour
-          cov = { parts: c.parts, before: c.covered, after: new Set(m.parts.filter((x) => x >= 0)).size, added: extra.length };
+          const out: { q: string; part: number }[] = [];
+          for (const q of parsePlan(r.text, n + 1).questions) {
+            if (out.length >= n || leansOnMaterial(q) || seen.has(q.toLowerCase())) continue;
+            seen.add(q.toLowerCase());
+            out.push({ q, part: i });
+          }
+          return out;
+        }));
+        for (const g of got) (chosen.push(...g), added += g.length);
+      }
+      // calls that came back short: fill with the dropped candidates (within the half cap first, then any)
+      const capPer = parts.length >= 3 ? Math.max(1, Math.floor(target / 2)) : target;
+      const per = (p: number) => chosen.filter((c) => c.part === p).length;
+      for (const pass of [true, false]) {
+        for (const j of al.dropped) {
+          if (chosen.length >= target) break;
+          const q = cands[order[j]], part = placedAll[order[j]];
+          if (chosen.some((c) => c.q === q) || (pass && part >= 0 && per(part) >= capPer)) continue;
+          chosen.push({ q, part });
         }
       }
+      // the material's order: by part, then as they came
+      const sorted = chosen.map((c, i) => ({ ...c, i })).sort((x, y) => ((x.part < 0 ? 1e9 : x.part) - (y.part < 0 ? 1e9 : y.part)) || x.i - y.i);
+      if (sorted.length) qs = sorted.map((c) => c.q);
+      const counts = parts.map((_, i) => sorted.filter((c) => c.part === i).length);
+      cov = { parts: parts.length, before: beforeCovered, after: counts.filter((n) => n > 0).length, added, target, max_share: Math.max(...counts) };
     }
     const base = qs.map((question, i) => ({ id: `q${i + 1}`, question }));
     let items: DrillItem[] = base;

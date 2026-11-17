@@ -120,3 +120,52 @@ export function mergeCoverageParts(questions: string[], placed: number[], extra:
   const sorted = list.map((x, i) => ({ ...x, i })).sort((a, b) => (a.part < 0 ? 1e9 : a.part) - (b.part < 0 ? 1e9 : b.part) || a.i - b.i);
   return { questions: sorted.map((x) => x.q), parts: sorted.map((x) => x.part) };
 }
+
+// ---------- K86 (D207): spread by length, at most half from one part, and a cap of our own ----------
+
+/** Questions per 600 characters of material: the code's own cap (D207), never more than asked. */
+export const CHARS_PER_QUESTION = 600;
+export const codeCap = (chars: number, asked: number) => Math.min(asked, Math.max(1, Math.floor(chars / CHARS_PER_QUESTION)));
+
+/**
+ * Each part's share of `target` questions: by its length (largest remainders), at least 1 each when there are enough
+ * questions, and with three or more parts never more than half of all from one part (the excess goes to the others
+ * by length). Decided here, never by a model (D206).
+ */
+export function shares(lengths: number[], target: number): number[] {
+  const n = lengths.length;
+  if (!n || target <= 0) return lengths.map(() => 0);
+  const total = lengths.reduce((a, b) => a + b, 0) || 1;
+  const cap = n >= 3 ? Math.max(1, Math.floor(target / 2)) : target;
+  const out = lengths.map(() => 0);
+  let left = target;
+  // at least one each while there are questions to give
+  for (let i = 0; i < n && left > 0; i++) (out[i] = 1, left--);
+  // the rest by length, largest remainder first, within the cap
+  while (left > 0) {
+    let best = -1, bestGap = -Infinity;
+    for (let i = 0; i < n; i++) {
+      if (out[i] >= cap) continue;
+      const gap = (target * lengths[i]) / total - out[i];
+      if (gap > bestGap + 1e-9) (best = i, bestGap = gap);
+    }
+    if (best < 0) break; // every part at the cap
+    out[best]++;
+    left--;
+  }
+  return out;
+}
+
+/**
+ * Which questions to keep and how many each part still needs. `placed` is each question's part (-1 = none).
+ * A part over its share keeps its first ones; the dropped ones are returned (they fill up if calls fail).
+ */
+export function allocate(placed: number[], share: number[]): { keep: number[]; dropped: number[]; need: number[] } {
+  const have = share.map(() => 0);
+  const keep: number[] = [], dropped: number[] = [];
+  placed.forEach((p, i) => {
+    if (p >= 0 && have[p] < share[p]) (have[p]++, keep.push(i));
+    else dropped.push(i);
+  });
+  return { keep, dropped, need: share.map((s, i) => Math.max(0, s - have[i])) };
+}

@@ -71,3 +71,52 @@ Deno.test("K85 (Oscar O73): a word every part shares does not decide the part; a
   assertEquals(placeQuestions(["Vad händer vid neutralisation av energi?"], parts), [1]);
   assertEquals(placeQuestions(["Vad är energi?"], parts), [-1], "only a shared word: no part");
 });
+
+// ---------- K86 (D207) ----------
+import { allocate, codeCap, shares } from "./coverage.ts";
+
+Deno.test("K86 shares by length; at least one each; at most half from one part with three or more parts", () => {
+  assertEquals(shares([1000, 1000, 1000], 12), [4, 4, 4]);
+  assertEquals(shares([6000, 500, 500], 12), [6, 3, 3], "a long first part gets at most half");
+  assertEquals(shares([3000, 1000], 8), [6, 2], "two parts: by length, no half cap");
+  assertEquals(shares([1000, 1000, 1000, 1000], 3), [1, 1, 1, 0], "fewer questions than parts");
+  assertEquals(codeCap(3449, 12), 5);
+  assertEquals(codeCap(9000, 12), 12, "never more than asked");
+  assertEquals(codeCap(300, 12), 1);
+});
+
+Deno.test("K86 allocate: a part over its share keeps its first questions; the rest are dropped; the need is counted", () => {
+  const a = allocate([0, 0, 0, 0, 1, -1], [2, 2, 2]);
+  assertEquals(a.keep, [0, 1, 4]);
+  assertEquals(a.dropped, [2, 3, 5]);
+  assertEquals(a.need, [0, 1, 2]);
+});
+
+Deno.test("K86 handleDrill: 10/1/1 from the model becomes a spread by length (at most half from one part)", async () => {
+  const llm: LLMProvider = {
+    name: "fake",
+    model: "haiku",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      let out: unknown;
+      if (req.user.includes("<part>notes")) out = { notes: "" };
+      else if (req.user.includes("one part of a longer material")) {
+        const n = Number(/<count>(\d+)<\/count>/.exec(req.user)?.[1] ?? 1);
+        const topic = req.user.includes("Näringskedjor") ? "näringskedjan" : "cellandningen";
+        out = { questions: Array.from({ length: n }, (_, i) => `Vad gör steg ${i + 1} i ${topic}?`) };
+      } else if (req.user.includes("<questions>")) out = { questions: [] };
+      else {
+        const p1 = ["Var sker fotosyntesen?", "Vad fångar klorofyllet?", "Vart tar syret vägen?", "Vad bildar växten av koldioxid?", "Varför behöver växten ljus i kloroplasterna?",
+          "Vad är glukos i fotosyntesen?", "Varför släpps syret ut genom klyvöppningarna?", "Hur fångar klorofyllet ljusenergi?", "Varför är kloroplasterna gröna av klorofyll?", "Vad händer i kloroplasterna?"];
+        out = { summary: { subject: "Biologi", grade: "åk 8", covers: "x" }, questions_possible: 12, questions: [...p1, "Var sker cellandningen?", "Hur börjar en näringskedja?"] };
+      }
+      yield { type: "text", text: JSON.stringify(out) };
+      yield { type: "usage", inputTokens: 10, outputTokens: 5 };
+    },
+  };
+  const r = await handleDrill("drill", { text: TEXT, questions: 12, answers: false, subject: "Biologi", grade: "åk 8" }, llm, DEFAULT_DRILL_CONFIG);
+  const cov = (r.body.usage as Record<string, unknown>).coverage as { parts: number; max_share: number; after: number; target: number };
+  assertEquals(cov.parts, 3);
+  assertEquals(cov.after, 3);
+  assert(cov.max_share <= 6, `at most half: ${cov.max_share}`);
+  assertEquals((r.body.items as unknown[]).length, 12);
+});
