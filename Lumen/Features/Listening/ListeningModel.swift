@@ -27,7 +27,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private var resumeMode: ConversationMode?
     /// The last voice command and when, so a command seen both as a final result and as a turn runs once.
     private var lastVoice: (intent: VoiceIntent, at: Date)?
-    private var questionTimer: Task<Void, Never>?
     /// D80: the answer being made before the pause is over. Spoken only when the pause comes and the words did not go on.
     private var ahead: AheadAnswer?
     /// A8.3: the Diagnostics turn rows of the answer in flight and of the answer made ahead.
@@ -42,7 +41,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private var lastHeardAt: Date?
     private var prefetchTask: Task<Void, Never>?
     /// When the last answer was completed, so a complaint right after it can be reported (D80).
-    private var lastAnswerAt: Date?
+    private(set) var lastAnswerAt: Date?
     /// D80: turns go to the backend's memory extraction afterwards, never in the answer path.
     let memoryExtractor: MemoryExtractor?
     /// D83: Provläge's first-start answers (exam date, grade, subject, check questions, explanation length).
@@ -214,6 +213,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// D199 step 3 (A114): Rizzläge's own rules (its style, and D63's age check, never true since D112) on the same
     /// live session.
     let rizzMode: RizzModeController
+    /// D199 step 5 (A120): Frågor's own decisions (the question gate at the pause, the name alone, the hands-free turn)
+    /// and the "Mer?" window with its two levels, which Provläge shares. The activation and the echo stay here.
+    let standardMode = StandardModeController()
+    /// A15: the 5 s window is open: the screen shows "Säg ja för mer".
+    var isOfferingMore: Bool { standardMode.more.isOpen }
     var isShowingInterviewSetup = false
     var isShowingLiveStart = false
     var isShowingAgeGate = false
@@ -232,9 +236,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A9.2: the last app command done for the backend, so "nej" / "ångra" within 5 s takes it back.
     @ObservationIgnored private var lastAppCommand: (command: AppCommand, previousMode: ConversationMode, wasListening: Bool, at: Date)?
     static let undoWindow: TimeInterval = 5
-    /// A14: when a lone "Lumen." was heard; the next segment within `loneNameWindow` is its command.
-    @ObservationIgnored private var loneNameAt: Date?
-    static let loneNameWindow: TimeInterval = 8 // A75: "Ja?" and 8 s for the question
     /// The tip on the screen, until the next answer.
     private(set) var tipNotice: String?
     private var tipTask: Task<Void, Never>?
@@ -421,6 +422,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         interviewMode.host = self // D199
         liveMode.host = self
+        standardMode.host = self
     }
 
     // MARK: - User actions
@@ -561,9 +563,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let rest = terms + prep.sttTerms + (studyProfile.profile.terms ?? [])
         // D87: in Provläge the active exam's words go first, so Scribe hears them right from the first word.
         let exam = mode == .prov ? quizTerms + ExamKeyterms.terms(profile: studyProfile.profile) : [] // A62: the quiz answer first
-        // A14 (Toby T6): alone, these short words are what Scribe mishears most ("kortare" heard as "högre").
+        // A14 (Toby T6): the short words Scribe mishears most when they stand alone, per mode.
         let spoken: [String] = switch mode {
-        case .prov, .standard: ["kortare", "upprepa", "viska", "högre"]
+        case .prov, .standard: standardMode.spokenKeyterms // D199 step 5; Provläge has the same words
         case .social: socialMode.spokenKeyterms // D199 step 2
         case .rizz: rizzMode.spokenKeyterms // D199 step 3
         case .interview: interviewMode.spokenKeyterms
@@ -606,7 +608,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// session: the microphone is only switched on from the app.
     func togglePause() async {
         if isOfferingMore {
-            takeMore(by: "AirPods press") // A15: the press means "mer" while the window is open
+            standardMode.more.take(by: "AirPods press") // A15: the press means "mer" while the window is open
             return
         }
         if isListening {
@@ -753,14 +755,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
     }
 
-    /// D199 step 4 (A119): the controller of a mode that has one. Standardläget and Provläge get theirs in steps 5
-    /// and 6; until then they have no start block.
+    /// D199 step 4 (A119): the controller of a mode that has one. Provläge gets its own in step 6; until then it has
+    /// no start block.
     func modeController(for mode: ConversationMode) -> (any ListeningModeController)? {
         switch mode {
         case .interview: interviewMode
         case .social: socialMode
         case .rizz: rizzMode
-        case .standard, .prov: nil
+        case .standard: standardMode // D199 step 5
+        case .prov: nil
         }
     }
 
@@ -1264,13 +1267,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             case .standard, .prov:
                 headMotion.stop() // answered with the voice
                 if silentQuiz?.awaitingAnswer == true { silentQuiz?.answered(); noteQuizAnswer() } // A20.2: "ja" / "nej" by voice; A38
+                if mode == .standard {
+                    standardMode.turn(text) // D199 step 5
+                    return
+                }
                 // A8.4: several questions in one breath are separate turns, each with its own answer.
                 var parts = QuestionSplitter.split(text)
                 let first = parts.isEmpty ? text : parts.removeFirst()
                 if !parts.isEmpty { controller.log("\(mode.rawValue): one turn split into \(parts.count + 1) parts") }
-                studyQueue = parts + studyQueue // A21.1: turns heard while the last one was answered stay queued
-                activated(ActivationRequest(query: first, trigger: .tutor, language: language), persona: mode == .prov ? tutorPersona() : nil)
-                if mode == .prov { recordStudyTurn(first) }
+                queueTurns(parts) // A21.1: turns heard while the last one was answered stay queued
+                activated(ActivationRequest(query: first, trigger: .tutor, language: language), persona: tutorPersona())
+                recordStudyTurn(first)
             }
         case .stalled:
             liveMode.stalled()
@@ -1314,40 +1321,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     // MARK: - Voice (D74)
 
-    /// The question gate holds a question until the speaker is done (D78): fire it when it is due.
-    private func scheduleQuestionTimer() {
-        guard let due = activation.pendingDueAt else { return }
-        questionTimer?.cancel()
-        questionTimer = Task { [weak self] in
-            let wait = due.timeIntervalSinceNow
-            if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
-            // A8: Lumen is speaking: the question waits for the end of the answer, never dropped. A68 (Toby T13
-            // finding 2): it looks again every 0.5 s instead of trusting that something asks it later; a held half
-            // question waited 21 s for Scribe's session to end after the answer fetched ahead for it was dropped.
-            var waited = 0
-            var quietSince: Date? // A72: when Lumen's voice last went quiet
-            while true {
-                guard let model = self, !Task.isCancelled else { return }
-                let speaking = model.controller.playback.isSpeaking || model.speaker.hasPendingSpeech
-                quietSince = speaking ? nil : (quietSince ?? Date())
-                // A72 (Toby T14 finding 2–3): never more than `quietMaxWait` after Lumen went quiet, whatever streams.
-                let overdue = quietSince.map { Date().timeIntervalSince($0) >= Self.quietMaxWait } ?? false
-                if !model.lumenIsBusyAnswering || overdue {
-                    if overdue, model.lumenIsBusyAnswering {
-                        model.controller.log("A question waited \(Int(Self.quietMaxWait)) s after Lumen went quiet: asked now (A72) · \(model.busyReason)")
-                    }
-                    if !model.activation.fireDue(now: Date()) { model.scheduleQuestionTimer() } // the cooldown moved it
-                    return
-                }
-                waited += 1
-                if waited == 6 { model.controller.log("A question waits 3 s: \(model.busyReason) (A70)") } // Toby T14
-                try? await Task.sleep(for: .milliseconds(500))
-            }
-        }
-    }
-
-    /// A72: a waiting question goes at most this long after Lumen's voice went quiet.
-    static let quietMaxWait: TimeInterval = 3
+    // The question gate's timer at the pause (D78, A68, A72) is `StandardModeController` now (D199 step 5).
 
     /// "Lumen, …" in every mode. True when the words were for Lumen: they are never conversation.
     @discardableResult
@@ -1538,67 +1512,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     // MARK: - A15 "Mer?" after a short answer
 
-    /// The 5 s window is open: the screen shows "Säg ja för mer".
-    private(set) var isOfferingMore = false
-    @ObservationIgnored private var moreTask: Task<Void, Never>?
-    @ObservationIgnored private var moreOfferedFor: Date?
-
-    /// After a short answer has been spoken (Frågor and Provläge): the window opens with a soft tone.
-    private func offerMoreIfShort() {
-        guard mode == .standard || mode == .prov, exam == nil, practice == nil, miniTest == nil, silentQuiz == nil, isListening,
-              let last = conversation.answers.last, MoreOffer.isShort(last.answer),
-              let answered = lastAnswerAt, Date().timeIntervalSince(answered) < 30,
-              moreOfferedFor != answered else { return } // once per answer (a tip or a confirmation also ends speech)
-        moreOfferedFor = answered
-        isOfferingMore = true
-        controller.log("More? window open (A15)")
-        listeningEventObserver?(.moreWindowOpen, Date()) // A29
-        if speaker.settings.moreTone {
-            try? controller.playback.playTestTone(frequency: 1_320, duration: 0.12)
-        }
-        if headMotion.isAvailable {
-            headMotion.listen(for: MoreOffer.window) { [weak self] gesture in
-                guard let self, self.isOfferingMore else { return }
-                if gesture == .nod { self.takeMore(by: "nod") } else { self.closeMoreOffer(why: "shake") }
-            }
-        }
-        moreTask?.cancel()
-        moreTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(MoreOffer.window))
-            guard let self, !Task.isCancelled, self.isOfferingMore else { return }
-            self.closeMoreOffer(why: "silence")
-        }
-    }
-
-    private func closeMoreOffer(why: String) {
-        guard isOfferingMore else { return }
-        isOfferingMore = false
-        moreTask?.cancel()
-        moreTask = nil
-        controller.log("More? window closed (\(why))")
-        listeningEventObserver?(.moreWindowClosed, Date()) // A29
-        if why == "no" || why == "silence" || why == "shake" { sendLengthSignal(yes: false) } // A56 (K13.2)
-    }
-
-    /// A65 (Toby T7b/T12): "ja" in the Mer? window is taken from the partial once it has stood still for
-    /// `morePartialHold`, instead of waiting for Scribe's final after the pause (3 s and more). A partial that goes on
-    /// ("Ja men vad är fotosyntes?") is an ordinary turn, as before.
-    @ObservationIgnored private var morePartialTask: Task<Void, Never>?
-    @ObservationIgnored private var moreTakenFromPartial: (text: String, at: Date)?
-    static let morePartialHold: TimeInterval = 0.7
-
-    private func takeMoreFromPartialIfStable(_ text: String) {
-        morePartialTask?.cancel()
-        guard isOfferingMore, MoreOffer.verdict(text) == true, isOtherVoice(near: Date()) != true else { return }
-        morePartialTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(Self.morePartialHold))
-            guard let self, !Task.isCancelled, self.isOfferingMore,
-                  self.conversation.partial?.text == text else { return }
-            self.moreTakenFromPartial = (text, Date())
-            self.discardAhead(reason: "more")
-            self.takeMore(by: "voice, before the final (A65)")
-        }
-    }
+    // The window, "ja" from the partial (A65) and the developed answer (A56, A67) are `MoreWindow` in
+    // `StandardModeController.swift` (D199 step 5). `isOfferingMore` above reads it for the screen.
 
     /// A62 (K40): the answer key of the last answer, sent back with the next call in Provläge; its words go first among
     /// Scribe's keyterms while the question is asked ("Nilen", not "Nilan").
@@ -1617,61 +1532,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         Task { await transcription.applyQuizKeytermsNow() }
     }
 
-    /// A56 (K13): the developed answer that came with the last short one (`done.more`), for about 2 minutes.
-    @ObservationIgnored private var developedAnswer: (text: String, at: Date, answerID: UUID)?
-
-    /// "ja" / nod / AirPods press in the window: the developed answer. A56: K13's `done.more` at once, without a new
-    /// call (Toby T7b: 7–15 s before); `continue_more` only when it did not come.
-    private func takeMore(by how: String) {
-        closeMoreOffer(why: "yes, \(how)")
-        tips.markUsed(.moreDetail)
-        sendLengthSignal(yes: true)
-        if let cached = developedAnswer, Date().timeIntervalSince(cached.at) < MoreOffer.cacheLife,
-           let last = conversation.answers.last, last.id == cached.answerID {
-            developedAnswer = nil
-            controller.log("More: the developed answer from the same call, no new call (A56, K13)")
-            let turn = AnswerTurn(question: last.question, answer: cached.text, source: "cloud", isOwnQuestion: last.isOwnQuestion)
-            conversation.append(turn)
-            lastAnswerAt = Date()
-            history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
-                                        answer: turn.answer, summary: nil, mode: mode.rawValue, persona: currentPersona))
-            say(cached.text)
-            return
-        }
-        if case .answering = answers.status, conversation.answers.last != nil {
-            // A67 (Toby T13 finding 1): the developed answer is still streaming in the same call (two_level). A new
-            // "utveckla" would queue behind it (7–13 s); it is said the moment `done.more` arrives instead.
-            moreWantedWhileStreaming = Date()
-            controller.log("More: waiting for the developed answer still streaming (A67)")
-            return
-        }
-        instruct(MoreOffer.instruction)
-    }
-
-    /// A67: "ja" came while the short answer's call was still streaming its developed part.
-    @ObservationIgnored private var moreWantedWhileStreaming: Date?
-
-    /// A67: the call ended; say its developed answer, or ask for one when it had none.
-    private func sayMoreIfWanted() {
-        guard let wanted = moreWantedWhileStreaming else { return }
-        moreWantedWhileStreaming = nil
-        guard Date().timeIntervalSince(wanted) < 60 else { return }
-        if let cached = developedAnswer, let last = conversation.answers.last, last.id == cached.answerID {
-            developedAnswer = nil
-            controller.log("More: the developed answer said as soon as it came (A67)")
-            let turn = AnswerTurn(question: last.question, answer: cached.text, source: "cloud", isOwnQuestion: last.isOwnQuestion)
-            conversation.append(turn)
-            lastAnswerAt = Date()
-            history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
-                                        answer: turn.answer, summary: nil, mode: mode.rawValue, persona: currentPersona))
-            say(cached.text)
-        } else {
-            instruct(MoreOffer.instruction)
-        }
-    }
-
     /// A17: the voice profile says someone else spoke (nil without a profile or when unknown).
-    private func isOtherVoice(near date: Date) -> Bool? {
+    func isOtherVoice(near date: Date) -> Bool? {
         guard let speakers, speakers.profiles.isEnrolled, let identity = speakers.identity(near: date, window: 4) else { return nil }
         return !identity.isWearer
     }
@@ -1758,7 +1620,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// What follows the name when it is not a command. Socialt läge and Rizzläge: the D69 instruction path.
     /// The other modes: a question to Lumen.
-    private func instruct(_ text: String) {
+    func instruct(_ text: String) {
         if practice != nil, mode == .prov {
             practiceTurn(text) // A16: "Lumen, nästa" works as well as "nästa"
             return
@@ -1798,6 +1660,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             studyProfileChanged()
             controller.log("Provläge profile changed by voice")
             say(language == .swedish ? "Uppdaterat." : "Updated.")
+        } else if mode == .standard {
+            standardMode.instruction(text) // D199 step 5
         } else if study.isActive {
             activated(ActivationRequest(query: text, trigger: .tutor, language: language), persona: mode == .prov ? tutorPersona() : nil)
         } else {
@@ -1817,7 +1681,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// A short confirmation in the AirPods. Not while paused: the audio belongs to someone else then.
-    private func say(_ line: String) {
+    func say(_ line: String) {
         if case .paused = state { return }
         speaker.enqueue(line, language: language)
     }
@@ -1895,21 +1759,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             silentQuizAfterSpeech()
             watchForNoteTaking()
             scheduleTip()
-            offerMoreIfShort()
+            standardMode.more.offerIfShort()
         }
-        if !study.isActive { askWaitingQuestionIfIdle() }
-    }
-
-    /// A8: a question that waited (cooldown, Lumen speaking, or split from the same utterance) goes now that the
-    /// answer before it is over. Frågor only; Provläge asks its split turns when it would listen again.
-    private func askWaitingQuestionIfIdle() {
-        guard !study.isActive, isListening, !speaker.isSpeaking, !speaker.hasPendingSpeech else { return }
-        if case .answering = answers.status { return }
-        if activation.pendingDueAt != nil {
-            if !activation.fireDue(now: Date()) { scheduleQuestionTimer() }
-            return
-        }
-        activation.fireNextQueued(now: Date())
+        if !study.isActive { standardMode.askWaitingQuestionIfIdle() }
     }
 
     /// A21.1 (Toby T5 finding 1): Scribe delivered several segments at once and the first one ended the turn; the
@@ -2149,7 +2001,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// A68: Lumen is saying something, or an answer streams that still gives it things to say (a stream that only
     /// sends the developed part, `more_delta`, for `streamQuiet` is not in the way of a new question).
-    private var lumenIsBusyAnswering: Bool {
+    var lumenIsBusyAnswering: Bool {
         if controller.playback.isSpeaking || speaker.hasPendingSpeech { return true }
         if case .answering = answers.status {
             // Nothing said yet for this call: its answer is coming, the question waits for it.
@@ -2160,7 +2012,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// A70 (Toby T14): why a waiting question is held, for the log.
-    private var busyReason: String {
+    var busyReason: String {
         var parts: [String] = []
         if controller.playback.isSpeaking { parts.append("playback speaking") }
         if speaker.hasPendingSpeech { parts.append("speech pending") }
@@ -2611,7 +2463,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func beginFreshPass() {
         guard !isActiveSession else { return }
         conversation.clear()
-        developedAnswer = nil
+        standardMode.more.forget()
     }
 
     /// A50 (D124): Start's big button starts the chosen mode. Provläge goes to the nearest exam when there is one,
@@ -3391,7 +3243,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if let round = toolRoundFor, round.id == request.id { context.toolRound = round.round }
         // A56 (K13, D100, Toby T7b): the short answer is spoken and the developed one comes in the same call, ready
         // for "ja" in the Mer? window without a new call.
-        context.twoLevel = mode == .standard || mode == .prov
+        context.twoLevel = MoreWindow.applies(to: mode)
         context.connections = spotifyConnection?.connections ?? [] // A59 (K36)
         context.utteranceSeconds = transcription.lastUtteranceSeconds // A74 (K42.5)
         context.capabilities = LumenCapability.grantedPermissions() // A77 (K44): "kan du …?" answered from what is allowed
@@ -3454,7 +3306,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// A56 (K13.2): the answer to "Mer?" teaches the backend the default length for this context.
-    private func sendLengthSignal(yes: Bool) {
+    func sendLengthSignal(yes: Bool) {
         guard let extractor = memoryExtractor else { return }
         let context = lastAnswerScope
         let current = preferences.settings
@@ -3498,14 +3350,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         let request: ActivationRequest
         switch mode {
         case .standard:
-            if let lone = loneNameAt, Date().timeIntervalSince(lone) <= Self.loneNameWindow {
-                // Toby 1 T25 finding 9b: after "Ja?" (the name alone) the next sentence is said to Lumen, also when it
-                // ends in "?": answered ahead as an address ("Lumen, …"), not as an auto question the gate can refuse.
-                request = ActivationRequest(query: text, trigger: .text, language: language)
-                break
-            }
-            guard !study.isActive, QuestionGate(sensitivity: activation.settings.sensitivity).evaluate(text).fires else { return }
-            request = ActivationRequest(query: text, trigger: .auto, language: language)
+            guard let ahead = standardMode.aheadRequest(for: text) else { return } // D199 step 5
+            request = ahead.request
+            persona = ahead.persona
         case .prov:
             guard study.isActive, study.phase == .listening, exam == nil, practice == nil, miniTest == nil else { return }
             request = ActivationRequest(query: text, trigger: .tutor, language: language)
@@ -3603,7 +3450,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         return true
     }
 
-    private func discardAhead(reason: String) {
+    func discardAhead(reason: String) {
         guard let current = ahead, !current.delivered else { return }
         ahead = nil
         answers.cancel()
@@ -3652,7 +3499,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if bufferAhead(.started(request, source: source)) { return }
         tipTask?.cancel()
         tipNotice = nil
-        closeMoreOffer(why: "a new answer")
+        standardMode.more.close(why: "a new answer")
         conversation.beginAnswer(question: request.query, source: source, at: request.createdAt,
                                  isOwnQuestion: request.trigger.isUsersOwnWords)
         controller.playback.startRecordingSpeech() // A7 "upprepa"
@@ -3704,7 +3551,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             if ahead?.delivered == true { ahead = nil }
             controller.log("Answer withdrawn by the backend (retract)")
             studyAnswerEnded()
-            askWaitingQuestionIfIdle()
+            standardMode.askWaitingQuestionIfIdle()
             return
         }
         if ahead?.delivered == true { ahead = nil }
@@ -3731,12 +3578,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             }
             if let link = done?.resource { linkArrived(link, for: turn) }
             quizKeyArrived(done?.quizKey) // A62 (K40)
-            if let more = done?.more?.trimmingCharacters(in: .whitespacesAndNewlines), !more.isEmpty {
-                developedAnswer = (more, Date(), turn.id) // A56 (K13): said at once on "ja"
-            } else {
-                developedAnswer = nil
-            }
-            sayMoreIfWanted() // A67
+            standardMode.more.answerEnded(developed: done?.more, of: turn) // A56 (K13), A67
             if let tool = done?.serverTool { controller.log("Server tool: \(tool.name) \(tool.status) (A59, K36)") }
             if let saved = done?.savedAnswer {
                 conversation.markSaved(saved.id, text: saved.text, on: turn.id) // A53: "Ditt svar" on Lyssnar
@@ -3752,7 +3594,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         controller.turns.finish(currentTurnID, outcome: .silent, reason: "no answer text")
         studyAnswerEnded()
-        askWaitingQuestionIfIdle()
+        standardMode.askWaitingQuestionIfIdle()
     }
 
     /// A9.2 / K10.1: "kan vi byta till frågor" in the user's own words. The app does it and confirms; "nej" or
@@ -3882,7 +3724,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         controller.log("Auto: backend says not a question: \(request.query)")
         controller.turns.finish(currentTurnID, outcome: .silent, reason: "backend: not a question")
         studyAnswerEnded()
-        askWaitingQuestionIfIdle()
+        standardMode.askWaitingQuestionIfIdle()
     }
 
     func answerFailed(_ message: String, wantsFallback: Bool) {
@@ -3926,7 +3768,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         controller.turns.setStatus(currentTurnID, status: message, isQuestion: nil)
         controller.turns.finish(currentTurnID, outcome: .failed)
         studyAnswerEnded()
-        askWaitingQuestionIfIdle()
+        standardMode.askWaitingQuestionIfIdle()
     }
 
     // MARK: - TranscriptSink (fed by TranscriptionCoordinator)
@@ -3938,7 +3780,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         guard !controller.playback.isSpeaking else { return }
         lastHeardAt = date
         if !text.isEmpty { activation.speechContinues(now: date) } // A21.2: a held half question waits for the rest
-        takeMoreFromPartialIfStable(text)
+        standardMode.more.takeFromPartialIfStable(text)
         schedulePrefetch()
         // A partial that already ends a sentence is enough to start the answer (D80).
         if let last = text.trimmingCharacters(in: .whitespacesAndNewlines).last, last == "?" || last == "!" {
@@ -4002,50 +3844,16 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         // Toby 1 T17c finding 9: "Hej, Lumen." alone is the name alone too.
         if WakeWord.matches(VoiceChannel.normalized(segment.text)) || VoiceChannel.isGreetedNameAlone(segment.text),
            !segment.overlapsPlayback {
-            // A75 (Aron 20:41): the name alone (as heard: "Lumin.") always gets an answer: "Ja?", then 8 s for the question.
-            loneNameAt = date
-            controller.log("Name alone: \"Ja?\", waiting for the question (A75)")
-            study.discardTurnText()
-            discardAhead(reason: "the name alone")
-            say(language == .swedish ? "Ja?" : "Yes?")
+            standardMode.nameAlone(at: date) // A75: "Ja?", then 8 s for the question (D199 step 5)
             return
         }
         if VoiceChannel.parse(segment.text).intent == nil, let miss = VoiceChannel.nearMissName(in: segment.text) {
             controller.log("Name-like word not taken: \(miss) (A75)") // grows WakeWord.variantsByName
         }
-        if let lone = loneNameAt {
-            loneNameAt = nil
-            // A75: the question after "Ja?" may overlap its end; only an echo of "Ja?" itself is not the question.
-            let isEchoOfYes = ["ja", "yes"].contains(VoiceChannel.normalized(segment.text))
-            if date.timeIntervalSince(lone) <= Self.loneNameWindow, !isEchoOfYes,
-               handleVoice(in: WakeWord.name + ", " + segment.text, at: date) {
-                discardAhead(reason: "a voice command")
-                return
-            }
-        }
-        // A65: the "ja" was already taken from the partial; Scribe's final of the same word is not a turn of its own.
-        if let taken = moreTakenFromPartial, date.timeIntervalSince(taken.at) < 6, MoreOffer.verdict(segment.text) == true {
-            moreTakenFromPartial = nil
-            discardAhead(reason: "more, already taken")
-            study.discardTurnText()
-            return
-        }
-        // A15: in the "Mer?" window "ja" / "mer" from the wearer gets the long answer; "nej" or anything else closes it.
-        if isOfferingMore {
-            switch MoreOffer.verdict(segment.text) {
-            case true? where isOtherVoice(near: date) != true:
-                discardAhead(reason: "more")
-                study.discardTurnText()
-                takeMore(by: "voice")
-                return
-            case false?:
-                closeMoreOffer(why: "no")
-                study.discardTurnText()
-                return
-            default:
-                closeMoreOffer(why: "new words")
-            }
-        }
+        // A75: the segment after "Ja?" is said to Lumen (D199 step 5).
+        if standardMode.takesAfterName(segment.text, at: date) { return }
+        // A15, A65: "ja" / "mer" in the "Mer?" window gets the long answer; "nej" or anything else closes it.
+        if standardMode.more.takes(segment.text, at: date) { return }
         // A17: "igen" / "en gång till" / "va?" from the wearer: exactly the same answer again, within the time rules.
         switch AgainRule.judge(segment.text, lastAnswerAt: lastAnswerAt, now: date, isOtherVoice: isOtherVoice(near: date)) {
         case .repeatAnswer?:
@@ -4128,29 +3936,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             study.transcriptFinal(segment.text, at: date)
             return
         }
-        activation.segmentFinalized(segment, conversation: conversation, language: language,
-                                    isPlaybackSpeaking: controller.playback.isSpeaking, now: date)
-        if activation.pendingIsUnfinished {
-            controller.log("Frågor: half a question, waiting up to \(UnfinishedQuestion.hold) s for the rest (A21)")
-            askForTheRestBeforeTheHoldEnds()
-        }
-        scheduleQuestionTimer()
-        if activation.pendingDueAt == nil { discardAhead(reason: "no question when the pause came") }
+        standardMode.heard(segment, at: date) // D199 step 5: the question gate at the pause
     }
-
-    /// A63 (Toby T12 finding 1): the rest of a half question came, but Scribe kept it uncommitted until its session
-    /// ended (11–17 s). Before the hold is over, Scribe is asked for its final, so the rest arrives in time to be joined.
-    private func askForTheRestBeforeTheHoldEnds() {
-        halfQuestionTask?.cancel()
-        halfQuestionTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(max(0.5, UnfinishedQuestion.hold - 1.2)))
-            guard let self, !Task.isCancelled, self.isListening, self.activation.pendingIsUnfinished else { return }
-            self.controller.log("Half a question: Scribe asked for the rest now, words waiting: \(self.transcription.hasWaitingWords) (A63)")
-            self.transcription.commit()
-        }
-    }
-
-    @ObservationIgnored private var halfQuestionTask: Task<Void, Never>?
 
     /// Voice-created command (D37): "spara kommando <ord>: <instruktion>". Confirms by voice.
     @discardableResult
@@ -4193,4 +3980,32 @@ extension ListeningModel: LiveModeHost {
     func sayLive(_ line: String) { say(line) }
     func aheadStarted() { aheadStats.started += 1 }
     func aheadDiscarded() { aheadStats.discarded += 1 }
+}
+
+/// D199 step 5 (A120): what Frågor and the "Mer?" window use (`StandardModeHost`): the model's own calls, unchanged.
+extension ListeningModel: StandardModeHost {
+    var hasRunningExercise: Bool { exam != nil || practice != nil || miniTest != nil || silentQuiz != nil }
+    var playbackIsSpeaking: Bool { controller.playback.isSpeaking }
+    var hasPendingSpeech: Bool { speaker.hasPendingSpeech }
+    var hasWaitingWords: Bool { transcription.hasWaitingWords }
+
+    func commitWaitingWords() { transcription.commit() }
+    func voice(in text: String, at date: Date) -> Bool { handleVoice(in: text, at: date) }
+    func listeningEvent(_ event: ListeningEvent) { listeningEventObserver?(event, Date()) }
+    func markMoreUsed() { tips.markUsed(.moreDetail) }
+    func queueTurns(_ parts: [String]) { studyQueue = parts + studyQueue }
+
+    func sayDeveloped(_ text: String, after last: AnswerTurn) {
+        let turn = AnswerTurn(question: last.question, answer: text, source: "cloud", isOwnQuestion: last.isOwnQuestion)
+        conversation.append(turn)
+        lastAnswerAt = Date()
+        history.record(HistoryEntry(createdAt: turn.createdAt, question: turn.isOwnQuestion ? turn.question : nil,
+                                    answer: turn.answer, summary: nil, mode: mode.rawValue, persona: currentPersona))
+        say(text)
+    }
+
+    func playMoreTone() {
+        guard speaker.settings.moreTone else { return }
+        try? controller.playback.playTestTone(frequency: 1_320, duration: 0.12)
+    }
 }

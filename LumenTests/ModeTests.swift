@@ -418,6 +418,34 @@ import Testing
         #expect(json["adult_confirmed"] == nil)
     }
 
+    /// D199 step 5 (A120): Frågor's decisions are `StandardModeController`, and the "Mer?" window with its two levels
+    /// is `MoreWindow`, which Provläge shares. The screen still reads the window through `model.isOfferingMore`.
+    @Test func standardIsItsOwnController() {
+        let rig = makeRig(events: [])
+        let standard = rig.model.standardMode
+        #expect(standard.mode == .standard)
+        #expect(standard.host === rig.model && standard.more.host === rig.model)
+        #expect(standard.spokenKeyterms == ["kortare", "upprepa", "viska", "högre"])
+        #expect(standard.startBlock() == nil && standard.startScreen() == nil, "the button starts Frågor directly")
+        #expect(rig.model.modeController(for: .standard) === standard)
+        #expect(rig.model.modeController(for: .prov) == nil, "Provläge is step 6")
+
+        // D80: only what the question gate would take is answered ahead, as an auto question.
+        let ahead = standard.aheadRequest(for: "Vad är fotosyntes?")
+        #expect(ahead?.request.trigger == .auto && ahead?.persona == nil)
+        #expect(standard.aheadRequest(for: "Det regnar i dag.") == nil)
+
+        // A75: after the name alone ("Ja?") the next sentence is said to Lumen, whatever the gate thinks of it.
+        standard.nameAlone(at: Date())
+        #expect(standard.aheadRequest(for: "Det regnar i dag.")?.request.trigger == .text)
+
+        // A15, A56: the window and the two levels are for Frågor and Provläge only.
+        #expect(MoreWindow.applies(to: .standard) && MoreWindow.applies(to: .prov))
+        #expect(!MoreWindow.applies(to: .interview) && !MoreWindow.applies(to: .social) && !MoreWindow.applies(to: .rizz))
+        #expect(!standard.more.isOpen && !rig.model.isOfferingMore)
+        #expect(!standard.more.takes("ja", at: Date()), "no window, so \"ja\" is an ordinary turn")
+    }
+
     /// D199 step 4 (A119): each mode says what the app must show before it starts; the model shows the sheet or
     /// says the line. The same checks as before the move.
     @Test func eachModeSaysWhatItNeedsBeforeItStarts() async {

@@ -284,7 +284,7 @@ final class SocialModeController: ListeningModeController {
     func startBlock() -> ModeStartBlock? { settings.hasConfirmedLiveStart(mode) ? nil : .liveStartScreen }
 
     /// The mode button always opens the start screen.
-    func startScreen() -> ModeStartBlock { .liveStartScreen }
+    func startScreen() -> ModeStartBlock? { .liveStartScreen }
 
     var spokenKeyterms: [String] { LiveModeController.spokenKeyterms }
 
@@ -326,7 +326,7 @@ final class RizzModeController: ListeningModeController {
     }
 
     /// The mode button opens the start screen (after the age check, never since D112).
-    func startScreen() -> ModeStartBlock { needsAgeConfirmation ? .ageQuestion : .liveStartScreen }
+    func startScreen() -> ModeStartBlock? { needsAgeConfirmation ? .ageQuestion : .liveStartScreen }
 
     var spokenKeyterms: [String] { LiveModeController.spokenKeyterms }
 
