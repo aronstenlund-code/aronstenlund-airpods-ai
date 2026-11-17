@@ -446,6 +446,34 @@ import Testing
         #expect(!standard.more.takes("ja", at: Date()), "no window, so \"ja\" is an ordinary turn")
     }
 
+    /// D199 step 6a (A121): the exam session inside Provläge (D84) is `ExamSessionController`. The model's checks
+    /// (`exam != nil`) read its session, and "Lumen, …" goes to it while a session runs.
+    @Test func theExamSessionIsItsOwnController() {
+        let rig = makeRig(events: [])
+        let exam = rig.model.examSession
+        #expect(exam.mode == .prov && exam.host === rig.model)
+        #expect(!exam.isActive && rig.model.exam == nil && !rig.model.hasRunningExercise)
+        #expect(exam.spokenKeyterms == rig.model.standardMode.spokenKeyterms)
+        #expect(exam.startBlock() == nil && exam.startScreen() == nil)
+
+        var paper = ExamPaper()
+        paper.tasks = [ExamTask(no: "1", text: "Vad är 2 + 2?", points: .init(E: 1, C: 0, A: 0), answer: "4", assessment: ""),
+                       ExamTask(no: "2", text: "Lös x + 1 = 3.", points: .init(E: 1, C: 1, A: 0), answer: "2", assessment: "")]
+        exam.begin(paper: paper)
+        #expect(exam.isActive && rig.model.exam?.paper == paper, "the model reads the controller's session")
+        #expect(rig.model.hasRunningExercise, "no \"Mer?\" and no tips while the session runs")
+        #expect(exam.aheadRequest(for: "Vad är fotosyntes?") == nil, "nothing is answered ahead in the session")
+
+        rig.model.instruct("uppgift två") // "Lumen, uppgift två" through the model
+        #expect(rig.model.exam?.currentTask?.no == "2")
+        rig.model.instruct("vad är fotosyntes") // not an exam command: not answered
+        #expect(rig.provider.requests.isEmpty)
+        #expect(rig.model.exam?.currentTask?.no == "2")
+
+        rig.model.instruct("avsluta provet")
+        #expect(!exam.isActive && rig.model.exam == nil)
+    }
+
     /// D199 step 4 (A119): each mode says what the app must show before it starts; the model shows the sheet or
     /// says the line. The same checks as before the move.
     @Test func eachModeSaysWhatItNeedsBeforeItStarts() async {
