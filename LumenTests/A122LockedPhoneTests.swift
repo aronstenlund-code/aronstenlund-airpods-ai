@@ -97,4 +97,30 @@ import Testing
         #expect(!RepetitionModel.soundIsNotComing(problem: nil), "Gör ljudet …: it is on its way, so pause stays")
         #expect(!RepetitionModel.soundIsNotComing(problem: ""))
     }
+
+    /// Kevin K87 (3): the text from "Säg i AirPods" was saved twice (one copy started, one not). A new exam's save
+    /// spawns `prepare`, and Spela starts the sound before that task has run: only one of them may save it.
+    @Test func aNewTextThatIsStartedAtOnceIsSavedOnce() async throws {
+        let folder = try A79A81RepetitionTests.folder("a122-once")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A107StartAudioTests.DeferredCloud()
+        cloud.yieldsInSave = true
+        let audio = CloudDrillAudio(cloud: cloud, store: store, folder: folder, pollInterval: .milliseconds(1), maxPolls: 20)
+        var drill = A79A81RepetitionTests.bio(2)
+        drill.needsUpload = true
+        drill.audioStarted = false
+        store.save(drill)
+
+        let saving = Task { await audio.prepare(drill) } // what saving a new exam spawns
+        let started = await audio.startAudio(drill)      // Spela, before that task has run
+        await saving.value
+        for _ in 0..<50 where audio.preparing.contains(drill.id) { try? await Task.sleep(for: .milliseconds(2)) }
+
+        #expect(started)
+        #expect(cloud.saves.count == 1, "one copy on the server, not one started and one not")
+        #expect(cloud.startCalls == 1)
+        let saved = try #require(store.drill(drill.id))
+        #expect(!saved.awaitsAudioStart && saved.serverID == "srv-1")
+        #expect(audio.problem(for: saved) == nil)
+    }
 }

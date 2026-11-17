@@ -31,7 +31,11 @@ import Testing
             }, audio: .init(done: started ? items.count * 2 : 0, total: items.count * 2, failed: 0))
         }
 
+        /// As a real server: the answer takes a moment, so other tasks run meanwhile.
+        var yieldsInSave = false
+
         func save(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView {
+            if yieldsInSave { await Task.yield(); await Task.yield() }
             saves.append(DrillCloudClient.saveBody(drill))
             items = drill.items
             return view()

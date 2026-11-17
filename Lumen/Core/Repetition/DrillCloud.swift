@@ -608,6 +608,8 @@ final class CloudDrillAudio: DrillAudioProviding {
                     return
                 }
             } catch {
+                // Kevin K87 (2): a request that was cancelled is not "Ingen kontakt"; nothing is said for it.
+                if Task.isCancelled { return }
                 if case .offline = error, !NetworkStatus.shared.isOnline {
                     // A103: on the underground. Say it, then go on by itself when the network is back.
                     problems[drill.id] = Self.waitingForNetworkLine
@@ -799,6 +801,13 @@ final class CloudDrillAudio: DrillAudioProviding {
         problems[drill.id] = nil
         // A save that is still on its way first (it brings the server id).
         for _ in 0..<100 where preparing.contains(drill.id) { try? await Task.sleep(for: .milliseconds(100)) }
+        // Aron's phone 2026-11-17 (Kevin K87): "Säg i AirPods" saved the same text twice, 2 s apart, one copy started
+        // and one not. Saving a new exam spawns `prepare`, and Spela came here before that task had run; both saw an
+        // exam without a server id and both saved it. Whichever answer was stored last decided which copy the phone
+        // followed, and with the unstarted one the sound never came. From here to the end, this exam is this
+        // function's: a `prepare` that begins meanwhile leaves at once, and the one started at the end follows it.
+        let holds = preparing.insert(drill.id).inserted
+        defer { if holds { preparing.remove(drill.id) } }
         guard var current = store.drill(drill.id) else { return false }
         do throws(DrillCloudError) {
             if current.serverID == nil || current.needsUpload == true {
