@@ -31,6 +31,7 @@ on:
           - k93-live.py
           - k94-apple-root.py
           - qa/o79_quality.py
+          - k98-attest-root.py
       args:
         description: "Arguments (optional)"
         required: false
