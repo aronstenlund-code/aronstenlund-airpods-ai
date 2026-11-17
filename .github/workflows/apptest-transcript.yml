@@ -3,6 +3,11 @@ name: Apptest transcript (T17c, no ElevenLabs)
 # Toby 1's T17c (D180): T16, T17, fynd 8 and A97 with recorded or written transcripts; Scribe off, never ElevenLabs.
 on:
   workflow_dispatch:
+    inputs:
+      app_ref:
+        description: "Branch or commit whose app code to test (empty = this checkout). Tests and scripts come from main then."
+        required: false
+        default: ""
   push:
     branches: ["toby/**"]
     paths:
@@ -12,7 +17,7 @@ on:
       - ".github/workflows/apptest-transcript.yml"
 
 concurrency:
-  group: apptest-transcript-${{ github.ref }}
+  group: apptest-transcript-${{ github.ref }}-${{ inputs.app_ref }}
   cancel-in-progress: true
 
 jobs:
@@ -22,6 +27,18 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.app_ref || github.ref }}
+          fetch-depth: 0
+
+      # T38 (G7 guard): the app from another branch, the tests from main, so main and the branch are compared alike.
+      - name: Tests from main
+        if: inputs.app_ref != ''
+        run: |
+          set -euo pipefail
+          git fetch -q origin main
+          git checkout origin/main -- AppTests/E2E scripts/apptest
+          echo "App from ${{ inputs.app_ref }} ($(git rev-parse --short HEAD)), tests from main ($(git rev-parse --short origin/main))"
 
       - name: Select Xcode 26
         run: |
