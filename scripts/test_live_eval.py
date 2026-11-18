@@ -57,4 +57,10 @@ check("either ok", le.silence_checks("", {"answered": False}, {"expect": "either
 check("meta reply flagged", any("metasvar" in p for p in le.silence_checks("Det låter som att du tänker på något.", {"answered": True}, {"expect": "either"})))
 check("sv numbers", le.sv(20) == "tjugo" and le.sv(8) == "åtta" and le.sv(0) == "noll")
 check("domains parsed", "scb.se" in le.reliable_domains() and "bbc.com" not in le.reliable_domains())
+# O87 (D232): "det beror på att …" is an explanation; "det beror på" alone is still a hedge
+check("beror på att = förklaring", not any("brasklapp" in p for p in probs("Det beror på att virus saknar egen ämnesomsättning.")))
+check("beror på = brasklapp", any("brasklapp" in p for p in probs("Det beror på. Fråga gärna igen.")))
+check("beror på vad = brasklapp", any("brasklapp" in p for p in probs("Det beror på vad du menar.")))
+# O87: the sessions are shared between Backend objects (one signup round per process)
+check("delade konton", le.Backend().tokens is le.Backend().tokens)
 sys.exit(0 if all(ok) else 1)
