@@ -303,7 +303,17 @@ export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
 - A why-question whose cause the material does not give: rewrite it into an understanding question the material does carry, never into a what-, when- or who-question (D230): "Förklara hur X hänger ihop med Y", "Vad blev följden av X?", "Jämför X och Y", "Hur påverkade X Y?" (or the same in the exam's language): {"i": N, "q": "..."}. The new question may only ask about a link the material itself makes.
 - At least half of the questions must be understanding questions (why, how, explain, compare, what followed). When fewer are, rewrite plain recall questions (what is, when, who, which) into understanding questions the material carries, the earliest first, until half are.
 - A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {"i": N, "drop": true, "same_as": M}. Two questions on one topic that ask different things both stay.
+- A question the material does not answer (a how or why whose way or cause it never gives): rewrite it into one about the same part that the material answers (D230 forms first). A question that asks two things, of which the material answers one: keep only that one (K106, Oscar).
 - Never change anything else: same language, same length or shorter, clear when only heard. No other text.`;
+
+/**
+ * K106 (Oscar's K102 omtest F1, Vasa 14: "Vad var fogdarnas uppgift …, och varför skapade han en egen här?" was answered
+ * only in its first part): one question asks one thing; the added "…, och varför/hur …?" part goes.
+ */
+export function oneAsk(q: string): string {
+  const m = /^(.{12,}?),\s+och\s+(?:varför|hur|vad|vilk\p{L}*|när|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim());
+  return m && words(m[1]) >= 3 ? m[1].replace(/[\s,]+$/, "") + "?" : q;
+}
 
 /** D230: a question that asks for understanding (a cause, a link, a result, a comparison), not a recalled fact. */
 export function isUnderstanding(q: string): boolean {
@@ -331,8 +341,9 @@ export async function refillQuestions(
   try {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_REFILL,
-      user: `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n<kept>${sanitizeTagged(JSON.stringify(kept))}</kept>\n<count>${n}</count>`,
-      maxTokens: 150 + n * 80,
+      // K106: two more than needed, since some may be the same as a kept question in other words
+      user: `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n<kept>${sanitizeTagged(JSON.stringify(kept))}</kept>\n<count>${n + 2}</count>`,
+      maxTokens: 150 + (n + 2) * 80,
       cacheSystem: true,
       model: cfg.answerModel,
       timeoutMs: 40_000,
@@ -585,6 +596,13 @@ export function contextLine(subject: string, grade: string): string {
 }
 
 /** Step 2: the answers in batches of 5 in parallel; a batch that fails or misses a question is asked once more. */
+/** K106: a short answer that says the notes do not answer the question ("framgår inte här", "is not explained here"). */
+export function notAnswered(short: string): boolean {
+  return /(?:framgår inte|är inte känt|inte känt här|förklaras inte här|beskrivs inte här|står inte här|går inte att säga här|is not (?:explained|stated|known|described) here|isn't (?:explained|stated) here|not explained here)/i.test(short);
+}
+export const MUST_FIX =
+  "<must_fix>yes</must_fix> The notes do not answer this question as it is asked (your last answer said so). Put a new question in \"question\" about the same part of the notes that the notes do answer (an understanding question when they carry one: how, what followed, explain how X is linked to Y, compare), and answer that one. Never answer that something is not known.";
+
 export async function answerItems(
   provider: LLMProvider,
   cfg: DrillConfig,
@@ -595,14 +613,14 @@ export async function answerItems(
   const steps: StepUsage[] = [];
   const got = new Map<string, { short: string; long: string; question?: string; screen?: Screen }>();
   const lang = examLanguage(ctx.subject);
-  const ask = async (batch: { id: string; question: string }[], strict = true) => {
+  const ask = async (batch: { id: string; question: string }[], strict = true, mustFix = false) => {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_ANSWERS,
       user: `<context>${sanitizeTagged(contextLine(ctx.subject, ctx.grade))}</context>\n<notes>\n${
         sanitizeTagged(ctx.notes || "(inga anteckningar)")
       }\n</notes>\n<long_words>${ctx.longWords}</long_words>${lang ? `\n<language>${lang}</language>` : ""}${
         ctx.mayFix ? "\n<may_fix>yes</may_fix>" : ""
-      }\n<questions>${sanitizeTagged(JSON.stringify(batch))}</questions>`,
+      }${mustFix ? `\n${MUST_FIX}` : ""}\n<questions>${sanitizeTagged(JSON.stringify(batch))}</questions>`,
       maxTokens: Math.min(8000, 400 + batch.length * Math.round(ctx.longWords * 3.2)),
       cacheSystem: true,
       model: cfg.answerModel,
@@ -630,6 +648,22 @@ export async function answerItems(
     const again: { id: string; question: string }[][] = [];
     for (let i = 0; i < missing.length; i += size) again.push(missing.slice(i, i + size));
     await Promise.allSettled(again.map((x) => ask(x, size !== 1)));
+  }
+  // K106 (Oscar's K102 omtest F1, Vasa: "Varför han flydde till Dalarna framgår inte här, men …"): a generated question
+  // the notes do not answer is asked once more with the order to replace it by one they answer (one by one, in parallel)
+  if (ctx.mayFix) {
+    const unanswered = items.filter((it) => { const a = got.get(it.id); return a && notAnswered(a.short); });
+    if (unanswered.length) {
+      const before = new Map(unanswered.map((it) => [it.id, got.get(it.id)!]));
+      await Promise.allSettled(unanswered.map((it) => ask([it], true, true)));
+      let fixed = 0;
+      for (const it of unanswered) {
+        const a = got.get(it.id);
+        if (!a || notAnswered(a.short)) got.set(it.id, before.get(it.id)!); // no better question: the first answer stays
+        else if (a.question) fixed++;
+      }
+      console.log("drill_unanswered", JSON.stringify({ found: unanswered.length, fixed }));
+    }
   }
   if (!got.size) {
     const err = first.find((r) => r.status === "rejected") as PromiseRejectedResult | undefined;
@@ -1047,13 +1081,16 @@ export async function handleDrill(
     // the last check of the finished list against the material (claims, why without a cause, same answer)
     const fc = material ? await finalCheck(provider, cfg, qs, qParts, material, signal) : null;
     let refilled = 0;
+    if (fc) fc.questions = fc.questions.map(oneAsk);
     if (fc) {
       qs = fc.questions;
       qParts = fc.parts;
       if (fc.usage) steps.push(fc.usage);
       // D230 (2): the removed duplicates are made up for, placed in the part they draw on (the material's order)
-      if (fc.dropped > 0) {
-        const rf = await refillQuestions(provider, cfg, qs, fc.dropped, material, signal);
+      // K106 (Oscar's K102 omtest F3: printing 13/14, ljud 11/12): also what the coverage calls left short
+      const missing = Math.max(fc.dropped, target - qs.length);
+      if (missing > 0) {
+        const rf = await refillQuestions(provider, cfg, qs, missing, material, signal);
         if (rf.usage) steps.push(rf.usage);
         if (rf.questions.length) {
           const at = parts.length > 1 ? placeQuestions(rf.questions, parts) : rf.questions.map(() => 0);
