@@ -132,12 +132,18 @@ grep -E "Reading:|offline|Offline|network|Network|drill_audio|download" "$OUT/lo
   echo
   echo "Detaljer:"
   echo '```'
-  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT|GREY|spela-|PRESS|T36|T46|T49|SYSTEM ALERT|SCREEN|  texts:|  buttons:|TAP " "$OUT/t36-log.txt" 2>/dev/null | cut -c1-900
+  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT|GREY|spela-|PRESS|T36|T46|T49|T50|SYSTEM ALERT|SCREEN|  texts:|  buttons:|TAP " "$OUT/t36-log.txt" 2>/dev/null | cut -c1-900
   echo '```'
   echo
   echo "Tryck (testkroken, appens logg):"
   echo '```'
   grep -E "Test press|Reading: (paused|go on|next|previous|tap on|start at)" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | head -n 30
+  echo '```'
+  echo
+  echo "T50 Skriv i takt (appens logg, pauserna):"
+  echo '```'
+  echo "pace-rader: $(grep -c 'Reading: pace:' "$OUT/logs/app.log" 2>/dev/null || echo 0)"
+  grep -E "Reading: pace:|style|voice_id" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | head -n 15
   echo '```'
   echo
   echo "Spelaren (appens logg, Reading:):"
