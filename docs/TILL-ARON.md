@@ -63,3 +63,7 @@ Det tar en minut, och ingenting ska ändras om värdena stämmer. Appen förlita
 3. Skicka de två värdena till Deangelo. Är intervallet lägre än 10, skriv det; ändra inget själv.
 
 Verifierat i Supabases dokumentation: intervallet finns och är 10 s som standard. Ej verifierat: att knapparna heter exakt så i dag.
+
+
+## #33 Webbsvaren är slut för i dag (2026-11-18 15:15)
+Testerna har använt alla 150 webbsvar för i dag, så appen svarar utan webben till kl. 01:00 svensk tid. Från och med nu har testerna ett eget tak (D234) och kan inte ta användarnas. **Fråga:** ska webbsvaren slås på igen redan i dag? Det kostar högst cirka 3–5 USD extra. Svara ja eller nej.

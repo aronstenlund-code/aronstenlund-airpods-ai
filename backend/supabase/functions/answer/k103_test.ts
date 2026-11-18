@@ -3,7 +3,7 @@ import { assert, assertEquals, assertStringIncludes } from "jsr:@std/assert@1.0.
 import { textForVoice } from "./handler.ts";
 import { WEB_PROMPT, TEXT_PROMPT } from "./web.ts";
 import { SYSTEM_PROMPT_SOCIALLINE } from "./socialroute.ts";
-import { AnswerPost, NumberStream, noParens, socialLineSentence } from "./speech.ts";
+import { AnswerPost, NumberStream, codeNumbers, noParens, socialLineSentence } from "./speech.ts";
 import { afterNumbers } from "./speechsym.ts";
 
 Deno.test("K103 B1: a song is said without line breaks; a self-correction drops the wrong start", () => {
@@ -63,4 +63,17 @@ Deno.test("K103 (O86 tillägg): a parenthesis in a web answer is not read; its i
 Deno.test("K103 B1: the prompt holds the exact words of Helan går, each word apart", () => {
   assertStringIncludes(TEXT_PROMPT, "Och den som inte helan tar, han heller inte halvan får.");
   assertStringIncludes(TEXT_PROMPT, "sjung hopp faderallan lallan lej");
+});
+
+Deno.test("K103 (live 13:25, k9-neg-5): a web answer starts with the likely case, never with 'Det beror på'", () => {
+  assertStringIncludes(WEB_PROMPT, 'never "Det beror (mest/främst) på …"');
+});
+
+Deno.test("K103 (live 13:32): a number glued to a scenario code is said apart (RCP4.5), formulas are left alone", () => {
+  assertEquals(codeNumbers("Med RCP4.5 och SSP585 blir det varmare."), "Med RCP 4,5 och SSP 585 blir det varmare.");
+  assertEquals(codeNumbers("CO2 och H2O"), "CO2 och H2O");
+  const ns = new NumberStream();
+  const said = ["Scenario RCP4.5 ", "innebär cirka 3 grader."].map((c) => ns.push(c)).join("") + ns.finish();
+  assert(!/\d/.test(said), said);
+  assertStringIncludes(said, "RCP fyra komma fem");
 });

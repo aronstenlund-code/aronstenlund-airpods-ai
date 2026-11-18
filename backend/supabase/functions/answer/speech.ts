@@ -304,8 +304,11 @@ export function isEnglishSentence(sentence: string): boolean {
  */
 const SEARCH_META =
   /(?:utan (?:att )?(?:beh\u00f6va |ha )?s\u00f6k|jag har inte s\u00f6kt|om du vill vara (?:helt )?s\u00e4ker|^\s*hmm\b|jag \u00e4r s\u00e4ker p\u00e5 (?:detta|det h\u00e4r|det)\b|(?:beh\u00f6ver|beh\u00f6vs) (?:inte |ingen )?s\u00f6k|ingen s\u00f6kning|jag kan svara (?:p\u00e5 )?(?:den |det |fr\u00e5gan )?direkt|^\s*(?:jag|l\u00e5t mig) (?:ska |kan |vill |m\u00e5ste |beh\u00f6ver )?(?:s\u00f6ka|s\u00f6ker|kolla|kollar|letar|leta)\b|^\s*det h\u00e4r \u00e4r en \p{L}+ fr\u00e5ga)/iu;
+/** K104 (Oscar O88 N1, said aloud while the web cap was used up): the model on its own sources and knowledge. */
+const SOURCE_META =
+  /(?:(?:kräver|behöver|behövs) (?:inte |ingen )?(?:någon )?(?:aktuell|ny|färsk|uppdaterad) information|(?:svarar|svara|utgår) (?:jag )?(?:direkt )?(?:från|ur|utifrån) (?:min |mina |egen |egna )?(?:egen |egna )?(?:kunskap|kunskaper|minne)|utan (?:webb\p{L}*|uppslag|källor|internet)|(?:kan|kunde) (?:jag )?inte (?:se|nå|komma åt|söka|kolla)\b[^.!?]*(?:källor|webben|internet|nätet|sökning))/iu;
 export function isSearchMeta(sentence: string): boolean {
-  return SEARCH_META.test(sentence);
+  return SEARCH_META.test(sentence) || SOURCE_META.test(sentence);
 }
 
 /** Drops whole English sentences (web mode only, unless the user asked for a translation), and sentences
@@ -1046,13 +1049,22 @@ export function noParens(s: string): string {
   return s.replace(/[ \t]*\([ \t]*/g, ", ").replace(/[ \t]*\)/g, ",").replace(/,[ \t]*([.!?,;:])/g, "$1").replace(/^, /, "");
 }
 
+/**
+ * K103 (live 13:32, k9-neg-5: "Scenario RCP4.5" kept the digit 4): a number glued to a code of three or more capital
+ * letters ("RCP4.5", "SSP585") is said apart from it, with a decimal comma. Two-letter codes (CO2, H2O) are formulas
+ * and are left to the formula rules. Only the spoken answer, never the drill voice text (K74).
+ */
+export function codeNumbers(s: string): string {
+  return s.replace(/(?<![\p{L}\d])(\p{Lu}{3,})(\d+)(?:\.(\d+))?(?![\p{L}\d])/gu, (_m, c: string, a: string, b?: string) => `${c} ${a}${b ? "," + b : ""}`);
+}
+
 // ---------- 3. digits -> words across chunk boundaries ----------
 export class NumberStream {
   private buf = "";
   private tail = ""; // last raw text already passed on (context for the phone-number guard)
 
   private say(raw: string): string {
-    const out = noParens(toSpeech(raw, this.tail));
+    const out = noParens(toSpeech(codeNumbers(raw), this.tail));
     this.tail = (this.tail + raw).slice(-120);
     return out;
   }
