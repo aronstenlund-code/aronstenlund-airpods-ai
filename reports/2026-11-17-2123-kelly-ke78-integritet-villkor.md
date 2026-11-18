@@ -60,3 +60,8 @@ Grenen `kelly/ke78-integritet`, commit 22f069c7. Bilderna i `reports/2026-11-17-
 - **Fotona:** raderas direkt efter analysen och det som blir kvar tas bort inom en timme (`drill-purge`, **verifierat i
   koden** av Angela): markeringen (sv och en) är borta.
 - **Kvar: 16 overifierade punkter** (11 i integritet, 5 i villkor).
+
+## Uppdatering 2026-11-18 12:45 (efter A145)
+Commit baa37672 på grenen. **Radera konto finns i appen** (Inställningar › Konto › Radera konto, A145/K101): markeringen
+om knappen är borta, texten säger var den finns, att det inte går att ångra och att veckokortet inte avslutas (sv och en).
+Bilderna tagna om. **Kvar: 15 overifierade punkter** (10 i integritet, 5 i villkor).
