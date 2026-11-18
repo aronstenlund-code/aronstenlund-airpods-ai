@@ -1,8 +1,14 @@
 /** K94: the wallet (wallet.ts) on the database's RPCs (service_role). Missing RPCs read as "none", never as "admin". */
 import type { RestDb } from "./restdb.ts";
 import { makeUseQuota, type WalletStore } from "./wallet.ts";
+import { memo } from "./memo.ts";
 
 export function walletStore(db: RestDb): WalletStore {
+  // K100: the week's limit is a setting: read at most once a minute per instance
+  const weekLimit = memo(async () => {
+    const rows = (await db.select("drill_settings", "select=value&key=eq.subscription_week_chars")) as { value: number }[];
+    return Number(rows[0]?.value) || 20_000; // D224
+  });
   const one = <T>(r: unknown) => (Array.isArray(r) ? r[0] : r) as T;
   return {
     isAdmin: async (u) => (await db.rpc("is_credit_admin", { p_user: u }).catch(() => false)) === true,
@@ -20,10 +26,7 @@ export function walletStore(db: RestDb): WalletStore {
       const sum = (k: string) => rows.filter((r) => r.kind === k).reduce((n, r) => n + (Number(r.credits) || 0), 0);
       return { welcome: sum("welcome"), invite: sum("invite"), used: -sum("use") };
     },
-    weekLimit: async () => {
-      const rows = (await db.select("drill_settings", "select=value&key=eq.subscription_week_chars").catch(() => [])) as { value: number }[];
-      return Number(rows[0]?.value) || 20_000; // D224
-    },
+    weekLimit: () => weekLimit().catch(() => 20_000),
   };
 }
 

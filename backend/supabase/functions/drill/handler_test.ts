@@ -5,10 +5,11 @@ import { questionKey } from "./length.ts";
 import { runWithTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
-function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean; styler?: (t: string, s: string) => Promise<string | null>; catalog?: { voice_id: string; name: string }[]; picker?: (s: string, v: { voice_id: string }[]) => Promise<{ voice_id: string; reason: string } | null> } = {}) {
+function world(opts: { background?: (p: Promise<unknown>) => void; perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean; styler?: (t: string, s: string) => Promise<string | null>; catalog?: { voice_id: string; name: string }[]; picker?: (s: string, v: { voice_id: string }[]) => Promise<{ voice_id: string; reason: string } | null> } = {}) {
   let busy = opts.busy ?? 0;
   let out = !!opts.outOfCredits; // K78: credits can come back
   const quota = new Map<string, number>();
+  const started: string[] = [];
   const admins = new Set<string>(); // K93: credit_admins
   const credits = new Set<string>(); // K61 (D177): "user|question key" counted in /help try
   const models: string[] = [];
@@ -124,9 +125,9 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
       quota.set(u, Math.max(0, (quota.get(u) ?? 0) - n));
       return Promise.resolve();
     },
-    recentUnavailable: (since: string, test: boolean) =>
-      Promise.resolve([...audio.values()].some((a) => a.status === "failed" && (a.error ?? "").startsWith("audio_unavailable") &&
-        (a.voice_id === TEST_VOICE_ID) === test && (a.done_at ?? "") >= since)),
+    recentUnavailable: (since: string, tag: string | null) =>
+      Promise.resolve([...audio.values()].some((a) => a.status === "failed" && (a.error ?? "").startsWith(tag ? `audio_unavailable: test ${tag} ` : "audio_unavailable") &&
+        (a.voice_id === TEST_VOICE_ID) === !!tag && (a.done_at ?? "") >= since)),
     setRefunded: (id: string, n: number) => {
       drills.get(id)!.refunded_chars = n;
       return Promise.resolve();
@@ -158,6 +159,8 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
       authenticate: () => Promise.resolve(owner ? { id: user, isAnonymous: false, email: "owner@example.com", amr: ["otp"] } : { id: user, isAnonymous: true }),
       ownerEmails: ["owner@example.com"],
       styler: opts.styler,
+      ...(opts.background ? { background: opts.background } : {}),
+      onStarted: (u: string) => (started.push(u), Promise.resolve()),
       voicePicker: opts.picker,
       analysis: (r) => {
         logged.push(...r);
@@ -197,7 +200,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
       usdPer1kChars: 0.08,
       charLimits: { perMinute: 1e9, perDay: opts.perDay ?? 1e9, globalPerDay: 1e9 },
     });
-  return { h, limiter, admins, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, logged, setBusy: (n: number) => (busy = n), setOut: (v: boolean) => (out = v) };
+  return { h, limiter, started, admins, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, logged, setBusy: (n: number) => (busy = n), setOut: (v: boolean) => (out = v) };
 }
 const CUE = "Tryck en gång för svaret.";
 const post = (b: unknown) => new Request("http://x/drill", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
@@ -902,6 +905,10 @@ Deno.test("K78 a test account's fake out-of-credits stays among test files (D180
     await (await w.h("t2")(post({ action: "save", items: [{ question: "Vad är is?", short: "Fruset vatten.", long: "Fruset vatten." }] }))).json());
   assertEquals(t2.audio_unavailable, true, "the next test save sees the test's fake failure");
   assertEquals(t2.generated_questions, 0);
+  // K100: another tester (another first word in x-earmind-test) is not held back by it
+  const t3 = await runWithTest({ test: true, reason: "header", userId: "t3", tag: "kevin-t50" }, async () =>
+    await (await w.h("t3")(post({ action: "save", items: [{ question: "Vad är ånga?", short: "Kokat vatten.", long: "Kokat vatten." }] }))).json());
+  assertEquals([t3.audio_unavailable, t3.generated_questions], [undefined, 1]);
 });
 
 Deno.test("K78 get on a drill kept as text while credits are out says audio_unavailable too", async () => {
@@ -1039,6 +1046,37 @@ Deno.test("T28: drill.said marks a Säg text at its first save, is kept, shown i
   assertEquals((imp.drill ?? imp).said ?? false, false);
 });
 
+Deno.test("K100: save with start:true makes a Säg text in one call (audio started, counted once); the inviter's reward runs once", async () => {
+  const w = world({ credits: 1500 });
+  const text = [{ kind: "para", text: "Ring mamma klockan fem i dag." }];
+  const s = await (await w.h("u1")(post({ action: "save", start: true, defer_audio: true, drill: { kind: "text", said: true, client_id: crypto.randomUUID() }, items: text }))).json();
+  assertEquals([s.drill.audio_started, s.cost, w.quota.get("u1"), w.started], [true, text[0].text.length, text[0].text.length, ["u1"]]);
+  assert(s.items[0].id, "the item has its id in the answer");
+  // the same drill started again: nothing new, no second reward
+  const again = await (await w.h("u1")(post({ action: "start", id: s.drill.id }))).json();
+  assertEquals([again.cost, w.started.length, again.items[0].id], [0, 1, s.items[0].id]);
+  // the two-call way (save, then start) rewards once too
+  const d = await (await w.h("u2")(post({ action: "save", defer_audio: true, drill: { kind: "text" }, items: [{ kind: "para", text: "Köp mjölk på vägen hem." }] }))).json();
+  assertEquals([d.drill.audio_started, w.started.length], [false, 1]);
+  await w.h("u2")(post({ action: "start", id: d.drill.id }));
+  await w.h("u2")(post({ action: "start", id: d.drill.id }));
+  assertEquals(w.started, ["u1", "u2"]);
+  // the item ids given at save are the ones the drill keeps
+  const g = await (await w.h("u1")(post({ action: "get", id: s.drill.id }))).json();
+  assertEquals(g.items.map((i: { id: string }) => i.id), s.items.map((i: { id: string }) => i.id));
+});
+
+Deno.test("K100 with a background queue: the answer says pending without reading the files again; the files are made after", async () => {
+  const bg: Promise<unknown>[] = [];
+  const w = world({ credits: 1500, background: (p) => void bg.push(p) });
+  const text = [{ kind: "para", text: "Ring mamma klockan sex i kväll." }];
+  const s = await (await w.h("u1")(post({ action: "save", start: true, drill: { kind: "text" }, items: text }))).json();
+  assertEquals([s.drill.audio_started, s.items[0].audio.text.status, s.cost], [true, "pending", text[0].text.length]);
+  await Promise.all(bg);
+  const g = await (await w.h("u1")(post({ action: "get", id: s.drill.id }))).json();
+  assertEquals(g.items[0].audio.text.status, "done");
+});
+
 Deno.test("K93 (D216): an admin is never charged or refused; quota, list and cost say unlimited; another account is unchanged", async () => {
   const w = world({ credits: 10 });
   w.admins.add("aron");
@@ -1140,6 +1178,26 @@ Deno.test("K99 mix_voices: each part gets a catalog voice by lot, kept on later 
   assert(new Set(files.map((f) => f.voice_id)).size >= 2);
   const again = await (await w.h("u1")(post({ action: "save", drill: { id: a.drill.id }, items: st.items.map((i: { id: string; text: string }) => ({ id: i.id, kind: "para", text: i.text })) }))).json();
   assertEquals([again.cost, again.items.map((i: { voice_id?: string }) => i.voice_id)], [0, voices]);
+});
+
+Deno.test("O81: with mixed voices the same text gets the same voice in a new drill, so its audio is reused (cost 0)", async () => {
+  const w = world({ catalog: CAT });
+  const parts = ["Första meningen här.", "Andra meningen här.", "Tredje meningen här.", "Fjärde meningen här."].map((text) => ({ kind: "para", text }));
+  const a = await (await w.h("u1")(post({ action: "save", drill: { kind: "text", mix_voices: true }, items: parts }))).json();
+  const b = await (await w.h("u2")(post({ action: "save", drill: { kind: "text", mix_voices: true }, items: parts }))).json();
+  assertEquals(b.items.map((i: { voice_id?: string }) => i.voice_id), a.items.map((i: { voice_id?: string }) => i.voice_id));
+  assertEquals([a.cost > 0, b.cost], [true, 0]);
+});
+
+Deno.test("O80 F2: a text with its own square brackets ([1], [sic]) still gets its style", async () => {
+  const seen: string[] = [];
+  const w = world({ styler: (t) => (seen.push(t), Promise.resolve(`[calm] ${t}`)) });
+  const r = await (await w.h("u1")(post({ action: "save", drill: { kind: "text", style: "Lugnt" }, items: [{ kind: "para", text: "Enligt källan [1] var det så [sic]." }] }))).json();
+  assertEquals(r.status ?? 200, 200);
+  assert(seen.length === 1 && !/[\[\]]/.test(seen[0]), seen.join("|"));
+  const f = [...w.audio.values()].find((x) => x.kind === "text")!;
+  // the voice text rules (D196) already read them as pauses; the tag is kept and no other bracket is left
+  assert(f.text.startsWith("[calm] ") && !/\[(1|sic)\]/.test(f.text), f.text);
 });
 
 Deno.test("K99 the AI picks a catalog voice for a style when none is chosen; a voice not in the list is ignored; a chosen voice wins", async () => {

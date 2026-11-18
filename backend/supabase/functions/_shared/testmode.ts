@@ -24,7 +24,17 @@ export interface TestInfo {
    * (files fail with audio_unavailable, /tts answers 503); `x-earmind-test: slow` = drill files stay pending.
    */
   mode?: "unavailable" | "slow" | null;
+  /**
+   * K100: who is testing (the first word of x-earmind-test, e.g. "oscar-qa", "kevin-t50"). A fake "no credits"
+   * holds back only the same tester's audio for a while, never everyone's test audio.
+   */
+  tag?: string;
 }
+export function testTag(v: string | null): string {
+  const w = (v ?? "").toLowerCase().split(/\s+/).filter((x) => x && x !== "unavailable" && x !== "slow")[0] ?? "";
+  return w.replace(/[^a-z0-9-]/g, "").slice(0, 30) || "x";
+}
+
 export function testMode(v: string | null): "unavailable" | "slow" | null {
   const t = (v ?? "").toLowerCase();
   return /\bunavailable\b/.test(t) ? "unavailable" : /\bslow\b/.test(t) ? "slow" : null;
@@ -176,7 +186,10 @@ export function isOwnerClaims(c: Record<string, unknown> | null, ownerEmails: st
 export function detectTest(req: Request, ownerEmails: string[] = []): TestInfo {
   const c = jwtClaims(req);
   const userId = typeof c?.sub === "string" ? c.sub : null;
-  if (req.headers.has("x-earmind-test")) return { test: true, reason: "header", userId, mode: testMode(req.headers.get("x-earmind-test")) };
+  if (req.headers.has("x-earmind-test")) {
+    const h = req.headers.get("x-earmind-test");
+    return { test: true, reason: "header", userId, mode: testMode(h), tag: testTag(h) };
+  }
   if (isOwnerClaims(c, ownerEmails)) return { test: false, reason: null, userId };
   const meta = (k: string) => (c?.[k] as Record<string, unknown> | undefined)?.test === true;
   if (meta("app_metadata") || meta("user_metadata")) return { test: true, reason: "account", userId };

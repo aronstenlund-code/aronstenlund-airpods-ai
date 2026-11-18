@@ -37,6 +37,17 @@ export function rewardStore(db: RestDb): RewardStore {
     inviteRewards: async (inv, since) =>
       ((await db.select("credit_ledger", `select=credits,created_at&user_id=eq.${q(inv)}&kind=eq.invite&created_at=gte.${q(since)}&order=created_at.desc&limit=20`)) as { credits: number; created_at: string }[])
         .map((r) => ({ credits: Number(r.credits) || 0, at: r.created_at })),
+    // O82: null while the SQL function is missing (20261118100001), so the caller uses the older steps
+    rewardInvite: async (i, credits, max) => {
+      try {
+        const r = Number(await db.rpc("invite_reward", { p_invitee: i, p_credits: credits, p_max: max }));
+        return r < 0 ? "cap" : Number.isFinite(r) ? r : null;
+      } catch (e) {
+        console.warn("invite_reward_rpc_failed", String(e).slice(0, 80));
+        return null;
+      }
+    },
+    hasPlayed: async (u) => ((await db.select("drills", `select=id&user_id=eq.${q(u)}&audio_started_at=not.is.null&limit=1`)) as unknown[]).length > 0,
     invitesThisMonth: async (inv) => {
       const d = new Date();
       const start = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1)).toISOString();
