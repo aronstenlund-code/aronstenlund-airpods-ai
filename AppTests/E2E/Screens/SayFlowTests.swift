@@ -489,7 +489,14 @@ final class SayFlowTests: XCTestCase {
     }
 
     private func shopSheetOpen(before: Int?) -> Bool {
-        pause(3)
+        // Run 44300125934: after 3 s neither the products nor Fable's line were there; StoreKit may take longer. Wait
+        // up to 15 s for one of them.
+        let shopEnd = Date().addingTimeInterval(15)
+        repeat {
+            let t = app.debugDescription
+            if t.contains("Paketen kunde inte hämtas") || t.contains("label: 'Köp ") { break }
+            pause(1)
+        } while Date() < shopEnd
         var ok = true
         let tree = app.debugDescription
         let all = (Self.labels(in: tree, kind: "StaticText") + Self.labels(in: tree, kind: "Button") + Self.labels(in: tree, kind: "Link"))
@@ -655,7 +662,17 @@ final class SayFlowTests: XCTestCase {
         goToStart()
         guard tap(["Inställningar"], "Inställningar") else { return false }
         pause(1.5)
-        return wait(["Radera konto"], 5) != nil || tap(["Radera konto"], "Radera konto (scroll)", counted: false) || miss("no 'Radera konto' in Inställningar")
+        // Run 44300125934: Konto is the last part of Inställningar, and the list makes it only when it is scrolled to.
+        for n in 0..<10 {
+            if app.buttons.matching(NSPredicate(format: "label ==[c] 'Radera konto'")).firstMatch.exists {
+                if n > 0 { log.append("A145 Radera konto after \(n) swipes in Inställningar") }
+                return true
+            }
+            app.swipeUp(velocity: .fast)
+            pause(0.7)
+        }
+        screen("installningar-utan-konto", "Inställningar without Radera konto")
+        return miss("no 'Radera konto' in Inställningar after 10 swipes")
     }
 
     private func askDelete() -> Bool {
