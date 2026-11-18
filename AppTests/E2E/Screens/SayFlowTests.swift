@@ -117,8 +117,9 @@ final class SayFlowTests: XCTestCase {
         repeat {
             up = text(starting: "Spelar i AirPods") != nil || text(starting: "Gör ljudet") != nil || timeLeft() != nil
             // Run 44230731193: 20 s after the network came back the first try said "Ljudet kunde inte hämtas. Kolla
-            // nätet." with Försök igen. Try again once, and say so.
-            if !up, !retried, let line = text(starting: "Ljudet kunde inte hämtas") {
+            // nätet." with Försök igen. Try again once, and say so. Angela Fable 07:19: with the network up the line is
+            // "Det tar längre tid än vanligt. Försök igen om en stund."
+            if !up, !retried, let line = text(starting: "Ljudet kunde inte hämtas") ?? text(starting: "Det tar längre tid än vanligt") {
                 retried = true
                 note("Spela said '\(line)'; tapped Försök igen once")
                 tap(["Försök igen"], "Försök igen", counted: false, quiet: true)
