@@ -63,4 +63,18 @@ check("beror på = brasklapp", any("brasklapp" in p for p in probs("Det beror p�
 check("beror på vad = brasklapp", any("brasklapp" in p for p in probs("Det beror på vad du menar.")))
 # O87: the sessions are shared between Backend objects (one signup round per process)
 check("delade konton", le.Backend().tokens is le.Backend().tokens)
+# O89 (D234): a turn whose done has web_cap_test is skipped, not a fault, and the report counts it
+class _FakeBackend(le.Backend):
+    def signup(self):
+        return "x"
+
+    def ask(self, u, body):
+        return dict(text="Utan sökning: Nilen.", ttft_ms=9000, total_ms=9100, done={"web_cap_test": True}, options=None, error=None)
+
+
+_real_backend, le.Backend = le.Backend, _FakeBackend
+_rows = le.run([{"id": "webb-x", "cat": "webb", "turns": [{"q": "vem vann igår", "web": True, "expect_any": ["finns inte"]}]}], {}, [], set(), now)
+le.Backend = _real_backend
+check("web_cap_test = överhoppad", _rows[0].get("skipped") == "web_cap_test" and _rows[0]["problems"] == [])
+check("rapporten räknar överhoppade", "1 överhoppade" in le.report(_rows, "2026-11-19"))
 sys.exit(0 if all(ok) else 1)
