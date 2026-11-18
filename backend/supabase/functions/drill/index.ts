@@ -11,10 +11,32 @@ import { restDbFromEnv } from "../_shared/restdb.ts";
 import { secret } from "../_shared/secrets.ts";
 import { parseVoices } from "../tts/voices.ts";
 import { currentTest, silentMp3, TEST_VOICE_ID, withTestMode } from "../_shared/testmode.ts";
+import { AsyncLocalStorage } from "node:async_hooks";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type PublicationRow, type SchoolRow, type ShareRow } from "./handler.ts";
 
 const env = Deno.env;
-const db = restDbFromEnv();
+
+/** T50: what a slow request spent its time on: the outbound calls per kind (count, summed ms; parallel calls overlap). */
+type Spent = Record<string, { n: number; ms: number }>;
+const spent = new AsyncLocalStorage<Spent>();
+const realFetch = globalThis.fetch;
+globalThis.fetch = (async (input: Request | URL | string, init?: RequestInit) => {
+  const st = spent.getStore();
+  if (!st) return realFetch(input, init);
+  const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+  const k = url.includes("/rest/v1/rpc/") ? "db_rpc" : url.includes("/rest/v1/") ? "db" : url.includes("/storage/v1/") ? "storage"
+    : url.includes("anthropic") ? "claude" : url.includes("/auth/v1/") ? "auth" : url.includes("elevenlabs") ? "tts" : "other";
+  const t0 = Date.now();
+  try {
+    return await realFetch(input, init);
+  } finally {
+    const e = (st[k] ??= { n: 0, ms: 0 });
+    e.n++;
+    e.ms += Date.now() - t0;
+  }
+}) as typeof fetch;
+
+const db = restDbFromEnv(); // after the fetch above, so its calls are counted
 const stylerProvider = providerFromEnv(Deno.env);
 const rewards = rewardStore(db);
 const base = env.get("SUPABASE_URL")!.replace(/\/+$/, "");
@@ -72,9 +94,10 @@ function timed(h: (req: Request) => Promise<Response>): (req: Request) => Promis
   return async (req) => {
     const t0 = Date.now();
     const action = req.method === "POST" ? await req.clone().json().then((b) => String(b?.action ?? "").slice(0, 20)).catch(() => "") : req.method;
-    const r = await h(req);
+    const calls: Spent = {};
+    const r = await spent.run(calls, () => h(req));
     const ms = Date.now() - t0;
-    if (ms > 3000) console.log("drill_slow", JSON.stringify({ action, ms, status: r.status }));
+    if (ms > 3000) console.log("drill_slow", JSON.stringify({ action, ms, status: r.status, calls }));
     return r;
   };
 }
