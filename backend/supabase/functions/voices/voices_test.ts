@@ -48,9 +48,18 @@ Deno.test("GET /voices returns names + ids and a default, nothing else", async (
   assertEquals(await res.json(), {
     voices: [{ name: "Astrid", id: A }, { name: "Elin", id: E }],
     default_id: A,
+    default_voice: { voice_id: A, name: "Astrid", in_catalog: false },
   });
   const res2 = await createVoicesHandler(deps({ defaultVoiceId: O }))(get());
   assertEquals((await res2.json()).default_id, O);
+});
+
+Deno.test("A140: default_voice names the default with the catalog's name when it is there, else 'Standard'", async () => {
+  const cat = [{ voice_id: O, name: "Jonas", review: false }];
+  const j = await (await createVoicesHandler(deps({ defaultVoiceId: O, catalog: () => Promise.resolve(cat) }))(get())).json();
+  assertEquals(j.default_voice, { voice_id: O, name: "Jonas", in_catalog: true });
+  const k = await (await createVoicesHandler(deps({ defaultVoiceId: "ZZZZZZZZZZZZZZZZZZZZ" }))(get())).json();
+  assertEquals(k.default_voice.name, "Standard");
 });
 
 Deno.test("GET /voices: auth required, GET only, empty list is fine", async () => {

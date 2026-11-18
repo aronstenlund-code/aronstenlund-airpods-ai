@@ -79,6 +79,8 @@ export function createVoicesHandler(deps: VoicesDeps): (req: Request) => Promise
         JSON.stringify({
           voices: deps.voices.map((v) => ({ name: v.name, id: v.id })),
           default_id: def,
+          // Angela Fable (A140): the voice a text gets when none is chosen, with a name the app can show
+          ...(def ? { default_voice: { voice_id: def, name: all.find((v) => v.voice_id === def)?.name ?? deps.voices.find((v) => v.id === def)?.name ?? "Standard", in_catalog: all.some((v) => v.voice_id === def) } } : {}),
           // K96 (D220): choose one with save's drill.voice_id; it is locked for that text (D151)
           ...(deps.catalog ? { catalog } : {}),
         }),

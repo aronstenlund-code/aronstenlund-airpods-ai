@@ -68,3 +68,10 @@ Följden är att AI-valet inte väljer Kines eller Hindi ännu, inte ens för en
 
 ## Tillägg 23:45: Oscars låga O77-fynd
 `action:"cost"` svarar nu med en egen text när dagens gräns (300 per konto) är nådd: "Du har förhandsvisat många texter i dag. Försök igen i morgon." Minutens gräns behåller "För många förhandsvisningar just nu. Vänta en stund." Koden (`rate_limited`) och `retry-after` är oförändrade, så appen påverkas inte. Testat med fejk: ett nytt test, och 701/701 i backend/supabase/functions.
+
+## Tillägg 2026-11-18 00:35: Angela Fables saknade fält (A134, A140, A141)
+- **`invite_code`** svarar nu också med `month_rewarded`, `month_max`, `invite_credits` och `rewards:[{credits, at}]` (de senaste 30 dagarna). Kontona är anonyma, så svaret har inget namn på den som började.
+- **Wallet** har `gift:{left, welcome, invite}`. Gåvokrediter räknas som använda före köpta. `purchased` betyder samma som förut, alltså totalen. Det kräver ingen migrering: summorna räknas ur credit_ledger, där kinds `use`, `welcome` och `invite` finns. Välkomst och inbjudan kräver dock att K98-migreringen 20261117220001 är körd.
+- **`/voices`** har `default_voice:{voice_id, name, in_catalog}`.
+- **Köpen:** jag rekommenderar att appen avslutar transaktionen vid 200 och 409 `purchase_other_account`, men inte vid 422 eller 5xx.
+- **Tester:** 3 nya med fejk. 703/703 i backend/supabase/functions.

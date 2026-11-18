@@ -14,7 +14,7 @@ import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/
 import { enforceLimits, type RateLimiter } from "../_shared/ratelimit.ts";
 import { InvalidJws, type Transaction, verifyJws } from "./jws.ts";
 import { InvalidAttestation, verifyAttestation } from "./attest.ts";
-import { claimInvite, inviteCodeFor, RewardRefusal, type RewardStore, welcome } from "../_shared/rewards.ts";
+import { claimInvite, inviteCodeFor, inviteStatus, RewardRefusal, type RewardStore, welcome } from "../_shared/rewards.ts";
 
 export interface Product { product_id: string; kind: "credits" | "subscription"; credits: number }
 export interface LedgerRow {
@@ -196,7 +196,7 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
       if (b?.action === "invite_code") {
         if (!deps.rewards) throw new HttpError(503, "invite_unavailable", "Inte tillgängligt än.");
         const code = await inviteCodeFor(deps.rewards, user.id);
-        return json({ code, url: `https://earmind.vercel.app/i/${code}`, app_url: `earmind://invite/${code}` });
+        return json({ code, url: `https://earmind.vercel.app/i/${code}`, app_url: `earmind://invite/${code}`, ...(await inviteStatus(deps.rewards, user.id)) });
       }
       if (b?.action === "invite_claim") {
         if (!deps.rewards) throw new HttpError(503, "invite_unavailable", "Inte tillgängligt än.");
