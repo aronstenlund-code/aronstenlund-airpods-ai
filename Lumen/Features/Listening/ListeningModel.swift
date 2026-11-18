@@ -3492,13 +3492,13 @@ extension ListeningModel: SearchToneHost {
     var searchToneAllowed: Bool {
         let answering = if case .answering = answers.status { true } else { false }
         return SearchToneController.allowed(listening: isListening, mode: mode, instructing: liveMode.isInstructing,
-                                            answering: answering, trigger: pendingQuestion?.trigger,
+                                            answering: answering, speaking: speaker.isSpeaking,
+                                            trigger: pendingQuestion?.trigger,
                                             builtInSpeaker: controller.snapshot?.outputsToBuiltInSpeaker ?? false)
     }
 
     func playSearchTone() {
-        let tone = SearchToneController.tone
-        try? controller.playback.playQuietTone(frequency: tone.frequency, duration: tone.duration, level: tone.level)
+        try? controller.playback.playSearchTone()
     }
 }
 

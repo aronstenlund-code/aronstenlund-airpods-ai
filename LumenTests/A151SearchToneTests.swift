@@ -160,9 +160,10 @@ import Testing
 
     @Test func neverInProvlägeAndOnlyWhereTheAnswerIsSpoken() {
         func allowed(listening: Bool = true, mode: ConversationMode = .standard, instructing: Bool = false,
-                     answering: Bool = true, trigger: ActivationTrigger? = .auto, builtInSpeaker: Bool = false) -> Bool {
+                     answering: Bool = true, speaking: Bool = false, trigger: ActivationTrigger? = .auto,
+                     builtInSpeaker: Bool = false) -> Bool {
             SearchToneController.allowed(listening: listening, mode: mode, instructing: instructing, answering: answering,
-                                         trigger: trigger, builtInSpeaker: builtInSpeaker)
+                                         speaking: speaking, trigger: trigger, builtInSpeaker: builtInSpeaker)
         }
         #expect(allowed() && allowed(trigger: .text) && allowed(mode: .interview, trigger: .overheard))
         #expect(!allowed(mode: .prov), "D233: never in Provläge")
@@ -172,23 +173,32 @@ import Testing
         #expect(!allowed(listening: false), "paused or stopped: the tone must not start the audio again")
         #expect(!allowed(answering: false), "the answer ended or was called off")
         #expect(!allowed(instructing: true))
+        #expect(!allowed(speaking: true), "Lumen is still talking")
         #expect(!allowed(builtInSpeaker: true), "the microphone would hear it")
     }
 
     // MARK: - The tone
 
-    @Test func theToneIsQuietAndSoft() {
-        let tone = SearchToneController.tone
+    /// Kelly's variant A (Ke81), as her script makes it: 0.36 s, peak −26 dBFS, zero at both ends.
+    @Test func theToneIsKellysQuietOne() {
         let rate = 24_000.0
-        let samples = ToneShape.samples(frequency: tone.frequency, duration: tone.duration, level: tone.level, fade: 0.04, sampleRate: rate)
-        #expect(samples.count == Int(rate * tone.duration))
-        let peak = samples.map { abs($0) }.max() ?? 0
-        #expect(peak <= Float(tone.level) + 0.000_1 && peak > Float(tone.level) * 0.9)
-        #expect(tone.level <= 0.1 && tone.duration <= 0.25, "a third of the cues' level, a fifth of a second")
-        #expect(abs(samples.first ?? 1) < 0.001 && abs(samples.last ?? 1) < 0.01, "it fades in and out: no click")
-        // The other tones sound as before (level 0.3, 10 ms fades).
+        let samples = ToneShape.searchTone(sampleRate: rate)
+        #expect(samples.count == Int(rate * 0.36))
+        let peak = Double(samples.map { abs($0) }.max() ?? 0)
+        #expect(abs(20 * log10(peak) - (-26)) < 0.05, "peak −26 dBFS: about a sixth of the cues' level")
+        #expect(samples.first == 0 && abs(samples.last ?? 1) < 0.000_1, "it starts and ends at zero: no click")
+        // Soft in (90 ms) and out (200 ms): a tenth of the way in it is still far below the peak.
+        #expect(abs(samples[Int(rate * 0.009)]) < Float(peak) * 0.1)
+        #expect(samples[Int(rate * 0.345)...].allSatisfy { abs($0) < Float(peak) * 0.1 })
+        // 392 Hz: 141 whole periods in 0.36 s, so about 282 zero crossings (the faint octave adds none).
+        let crossings = zip(samples, samples.dropFirst()).filter { ($0 < 0) != ($1 < 0) }.count
+        #expect((270...295).contains(crossings))
+        #expect(ToneShape.searchTone(sampleRate: 0).isEmpty)
+
+        // The other tones sound as before (level 0.3, 10 ms linear fades).
         let cue = ToneShape.samples(frequency: 880, duration: 0.07, level: 0.3, fade: 0.01, sampleRate: rate)
-        #expect((cue.map { abs($0) }.max() ?? 0) > 0.25)
+        #expect(cue.count == Int(rate * 0.07) && (cue.map { abs($0) }.max() ?? 0) > 0.25)
+        #expect(cue.first == 0)
         #expect(ToneShape.samples(frequency: 880, duration: 0, level: 0.3, fade: 0.01, sampleRate: rate).isEmpty)
     }
 
@@ -216,9 +226,7 @@ import Testing
         await model.startListening()
         model.submitText("vilken är världens längsta flod")
         #expect(await waitUntil { model.conversation.answers.last?.answer.hasSuffix("6 650 km.") == true })
-        #expect(h.playback.quietTones.count == 1, "one tone, and only one")
-        let tone = h.playback.quietTones.first
-        #expect(tone?.frequency == SearchToneController.tone.frequency && tone?.level == SearchToneController.tone.level)
+        #expect(h.playback.searchTones == 1, "one tone, and only one")
         #expect(model.searchTone.played)
     }
 
@@ -233,7 +241,7 @@ import Testing
         #expect(model.searchTone.pending == nil, "the first word called the wait off")
         gate.open()
         try? await Task.sleep(for: .milliseconds(50)) // the called-off wait runs out
-        #expect(h.playback.quietTones.isEmpty && !model.searchTone.played)
+        #expect(h.playback.searchTones == 0 && !model.searchTone.played)
     }
 
     @Test func nothingSoundsWhenLumenIsNotListening() async {
@@ -243,6 +251,6 @@ import Testing
         #expect(!model.searchToneAllowed)
         model.answerSearching() // a late event after the session ended
         await model.searchTone.pending?.value
-        #expect(h.playback.quietTones.isEmpty)
+        #expect(h.playback.searchTones == 0)
     }
 }

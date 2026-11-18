@@ -16,8 +16,8 @@ protocol PlaybackServicing: AnyObject {
     var speechVolume: Float { get set }
 
     func playTestTone(frequency: Double, duration: Double) throws(AudioError)
-    /// A151 (D233): a quiet, soft tone from the same graph. `level` is the peak, 0…0.3 (the other tones are 0.3).
-    func playQuietTone(frequency: Double, duration: Double, level: Double) throws(AudioError)
+    /// A151 (D233): Kelly's search tone (Ke81), quiet and soft, from the same graph as the other tones.
+    func playSearchTone() throws(AudioError)
     /// Speaks `text` through our engine (not the system's) using `AVSpeechSynthesizer.write`.
     /// `voiceIdentifier` picks a specific `AVSpeechSynthesisVoice`; nil = the default voice for `language`.
     func speak(_ text: String, language: String, voiceIdentifier: String?) async throws(AudioError)
@@ -56,9 +56,10 @@ extension PlaybackServicing {
     func replayRecordedSpeech() throws(AudioError) -> Bool { false }
 }
 
-/// The app's own tones (test tone, cues, the search tone): a sine with a linear fade in and out. Pure.
+/// The app's own tones, made in code (no files, no calls). Pure.
 enum ToneShape {
-    /// `level` is the peak (0…1), `fade` the seconds of fade at each end.
+    /// The test tone and the cues: a sine with a linear fade in and out. `level` is the peak (0…1), `fade` the
+    /// seconds of fade at each end.
     static func samples(frequency: Double, duration: Double, level: Double, fade: Double, sampleRate: Double) -> [Float] {
         let frames = Int(sampleRate * duration)
         guard frames > 0 else { return [] }
@@ -68,6 +69,40 @@ enum ToneShape {
             let envelope = min(1.0, min(Double(i), Double(frames - i)) / ramp)
             return Float(level * sin(2 * .pi * frequency * t) * envelope)
         }
+    }
+
+    /// A151 (D233): the search tone Kelly chose (Ke81, variant A "Andetag"), by the same formula as her
+    /// `docs/design/_src/soktonen.py`: G4 392 Hz with a faint octave above, 0.36 s, in over 90 ms and out over 200 ms
+    /// (half cosines, so it starts and ends at zero), peak −26 dBFS. No rising or falling pitch (not a notification,
+    /// not an error), and everything under 1 kHz, below the consonants of someone talking.
+    enum Search {
+        static let duration = 0.36
+        static let attack = 0.09
+        static let release = 0.20
+        static let peakDBFS = -26.0
+        static let frequency = 392.0
+        static let overtone = 0.12
+    }
+
+    static func searchTone(sampleRate: Double) -> [Float] {
+        let frames = Int(sampleRate * Search.duration)
+        guard frames > 0 else { return [] }
+        let raw = (0..<frames).map { i -> Double in
+            let t = Double(i) / sampleRate
+            let envelope: Double
+            if t < Search.attack {
+                envelope = 0.5 - 0.5 * cos(.pi * t / Search.attack)
+            } else if t > Search.duration - Search.release {
+                envelope = 0.5 - 0.5 * cos(.pi * max(0, (Search.duration - t) / Search.release))
+            } else {
+                envelope = 1
+            }
+            return envelope * (sin(2 * .pi * Search.frequency * t) + Search.overtone * sin(2 * .pi * 2 * Search.frequency * t))
+        }
+        let peak = raw.map { abs($0) }.max() ?? 0
+        guard peak > 0 else { return [] }
+        let gain = pow(10, Search.peakDBFS / 20) / peak
+        return raw.map { Float($0 * gain) }
     }
 }
 
@@ -245,19 +280,21 @@ final class PlaybackService: PlaybackServicing {
     // MARK: - Test tone
 
     func playTestTone(frequency: Double = 440, duration: Double = 0.6) throws(AudioError) {
-        try scheduleTone(frequency: frequency, duration: duration, level: 0.3, fade: 0.01)
+        let samples = ToneShape.samples(frequency: frequency, duration: duration, level: 0.3, fade: 0.01,
+                                        sampleRate: playbackFormat.sampleRate)
+        try scheduleTone(samples)
         Log.playback.info("Test tone \(Int(frequency)) Hz, \(duration) s")
     }
 
-    func playQuietTone(frequency: Double, duration: Double, level: Double) throws(AudioError) {
-        try scheduleTone(frequency: frequency, duration: duration, level: min(max(level, 0), 0.3), fade: 0.04)
-        Log.playback.info("Quiet tone \(Int(frequency)) Hz, \(duration) s, level \(level)")
+    func playSearchTone() throws(AudioError) {
+        try scheduleTone(ToneShape.searchTone(sampleRate: playbackFormat.sampleRate))
+        Log.playback.info("Search tone (A151)")
     }
 
-    private func scheduleTone(frequency: Double, duration: Double, level: Double, fade: Double) throws(AudioError) {
+    /// A tone goes into the same player as the speech, so it never sounds over an answer: speech scheduled after it
+    /// starts when the tone has ended.
+    private func scheduleTone(_ samples: [Float]) throws(AudioError) {
         try graph.ensureRunning()
-        let sampleRate = playbackFormat.sampleRate
-        let samples = ToneShape.samples(frequency: frequency, duration: duration, level: level, fade: fade, sampleRate: sampleRate)
         let frames = AVAudioFrameCount(samples.count)
         guard frames > 0, let buffer = AVAudioPCMBuffer(pcmFormat: playbackFormat, frameCapacity: frames),
               let channel = buffer.floatChannelData?[0] else {

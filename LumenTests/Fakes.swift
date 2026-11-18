@@ -114,11 +114,9 @@ final class FakePlaybackService: PlaybackServicing {
     var speechVolume: Float = 1
 
     func playTestTone(frequency: Double, duration: Double) throws(AudioError) {}
-    /// A151: the quiet tones asked for.
-    var quietTones: [(frequency: Double, duration: Double, level: Double)] = []
-    func playQuietTone(frequency: Double, duration: Double, level: Double) throws(AudioError) {
-        quietTones.append((frequency, duration, level))
-    }
+    /// A151: how many times the search tone was asked for.
+    var searchTones = 0
+    func playSearchTone() throws(AudioError) { searchTones += 1 }
 
     func speak(_ text: String, language: String, voiceIdentifier: String?) async throws(AudioError) {
         if let speakError { throw speakError }
