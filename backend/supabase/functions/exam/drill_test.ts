@@ -129,7 +129,7 @@ Deno.test("K45 drill: answers false = questions only; a batch that fails is aske
   const r = await h(post({ action: "drill", text: "material", answers: false, questions: 5 }));
   const j = await r.json();
   assertEquals(j.items[0], { id: "q1", question: "Varför behövs klorofyll?" });
-  assertEquals(llm.calls.length, 3, "the notes, the questions and the question check (K69), no answers");
+  assertEquals(llm.calls.length, 4, "the notes, the questions, the question check (K69) and the final check against the material, no answers");
   assert(llm.calls[0].user.includes("<count>11</count>"));
   const m = mk();
   m.llm.failFirstAnswerBatch = true;
@@ -646,4 +646,41 @@ Deno.test("K97 (O79 F3): the prompts forbid made-up causes and say what to do in
   assert(mentionsMaterial("Det får inte stöd i det material jag har.") && mentionsMaterial("The notes do not say why it stuck."));
   assert(SYSTEM_PROMPT_DRILL_PLAN.includes("Gustav Vasa"));
   assert(SYSTEM_PROMPT_DRILL_SHORTEN.includes('"drop": true'));
+});
+
+Deno.test("O79 omtest: the final check fixes a question that assumes what the material does not say and drops a same-answer one, but never a part's last", async () => {
+  const { finalCheck, DEFAULT_DRILL_CONFIG, SYSTEM_PROMPT_DRILL_FINAL_CHECK } = await import("./drill.ts");
+  const seen: LLMRequest[] = [];
+  const reply = (o: unknown): LLMProvider => ({
+    name: "fake", model: "sonnet-fake",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      seen.push(req);
+      yield { type: "text", text: JSON.stringify(o) };
+      yield { type: "usage", inputTokens: 900, outputTokens: 80 };
+    },
+  });
+  const qs = [
+    "Varför flydde Gustav Vasa till Dalarna?",
+    "Varför behövde kronan pengar efter kriget med Lübeck?",
+    "Vad beslutade riksdagen i Västerås?",
+    "Vad bestämdes vid riksdagen i Västerås om kyrkans egendom?",
+    "Vad var Dackefejden?",
+  ];
+  const parts = [0, 1, 1, 1, 2];
+  const llm = reply({ questions: [
+    { i: 1, q: "Varför hade kronan skulder till Lübeck?" },
+    { i: 3, drop: true, same_as: 2 },
+    { i: 4, drop: true, same_as: 0 }, // the only question of part 2: stays
+    { i: 0, drop: true, same_as: 0 }, // never the first
+    { i: 2, q: "En mycket mycket mycket lång omskrivning av en fråga som nu blir alldeles för lång?" }, // too long: kept
+  ] });
+  const r = await finalCheck(llm, DEFAULT_DRILL_CONFIG, qs, parts, "Gustav Vasa ... skulder till Lübeck efter kriget ...");
+  assertEquals(r.questions, [qs[0], "Varför hade kronan skulder till Lübeck?", qs[2], qs[4]]);
+  assertEquals([r.fixed, r.dropped, r.parts], [1, 1, [0, 1, 1, 2]]);
+  assertEquals(seen[0].model, DEFAULT_DRILL_CONFIG.answerModel, "the answer model (correctness)");
+  assert(seen[0].user.includes("<material>") && SYSTEM_PROMPT_DRILL_FINAL_CHECK.includes("skulder till Lübeck"));
+  // a broken reply or a failure keeps the list
+  const broken = await finalCheck(reply("nonsense"), DEFAULT_DRILL_CONFIG, qs, parts, "m");
+  assertEquals([broken.questions, broken.dropped], [qs, 0]);
+  assertEquals((await finalCheck(llm, DEFAULT_DRILL_CONFIG, qs, parts, "")).usage, null, "no material: no call");
 });
