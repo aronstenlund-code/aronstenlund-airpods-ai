@@ -292,6 +292,16 @@ enum AnswerEvent: Equatable, Sendable {
     case error(AnswerFailure)
     /// A48 (K35): the model wants a phone tool run.
     case toolCall(PhoneToolCall)
+    /// K104 (D233): the model began a web search or fetch for this answer. Once per answer, before its first `delta`.
+    case searching(AnswerSearching)
+}
+
+/// K104 (D233): `event: searching`. The signal is what matters; both fields are for the log.
+struct AnswerSearching: Equatable, Sendable, Codable {
+    /// `web_search` | `web_fetch`.
+    var tool: String?
+    /// Milliseconds since the request, on the server's clock.
+    var ms: Double?
 }
 
 enum AnswerError: Error, Equatable, Sendable, LocalizedError {
