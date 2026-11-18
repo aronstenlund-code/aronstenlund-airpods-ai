@@ -152,6 +152,12 @@ final class AppContainer {
         // fixed questions, the phone only and the iPhone's own voice: 0 model calls and 0 ElevenLabs characters.
         let drillStore = DrillStore()
         let mock = Self.isMockMode
+        // A143 (D225 point 4): the sign-in starts when the app opens, and the token is renewed when the app comes back,
+        // so Spela never waits for it. Not in the mock mode (no network there) and not in the unit tests' host app.
+        if !mock, ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            auth.prepare()
+            auth.watchForeground()
+        }
         let drillCloud: (any DrillCloudSyncing)? = mock ? nil : DrillCloudClient(config: .lumen, auth: auth, http: http) as any DrillCloudSyncing
         let maker: any DrillMaking = mock ? MockDrillMaker() as any DrillMaking
             : DrillClient(config: .lumen, auth: auth, http: http) as any DrillMaking
