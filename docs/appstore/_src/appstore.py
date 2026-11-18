@@ -29,7 +29,7 @@ SHOTS = [
     ("repSayCredits", "Skriv. Lyssna.", "Det du skriver läses upp i dina hörlurar."),
     ("repSayOnCard", "Om och om igen.", "Från 10 minuter upp till en timme."),
     ("repSayPicked", "Hur ska det låta?", "Skriv det, så väljer EarMind en röst."),
-    ("repSayVoices", "Välj en röst.", "Lyssna först. Det kostar inget."),
+    # repSayVoices väntar på en scen utan "Att provlyssna" (bara admin ser röster under granskning).
     ("repHomeSaidMarks", "Spela igen.", "Det senaste ligger kvar under fältet."),
     ("repTextNew", "Fota boken.", "Frågor med svar, eller hela texten uppläst."),
     ("repPlayAnswer", "Tryck för svaret.", "1 gång för långt svar, 2 för kort, 3 för paus."),
