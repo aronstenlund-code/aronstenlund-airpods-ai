@@ -50,3 +50,9 @@ godtagbart i rubriker och frågan. Kortets text kortas med "…" medan det spela
 
 ## Nästa
 Angela Schrute rättar orden och träffytorna (förslagen i `prompts/queue/angela.md`). Kelly tittar på nästa körning.
+
+## Uppföljning (Angelas körning 4, 44319799570, commit b43a74e, 17 Pro)
+- **Träffytorna är rättade:** inga `hitRegion`-fynd kvar (stilraden, länkarna, Fyll på). Kontrastfynden är nere på 0–2
+  per skärm. **Verifierat i Xcodes granskning i Simulatorn.**
+- **VoiceOver-orden är inte ändrade än** (alla nio punkterna står kvar, t.ex. svarsförklaringen två gånger och
+  "Säg i AirPods, textfält"). Väntar på Angela (`prompts/queue/angela.md`).

@@ -1,0 +1,69 @@
+name: Apptest Release utan testläge (D227)
+
+# Toby (moln), Deangelo 2026-11-18: an independent check that the App Store build (Release) has neither the test mode
+# (D140, sends the microphone's audio) nor the UI-test hooks (LUMEN_TEST_HEADER, LUMEN_TEST_PRESSES,
+# LUMEN_TEST_MATERIAL). Builds Debug and Release for the device without signing and searches both binaries; Debug is the
+# control (the search must find the marks there). Builds only; nothing is run, no server is called, 0 ElevenLabs.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/**"]
+    paths:
+      - ".github/workflows/apptest-release.yml"
+
+concurrency:
+  group: apptest-release-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  release:
+    name: Release utan testläge
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Build Debug and Release
+        run: |
+          set -euo pipefail
+          xcodegen generate
+          for C in Debug Release; do
+            xcodebuild build -project Lumen.xcodeproj -scheme Lumen -configuration "$C" \
+              -destination 'generic/platform=iOS' -derivedDataPath "DD-$C" \
+              CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY="" > "build-$C.log" 2>&1 \
+              || { tail -n 60 "build-$C.log"; exit 1; }
+          done
+
+      - name: Search the binaries
+        run: |
+          set -euo pipefail
+          DEBUG="DD-Debug/Build/Products/Debug-iphoneos/Lumen.app"
+          RELEASE="DD-Release/Build/Products/Release-iphoneos/Lumen.app"
+          FAIL=0
+          {
+            echo "## Release utan testläge (Toby, D227) – byggt, inte kört"
+            echo
+            echo "| Märke | Debug (kontroll) | Release |"
+            echo "|---|---|---|"
+          } >> "$GITHUB_STEP_SUMMARY"
+          for MARK in 'functions/v1/debug-audio' DebugAudioWriter DebugAudioClient DebugAudioController \
+                      LUMEN_TEST_HEADER LUMEN_TEST_PRESSES LUMEN_TEST_MATERIAL 'earmind.test.press'; do
+            # grep finds nothing = exit 1, which pipefail would turn into a failed step (run 44289150827).
+            D="$({ LC_ALL=C grep -rlaF "$MARK" "$DEBUG" || true; } | wc -l | tr -d ' ')"
+            R="$({ LC_ALL=C grep -rlaF "$MARK" "$RELEASE" || true; } | wc -l | tr -d ' ')"
+            echo "$MARK: Debug $D file(s), Release $R file(s)"
+            echo "| \`$MARK\` | $D | $R |" >> "$GITHUB_STEP_SUMMARY"
+            if [ "$D" = 0 ]; then echo "::warning::control: '$MARK' not in Debug either, so its absence in Release proves nothing"; fi
+            if [ "$R" != 0 ]; then echo "::error::'$MARK' is in the Release build"; LC_ALL=C grep -rlaF "$MARK" "$RELEASE"; FAIL=1; fi
+          done
+          exit $FAIL
