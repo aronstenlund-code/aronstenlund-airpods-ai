@@ -30,7 +30,7 @@ Last updated: 2026-11-08 by Angela (builder).
 - **Kevin (moln), 2026-11-18 19:30: K106 (D232), 754/754.**
   - **Prov** (Oscars fem material, tre livekörningar, verifierat live): 0 korta svar säger "framgår inte". Fullt mot målet i 13 av 15. Tvådelade och nästan lika frågor tas bort eller görs om.
   - **/answer N2–N4** och **stilens reserv** när Haiku vägrar: verifierat i test.
-  - Oscars omtest K106 (F1, F3) är åtgärdat i 0ffbf220 och mäts igen.
+  - Oscars omtest K106: F1 är rättad (fjärde körningen gav 0 "inte känt" och 5 av 5 fulla prov). F3 (nästan samma korta svar) är kvar.
   - → `reports/2026-11-18-1930-kevin-k106-kvalitet.md`
 - **Kevin (moln), 2026-11-18 18:15: K105 (D234), 739/739.**
   - Testanrop (`x-earmind-test`) har ett eget webbtak på 50 per dygn och användarna 100, alltså 150 tillsammans som förut. När testtaket är slut får `done` fältet `web_cap_test: true`.
