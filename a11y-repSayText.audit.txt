@@ -1,0 +1,35 @@
+repSayText: 8 issues (contrast 2, dynamicType 6), audit 11 s
+
+
+
+ISSUE 1 [contrast] Contrast failed
+  Contrast failed for SwiftUI.AccessibilityNode
+  element: (none)
+
+ISSUE 2 [contrast] Contrast failed
+  Contrast failed for SwiftUI.AccessibilityNode
+  element: (none)
+
+ISSUE 3 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Nytt prov' identifier='' frame={{20, 624}, {157, 34}}
+
+ISSUE 4 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='12 frågor kvar' identifier='' frame={{20.000000000000014, 24}, {144, 36}}
+
+ISSUE 5 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Du kan låsa telefonen. Det hörs i AirPods ändå.' identifier='' frame={{32, 312.3671875}, {305.5, 65.5}}
+
+ISSUE 6 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='›' identifier='' frame={{32, 94.1328125}, {25, 48}}
+
+ISSUE 7 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this UITextField
+  element: 49 label='Hur ska det låta?' identifier='' frame={{32, 258.5}, {311, 44}}
+
+ISSUE 8 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.VerticalTextView
+  element: 49 label='Säg i AirPods, textfält' identifier='' frame={{65, 94}, {278, 144}}

@@ -1,0 +1,7 @@
+repSayVoices: 1 issues (textClipped 1), audit 8 s
+
+
+
+ISSUE 1 [textClipped] Text clipped
+  Text of this UISearchBarTextField may be clipped at larger Dynamic Type sizes.
+  element: 45 label='Sök bland alla röster' identifier='' frame={{16, 101}, {343, 124}}

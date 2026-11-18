@@ -1,0 +1,62 @@
+Attributes: Application, 0x11a340140, pid: 35797, label: 'EarMind'
+Element subtree:
+ →Application, 0x11a340140, pid: 35797, label: 'EarMind'
+    Window (Main), 0x11a340280, {{0.0, 0.0}, {375.0, 667.0}}
+      Other, 0x11a3403c0, {{0.0, 0.0}, {375.0, 667.0}}
+        Other, 0x11a340500, {{0.0, 0.0}, {375.0, 667.0}}
+          Other, 0x11a340640, {{0.0, 0.0}, {375.0, 667.0}}
+            Other, 0x11a340780, {{0.0, 0.0}, {375.0, 667.0}}
+              Other, 0x11a3408c0, {{0.0, 0.0}, {375.0, 667.0}}
+                NavigationBar, 0x11a340a00, {{0.0, 20.0}, {375.0, 54.0}}, identifier: 'Inställningar'
+                  StaticText, 0x11a340b40, {{128.0, 29.0}, {118.5, 26.0}}, label: 'Inställningar'
+                Other, 0x11a340c80, {{0.0, 0.0}, {375.0, 667.0}}
+                  Other, 0x11a340dc0, {{0.0, 0.0}, {375.0, 667.0}}
+                    Other, 0x11a340f00, {{0.0, 0.0}, {375.0, 667.0}}
+                      Other, 0x11a341040, {{0.0, 0.0}, {375.0, 667.0}}
+                        CollectionView, 0x11a341180, {{0.0, 0.0}, {375.0, 667.0}}
+                          Other, 0x11a3412c0, {{-16.0, -1260.0}, {407.0, 3822.0}}
+                          Other, 0x11a341400, {{0.0, 0.0}, {375.0, 667.0}}
+                          Other, 0x11a341540, {{0.0, 0.0}, {375.0, 667.0}}
+                          Cell, 0x11a341680, {{16.0, 74.0}, {343.0, 83.5}}
+                            Other, 0x11a3417c0, {{16.0, 74.0}, {343.0, 83.5}}
+                            Other, 0x11a341900, {{16.0, 74.0}, {343.0, 83.5}}
+                              Other, 0x11a341a40, {{16.0, 74.0}, {343.0, 83.5}}
+                                Other, 0x11a341b80, {{16.0, 74.0}, {343.0, 83.5}}
+                                  StaticText, 0x11a341cc0, {{16.0, 74.0}, {343.0, 83.5}}, label: 'Konto'
+                          Cell, 0x11a341e00, {{16.0, 157.5}, {343.0, 155.5}}
+                            Other, 0x11a341f40, {{16.0, 157.5}, {343.0, 155.5}}
+                              Other, 0x11a342080, {{16.0, 157.5}, {343.0, 155.5}}
+                            Other, 0x11a3421c0, {{16.0, 157.5}, {343.0, 155.5}}
+                              Other, 0x11a342300, {{16.0, 157.5}, {343.0, 155.5}}
+                                Other, 0x11a342440, {{16.0, 157.5}, {343.0, 155.5}}
+                                  ActivityIndicator, 0x11a342580, {{16.0, 157.5}, {343.0, 155.5}}, label: 'Raderar kontot …', value: 1
+                                    StaticText, 0x11a3426c0, {{32.0, 172.5}, {186.5, 125.5}}, label: 'Raderar kontot …'
+                                    ActivityIndicator, 0x11a342800, {{286.5, 207.0}, {56.5, 56.5}}, value: 1
+                                      ActivityIndicator, 0x11a342940, {{286.5, 207.0}, {56.5, 56.5}}, value: 1
+                          Cell, 0x11a342a80, {{16.0, 313.0}, {343.0, 217.5}}
+                            Other, 0x11a342bc0, {{16.0, 313.0}, {343.0, 217.5}}
+                              Other, 0x11a342d00, {{16.0, 313.0}, {343.0, 217.5}}
+                            Other, 0x11a342e40, {{16.0, 313.0}, {343.0, 217.5}}
+                              Other, 0x11a342f80, {{16.0, 313.0}, {343.0, 217.5}}
+                                Other, 0x11a3430c0, {{16.0, 313.0}, {343.0, 217.5}}
+                                  Button, 0x11a343200, {{16.0, 313.0}, {343.0, 217.5}}, label: 'Hantera prenumerationer'
+                          Other, 0x11a343340, {{32.0, 312.0}, {311.0, 1.0}}
+                          Cell, 0x11a343480, {{16.0, 530.5}, {343.0, 697.5}}
+                            Other, 0x11a3435c0, {{16.0, 530.5}, {343.0, 697.5}}
+                            Other, 0x11a343700, {{16.0, 530.5}, {343.0, 697.5}}
+                              Other, 0x11a343840, {{16.0, 530.5}, {343.0, 697.5}}
+                                Other, 0x11a343980, {{16.0, 530.5}, {343.0, 697.5}}
+                                  StaticText, 0x11a343ac0, {{16.0, 530.5}, {343.0, 697.5}}, label: 'Har du veckokortet? Det avslutas inte när kontot raderas. Säg upp det i Inställningar, ditt namn, Prenumerationer.'
+                          Other, 0x11a343c00, {{342.0, 74.0}, {30.0, 593.0}}, label: 'Vertikal rullningslist, 2 sidor', value: 0 %
+                            Other, 0x11a343d40, {{369.0, 657.0}, {3.0, 7.0}}
+                          Other, 0x11a343e80, {{342.0, 74.0}, {30.0, 593.0}}, label: 'Vertikal rullningslist, 2 sidor', value: 0 %
+                            Other, 0x11a34c000, {{369.0, 657.0}, {3.0, 7.0}}
+                Other, 0x11a34c140, {{0.0, 0.0}, {375.0, 667.0}}
+                  Other, 0x11a34c280, {{0.0, 0.0}, {375.0, 667.0}}
+Path to element:
+ →Application, 0x11a340140, pid: 35797, label: 'EarMind'
+Query chain:
+ →Find: Target Application 'com.rsolutions.lumen'
+  Output: {
+    Application, 0x11a34c3c0, pid: 35797, label: 'EarMind'
+  }
