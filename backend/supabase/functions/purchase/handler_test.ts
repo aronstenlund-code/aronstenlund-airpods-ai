@@ -113,6 +113,31 @@ Deno.test("K94 notifications v2: renewal extends, refund takes credits back once
   assertEquals((await note("REFUND", {}, true)).status, 422, "a notification not signed by the chain is refused");
 });
 
+Deno.test("O78: a refunded subscription stays ended when the old purchase is sent again; a new purchase after it works; a second refund says already", async () => {
+  const pki = await testPki();
+  const w = world([pki.rootSha]);
+  const note = async (type: string, t: Record<string, unknown>) =>
+    await w.call({ signedPayload: await pki.sign({ notificationType: type, data: { bundleId: BUNDLE, signedTransactionInfo: await pki.sign(tx(t)) }, signedDate: Date.now() }) });
+  const s = { productId: "com.rsolutions.lumen.sub.week", type: "Auto-Renewable Subscription", transactionId: "4000000001", originalTransactionId: "4000000001" };
+  const bought = Date.now() - 3600_000;
+  const old = await pki.sign(tx({ ...s, purchaseDate: bought, expiresDate: Date.now() + 6 * 864e5 }));
+  assertEquals((await w.call({ action: "verify", jws: old })).body.active, true);
+  assertEquals((await note("REFUND", { ...s, purchaseDate: bought, revocationDate: Date.now() - 1000 })).body.status, "revoked");
+  const again = await w.call({ action: "verify", jws: old });
+  assertEquals([again.status, again.body.active, again.body.revoked, w.subs.get("4000000001")!.status], [200, false, true, "revoked"]);
+  // Apple re-sending the old renewal does not bring it back either
+  assertEquals((await note("DID_RENEW", { ...s, purchaseDate: bought, expiresDate: Date.now() + 6 * 864e5 })).body.ignored, "older_than_end");
+  assertEquals(w.subs.get("4000000001")!.status, "revoked");
+  // subscribing again later (a new transaction, the same original) is active
+  const fresh = await w.call({ action: "verify", jws: await pki.sign(tx({ ...s, transactionId: "4000000002", purchaseDate: Date.now(), expiresDate: Date.now() + 7 * 864e5 })) });
+  assertEquals([fresh.body.active, w.subs.get("4000000001")!.status], [true, "active"]);
+  // credits: the second refund takes nothing and says so
+  await w.call({ action: "verify", jws: await pki.sign(tx({ transactionId: "5000000001" })) });
+  const r1 = await note("REFUND", { transactionId: "5000000001", revocationDate: Date.now() });
+  const r2 = await note("REFUND", { transactionId: "5000000001", revocationDate: Date.now() });
+  assertEquals([r1.body.refunded, r2.body.refunded, r2.body.already], [500, 0, true]);
+});
+
 Deno.test("K94 the payload of a JWS is only read after the chain and the signature hold", async () => {
   const pki = await testPki();
   const p = await verifyJws<{ productId: string }>(await pki.sign(tx()), { roots: [pki.rootSha] });
