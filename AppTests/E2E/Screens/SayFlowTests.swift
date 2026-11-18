@@ -275,6 +275,7 @@ final class SayFlowTests: XCTestCase {
     /// Run 44163010444: the deletes did nothing (110 characters after "clearing" 78): a tap puts the cursor where it lands.
     /// Put it at the end first (bottom right of the field), then delete; check, and say so if text is left.
     private func clearField() {
+        guard field.exists else { return }
         let value = (field.value as? String) ?? ""
         guard value.contains("Klorofyllet") || value.contains("Bladen") || value.contains("Långsamt") || value.localizedCaseInsensitiveContains("example") else { return }
         guard focusField("Säg i AirPods (to clear it)", counted: false) else { return }
@@ -400,13 +401,18 @@ final class SayFlowTests: XCTestCase {
         log.append(String(format: "A144 slow: 'Det tar längre tid än vanligt.' at %@ s, 'Ljudet kunde inte hämtas.' at %@ s, Försök igen %@, playing %@",
                           slowAt.map { String(format: "%.1f", $0) } ?? "-", failAt.map { String(format: "%.1f", $0) } ?? "-",
                           retry ? "yes" : "no", playedAt.map { String(format: "at %.1f s", $0) } ?? "no"))
+        let waitingCard = text(starting: "Gör ljudet") != nil
+        log.append("A144 slow: the card shows 'Gör ljudet …' while waiting: \(waitingCard), \(timeLeft() ?? "-")")
         screen("langsamt", "Slow sound: after the wait")
         if let a = slowAt { if a < 6 || a > 12 { ok = miss(String(format: "'Det tar längre tid än vanligt.' came after %.1f s (A144: 8 s)", a)) } }
         else { ok = miss("no 'Det tar längre tid än vanligt.' in 45 s") }
         if let b = failAt { if b < 22 || b > 32 { ok = miss(String(format: "'Ljudet kunde inte hämtas.' came after %.1f s (A144: 25 s)", b)) } }
         else { ok = miss("no 'Ljudet kunde inte hämtas.' in 45 s") }
         if failAt != nil, !retry { ok = miss("no Försök igen with 'Ljudet kunde inte hämtas.'") }
-        clearField()
+        // Run 44283940066: with K100 the card goes to its playing state ("Gör ljudet …", the time counting down) and
+        // the field is gone, so stop first.
+        stopOnCard()
+        if field.exists { clearField() }
         return ok
     }
 
