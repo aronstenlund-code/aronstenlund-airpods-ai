@@ -1,0 +1,104 @@
+name: A11y audit with pictures (A148)
+
+# Angela Schrute (A148): Toby's accessibility audit (scripts/apptest/a11y.sh, XCTest's audit as in Accessibility
+# Inspector: contrast, clipped text, missing labels, hit regions, Dynamic Type) on chosen Debug scenes, on iPhone 17 Pro
+# with default text and on iPhone SE with the largest text (AX5). The cloud sessions cannot download artifacts, so the
+# findings are printed in the log, and the pictures, findings and accessibility trees are pushed to a branch of their own
+# for Kelly (Ke79). Started by hand. Free: demo data, no network, no ElevenLabs (D180). Simulator only, never a device.
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch the results are pushed to (new for every run, e.g. angela/a11y-a148-1)"
+        required: true
+      scenes:
+        description: "Scenes, space separated"
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: a11y-pictures-${{ inputs.branch }}
+  cancel-in-progress: true
+
+jobs:
+  audit:
+    name: A11y ${{ matrix.device }} ${{ matrix.size }}
+    runs-on: macos-26
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - device: "iPhone 17 Pro"
+            size: "default"
+            name: "17pro"
+          - device: "iPhone SE (3rd generation)"
+            size: "accessibility-extra-extra-extra-large"
+            name: "se-ax5"
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Audit
+        env:
+          A11Y_DEVICE: ${{ matrix.device }}
+          A11Y_TEXT_SIZE: ${{ matrix.size }}
+          A11Y_SCENES: ${{ inputs.scenes }}
+        run: bash scripts/apptest/a11y.sh
+
+      - name: Print the findings and the trees
+        if: always()
+        run: |
+          for f in apptest-out/a11y/*/a11y-*.audit.txt; do
+            echo "::group::FINDINGS $(basename "$f" .audit.txt)"
+            cat "$f"
+            echo "::endgroup::"
+          done
+          for f in apptest-out/a11y/*/a11y-*.tree.txt; do
+            echo "::group::TREE $(basename "$f" .tree.txt)"
+            # The elements with their labels, in reading order (the attribute dumps are left out).
+            grep -E "^ *(Button|StaticText|Image|Other|Switch|TextField|TextView|NavigationBar|Cell|Alert|Sheet|Slider|Link|SearchField|ProgressIndicator|ActivityIndicator|Heading|Toggle|MenuItem|Popover|ScrollView|Table|CollectionView)," "$f" | cut -c1-260 || true
+            echo "::endgroup::"
+          done
+
+      - name: Push the pictures and the findings to their branch
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ inputs.branch }}-${{ matrix.name }}
+        run: |
+          set -euo pipefail
+          brew install pngquant || true
+          mkdir -p shots
+          cp apptest-out/a11y/*/a11y-*.png apptest-out/a11y/*/a11y-*.audit.txt apptest-out/a11y/*/a11y-*.tree.txt shots/ 2>/dev/null || true
+          cp apptest-out/a11y/*/summary.md shots/ 2>/dev/null || true
+          cd shots
+          for f in *.png; do
+            [ -f "$f" ] || continue
+            sips -Z 1400 "$f" >/dev/null
+            pngquant --force --ext .png --quality 60-90 "$f" || true
+          done
+          {
+            echo "run: ${GITHUB_RUN_ID}"
+            echo "commit: ${GITHUB_SHA}"
+            echo "device: ${{ matrix.device }}"
+            echo "text_size: ${{ matrix.size }}"
+          } > RUN.txt
+          git init -q -b pictures
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "A11y pictures ${GITHUB_RUN_ID} (${GITHUB_SHA:0:7}) [skip eval]"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "pictures:refs/heads/${BRANCH}"
