@@ -707,7 +707,8 @@ struct SayInAirPodsField: View {
                 play()
             } label: {
                 HStack(spacing: 6) {
-                    if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: "play.fill").accessibilityHidden(true) }
+                    // Kelly: Försök igen must not look as if it plays at once.
+                    if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: canRetry ? "arrow.clockwise" : "play.fill").accessibilityHidden(true) }
                     // In a row of its own (the largest text) it may shrink; it must never be wider than the card.
                     Text(verbatim: canRetry ? "Försök igen" : SayText.playTitle(minutes)).lineLimit(1)
                         .fixedSize(horizontal: !wide, vertical: false)
