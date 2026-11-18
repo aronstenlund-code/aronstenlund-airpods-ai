@@ -10,6 +10,10 @@ options:
   createIntermediateGroups: true
   generateEmptyDirectories: false
 
+# A134: the StoreKit configuration file is in the project (not in the app), so the scheme can point at it.
+fileGroups:
+  - StoreKit
+
 packages:
   LumenScoring:
     path: Packages/LumenScoring
@@ -137,6 +141,8 @@ schemes:
         LumenTests: [test]
     run:
       config: Debug
+      # A134 (D218): the four products without the App Store, for runs from Xcode (no real purchases).
+      storeKitConfiguration: StoreKit/Lumen.storekit
     test:
       config: Debug
       gatherCoverageData: false

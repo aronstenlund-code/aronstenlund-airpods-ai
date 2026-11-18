@@ -1,18 +1,27 @@
 # App Store: bilder och text (Kelly, Ke56, D160, 2026-11-13)
 
+> **Ersatt 2026-11-17 (Ke76):** texterna, integritetsuppgifterna och granskningsanteckningarna gäller nu i
+> `granskning.md`. Bilderna nedan görs om efter nya första skärmen (Ke74).
+
 **Förberedelse. Inget är inlagt i App Store Connect och inget skickas in.** Att publicera eller skicka in görs bara
 efter Arons ja (CLAUDE.md). Ersätter utkastet i `docs/marketing/appstore/` (Ke25), som beskrev lyssningen före D142.
 
-## Bilder (6,9 tum, 1320 × 2868)
+## Bilder (6,9 tum, 1320 × 2868), Ke74 2026-11-17
 | # | Fil | Rubrik | Rad under | Scen i appen |
 |---|---|---|---|---|
-| 1 | `69-1.jpg` | Fota materialet. | Sidor ur boken, bilder, PDF eller text. | `repMaterial` |
-| 2 | `69-2.jpg` | Frågor med A-svar. | Ett kort och ett långt svar på varje fråga. | `repList` |
-| 3 | `69-3.jpg` | Starta prov. | Frågorna läses upp i dina AirPods. | `repHome` |
-| 4 | `69-4.jpg` | Tryck för svaret. | 1 gång för A-svaret. 2 för ett kort. 3 för paus. | `repControlsDone` |
-| 5 | `69-5.jpg` | Dela med klassen. | Lägg till prov som kompisarna har gjort. | `repSchools` |
+| 1 | `69-1.jpg` | Skriv. Lyssna. | Det du skriver läses upp i dina hörlurar. | `repSayCredits` |
+| 2 | `69-2.jpg` | Om och om igen. | Välj 10 minuter upp till en timme. | `repSayOnCard` |
+| 3 | `69-3.jpg` | Fota boken. | Frågor med svar, eller hela texten uppläst. | `repTextNew` |
+| 4 | `69-4.jpg` | Tryck för svaret. | 1 gång för långt svar, 2 för kort, 3 för paus. | `repPlayAnswer` |
+| 5 | `69-5.jpg` | Följ texten. | Meningen som läses är markerad. | `repTextPlay` |
 
-- **Skärmbilderna är exakta:** CI "Simulator screenshots" **43578038498** på **iPhone 17 Pro Max** (1320 × 2868,
+- **Förslag, inte slutliga:** skärmbilderna är från iPhone 17 Pro Max (grenen `kelly/screens-ke74-promax`, körning
+  44160416467, 5398a2b) men **nedskalade till 644 × 1400 av bildflödet** och uppskalade igen, så de är lite mjuka.
+  Slutliga bilder tas med "Simulator screenshots" på 17 Pro Max i full upplösning, och rubrikerna med SF Pro Display.
+  Rubrikerna här är DejaVu Sans (molnet).
+- Bild 1 visar appens rad "Du kan låsa telefonen. Det hörs i AirPods ändå." Den är **inte provad på telefon** (D209).
+  Provar Aron den inte före inskickning: ta bilden igen efter första Spela (raden visas då inte).
+- **Äldre bilder (Ke56/Ke62):** **Skärmbilderna är exakta:** CI "Simulator screenshots" **43578038498** på **iPhone 17 Pro Max** (1320 × 2868,
   main 508aeb2, efter A87, A83 och A92), inte uppskalade. **Rubrikerna är fortfarande Segoe UI**, eftersom SF Pro
   inte finns i Windows. Gör om dem med SF Pro Display på en Mac före inskickning (kommandot nedan).
 - Bild 5 visar Prov från din skola i stället för Dela-scenen, eftersom Dela bara syns som en symbol i verktygsraden.

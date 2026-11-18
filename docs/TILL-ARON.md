@@ -34,7 +34,7 @@ Kortast möjligt. Svara "ja"/"nej"/eget val i chatten med Deangelo.
 ## 25. ~~Din egen gräns~~ Klart: Aron 18:33 "gör så att jag alltid har krediter som admin" (D216, K93) (2026-11-17 13:55)
 Du har gjort 14 av 15 frågor med ljud den här månaden, så appen nekar mer ljud tills 1 december. ElevenLabs har krediter igen. Vill du att ditt eget konto inte har någon månadsgräns? Svara ja eller nej, så gör Kevin det. Det kostar bara ElevenLabs-krediter när du själv använder appen.
 
-## 26. Priser (D214), förslag från Deangelo 2026-11-17 14:20
+## 26. ~~Priser~~ Bestämt av Aron 21:08 (D224): 79 kr/vecka, 20 000 tecken, 5 000 välkomstkrediter, inbjudan 2 000 (förslaget nedan gäller i övrigt)
 - 100 krediter 10 kr, 500 för 39 kr, 2 000 för 110 kr.
 - Prenumeration 80 kr i veckan, obegränsat med en dold gräns för rimlig användning på 40 000 tecken i veckan.
 - Varje nytt konto får 10 000 krediter första gången, så att man hinner prova ett helt prov. Därefter 1 500 i månaden.

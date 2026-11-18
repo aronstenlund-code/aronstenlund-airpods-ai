@@ -15,9 +15,14 @@ export function walletStore(db: RestDb): WalletStore {
       return rows[0]?.expires_at ?? null;
     },
     week: async (u, n, lim) => one<{ ok: boolean; used: number }>(await db.rpc("use_week_chars", { p_user: u, p_n: n, p_lim: lim })) ?? { ok: false, used: 0 },
+    gifts: async (u) => {
+      const rows = (await db.select("credit_ledger", `select=kind,credits&user_id=eq.${encodeURIComponent(u)}&kind=in.(welcome,invite,use)&limit=10000`)) as { kind: string; credits: number }[];
+      const sum = (k: string) => rows.filter((r) => r.kind === k).reduce((n, r) => n + (Number(r.credits) || 0), 0);
+      return { welcome: sum("welcome"), invite: sum("invite"), used: -sum("use") };
+    },
     weekLimit: async () => {
       const rows = (await db.select("drill_settings", "select=value&key=eq.subscription_week_chars").catch(() => [])) as { value: number }[];
-      return Number(rows[0]?.value) || 40_000;
+      return Number(rows[0]?.value) || 20_000; // D224
     },
   };
 }

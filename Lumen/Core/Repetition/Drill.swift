@@ -52,8 +52,37 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     /// A132: the text as it was written in the field (one line per part).
     var saidText: String { items.map(\.long).joined(separator: "\n") }
 
+    /// A135 (D219.5; Angela Schrute's finding): some of this exam's sound was removed from the phone to stay under the
+    /// storage ceiling. It is on the server and is fetched again when the exam is opened or started, not before
+    /// (else Start would remove and fetch the same files over and over).
+    var audioTrimmed: Bool?
+
     /// A131 (D213, K90): what Starta prov costs in credits, as the server last said it. Never counted in the app.
     var startCost: Int?
+
+    /// A136 (D220.2, K95): "Hur ska det låta?" in the user's own words (at most 80 characters). Nil = no style.
+    var style: String?
+    /// A136 (D220.3, K96): the voice from the server's catalog, chosen before the first save and locked after it.
+    /// Nil = the server's own voice.
+    var voiceID: String?
+
+    /// A136: how this text sounds (its voice and style). The same text with another sound is another exam, since the
+    /// server locks both per exam.
+    var sound: SaySound { SaySound(voiceID: voiceID, style: style, mix: mixVoices == true) }
+
+    /// A140 (D223, K99): "Blanda röster": the server draws a voice per part when the text is first saved (the same at
+    /// every lap). Locked after the first save. Nil = one voice.
+    var mixVoices: Bool?
+    /// A140 (K99): the voice was chosen by the server from the style ("Hur ska det låta?"), not by the user, and why
+    /// (a short Swedish sentence).
+    var voicePicked: Bool?
+    var voiceReason: String?
+
+    /// A136: the style as it is sent and compared: trimmed, at most what the server takes; nil when empty.
+    static func cleanStyle(_ style: String?) -> String? {
+        let trimmed = (style ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? nil : String(trimmed.prefix(SaidText.maxStyleChars))
+    }
 
     /// A107: the sound is not asked for yet; Starta prov asks for it.
     var awaitsAudioStart: Bool { audioStarted == false }
@@ -155,6 +184,11 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
     var sentences: [String]?
     /// A105 (K70): [start_ms, end_ms] per sentence in the part's file (`longAudio`), from the download.
     var sentenceTimesMs: [[Int]]?
+    /// A136 (D220.1): [start_ms, end_ms] per spoken word in the part's file, for "Skriv i takt". Nil for a file made
+    /// before the server kept them; the pauses then come after each sentence.
+    var wordTimesMs: [[Int]]?
+    /// A140 (K99): the voice of this part when the text's voices are mixed.
+    var voiceID: String?
 
     init(id: UUID = UUID(), question: String, short: String, long: String, serverID: String? = nil) {
         self.id = id
@@ -226,8 +260,12 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
     }
 
     /// A105 (K70): the part's sentence times in seconds, nil while unknown.
-    var sentenceTimes: [ClosedRange<TimeInterval>]? {
-        guard let ms = sentenceTimesMs, !ms.isEmpty else { return nil }
+    var sentenceTimes: [ClosedRange<TimeInterval>]? { Self.ranges(sentenceTimesMs) }
+    /// A136: the spoken words' times in seconds.
+    var wordTimes: [ClosedRange<TimeInterval>]? { Self.ranges(wordTimesMs) }
+
+    private static func ranges(_ ms: [[Int]]?) -> [ClosedRange<TimeInterval>]? {
+        guard let ms, !ms.isEmpty else { return nil }
         return ms.map { pair in
             let start = Double(pair.first ?? 0) / 1000
             let end = max(start, Double(pair.count > 1 ? pair[1] : pair.first ?? 0) / 1000)
@@ -374,9 +412,41 @@ enum DrillText {
 
 /// A115 (D203): the free text of "Säg i AirPods" as a text read aloud: exactly what was written, one part per
 /// paragraph, named after its first words.
+/// A136 (D220): the voice and the style of a text from "Säg i AirPods". Two are the same when the voice is the same
+/// and the cleaned styles are the same.
+struct SaySound: Equatable, Hashable, Sendable {
+    var voiceID: String?
+    var style: String?
+    /// A140 (D223): "Blanda röster". No single voice is chosen then.
+    var mix: Bool
+
+    init(voiceID: String? = nil, style: String? = nil, mix: Bool = false) {
+        self.voiceID = mix ? nil : voiceID
+        self.style = Drill.cleanStyle(style)
+        self.mix = mix
+    }
+
+    /// A140 (K99): no voice is chosen but there is a style: the server chooses a voice from it.
+    var serverPicksVoice: Bool { voiceID == nil && !mix && style != nil }
+
+    static let plain = SaySound()
+
+    /// Ke75 §2: a suggestion is written into the style: alone, or after a comma when there is text already.
+    static func adding(_ word: String, to style: String) -> String {
+        let trimmed = style.trimmingCharacters(in: .whitespaces)
+        if trimmed.isEmpty { return word }
+        let joined = trimmed.hasSuffix(",") ? "\(trimmed) \(word.lowercased())" : "\(trimmed), \(word.lowercased())"
+        return String(joined.prefix(SaidText.maxStyleChars))
+    }
+
+    static let suggestions = ["Tydligt", "Lugnt", "Glatt", "Viskande"]
+}
+
 enum SaidText {
     /// The server reads at most this much (K70).
     static let maxChars = 40_000
+    /// A136 (K95): the server takes a style of at most this many characters.
+    static let maxStyleChars = 80
 
     static func parts(_ text: String) -> [String] {
         text.components(separatedBy: .newlines)
@@ -434,10 +504,30 @@ enum CreditText {
         return n < 0 ? "-" + out : out
     }
 
-    static func credits(_ n: Int) -> String { n == 1 ? "1 kredit" : "\(number(n)) krediter" }
+    /// A139 (D222, Aron 2026-11-17): short numbers. Under 1 000 as it is ("764"); from 1 000 one decimal and k
+    /// ("5,3k"); from 10 000 no decimal ("12k"). What one has is rounded down and what something costs is rounded
+    /// up, so the app never shows more than there is or less than it costs. The exact number is in the credits sheet.
+    enum Rounding { case down, up }
+    static func short(_ n: Int, _ rounding: Rounding) -> String {
+        guard n >= 1000 else { return String(max(0, n)) }
+        // Tenths of a thousand, rounded the way asked for.
+        let tenths = rounding == .down ? n / 100 : (n + 99) / 100
+        if tenths >= 100 { // 10 000 and up: whole thousands
+            let thousands = rounding == .down ? n / 1000 : (n + 999) / 1000
+            return "\(number(thousands))k"
+        }
+        return "\(tenths / 10),\(tenths % 10)k"
+    }
 
-    /// The capsule: "1 236 krediter kvar".
-    static func capsule(_ left: Int) -> String { "\(credits(left)) kvar" }
+    /// What one has: "88 krediter", "5,3k krediter" (rounded down).
+    static func have(_ n: Int) -> String { n == 1 ? "1 kredit" : "\(short(n, .down)) krediter" }
+    /// What something costs: "764 krediter", "1,3k krediter" (rounded up).
+    static func credits(_ n: Int) -> String { n == 1 ? "1 kredit" : "\(short(n, .up)) krediter" }
+    /// The exact number with its word, for the credits sheet: "1 500 krediter".
+    static func exact(_ n: Int) -> String { n == 1 ? "1 kredit" : "\(number(n)) krediter" }
+
+    /// The capsule: "764 krediter kvar", "5,3k krediter kvar".
+    static func capsule(_ left: Int) -> String { "\(have(left)) kvar" }
 
     /// Under the field in Säg i AirPods, before Spela.
     static func sayLine(cost: Int) -> String {
@@ -449,7 +539,7 @@ enum CreditText {
 
     /// The credits do not cover it (said before anything is saved or started).
     static func notEnough(cost: Int, left: Int, resetsDay: String?) -> String {
-        "Det här kostar \(credits(cost)). Du har \(number(left)) kvar." + (resetsDay.map { " Nya krediter den \($0)." } ?? "")
+        "Det här kostar \(credits(cost)). Du har \(short(left, .down)) kvar." + (resetsDay.map { " Nya krediter den \($0)." } ?? "")
     }
 
     /// The sheet's rows ("Så räknas det").
@@ -460,7 +550,7 @@ enum CreditText {
 
     /// The sheet's footnote, with the month's limit from the server.
     static func footnote(limit: Int, resetsDay: String?) -> String {
-        "En text på 764 tecken kostar 764 krediter. Du får \(credits(limit)) varje månad."
+        "En text på 764 tecken kostar 764 krediter. Du får \(exact(limit)) varje månad."
             + (resetsDay.map { " Nya krediter den \($0)." } ?? "") + " Oanvända krediter sparas inte."
     }
 }

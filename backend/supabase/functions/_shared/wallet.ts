@@ -1,6 +1,6 @@
 /**
  * K94 (D213, D214, D218): an account's credits. In this order: an admin (K93) is never counted; an active weekly
- * subscription covers up to its week limit (drill_settings.subscription_week_chars, 40 000); then the month's free
+ * subscription covers up to its week limit (drill_settings.subscription_week_chars, 20 000 since D224); then the month's free
  * credits; then bought credits (credit_ledger). A charge that the free and bought credits together cannot pay is
  * refused and nothing is counted. The answer keeps the shape the handlers already use ({ok, used, lim}: remaining =
  * lim - used) and adds `wallet` for the app.
@@ -9,6 +9,8 @@ export interface Wallet {
   monthly_free: number;
   purchased: number;
   subscription: { active: boolean; until: string | null; week_used: number; week_limit: number };
+  /** Angela Fable (A141): the part of `purchased` that was given (welcome, invite), spent first. Never more than purchased. */
+  gift?: { left: number; welcome: number; invite: number };
 }
 export interface QuotaAnswer { ok: boolean; used: number; lim: number; unlimited?: boolean; wallet?: Wallet }
 
@@ -26,6 +28,8 @@ export interface WalletStore {
   /** this week's subscription characters: atomic within lim; n = 0 reads */
   week(u: string, n: number, lim: number): Promise<{ ok: boolean; used: number }>;
   weekLimit(): Promise<number>;
+  /** credits given (welcome, invite) and all bought-or-given credits spent so far ('use' rows, as a positive number) */
+  gifts?(u: string): Promise<{ welcome: number; invite: number; used: number }>;
 }
 
 const BIG = 1_000_000;
@@ -36,8 +40,9 @@ export function makeUseQuota(s: WalletStore) {
       const m = await s.monthly(u, 0);
       return { ok: true, used: m.used, lim: m.used + BIG, unlimited: true };
     }
-    const [m, bought, until, wlim] = await Promise.all([
-      s.monthly(u, 0), s.purchased(u).catch(() => 0), s.subscriptionUntil(u).catch(() => null), s.weekLimit().catch(() => 40_000),
+    const [m, bought, until, wlim, g] = await Promise.all([
+      s.monthly(u, 0), s.purchased(u).catch(() => 0), s.subscriptionUntil(u).catch(() => null), s.weekLimit().catch(() => 20_000),
+      s.gifts ? s.gifts(u).catch(() => null) : Promise.resolve(null),
     ]);
     const wk = until ? await s.week(u, 0, wlim) : { ok: true, used: 0 };
     const freeLeft = Math.max(0, m.lim - m.used);
@@ -45,6 +50,8 @@ export function makeUseQuota(s: WalletStore) {
     const wallet = (mUsed: number, b: number, wUsed: number): Wallet => ({
       monthly_free: Math.max(0, m.lim - mUsed), purchased: Math.max(0, b),
       subscription: { active: !!until, until, week_used: wUsed, week_limit: until ? wlim : 0 },
+      // given credits are spent before bought ones; what this charge took from the ledger counts as spent
+      ...(g ? { gift: { left: Math.max(0, Math.min(b, g.welcome + g.invite - (g.used + (bought - b)))), welcome: g.welcome, invite: g.invite } } : {}),
     });
     // used/lim so that lim - used = everything that is left
     const answer = (ok: boolean, mUsed: number, b: number, wUsed: number): QuotaAnswer => {
@@ -84,4 +91,4 @@ export function makeUseQuota(s: WalletStore) {
 
 /** The app's fields (A134) for quota, cost and list. */
 export const walletFields = (q: QuotaAnswer) =>
-  q.wallet ? { monthly_free: q.wallet.monthly_free, purchased: q.wallet.purchased, subscription: q.wallet.subscription } : {};
+  q.wallet ? { monthly_free: q.wallet.monthly_free, purchased: q.wallet.purchased, subscription: q.wallet.subscription, ...(q.wallet.gift ? { gift: q.wallet.gift } : {}) } : {};

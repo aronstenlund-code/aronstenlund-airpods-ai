@@ -42,7 +42,15 @@ enum RepetitionDemo {
                                       // A131 (D213, Ke71): the month in credits
                                       "repSayCredits", "repSayCreditsShort", "repCreditsSheet",
                                       // A132 (D215): said texts are "Senaste" under the field, not exams
-                                      "repHomeSaid", "repHomeSaidOnly", "repSayOnCard",
+                                      "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited",
+                                      // A136 (D220, Ke75): the style row, "I takt" and the voice sheet
+                                      "repSayStyle", "repSayVoices",
+                                      // A134 (D218), A141 (D224), Ke73/Ke77: the purchase part
+                                      "repShop", "repShopWeekly", "repShopShort", "repShopWeeklyHome",
+                                      // A141 (K99 fields): welcome credits and a rewarded invitation
+                                      "repShopWelcome", "repShopReward",
+                                      // A140 (D223): the voice the server chose from the style
+                                      "repSayPicked",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -180,6 +188,11 @@ enum RepetitionDemo {
     /// Once, before the first frame.
     static func seed(_ model: RepetitionModel, for name: String) {
         for old in model.store.drills { model.store.delete(old.id) } // left by an earlier screen
+        // A136: the voice, the style and "Skriv i takt" are staged only in their own scenes.
+        UserDefaults.standard.removeObject(forKey: SayText.voiceKey)
+        UserDefaults.standard.removeObject(forKey: SayText.inPaceKey)
+        SayText.stagedStyle = nil
+        SayText.stagedVoicesSheet = false
         // A83: demo schools and publications instead of the server; my school is set except for the empty list.
         model.publishing = DemoPublishing(empty: name == "repSchoolsEmpty", failure: DemoPublishing.failure(for: name),
                                           noSchools: name == "repSchoolSearchNone")
@@ -247,6 +260,77 @@ enum RepetitionDemo {
             SayText.stagedRefusal = nil
             return
         }
+        model.shop = nil
+        if name.hasPrefix("repShop") { // A134 (D218), A141 (D224): packs, the weekly card and the invitation
+            model.store.save(history)
+            model.store.save(drill)
+            let short = name == "repShopShort"
+            var credits = DrillQuota(used: short ? 1412 : 264, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = short ? 88 : 1236
+            credits.resets_day = "1 december"
+            credits.subscription = DrillQuota.Subscription(active: name.hasPrefix("repShopWeekly"), until: "2026-11-24T10:00:00.000Z",
+                                                           week_used: name.hasPrefix("repShopWeekly") ? 3800 : 0, week_limit: 20_000)
+            if name.hasPrefix("repShopWeekly") { credits.remaining = 17_436 }
+            if name == "repShopWelcome" { // Ke77 §1b: a new account, only its welcome credits
+                credits.remaining = 5000
+                credits.gift = DrillQuota.Gift(left: 5000, welcome: 5000, invite: 0)
+            }
+            model.quota = credits
+            let server = StagedPurchaseServer()
+            server.rewarded = name == "repShopReward"
+            let shopDefaults = UserDefaults(suiteName: "screenshot-shop") ?? .standard
+            shopDefaults.removeObject(forKey: CreditShop.seenRewardKey)
+            let shop = CreditShop(front: StagedStoreFront(), server: server, defaults: shopDefaults)
+            model.shop = shop
+            Task { await shop.load() }
+            SayText.stagedForScreenshots = name == "repShopShort" || name == "repShopWeeklyHome" ? said : nil
+            SayText.stagedRefusal = nil
+            SayText.stagedCost = 120
+            return
+        }
+        SayText.stagedPicked = nil
+        UserDefaults.standard.removeObject(forKey: SayText.mixKey)
+        if name == "repSayStyle" || name == "repSayVoices" || name == "repSayPicked" { // A136 (D220, Kelly Ke75), A140
+            model.store.save(history)
+            model.store.save(drill)
+            var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = 1236
+            model.quota = credits
+            model.stageSayVoices([
+                SayVoice(voice_id: "astrid0000000001", name: "Astrid", preview_url: "https://example.com/astrid.mp3", description: "Lugn, rikssvenska"),
+                SayVoice(voice_id: "elsa00000000002", name: "Elsa", preview_url: "https://example.com/elsa.mp3", description: "Ung, glad"),
+                SayVoice(voice_id: "gustav000000003", name: "Gustav", preview_url: "https://example.com/gustav.mp3", description: "Mörk, tydlig"),
+                SayVoice(voice_id: "nils000000000004", name: "Nils", preview_url: "https://example.com/nils.mp3", description: "Skånska"),
+                SayVoice(voice_id: "maja000000000005", name: "Maja", preview_url: "https://example.com/maja.mp3", description: "Göteborgska"),
+                SayVoice(voice_id: "hindi00000000006", name: "Hindi", preview_url: "https://example.com/hindi.mp3", description: "Svenska med indisk brytning", review: true),
+            ], defaultName: "Astrid")
+            if name == "repSayPicked" { // A140 (K99): no voice chosen, a style: the server chose Gustav
+                SayText.stagedPicked = ("gustav000000003", "Mörk och tydlig, passar en lärare.")
+            } else {
+                UserDefaults.standard.set("astrid0000000001", forKey: SayText.voiceKey)
+                UserDefaults.standard.set(true, forKey: SayText.inPaceKey)
+            }
+            SayText.stagedForScreenshots = said
+            SayText.stagedStyle = "Lugnt, som en lärare"
+            SayText.stagedVoicesSheet = name == "repSayVoices"
+            SayText.stagedRefusal = nil
+            SayText.stagedCost = 120 // K92: a new voice or style is new sound
+            return
+        }
+        if name == "repSayUnlimited" { // A133 (D216): the owner's account has no limit
+            model.store.save(history)
+            model.store.save(drill)
+            var credits = DrillQuota(used: 0, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.unlimited = true
+            model.quota = credits
+            SayText.stagedForScreenshots = said
+            SayText.stagedRefusal = nil
+            SayText.stagedCost = nil
+            return
+        }
         if name == "repSayCredits" || name == "repSayCreditsShort" || name == "repCreditsSheet" { // A131 (D213)
             model.store.save(history)
             model.store.save(drill)
@@ -257,6 +341,7 @@ enum RepetitionDemo {
             model.quota = credits
             SayText.stagedForScreenshots = name == "repCreditsSheet" ? nil : said
             SayText.stagedRefusal = nil
+            SayText.stagedCost = 120 // K92: what the server would answer for this text
             return
         }
         if name == "repCredits" || name == "repHomeCredits" { // A117
@@ -294,6 +379,7 @@ enum RepetitionDemo {
             let goesRound = name == "repSayPlay" || name == "repSayOnCard"
             model.session.stageSaying(text, reader: reader, minutes: goesRound ? 10 : nil, lap: goesRound ? 3 : 1)
             if name == "repSayOnCard" { // A132 (D215.6, Ke72): it plays on the card on Start
+                model.stageSayVoices([], defaultName: "Astrid") // A140 (D223): the voice that speaks is named
                 var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
                 credits.unit = "chars"
                 credits.remaining = 1236
@@ -411,13 +497,14 @@ enum RepetitionDemo {
             case "repOffTextPlay": RepetitionPlayerView(model: model)
             case "repUnstarted", "repUnstartedTooMany": NavigationStack { DrillView(model: model, drillID: unstarted.id) }
             case "repUnstartedEdit": DrillItemEditor(model: model, drill: unstarted, itemID: unstarted.items[0].id)
-            case "repCredits", "repCreditsSheet":
+            case "repCredits", "repCreditsSheet", "repShop", "repShopWeekly", "repShopWelcome", "repShopReward":
                 Color(.systemGroupedBackground).ignoresSafeArea()
                     .sheet(isPresented: .constant(true)) { CreditsSheet(model: model) }
             case "repSayPlay", "repSayPlayOnce": RepetitionPlayerView(model: model)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
-                 "repHomeSaid", "repHomeSaidOnly", "repSayOnCard":
+                 "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices",
+                 "repShopShort", "repShopWeeklyHome", "repSayPicked":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)

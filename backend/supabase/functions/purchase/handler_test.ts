@@ -120,8 +120,8 @@ Deno.test("K94 the payload of a JWS is only read after the chain and the signatu
 });
 
 // ---------- the wallet: subscription week, then the month's free credits, then bought credits ----------
-function wallet(o: { free?: number; bought?: number; sub?: boolean; admin?: boolean; weekLimit?: number }) {
-  const st = { mUsed: 0, mLim: o.free ?? 1500, bought: o.bought ?? 0, week: 0 };
+function wallet(o: { free?: number; bought?: number; sub?: boolean; admin?: boolean; weekLimit?: number; gifts?: { welcome: number; invite: number } }) {
+  const st = { mUsed: 0, mLim: o.free ?? 1500, bought: o.bought ?? 0, week: 0, spent: 0 };
   const store: WalletStore = {
     isAdmin: () => Promise.resolve(!!o.admin),
     monthly: (_u, n) => {
@@ -131,7 +131,7 @@ function wallet(o: { free?: number; bought?: number; sub?: boolean; admin?: bool
     },
     refundMonthly: (_u, n) => (st.mUsed = Math.max(0, st.mUsed - n), Promise.resolve()),
     purchased: () => Promise.resolve(st.bought),
-    usePurchased: (_u, n) => Promise.resolve(st.bought >= n ? (st.bought -= n, true) : false),
+    usePurchased: (_u, n) => Promise.resolve(st.bought >= n ? (st.bought -= n, st.spent += n, true) : false),
     subscriptionUntil: () => Promise.resolve(o.sub ? "2026-11-24T10:00:00.000Z" : null),
     week: (_u, n, lim) => {
       if (n > 0 && st.week + n > lim) return Promise.resolve({ ok: false, used: st.week });
@@ -139,6 +139,7 @@ function wallet(o: { free?: number; bought?: number; sub?: boolean; admin?: bool
       return Promise.resolve({ ok: true, used: st.week });
     },
     weekLimit: () => Promise.resolve(o.weekLimit ?? 40_000),
+    ...(o.gifts ? { gifts: () => Promise.resolve({ ...o.gifts!, used: st.spent }) } : {}),
   };
   return { use: makeUseQuota(store), st };
 }
@@ -165,8 +166,31 @@ Deno.test("K94 wallet: a subscription covers 40 000 a week before anything else;
   assertEquals([w.st.week, w.st.mUsed], [40_000, 1000]);
 });
 
+Deno.test("A141 wallet: given credits (welcome 5 000 + invite 2 000) are shown apart and spent before bought ones", async () => {
+  const w = wallet({ free: 0, bought: 7500, gifts: { welcome: 5000, invite: 2000 } }); // 500 bought
+  const q = await w.use("u", 0);
+  assertEquals([q.wallet!.purchased, q.wallet!.gift], [7500, { left: 7000, welcome: 5000, invite: 2000 }]);
+  const a = await w.use("u", 6800);
+  assertEquals([a.ok, a.wallet!.purchased, a.wallet!.gift!.left], [true, 700, 200], "200 given + 500 bought left");
+  const b = await w.use("u", 300);
+  assertEquals([b.wallet!.purchased, b.wallet!.gift!.left], [400, 0], "the given ones are gone first");
+  // without the store method the field is absent (old shape)
+  assertEquals("gift" in (await wallet({ bought: 10 }).use("u", 0)).wallet!, false);
+});
+
 Deno.test("K94 wallet: an admin (K93) is never counted", async () => {
   const w = wallet({ admin: true, free: 0 });
   const a = await w.use("u", 99_999);
   assertEquals([a.ok, a.unlimited, w.st.mUsed], [true, true, 0]);
+});
+
+Deno.test("K94 the real Apple Root CA - G3 (public, fetched in Actions 44157863130) parses, signs itself and is the pinned one", async () => {
+  const { parseCert, sha256Hex, signedBy } = await import("./x509.ts");
+  const b64 = (await Deno.readTextFile(new URL("./apple_root_g3.b64", import.meta.url))).replace(/\s+/g, "");
+  const der = Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
+  assertEquals(await sha256Hex(der), APPLE_ROOT_G3_SHA256);
+  const c = parseCert(der);
+  assertEquals([c.curve, c.sigAlg], ["P-384", "1.2.840.10045.4.3.3"]);
+  assert(await signedBy(c, c), "the root signs itself");
+  assertEquals(new Date(c.notAfter).toISOString(), "2039-04-30T18:19:06.000Z");
 });

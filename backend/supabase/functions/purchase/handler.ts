@@ -13,6 +13,8 @@ import type { Authenticator } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
 import { enforceLimits, type RateLimiter } from "../_shared/ratelimit.ts";
 import { InvalidJws, type Transaction, verifyJws } from "./jws.ts";
+import { InvalidAttestation, verifyAttestation } from "./attest.ts";
+import { claimInvite, inviteCodeFor, inviteStatus, RewardRefusal, type RewardStore, welcome } from "../_shared/rewards.ts";
 
 export interface Product { product_id: string; kind: "credits" | "subscription"; credits: number }
 export interface LedgerRow {
@@ -38,6 +40,19 @@ export interface PurchaseDeps {
   /** accepted roots (SHA-256 hex): production only Apple Root CA - G3 */
   roots: string[];
   bundleId: string;
+  /** K98 (D224): welcome credits and invitations (App Attest) */
+  rewards?: RewardStore;
+  attest?: {
+    /** "<TEAMID>.<bundle id>"; null = not configured (Aron sets APPLE_TEAM_ID) */
+    appId: string | null;
+    allowDevelopment: boolean;
+    rootDer: Uint8Array;
+    roots: string[];
+    /** a one-time challenge for this account (5 minutes) */
+    newChallenge(userId: string): Promise<string>;
+    /** true once, when this challenge was given to this account and has not expired */
+    useChallenge(userId: string, challenge: string): Promise<boolean>;
+  };
   /** the account's credits afterwards (the same wallet as /drill quota) */
   wallet?: (userId: string) => Promise<Record<string, unknown>>;
   now?: () => number;
@@ -154,6 +169,42 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
       const b = (raw ? JSON.parse(raw) : null) as Record<string, unknown> | null;
       if (b && "signedPayload" in b) return await notify(b.signedPayload);
       const user = await deps.authenticate(req);
+      // ---------- K98 (D224): welcome credits and invitations ----------
+      if (b?.action === "attest_challenge") {
+        if (!deps.attest) throw new HttpError(503, "attest_unconfigured", "Inte tillgängligt än.");
+        return json({ challenge: await deps.attest.newChallenge(user.id) });
+      }
+      if (b?.action === "welcome") {
+        if (!deps.attest || !deps.rewards || !deps.attest.appId) throw new HttpError(503, "attest_unconfigured", "Välkomstkrediterna är inte på än.");
+        const rl = await enforceLimits(deps.rateLimiter, "welcome", user.id, { perMinute: 5, perDay: 20, globalPerDay: 50_000 }, 1);
+        if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många försök just nu.", { retryAfterSec: rl.retryAfterSec });
+        const keyId = typeof b.key_id === "string" ? b.key_id : "", ch = typeof b.challenge === "string" ? b.challenge : "";
+        const att = typeof b.attestation === "string" ? b.attestation : "";
+        if (!keyId || !ch || !att || att.length > 20_000) throw new HttpError(400, "invalid_request", "key_id, challenge and attestation are required");
+        if (!(await deps.attest.useChallenge(user.id, ch))) throw new Refusal(422, "attest_invalid", "Försök igen.", { reason: "challenge" });
+        try {
+          await verifyAttestation(keyId, Uint8Array.from(atob(att), (c) => c.charCodeAt(0)), new TextEncoder().encode(ch), {
+            roots: deps.attest.roots, rootDer: deps.attest.rootDer, appId: deps.attest.appId, allowDevelopment: deps.attest.allowDevelopment,
+          });
+        } catch (e) {
+          if (e instanceof InvalidAttestation) throw new Refusal(422, "attest_invalid", "Telefonen gick inte att kontrollera.", { reason: e.reason });
+          throw new Refusal(422, "attest_invalid", "Telefonen gick inte att kontrollera.", { reason: "format" });
+        }
+        const r = await welcome(deps.rewards, user.id, keyId);
+        return json({ ok: true, added: r.added, ...(r.reason ? { reason: r.reason } : {}), ...(deps.wallet ? { wallet: await deps.wallet(user.id) } : {}) });
+      }
+      if (b?.action === "invite_code") {
+        if (!deps.rewards) throw new HttpError(503, "invite_unavailable", "Inte tillgängligt än.");
+        const code = await inviteCodeFor(deps.rewards, user.id);
+        return json({ code, url: `https://earmind.vercel.app/i/${code}`, app_url: `earmind://invite/${code}`, ...(await inviteStatus(deps.rewards, user.id)) });
+      }
+      if (b?.action === "invite_claim") {
+        if (!deps.rewards) throw new HttpError(503, "invite_unavailable", "Inte tillgängligt än.");
+        const rl = await enforceLimits(deps.rateLimiter, "invite_claim", user.id, { perMinute: 5, perDay: 20, globalPerDay: 50_000 }, 1);
+        if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många försök just nu.", { retryAfterSec: rl.retryAfterSec });
+        await claimInvite(deps.rewards, user.id, String(b.code ?? "").trim().toLowerCase());
+        return json({ ok: true });
+      }
       if (b?.action !== "verify") throw new HttpError(400, "invalid_request", "unknown action");
       const rl = await enforceLimits(deps.rateLimiter, "purchase_verify", user.id, { perMinute: 20, perDay: 200, globalPerDay: 100_000 }, 1);
       if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många försök just nu.", { retryAfterSec: rl.retryAfterSec });
@@ -162,6 +213,7 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
       return json({ ok: true, ...r, transaction_id: t.transactionId, product_id: t.productId, ...(deps.wallet ? { wallet: await deps.wallet(user.id) } : {}) });
     } catch (e) {
       if (e instanceof Refusal) return json({ error: { code: e.code, message: e.message, fallback: false }, ...e.extra }, e.status);
+      if (e instanceof RewardRefusal) return json({ error: { code: e.code, message: e.message, fallback: false } }, e.status);
       if (e instanceof SyntaxError) return errorResponse(new HttpError(400, "invalid_request", "invalid JSON"));
       return errorResponse(toHttpError(e));
     }

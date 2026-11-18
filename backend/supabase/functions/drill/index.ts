@@ -3,6 +3,10 @@ import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { useQuotaFromDb } from "../_shared/wallet_db.ts";
+import { providerFromEnv } from "../answer/llm/factory.ts";
+import { haikuStyler, haikuVoicePicker } from "./style.ts";
+import { onFirstPlay } from "../_shared/rewards.ts";
+import { rewardStore } from "../_shared/rewards_db.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
 import { secret } from "../_shared/secrets.ts";
 import { parseVoices } from "../tts/voices.ts";
@@ -11,6 +15,8 @@ import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type Pu
 
 const env = Deno.env;
 const db = restDbFromEnv();
+const stylerProvider = providerFromEnv(Deno.env);
+const rewards = rewardStore(db);
 const base = env.get("SUPABASE_URL")!.replace(/\/+$/, "");
 const key = env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 const xi = secret(env, "ELEVENLABS_API_KEY");
@@ -65,6 +71,12 @@ Deno.serve(withCors(withTestMode("drill",
   createDrillHandler({
     authenticate: createJwtAuthenticator({ supabaseUrl: base, hs256Secret: env.get("SUPABASE_JWT_SECRET") }),
     rateLimiter: new SupabaseRateLimiter(db),
+    // K95 (D220): Haiku adds v3 tags for "Hur ska det låta?" (only for files that are made new)
+    styler: stylerProvider ? haikuStyler(stylerProvider) : undefined,
+    // K98 (D224): the first Starta prov / Spela rewards the inviter
+    onStarted: (u) => onFirstPlay(rewards, u),
+    // K99 (D223): Haiku picks the catalog voice that fits "Hur ska det låta?"
+    voicePicker: stylerProvider ? haikuVoicePicker(stylerProvider) : undefined,
     model,
     voiceId: secret(env, "ELEVENLABS_VOICE_ID") ?? parseVoices(env.get("ELEVENLABS_VOICES")).voices[0]?.id ?? null,
     usdPer1kChars: 0.08,
@@ -83,7 +95,16 @@ Deno.serve(withCors(withTestMode("drill",
       drillByClient: async (u, c) =>
         ((await db.select("drills", `select=*&user_id=eq.${encodeURIComponent(u)}&client_id=eq.${encodeURIComponent(c)}&limit=1`)) as DrillRow[])[0] ?? null,
       saveDrill: async (row) => {
-        await db.upsert("drills", { ...row, updated_at: new Date().toISOString() }, "id");
+        const r = { ...row, updated_at: new Date().toISOString() };
+        try {
+          await db.upsert("drills", r, "id");
+        } catch (e) {
+          // until the migration adding drills.said has run, a Säg text is still saved (without the mark)
+          if (!("said" in r)) throw e;
+          console.warn("drill_said_column_missing", String(e).slice(0, 80));
+          const { said: _s, ...rest } = r;
+          await db.upsert("drills", rest, "id");
+        }
       },
       items: (ids) => chunked(ids, 50, async (p) => (await db.select("drill_items", `select=*&drill_id=in.(${list(p)})&order=position.asc`)) as (ItemRow & { id: string })[]),
       replaceItems: async (drillId, keepIds, rows) => {
@@ -102,7 +123,7 @@ Deno.serve(withCors(withTestMode("drill",
         chunked(hashes, 100, async (p) =>
           (await db.select(
             "drill_audio_files",
-            `select=hash,kind,text,short_chars,model,voice_id,status,attempts,bytes,duration_ms,short_end_ms,credits,error,done_at,queued_at,sentence_ends,sentences&hash=in.(${list(p)})`,
+            `select=hash,kind,text,short_chars,model,voice_id,status,attempts,bytes,duration_ms,short_end_ms,credits,error,done_at,queued_at,sentence_ends,sentences,words&hash=in.(${list(p)})`,
           )) as AudioRow[]),
       enqueue: (rows) => db.insertManyIgnoreDuplicates("drill_audio_files", rows, "hash"),
       claim: async (n) => {
@@ -173,6 +194,10 @@ Deno.serve(withCors(withTestMode("drill",
         return hashes.filter((h) => out.has(h));
       },
       // ---------- K61 ----------
+      // K99 (D223): the catalog voices everyone may use (not under review) for mixing and the AI's choice
+      catalogVoices: async () => (await db.select("voice_catalog", "select=voice_id,name,description,accent,gender,age&enabled=eq.true&review=eq.false&limit=40").catch(() => [])) as { voice_id: string; name: string }[],
+      // K96 (D220): a voice may be chosen only from the curated catalog
+      voiceAllowed: async (id) => ((await db.select("voice_catalog", `select=voice_id&voice_id=eq.${encodeURIComponent(id)}&enabled=eq.true&limit=1`).catch(() => [])) as unknown[]).length > 0,
       settings: async () => Object.fromEntries(((await db.select("drill_settings", "select=key,value")) as { key: string; value: number }[]).map((r) => [r.key, Number(r.value)])),
       tryCredits: async (u, keys) => {
         if (!keys.length) return [];

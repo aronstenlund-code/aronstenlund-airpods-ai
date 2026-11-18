@@ -601,3 +601,49 @@ Deno.test("K69: an empty questions part (no questions, no reason) falls back to 
   assert(calls.includes("plan"), calls.join(","));
   assertEquals(r.body.notes, "Fotosyntes ger glukos.");
 });
+
+Deno.test("K97 (O79 F2): the check step drops a question with the same answer as an earlier one; never the first, at most a third", async () => {
+  const { shortenQuestions, DEFAULT_DRILL_CONFIG } = await import("./drill.ts");
+  const reply = (r: unknown): LLMProvider => ({
+    name: "fake", model: "haiku-fake",
+    async *stream(): AsyncIterable<LLMChunk> {
+      yield { type: "text", text: JSON.stringify(r) };
+      yield { type: "usage", inputTokens: 300, outputTokens: 20 };
+    },
+  });
+  const qs = ["Hur påverkar inflation hushållens köpkraft?", "Vad mäter KPI?", "Vad händer med köpkraften när inflationen stiger?", "Varför höjer Riksbanken räntan?", "Vem vinner på inflation?", "Vem förlorar på inflation?"];
+  const r = await shortenQuestions(reply({ questions: [{ i: 2, drop: true }] }), DEFAULT_DRILL_CONFIG, qs, { subject: "Samhällskunskap", grade: "åk 9", covers: "Inflation" });
+  assertEquals([r.questions.length, r.dropped], [5, 1]);
+  assert(!r.questions.includes(qs[2]));
+  const first = await shortenQuestions(reply({ questions: [{ i: 0, drop: true }] }), DEFAULT_DRILL_CONFIG, qs, { subject: "", grade: "", covers: "" });
+  assertEquals(first.questions.length, 6, "the first is never dropped");
+  const many = await shortenQuestions(reply({ questions: [1, 2, 3, 4, 5].map((i) => ({ i, drop: true })) }), DEFAULT_DRILL_CONFIG, qs, { subject: "", grade: "", covers: "" });
+  assertEquals(many.questions.length, 4, "at most a third goes");
+});
+
+Deno.test("K97 (O79 F4): years in words become digits on screen, the spoken text keeps the words; amounts stay words", async () => {
+  const { yearsToDigits, answerItems, DEFAULT_DRILL_CONFIG } = await import("./drill.ts");
+  assertEquals(yearsToDigits("Riksdagen i Västerås femton hundra tjugosju och femtonhundrafyrtioett."), "Riksdagen i Västerås 1527 och 1541.");
+  assertEquals(yearsToDigits("tvåtusentjugotvå, på sextonhundratalet, femhundra kronor, tvåtusen kronor"), "2022, på 1600-talet, femhundra kronor, tvåtusen kronor");
+  const llm: LLMProvider = {
+    name: "fake", model: "haiku-fake",
+    async *stream(): AsyncIterable<LLMChunk> {
+      yield { type: "text", text: JSON.stringify({ answers: [{ id: "q1", short: "Det beslutades i Västerås femton hundra tjugosju.", rest: "Kyrkan kom under kungen." }] }) };
+      yield { type: "usage", inputTokens: 300, outputTokens: 40 };
+    },
+  };
+  const r = await answerItems(llm, DEFAULT_DRILL_CONFIG, [{ id: "q1", question: "När bröt Sverige med påven?" }], { subject: "Historia", grade: "åk 8", notes: "Västerås 1527.", longWords: 40 });
+  assertEquals(r.items[0].short, "Det beslutades i Västerås femton hundra tjugosju.", "the voice keeps the words");
+  assertEquals(r.items[0].screen?.short, "Det beslutades i Västerås 1527.");
+  assert(r.items[0].screen?.long?.startsWith("Det beslutades i Västerås 1527."));
+});
+
+Deno.test("K97 (O79 F3): the prompts forbid made-up causes and say what to do instead", async () => {
+  const { SYSTEM_PROMPT_DRILL_ANSWERS, SYSTEM_PROMPT_DRILL_PLAN, SYSTEM_PROMPT_DRILL_SHORTEN } = await import("./drill.ts");
+  assert(SYSTEM_PROMPT_DRILL_ANSWERS.includes("never invent a cause"));
+  assert(SYSTEM_PROMPT_DRILL_ANSWERS.includes("Varför det blev så är inte känt här"));
+  const { mentionsMaterial } = await import("./drill.ts");
+  assert(mentionsMaterial("Det får inte stöd i det material jag har.") && mentionsMaterial("The notes do not say why it stuck."));
+  assert(SYSTEM_PROMPT_DRILL_PLAN.includes("Gustav Vasa"));
+  assert(SYSTEM_PROMPT_DRILL_SHORTEN.includes('"drop": true'));
+});
