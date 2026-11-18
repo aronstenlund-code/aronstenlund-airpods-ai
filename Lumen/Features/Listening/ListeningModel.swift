@@ -134,10 +134,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A53: Mina svar is open (from Start's exam card or Inställningar), for this exam; the editor for one answer.
     var showingMyAnswers: MyAnswersRoute?
     /// A48: the question Lumen asked before a tool changes something ("Ska jag lägga in …?"); shown with Ja / Nej.
-    private(set) var pendingToolConfirm: String?
-    @ObservationIgnored private var pendingTool: (call: PhoneToolCall, request: ActivationRequest, persona: PersonaRequest?)?
+    var pendingToolConfirm: String? { tools.pendingConfirm }
+    /// D221 (G7 step 7d): the tool call, the confirm question and the second call are `PhoneToolsController`.
+    let tools = PhoneToolsController()
     @ObservationIgnored private var lastSent: (request: ActivationRequest, persona: PersonaRequest?)?
-    @ObservationIgnored private var toolRoundFor: (id: UUID, round: ToolRound)?
     /// A38 (K31): the days with a quiz answer, and the streak they make (shown on Start).
     @ObservationIgnored private var quizDays = QuizDays.load()
     private(set) var streak = QuizDays.load().streak()
@@ -428,6 +428,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         standardMode.host = self
         provMode.host = self
         turnQueue.host = self
+        debugAudio.host = self
+        tools.host = self
+        pagePhoto.host = self
+        flipCards.host = self
     }
 
     // MARK: - User actions
@@ -557,7 +561,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// Command keywords first: they decide what happens, and Scribe takes a limited number of keyterms (D44).
-    private func refreshKeyterms() {
+    func refreshKeyterms() {
         let recent = conversation.answers.suffix(2)
         let terms = KeytermBuilder.terms(commands: phrases.userPhrases + commands.commands.map(\.keyword),
                                          topic: recent.last?.question,
@@ -592,7 +596,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func stopListening() async {
         if isListening { cue(.stop) } // A34: before the graph stops
         listeningStoppedAt = Date() // A60 (Toby T8b finding 1): what Scribe hands over after this is not used
-        stopDebugAudio() // A76: the last, shorter piece is finished
+        debugAudio.stop() // A76: the last, shorter piece is finished
         stopListeningForExamStatement()
         answers.sessionLength = nil
         activation.cancelPending()
@@ -1221,7 +1225,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 return
             }
             logTurn()
-            if pendingToolConfirm != nil, toolConfirmTurn(text) { return } // A48: "ja" before the filler filter
+            if pendingToolConfirm != nil, tools.confirmTurn(text) { return } // A48: "ja" before the filler filter
             // A16: the practice exam comes before the filler filter, "ja" can be an answer (D199 steps 6b and 6c).
             if mode == .prov, provMode.takesUnfiltered(text) { return }
             if !mode.isLive, FillerFilter.isOnlyFiller(text) {
@@ -1886,124 +1890,37 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     // MARK: - A76 (D140) the test mode: the audio and what happened, for us
 
-    /// The test mode switch (Inställningar, or on for a test account by K43's flag).
-    var testMode: TestModeSettings?
-    /// True while the microphone's audio is being kept for us (the indicator says "Testläge · ljud skickas").
-    private(set) var isRecordingDebugAudio = false
-    @ObservationIgnored private var debugSubscription: UUID?
-    @ObservationIgnored private var debugTask: Task<Void, Never>?
-    @ObservationIgnored private var debugWriter: DebugAudioWriter?
-    @ObservationIgnored let debugStore = DebugPieceStore()
+    /// The kept audio, the pieces and the upload are `DebugAudioController` (D221, G7 step 7d). The screens and
+    /// AppContainer use the test mode through the model, as before.
+    let debugAudio = DebugAudioController()
 
-    var debugAudioClient: DebugAudioClient?
-    @ObservationIgnored private var debugFlagChecked = false
-    @ObservationIgnored private var debugUploading = false
+    /// The test mode switch (Inställningar, or on for a test account by K43's flag).
+    var testMode: TestModeSettings? {
+        get { debugAudio.testMode }
+        set { debugAudio.testMode = newValue }
+    }
+
+    /// True while the microphone's audio is being kept for us (the indicator says "Testläge · ljud skickas").
+    var isRecordingDebugAudio: Bool { debugAudio.isRecording }
+
+    var debugAudioClient: DebugAudioClient? {
+        get { debugAudio.client }
+        set { debugAudio.client = newValue }
+    }
 
     /// Starts or stops keeping the audio to match the switch, the server and the listening.
     func updateDebugAudio() {
-        if !debugFlagChecked, debugAudioClient != nil {
-            debugFlagChecked = true
-            Task { await refreshTestModeFlag() }
-        }
-        let wanted = (testMode?.isEnabled ?? false) && !(testMode?.serverRefused ?? false) && isListening
-        if wanted, debugSubscription == nil {
-            let store = debugStore
-            let writer = DebugAudioWriter(store: store) { [weak self] url, start, end in
-                Task { @MainActor in self?.debugPieceFinished(url: url, start: start, end: end) }
-            }
-            let (id, stream) = controller.subscribeToChunks()
-            debugSubscription = id
-            debugWriter = writer
-            debugTask = Task.detached {
-                for await chunk in stream { await writer.append(chunk.samples) }
-                await writer.close()
-            }
-            isRecordingDebugAudio = true
-            controller.log("Test mode: the audio is kept and sent for debugging (A76, D140)")
-        } else if !wanted, debugSubscription != nil {
-            stopDebugAudio()
-        }
+        debugAudio.update()
     }
 
     #if DEBUG
     /// The screenshots (Kelly Ke48): Lyssnar as it looks while the audio is sent; nothing is recorded.
-    func stageTestModeForScreenshot() { isRecordingDebugAudio = true }
+    func stageTestModeForScreenshot() { debugAudio.stageForScreenshot() }
     #endif
-
-    private func stopDebugAudio() {
-        guard let id = debugSubscription else { return }
-        debugSubscription = nil
-        controller.unsubscribeFromChunks(id) // ends the stream; the writer closes the last piece
-        debugTask = nil
-        debugWriter = nil
-        isRecordingDebugAudio = false
-    }
-
-    /// A finished minute: what was heard, what the turns became and the log lines in it, next to the audio.
-    private func debugPieceFinished(url: URL, start: Date, end: Date) {
-        let inside = { (date: Date) in date >= start.addingTimeInterval(-1) && date <= end.addingTimeInterval(1) }
-        var piece = DebugPiece(id: url.deletingPathExtension().lastPathComponent, startedAt: start, endedAt: end,
-                               audioFile: url.lastPathComponent, mode: mode.rawValue)
-        piece.heard = conversation.finalSegments.filter { inside($0.startedAt) }.map { .init(at: $0.startedAt, text: $0.text) }
-        piece.turns = controller.turns.records.filter { inside($0.at) }.map {
-            .init(at: $0.at, heard: $0.fragment, outcome: $0.outcome.rawValue, reason: $0.reason, status: $0.status)
-        }
-        piece.log = controller.eventLog.filter { inside($0.time) }.suffix(200).map {
-            String(format: "%.2f ", $0.time.timeIntervalSince(start)) + $0.text
-        }
-        piece.answers = conversation.answers.filter { inside($0.createdAt) }.map {
-            .init(at: $0.createdAt, text: "\($0.question) → \($0.answer)")
-        }
-        debugStore.save(piece)
-        controller.log("Test mode: a piece of \(Int(end.timeIntervalSince(start))) s is waiting for upload (A76)")
-        Task { await uploadDebugPieces() }
-    }
-
-    /// K43's flag once per launch: a test account is switched on, an account the server refuses is told so.
-    private func refreshTestModeFlag() async {
-        guard let client = debugAudioClient, let testMode, let flag = await client.flag() else { return }
-        testMode.applyServerFlag(flag)
-        if flag { await uploadDebugPieces() }
-        updateDebugAudio()
-    }
 
     /// The switch in Settings: the tester's own choice goes to the server (K43 `opt_in`/`opt_out`).
     func testModeSwitched() async {
-        guard let testMode else { return }
-        let on = testMode.isEnabled
-        if !on {
-            testMode.serverRefused = false
-            updateDebugAudio()
-        }
-        if let client = debugAudioClient, let flag = await client.setOptIn(on) {
-            testMode.serverRefused = on && !flag
-            if testMode.serverRefused {
-                controller.log("Test mode: the server does not take audio from this account (K43 needs an email sign-in)")
-                for piece in debugStore.pending() { debugStore.delete(piece) } // never kept when it cannot be sent
-            }
-        }
-        updateDebugAudio()
-    }
-
-    /// Sends the waiting pieces one at a time, oldest first; a sent piece leaves the phone (D140 point 4).
-    func uploadDebugPieces() async {
-        guard let client = debugAudioClient, !debugUploading else { return }
-        debugUploading = true
-        defer { debugUploading = false }
-        for piece in debugStore.pending() {
-            switch await client.upload(DebugTurnBody(piece: piece, audio: debugStore.audio(of: piece))) {
-            case .sent:
-                debugStore.delete(piece)
-            case .refused:
-                testMode?.serverRefused = true
-                for piece in debugStore.pending() { debugStore.delete(piece) }
-                controller.log("Test mode: the server refused the upload; the pieces are deleted and nothing more is kept (A76)")
-                updateDebugAudio()
-                return
-            case .failed:
-                return // no network: the pieces wait (at most 120 or 48 h)
-            }
-        }
+        await debugAudio.switched()
     }
 
     /// A74: the questions asked in the last minute (Standardläge), so a late copy is not answered again.
@@ -2427,44 +2344,19 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     // MARK: - A photographed page (A36, D115)
 
-    /// What "Fota sidan" is doing, for the exam card ("Läser sidan …"); nil when nothing is.
-    private(set) var pagePhotoStatus: String?
-    private(set) var isReadingPage = false
+    /// The reading, the practice questions and what starts afterwards are `PagePhotoController` (D221, G7 step 7d).
+    let pagePhoto = PagePhotoController()
 
-    /// The page is read on the phone (Vision); its key terms go to Förberedelser (they follow every question); K15
-    /// makes practice questions of it when there is no practice exam to replace; then Provläge quizzes on it.
+    /// What "Fota sidan" is doing, for the exam card ("Läser sidan …"); nil when nothing is.
+    var pagePhotoStatus: String? { pagePhoto.status }
+    var isReadingPage: Bool { pagePhoto.isReading }
+
     func studyPhotographedPage(_ image: UIImage, for plan: ExamPlan) async {
-        isReadingPage = true
-        defer { isReadingPage = false }
-        pagePhotoStatus = "Läser sidan …"
-        let text = await PagePhoto.text(of: image)
-        guard text.count >= PagePhoto.minimumCharacters else {
-            pagePhotoStatus = "Jag kunde inte läsa sidan. Fota den rakt uppifrån, i bra ljus."
-            controller.log("Page photo: too little text (\(text.count) characters) (A36)")
-            return
-        }
-        let title = PagePhoto.title()
-        let terms = prep.add(title: title, text: text)?.terms.count ?? 0
-        refreshKeyterms()
-        controller.log("Page photo: \(text.count) characters, \(terms) terms (A36)")
-        if let examMaterials, let examClient, PagePhoto.mayReplace(examMaterials.paper) {
-            pagePhotoStatus = "Gör övningsfrågor av sidan …"
-            let profile = studyProfile.profile
-            await examMaterials.read(text: text, name: title, with: examClient,
-                                     subject: profile.subject.isEmpty ? plan.subject : profile.subject,
-                                     grade: (profile.grade ?? plan.grade)?.rawValue)
-        }
-        pagePhotoStatus = nil
-        if let examMaterials, examMaterials.isReady, examMaterials.paper.name == title {
-            useExamPlan(plan)
-            await startPracticeExam() // the page's own questions, one at a time
-        } else {
-            await startQuiz(for: plan) // the quiz, with the page's terms in every question
-        }
+        await pagePhoto.study(image, for: plan)
     }
 
     func clearPagePhotoStatus() {
-        pagePhotoStatus = nil
+        pagePhoto.clearStatus()
     }
 
     // MARK: - Study plan, summary and links (A19: K17, K19)
@@ -2514,59 +2406,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     // MARK: - A48 (D122, K35): phone tools
 
-    /// The model asked for a tool: run it at once when nothing changes, else ask first (voice or Ja / Nej).
+    /// The model asked for a tool (`AnswerSink`). The tools are `PhoneToolsController` (D221, G7 step 7d).
     func answerToolCall(_ call: PhoneToolCall) {
-        guard let lastSent, phoneTools != nil else { return }
-        controller.log("Tool call: \(call.name) (A48)")
-        pendingTool = (call, lastSent.request, lastSent.persona)
-        if let confirm = call.confirm, !confirm.isEmpty {
-            pendingToolConfirm = confirm
-            say(confirm)
-        } else {
-            runPendingTool()
-        }
+        tools.answer(call)
     }
 
     /// "Ja" / "Nej" on Lyssnar, or the voice.
     func confirmTool(_ yes: Bool) {
-        guard pendingTool != nil else { return }
-        pendingToolConfirm = nil
-        if yes { runPendingTool() } else { sendToolRound(.declined, result: nil) }
-    }
-
-    /// A spoken yes or no to the confirm question; anything else drops the tool and is a turn of its own.
-    private func toolConfirmTurn(_ text: String) -> Bool {
-        switch ToolConfirmReply.parse(text) {
-        case .yes: confirmTool(true)
-        case .no: confirmTool(false)
-        case .other:
-            controller.log("Tool not confirmed: something else was said (A48)")
-            pendingTool = nil
-            pendingToolConfirm = nil
-            return false
-        }
-        study.resumeListening()
-        return true
-    }
-
-    private func runPendingTool() {
-        guard let pending = pendingTool, let phoneTools else { return }
-        pendingToolConfirm = nil
-        Task { [weak self] in
-            let outcome = await phoneTools.run(pending.call)
-            guard let self, self.pendingTool?.call.id == pending.call.id else { return }
-            self.controller.log("Tool \(pending.call.name): \(outcome.status.rawValue) (A48)")
-            self.sendToolRound(outcome.status, result: outcome.result)
-        }
-    }
-
-    /// The second call: same question, the tool's result; the model says one short sentence about it.
-    private func sendToolRound(_ status: ToolRound.Status, result: JSONValue?) {
-        guard let pending = pendingTool else { return }
-        pendingTool = nil
-        let request = ActivationRequest(query: pending.request.query, trigger: pending.request.trigger, language: pending.request.language)
-        toolRoundFor = (request.id, ToolRound(call: pending.call, status: status, result: result))
-        activated(request, persona: pending.persona)
+        tools.confirm(yes)
     }
 
     /// A38 (K31): a quiz answer today (Förhör mig, the practice exam, the mini test, the silent quiz, flip cards).
@@ -2627,22 +2474,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     // MARK: - A46 (N6): flip cards, on the screen without the voice
 
+    /// The deck and what an answered card counts as are `FlipCardsController` (D221, G7 step 7d).
+    let flipCards = FlipCardsController()
+
     /// The exam's study cards as flip cards, nil when there is none.
     func flipDeck(for plan: ExamPlan) -> FlipDeck? {
-        guard let cards = studyCards?.current() else { return nil }
-        return FlipDeck(from: cards, subject: plan.subject)
+        flipCards.deck(for: plan)
     }
 
     /// One flip card answered: it counts like a quiz answer (the card, the tutor's concept stats, the study plan).
     func recordFlip(_ card: StudyCard, knew: Bool, for plan: ExamPlan) {
-        studyCards?.mark(card.id, right: knew)
-        noteQuizAnswer() // A38
-        let concept = FlipDeck.concept(for: card, topics: plan.topics)
-        conceptStats.record(concept, right: knew)
-        conceptStats.save()
-        studyHistory.record(concept, ok: knew, exam: plan.id)
-        studyHistory.save()
-        controller.log("Flip card: \(knew ? "knew" : "missed") (A46)")
+        flipCards.record(card, knew: knew, for: plan)
     }
 
     /// Five questions by voice, inside Provläge (the backend's test for the last session, else its cards first).
@@ -2758,7 +2600,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if let phoneTools, mode == .standard || mode == .prov, !isAhead {
             context.toolsAvailable = phoneTools.available.map(\.rawValue)
         }
-        if let round = toolRoundFor, round.id == request.id { context.toolRound = round.round }
+        if let round = tools.round(for: request) { context.toolRound = round }
         // A56 (K13, D100, Toby T7b): the short answer is spoken and the developed one comes in the same call, ready
         // for "ja" in the Mer? window without a new call.
         context.twoLevel = MoreWindow.applies(to: mode)
@@ -3606,4 +3448,17 @@ extension ListeningModel: ProvModeHost {
 extension ListeningModel: TurnQueueHost {
     func turnPersona() -> PersonaRequest? { mode == .prov ? tutorPersona() : nil }
     func turnAsked(_ text: String) { if mode == .prov { provMode.recordTurn(text) } }
+}
+
+/// D221 (A138, G7 step 7d): what the smaller parts use (`DebugAudioHost`, `PhoneToolsHost`, `PagePhotoHost`,
+/// `FlipCardsHost`): the model's own calls, unchanged.
+extension ListeningModel: DebugAudioHost, PhoneToolsHost, PagePhotoHost, FlipCardsHost {
+    var lastSentRequest: (request: ActivationRequest, persona: PersonaRequest?)? { lastSent }
+
+    func recordFlippedConcept(_ concept: String, right: Bool, exam: UUID) {
+        conceptStats.record(concept, right: right)
+        conceptStats.save()
+        studyHistory.record(concept, ok: right, exam: exam)
+        studyHistory.save()
+    }
 }
