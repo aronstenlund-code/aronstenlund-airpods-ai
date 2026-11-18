@@ -48,3 +48,9 @@ För att veta att taggarna (lugnt, tydligt, viskande) och en skånsk röst fakti
 
 ## 29. När det passar: prova lyssnarlägena med AirPods (D221)
 Fem omstruktureringar av lyssnarlägena (Frågor, Provläge med rösten, minitestet, det tysta förhöret, studieplanen) är bara testade i simulatorn. Provlistorna står i rapporterna för A120, A125, A126, A127 och A128. Ingen brådska; de två sista stegen med högre risk väntar tills du har provat.
+
+## 30. Läs integritetspolicyn och villkoren (Ke78), 2026-11-18 09:05
+Kelly har skrivit /integritet och /villkor för earmind.vercel.app på en gren, med det som inte är verifierat markerat. De publiceras inte förrän du har läst dem och svarat ja. Deangelo skickar bilderna.
+
+## 31. Apple-konto och Team ID (K98, App Store), 2026-11-18 09:05
+För App Attest (skyddet för välkomstkrediterna) och för att lämna in appen behövs ett betalt Apple Developer-konto (99 USD per år) och dess Team ID. Har du ett konto: öppna developer.apple.com/account → Membership details, och skicka Team ID (10 tecken) till Deangelo. Det är inte hemligt. Har du inget konto är det ditt beslut om kostnaden.
