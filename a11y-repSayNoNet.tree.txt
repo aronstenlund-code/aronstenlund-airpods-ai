@@ -1,0 +1,70 @@
+Attributes: Application, 0x115623980, pid: 26220, label: 'EarMind'
+Element subtree:
+ →Application, 0x115623980, pid: 26220, label: 'EarMind'
+    Window (Main), 0x115623ac0, {{0.0, 0.0}, {375.0, 667.0}}
+      Other, 0x115623c00, {{0.0, 0.0}, {375.0, 667.0}}
+        Other, 0x115623d40, {{0.0, 0.0}, {375.0, 667.0}}
+          Other, 0x115623e80, {{0.0, 0.0}, {375.0, 667.0}}
+            Other, 0x115628000, {{0.0, 0.0}, {375.0, 667.0}}
+              Other, 0x115628140, {{0.0, 0.0}, {375.0, 667.0}}
+                NavigationBar, 0x115628280, {{0.0, 20.0}, {375.0, 54.0}}, identifier: 'Prov'
+                  Other, 0x1156283c0, {{20.0, 24.0}, {172.5, 36.0}}, label: '1,2k krediter kvar'
+                    Other, 0x115628500, {{20.0, 24.0}, {172.5, 36.0}}
+                      Button, 0x115628640, {{20.0, 24.0}, {172.5, 36.0}}, label: '1,2k krediter kvar'
+                  StaticText, 0x115628780, {{208.5, 41.5}, {1.0, 1.0}}, label: 'Prov'
+                    Other, 0x1156288c0, {{208.5, 41.5}, {1.0, 1.0}}
+                      Other, 0x115628a00, {{208.5, 41.5}, {1.0, 1.0}}
+                  Button, 0x115628b40, {{245.0, 24.0}, {47.5, 36.0}}, label: 'Inställningar'
+                  Button, 0x115628c80, {{308.5, 24.0}, {46.5, 36.0}}, label: 'Mer'
+                Other, 0x115628dc0, {{0.0, 0.0}, {375.0, 667.0}}
+                  Other, 0x115628f00, {{0.0, 0.0}, {375.0, 667.0}}
+                    Other, 0x115629040, {{0.0, 0.0}, {375.0, 667.0}}
+                      Other, 0x115629180, {{0.0, 0.0}, {375.0, 667.0}}
+                        CollectionView, 0x1156292c0, {{0.0, 0.0}, {375.0, 667.0}}
+                          Other, 0x115629400, {{-16.0, -1256.0}, {407.0, 1919.0}}
+                          Other, 0x115629540, {{0.0, 0.0}, {375.0, 667.0}}
+                          Other, 0x115629680, {{0.0, 0.0}, {375.0, 667.0}}
+                          Cell, 0x1156297c0, {{16.0, 78.0}, {343.0, 579.0}}
+                            Other, 0x115629900, {{16.0, 78.0}, {343.0, 579.0}}
+                              Other, 0x115629a40, {{16.0, 78.0}, {343.0, 579.0}}
+                                Other, 0x115629b80, {{16.0, 78.0}, {343.0, 579.0}}
+                            Other, 0x115629cc0, {{16.0, 78.0}, {343.0, 579.0}}
+                              Other, 0x115629e00, {{16.0, 78.0}, {343.0, 579.0}}
+                                Other, 0x115629f40, {{16.0, 78.0}, {343.0, 579.0}}
+                                  StaticText, 0x11562a080, {{32.0, 94.1}, {25.0, 48.0}}, label: '›'
+                                  TextField, 0x11562a1c0, {{65.0, 94.0}, {278.0, 144.0}}, label: 'Säg i AirPods, textfält', value: Fotosyntes: koldio...
+                                    Other, 0x11562a300, {{65.0, 205.0}, {278.0, 30.0}}, label: 'Horisontell rullningslist, 1 sida', value: 0 %
+                                      Other, 0x11562a440, {{68.0, 232.0}, {272.0, 3.0}}
+                                  Other, 0x11562a580, {{32.0, 248.0}, {311.0, 0.5}}
+                                  TextField, 0x11562a6c0, {{32.0, 258.5}, {311.0, 36.0}}, label: 'Hur ska det låta?', placeholderValue: 'Hur ska det låta?'
+                                  StaticText, 0x11562a800, {{32.0, 304.4}, {305.5, 65.5}}, label: 'Du kan låsa telefonen. Det hörs i AirPods ändå.'
+                                  StaticText, 0x11562a940, {{32.0, 379.9}, {266.0, 157.0}}, label: 'Ljudet kunde inte hämtas. Kolla nätet.'
+                                  Button, 0x11562aa80, {{32.0, 552.5}, {45.0, 29.0}}, label: 'Lägg till material'
+                                    Button, 0x11562abc0, {{32.0, 552.5}, {45.0, 29.0}}
+                                      Image, 0x11562ad00, {{32.0, 552.5}, {45.0, 29.0}}, identifier: 'plus', label: 'Lägg Till'
+                                  Button, 0x11562ae40, {{85.0, 550.5}, {47.0, 33.0}}, label: 'Hur länge, 10 minuter'
+                                    Button, 0x11562af80, {{85.0, 550.5}, {47.0, 33.0}}
+                                      Image, 0x11562b0c0, {{85.0, 550.5}, {47.0, 33.0}}, identifier: 'timer', label: 'Timer'
+                                  Button, 0x11562b200, {{140.0, 547.0}, {76.0, 40.0}}, label: 'Tempo, 1,0×'
+                                    Button, 0x11562b340, {{140.0, 547.0}, {76.0, 40.0}}
+                                      StaticText, 0x11562b480, {{140.0, 547.0}, {76.0, 40.0}}, label: '1,0×'
+                                  Button, 0x11562b5c0, {{32.0, 597.0}, {311.0, 44.0}}, label: 'Försök igen'
+                                    Image, 0x11562b700, {{110.0, 608.0}, {17.5, 21.5}}, identifier: 'arrow.clockwise', label: 'Uppdatera'
+                                    StaticText, 0x11562b840, {{32.0, 597.0}, {311.0, 44.0}}, label: 'Försök igen'
+                          Other, 0x11562b980, {{-16.0, 663.0}, {407.0, 598.5}}
+                          Other, 0x11562bac0, {{342.0, 74.0}, {30.0, 533.0}}, label: 'Vertikal rullningslist, 3 sidor', value: 0 %
+                            Other, 0x11562bc00, {{369.0, 597.0}, {3.0, 7.0}}
+                          Other, 0x11562bd40, {{342.0, 74.0}, {30.0, 533.0}}, label: 'Vertikal rullningslist, 3 sidor', value: 0 %
+                            Other, 0x11562be80, {{369.0, 597.0}, {3.0, 7.0}}
+                        Button, 0x115680000, {{20.0, 624.0}, {157.0, 34.0}}, label: 'Nytt prov'
+                          Image, 0x115680140, {{22.5, 626.5}, {29.0, 29.0}}, identifier: 'plus.circle.fill', label: 'Lägg Till'
+                          StaticText, 0x115680280, {{20.0, 624.0}, {157.0, 34.0}}, label: 'Nytt prov'
+                Other, 0x1156803c0, {{0.0, 0.0}, {375.0, 667.0}}
+                  Other, 0x115680500, {{0.0, 0.0}, {375.0, 667.0}}
+Path to element:
+ →Application, 0x115623980, pid: 26220, label: 'EarMind'
+Query chain:
+ →Find: Target Application 'com.rsolutions.lumen'
+  Output: {
+    Application, 0x115680640, pid: 26220, label: 'EarMind'
+  }

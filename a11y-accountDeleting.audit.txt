@@ -1,0 +1,7 @@
+accountDeleting: 1 issues (contrast 1), audit 2 s
+
+
+
+ISSUE 1 [contrast] Contrast failed
+  Contrast failed for SwiftUI.AccessibilityNode
+  element: 48 label='Radera konto' identifier='' frame={{32, 172.5}, {170, 125.5}}

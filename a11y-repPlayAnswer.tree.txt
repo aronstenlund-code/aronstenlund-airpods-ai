@@ -1,0 +1,22 @@
+Attributes: Application, 0x115a6c280, pid: 27661, label: 'EarMind'
+Element subtree:
+ →Application, 0x115a6c280, pid: 27661, label: 'EarMind'
+    Window (Main), 0x115a6c3c0, {{0.0, 0.0}, {375.0, 667.0}}
+      Other, 0x115a6c500, {{0.0, 0.0}, {375.0, 667.0}}
+        Other, 0x115a6c640, {{0.0, 0.0}, {375.0, 667.0}}
+          Other, 0x115a6c780, {{0.0, 0.0}, {375.0, 667.0}}
+            Other, 0x115a6c8c0, {{0.0, 0.0}, {375.0, 667.0}}
+              StaticText, 0x115a6ca00, {{20.0, 32.0}, {335.0, 128.5}}, label: 'Fråga 2 av 5 · Varv 2'
+                StaticText, 0x115a6cb40, {{20.0, 32.0}, {301.5, 116.5}}, label: 'Fråga 2 av 5 · Varv 2'
+                ProgressIndicator, 0x115a6cc80, {{20.0, 156.5}, {335.0, 4.0}}, value: 40 %
+                  ProgressIndicator, 0x115a6cdc0, {{20.0, 146.5}, {335.0, 24.0}}, value: 40 %
+              StaticText, 0x115a6cf00, {{38.0, 195.2}, {299.0, 282.0}}, label: 'Vad bildas vid fotosyntesen?'
+              StaticText, 0x115a6d040, {{63.8, 512.0}, {247.5, 63.5}}, label: 'Långt svar'
+              Button, 0x115a6d180, {{20.0, 595.5}, {335.0, 63.5}}, label: 'Avsluta'
+Path to element:
+ →Application, 0x115a6c280, pid: 27661, label: 'EarMind'
+Query chain:
+ →Find: Target Application 'com.rsolutions.lumen'
+  Output: {
+    Application, 0x115a6c140, pid: 27661, label: 'EarMind'
+  }
