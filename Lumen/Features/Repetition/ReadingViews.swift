@@ -294,7 +294,7 @@ struct ReadingPlayerView: View {
             ZStack {
                 Text(verbatim: drill.title)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(LumenColor.secondaryText)
                     .lineLimit(1)
                     .padding(.horizontal, 84)
                     .accessibilityHidden(typeSize.isAccessibilitySize)
@@ -315,7 +315,7 @@ struct ReadingPlayerView: View {
                     }
                 }
                 .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(LumenColor.secondaryText)
                 ProgressView(value: Double(min(reader.sentenceIndex + 1, reader.sentenceCount)),
                              total: Double(max(reader.sentenceCount, 1)))
                     .tint(Color.primary)
@@ -405,7 +405,7 @@ struct ReadingPlayerView: View {
             if let statusLine {
                 Text(verbatim: statusLine)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(LumenColor.secondaryText)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
