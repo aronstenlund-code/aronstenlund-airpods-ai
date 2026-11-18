@@ -45,6 +45,33 @@ final class TestModeSettings {
     nonisolated static let soundNote = "Testläget är på: ljudet skickas till oss och sparas i 14 dagar. Sömnläget sparar klippen bara på din telefon."
 }
 
+/// A142 (D218 point 4, Kelly Ke76): the test mode sends the microphone's audio to us, so it is in the builds for us
+/// and our testers only (Debug and Beta, compiled with `LUMEN_TESTMODE`), never in the App Store build (Release).
+/// Without the flag nothing below this type is compiled: no pieces, no writer, no upload and no `debug-audio` address.
+enum TestModeBuild {
+    #if LUMEN_TESTMODE
+    static let isAvailable = true
+    #else
+    static let isAvailable = false
+    #endif
+
+    /// The folder the pieces waited in (`Application Support/Lumen/debug-audio`).
+    static func defaultFolder() -> URL {
+        let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
+            ?? FileManager.default.temporaryDirectory
+        return base.appending(path: "Lumen", directoryHint: .isDirectory).appending(path: "debug-audio", directoryHint: .isDirectory)
+    }
+
+    /// The App Store build over a tester's build: pieces that were waiting are removed and the switch is cleared, so
+    /// no audio stays on the phone and nothing is on by itself if a tester's build is installed again.
+    static func removeLeftovers(folder: URL = defaultFolder(), defaults: UserDefaults = .standard) {
+        try? FileManager.default.removeItem(at: folder)
+        defaults.removeObject(forKey: TestModeSettings.enabledKey)
+    }
+}
+
+#if LUMEN_TESTMODE
+
 /// One finished minute, waiting for upload: the audio and what happened in it.
 struct DebugPiece: Codable, Equatable, Sendable {
     struct Turn: Codable, Equatable, Sendable {
@@ -132,9 +159,7 @@ struct DebugPieceStore: Sendable {
     let folder: URL
 
     init(folder: URL? = nil) {
-        let base = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first
-            ?? FileManager.default.temporaryDirectory
-        self.folder = folder ?? base.appending(path: "Lumen", directoryHint: .isDirectory).appending(path: "debug-audio", directoryHint: .isDirectory)
+        self.folder = folder ?? TestModeBuild.defaultFolder()
     }
 
     func newAudioURL(at date: Date) -> URL {
@@ -291,3 +316,4 @@ actor DebugAudioWriter {
         startedAt = Date()
     }
 }
+#endif

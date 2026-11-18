@@ -282,8 +282,10 @@ func makeTestVoiceCatalog() -> VoiceCatalog {
         #expect(playback.played.isEmpty)
     }
 
-    @Test func unauthorizedInvalidatesTheSession() async {
-        let http = FakeHTTP([.init(status: 401, body: "{\"error\":{\"code\":\"unauthorized\"}}")])
+    /// A143: a 401 marks the access token as not accepted; the account stays, and the next call renews the token.
+    @Test func unauthorizedRenewsTheTokenAndKeepsTheAccount() async throws {
+        let http = FakeHTTP([.init(status: 401, body: "{\"error\":{\"code\":\"unauthorized\"}}"),
+                             .init(status: 200, body: Fixtures.tokenJSON(access: "jwt-new", refresh: "r2"))])
         let playback = FakePlaybackService()
         let auth = SupabaseAuth(config: config, store: InMemorySessionStore(session), http: http, now: { t0 })
         let provider = ElevenLabsTTSProvider(config: config, auth: auth, http: http, playback: playback)
@@ -293,7 +295,9 @@ func makeTestVoiceCatalog() -> VoiceCatalog {
         } catch {
             guard case .network(.unauthorized) = error else { Issue.record("wrong error \(error)"); return }
         }
-        #expect(!auth.hasSession)
+        #expect(auth.hasSession, "the account is kept")
+        #expect(try await auth.accessToken() == "jwt-new")
+        #expect(http.requests.last?.url?.path == "/auth/v1/token", "renewed with the refresh token, no new sign-up")
     }
 
     @Test func longTextIsSplitAtWordBoundaries() {

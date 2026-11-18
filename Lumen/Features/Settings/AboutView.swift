@@ -4,7 +4,9 @@ import SwiftUI
 /// moved one level down, to "Licenser". The full texts are in `THIRD_PARTY_NOTICES.md` and in the app bundle.
 struct AboutView: View {
     /// A76 (D140): D138's text gets the test mode's addition only while it is on.
-    @AppStorage(TestModeSettings.enabledKey) private var testModeOn = false
+    @AppStorage(TestModeSettings.enabledKey) private var testModeStored = false
+    /// A142: the App Store build has no test mode, whatever an earlier tester's build left in the settings.
+    private var testModeOn: Bool { TestModeBuild.isAvailable && testModeStored }
 
     var body: some View {
         List {

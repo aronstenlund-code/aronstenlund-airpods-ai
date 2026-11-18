@@ -1,5 +1,6 @@
 import Foundation
 import Security
+import UIKit
 
 /// An anonymous Supabase session (`POST /auth/v1/signup` with `{}`); refreshed with the refresh token.
 struct SupabaseSession: Codable, Equatable, Sendable {
@@ -68,8 +69,24 @@ final class InMemorySessionStore: SessionStore, @unchecked Sendable {
 }
 
 /// Signs in anonymously and keeps the token fresh (`backend/README.md` "Connect the app").
+///
+/// A143 (D225 point 4, D228): nothing the user does may wait for the sign-in.
+/// - The sign-in starts when the app opens (`prepare`), and the token is renewed ahead of time when the app opens or
+///   comes back with less than `renewAhead` left, so Spela finds a token that is already there.
+/// - A call to the auth server that gets no answer is given up after `requestTimeout` (the system's own limit is 60 s)
+///   and tried once more.
+/// - The account is only ever replaced by a new anonymous one when the server refuses the refresh token. A 401 from
+///   our own functions and a server error or rate limit during the refresh keep the account (before A143 both made a
+///   new anonymous user, and the old one's exams and credits stayed with the old one).
+/// - Every sign-in, renewal and wait is logged with its time ("Auth: …").
 @MainActor
 final class SupabaseAuth {
+    /// How long a sign-up or a refresh may go without an answer. Shorter than the 10 s Supabase accepts a refresh token
+    /// a second time, so the one retry also saves a refresh whose answer was lost on the way.
+    nonisolated static let requestTimeout: TimeInterval = 8
+    /// The token is renewed in the background when less than this is left of it.
+    nonisolated static let renewAhead: TimeInterval = 300
+
     let config: BackendConfig
     private let store: any SessionStore
     private let http: any HTTPStreaming
@@ -77,6 +94,7 @@ final class SupabaseAuth {
     private var session: SupabaseSession?
     /// The running sign-in or refresh, shared by everyone who needs a token meanwhile.
     private var renewal: Task<String, any Error>?
+    private var foregroundObserver: (any NSObjectProtocol)?
 
     init(config: BackendConfig, store: any SessionStore, http: any HTTPStreaming, now: @escaping @Sendable () -> Date = { Date() }) {
         self.config = config
@@ -108,21 +126,51 @@ final class SupabaseAuth {
             return session.accessToken
         }
         // The voices and the warm-up run together at launch: one sign-in, not one anonymous user per caller.
-        let task: Task<String, any Error>
-        if let renewal {
-            task = renewal
-        } else {
-            task = Task { [self] in
-                defer { renewal = nil }
-                return try await renewToken()
-            }
-            renewal = task
-        }
+        let clock = ContinuousClock()
+        let asked = clock.now
+        let task = startRenewal()
         do {
-            return try await task.value
+            let token = try await task.value
+            Log.answer.info("Auth: a call waited \(Self.seconds(asked.duration(to: clock.now)), privacy: .public) s for the token")
+            return token
         } catch {
-            throw AnswerError.from(error)
+            let failure = AnswerError.from(error)
+            Log.answer.error("Auth: a call got no token after \(Self.seconds(asked.duration(to: clock.now)), privacy: .public) s: \(failure.localizedDescription, privacy: .public)")
+            throw failure
         }
+    }
+
+    /// A143: the app opened or came back. The sign-in (a new install) or the renewal (the token has run out, or has
+    /// less than `renewAhead` left) starts now, in the background, so that the first thing the user does finds a token.
+    func prepare() {
+        if let session, session.isValid(at: now(), margin: Self.renewAhead) { return }
+        guard renewal == nil else { return }
+        if let session {
+            let left = Int(session.expiresAt.timeIntervalSince(now()))
+            Log.answer.info("Auth: renewing the token when the app opens (\(max(0, left), privacy: .public) s left of it)")
+        } else {
+            Log.answer.info("Auth: signing in when the app opens (no account on this phone yet)")
+        }
+        _ = startRenewal()
+    }
+
+    /// A143: from now on the token is also looked at every time the app comes back.
+    func watchForeground() {
+        guard foregroundObserver == nil else { return }
+        foregroundObserver = NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification,
+                                                                    object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.prepare() }
+        }
+    }
+
+    private func startRenewal() -> Task<String, any Error> {
+        if let renewal { return renewal }
+        let task = Task { [self] in
+            defer { renewal = nil }
+            return try await renewToken()
+        }
+        renewal = task
+        return task
     }
 
     private func renewToken() async throws(AnswerError) -> String {
@@ -130,18 +178,30 @@ final class SupabaseAuth {
             do {
                 return try await refresh(session).accessToken
             } catch {
-                // Refresh token rejected → start over with a new anonymous user. Offline keeps the session.
+                // Refresh token refused → start over with a new anonymous user. Offline, a timeout, a server error and
+                // a rate limit keep the session (A143: `perform` says "unauthorized" only when the token is refused).
                 guard case .unauthorized = AnswerError.from(error) else { throw AnswerError.from(error) }
                 // Toby 2 T24: a new anonymous user cannot see the old one's exams; said in the log, never silent.
                 Log.answer.error("Auth: the refresh token was refused, signing up a new anonymous user (the old one's server data stays with it)")
-                invalidate()
+                discard()
             }
         }
         return try await signUp().accessToken
     }
 
-    /// Forget the session (after a 401) so the next call signs in again.
+    /// One of our functions answered 401: the access token is not accepted. It is not used again, and the next call
+    /// renews it with the refresh token. A143: the account stays. Before, the session was thrown away here, and the
+    /// next call made a new anonymous user without ever trying the refresh token.
     func invalidate() {
+        guard var stale = session else { return }
+        Log.answer.error("Auth: the server did not accept the access token (401); it is renewed before the next call")
+        stale.expiresAt = .distantPast
+        session = stale
+        store.save(stale)
+    }
+
+    /// The server refused the refresh token: this phone's account cannot be reached any more.
+    private func discard() {
         session = nil
         store.clear()
     }
@@ -153,7 +213,7 @@ final class SupabaseAuth {
         request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = Data("{}".utf8)
-        return try await perform(request)
+        return try await perform(request, .signUp)
     }
 
     private func refresh(_ old: SupabaseSession) async throws(AnswerError) -> SupabaseSession {
@@ -163,41 +223,80 @@ final class SupabaseAuth {
         request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.httpBody = try? JSONEncoder().encode(["refresh_token": old.refreshToken])
-        return try await perform(request)
+        return try await perform(request, .refresh)
     }
 
-    private func perform(_ request: URLRequest) async throws(AnswerError) -> SupabaseSession {
-        let response: HTTPURLResponse
-        let data: Data
-        do {
-            (response, data) = try await http.data(for: request)
-        } catch {
-            throw AnswerError.from(error)
+    private enum Call: String {
+        case signUp = "sign-up"
+        case refresh = "refresh"
+    }
+
+    /// The statuses with which Supabase Auth refuses a refresh token (not found, already used, the session or the user
+    /// is gone). Everything else that is not a success (429, 5xx) is the server's trouble, and the account is kept.
+    nonisolated static func refusesTheRefreshToken(_ status: Int) -> Bool {
+        [400, 401, 403, 404].contains(status)
+    }
+
+    nonisolated static func seconds(_ duration: Duration) -> String {
+        let value = Double(duration.components.seconds) + Double(duration.components.attoseconds) / 1e18
+        return String(format: "%.2f", value)
+    }
+
+    private func perform(_ original: URLRequest, _ call: Call) async throws(AnswerError) -> SupabaseSession {
+        var request = original
+        request.timeoutInterval = Self.requestTimeout
+        let clock = ContinuousClock()
+        var attempt = 0
+        while true {
+            attempt += 1
+            let started = clock.now
+            let response: HTTPURLResponse
+            let data: Data
+            do {
+                (response, data) = try await http.data(for: request)
+            } catch {
+                let failure = AnswerError.from(error)
+                let took = Self.seconds(started.duration(to: clock.now))
+                // A143: no answer at all (a connection that never got through). Once more, at once: the first try
+                // cost at most `requestTimeout`, not the system's 60 s.
+                if (error as? URLError)?.code == .timedOut, attempt == 1 {
+                    Log.answer.error("Auth: \(call.rawValue, privacy: .public) got no answer in \(took, privacy: .public) s, trying once more")
+                    continue
+                }
+                Log.answer.error("Auth: \(call.rawValue, privacy: .public) failed after \(took, privacy: .public) s: \(failure.localizedDescription, privacy: .public)")
+                throw failure
+            }
+            let took = Self.seconds(started.duration(to: clock.now))
+            guard (200..<300).contains(response.statusCode) else {
+                let failure = AnswerSSEDecoder.decodeErrorBody(data, status: response.statusCode)
+                Log.answer.error("Auth: \(call.rawValue, privacy: .public) answered HTTP \(response.statusCode, privacy: .public) (\(failure.code, privacy: .public)) after \(took, privacy: .public) s")
+                if call == .refresh, !Self.refusesTheRefreshToken(response.statusCode) {
+                    throw AnswerError.backend(status: response.statusCode, failure: failure)
+                }
+                throw AnswerError.unauthorized(detail: "\(failure.code)\(failure.message.map { " — \($0)" } ?? "") (HTTP \(response.statusCode))")
+            }
+            struct TokenResponse: Decodable {
+                var access_token: String
+                var refresh_token: String?
+                var expires_in: Double?
+                var expires_at: Double?
+            }
+            let token: TokenResponse
+            do {
+                token = try JSONDecoder().decode(TokenResponse.self, from: data)
+            } catch {
+                throw AnswerError.decoding(detail: "auth: \(error.localizedDescription)")
+            }
+            let expiresAt: Date = if let at = token.expires_at {
+                Date(timeIntervalSince1970: at)
+            } else {
+                now().addingTimeInterval(token.expires_in ?? 3600)
+            }
+            let newSession = SupabaseSession(accessToken: token.access_token, refreshToken: token.refresh_token ?? "", expiresAt: expiresAt)
+            session = newSession
+            store.save(newSession)
+            Log.answer.info("Auth: \(call.rawValue, privacy: .public) took \(took, privacy: .public) s")
+            return newSession
         }
-        guard (200..<300).contains(response.statusCode) else {
-            let failure = AnswerSSEDecoder.decodeErrorBody(data, status: response.statusCode)
-            throw AnswerError.unauthorized(detail: "\(failure.code)\(failure.message.map { " — \($0)" } ?? "") (HTTP \(response.statusCode))")
-        }
-        struct TokenResponse: Decodable {
-            var access_token: String
-            var refresh_token: String?
-            var expires_in: Double?
-            var expires_at: Double?
-        }
-        let token: TokenResponse
-        do {
-            token = try JSONDecoder().decode(TokenResponse.self, from: data)
-        } catch {
-            throw AnswerError.decoding(detail: "auth: \(error.localizedDescription)")
-        }
-        let expiresAt: Date = if let at = token.expires_at {
-            Date(timeIntervalSince1970: at)
-        } else {
-            now().addingTimeInterval(token.expires_in ?? 3600)
-        }
-        let newSession = SupabaseSession(accessToken: token.access_token, refreshToken: token.refresh_token ?? "", expiresAt: expiresAt)
-        session = newSession
-        store.save(newSession)
-        return newSession
     }
 }
