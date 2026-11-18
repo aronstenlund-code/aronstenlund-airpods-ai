@@ -64,3 +64,7 @@ Deno.test("K103 B1: the prompt holds the exact words of Helan går, each word ap
   assertStringIncludes(TEXT_PROMPT, "Och den som inte helan tar, han heller inte halvan får.");
   assertStringIncludes(TEXT_PROMPT, "sjung hopp faderallan lallan lej");
 });
+
+Deno.test("K103 (live 13:25, k9-neg-5): a web answer starts with the likely case, never with 'Det beror på'", () => {
+  assertStringIncludes(WEB_PROMPT, 'never "Det beror på …"');
+});
