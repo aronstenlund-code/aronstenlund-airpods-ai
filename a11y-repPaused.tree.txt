@@ -1,0 +1,40 @@
+Attributes: Application, 0x117537840, pid: 22456, label: 'EarMind'
+Element subtree:
+ →Application, 0x117537840, pid: 22456, label: 'EarMind'
+    Window (Main), 0x117537980, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x117537ac0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x117537c00, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x117537d40, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x117537e80, {{0.0, 0.0}, {402.0, 874.0}}
+              ScrollView, 0x117544000, {{0.0, 0.0}, {402.0, 874.0}}
+                Other, 0x117544140, {{0.0, 62.0}, {402.0, 668.0}}
+                  StaticText, 0x117544280, {{20.0, 82.0}, {362.0, 30.0}}, label: 'Fråga 2 av 5 · Varv 2, Biologiprovet'
+                    StaticText, 0x1175443c0, {{20.0, 82.0}, {145.7, 18.0}}, label: 'Fråga 2 av 5 · Varv 2'
+                    StaticText, 0x117544500, {{292.0, 82.0}, {90.0, 18.0}}, label: 'Biologiprovet'
+                    ProgressIndicator, 0x117544640, {{20.0, 108.0}, {362.0, 4.0}}, value: 40 %
+                      ProgressIndicator, 0x117544780, {{20.0, 98.0}, {362.0, 24.0}}, value: 40 %
+                  StaticText, 0x1175448c0, {{86.2, 306.5}, {229.7, 81.7}}, label: 'Vad bildas vid fotosyntesen?'
+                  StaticText, 0x117544a00, {{51.7, 412.0}, {298.7, 143.5}}, label: 'Pausad, Tryck på AirPods för att fortsätta, Fortsätter från början av meningen'
+                    Image, 0x117544b40, {{173.0, 412.0}, {56.0, 56.0}}, identifier: 'pause.circle.fill', label: 'Pausa'
+                    StaticText, 0x117544c80, {{174.7, 479.5}, {52.7, 18.0}}, label: 'Pausad'
+                    StaticText, 0x117544dc0, {{51.7, 505.5}, {298.7, 24.0}}, label: 'Tryck på AirPods för att fortsätta'
+                    StaticText, 0x117544f00, {{82.5, 537.5}, {237.0, 18.0}}, label: 'Fortsätter från början av meningen'
+                Other, 0x117545040, {{369.0, 62.0}, {30.0, 668.0}}, label: 'Vertikal rullningslist, 1 sida', value: 0 %
+                  Other, 0x117545180, {{396.0, 65.0}, {3.0, 662.0}}
+                Other, 0x1175452c0, {{369.0, 62.0}, {30.0, 668.0}}, label: 'Vertikal rullningslist, 1 sida', value: 0 %
+                  Other, 0x117545400, {{396.0, 65.0}, {3.0, 662.0}}
+              StaticText, 0x117545540, {{60.8, 750.0}, {280.3, 15.7}}, label: 'Långt svar: 1 tryck. Kort svar: 2 tryck. Fortsätt: 3 tryck.'
+                StaticText, 0x117545680, {{60.8, 751.2}, {10.3, 13.3}}, label: 'Långt svar, 1 tryck på AirPods'
+                StaticText, 0x1175457c0, {{77.2, 750.0}, {66.3, 15.7}}, label: 'Långt svar, 1 tryck på AirPods'
+                StaticText, 0x117545900, {{159.5, 751.2}, {20.7, 13.3}}, label: 'Kort svar, 2 tryck på AirPods'
+                StaticText, 0x117545a40, {{186.2, 750.0}, {54.3, 15.7}}, label: 'Kort svar, 2 tryck på AirPods'
+                StaticText, 0x117545b80, {{256.5, 751.2}, {31.0, 13.3}}, label: 'Fortsätt, 3 tryck på AirPods'
+                StaticText, 0x117545cc0, {{293.5, 750.0}, {47.7, 15.7}}, label: 'Fortsätt, 3 tryck på AirPods'
+              Button, 0x117545e00, {{20.0, 781.7}, {362.0, 50.3}}, label: 'Avsluta'
+Path to element:
+ →Application, 0x117537840, pid: 22456, label: 'EarMind'
+Query chain:
+ →Find: Target Application 'com.rsolutions.lumen'
+  Output: {
+    Application, 0x117545f40, pid: 22456, label: 'EarMind'
+  }

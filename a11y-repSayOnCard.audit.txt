@@ -1,0 +1,61 @@
+repSayOnCard: 14 issues (dynamicType 12, elementDetection 1, textClipped 1), audit 9 s
+
+
+
+ISSUE 1 [elementDetection] Potentially inaccessible text
+  This element appears to display text that should be represented using the accessibility API.
+  element: (none)
+
+ISSUE 2 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='1,2k krediter kvar' identifier='' frame={{20, 66}, {144.66666666666666, 36}}
+
+ISSUE 3 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='7:01 kvar' identifier='' frame={{87.833333333333329, 247.83333333333334}, {76.000000000000014, 20.333333333333286}}
+
+ISSUE 4 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Spelar i AirPods · Astrid' identifier='' frame={{45.833333333333343, 136}, {149.33333333333331, 15.666666666666657}}
+
+ISSUE 5 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Frågor och svar' identifier='' frame={{32, 492.33333333333331}, {338, 20.333333333333314}}
+
+ISSUE 6 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Historiaprovet' identifier='' frame={{32, 614.66666666666674}, {107, 20.333333333333371}}
+
+ISSUE 7 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Prov från din skola' identifier='' frame={{32, 698}, {338, 20.333333333333371}}
+
+ISSUE 8 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='Fotosyntes: koldioxid + vatten + ljus blir socker och syre.
+Cellandning: socker + syre blir energi, koldioxid och vatten.' identifier='' frame={{32, 161.66666666666666}, {338.33333333333331, 64.333333333333343}}
+
+ISSUE 9 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='3 dagar i rad' identifier='' frame={{16, 528.33333333333326}, {370, 31}}
+
+ISSUE 10 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='Stoppa' identifier='' frame={{315.16666666666674, 247.83333333333334}, {54.666666666666686, 20.333333333333286}}
+
+ISSUE 11 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Ljud: 4 av 6 klara' identifier='' frame={{32, 637.00000000000011}, {116.66666666666666, 18}}
+
+ISSUE 12 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Andra prov' identifier='' frame={{16, 559.33333333333326}, {370, 40.333333333333371}}
+
+ISSUE 13 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Nytt prov' identifier='' frame={{20, 804}, {100.33333333333333, 20.333333333333371}}
+
+ISSUE 14 [textClipped] Text clipped
+  Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.
+  element: 9 label='Fotosyntes: koldioxid + vatten + ljus blir socker och syre.
+Cellandning: socker + syre blir energi, koldioxid och vatten.' identifier='' frame={{32, 161.66666666666666}, {338.33333333333331, 64.333333333333343}}
