@@ -40,7 +40,7 @@ Ingen ändring i vad användaren ser. Inga nya tester: det här är vyns eget ti
 
 ## Testresultat
 
-- iOS build: se tavlan och tillägget nedan (bygget startade 00:20). **Untested assumption** tills det är grönt.
+- **iOS build 44418601653 på main är grön** (bygget för enhet, alla enhetstester, Release-bygget). **Verifierat i CI.**
 - Ändring 1 är **inte sedd** i Simulator eller på enhet. Den rättar ett läge som jag inte har kunnat återskapa.
 - 0 ElevenLabs.
 
@@ -63,3 +63,11 @@ Ingen ändring i vad användaren ser. Inga nya tester: det här är vyns eget ti
 Läs Tobys svar. Säger loggen "an earlier press is still waiting": hitta vilket anrop som inte kom tillbaka (raden
 före är `Say: Spela pressed (attempt N …)` utan `Say: answered`). Säger den "can be pressed" utan "Spela pressed":
 felet är trycket, och då är det Tobys test eller knappens träffyta.
+
+## Tillägg 00:55: Tobys svar
+
+Toby tror att felet låg i testet: det trycker mitt på en knapp som XCTest kallar otryckbar, och med tangentbordet
+uppe hamnade trycket då på tangentbordet. **Inte bekräftat** (loggen från körningen har ingen rad om att knappen var
+otryckbar). Han har ändrat testet: tangentbordet döljs före Spela utan nät, knappens `isEnabled` och `isHittable`
+loggas före trycket, och alla `Say:`-rader skrivs ut ur appens logg. Omkörningen gör han efter T54 7c. Raden i kön
+står öppen tills den körningen är läst.
