@@ -1,7 +1,7 @@
 // K107 (D232, Oscar's omtest K106 F3/F5): the last check sees which sentences answer each question; a later question
 // answered by the same sentences as an earlier one goes before the list is shown (the refill makes up the count).
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
-import { DEFAULT_DRILL_CONFIG, finalCheck, numberedSentences, sameSource, SYSTEM_PROMPT_DRILL_FINAL_CHECK } from "./drill.ts";
+import { DEFAULT_DRILL_CONFIG, finalCheck, numberedSentences, oneAsk, sameSource, SYSTEM_PROMPT_DRILL_FINAL_CHECK } from "./drill.ts";
 import type { LLMChunk, LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 
 const MATERIAL = `Energi i näringskedjan
@@ -54,4 +54,8 @@ Deno.test("K107: three questions answered by 'en tiondel av energin' keep the fi
   assertEquals(r.dropped, 2);
   assert(seen[0].user.includes("[3] Bara ungefär en tiondel av energin följer med till nästa nivå."));
   assert(SYSTEM_PROMPT_DRILL_FINAL_CHECK.includes('"sources"'));
+});
+
+Deno.test("K107 (live 19:09): '…, och var ägde den rum?' is a second question too", () => {
+  assertEquals(oneAsk("Vad var Dackefejden, och var ägde den rum?"), "Vad var Dackefejden?");
 });

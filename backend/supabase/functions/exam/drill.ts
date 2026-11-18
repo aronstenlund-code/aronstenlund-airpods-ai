@@ -313,7 +313,7 @@ export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
  */
 export function oneAsk(q: string): string {
   // live 18:00 (Vasa): "Vad var Dackefejden och varför var den viktig?" (also without the comma)
-  const m = /^(.{12,}?),\s+(?:och|and)\s+(?:varför|hur|vad|vilk\p{L}*|när|why|how|what|which|when)\s+[^?]{6,}\?$/iu.exec(q.trim()) ??
+  const m = /^(.{12,}?),\s+(?:och|and)\s+(?:varför|hur|vad|vilk\p{L}*|när|var|why|how|what|which|when|where)\s+[^?]{6,}\?$/iu.exec(q.trim()) ??
     /^((?:vad|vem|vilk\p{L}*|när|var|what|who|which|when)\s.{6,}?)\s+(?:och|and)\s+(?:varför|hur|vad|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim());
   return m && words(m[1]) >= 3 ? m[1].replace(/[\s,]+$/, "") + "?" : q;
 }
