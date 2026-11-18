@@ -361,6 +361,17 @@ import Testing
         #expect(cloud.oneCalls.count == 1 && cloud.saves.count == 1 && cloud.startCalls == 1)
     }
 
+    /// Kevin: a text sent again after a timeout is answered with the saved exam, unstarted; the app starts it.
+    @Test func anAlreadySavedTextIsStartedWithStart() async throws {
+        let (model, cloud, store, audio) = try model("k100-already")
+        cloud.oneCall = true
+        cloud.alreadySaved = true
+        let said = try #require(await model.say("En text som sparades förut.", repeatMinutes: 10))
+        model.end()
+        for _ in 0..<50 where audio.preparing.contains(said.id) { try? await Task.sleep(for: .milliseconds(2)) }
+        #expect(cloud.oneCalls.count == 1 && cloud.startCalls == 1 && store.drill(said.id)?.awaitsAudioStart == false)
+    }
+
     @Test func theCatalogIsReadOnceAndAnEmptyOneShowsNoVoices() async throws {
         let (model, _, _, _) = try model("a136-voices")
         await model.loadSayVoices()

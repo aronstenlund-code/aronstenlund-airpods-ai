@@ -1128,7 +1128,13 @@ final class CloudDrillAudio: DrillAudioProviding {
             }
             guard let id = current.serverID else { return false }
             let view: DrillCloudView
-            if let startedView { view = startedView } else { view = try await cloud.start(id: id) }
+            // Kevin: when the same client_id was saved before (sent again after a timeout) the server answers with the
+            // saved exam and starts nothing (`audio_started: false`); it is started here then.
+            if let startedView, startedView.drill.audio_started != false || startedView.audio_unavailable == true {
+                view = startedView
+            } else {
+                view = try await cloud.start(id: id)
+            }
             guard var latest = store.drill(drill.id) else { return false }
             if view.audio_unavailable == true, view.drill.audio_started == false {
                 // A112 (K78, D200): the voice service's credits are out. Nothing was queued or counted; the exam stays

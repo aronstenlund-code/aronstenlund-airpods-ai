@@ -38,12 +38,13 @@ import Testing
         /// K100: the server saves and starts in one call.
         var oneCall = false
         var oneCalls: [[String: Any]] = []
+        var alreadySaved = false
         func saveStarting(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView? {
             guard oneCall else { return nil }
             if let saveError { throw saveError }
             oneCalls.append(DrillCloudClient.saveStartingBody(drill))
             items = drill.items
-            started = true
+            started = !alreadySaved // Kevin: the same client_id again is answered with the saved exam, not started
             return view()
         }
 
