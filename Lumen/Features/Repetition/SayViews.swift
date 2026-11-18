@@ -69,6 +69,10 @@ enum SayText {
     /// A135 (D219.3): how long Spela shows its spinner, and what is said after that.
     static let patience: Duration = .seconds(10)
     static let slowLine = "Ljudet kunde inte hämtas. Kolla nätet." // Kelly: the button says the rest
+    /// Toby T50: the network is up and the server is slow (a new text can take longer than ten seconds to save).
+    /// The words must not blame the network then. Mine, for Kelly to review.
+    static let slowServerLine = "Det tar längre tid än vanligt. Försök igen om en stund."
+    static func slowLine(online: Bool) -> String { online ? slowServerLine : slowLine }
 
     /// A136 (D220, Kelly Ke75): the words of the style row and of "Skriv i takt".
     static let stylePrompt = "Hur ska det låta?"
@@ -856,8 +860,9 @@ struct SayInAirPodsField: View {
             model.giveUpSay()
             isStarting = false
             canRetry = true
-            refused = SayText.slowLine
-            AccessibilityNotification.Announcement(SayText.slowLine).post()
+            let line = SayText.slowLine(online: NetworkStatus.shared.isOnline)
+            refused = line
+            AccessibilityNotification.Announcement(line).post()
         }
     }
 }

@@ -35,6 +35,9 @@ import Testing
         var idPerExam = false
         private var currentID = "srv-1"
 
+        /// Toby T50: a save that takes its time (a cold server, a text with a style).
+        var saveDelay: Duration?
+
         /// As a real server: the answer takes a moment, so other tasks run meanwhile.
         var yieldsInSave = false
 
@@ -52,6 +55,7 @@ import Testing
 
         func save(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView {
             if yieldsInSave { await Task.yield(); await Task.yield() }
+            if let saveDelay { try? await Task.sleep(for: saveDelay) }
             if let saveError { throw saveError }
             saves.append(DrillCloudClient.saveBody(drill))
             if idPerExam { currentID = drill.serverID ?? "srv-\(drill.id.uuidString.prefix(8))" }

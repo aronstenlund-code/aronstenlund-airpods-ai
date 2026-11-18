@@ -1076,7 +1076,13 @@ final class CloudDrillAudio: DrillAudioProviding {
     @discardableResult
     func startAudio(_ drill: Drill) async -> Bool {
         guard store.drill(drill.id)?.awaitsAudioStart == true else { return true }
-        guard !starting.contains(drill.id) else { return true }
+        if starting.contains(drill.id) {
+            // Toby T50: an earlier press is still asking the server (a slow save, more than Spela's 10 s). This press
+            // waits for that answer instead of going on as if the exam were started: before the save has answered
+            // the text has no sentences to read, and Spela then said "Det gick inte att spela just nu".
+            for _ in 0..<1200 where starting.contains(drill.id) { try? await Task.sleep(for: .milliseconds(100)) }
+            return store.drill(drill.id).map { !$0.awaitsAudioStart } ?? false
+        }
         starting.insert(drill.id)
         defer { starting.remove(drill.id) }
         problems[drill.id] = nil
