@@ -31,6 +31,8 @@ on:
           - o83b_live.py
           - o84_k100_timing.py
           - o85_drill_auth_live.py
+          - o86_eval_reproduce.py
+          - o87_live.py
       args:
         description: "Arguments (optional, e.g. --fast)"
         required: false

@@ -73,6 +73,9 @@ enum AnswerSSEDecoder {
             case "tool_call":
                 // A48: no snake-case conversion, the input goes back to the server exactly as it came.
                 return .toolCall(try JSONDecoder().decode(PhoneToolCall.self, from: data))
+            case "searching":
+                // K104 (D233): a payload this build cannot read is still the signal.
+                return .searching((try? decoder.decode(AnswerSearching.self, from: data)) ?? AnswerSearching())
             default:
                 return nil // unknown event names are ignored (forward compatibility)
             }

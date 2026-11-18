@@ -366,6 +366,22 @@ Deno.test("web text gate: preface before a tool call is dropped, answer after th
     "Det är |sant.",
   );
   assertEquals(run([text("Svar "), text("direkt."), { type: "message_stop" }]), "Svar direkt.");
+  // K103 (O86 A1): an answer without a tool call starts after its first whole sentence, not at the end
+  assertEquals(
+    run([text("Helan går, sjung hopp faderallan lallan lej. "), text("Helan går, "), text("sjung hopp faderallan lej."), { type: "message_stop" }]),
+    "Helan går, sjung hopp faderallan lallan lej. |Helan går, |sjung hopp faderallan lej.",
+  );
+  // a song or quote (holdUntilEnd) is held whole, as before
+  const held = new WebTextGate(true);
+  const outs: string[] = [];
+  for (const ev of [text("Helan går, sjung hopp faderallan lallan lej. "), { type: "message_stop" }]) for (const c of held.filter(ev, mapAnthropicEvent(ev))) if (c.type === "text") outs.push(c.text);
+  assertEquals(outs, ["Helan går, sjung hopp faderallan lallan lej. "]);
+  assertEquals(held.released, false);
+  // a long preface about searching is still held, and dropped when the tool comes
+  assertEquals(
+    run([text("Jag söker efter den senaste uppgiften om det här. "), { type: "content_block_start", content_block: { type: "server_tool_use" } }, text("Svaret."), { type: "message_stop" }]),
+    "Svaret.",
+  );
 });
 
 import { RELATION_RULE } from "./prompt.ts";

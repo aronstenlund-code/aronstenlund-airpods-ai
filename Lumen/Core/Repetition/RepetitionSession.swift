@@ -65,7 +65,9 @@ final class RepetitionSession {
         // ever plays with the player on the screen.
         self.saying = saying
         readingLap = 1
-        repeatStarted = saying?.repeatMinutes == nil ? nil : now()
+        // Toby (T36 after K100): the time of the repetition starts with the first sound, not while the sound is still
+        // being made ("9:17 kvar" counted down in silence).
+        repeatStarted = nil
         let parts = drill.readingParts
         guard parts.contains(where: { !$0.sentences.isEmpty }) else { return }
         if activatesAudioSession { activatePlayback() }
@@ -79,6 +81,10 @@ final class RepetitionSession {
             self?.updateNowPlaying()
         }
         reader.onStep = { [weak self] line in self?.record(line) }
+        reader.onFirstSound = { [weak self] in
+            guard let self, self.saying?.repeatMinutes != nil else { return }
+            self.repeatStarted = self.now()
+        }
         reader.onEnd = { [weak self, weak reader] in
             self?.reportReading()
             self?.onFinished?(id)
@@ -220,7 +226,8 @@ final class RepetitionSession {
 
     /// A115: seconds left of the repetition; 0 when it reads once or the time is out.
     var repeatSecondsLeft: TimeInterval {
-        guard let minutes = saying?.repeatMinutes, let repeatStarted else { return 0 }
+        guard let minutes = saying?.repeatMinutes else { return 0 }
+        guard let repeatStarted else { return Double(minutes) * 60 } // no sound yet: the whole time is left
         return max(0, Double(minutes) * 60 - now().timeIntervalSince(repeatStarted))
     }
 
@@ -353,12 +360,13 @@ extension RepetitionSession {
     }
 
     /// A115's screenshots: a text from "Säg i AirPods" on its third lap of ten minutes.
-    func stageSaying(_ drill: Drill, reader: ReadingPlayer, minutes: Int?, lap: Int) {
+    func stageSaying(_ drill: Drill, reader: ReadingPlayer, minutes: Int?, lap: Int, waiting: Bool = false) {
         self.reader = reader
         self.drill = drill
         saying = SayOptions(repeatMinutes: minutes)
         readingLap = lap
-        repeatStarted = minutes == nil ? nil : now().addingTimeInterval(-168) // 7:12 left of 10 min
+        // 7:12 left of 10 min; while the first sound is waited for, the whole time is left.
+        repeatStarted = minutes == nil || waiting ? nil : now().addingTimeInterval(-168)
     }
 
     /// A106's screenshots: a text being read, without sound, Now Playing or the AirPods.

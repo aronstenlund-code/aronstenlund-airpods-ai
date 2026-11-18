@@ -55,6 +55,9 @@ final class LiveModeController {
     @ObservationIgnored private var inFlightTrigger: String?
     /// The instruction was a request for more and its suggestions are on screen: nothing replaces them at once.
     @ObservationIgnored private var instructionSuggested = false
+    /// The waiting trigger came after those suggestions were on screen (a turn that ended before the instruction's
+    /// `done`): it is news they did not know, so it is asked for when the instruction ends.
+    @ObservationIgnored private var deferredIsNews = false
 
     /// Set by the model right after its own init; weak, the model owns this controller.
     @ObservationIgnored weak var host: (any LiveModeHost)?
@@ -83,6 +86,7 @@ final class LiveModeController {
         session = nil
         instructing = nil
         deferredTrigger = nil
+        deferredIsNews = false
         inFlightTrigger = nil
     }
 
@@ -144,6 +148,7 @@ final class LiveModeController {
                                                     calibration: settings.calibration(for: host.mode),
                                                     adultConfirmed: settings.isAdultConfirmed) else { return }
         if let trigger = inFlightTrigger { deferredTrigger = trigger } // the suggestions being made are cancelled
+        deferredIsNews = false
         inFlightTrigger = nil
         instructing = host.mode
         instructionSuggested = false
@@ -161,8 +166,13 @@ final class LiveModeController {
             host.sayLive(host.language == .swedish ? "Okej." : "Okay.")
         }
         let suggested = instructionSuggested
+        let news = deferredIsNews
         instructionSuggested = false
-        if let trigger = deferredTrigger, answered, !suggested {
+        deferredIsNews = false
+        // What waited from before the instruction is not asked for when the instruction itself gave suggestions
+        // (nothing replaces them at once). A turn that ended after they came, in the moment before `done`, is asked
+        // for: it used to be dropped, and the other person's line got no suggestion.
+        if let trigger = deferredTrigger, answered, !suggested || news {
             deferredTrigger = nil
             requestSuggestions(trigger: trigger)
         }
@@ -181,6 +191,7 @@ final class LiveModeController {
         if liveTurn != nil, liveTurn?.requestedAt == nil { liveTurn?.requestedAt = Date() }
         if instructing != nil {
             deferredTrigger = trigger // the instruction goes first, the suggestions follow it
+            deferredIsNews = instructionSuggested
             return
         }
         guard let persona = LiveRequest.suggestions(for: session, trigger: trigger, interests: settings.interests,

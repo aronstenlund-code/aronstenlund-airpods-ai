@@ -281,7 +281,8 @@ Deno.test("K51 D159: never more questions than the material carries; answers onl
   const j = await (await h(post({ action: "drill", text: "kort material", questions: 20 }))).json();
   assertEquals([j.questions_asked, j.questions_possible, j.items.length], [20, 3, 3]);
   assertEquals(j.note, "Materialet räckte till 3 frågor.");
-  const asked = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(llm.calls.at(-1)!.user)![1]);
+  // the first answer call (K106: identical answers are asked again one by one afterwards)
+  const asked = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(llm.calls.find((c) => c.system.includes("You write the answers"))!.user)![1]);
   assertEquals(asked.length, 3, "no Claude answers for questions that are not made");
   // when the material carries enough: no note
   const full = mkPlan({ summary: {}, notes: "", questions_possible: 25, questions: ["Varför A?", "Varför B?", "Varför C?"] });
@@ -683,4 +684,39 @@ Deno.test("O79 omtest: the final check fixes a question that assumes what the ma
   const broken = await finalCheck(reply("nonsense"), DEFAULT_DRILL_CONFIG, qs, parts, "m");
   assertEquals([broken.questions, broken.dropped], [qs, 0]);
   assertEquals((await finalCheck(llm, DEFAULT_DRILL_CONFIG, qs, parts, "")).usage, null, "no material: no call");
+});
+
+Deno.test("D230: removed duplicates are made up for (no near-duplicates, nothing leaning on the material); why without a cause becomes understanding", async () => {
+  const { refillQuestions, isUnderstanding, DEFAULT_DRILL_CONFIG, SYSTEM_PROMPT_DRILL_FINAL_CHECK, SYSTEM_PROMPT_DRILL_REFILL } = await import("./drill.ts");
+  const seen: LLMRequest[] = [];
+  const llm: LLMProvider = {
+    name: "fake", model: "sonnet-fake",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      seen.push(req);
+      yield { type: "text", text: JSON.stringify({ questions: [
+        "Vad blev följden av riksdagen i Västerås för kyrkan?",
+        "Vad beslutade riksdagen i Västerås?", // the same as a kept one
+        "Enligt texten, vad hände sedan?", // leans on the material
+        "Jämför Gustav Vasas kungamakt med Kristians.",
+        "Förklara hur skulderna till Lübeck hänger ihop med reformationen.",
+      ] }) };
+      yield { type: "usage", inputTokens: 900, outputTokens: 90 };
+    },
+  };
+  const kept = ["Vad beslutade riksdagen i Västerås?", "Vad var Dackefejden?"];
+  const r = await refillQuestions(llm, DEFAULT_DRILL_CONFIG, kept, 2, "material om Gustav Vasa");
+  assertEquals(r.questions, ["Vad blev följden av riksdagen i Västerås för kyrkan?", "Jämför Gustav Vasas kungamakt med Kristians."]);
+  const { cleanQuestion: cq, leansOnMaterial: lean } = await import("./drill.ts");
+  assertEquals([cq("förklara hur X hänger ihop med Y?"), cq("Compare A and B"), cq("Vad är KPI")], ["Förklara hur X hänger ihop med Y.", "Compare A and B.", "Vad är KPI?"]);
+  assertEquals([lean("Hur visar materialet skillnaden?"), lean("What does the text say about Luther?"), lean("Hur mäts inflationen?")], [true, true, false]);
+  // K106: two more are asked for than needed (some may be the same as a kept one in other words)
+  assert(seen[0].user.includes("<count>4</count>") && seen[0].model === DEFAULT_DRILL_CONFIG.answerModel);
+  assertEquals((await refillQuestions(llm, DEFAULT_DRILL_CONFIG, kept, 0, "m")).usage, null, "nothing removed: no call");
+  // D230 in the prompts: understanding, not recall; half; no invented links
+  assert(SYSTEM_PROMPT_DRILL_FINAL_CHECK.includes("never into a what-, when- or who-question") && SYSTEM_PROMPT_DRILL_FINAL_CHECK.includes("At least half"));
+  assert(SYSTEM_PROMPT_DRILL_REFILL.includes("Never assume a fact, cause or link"));
+  assertEquals(
+    ["Förklara hur X hänger ihop med Y.", "Vad blev följden av kriget?", "Jämför A och B.", "Varför steg priserna?", "How did printing spread?", "Vad är KPI?", "När valdes Gustav Vasa?", "Vem var Dacke?"].map(isUnderstanding),
+    [true, true, true, true, true, false, false, false],
+  );
 });

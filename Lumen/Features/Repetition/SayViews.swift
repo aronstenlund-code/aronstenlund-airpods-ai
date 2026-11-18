@@ -17,6 +17,9 @@ enum SayText {
     static let fieldDark = Color(red: 0x15 / 255, green: 0x18 / 255, blue: 0x1F / 255)
     static let ink = Color(red: 0xE7 / 255, green: 0xE9 / 255, blue: 0xEF / 255)
     static let accent = Color(red: 0x7F / 255, green: 0x9B / 255, blue: 0xFF / 255)
+    /// A148: the fields' placeholders. 0.45 was 3.8:1 on the card ("Contrast failed" in the audit); 0.6 is 6:1 and
+    /// still clearly lighter than a written text.
+    static let promptOpacity = 0.6
 
     /// A124 (D210, Aron 2026-11-17): how long the text goes round: 10 min to 1 hour in steps of 5. It replaces
     /// "En gång" and 5/10/20. Spela plays at once; nothing starts later.
@@ -39,6 +42,14 @@ enum SayText {
     static var stagedPicked: (voiceID: String, reason: String?)?
     /// A135: the button is "Försök igen" (with a staged line), for the screenshots.
     static var stagedRetry = false
+    /// A144: Spela still waits (the spinner), for the screenshots of the 8 s line.
+    static var stagedStarting = false
+    /// Toby (T36): the line on the playing card while the first sound is waited for, for the screenshots.
+    static var stagedWaitNote: String?
+    /// A150: the card goes through its states by itself, for the recording of how it moves.
+    static var stagedMotion = false
+    /// A150 (Kelly Ke83): the player pulls itself down, for the recording.
+    static var stagedFold = false
     #endif
 
     /// "10 min" … "1 timme" on the button.
@@ -81,10 +92,17 @@ enum SayText {
 
     enum Wait: Equatable { case quiet, slow, gaveUp }
 
-    /// What Spela shows after this long without an answer.
-    static func wait(after elapsed: Duration, online: Bool) -> Wait {
-        if !online || elapsed >= giveUpAfter { return .gaveUp }
+    /// What Spela shows after this long without an answer (or, with the answer, without any sound yet).
+    static func wait(after elapsed: Duration, online: Bool, giveUpAfter limit: Duration = giveUpAfter) -> Wait {
+        if !online || elapsed >= limit { return .gaveUp }
         return elapsed >= slowAfter ? .slow : .quiet
+    }
+
+    /// Toby (T36 after K100): the server now answers in a second or two and the card says "Gör ljudet …" before
+    /// there is any sound, so the same clock goes on until the first sound. Making the sound of a long first part
+    /// takes its time, and that is not an error: a second more per 100 characters, at most two minutes in all.
+    static func giveUpAfter(waitingForChars chars: Int) -> Duration {
+        giveUpAfter + .seconds(min(95, max(0, chars) / 100))
     }
 
     /// A136 (D220, Kelly Ke75): the words of the style row and of "Skriv i takt".
@@ -135,13 +153,42 @@ enum SayText {
 
     /// A136 (Kelly's review): what a capsule in "Senaste" says after the text: the style's first word, else the name
     /// of the chosen voice. Nil for a text with the server's own voice and no style.
-    static func soundMark(_ drill: Drill, voices: [SayVoice]) -> String? {
+    /// Kelly (stil-och-roster.md, A136 point 2): the voice's name only when it is not the default voice.
+    static func soundMark(_ drill: Drill, voices: [SayVoice], defaultName: String? = nil) -> String? {
         if let style = Drill.cleanStyle(drill.style), let word = style.split(whereSeparator: { $0 == " " || $0 == "," }).first {
             return String(word)
         }
         if drill.mixVoices == true { return mixCapsule } // A140
-        guard let id = drill.voiceID else { return nil }
-        return voices.first { $0.voice_id == id }?.name
+        guard let id = drill.voiceID, let name = voices.first(where: { $0.voice_id == id })?.name, name != defaultName else { return nil }
+        return name
+    }
+
+    // MARK: A148 (Kelly Ke79): what VoiceOver says
+
+    /// "Kostar 120 krediter", "Kostar 120 krediter, du har 88". "Ingår" and "Veckans tak är nått" stand as they are.
+    static func spokenCost(_ line: String) -> String {
+        let spoken = line.replacingOccurrences(of: " · ", with: ", ")
+        return spoken.first?.isNumber == true ? "Kostar \(spoken)" : spoken
+    }
+
+    /// "Tempo, normal" for 1,0×; "Tempo, 1,25 gånger" else.
+    static func spokenTempo(_ value: Double) -> String {
+        value == 1 ? "Tempo, normal" : "Tempo, \(tempo(value).replacingOccurrences(of: "×", with: " gånger"))"
+    }
+
+    /// A capsule in Senaste: the whole text (the screen cuts it with "…"), then its style or voice.
+    static func spokenCapsule(_ text: String, mark: String?) -> String {
+        let flat = text.split(whereSeparator: \.isNewline).joined(separator: " ")
+        let whole = flat.count > 300 ? String(flat.prefix(300)) : flat
+        return mark.map { "\(whole), \($0)" } ?? whole
+    }
+
+    /// The card while it plays, as one: "Spelar i AirPods med Astrid, 7 minuter kvar". The minutes are the ones on
+    /// the clock (7:07 is "7 minuter kvar", Kelly Ke79 round 5), and the last minute is "under en minut kvar".
+    static func spokenPlaying(voice: String?, secondsLeft: Int, paused: Bool) -> String {
+        let minutes = max(0, secondsLeft) / 60
+        let left = minutes == 0 ? "under en minut kvar" : minutes == 1 ? "1 minut kvar" : "\(minutes) minuter kvar"
+        return "Spelar i AirPods" + (voice.map { " med \($0)" } ?? "") + ", \(left)" + (paused ? ", pausad" : "")
     }
 
     /// A132 (Ke72): a said text as a capsule under the field: its beginning, at most about 24 characters.
@@ -174,6 +221,8 @@ struct SayInAirPodsField: View {
     /// A135: which press is waited for, and that the last one took too long (the button is then Försök igen).
     @State private var attempt = 0
     @State private var canRetry = false
+    /// Toby (T36): said on the playing card while the first sound is still waited for (D225: after 8 s).
+    @State private var waitNote: String?
     /// K92: the server's answer for the text it was asked about.
     @State private var asked: (text: String, sound: SaySound, cost: Int, left: Int?, voiceID: String?, reason: String?)?
     /// A140 (D223): "Blanda röster", off by default, kept to the next time.
@@ -205,6 +254,35 @@ struct SayInAirPodsField: View {
     @FocusState private var focused: Bool
     @Environment(\.colorScheme) private var scheme
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    private var reduceMotion: Bool { SayMotion.reduces(systemReduceMotion) }
+
+    /// A150 (D231): what decides how the card looks. When any of it changes, the card moves to its new shape with a
+    /// spring that does not overshoot (a cross-fade with Reduce Motion) instead of jumping there. Typing does not
+    /// animate anything: only the first and the last character change the shape.
+    private struct CardLook: Hashable {
+        var plays: Bool
+        var isEmpty: Bool
+        var cost: Int?
+        var left: Int?
+        var refused: String?
+        var waitNote: String?
+        var picked: String?
+        var materialNote: String?
+        var hasPlayed: Bool
+        var canRetry: Bool
+        var isStarting: Bool
+        var isReading: Bool
+        var hasVoices: Bool
+        var waitsForSound: Bool
+    }
+
+    private var shape: CardLook {
+        CardLook(plays: playing != nil, isEmpty: isEmpty, cost: credits?.cost, left: credits?.left, refused: refused,
+              waitNote: waitNote, picked: picked?.voiceID, materialNote: materialNote, hasPlayed: hasPlayed,
+              canRetry: canRetry, isStarting: isStarting, isReading: isReadingMaterial, hasVoices: !model.sayVoices.isEmpty,
+                 waitsForSound: playing.map { $0.reader.phase == .waitingForAudio && !$0.reader.hasSounded } ?? false)
+    }
 
     private var chars: Int { SaidText.chars(text) }
     private var counts: Int { SaidText.countsAs(text, perQuestion: model.quota?.prices?.read?.chars_per_question) }
@@ -268,10 +346,19 @@ struct SayInAirPodsField: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             card
-            if playing == nil { recents }
+            if playing == nil { recents.transition(SayMotion.appear) }
+        }
+        .animation(SayMotion.change(reduceMotion), value: playing != nil)
+        // A150: the phone answers what the eye may miss: a no from the server or a Spela that gave up is felt once.
+        .sensoryFeedback(trigger: refused) { (_: String?, new: String?) -> SensoryFeedback? in
+            guard let new, new != SayText.slowServerLine else { return nil }
+            return .error
         }
         .task(id: Asked(text: text, sound: sound)) { await askCost(for: text, sound: sound) } // cancelled and asked again
         .task { await model.loadSayVoices() }
+        #if DEBUG
+        .task { if SayText.stagedMotion { await runMotionDemo() } }
+        #endif
         .onChange(of: sound) { refused = nil; canRetry = false }
         .onChange(of: isEmpty) { _, empty in if empty { style = "" } } // the style belongs to the text
         .onAppear { lookAtClipboard(); setStage() }
@@ -288,6 +375,37 @@ struct SayInAirPodsField: View {
 
     private func lookAtClipboard() { clipboardHasText = UIPasteboard.general.hasStrings }
 
+    #if DEBUG
+    /// A150 (D231): the card's changes, one after another, for the Simulator recording that Kelly reviews: a text
+    /// arrives, the cost comes and changes, Spela waits, the card plays, and Spela gives up. No server, no sound.
+    private func runMotionDemo() async {
+        func pause(_ seconds: Double) async { try? await Task.sleep(for: .seconds(seconds)) }
+        await pause(2.5)
+        text = "Fotosyntes: koldioxid + vatten + ljus blir socker och syre."
+        await pause(1.5)
+        asked = (text, sound, 120, nil, nil, nil)
+        await pause(1.5)
+        asked = (text, sound, 1251, nil, nil, nil)
+        await pause(1.5)
+        isStarting = true
+        await pause(1)
+        refused = SayText.slowServerLine
+        await pause(1.5)
+        isStarting = false
+        refused = nil
+        RepetitionDemo.stagePlaying(model, text: text, waiting: true)
+        await pause(1.5)
+        waitNote = SayText.slowServerLine
+        await pause(1.5)
+        waitNote = nil
+        RepetitionDemo.stagePlaying(model, text: text, waiting: false)
+        await pause(2)
+        model.end()
+        refused = SayText.failedLine
+        canRetry = true
+    }
+    #endif
+
     /// D215.1: at most one filled button on Start. Spela is filled when there is a text that can be played (or one
     /// plays); then Starta prov is toned down.
     private func setStage() { model.sayHoldsTheStage = model.isSayingOnCard || (!isEmpty && !tooMany) }
@@ -301,7 +419,7 @@ struct SayInAirPodsField: View {
         if !said.isEmpty {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    Text("Senaste").font(.footnote).foregroundStyle(.secondary)
+                    Text("Senaste").font(.footnote).foregroundStyle(LumenColor.secondaryText)
                     ForEach(said) { drill in
                         Button {
                             text = String(drill.saidText.prefix(SaidText.maxChars))
@@ -313,8 +431,8 @@ struct SayInAirPodsField: View {
                             // Kelly (review of A136): the text is cut first; what tells two sounds apart stays.
                             HStack(spacing: 4) {
                                 Text(verbatim: SayText.capsule(drill.saidText))
-                                if let mark = SayText.soundMark(drill, voices: model.sayVoices) {
-                                    Text(verbatim: "· \(mark)").foregroundStyle(.secondary)
+                                if let mark = SayText.soundMark(drill, voices: model.sayVoices, defaultName: model.sayDefaultVoice) {
+                                    Text(verbatim: "· \(mark)").foregroundStyle(LumenColor.secondaryText)
                                 }
                             }
                             .font(.footnote)
@@ -323,12 +441,16 @@ struct SayInAirPodsField: View {
                         .buttonStyle(.bordered)
                         .buttonBorderShape(.capsule)
                         .tint(.primary)
+                        // Ke79: the whole text and its style or voice, not the cut one with "…".
+                        .accessibilityLabel(SayText.spokenCapsule(drill.saidText, mark: SayText.soundMark(drill, voices: model.sayVoices, defaultName: model.sayDefaultVoice)))
                         .accessibilityHint("Lägger tillbaka texten i fältet")
                         .contextMenu {
                             Button("Ta bort", systemImage: "trash", role: .destructive) { model.delete(drill) }
                         }
+                        .transition(SayMotion.appear)
                     }
                 }
+                .animation(SayMotion.change(reduceMotion), value: said.map(\.id)) // A150: a removed capsule fades, the rest close the gap
                 .padding(.horizontal, 2)
             }
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -348,15 +470,29 @@ struct SayInAirPodsField: View {
     @ViewBuilder
     private func playingCard(_ reader: ReadingPlayer, _ drill: Drill) -> some View {
         let waiting = reader.phase == .waitingForAudio
-        HStack(spacing: 6) {
-            Circle().fill(SayText.accent).frame(width: 8, height: 8).accessibilityHidden(true)
-            // A140 (D223): which voice speaks now (the part's own when they are mixed).
-            Text(verbatim: waiting ? "Gör ljudet …" : SayText.playingLine(voice: model.speakingVoice(drill, part: reader.position?.part)))
-                .font(.footnote.weight(.semibold))
+        // Ke79: every 20 s, so the minutes VoiceOver says are the ones on the clock below.
+        TimelineView(.periodic(from: .now, by: 20)) { _ in
+            HStack(spacing: 6) {
+                Circle().fill(SayText.accent).frame(width: 8, height: 8).accessibilityHidden(true)
+                // A140 (D223): which voice speaks now (the part's own when they are mixed).
+                Text(verbatim: waiting ? "Gör ljudet …" : SayText.playingLine(voice: model.speakingVoice(drill, part: reader.position?.part)))
+                    .font(.footnote.weight(.semibold))
+            }
+            .foregroundStyle(SayText.accent)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            .accessibilityElement(children: .ignore)
+            // Ke79: the row as one: "Spelar i AirPods med Astrid, 7 minuter kvar". The clock below is for the eye.
+            .accessibilityLabel(waiting ? "Gör ljudet" : SayText.spokenPlaying(voice: model.speakingVoice(drill, part: reader.position?.part),
+                                                                               secondsLeft: Int(model.session.repeatSecondsLeft), paused: reader.isPaused))
+            .accessibilityAddTraits(.isStaticText) // Ke79 round 5: it is read, not pressed
         }
-        .foregroundStyle(SayText.accent)
-        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-        .accessibilityElement(children: .combine)
+        if waiting, !reader.hasSounded, let waitNote {
+            Text(verbatim: waitNote)
+                .font(.footnote.weight(.semibold))
+                .fixedSize(horizontal: false, vertical: true)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .transition(SayMotion.appear)
+        }
         Button {
             model.showsPlayer = true
         } label: {
@@ -368,35 +504,52 @@ struct SayInAirPodsField: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressFeedback) // A150: answers the touch on the way down
         .dynamicTypeSize(...DynamicTypeSize.accessibility3)
         .accessibilityHint("Öppnar spelaren med meningarna")
         HStack(spacing: 12) {
+            if waiting, !reader.hasSounded {
+                // Kelly Ke83: nothing is heard yet, so there is nothing to pause. A small spinner stands where the
+                // pause button will be; Stoppa is there all the time.
+                ProgressView()
+                    .controlSize(.small)
+                    .tint(SayText.ink)
+                    .frame(width: 44, height: 44)
+                    .background(SayText.accent.opacity(0.25), in: Circle())
+                    .accessibilityHidden(true) // the row above says "Gör ljudet"
+                    .transition(SayMotion.appear)
+            } else {
             Button {
                 model.session.press(.long)
             } label: {
                 Image(systemName: reader.isPaused ? "play.fill" : "pause.fill")
+                    .contentTransition(.symbolEffect(.replace)) // A150: the symbol changes in place
                     .font(.headline)
                     .foregroundStyle(Color.black)
                     .frame(width: 44, height: 44)
                     .background(SayText.accent, in: Circle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressFeedbackRound)
             .accessibilityLabel(reader.isPaused ? "Fortsätt" : "Pausa")
+            .transition(SayMotion.appear)
+            }
             TimelineView(.periodic(from: .now, by: 1)) { _ in
                 Text(verbatim: "\(SayText.clock(model.session.repeatSecondsLeft)) kvar" + (reader.isPaused ? " · pausad" : ""))
                     .font(.body.weight(.semibold))
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
+                    .accessibilityHidden(true) // Ke79: said in the row above, in minutes
             }
             Spacer(minLength: 8)
             Button {
                 model.end()
             } label: {
                 Text("Stoppa").font(.body).lineLimit(1).fixedSize()
+                    .frame(minHeight: 44) // A150: a whole finger's height to hit
+                    .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressFeedback)
             .foregroundStyle(SayText.accent)
         }
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -404,18 +557,24 @@ struct SayInAirPodsField: View {
 
     private var card: some View {
         VStack(alignment: .leading, spacing: 10) {
+            // A150 (D231): the two faces of the card change by fading where they stand, and the card takes its new
+            // height with a spring that does not overshoot.
             if let playing {
-                playingCard(playing.reader, playing.drill)
+                Group { playingCard(playing.reader, playing.drill) }.transition(SayMotion.swap(reduceMotion))
             } else {
-                writingCard
+                Group { writingCard }.transition(SayMotion.swap(reduceMotion))
             }
         }
+        // The card grows and shrinks from its top edge, and what is on its way in or out stays inside it.
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .animation(SayMotion.change(reduceMotion), value: shape)
         .onChange(of: text) { refused = nil; canRetry = false }
         .padding(16)
         .foregroundStyle(SayText.ink)
         .background(scheme == .dark ? SayText.fieldDark : SayText.field, in: RoundedRectangle(cornerRadius: 16))
         // Kelly S3: in dark mode the field is almost the colour of the screen, so a hairline shows where it ends.
         .overlay { if scheme == .dark { RoundedRectangle(cornerRadius: 16).strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5) } }
+        .clipShape(RoundedRectangle(cornerRadius: 16)) // A150: nothing shows outside the card while it changes
         .environment(\.colorScheme, .dark) // the system's controls are dark inside the field, in light mode too
         #if DEBUG
         .onAppear {
@@ -424,9 +583,11 @@ struct SayInAirPodsField: View {
                 Task {
                     refused = line
                     canRetry = SayText.stagedRetry
+                    if SayText.stagedStarting { isStarting = true }
                 }
             }
             if SayText.stagedVoicesSheet { showsVoices = true }
+            if let note = SayText.stagedWaitNote { waitNote = note }
         }
         #endif
         // A116: presented from outside the field's dark colour scheme, so the system's sheets look as usual.
@@ -463,26 +624,24 @@ struct SayInAirPodsField: View {
     private var writingCard: some View {
         HStack(alignment: .top, spacing: 8) { // the empty field keeps three rows: the mark stands at the first
             Text(verbatim: "›").foregroundStyle(SayText.accent).accessibilityHidden(true)
-            TextField("", text: $text, prompt: Text(typeSize.isAccessibilitySize ? "Skriv här" : "Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(0.45)),
+            TextField("", text: $text, prompt: Text(typeSize.isAccessibilitySize ? "Skriv här" : "Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(SayText.promptOpacity)),
                       axis: .vertical)
                 // A132 (D215.4): at most 5 rows, then it scrolls inside; 3 rows when it is not being written in.
                 .lineLimit(focused ? (typeSize.isAccessibilitySize ? 2...5 : 3...5) : (typeSize.isAccessibilitySize ? 2...3 : 3...3))
                 .focused($focused)
                 .tint(SayText.accent)
-                .accessibilityLabel("Säg i AirPods, textfält")
+                .accessibilityLabel("Säg i AirPods") // Ke79: VoiceOver says "textfält" itself
         }
         .font(.body.monospaced())
         .dynamicTypeSize(...DynamicTypeSize.accessibility3) // the field stays a field on a small screen
         // Ke72 §2: without focus the three rows fade downwards, so a longer text is seen to go on.
         .mask {
-            if focused || isEmpty {
-                Rectangle()
-            } else {
-                LinearGradient(stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.62),
-                                       .init(color: .black.opacity(0.25), location: 1)],
-                               startPoint: .top, endPoint: .bottom)
-            }
+            // A150: one gradient whose last stop fades, so the change with the focus is a fade and not a jump.
+            LinearGradient(stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.62),
+                                   .init(color: .black.opacity(focused || isEmpty ? 1 : 0.25), location: 1)],
+                           startPoint: .top, endPoint: .bottom)
         }
+        .animation(SayMotion.change(reduceMotion), value: focused)
         if isReadingMaterial || materialNote != nil {
             HStack(spacing: 8) {
                 if isReadingMaterial { ProgressView().controlSize(.small) }
@@ -492,15 +651,16 @@ struct SayInAirPodsField: View {
             }
             .accessibilityElement(children: .combine)
         }
-        if !isEmpty { styleRow }
+        if !isEmpty { Group { styleRow }.transition(SayMotion.appear) }
         if !hasPlayed { // D215.2: said until Spela has been pressed once, then never
             Text(verbatim: SayText.lockLine)
                 .font(.footnote)
                 .opacity(0.7)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .fixedSize(horizontal: false, vertical: true)
+                .transition(SayMotion.appear)
         }
-        costRow
+        Group { costRow }.transition(SayMotion.appear)
         controls
     }
 
@@ -526,7 +686,7 @@ struct SayInAirPodsField: View {
                 .accessibilityLabel("Röst, \(voiceLabel)")
                 .smallSayControl()
             }
-            TextField("", text: $style, prompt: Text(verbatim: SayText.stylePrompt).foregroundStyle(SayText.ink.opacity(0.45)))
+            TextField("", text: $style, prompt: Text(verbatim: SayText.stylePrompt).foregroundStyle(SayText.ink.opacity(SayText.promptOpacity)))
                 .font(.subheadline)
                 .focused($styleFocused)
                 .tint(SayText.accent)
@@ -536,6 +696,11 @@ struct SayInAirPodsField: View {
                 }
                 .accessibilityLabel(SayText.stylePrompt)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                // A148: a finger's size. The field itself stays one line high (the audit still measures that line), so
+                // the 44 points around it take the tap and put the cursor in the field.
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
+                .onTapGesture { styleFocused = true }
                 .toolbar {
                     // Ke75 §2: four suggestions above the keyboard; a tap writes the word.
                     if styleFocused {
@@ -571,7 +736,10 @@ struct SayInAirPodsField: View {
     /// Ke72: the cost as a short line just above the main button; the server's own line when it refused (D212).
     @ViewBuilder
     private var costRow: some View {
-        if let refused, !isEmpty {
+        // Kelly (kop.md §2): after the server's no (402) the row is the same as before it, "120 krediter · du har 88 ·
+        // Fyll på", when the credits are known; the sheet that Fyll på opens says when new credits come.
+        let creditsShort = model.shop != nil && (credits.map { $0.cost > $0.left } ?? false)
+        if let refused, !isEmpty, !creditsShort {
             Text(verbatim: refused)
                 .font(.footnote.weight(.semibold))
                 .fixedSize(horizontal: false, vertical: true)
@@ -580,7 +748,7 @@ struct SayInAirPodsField: View {
             if model.shop != nil, tooMany || refused.contains("krediter") {
                 Button(ShopText.refill) { showsCredits = true }
                     .font(.footnote.weight(.semibold))
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressFeedback)
                     .foregroundStyle(SayText.accent)
                     .frame(minHeight: 32)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
@@ -600,12 +768,15 @@ struct SayInAirPodsField: View {
                         Text(SayText.refillLine(line))
                             .multilineTextAlignment(typeSize.isAccessibilitySize ? .leading : .trailing)
                             .fixedSize(horizontal: false, vertical: true)
-                            .frame(minHeight: 32)
+                            .frame(minHeight: 44) // A148: a finger's size (the audit: "Hit area is too small")
+                            .contentShape(Rectangle())
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("\(line). \(ShopText.refill)")
+                    .buttonStyle(.pressFeedback) // A150: answers the touch on the way down
+                    .accessibilityLabel("\(SayText.spokenCost(line)). \(ShopText.refill)") // Ke79
                 } else {
-                    Text(verbatim: line)
+                    // A150: the number rolls in place when the server's answer comes or the text changes.
+                    Text(verbatim: line).contentTransition(SayMotion.number(reduceMotion))
+                        .accessibilityLabel(SayText.spokenCost(line)) // Ke79: "Kostar 120 krediter"
                 }
             }
             .font(short ? .footnote.weight(.semibold) : .footnote)
@@ -689,7 +860,7 @@ struct SayInAirPodsField: View {
         } label: {
             Text(verbatim: inPace ? SayText.paceCapsule : SayText.tempo(tempo)).monospacedDigit().lineLimit(1).fixedSize()
         }
-        .accessibilityLabel(inPace ? "Tempo, \(SayText.paceTitle)" : "Tempo, \(SayText.tempo(tempo))")
+        .accessibilityLabel(inPace ? "Tempo, \(SayText.paceTitle)" : SayText.spokenTempo(tempo)) // Ke79
         .smallSayControl()
     }
 
@@ -719,7 +890,7 @@ struct SayInAirPodsField: View {
             } label: {
                 HStack(spacing: 6) {
                     // Kelly: Försök igen must not look as if it plays at once.
-                    if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: canRetry ? "arrow.clockwise" : "play.fill").accessibilityHidden(true) }
+                    if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: canRetry ? "arrow.clockwise" : "play.fill").contentTransition(.symbolEffect(.replace)).accessibilityHidden(true) }
                     // In a row of its own (the largest text) it may shrink; it must never be wider than the card.
                     Text(verbatim: canRetry ? "Försök igen" : SayText.playTitle(minutes)).lineLimit(1)
                         .fixedSize(horizontal: !wide, vertical: false)
@@ -731,7 +902,9 @@ struct SayInAirPodsField: View {
             .buttonStyle(.borderedProminent)
             .buttonBorderShape(.capsule)
             .tint(SayText.accent)
-            .foregroundStyle(Color.black)
+            // A148: a button that cannot be pressed still says what it is. Black on the dimmed fill was unreadable
+            // ("Contrast failed" in the audit); the card's own text colour is 9:1 on it.
+            .foregroundStyle(isEmpty || isStarting || tooMany ? SayText.ink.opacity(0.85) : Color.black)
             .disabled(isEmpty || isStarting || tooMany)
             .dynamicTypeSize(...DynamicTypeSize.accessibility1) // as the small buttons beside it
         }
@@ -861,37 +1034,65 @@ struct SayInAirPodsField: View {
         canRetry = false
         attempt += 1
         let mine = attempt
+        // Toby (T36, 2026-11-18 18:00: without a network a new text said nothing at all): what Spela did is in the
+        // log, one line per step, so the next run shows where it stopped.
+        Log.repetition.info("Say: Spela pressed (attempt \(mine, privacy: .public), online \(NetworkStatus.shared.isOnline, privacy: .public))")
         Task {
             // A130: the model knows whether this text is already an exam (the same text never becomes two).
             let drill = await model.say(text, repeatMinutes: minutes, sound: sound, inPace: inPace, picked: picked)
-            guard mine == attempt, isStarting else { return } // given up meanwhile: the line below stands
+            guard mine == attempt, isStarting else { // given up meanwhile: the line below stands
+                Log.repetition.info("Say: answered after it was given up (attempt \(mine, privacy: .public))")
+                return
+            }
             if let drill {
                 refused = model.sayRefusal(drill)
                 if let refused { AccessibilityNotification.Announcement(refused).post() }
             }
+            // Never silent: a Spela that neither plays nor has a line says the plain one.
+            if refused == nil, !model.isSayingOnCard, !model.showsPlayer {
+                refused = SayText.slowLine(online: NetworkStatus.shared.isOnline)
+                canRetry = true
+            }
+            Log.repetition.info("Say: answered (plays \(model.isSayingOnCard || model.showsPlayer, privacy: .public), line \(refused ?? "-", privacy: .public))")
             isStarting = false
         }
         Task {
             // A135 (D219.3, Aron's phone 20:24): no spinner without an end. A144 (D225): looked at once a second.
             // After 8 s the line says that it takes longer than usual and the spinner goes on; after 25 s, or without
             // a network, it gives up: the error line and Försök igen. Nothing starts to play by itself later.
+            // Toby (T36 after K100): the server answers fast now, and the card turns to "Gör ljudet …" before there
+            // is any sound. The same clock goes on there until the first sound is heard; a text that plays is left
+            // alone, and so is the player with the text on the screen.
             let started = ContinuousClock.now
+            let firstPart = SaidText.parts(text).first?.count ?? 0
             var saidSlow = false
+            waitNote = nil
             while true {
                 try? await Task.sleep(for: .seconds(1))
-                guard mine == attempt, isStarting, !model.isSayingOnCard, !model.showsPlayer else { return }
+                guard mine == attempt, !model.showsPlayer else { waitNote = nil; return }
+                let onCard = model.isSayingOnCard
+                if onCard {
+                    guard let reader = model.session.reader, !reader.hasSounded else { waitNote = nil; return }
+                    if reader.isPaused { continue }
+                } else if !isStarting {
+                    return
+                }
                 let online = NetworkStatus.shared.isOnline
-                switch SayText.wait(after: ContinuousClock.now - started, online: online) {
+                let limit = onCard ? SayText.giveUpAfter(waitingForChars: firstPart) : SayText.giveUpAfter
+                switch SayText.wait(after: ContinuousClock.now - started, online: online, giveUpAfter: limit) {
                 case .quiet:
                     continue
                 case .slow:
+                    if onCard { waitNote = SayText.slowServerLine } else { refused = SayText.slowServerLine }
                     if !saidSlow {
                         saidSlow = true
-                        refused = SayText.slowServerLine
                         AccessibilityNotification.Announcement(SayText.slowServerLine).post()
                     }
                 case .gaveUp:
+                    Log.repetition.info("Say: gave up (on the card \(onCard, privacy: .public), online \(online, privacy: .public))")
                     model.giveUpSay()
+                    if onCard { model.end() } // back to the field; the sound goes on being made for Försök igen
+                    waitNote = nil
                     isStarting = false
                     canRetry = true
                     let line = SayText.slowLine(online: online)

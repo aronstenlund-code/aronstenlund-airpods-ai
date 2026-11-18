@@ -21,11 +21,14 @@ protocol AnswerSink: AnyObject {
     func answerFailed(_ message: String, wantsFallback: Bool)
     /// A48 (K35): the model asked for a phone tool; the sink confirms and runs it.
     func answerToolCall(_ call: PhoneToolCall)
+    /// K104 (D233): the answer is searching the web; its first word will take a while.
+    func answerSearching()
 }
 
 extension AnswerSink {
     func answerAppCommand(_ command: AppCommand) {}
     func answerToolCall(_ call: PhoneToolCall) {}
+    func answerSearching() {}
 }
 
 /// Runs one answer at a time: a new question interrupts the current answer (assignment item 5), streams
@@ -121,6 +124,9 @@ final class AnswerEngine {
                     done = finished
                 case .toolCall(let call):
                     sink?.answerToolCall(call)
+                case .searching(let search):
+                    Log.answer.info("searching: \(search.tool ?? "?", privacy: .public)")
+                    if firstDeltaMs == nil { sink?.answerSearching() } // K104: it comes before the first word
                 case .error:
                     break // the provider throws right after yielding this
                 }

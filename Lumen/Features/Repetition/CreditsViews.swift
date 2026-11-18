@@ -78,13 +78,18 @@ enum CreditsText {
 struct CreditsCapsule: View {
     let model: RepetitionModel
     @State private var showsSheet = false
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    private var reduceMotion: Bool { SayMotion.reduces(systemReduceMotion) }
 
     var body: some View {
         if let quota = model.quota {
             Button {
                 showsSheet = true
             } label: {
+                // A150 (D231): the number rolls in place when it changes; it never jumps.
                 Text(verbatim: CreditsText.capsule(quota)).font(.subheadline).monospacedDigit()
+                    .contentTransition(SayMotion.number(reduceMotion))
+                    .animation(SayMotion.change(reduceMotion), value: CreditsText.capsule(quota))
             }
             .accessibilityHint("Visar vad som kostar vad")
             .sheet(isPresented: $showsSheet) { CreditsSheet(model: model) }
@@ -99,6 +104,23 @@ struct CreditsSheet: View {
     let model: RepetitionModel
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    private var reduceMotion: Bool { SayMotion.reduces(systemReduceMotion) }
+
+    /// A150 (D231): what makes the sheet's list change: the products that arrive from the App Store, a line after a
+    /// purchase, a reward. The rows then make room with a spring that does not overshoot instead of jumping.
+    private struct Rows: Hashable {
+        var items: [String]
+        var note: String?
+        var rewards: [Int]
+        var asked: Bool
+        var weekly: Bool
+    }
+
+    private var rows: Rows {
+        Rows(items: model.shop?.items.map(\.id) ?? [], note: model.shop?.note, rewards: model.shop?.newRewards ?? [],
+             asked: model.shop?.hasAsked ?? false, weekly: model.quota?.hasWeeklyCard ?? false)
+    }
 
     var body: some View {
         NavigationStack {
@@ -112,10 +134,12 @@ struct CreditsSheet: View {
                                  : quota.isCredits ? CreditText.number(quota.left) : "\(quota.left)")
                                 .font(.system(.largeTitle, design: .rounded).weight(.bold))
                                 .monospacedDigit()
+                                .contentTransition(SayMotion.number(reduceMotion)) // A150: rolls up after a purchase
+                                .animation(SayMotion.change(reduceMotion), value: quota.left)
                             Text(verbatim: quota.isUnlimited ? "Det här kontot har ingen gräns"
                                  : weekly.map(ShopText.weekLine)
                                  ?? (quota.isOnlyWelcome ? ShopText.welcomeLine : CreditsText.leftLine(quota, withShop: model.shop != nil)))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(LumenColor.secondaryText)
                                 .multilineTextAlignment(.center)
                         }
                         .frame(maxWidth: .infinity)
@@ -136,9 +160,10 @@ struct CreditsSheet: View {
                                 LabeledContent(row.title, value: row.value)
                             }
                         } header: {
-                            Text("Så räknas det")
+                            Text("Så räknas det").foregroundStyle(LumenColor.secondaryText) // A148: AA
                         } footer: {
                             Text(verbatim: CreditText.footnote(limit: quota.limit, resetsDay: quota.resetsDay))
+                                .foregroundStyle(LumenColor.secondaryText)
                         }
                     } else if !rows.isEmpty {
                         Section {
@@ -153,11 +178,12 @@ struct CreditsSheet: View {
                     } else {
                         Section {
                             Text(verbatim: "\(CreditsText.refill(quota.resets)) Prov som andra har delat eller publicerat kostar inget.")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(LumenColor.secondaryText)
                         }
                     }
                 }
             }
+            .animation(SayMotion.change(reduceMotion), value: rows)
             .contentMargins(.top, 8, for: .scrollContent) // Kelly (review of A134): the number stands right under the title
             .navigationTitle(model.quota?.isCredits == true ? "Krediter" : "Frågor kvar")
             .navigationBarTitleDisplayMode(.inline)

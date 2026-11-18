@@ -21,6 +21,9 @@ export interface LLMRequest {
   timeoutMs?: number;
   /** K35: hold text until a tool call (then dropped) or the end (then released): Haiku may reason aloud first. */
   holdTextBeforeTool?: boolean;
+  /** K103: with web tools, hold the whole text until the end when no tool is used (a song or quote, so a
+   *  self-correction can still be cut); otherwise the first whole sentence starts the answer. */
+  holdUntilEnd?: boolean;
   /** K35: the whole conversation instead of one user turn (a tool round: user, assistant tool_use, tool_result). */
   messages?: unknown[];
   /** K19 (Oscar O34): also yield the web search results' URLs as `source` chunks (only the link search asks). */
@@ -33,6 +36,8 @@ export type LLMChunk =
   | { type: "text"; text: string }
   /** K11: text a web search result gave for a citation (`cited_text`), to check verbatim quotes. */
   | { type: "cite"; cited: string }
+  /** K104 (D233): the model started a web search or fetch (once per request); nothing is spoken, no cost. */
+  | { type: "searching"; tool: "web_search" | "web_fetch" }
   /** K19: one web search result (only with `wantSources`). */
   | { type: "source"; url: string; title: string }
   /** K35: a client tool call the app runs (input null = the model's JSON did not parse). */

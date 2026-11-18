@@ -334,7 +334,7 @@ export function numbersToSpeech(text: string): string {
     "$1$2 mot $3",
   );
   // ranges 5-10 / 5–10 (not dates 2026-11-04)
-  s = s.replace(/(?<![\d-])(\d+(?:[.,]\d+)?)\s*[–-]\s*(\d+(?:[.,]\d+)?)(?![\d-])/g, "$1 till $2");
+  s = s.replace(/(?<![\d-])(\d+(?:[.,]\d+)?)\s*[–—−-]\s*(\d+(?:[.,]\d+)?)(?![\d-])/g, "$1 till $2");
   // negative numbers
   s = s.replace(/(?<![\p{L}\d)])-(?=\d)/gu, "minus ");
   const re =

@@ -106,6 +106,17 @@ const ASK_START = /^(?:och |men |så |lumen,? |earmind,? )?(?:vad|vem|vilk(?:en|
 export const EMPTY_RETRY_NOTE =
   "Your previous reply could not be read aloud. Answer the question now from what you know, in one or two plain Swedish sentences, with \"cirka\" for a number you are not exactly sure of. Write no marker, no source list and no question back.";
 
+/** K103 (O86 B1): a song or poem as it is said: a self-correction at the start drops what came before it, and a line
+ *  break becomes a pause (a comma after a word), so two lines never run together. */
+export function textForVoice(t: string, first: boolean): string {
+  const fix = first ? TEXT_SELF_FIX.exec(t) : null;
+  const s = fix ? t.slice(fix.index + fix[0].length) : t;
+  return s.replace(/([\p{L}\p{N}])[ \t]*(?:\r?\n)+[ \t]*(?=\S)/gu, "$1, ").replace(/[ \t]*(?:\r?\n)+[ \t]*/gu, " ");
+}
+
+/** K103 (O86 B1): the model correcting itself in the middle of a song text; what came before it is dropped. */
+export const TEXT_SELF_FIX = /^[\s\S]*?(?:jag är (?:inte )?(?:osäker|säker) på (?:den )?(?:exakta |rätta )?texten|här (?:kommer|är) (?:den |en )?(?:vedertagna|riktiga|korrekta|rätta|vanliga) (?:versionen|texten))[^:\n]*[:.]\s*/iu;
+
 export function askLike(text: string): boolean {
   if (/\?/.test(text)) return true;
   if (/(?<![\p{L}])(?:och )?om [^.]{1,60}(?<![\p{L}])då\s*$/iu.test(text.trim())) return true; // "och om x är två då"
@@ -221,6 +232,11 @@ export interface HandlerConfig {
   limits: Limits;
   /** D46 item 8: caps for requests that use web search/fetch (they cost real money per search). */
   webLimits?: Limits;
+  /** K105 (D234): of webLimits.globalPerDay, this many a day are for test calls (`x-earmind-test`); the rest for users. */
+  webTestGlobalPerDay?: number;
+  /** K105: the split starts at this time (ms); before it every call shares one cap as before, so the day already
+   *  used up (18 Nov) gets no extra searches. */
+  webSplitFromMs?: number;
   /** K12: spoken instructions (commands, calibrations, free instructions) are counted apart from questions. */
   commandLimits?: Limits;
   /** D52: model + prices (USD / MTok) for Rizz suggestions (Sonnet 5.5 by default; Haiku for the rest). */
@@ -256,6 +272,16 @@ export function isRankQuestion(t: string): boolean {
     !/(?<![\p{L}])(?:jag|mig|min|mitt|mina|vi|vår|våra|du|din|ditt|dina)(?![\p{L}])/iu.test(t);
 }
 
+/**
+ * K104 (D233): `x-earmind-test: <tag> model-haiku|model-sonnet` picks the model of a call with web tools, for the
+ * measurement of Haiku against Sonnet on searched answers. Only calls that search: Sonnet is then what Provläge and
+ * texts already use (same web caps), so the header gives nobody a model they cannot already reach.
+ */
+export function testModelPick(h: string | null): "haiku" | "sonnet" | null {
+  const m = /(?:^|\s)model-(haiku|sonnet)(?:\s|$)/i.exec(h ?? "");
+  return m ? (m[1].toLowerCase() as "haiku" | "sonnet") : null;
+}
+
 export const DEFAULT_CONFIG: HandlerConfig = {
   confidenceThreshold: 0.45,
   maxTokens: 256,
@@ -264,6 +290,8 @@ export const DEFAULT_CONFIG: HandlerConfig = {
   maxAnswerCharsStudy: 1800,
   limits: { perMinute: 20, perDay: 400, globalPerDay: 5000 },
   webLimits: { perMinute: 5, perDay: 20, globalPerDay: 150 }, // Oscar O20: a recipe and two follow-ups in a minute
+  webTestGlobalPerDay: 50, // K105 (D234): tests filled the shared cap on 17 and 18 Nov; users keep 100, tests 50
+  webSplitFromMs: Date.parse("2026-11-19T00:00:00Z"), // K105: from the next day's window on, never more than 150 a day
   // K12 (Toby T6 #7: 429 on quick instructions in Socialt/Rizz): instructions have their own budget
   commandLimits: { perMinute: 15, perDay: 300, globalPerDay: 3000 },
   // Oscar 2026-11-08: 40 (was 20) and aborted calls are given back here too
@@ -297,6 +325,8 @@ export interface Deps {
   localLimiter?: RateLimiter;
   /** Wall clock (tests); default `new Date()`. */
   clock?: () => Date;
+  /** K105 (Oscar O89): is this call test traffic (header, test account, script, CI)? Default: the test header. */
+  isTest?: (req: Request) => boolean;
   /** null = no provider configured -> 503 provider_unconfigured (fail closed). */
   provider: LLMProvider | null;
   recordUsage: (rec: UsageRecord) => void | Promise<void>;
@@ -339,6 +369,18 @@ export function providerErrorToHttp(e: unknown): HttpError {
   return new HttpError(502, "provider_unavailable", "LLM provider unavailable", { fallback: true });
 }
 
+/** K105 (D234): the web cap's scope and limits for this call. Test calls (`x-earmind-test`) count against their own
+ *  global cap, so tests never use up users' web answers; the two caps add up to webLimits.globalPerDay as before. */
+export const WEB_TEST_GLOBAL_KEY = "answer-web-test:global:d";
+export function webCap(cfg: HandlerConfig, test: boolean, nowMs = Date.now()): { scope: string; limits: Limits } {
+  const base = cfg.webLimits ?? DEFAULT_CONFIG.webLimits!;
+  if (nowMs < (cfg.webSplitFromMs ?? 0)) return { scope: "answer-web", limits: base };
+  const testCap = Math.min(base.globalPerDay, Math.max(0, cfg.webTestGlobalPerDay ?? DEFAULT_CONFIG.webTestGlobalPerDay ?? 0));
+  return test
+    ? { scope: "answer-web-test", limits: { ...base, globalPerDay: testCap } }
+    : { scope: "answer-web", limits: { ...base, globalPerDay: base.globalPerDay - testCap } };
+}
+
 export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
   const now = deps.now ?? (() => performance.now());
   const cfg = deps.config;
@@ -352,6 +394,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
     }
     const t0 = now();
     const cold = served++ === 0;
+    // K105 (D234): test calls have their own web cap; `done.web_cap_test` says when it is used up
+    const webTest = deps.isTest ? deps.isTest(req) : req.headers.has("x-earmind-test");
+    let webCapTest = false;
+    const webLimit = async (userId: string) => {
+      const c = webCap(cfg, webTest, (deps.clock ?? (() => new Date()))().getTime());
+      const r = await enforceLimits(deps.rateLimiter, c.scope, userId, c.limits);
+      if (!r.allowed && webTest && r.deniedKey === WEB_TEST_GLOBAL_KEY) webCapTest = true;
+      return r;
+    };
     try {
       if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use POST");
       const declared = Number(req.headers.get("content-length") ?? "0");
@@ -755,7 +806,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         !demo && !personaPlan(body) && body.mode !== "interview_prep" &&
         (body.mode === "auto" ? isDirectResourceRequest(body.fragment) : isResourceRequest(body.fragment))
       ) {
-        const wl = await enforceLimits(deps.rateLimiter, "answer-web", user.id, cfg.webLimits ?? DEFAULT_CONFIG.webLimits!);
+        const wl = await webLimit(user.id);
         const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
         if (!rl.allowed) {
           throw new HttpError(429, "rate_limited", "Too many requests", { fallback: true, retryAfterSec: rl.retryAfterSec });
@@ -837,6 +888,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             relation: null,
             source: resource ? domainOf(resource.url) : null,
             memory_add: null,
+            ...(webCapTest ? { web_cap_test: true } : {}),
             resource,
           }),
         ];
@@ -1326,21 +1378,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       let webNote: string | undefined;
       let textOn = false;
       if (textReq) {
-        const wl = await enforceLimits(
-          deps.rateLimiter,
-          "answer-web",
-          user.id,
-          cfg.webLimits ?? DEFAULT_CONFIG.webLimits!,
-        );
+        const wl = await webLimit(user.id);
         textOn = wl.allowed; // without search the rules still apply, from the model's own knowledge
       }
       if (need) {
-        const wl = await enforceLimits(
-          deps.rateLimiter,
-          "answer-web",
-          user.id,
-          cfg.webLimits ?? DEFAULT_CONFIG.webLimits!,
-        );
+        const wl = await webLimit(user.id);
         webOn = wl.allowed;
         if (!webOn) webNote = WEB_UNAVAILABLE_NOTE;
         else if (followSource) webNote = SAME_SOURCE_NOTE(followSource);
@@ -1457,7 +1499,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K7.6: a word or logic problem in Provläge gets the model's thinking (it said "Tom är nio" before working
       // out eight); everything else keeps thinking off for the first word
       const wordProblem = !!tutorModel && isWordProblem(body.fragment);
-      const modelUsed = isRizz ? (cfg.rizzModel ?? provider.model) : tutorModel ?? provider.model;
+      // K104 (D233): a test may pick the model of the searched call (Haiku vs Sonnet measurement); only a call with web tools
+      const pick = testModelPick(req.headers.get("x-earmind-test"));
+      const pickModel = (t: unknown[] | undefined) =>
+        pick && t?.length ? (pick === "haiku" ? provider.model : (cfg.tutorModel ?? "claude-sonnet-5-5")) : undefined;
+      let modelUsed = pickModel(textOn || (webOn && need) ? [true] : undefined) ?? (isRizz ? (cfg.rizzModel ?? provider.model) : tutorModel ?? provider.model);
       const priceIn = isRizz
         ? (cfg.rizzPriceInPerMTok ?? cfg.priceInPerMTok)
         : tutorModel
@@ -1621,11 +1667,14 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           ...(phoneTools && !body.toolRound && (ACTION_REQUEST.test(body.fragment) || (spotifyOn && MUSIC_REQUEST.test(body.fragment)))
             ? { holdTextBeforeTool: true }
             : {}),
+          // K103: a song, poem or quote is held whole (a self-correction is cut); other web answers start early (A1)
+          ...(textReq ? { holdUntilEnd: true } : {}),
           // D72 live test: "den andra statsministern" was answered wrong from memory: ordinal facts search.
           ...(tools && ordinal ? { toolChoice: { type: "any" } } : {}),
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
           ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem, think: wordProblem } : {}),
           ...(careful ? { think: true } : {}),
+          ...(pickModel(tools) ? { model: pickModel(tools) } : {}),
           signal: ac.signal,
         })[Symbol.asyncIterator]();
       const firstP = iterator.next().then((r) => {
@@ -1687,6 +1736,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             // D83: profile "Inga kontrollfrågor" = no check question, also in Provläge (enforced in code)
             trimQuestion: direct && !plan && (!tutor || noChecks),
             firstLineOnly: plan?.kind === "socialline",
+            socialLine: plan?.kind === "socialline", // K103 (O86 B5)
             relationTag,
             web: webOn || !!need,
             dropEnglish: !!phoneTools && body.language === "sv",
@@ -1723,6 +1773,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               t = t.replace(/\s*\|\s*/gu, ", ").replace(/,\s*,/gu, ",")
                 .replace(/(?<![\p{L}])(?:Nickname|Population|Area|Elevation|Founded|Website|Coordinates|Type|Country|Region)\s*:\s*/gu, "");
             }
+            // K103 (Oscar O86 B1): a song or poem is said, not shown: a self-correction ("Jag är osäker på den exakta
+            // texten, så här kommer den vedertagna versionen:") drops what came before it, and line breaks become
+            // pauses instead of reaching the voice (the words of two lines never run together)
+            if (textOn) t = textForVoice(t, answerChars === 0);
             if (!t.trim()) return;
             flushMeta();
             if (ttftMs === null) ttftMs = now() - t0;
@@ -1794,6 +1848,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let headBuf: string | null = askSearch || (direct && !plan) ? "" : null;
           let crisisMarked = false;
           let crisisLate = false;
+          let searchingSent = false; // K104: the `searching` event was sent
           let toolPending = false; // K35: a phone tool call was sent; the app runs it and sends a tool_round
           let serverTool: { name: SpotifyToolName; input: Record<string, unknown> } | null = null; // K36, run after the turn
           let serverToolDone: { name: string; status: string; playing?: string } | null = null;
@@ -1927,6 +1982,14 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               return;
             }
             if (chunk.type === "source") return; // only the K19 link search asks for sources
+            if (chunk.type === "searching") {
+              // K104 (D233): the app plays a quiet tone after 1.5 s instead of spoken filler (D46); once per answer
+              if (!searchingSent && ttftMs === null) {
+                searchingSent = true;
+                send("searching", { tool: chunk.tool, ms: Math.round(now() - t0) });
+              }
+              return;
+            }
             if (chunk.type === "tool_use" && isSpotifyTool(chunk.name)) {
               const input = spotifyOn ? validateSpotifyInput(chunk.name, chunk.input) : null;
               if (!input || toolPending || serverTool) {
@@ -2017,7 +2080,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 if (m) history = history.filter((x) => x.a !== m);
               } else if (searchMarked && attempt === 0) {
                 // K16.1: the model is not sure: search once (within the web caps), or say it does not know
-                const wl = await enforceLimits(deps.rateLimiter, "answer-web", user.id, cfg.webLimits ?? DEFAULT_CONFIG.webLimits!);
+                const wl = await webLimit(user.id);
                 if (wl.allowed) {
                   retrySystem = systemPrompt.replace(SEARCH_MARK_RULE, "") + WEB_PROMPT;
                   retryTools = webTools({ search: true, fetch: false });
@@ -2042,7 +2105,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 } else if (post.unverifiedQuote && ttftMs === null && !stop) {
                   // K11: the quote was not in what the search gave: nothing was said yet, ask for own words
                   note =
-                    "The quote you gave was not found word for word in the search results. Do not quote anything: start with \"Jag kan inte citera det ordagrant, men\" and say in your own words what the person writes or says about it, without quotation marks, and name a work only when you are sure the person wrote it.";
+                    "The quote you gave was not found word for word in the search results. Do not quote anything: start with \"Jag kan inte citera det ordagrant, men\" followed by the person's name, and say in your own words what the person writes or says about it, without quotation marks, and name a work only when you are sure the person wrote it.";
                 } else if (post.questionOnly && !stop) {
                   note =
                     "Your previous reply only asked the user a question. Answer directly with the most likely interpretation and do not ask anything back.";
@@ -2077,6 +2140,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               const ac2 = new AbortController();
               acs.push(ac2);
               retries++;
+              if (pickModel(retryTools)) modelUsed = pickModel(retryTools)!;
               it = llm.stream({
                 system: retrySystem,
                 user: userFor({ ...body, context: { ...body.context, recent_qa: history } }, {
@@ -2090,6 +2154,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
                 ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem, think: wordProblem } : {}),
           ...(careful ? { think: true } : {}),
+                ...(pickModel(retryTools) ? { model: pickModel(retryTools) } : {}),
                 signal: ac2.signal,
               })[Symbol.asyncIterator]();
               // T17b: the two-level state belongs to one attempt (a retry's text went to "more" and was never said)
@@ -2102,6 +2167,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 previousAnswers: [],
                 trimQuestion: false,
                 firstLineOnly: plan?.kind === "socialline",
+            socialLine: plan?.kind === "socialline", // K103 (O86 B5)
                 relationTag,
                 web: (webOn || !!need || searched) && !emptyRetried,
                 dropEnglish: !!phoneTools && body.language === "sv",
@@ -2287,6 +2353,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               relation: post.relation ?? parser.meta?.relation ?? null,
               source: post.source,
               memory_add: null,
+              ...(webCapTest ? { web_cap_test: true } : {}),
               calibration,
               ...(toolPending ? { tool_pending: true } : {}),
               ...(serverToolDone ? { server_tool: serverToolDone } : {}),

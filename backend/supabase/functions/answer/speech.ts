@@ -304,8 +304,11 @@ export function isEnglishSentence(sentence: string): boolean {
  */
 const SEARCH_META =
   /(?:utan (?:att )?(?:beh\u00f6va |ha )?s\u00f6k|jag har inte s\u00f6kt|om du vill vara (?:helt )?s\u00e4ker|^\s*hmm\b|jag \u00e4r s\u00e4ker p\u00e5 (?:detta|det h\u00e4r|det)\b|(?:beh\u00f6ver|beh\u00f6vs) (?:inte |ingen )?s\u00f6k|ingen s\u00f6kning|jag kan svara (?:p\u00e5 )?(?:den |det |fr\u00e5gan )?direkt|^\s*(?:jag|l\u00e5t mig) (?:ska |kan |vill |m\u00e5ste |beh\u00f6ver )?(?:s\u00f6ka|s\u00f6ker|kolla|kollar|letar|leta)\b|^\s*det h\u00e4r \u00e4r en \p{L}+ fr\u00e5ga)/iu;
+/** K104 (Oscar O88 N1, said aloud while the web cap was used up): the model on its own sources and knowledge. */
+const SOURCE_META =
+  /(?:(?:kräver|behöver|behövs) (?:inte |ingen )?(?:någon )?(?:aktuell|ny|färsk|uppdaterad) information|(?:svarar|svara|utgår) (?:jag )?(?:direkt )?(?:från|ur|utifrån) (?:min |mina |egen |egna )?(?:egen |egna )?(?:kunskap|kunskaper|minne)|utan (?:webb\p{L}*|uppslag|källor|internet)|(?:kan|kunde) (?:jag )?inte (?:se|nå|komma åt|söka|kolla)\b[^.!?]*(?:källor|webben|internet|nätet|sökning))/iu;
 export function isSearchMeta(sentence: string): boolean {
-  return SEARCH_META.test(sentence);
+  return SEARCH_META.test(sentence) || SOURCE_META.test(sentence);
 }
 
 /** Drops whole English sentences (web mode only, unless the user asked for a translation), and sentences
@@ -1036,13 +1039,37 @@ export class QuestionTrim {
   }
 }
 
+/**
+ * K103 (Oscar O86 tillägg: "Climate Action Tracker (tvåtusen tjugofem)" in a web answer): a parenthesis is never
+ * read; what is inside becomes an aside between commas. Only the spoken answer (NumberStream), never the drill voice
+ * text, whose hashes must stay the same (K74).
+ */
+export function noParens(s: string): string {
+  if (!/[()]/.test(s)) return s;
+  return s.replace(/[ \t]*\([ \t]*/g, ", ").replace(/[ \t]*\)/g, ",").replace(/,[ \t]*([.!?,;:])/g, "$1").replace(/^, /, "");
+}
+
+/**
+ * K103 (live 13:32, k9-neg-5: "Scenario RCP4.5" kept the digit 4): a number glued to a code of three or more capital
+ * letters ("RCP4.5", "SSP585") is said apart from it, with a decimal comma. Two-letter codes (CO2, H2O) are formulas
+ * and are left to the formula rules. Only the spoken answer, never the drill voice text (K74).
+ */
+export function codeNumbers(s: string): string {
+  return s.replace(/(?<![\p{L}\d])(\p{Lu}{3,})(\d+)(?:\.(\d+))?(?![\p{L}\d])/gu, (_m, c: string, a: string, b?: string) => `${c} ${a}${b ? "," + b : ""}`);
+}
+
 // ---------- 3. digits -> words across chunk boundaries ----------
+/** K106 (Oscar O88 N4: "ett och en halv tesked"): "1 och en halv" goes with an en-word, so the 1 is "en". */
+export function halfFix(s: string): string {
+  return s.replace(/(?<![\d,.])1(\s+och\s+en\s+halv)(?![\p{L}])/gu, "en$1").replace(/(?<![\p{L}])([Ee])tt( och en halv)(?![\p{L}])/gu, "$1n$2");
+}
+
 export class NumberStream {
   private buf = "";
   private tail = ""; // last raw text already passed on (context for the phone-number guard)
 
   private say(raw: string): string {
-    const out = toSpeech(raw, this.tail);
+    const out = noParens(toSpeech(halfFix(codeNumbers(raw)), this.tail));
     this.tail = (this.tail + raw).slice(-120);
     return out;
   }
@@ -1061,7 +1088,8 @@ export class NumberStream {
     let cut = lastWs + 1;
     const head = this.buf.slice(0, cut);
     // eval 2026-11-11: "1,4 – " must wait for "5,7" (a spaced range is read "ett komma fyra till fem komma sju")
-    const m = /\S*\d\S*\s+[–—-]\s+$/.exec(head) ??
+    // K106 (O88 N4): "1 och " / "1 och en " waits for "halv" ("en och en halv tesked", never "ett och en halv")
+    const m = /(?<![\d,.])1\s+och(?:\s+en)?\s+$/.exec(head) ?? /\S*\d\S*\s+[–—-]\s+$/.exec(head) ??
       /((?:\S*\d\S*\s+[–—-]\s+)?(?:\d{1,3}[ \u00a0\u202f])*\S*\d\S*|[=≈≠]|\S*\^\S*)\s+$/.exec(head) ?? // incl. "1 " of "1 789"
       // D72 live test: "Karl " must wait for a possible "XV" (a regnal number is read as a pair with the
       // name), and a "Karl XV." pair is passed on together.
@@ -1088,6 +1116,8 @@ export interface PostOptions {
   trimQuestion: boolean;
   /** Social lines: keep only the first line (D51: no tips, no questions about context). */
   firstLineOnly?: boolean;
+  /** K103 (Oscar O86 B5): a social line is the line to say; advice to the user about the other person goes. */
+  socialLine?: boolean;
   /** D65: tutor mode: check questions must be short single questions (others are dropped). */
   tutor?: boolean;
   /** D53: the stream starts with a `[[REL ...]]` relation tag that is split off. */
@@ -1186,6 +1216,35 @@ export function quoteVerified(quote: string, cited: string): boolean {
   return hit / Math.max(1, w.length - 1) >= 0.75;
 }
 
+/**
+ * K103 (Oscar O86 B5, "Haha, då får du visa honom att du är allt annat än tråkig. Vad sa han sen?"): in a social line
+ * a sentence that advises the user about the other person (he/she in the third person) is not something to say, and
+ * "om du vill svara …: \"…\"" keeps only the quoted line. A line said to the other person ("visa mig …") stays.
+ */
+const SOCIAL_ADVICE = /^\s*(?:(?:haha|hah|okej|ok|aha|asså|alltså)[,!.]?\s+)?(?:men\s+)?(?:då\s+)?(?:(?:får|kan|borde|ska|måste|bör)\s+du|säg\s+(?:att|till)|svara\s+(?:att|med)|du\s+(?:kan|får|borde)\s+(?:säga|svara|visa))\b[^.!?]*\b(?:honom|henne|hen|han|hon|dem)\b/iu;
+export function socialLineSentence(sentence: string): string {
+  const quoted = /:\s*["“”«»„]([^"“”«»„]{3,200})["“”«»„]?\s*$/u.exec(sentence);
+  if (quoted) return quoted[1].trim() + " ";
+  if (/^\s*(?:men\s+)?om du vill (?:svara|säga)\b/iu.test(sentence)) return "";
+  if (SOCIAL_ADVICE.test(sentence)) return "";
+  // a question to the user about the other person ("Vad sa han sen?") is not a line to say either
+  if (/^\s*(?:vad|varför|hur|när)\b[^?]*\b(?:han|hon|hen)\b[^?]*\?\s*$/iu.test(sentence)) return "";
+  return sentence.replace(/["“”«»„]/g, "");
+}
+
+/**
+ * K106 (Oscar O88 N2, k9-neg-5: "Det beror mest på hur mycket vi minskar utsläppen."): in a web answer a sentence
+ * that only names what the answer depends on is dropped; "Det beror på hur …, men X" keeps X. "Det beror på att …"
+ * is an explanation (because) and stays.
+ */
+const DEPENDS = /^\s*det beror (?:(?:mest|främst|helt|delvis|framför allt|till stor del|egentligen) )?på (?:hur|vad|om|vilk(?:en|et|a)|när|var)\b/iu;
+export function dependsLead(sentence: string): string {
+  if (!DEPENDS.test(sentence)) return sentence;
+  const m = /,\s*(?:men|och)\s+(\S[\s\S]*)$/u.exec(sentence);
+  if (m && /\p{L}{3,}/u.test(m[1])) return m[1][0].toUpperCase() + m[1].slice(1);
+  return "";
+}
+
 export class AnswerPost {
   readonly dup: DupGuard;
   readonly trim: QuestionTrim;
@@ -1199,6 +1258,8 @@ export class AnswerPost {
   private readonly level: MetaGate;
   private readonly lead: MetaGate;
   private readonly quote: MetaGate;
+  private readonly social: MetaGate;
+  private readonly depends: MetaGate;
   private cited = "";
   /** K11: a quote was dropped because the search did not give its words (the handler may ask again). */
   unverifiedQuote = false;
@@ -1274,6 +1335,8 @@ export class AnswerPost {
       if (marks % 2 === 1) openQuote = true;
       return "";
     });
+    this.social = new MetaGate(opts.socialLine === true, () => false, socialLineSentence);
+    this.depends = new MetaGate(opts.web === true, () => false, dependsLead); // K106 (O88 N2)
     this.quizOnly = opts.quizOnly === true;
     this.src = new SourceTap(opts.web === true || opts.source === true);
     this.en = new EnglishGate(opts.web === true || opts.dropEnglish === true, opts.dropEnglish === true);
@@ -1356,7 +1419,7 @@ ${text}`;
     c.source += t2.length;
     const t3 = this.en.push(t2);
     c.english += t3.length;
-    const t4 = this.lead.push(this.level.push(this.input.push(this.meta.push(this.quote.push(t3)))));
+    const t4 = this.lead.push(this.level.push(this.input.push(this.meta.push(this.social.push(this.depends.push(this.quote.push(t3)))))));
     c.meta += t4.length;
     const a = this.dup.push(this.gate.push(this.imeta.push(t4)));
     c.gate += a.length;
@@ -1376,7 +1439,9 @@ ${text}`;
     const t = this.strip.push(t0) + this.strip.finish();
     const s = this.src.push(t) + this.src.finish();
     const e0q = this.en.push(s) + this.en.finish();
-    const e0 = this.quote.push(e0q) + this.quote.finish();
+    const e0a = this.quote.push(e0q) + this.quote.finish();
+    const e0d = this.depends.push(e0a) + this.depends.finish();
+    const e0 = this.social.push(e0d) + this.social.finish();
     const e1 = this.meta.push(e0) + this.meta.finish();
     const e2i = this.input.push(e1) + this.input.finish();
     const e2a = this.level.push(e2i) + this.level.finish();

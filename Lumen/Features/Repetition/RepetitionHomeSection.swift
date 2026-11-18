@@ -28,6 +28,8 @@ struct RepetitionHomeSection: View {
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
     @AppStorage("repetition.textControlsChecked") private var textControlsChecked = false // A106 (Ke63 §4.1)
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    private var reduceMotion: Bool { SayMotion.reduces(systemReduceMotion) }
 
     /// A100 (Deangelo 2026-11-14, Toby T21 finding 2): "Fler lägen · Beta · använder mikrofonen" is shown only once
     /// the user has started a first exam (the control check before the first Starta prov sets `controlsChecked`).
@@ -258,13 +260,16 @@ struct RepetitionHomeSection: View {
                         } icon: {
                             Image(systemName: "flame").accessibilityHidden(true) // A95 (Toby): not read as "Flamma"
                         }
+                        .foregroundStyle(LumenColor.secondaryText) // A148: AA, as the other grey text
                     }
                 }
             }
 
             if model.examDrills.count > 1 {
-                Section("Andra prov") {
+                Section {
                     ForEach(model.examDrills.dropFirst()) { drill in otherExam(drill) }
+                } header: {
+                    Text("Andra prov").foregroundStyle(LumenColor.secondaryText) // A148: AA
                 }
             }
 
@@ -298,13 +303,13 @@ struct RepetitionHomeSection: View {
         let saved = place(drill)
         return VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Nästa prov").font(.footnote).foregroundStyle(.secondary)
+                Text("Nästa prov").font(.footnote).foregroundStyle(LumenColor.secondaryText)
                 Text(verbatim: drill.title)
                     .font(.title2.bold())
                     .accessibilityAddTraits(.isHeader)
                 Text(verbatim: facts(drill, saved: saved))
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(LumenColor.secondaryText)
                     .monospacedDigit()
             }
             .accessibilityElement(children: .combine) // A95: "Nästa prov, Biologiprovet, Du var på fråga 3 av 5"
@@ -323,6 +328,7 @@ struct RepetitionHomeSection: View {
                     }
                     .buttonStyle(.bordered)
                     .tint(.accentColor)
+                    .transition(SayMotion.appear)
                 } else {
                     Button {
                         start(drill)
@@ -330,8 +336,11 @@ struct RepetitionHomeSection: View {
                         FilledButtonLabel { startLabel(saved) } // A95
                     }
                     .buttonStyle(.borderedProminent)
+                    .transition(SayMotion.appear)
                 }
             }
+            // A150 (D231): the filled button changes places with Spela by fading, not by jumping.
+            .animation(SayMotion.change(reduceMotion), value: model.sayHoldsTheStage)
             .controlSize(.large)
             .disabled(!model.canStart(drill) && !model.isReadingAloudOff(drill)) // A112b: the text can be opened
             .accessibilityHint(drill.isText ? "Läser upp texten i dina AirPods. EarMind använder inte mikrofonen."
@@ -443,12 +452,12 @@ struct RepetitionHomeSection: View {
             } label: {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(verbatim: drill.title).foregroundStyle(.primary)
-                    Text(verbatim: detail).font(.subheadline).foregroundStyle(.secondary).monospacedDigit()
+                    Text(verbatim: detail).font(.subheadline).foregroundStyle(LumenColor.secondaryText).monospacedDigit()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressFeedback) // A150: the row answers the touch on the way down
             .accessibilityHint("Öppnar provet")
             Button {
                 start(drill)
@@ -470,7 +479,7 @@ struct RepetitionHomeSection: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(verbatim: title).foregroundStyle(Color.primary)
                     if let detail {
-                        Text(verbatim: detail).font(.subheadline).foregroundStyle(Color.secondary)
+                        Text(verbatim: detail).font(.subheadline).foregroundStyle(LumenColor.secondaryText)
                     }
                 }
                 Spacer(minLength: 0)

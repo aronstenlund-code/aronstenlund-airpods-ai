@@ -58,6 +58,8 @@ struct SayVoicesSheet: View {
     @State private var preview = VoicePreview()
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    private var reduceMotion: Bool { SayMotion.reduces(systemReduceMotion) }
 
     static let footnote = "Provlyssning kostar inget. En ny röst blir nytt ljud."
     // A140 (D223): mine, for Kelly to review.
@@ -97,12 +99,12 @@ struct SayVoicesSheet: View {
                     Section {
                         if let found {
                             ForEach(found) { row($0) }
-                            if found.isEmpty { Text("Inga röster hittades.").foregroundStyle(.secondary) }
+                            if found.isEmpty { Text("Inga röster hittades.").foregroundStyle(LumenColor.secondaryText) }
                         } else if isSearching {
-                            HStack(spacing: 8) { ProgressView(); Text("Söker …").foregroundStyle(.secondary) }
+                            HStack(spacing: 8) { ProgressView(); Text("Söker …").foregroundStyle(LumenColor.secondaryText) }
                         } else {
                             Text(verbatim: NetworkStatus.shared.isOnline ? "Det gick inte att söka just nu." : NetworkStatus.noNetworkLine)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(LumenColor.secondaryText)
                         }
                     } footer: {
                         Text(verbatim: Self.footnote)
@@ -117,6 +119,11 @@ struct SayVoicesSheet: View {
                 ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } }
             }
             .onDisappear { preview.stop() }
+            // A150 (D231): the check mark moves to the chosen row with a fade, and the choice is felt.
+            .animation(SayMotion.change(reduceMotion), value: chosen)
+            .animation(SayMotion.change(reduceMotion), value: mix)
+            .sensoryFeedback(.selection, trigger: chosen)
+            .sensoryFeedback(.selection, trigger: mix)
         }
     }
 
@@ -155,16 +162,16 @@ struct SayVoicesSheet: View {
                             Text(verbatim: voice.name).foregroundStyle(.primary)
                             Spacer(minLength: 8)
                             if chosen == voice.voice_id, !mix {
-                                Image(systemName: "checkmark").font(.body.weight(.semibold)).foregroundStyle(.tint).accessibilityLabel("Vald")
+                                Image(systemName: "checkmark").font(.body.weight(.semibold)).foregroundStyle(.tint).transition(SayMotion.mark(reduceMotion)).accessibilityLabel("Vald")
                             }
                         }
                         .contentShape(Rectangle())
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressFeedback)
                     .disabled(!voice.canBeChosen)
                 }
                 if !line.isEmpty {
-                    Text(verbatim: line).font(.footnote).foregroundStyle(.secondary)
+                    Text(verbatim: line).font(.footnote).foregroundStyle(LumenColor.secondaryText)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -194,11 +201,12 @@ struct SayVoicesSheet: View {
                 preview.toggle(voice)
             } label: {
                 Image(systemName: preview.playingID == voice.id ? "pause.circle.fill" : "play.circle.fill")
+                    .contentTransition(.symbolEffect(.replace)) // A150: the symbol changes in place
                     .font(.title2)
                     .foregroundStyle(.tint)
                     .frame(minWidth: 44, minHeight: 44)
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressFeedbackRound)
             .accessibilityLabel(preview.playingID == voice.id ? "Pausa \(voice.name)" : "Provlyssna \(voice.name)")
         }
     }
@@ -213,17 +221,17 @@ struct SayVoicesSheet: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(verbatim: voice.name).foregroundStyle(.primary)
                         let line = subtitle(of: voice)
-                        if !line.isEmpty { Text(verbatim: line).font(.footnote).foregroundStyle(.secondary) }
+                        if !line.isEmpty { Text(verbatim: line).font(.footnote).foregroundStyle(LumenColor.secondaryText) }
                     }
                     Spacer(minLength: 8)
                     if chosen == voice.voice_id, !mix {
-                        Image(systemName: "checkmark").font(.body.weight(.semibold)).foregroundStyle(.tint)
+                        Image(systemName: "checkmark").font(.body.weight(.semibold)).foregroundStyle(.tint).transition(SayMotion.mark(reduceMotion))
                             .accessibilityLabel("Vald")
                     }
                 }
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressFeedback)
             .disabled(!voice.canBeChosen)
         }
     }

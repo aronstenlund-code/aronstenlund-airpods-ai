@@ -55,7 +55,7 @@ Kelly har skrivit /integritet och /villkor för earmind.vercel.app på en gren, 
 ## 31. Apple-konto och Team ID (K98, App Store), 2026-11-18 09:05
 För App Attest (skyddet för välkomstkrediterna) och för att lämna in appen behövs ett betalt Apple Developer-konto (99 USD per år) och dess Team ID. Har du ett konto: öppna developer.apple.com/account → Membership details, och skicka Team ID (10 tecken) till Deangelo. Det är inte hemligt. Har du inget konto är det ditt beslut om kostnaden.
 
-## 32. En inställning för inloggningen i Supabase (A143), 2026-11-18 11:00
+## 32. ~~En inställning för inloggningen i Supabase (A143)~~ Klart 2026-11-18 12:50: Deangelo läste i dashboarden (Aron: "kolla du"). "Detect and revoke potentially compromised refresh tokens" är på, "Refresh token reuse interval" är 10 s. Inget ändrat.
 Det tar en minut, och ingenting ska ändras om värdena stämmer. Appen förlitar sig på att en förnyelse av inloggningen som tappas på vägen räddas inom 10 sekunder. Kevin kan inte läsa inställningen själv, eftersom nyckeln saknar behörigheten `auth_config_read`.
 
 1. Öppna supabase.com/dashboard, välj projektet (xjczbzfkmbjdebwlccki) och gå till **Authentication**. Under **Configuration**, välj **Sessions**. Direktlänk: `https://supabase.com/dashboard/project/xjczbzfkmbjdebwlccki/auth/sessions`.
@@ -63,3 +63,7 @@ Det tar en minut, och ingenting ska ändras om värdena stämmer. Appen förlita
 3. Skicka de två värdena till Deangelo. Är intervallet lägre än 10, skriv det; ändra inget själv.
 
 Verifierat i Supabases dokumentation: intervallet finns och är 10 s som standard. Ej verifierat: att knapparna heter exakt så i dag.
+
+
+## #33 Webbsvaren är slut för i dag (2026-11-18 15:15)
+Testerna har använt alla 150 webbsvar för i dag, så appen svarar utan webben till kl. 01:00 svensk tid. Från och med nu har testerna ett eget tak (D234) och kan inte ta användarnas. **Fråga:** ska webbsvaren slås på igen redan i dag? Det kostar högst cirka 3–5 USD extra. Svara ja eller nej.

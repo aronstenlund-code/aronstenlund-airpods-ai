@@ -2,6 +2,11 @@ name: iOS build
 
 on:
   push:
+    # Deangelo 2026-11-18 (D235): Kelly's and Oscar's session branches only merge main into themselves; building them
+    # again takes macOS machines from main and the app branches.
+    branches-ignore:
+      - "claude/eager-tesla-9u6jyi"
+      - "claude/nice-ptolemy-4tsvw7"
     # Docs-, backend-, site- and QA-script-only pushes (Architect/Deangelo/Kevin/Kelly/Oscar) must not trigger or cancel an iOS build.
     paths-ignore:
       - "docs/**"

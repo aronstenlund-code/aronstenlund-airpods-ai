@@ -219,8 +219,36 @@
   - O84 F2 delvis: kall `loadCiRanges` läser tabellen först, och testanrop väntar inte. Mät gärna kallstarten igen.
   - K101 401 efter radering är verifierad live.
   → `reports/2026-11-18-1100-kevin-o79-avsnitt-k101-401.md`
-- [ ] (Från Kevin (moln) 2026-11-18 12:00) **Klart att testa:**
+- [x] _omtestat 2026-11-18 12:50 (Oscar moln): Lübeck rättat, warm-gränsen håller, kvar F1–F4, `reports/qa/2026-11-18-1250-oscar-omtest-k102.md`_ (Från Kevin (moln) 2026-11-18 12:00) **Klart att testa:**
   - Sista kontrollen av frågelistan mot materialet: Lübeck rättad, inflation 2/14 och dina printing- och ljudpar borta live. Varför-frågor utan orsak blir vad/hur (Vasa 3/13 förståelse).
   - `{"action":"warm"}` för drill. pg_cron var 2:a min när Deangelo har kört 20261118120001; mät O84 kallstart efter vila igen.
   → `reports/2026-11-18-1200-kevin-kallstart-sakfel-dubbletter-auth.md`
 - [x] _klar 2026-11-18 12:01 (Oscar moln, eget initiativ), `reports/qa/2026-11-18-1201-oscar-o85-drill-utan-gateway.md`_ **O85 – drill utan gatewayens JWT-kontroll (Kevin 6ff8914e).** Alla åtgärder nekar utan giltig token (401 för ingen, skräp, alg none, fel nyckel, ändrat innehåll, publika nyckeln); warm 204 tomt; riktig token fungerar. Lågt fynd: warm utan gräns.
+- [x] _testat 2026-11-18 (Oscar moln): min körning 11:43 UTC gick mot slutversionen, se `reports/qa/2026-11-18-1250-oscar-omtest-k102.md` (med tillägg 13:23); kvar F1 "framgår inte här", F3 korta material_ (Från Kevin (moln) 2026-11-18 12:40) **K102 klart att testa:**
+  - Varför utan orsak blir förståelsefrågor, minst hälften förståelse. Mätt: 0,71–1,0 på dina fem.
+  - Borttagna dubbletter fylls på (14 i fyra av fem; ljud 7).
+  - `warm`: 30/min per IP gav 429 live; med token 204.
+  - `materialet` eller `the text` i en fråga avvisas nu.
+  → `reports/2026-11-18-1240-kevin-k102-forstaelse-fulla-prov-warm.md`
+
+- [x] _klar 2026-11-18 13:06 (Oscar moln): 16 långsamt (3 orsaker), 4 falsklarm, 5 innehållsfel, `reports/qa/2026-11-18-1306-oscar-o86-live-eval.md`_ **O86 – Nattens live-eval: de 22 anmärkningarna (D231)** (effort: high). Lagd av Deangelo 2026-11-18 13:00. reports/eval/ från 2026-11-18 (388 turer, 22 anmärkningar: fakta 2, kommando 4, logik 1, minne 1 m.fl.). Gruppera efter orsak, återskapa varje fel med en egen fråga om det går, och lämna fynd med exempel till Kevin. Bara Claude, 0 ElevenLabs. Rapport, push.
+
+- [x] _klar 2026-11-18 14:06 (Oscar moln): 4 falsklarm borta, 6 ändrade turer av 388 (alla väntade), 6 inloggningar i stället för 12, `reports/qa/2026-11-18-1405-oscar-o87-eval-regler.md`_ **O87 – Evalens regler och konton (D232)** (effort: medium). Lagd av Deangelo 2026-11-18 14:05. Ändra `scripts/live-eval.py` (Deangelo ger dig uppdraget) enligt din tabell C i O86: `allow_question: true` för socialt och minne-01 (behåll `max_words`), `expect_any: ["färs"]` i praktiskt-04, "det beror på" räknas bara som brasklapp när "att" inte följer. Låt live-eval återanvända samma testkonton i alla omgångar (som du gjorde i o86_eval_reproduce.py) så att inloggningen inte ger 429. Visa med en körning av de fyra fallen att larmen är borta och att inget annat fall ändrade utfall. 0 ElevenLabs. Rapport, push.
+- [ ] (Från Kevin (moln) 2026-11-18 14:30) **K103 är live** (080e59b3). B1–B5 0 fel i min omkörning (`reports/2026-11-18-1430-kevin-k103-o86.md`). Sökta svar är lika långsamma som förut; det är sökningen själv, se rapporten.
+- [x] _klar 2026-11-18 14:49 (Oscar moln): B1–B5 0 av 2–4, nytt N1 (sökprat i svaret), webbflagga på fakta-05, `reports/qa/2026-11-18-1449-oscar-o88-omtest-k103.md`_ **O88 – Omtest av O86 efter Kevins K103 (D232)** (effort: high). Lagd av Deangelo 2026-11-18 14:05. När Kevin säger att K103 är live: kör de 22 fallen två omgångar med serverns tider; jämför före och efter för A1–A3 och B1–B5. Fynd till kevin.md. 0 ElevenLabs. Rapport, push.
+- [ ] (Från Kevin (moln) 2026-11-18 15:05, info) **Webbtaket är slut till 00:00 UTC:** det globala taket på 150 sökta svar per dygn fylldes 13:51 UTC. Sökta fall i dina körningar efter det svarar ur minnet ("ingen webbsökning just nu"), så de säger inget om K103/K104. O88 N1 är rättad i test (b41d2272); se `reports/2026-11-18-1505-kevin-k104-sokta-svar.md`.
+
+- [ ] (Från Kevin (moln) 2026-11-18 18:15, K105) **`done.web_cap_test: true`** finns från deployen av 4be7dc3b. Fältet kommer bara på testanrop (huvudet, testkonto, skript eller CI enligt `detectTest`; din O89-punkt är gjord) när testtakets 50 sökta svar per dygn (`answer-web-test:global:d`) är slut; svaret kommer då ur minnet. Delningen gäller från **2026-11-19 00:00 UTC**; i dag delar alla som förut på det tak som redan är fullt. `reports/2026-11-18-1815-kevin-k105-webbtak-test.md`
+- [ ] **O89 – Evalen och QA inom testtaket (D234)** (effort: medium). Lagd av Deangelo 2026-11-18 15:15. När Kevins K105 är live: live-eval och dina skript räknar `web_cap_test: true` som överhoppat, inte som fel, och skriver hur många fall som hoppades över. Räkna ut hur många sökta svar nattens eval behöver och föreslå i rapporten hur den håller sig under 50 per dygn (färre omgångar för sökta fall, eller rotation). Den live-delen av O88 som behöver webben görs efter 00:00 UTC. 0 ElevenLabs. Rapport, push.
+- [x] _gjort 2026-11-18 18:45 (Oscar moln): domänerna i live-eval, webbflagga på praktiskt-03/04, 49/49 tester_ (Deangelo 2026-11-18 15:20, svar på O88 "Till Deangelo") **ica.se och clasohlson.com är pålitliga för praktiska frågor** (recept, hem och verktyg): lägg in dem i `RELIABLE_DOMAINS` i live-eval, inte i serverns val. Gör det i samma commit som O89.
+- [x] _omtestat 20:05 (Oscar moln): fulla prov 5/5, F1 3→1 (Lübeck 'inte känt härifrån'), F5 kvar till K107, `reports/qa/2026-11-18-1925-oscar-omtest-k106.md`_ (Från Kevin (moln) 2026-11-18 19:45, K106) **Din omtest K106:**
+  - F1 är rättad: ett andra försök med en faktafråga. 0 "inte känt" eller "not explained" i körning 44371848984.
+  - Fulla prov: 5 av 5 nådde målet i samma körning.
+  - F3 (nästan samma korta svar) är inte löst. Jag provade att göra om frågan i svarssteget, men det flyttade frågor till andra delar, så jag tog bort det igen.
+  - Nytt att testa: tvådelade frågor kortas till en (också från påfyllningen), "Det beror på …" i webbsvar (efter 00:00 UTC), "en och en halv tesked", och stilens reserv när Haiku vägrar.
+  - `reports/2026-11-18-1930-kevin-k106-kvalitet.md`
+- [x] _omtestat 23:26 (Oscar moln): fulla 5/5, Lübeck löst, par kvar cirka 6 (ekosystem 'en tiondel' ×3), ny F1 Vasa Bibeln, `reports/qa/2026-11-18-2326-oscar-omtest-k107.md`_ (Från Kevin (moln) 2026-11-18 20:15, K107) **Omtest F3/F5, par med samma svar:**
+  - Den sista kontrollen tar nu bort en senare fråga som besvaras av samma meningar i materialet, innan listan visas.
+  - Min mätning på dina fem: 13 par blev 7, fulla prov 5 av 5, förståelse 0,64–0,89.
+  - Kvar: par från påfyllningen och från svarsstegets omskrivningar.
+  - `reports/2026-11-18-2015-kevin-k107-samma-svar.md`

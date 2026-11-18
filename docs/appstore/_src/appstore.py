@@ -14,8 +14,9 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 SRC = Path(sys.argv[1])
-BOLD = sys.argv[2] if len(sys.argv) > 2 else "C:/Windows/Fonts/segoeuib.ttf"
-REG = sys.argv[3] if len(sys.argv) > 3 else "C:/Windows/Fonts/segoeui.ttf"
+# Ke80: Inter Display (finns i molnet) som standard; SF Pro Display på en Mac ges som argument.
+BOLD = sys.argv[2] if len(sys.argv) > 2 else "/usr/share/fonts/opentype/inter/InterDisplay-Bold.otf"
+REG = sys.argv[3] if len(sys.argv) > 3 else "/usr/share/fonts/opentype/inter/InterDisplay-Regular.otf"
 OUT = Path("docs/appstore")
 OUT.mkdir(parents=True, exist_ok=True)
 
@@ -24,12 +25,15 @@ W, H = 1320, 2868
 
 # (scen, rubrik, rad under). Ordning enligt Ke56. Texten för trycken följer A90 (Arons ord).
 SHOTS = [
-    # Ke74 (2026-11-17): nya första skärmen (D215) först. Inget om låst skärm (D209 inte provat på telefon).
+    # Ke80 (D232, 2026-11-18): full storlek ur kelly-appstore-shots.yml. Inget om låst skärm (D209 inte provat).
     ("repSayCredits", "Skriv. Lyssna.", "Det du skriver läses upp i dina hörlurar."),
-    ("repSayOnCard", "Om och om igen.", "Välj 10 minuter upp till en timme."),
+    ("repSayOnCard", "Om och om igen.", "Från 10 minuter upp till en timme."),
+    ("repSayPicked", "Hur ska det låta?", "Skriv det, så väljer EarMind en röst."),
+    ("repSayVoicesUser", "Välj en röst.", "Lyssna först. Det kostar inget."),
+    ("repHomeSaidMarks", "Spela igen.", "Det senaste ligger kvar under fältet."),
     ("repTextNew", "Fota boken.", "Frågor med svar, eller hela texten uppläst."),
     ("repPlayAnswer", "Tryck för svaret.", "1 gång för långt svar, 2 för kort, 3 för paus."),
-    ("repTextPlay", "Följ texten.", "Meningen som läses är markerad."),
+    ("repShop", "Börja gratis.", "5 000 krediter att börja med, 1 500 varje månad."),
 ]
 
 
@@ -58,5 +62,5 @@ def make(src: Image.Image, title: str, sub: str) -> Image.Image:
 
 for i, (scene, title, sub) in enumerate(SHOTS, 1):
     p = OUT / f"69-{i}.jpg"
-    make(Image.open(SRC / f"light-{scene}.png"), title, sub).save(p, quality=88, optimize=True, progressive=True)
+    make(Image.open(next(q for q in (SRC / f"{scene}.png", SRC / f"light-{scene}.png") if q.exists())), title, sub).save(p, quality=88, optimize=True, progressive=True)
     print(p, p.stat().st_size // 1024, "kB")

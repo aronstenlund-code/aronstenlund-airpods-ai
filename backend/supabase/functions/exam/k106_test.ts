@@ -1,0 +1,149 @@
+// K106 (D232): Oscar's K102 omtest in the exam drill: questions the material does not answer, full exams, the near pair.
+import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
+import { answerItems, DEFAULT_DRILL_CONFIG, dropNearSame, notAnswered, oneAsk } from "./drill.ts";
+import { nearDuplicate } from "./coverage.ts";
+import type { LLMChunk, LLMProvider, LLMRequest } from "../answer/llm/types.ts";
+
+Deno.test("K106 F1: an answer that says the notes do not answer it is seen", () => {
+  assert(notAnswered("Varför han flydde till Dalarna framgår inte här, men han sökte stöd hos bönderna."));
+  assert(notAnswered("Why he left is not explained here, but he wanted support."));
+  assertEquals(notAnswered("Han flydde för att danskarna jagade honom efter blodbadet."), false);
+});
+
+Deno.test("K106 F1: a two-part question keeps the first part; one question stays as it is", () => {
+  assertEquals(oneAsk("Vad var fogdarnas uppgift i landskapen, och varför skapade han en egen här?"), "Vad var fogdarnas uppgift i landskapen?");
+  assertEquals(oneAsk("Hur påverkade reformationen kyrkans makt?"), "Hur påverkade reformationen kyrkans makt?");
+  assertEquals(oneAsk("Förklara hur X och Y hänger ihop."), "Förklara hur X och Y hänger ihop.");
+});
+
+Deno.test("K106 F1: a generated question the notes do not answer is replaced by one they answer (asked again once)", async () => {
+  const seen: LLMRequest[] = [];
+  const llm: LLMProvider = {
+    name: "fake", model: "sonnet-fake",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      seen.push(req);
+      const fix = req.user.includes("<must_fix>yes</must_fix>");
+      const answers = fix
+        ? [{ id: "q1", question: "Vad hände när Gustav Vasa kom till Dalarna?", short: "Han försökte få dalkarlarna att resa sig mot danskarna.", rest: "Först sa de nej." }]
+        : [
+          { id: "q1", short: "Varför han flydde till Dalarna framgår inte här, men han sökte stöd.", rest: "Mer." },
+          { id: "q2", short: "Riksdagen valde honom till kung 1523.", rest: "I Strängnäs." },
+        ];
+      yield { type: "text", text: JSON.stringify({ answers }) };
+      yield { type: "usage", inputTokens: 100, outputTokens: 50 };
+    },
+  };
+  const items = [{ id: "q1", question: "Varför flydde Gustav Vasa till Dalarna?" }, { id: "q2", question: "När blev Gustav Vasa kung?" }];
+  const r = await answerItems(llm, DEFAULT_DRILL_CONFIG, items, { subject: "Historia", grade: "åk 8", notes: "n", longWords: 60, mayFix: true });
+  assertEquals(r.items[0].question, "Vad hände när Gustav Vasa kom till Dalarna?");
+  assertEquals(notAnswered(r.items[0].short!), false);
+  assertEquals(r.items[1].question, "När blev Gustav Vasa kung?");
+  assertEquals(seen.filter((x) => x.user.includes("<must_fix>")).length, 1, "only the unanswered one is asked again");
+  // the student's own questions (no may_fix) are never asked again or changed
+  seen.length = 0;
+  const own = await answerItems(llm, DEFAULT_DRILL_CONFIG, items, { subject: "Historia", grade: "åk 8", notes: "n", longWords: 60 });
+  assertEquals(own.items[0].question, "Varför flydde Gustav Vasa till Dalarna?");
+  assertEquals(seen.length, 1);
+});
+
+Deno.test("K106 F3: the ljud pair is one question; different topics on one subject are two", () => {
+  assert(nearDuplicate("Hur påverkar frekvensen tonhöjden?", "Jämför hur hög och låg frekvens påverkar tonen."));
+  assertEquals(nearDuplicate("Hur påverkar temperaturen fotosyntesen?", "Hur påverkar ljuset fotosyntesen?"), false);
+  assertEquals(nearDuplicate("Vad är frekvens?", "Hur mäts ljudets styrka i decibel?"), false);
+  assertEquals(nearDuplicate("Varför steg priserna efter kriget?", "Hur påverkade kriget handeln med Lübeck?"), false);
+});
+
+Deno.test("K106 (live 18:00, Vasa): a two-part question without a comma is cut; a later near-same question goes", () => {
+  assertEquals(oneAsk("Vad var Dackefejden och varför var den viktig?"), "Vad var Dackefejden?");
+  assertEquals(oneAsk("Hur hänger utsläppen och temperaturen ihop?"), "Hur hänger utsläppen och temperaturen ihop?");
+  const qs = [
+    "Hur gick Gustav Vasas uppror mot danskarna till?",
+    "Vad beslutades vid riksdagen i Västerås 1527?",
+    "Förklara hur Gustav Vasas uppror mot danskarna hänger ihop med att han blev kung.",
+    "Hur byggde Gustav Vasa upp en starkare kungamakt?",
+  ];
+  const r = dropNearSame(qs, [0, 1, 0, 2]);
+  assertEquals(r.questions, [qs[0], qs[1], qs[3]]);
+  assertEquals(r.dropped, 1);
+  // the only question of its part stays even when it is near an earlier one
+  assertEquals(dropNearSame(qs, [0, 1, 2, 3]).questions.length, 4);
+});
+
+Deno.test("K106 (live 18:14): a fix that repeats another question or asks two things is asked again with the others shown", async () => {
+  const seen: LLMRequest[] = [];
+  const llm: LLMProvider = {
+    name: "fake", model: "sonnet-fake",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      seen.push(req);
+      const again = req.user.includes("<other_questions>");
+      const answers = again
+        ? [{ id: "q2", question: "Vad gjorde Gustav Vasa med kyrkans jord?", short: "Han lät kronan ta över kyrkans jord och egendom.", rest: "1527." }]
+        : [
+          { id: "q1", short: "Kronan hade stora skulder till Lübeck efter kriget.", rest: "Mer." },
+          { id: "q2", question: "Vad hade kronan för skuld till Lübeck efter kriget?", short: "Kronan hade stora skulder till Lübeck.", rest: "Mer." },
+          { id: "q3", question: "Vilket ljud kan skada hörseln, och vad avgör hur starkt ett ljud är?", short: "Ljud över 85 decibel kan skada hörseln.", rest: "Mer." },
+        ];
+      yield { type: "text", text: JSON.stringify({ answers }) };
+      yield { type: "usage", inputTokens: 100, outputTokens: 50 };
+    },
+  };
+  const items = [
+    { id: "q1", question: "Vad hade kronan för skulder till Lübeck efter kriget?" },
+    { id: "q2", question: "Varför ville Gustav Vasa ta kyrkans rikedomar?" },
+    { id: "q3", question: "Varför kan starka ljud skada hörseln?" },
+  ];
+  const r = await answerItems(llm, DEFAULT_DRILL_CONFIG, items, { subject: "Historia", grade: "åk 8", notes: "n", longWords: 60, mayFix: true });
+  assertEquals(r.items[1].question, "Vad gjorde Gustav Vasa med kyrkans jord?", "the repeated question was replaced");
+  assertEquals(r.items[2].question, "Vilket ljud kan skada hörseln?", "a two-part fix is cut when the new try gives nothing better");
+  assert(seen.some((x) => x.user.includes("<other_questions>")));
+  assertEquals(oneAsk("What did Gutenberg take from earlier technology, and what was that technology used for?"), "What did Gutenberg take from earlier technology?");
+});
+
+Deno.test("K106 (live 18:24): the refill's questions are one question each too", async () => {
+  const { refillQuestions } = await import("./drill.ts");
+  const llm: LLMProvider = {
+    name: "fake", model: "sonnet-fake",
+    async *stream(): AsyncIterable<LLMChunk> {
+      yield { type: "text", text: JSON.stringify({ questions: ["Vilka ämnen bryter nedbrytarna ner döda djur till, och hur tar växterna upp dem?"] }) } as LLMChunk;
+    },
+  };
+  const r = await refillQuestions(llm, DEFAULT_DRILL_CONFIG, ["Vad är en toppkonsument?"], 1, "material");
+  assertEquals(r.questions, ["Vilka ämnen bryter nedbrytarna ner döda djur till?"]);
+});
+
+Deno.test("K106 (Oscar omtest K106 F1): a second 'fact' try when the first fix is still unanswered; alike answers alone change nothing", async () => {
+  const seen: LLMRequest[] = [];
+  const llm: LLMProvider = {
+    name: "fake", model: "sonnet-fake",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      seen.push(req);
+      let answers;
+      if (req.user.includes("<must_fix>fact</must_fix>")) {
+        answers = [{ id: "q1", question: "Vad gjorde bönderna i Dalarna?", short: "Bönderna i Dalarna gick med i upproret mot danskarna.", rest: "Mer." }];
+      } else if (req.user.includes("<must_fix>yes</must_fix>") && req.user.includes('"q1"')) {
+        answers = [{ id: "q1", question: "Hur fick Gustav Vasa med sig bönderna?", short: "Hur han fick med sig dem förklaras inte närmare här.", rest: "Mer." }];
+      } else if (req.user.includes("<must_fix>yes</must_fix>") && req.user.includes('"q3"')) {
+        answers = [{ id: "q3", question: "Vart försvinner resten av energin?", short: "Resten av energin används till att röra sig och hålla värmen och blir till slut värme.", rest: "Mer." }];
+      } else {
+        answers = [
+          { id: "q1", short: "Varför bönderna följde honom är inte känt här.", rest: "Mer." },
+          { id: "q2", short: "Bara ungefär en tiondel av energin följer med till nästa nivå i näringskedjan.", rest: "Mer." },
+          { id: "q3", short: "Eftersom bara ungefär en tiondel av energin följer med till nästa nivå i näringskedjan.", rest: "Mer." },
+        ];
+      }
+      yield { type: "text", text: JSON.stringify({ answers }) };
+      yield { type: "usage", inputTokens: 100, outputTokens: 50 };
+    },
+  };
+  const items = [
+    { id: "q1", question: "Varför fick Gustav Vasa med sig bönderna?" },
+    { id: "q2", question: "Vad händer med energin från en nivå till nästa?" },
+    { id: "q3", question: "Varför finns det fler växter än växtätare?" },
+  ];
+  const r = await answerItems(llm, DEFAULT_DRILL_CONFIG, items, { subject: "Biologi", grade: "åk 8", notes: "n", longWords: 60, mayFix: true });
+  assertEquals(r.items[0].question, "Vad gjorde bönderna i Dalarna?");
+  assertEquals(notAnswered(r.items[0].short!), false);
+  // live 18:38: alike short ANSWERS alone never change a question (that moved good questions to other topics)
+  assertEquals(r.items[2].question, "Varför finns det fler växter än växtätare?");
+  assertEquals(r.items[1].question, "Vad händer med energin från en nivå till nästa?");
+});

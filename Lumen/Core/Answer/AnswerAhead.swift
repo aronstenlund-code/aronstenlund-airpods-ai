@@ -12,6 +12,8 @@ struct AheadAnswer {
         case completed(latencyMs: Double?, done: AnswerDone?)
         case skipped(ActivationRequest)
         case report
+        /// D233 (A151): the answer began to search the web, and when.
+        case searching(at: Date)
 
         /// T17 finding 5: text the user would hear or see.
         var carriesWords: Bool {
