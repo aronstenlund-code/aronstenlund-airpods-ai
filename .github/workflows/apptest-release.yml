@@ -58,8 +58,9 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
           for MARK in 'functions/v1/debug-audio' DebugAudioWriter DebugAudioClient DebugAudioController \
                       LUMEN_TEST_HEADER LUMEN_TEST_PRESSES LUMEN_TEST_MATERIAL 'earmind.test.press'; do
-            D="$(LC_ALL=C grep -rlaF "$MARK" "$DEBUG" | wc -l | tr -d ' ')"
-            R="$(LC_ALL=C grep -rlaF "$MARK" "$RELEASE" | wc -l | tr -d ' ')"
+            # grep finds nothing = exit 1, which pipefail would turn into a failed step (run 44289150827).
+            D="$({ LC_ALL=C grep -rlaF "$MARK" "$DEBUG" || true; } | wc -l | tr -d ' ')"
+            R="$({ LC_ALL=C grep -rlaF "$MARK" "$RELEASE" || true; } | wc -l | tr -d ' ')"
             echo "$MARK: Debug $D file(s), Release $R file(s)"
             echo "| \`$MARK\` | $D | $R |" >> "$GITHUB_STEP_SUMMARY"
             if [ "$D" = 0 ]; then echo "::warning::control: '$MARK' not in Debug either, so its absence in Release proves nothing"; fi
