@@ -140,6 +140,11 @@ grep -E "Reading:|offline|Offline|network|Network|drill_audio|download" "$OUT/lo
   grep -E "Test press|Reading: (paused|go on|next|previous|tap on|start at)" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | head -n 30
   echo '```'
   echo
+  echo "Inloggningen (appens logg, Auth:, Angela Schrute 2026-11-18):"
+  echo '```'
+  grep -E "Auth:" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | head -n 15
+  echo '```'
+  echo
   echo "T50 Skriv i takt (appens logg, pauserna):"
   echo '```'
   echo "pace-rader: $(grep -c 'Reading: pace:' "$OUT/logs/app.log" 2>/dev/null || echo 0)"
