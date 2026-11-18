@@ -59,7 +59,7 @@ Om du skriver upp dig på väntelistan på earmind.vercel.app sparar vi din e-po
 Texter, prov och ljud finns kvar tills du tar bort dem eller ber oss radera ditt konto. Loggar utan text sparas [[O: hur länge]].
 
 ## Dina rättigheter
-Du kan be om att få se, rätta eller radera dina uppgifter, och du kan klaga hos Integritetsskyddsmyndigheten (IMY). Mejla oss för att radera ditt konto och allt som hör till det [[O: en knapp för att radera kontot i appen saknas; Apple kräver den om appen räknas ha konton]].
+Du kan be om att få se, rätta eller radera dina uppgifter, och du kan klaga hos Integritetsskyddsmyndigheten (IMY). Du raderar kontot och allt som hör till det, på telefonen och hos oss, i appen: **Inställningar › Konto › Radera konto**. Det går inte att ångra. Veckokortet avslutas inte av det; säg upp det i Inställningar › ditt namn › Prenumerationer. Du kan också mejla oss.
 
 ## Barn
 EarMind är gjord för elever från 13 år [[O: åldersgränsen i App Store är inte bestämd]].
@@ -81,5 +81,6 @@ Last updated 17 November 2026.
 - **Purchases** are handled by Apple. We receive the purchase details needed to give you credits or the weekly pass, never your card or name.
 - **No ads, no tracking, no selling of data.**
 - **Providers:** Supabase (Stockholm, Frankfurt), Anthropic (USA), ElevenLabs, Apple, Vercel.
+- **Delete your account** and everything on our server in the app: Settings › Account › Delete account. It cannot be undone, and it does not cancel the weekly pass.
 - **Your rights:** ask to see, correct or delete your data at [stenlundaron@gmail.com](mailto:stenlundaron@gmail.com). You can complain to the Swedish Authority for Privacy Protection (IMY).
 - **Controller:** Rothman Solutions AB [[O: company number and address]].
