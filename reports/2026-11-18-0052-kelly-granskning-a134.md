@@ -3,7 +3,7 @@
 Underlag: grenarna `fable/screens-a134` (iPhone 17 Pro, körning 44199413253, commit 15fe6f1) och `fable/screens-a134-se`
 (iPhone SE, största text). Sammanställt i `reports/2026-11-18-a134-granskning/a.jpg` (ljust: bladet, räcker inte,
 veckokort, första skärmen med veckokort) och `b.jpg` (mörkt, SE största text). Jämfört mot `docs/design/kop.md` (Ke73 + Ke77).
-Allt är **sett på bild i Simulatorn** med StoreKit-konfigurationsfil; inga riktiga köp.
+Allt är **sett på bild i Simulatorn** med en låtsasbutik i appen (rättat efter Angela Fable: StoreKit-filen är inte körd, Toby provar den i T48); inga riktiga köp.
 
 ## Stämmer
 - Bladet: siffran, Fyll på med tre tonade prisknappar, märket "Bäst värde" på 2 000, "Ett prov ≈ 6 000 krediter.",
@@ -28,3 +28,10 @@ Allt är **sett på bild i Simulatorn** med StoreKit-konfigurationsfil; inga rik
 ## Inte sett
 - Välkomstkrediterna (`valkommen.png`) och raden efter en inbjudan finns inte bland bilderna (byggs i A141?).
 - Köpflödet (Apples ruta, snurran, "Köpet gick inte igenom") kan bara ses vid ett köp (**otestat**).
+
+## Efter rättelserna (2026-11-18 01:20)
+`reports/2026-11-18-a134-bilder/kop-efter-kellys-rattelser.jpg`: raden vid Spela flödar i största text ("Fyll på" bryts
+som ett ord) och siffran ligger direkt under rubriken. **Godkänt.** Fables tre nya köptexter är godtagna; den första
+kortad till "Köpet är gjort. Krediterna kommer när EarMind har kontakt igen." (kop.md, avsnitt 5).
+Kvar för servern (Kevin): ett fält för välkomstkrediter, för inbjudan som gett krediter och för gränsen 10 i månaden,
+och namnet på standardrösten (så att kortet kan visa "Astrid ▾" i stället för "Röst ▾").
