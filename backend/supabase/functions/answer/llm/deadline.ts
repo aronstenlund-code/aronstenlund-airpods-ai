@@ -78,6 +78,12 @@ async function* deadlineStream(p: LLMProvider, req: LLMRequest, o: DeadlineOptio
         return;
       }
       const c = r.value;
+      if (c.type === "searching") {
+        // K104 (D233): passed on at once, not held for the first word (it exists to say that the word is late)
+        yield c;
+        pending = it.next();
+        continue;
+      }
       if (!sawText && c.type !== "text" && c.type !== "tool_use") { // K35: a tool call is the first output too
         held.push(c); // usage before the first word: passed on with it (a timeout drops it with the call)
       } else {

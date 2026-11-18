@@ -127,3 +127,27 @@ Deno.test("K104: a test picks the model of a searched call only; without the hea
   // a call without web tools never changes model (no cheap way to Sonnet for ordinary answers)
   assertEquals(await modelFor("vad är en atom", "kevin-k104 model-sonnet"), undefined);
 });
+
+import { withDeadline } from "./llm/deadline.ts";
+Deno.test("K104 (live 13:49: `searching` came 2 ms before the first word): the deadline wrapper passes it on at once", async () => {
+  const slow: LLMProvider = {
+    name: "slow",
+    model: "claude-haiku-5-5",
+    stream(): AsyncIterable<LLMChunk> {
+      return (async function* () {
+        yield { type: "usage", inputTokens: 5 } as LLMChunk;
+        yield { type: "searching", tool: "web_search" } as LLMChunk;
+        await new Promise((r) => setTimeout(r, 300)); // the search
+        yield { type: "text", text: "Svar." } as LLMChunk;
+      })();
+    },
+  };
+  const t0 = Date.now();
+  const seen: [string, number][] = [];
+  for await (const c of withDeadline(slow, { firstTextMs: 5000, idleMs: 5000 }).stream({ system: "S", user: "U", maxTokens: 9 })) {
+    seen.push([c.type, Date.now() - t0]);
+  }
+  assertEquals(seen.map((x) => x[0]), ["searching", "usage", "text"]);
+  assert(seen[0][1] < 150, `searching after ${seen[0][1]} ms`);
+  assert(seen[2][1] >= 250);
+});
