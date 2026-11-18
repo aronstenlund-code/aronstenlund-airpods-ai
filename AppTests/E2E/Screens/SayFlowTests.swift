@@ -56,6 +56,7 @@ final class SayFlowTests: XCTestCase {
         section("Krediter, + och Klistra in länk (A116, A117)", { plusLinkAndCredits() })
         section("Nytt prov: Klistra in länk finns (A116)", { newDrillLinkRow() })
         section("Krediter: köpbladet (A134, A141)", { shopSheet() })
+        section("Radera konto (A145, K101)", { deleteAccount() })
         section("Ta bort i Senaste", { cleanUp() })
     }
 
@@ -570,6 +571,90 @@ final class SayFlowTests: XCTestCase {
         } while Date() < end
         log.append("T48 store sheet: none seen (\(confirm ? "confirm" : "cancel"))")
         return false
+    }
+
+    /// A145 (K101): Inställningar › Konto › Radera konto deletes the account on the server for real. The test account
+    /// is the one this Simulator made at its first start, made only for this run. Avbryt does nothing; offline the line
+    /// says nothing is deleted; then the deletion: the app starts over with Välkommen and "Kontot är raderat", and no
+    /// exam or said text is left.
+    private func deleteAccount() -> Bool {
+        goToStart()
+        pause(2)
+        var ok = true
+        let before = recentCapsules().count
+        log.append("A145 before: \(before) capsule(s) in Senaste, credits \(creditsLeft().map(String.init) ?? "-")")
+        guard openAccount() else { return false }
+        // 1. Avbryt.
+        guard askDelete() else { return false }
+        tapAlert("Avbryt")
+        pause(2)
+        let stillThere = find(["Radera konto"]) != nil
+        log.append("A145 Avbryt: still in Inställningar \(stillThere)")
+        if !stillThere { ok = miss("after Avbryt the account part is gone") }
+        // 2. Offline: nothing is deleted.
+        guard network(on: false) else { return false }
+        if askDelete() {
+            tapAlert("Radera konto")
+            var line: String?
+            let end = Date().addingTimeInterval(20)
+            repeat { line = text(starting: "Det gick inte att radera kontot"); if line == nil { pause(1) } } while line == nil && Date() < end
+            log.append("A145 offline: \(line ?? "no line in 20 s")")
+            screen("radera-utan-nat", "Radera konto offline")
+            if line?.contains("Inget är raderat") != true { ok = miss("offline the line does not say that nothing is deleted ('\(line ?? "-")')") }
+        } else { ok = false }
+        _ = network(on: true)
+        goToStart()
+        pause(2)
+        let afterOffline = recentCapsules().count
+        log.append("A145 after the offline try: \(afterOffline) capsule(s)")
+        if afterOffline < before { ok = miss("an offline try removed texts (\(before) → \(afterOffline))") }
+        // 3. Delete.
+        guard openAccount(), askDelete() else { return false }
+        tapAlert("Radera konto")
+        var done: String?
+        let end = Date().addingTimeInterval(45)
+        repeat { done = text(starting: "Kontot är raderat") ?? (find(["Välkommen till EarMind"]) != nil ? "Välkommen till EarMind" : nil); if done == nil { pause(1) } } while done == nil && Date() < end
+        pause(2)
+        let box = text(starting: "Kontot är raderat") != nil
+        let welcome = find(["Välkommen till EarMind"]) != nil
+        log.append("A145 after Radera konto: 'Kontot är raderat' \(box), Välkommen \(welcome), \(text(starting: "EarMind börjar om") ?? "-")")
+        screen("raderat", "After Radera konto")
+        if !box { ok = miss("no 'Kontot är raderat' after the deletion") }
+        if !welcome { ok = miss("the app did not start over with Välkommen") }
+        for label in ["OK", "Okej", "Stäng", "Fortsätt"] where text(starting: "Kontot är raderat") != nil {
+            if let b = app.alerts.firstMatch.buttons[label].exists ? app.alerts.firstMatch.buttons[label] : nil { b.tap(); testTaps += 1; pause(1) }
+        }
+        if welcome { _ = firstStart() }
+        pause(3)
+        let left = recentCapsules().count
+        let examHeads = Self.labels(in: app.debugDescription, kind: "StaticText").filter { ["nästa prov", "andra prov", "senaste"].contains($0.lowercased()) }
+        log.append("A145 Start afterwards: \(left) capsule(s), headings \(examHeads), credits \(creditsLeft().map(String.init) ?? "-")")
+        screen("efter-radering", "Start after the deletion")
+        if left > 0 || !examHeads.isEmpty { ok = miss("texts or exams are left after the deletion (\(left) capsules, \(examHeads))") }
+        return ok
+    }
+
+    private func openAccount() -> Bool {
+        goToStart()
+        guard tap(["Inställningar"], "Inställningar") else { return false }
+        pause(1.5)
+        return wait(["Radera konto"], 5) != nil || tap(["Radera konto"], "Radera konto (scroll)", counted: false) || miss("no 'Radera konto' in Inställningar")
+    }
+
+    private func askDelete() -> Bool {
+        let button = app.buttons.matching(NSPredicate(format: "label ==[c] 'Radera konto'")).allElementsBoundByIndex.first { $0.exists }
+        guard let button else { return miss("no 'Radera konto' button") }
+        var swipes = 0
+        while !button.isHittable, swipes < 6 { app.swipeUp(); swipes += 1 }
+        tapElement(button, "Radera konto")
+        guard app.alerts.firstMatch.waitForExistence(timeout: 5) else { return miss("no 'Radera kontot?' question") }
+        log.append("A145 question: \(app.alerts.firstMatch.label)")
+        return true
+    }
+
+    private func tapAlert(_ label: String) {
+        let button = app.alerts.firstMatch.buttons[label]
+        if button.exists { tapElement(button, "\(label) (Radera kontot?)") } else { log.append("MISS: no '\(label)' in the question") }
     }
 
     /// Asks t36.sh to turn the runner's network off or on (t36-net-off/on.request), and waits for it.
