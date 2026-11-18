@@ -55,6 +55,8 @@ enum RepetitionDemo {
                                       "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited",
                                       // A136 (D220, Ke75): the style row, "I takt" and the voice sheet
                                       "repSayStyle", "repSayVoices",
+                                      // Kelly Ke80 (the App Store page): the voice sheet as an ordinary user sees it
+                                      "repSayVoicesUser",
                                       // A134 (D218), A141 (D224), Ke73/Ke77: the purchase part
                                       "repShop", "repShopWeekly", "repShopShort", "repShopWeeklyHome",
                                       // A141 (K99 fields): welcome credits and a rewarded invitation
@@ -381,13 +383,14 @@ enum RepetitionDemo {
         }
         SayText.stagedPicked = nil
         UserDefaults.standard.removeObject(forKey: SayText.mixKey)
-        if name == "repSayStyle" || name == "repSayVoices" || name == "repSayPicked" { // A136 (D220, Kelly Ke75), A140
+        if ["repSayStyle", "repSayVoices", "repSayVoicesUser", "repSayPicked"].contains(name) { // A136 (D220, Kelly Ke75), A140
             model.store.save(history)
             model.store.save(drill)
             var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
             credits.unit = "chars"
             credits.remaining = 1236
             model.quota = credits
+            // Voices under review reach the owner's account only; an ordinary user never sees "Att provlyssna".
             model.stageSayVoices([
                 SayVoice(voice_id: "astrid0000000001", name: "Astrid", preview_url: "https://example.com/astrid.mp3", description: "Lugn, rikssvenska"),
                 SayVoice(voice_id: "elsa00000000002", name: "Elsa", preview_url: "https://example.com/elsa.mp3", description: "Ung, glad"),
@@ -395,7 +398,7 @@ enum RepetitionDemo {
                 SayVoice(voice_id: "nils000000000004", name: "Nils", preview_url: "https://example.com/nils.mp3", description: "Skånska"),
                 SayVoice(voice_id: "maja000000000005", name: "Maja", preview_url: "https://example.com/maja.mp3", description: "Göteborgska"),
                 SayVoice(voice_id: "hindi00000000006", name: "Hindi", preview_url: "https://example.com/hindi.mp3", description: "Svenska med indisk brytning", review: true),
-            ], defaultName: "Astrid")
+            ].filter { name != "repSayVoicesUser" || !$0.isUnderReview }, defaultName: "Astrid")
             if name == "repSayPicked" { // A140 (K99): no voice chosen, a style: the server chose Gustav
                 SayText.stagedPicked = ("gustav000000003", "Mörk och tydlig, passar en lärare.")
             } else {
@@ -404,7 +407,7 @@ enum RepetitionDemo {
             }
             SayText.stagedForScreenshots = said
             SayText.stagedStyle = "Lugnt, som en lärare"
-            SayText.stagedVoicesSheet = name == "repSayVoices"
+            SayText.stagedVoicesSheet = name == "repSayVoices" || name == "repSayVoicesUser"
             SayText.stagedRefusal = nil
             SayText.stagedCost = 120 // K92: a new voice or style is new sound
             return
@@ -596,7 +599,7 @@ enum RepetitionDemo {
             case "repSayPlay", "repSayPlayOnce": RepetitionPlayerView(model: model)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
-                 "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices",
+                 "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices", "repSayVoicesUser",
                  "repShopShort", "repShopWeeklyHome", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
                  "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced":
                 NavigationStack { HomeView(model: listening) }
