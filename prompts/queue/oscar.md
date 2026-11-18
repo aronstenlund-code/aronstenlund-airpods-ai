@@ -202,8 +202,8 @@
 
 - [x] _klar 2026-11-18 09:15 (Oscar moln): live 1/1, lokalt 6/7; F1 medel: taket inte atomiskt, `reports/qa/2026-11-18-0915-oscar-o82-valkomst-inbjudan.md`_ **O82 – Testa K98** (effort: medium). Lagd av Deangelo 2026-11-17 21:15. Välkomstkrediter en gång per konto och telefon, inbjudan ger 2 000 först när den inbjudna har spelat, inte två gånger för samma inbjudna, inte för konton på samma telefon, taket på 10 i månaden. Veckotaket 20 000. Testläge, 0 ElevenLabs. Rapport, push. **Kevin (moln) 21:25: K98 servern byggd.** `POST /purchase {"action":"attest_challenge"}` → `{challenge}`; `{"action":"welcome","key_id","challenge","attestation"}` (base64 ur `DCAppAttestService.attestKey(keyId, clientDataHash: SHA256(challenge-utf8))`) → `{ok, added, reason?: "already"|"key_used", wallet}`; 503 `attest_unconfigured` tills APPLE_TEAM_ID är satt; 422 `attest_invalid` {reason}. `{"action":"invite_code"}` → `{code, url, app_url: "earmind://invite/<code>"}`; `{"action":"invite_claim","code"}` (kräver att welcome-kontrollen gjorts på telefonen) → 200 eller 404 `invite_not_found`/409 `invite_self`/`invite_needs_device`/`invite_same_device`/`invite_already`. Belöningen ges vid den inbjudnas första `/drill start`. Krediterna syns i `purchased`. → `reports/2026-11-17-2125-kevin-k98-valkomst-inbjudan.md`
 
-- [ ] **O83 – Kontrollera det integritetspolicyn lovar (Ke78)** (effort: medium). Lagd av Deangelo 2026-11-18 09:55. (1) Att foton och dokument verkligen inte ligger kvar i lagringen efter att frågorna är gjorda (bara metadata, inga filer); (2) var sammanfattningen från lyssnarlägena sparas; (3) när K101 är klar: att radera kontot tar bort allt kontots eget och lämnar delat ljud. Läs-SQL skriver du färdig, så kör Deangelo den. Rapport, push. **Oscar (moln) 09:58: del 1–2 klara (`reports/qa/2026-11-18-0958-oscar-o83-integritet.md`), del 3 väntar på K101.**
-- [ ] (Från Kevin (moln) 2026-11-18 10:00) **Klart att testa:**
+- [x] _klar 2026-11-18 10:39 (Oscar moln): del 3 K101 live, `reports/qa/2026-11-18-1039-oscar-o83-del3-radera-konto.md`_ **O83 – Kontrollera det integritetspolicyn lovar (Ke78)** (effort: medium). Lagd av Deangelo 2026-11-18 09:55. (1) Att foton och dokument verkligen inte ligger kvar i lagringen efter att frågorna är gjorda (bara metadata, inga filer); (2) var sammanfattningen från lyssnarlägena sparas; (3) när K101 är klar: att radera kontot tar bort allt kontots eget och lämnar delat ljud. Läs-SQL skriver du färdig, så kör Deangelo den. Rapport, push. **Oscar (moln) 09:58: del 1–2 klara (`reports/qa/2026-11-18-0958-oscar-o83-integritet.md`), del 3 väntar på K101.**
+- [x] _omtestat 2026-11-18 10:39 (Oscar moln): O81 F1/F2 live, O80 F1 taggar live med riktig text, `reports/qa/2026-11-18-1039-oscar-o83-del3-radera-konto.md`_ (Från Kevin (moln) 2026-11-18 10:00) **Klart att testa:**
   - O78 F1/F2: en återbetald prenumeration återaktiveras inte av samma JWS; en andra REFUND svarar `already`.
   - O82 F1: `invite_reward` (SQL, körd av Deangelo).
   - O82 F3/F4: `invite_not_new`; samma konto och nyckel svarar `already`.
@@ -212,3 +212,10 @@
   - Nytt: `x-earmind-test: <namn> unavailable` håller bara tillbaka ljudet för samma `<namn>`; ditt O72 med `oscar-qa` fungerar som förut.
   - Fråga O80 F1: loggen säger `style_failed Provider refused the request` (Haiku `refusal`) 20:21:23 – vilken text var det?
   → `reports/2026-11-18-1000-kevin-o78-k100-oscar.md`
+- [x] _klar 2026-11-18 10:52 (Oscar moln), `reports/qa/2026-11-18-1052-oscar-o84-k100-tid.md`_ **O84 – K100 live: tid för save + start (D225) och list efter radering** (Deangelo 2026-11-18). Ett anrop klarar målet (2,7 s / 4,9 s), två anrop inte (4,7 s / 8,5 s), kall start 11 s; list efter radering 401.
+- [ ] (Från Kevin (moln) 2026-11-18 11:00) **Klart att testa:**
+  - O79 F1: delarna är rubriker, annars stycken; `usage.coverage.by`. Mätt på dina fem: alla avsnitt nu egna delar, vasa 5/5/4, inflation 2/3/2/3/4.
+  - Dubbletterna är kvar: inflation 2 och 14 är samma fråga, men ditt mått missade det.
+  - O84 F2 delvis: kall `loadCiRanges` läser tabellen först, och testanrop väntar inte. Mät gärna kallstarten igen.
+  - K101 401 efter radering är verifierad live.
+  → `reports/2026-11-18-1100-kevin-o79-avsnitt-k101-401.md`

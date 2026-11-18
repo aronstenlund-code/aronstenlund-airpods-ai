@@ -136,7 +136,8 @@ import Testing
         let events = try await collect(provider.answer(AnswerRequest(fragment: "x", mode: "text", language: "sv")))
 
         #expect(events.count == 4)
-        #expect(http.requests.map { $0.url?.path } == ["/functions/v1/answer", "/auth/v1/signup", "/functions/v1/answer"])
+        // A143: a 401 renews the token with the refresh token; the account stays (before: a new anonymous sign-up).
+        #expect(http.requests.map { $0.url?.path } == ["/functions/v1/answer", "/auth/v1/token", "/functions/v1/answer"])
         #expect(http.requests[0].value(forHTTPHeaderField: "Authorization") == "Bearer jwt-valid")
         #expect(http.requests[2].value(forHTTPHeaderField: "Authorization") == "Bearer jwt-new")
     }

@@ -35,19 +35,36 @@
         }
       }
     },
+    "NSAppleMusicUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EarMind can skip and pause songs in Apple Music when you say \"Lumen, nästa låt\"."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EarMind kan byta och pausa låtar i Apple Music när du säger ”Lumen, nästa låt”."
+          }
+        }
+      }
+    },
     "NSCalendarsFullAccessUsageDescription": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When you ask, EarMind adds events to your calendar and tells you what is in it. It always asks before it adds something."
+            "value": "When you ask, EarMind adds events to your calendar and tells you what is in it. To tell you, the events you ask about are sent to EarMind's server. It always asks before it adds something."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "När du ber om det lägger EarMind in händelser i din kalender och berättar vad som finns i den. EarMind frågar alltid innan den lägger in något."
+            "value": "När du ber om det lägger EarMind in händelser i din kalender och berättar vad som finns i den. För att kunna berätta skickas händelserna du frågar om till EarMinds server. EarMind frågar alltid innan den lägger in något."
           }
         }
       }
@@ -58,13 +75,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Take a photo of the page you are studying, so EarMind can quiz you on it. The text is read on the iPhone; the photo is not saved."
+            "value": "Take a photo of the page you are studying. The photo is sent once to EarMind's server to make your questions or the text that is read aloud, and EarMind does not save it."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fota sidan du pluggar på, så förhör EarMind dig på den. Texten läses på telefonen, och bilden sparas inte."
+            "value": "Fota sidan du pluggar på. Bilden skickas en gång till EarMinds server för att göra dina frågor eller texten som läses upp, och EarMind sparar den inte."
           }
         }
       }
@@ -75,13 +92,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When you say \"Lumen, call Mum\", EarMind looks the name up in your contacts to find the number. Nothing from your contacts is sent anywhere."
+            "value": "When you say \"Lumen, call Mum\", EarMind looks the name up in your contacts to find the number. The number stays on your phone. If several contacts match, their names are sent to EarMind's server so it can ask which one you mean."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "När du säger ”Lumen, ring mamma” letar EarMind upp namnet i dina kontakter för att hitta numret. Inget från kontakterna skickas någonstans."
+            "value": "När du säger ”Lumen, ring mamma” letar EarMind upp namnet i dina kontakter för att hitta numret. Numret stannar på telefonen. Om flera kontakter passar skickas deras namn till EarMinds server, så att EarMind kan fråga vem du menar."
           }
         }
       }
@@ -99,6 +116,23 @@
           "stringUnit": {
             "state": "translated",
             "value": "EarMind lyssnar genom mikrofonen för att skriva ut tal och svara på frågor i dina AirPods. Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon."
+          }
+        }
+      }
+    },
+    "NSMotionUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In Provläge you can answer a yes/no check question by nodding or shaking your head with your AirPods. Only used then."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I Provläge kan du svara ja eller nej på en kontrollfråga genom att nicka eller skaka på huvudet med dina AirPods. Används bara då."
           }
         }
       }

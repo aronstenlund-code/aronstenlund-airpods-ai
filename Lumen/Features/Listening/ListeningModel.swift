@@ -428,7 +428,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         standardMode.host = self
         provMode.host = self
         turnQueue.host = self
+        #if LUMEN_TESTMODE
         debugAudio.host = self
+        #endif
         tools.host = self
         pagePhoto.host = self
         flipCards.host = self
@@ -596,7 +598,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func stopListening() async {
         if isListening { cue(.stop) } // A34: before the graph stops
         listeningStoppedAt = Date() // A60 (Toby T8b finding 1): what Scribe hands over after this is not used
+        #if LUMEN_TESTMODE
         debugAudio.stop() // A76: the last, shorter piece is finished
+        #endif
         stopListeningForExamStatement()
         answers.sessionLength = nil
         activation.cancelPending()
@@ -1892,6 +1896,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// The kept audio, the pieces and the upload are `DebugAudioController` (D221, G7 step 7d). The screens and
     /// AppContainer use the test mode through the model, as before.
+    ///
+    /// A142 (D218 point 4): only in the builds for us and our testers (`LUMEN_TESTMODE`: Debug and Beta). The App Store
+    /// build (Release) has no test mode: no switch, nothing kept and nothing sent.
+    #if LUMEN_TESTMODE
     let debugAudio = DebugAudioController()
 
     /// The test mode switch (Inställningar, or on for a test account by K43's flag).
@@ -1922,6 +1930,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func testModeSwitched() async {
         await debugAudio.switched()
     }
+    #else
+    /// The App Store build: there is no test mode, so the screens show no switch and no badge.
+    var testMode: TestModeSettings? { nil }
+    var isRecordingDebugAudio: Bool { false }
+    func updateDebugAudio() {}
+    func testModeSwitched() async {}
+    #endif
 
     /// A74: the questions asked in the last minute (Standardläge), so a late copy is not answered again.
     @ObservationIgnored private var repeatGuard = RepeatGuard()
@@ -3452,7 +3467,11 @@ extension ListeningModel: TurnQueueHost {
 
 /// D221 (A138, G7 step 7d): what the smaller parts use (`DebugAudioHost`, `PhoneToolsHost`, `PagePhotoHost`,
 /// `FlipCardsHost`): the model's own calls, unchanged.
-extension ListeningModel: DebugAudioHost, PhoneToolsHost, PagePhotoHost, FlipCardsHost {
+#if LUMEN_TESTMODE
+extension ListeningModel: DebugAudioHost {} // A142: the test mode's part exists only with the flag
+#endif
+
+extension ListeningModel: PhoneToolsHost, PagePhotoHost, FlipCardsHost {
     var lastSentRequest: (request: ActivationRequest, persona: PersonaRequest?)? { lastSent }
 
     func recordFlippedConcept(_ concept: String, right: Bool, exam: UUID) {

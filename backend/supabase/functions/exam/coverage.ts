@@ -21,6 +21,59 @@ export function partCount(chars: number, questions: number): number {
   return Math.max(2, Math.min(6, questions, Math.round(chars / 1200)));
 }
 
+/**
+ * O79 F1: a heading line: a short paragraph of its own (at most 80 characters and 10 words) that does not end like a
+ * sentence, or a markdown heading.
+ */
+export function isHeading(par: string): boolean {
+  const p = par.trim();
+  if (!p || p.includes("\n")) return false;
+  if (/^#{1,6}\s+\S/.test(p)) return true;
+  return p.length <= 80 && p.split(/\s+/).length <= 10 && !/[.!?:;,]$/.test(p) && /\p{L}/u.test(p);
+}
+
+const MIN_SECTION = 120;
+/** at most this many parts (each short part may cost a model call of its own) */
+const MAX_SECTIONS = 8;
+
+/**
+ * O79 F1 (Oscar): the material's own sections as parts. With two or more headings, a part is a heading and the text
+ * under it (text before the first heading goes with it). Without headings, the paragraphs are the parts when there
+ * are at least two. A part shorter than MIN_SECTION characters joins the next (the last joins the one before). More
+ * parts than `max` (the questions there are room for): the two neighbours that together are shortest are joined
+ * until they fit, so every part can get a question. null = no structure: the caller cuts on length (splitParts).
+ */
+export function sectionParts(text: string, max: number): string[] | null {
+  const pars = text.trim().split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  if (pars.length < 2 || max < 2) return null;
+  const heads = pars.filter((p) => isHeading(p)).length;
+  let parts: string[] = [];
+  if (heads >= 2) {
+    let open = false; // the last part is a heading with nothing under it yet (two headings in a row stay together)
+    for (const p of pars) {
+      if (isHeading(p) && !open) (parts.push(p), open = true);
+      else if (!parts.length) (parts.push(p), open = false);
+      else (parts[parts.length - 1] += "\n\n" + p, open = open && isHeading(p));
+    }
+  } else if (heads === 0) {
+    parts = pars;
+  } else {
+    return null; // one heading: a title, not sections
+  }
+  // too short to stand alone: join the next (the last joins the one before)
+  for (let i = 0; i < parts.length && parts.length > 1;) {
+    if (parts[i].length >= MIN_SECTION) { i++; continue; }
+    if (i < parts.length - 1) parts.splice(i, 2, `${parts[i]}\n\n${parts[i + 1]}`);
+    else parts.splice(i - 1, 2, `${parts[i - 1]}\n\n${parts[i]}`);
+  }
+  while (parts.length > Math.min(max, MAX_SECTIONS)) {
+    let best = 0;
+    for (let i = 1; i < parts.length - 1; i++) if (parts[i].length + parts[i + 1].length < parts[best].length + parts[best + 1].length) best = i;
+    parts.splice(best, 2, `${parts[best]}\n\n${parts[best + 1]}`);
+  }
+  return parts.length >= 2 ? parts : null;
+}
+
 /** The text cut into `k` parts of about equal length, at a paragraph (else sentence) end near each cut. */
 export function splitParts(text: string, k: number): string[] {
   const t = text.trim();

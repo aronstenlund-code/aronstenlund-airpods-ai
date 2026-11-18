@@ -35,6 +35,17 @@ final class AppContainer {
     var testPresses: TestPresses?
     #endif
 
+    /// The mock mode of the repetition flow (`-RepetitionMock YES` and the screenshots): Debug only, never in the builds
+    /// for testers or the App Store. A142: a property, not a constant in `init`. With `let mock = false` the first
+    /// Release build ever (44264496532) stopped on "will never be executed" for every `mock ? … : …`.
+    private static var isMockMode: Bool {
+        #if DEBUG
+        UserDefaults.standard.bool(forKey: "RepetitionMock") || ScreenshotStage.requested != nil
+        #else
+        false
+        #endif
+    }
+
     init() {
         let graph = AudioGraph()
         let session = AudioSessionManager()
@@ -103,8 +114,12 @@ final class AppContainer {
         listening.myAnswers = MyAnswerStore() // A53 (D126)
         listening.myAnswersClient = MyAnswersClient(config: .lumen, auth: auth, http: http)
         listening.logoVoteClient = LogoVoteClient(config: .lumen, auth: auth, http: http) // A54 (D127)
+        #if LUMEN_TESTMODE
         listening.testMode = TestModeSettings() // A76 (D140): off unless switched on
         listening.debugAudioClient = DebugAudioClient(config: .lumen, auth: auth, http: http) // A76 (K43)
+        #else
+        TestModeBuild.removeLeftovers() // A142: the App Store build has no test mode and keeps none of its audio
+        #endif
         listening.spotifyConnection = SpotifyConnection(client: ConnectClient(config: .lumen, auth: auth, http: http)) // A59
         listening.phoneTools = LivePhoneTools { [weak listening] text in listening?.notes.add(text: text) }
         ListeningRemote.pause = { [weak listening] in await listening?.pauseFromShortcut() }
@@ -136,11 +151,13 @@ final class AppContainer {
         // K47 for sharing. The mock mode (-RepetitionMock YES, Debug only: the Simulator tests and screenshots) uses
         // fixed questions, the phone only and the iPhone's own voice: 0 model calls and 0 ElevenLabs characters.
         let drillStore = DrillStore()
-        #if DEBUG
-        let mock = UserDefaults.standard.bool(forKey: "RepetitionMock") || ScreenshotStage.requested != nil
-        #else
-        let mock = false
-        #endif
+        let mock = Self.isMockMode
+        // A143 (D225 point 4): the sign-in starts when the app opens, and the token is renewed when the app comes back,
+        // so Spela never waits for it. Not in the mock mode (no network there) and not in the unit tests' host app.
+        if !mock, ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil {
+            auth.prepare()
+            auth.watchForeground()
+        }
         let drillCloud: (any DrillCloudSyncing)? = mock ? nil : DrillCloudClient(config: .lumen, auth: auth, http: http) as any DrillCloudSyncing
         let maker: any DrillMaking = mock ? MockDrillMaker() as any DrillMaking
             : DrillClient(config: .lumen, auth: auth, http: http) as any DrillMaking

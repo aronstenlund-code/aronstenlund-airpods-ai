@@ -120,44 +120,54 @@ export function loadCiRanges(fetchFn: typeof fetch = fetch, env = Deno.env): Pro
   const base = (env.get("SUPABASE_URL") ?? "").replace(/\/+$/, "");
   const key = env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
   const h = { apikey: key, authorization: `Bearer ${key}`, "content-type": "application/json" };
-  loading ??= (async () => {
-    let fromGithub: string[] = [];
+  const fromGithub = async (): Promise<string[]> => {
     try {
       const r = await fetchFn("https://api.github.com/meta", { headers: { accept: "application/json", "user-agent": "earmind-server" }, signal: AbortSignal.timeout(2500) });
-      if (r.ok) {
-        const j = await r.json() as Record<string, unknown>;
-        fromGithub = Object.entries(j).filter(([k]) => k.startsWith("actions")).flatMap(([, v]) => Array.isArray(v) ? v as string[] : []);
-      } else {
+      if (!r.ok) {
         console.warn("ci_ranges_failed", r.status);
         await r.body?.cancel();
+        return [];
       }
+      const j = await r.json() as Record<string, unknown>;
+      return Object.entries(j).filter(([k]) => k.startsWith("actions")).flatMap(([, v]) => Array.isArray(v) ? v as string[] : []);
     } catch (e) {
       console.warn("ci_ranges_failed", e instanceof Error ? e.message.slice(0, 80) : String(e));
+      return [];
     }
+  };
+  const useGithub = (list: string[]) => {
+    ranges = parseRanges(list);
+    rangesAt = Date.now();
+    // keep it for the next isolate GitHub turns away (fire and forget)
+    if (base && key) {
+      void fetchFn(`${base}/rest/v1/ci_ranges?on_conflict=id`, {
+        method: "POST", headers: { ...h, prefer: "resolution=merge-duplicates,return=minimal" },
+        body: JSON.stringify({ id: 1, cidrs: list, source: "function", updated_at: new Date().toISOString() }),
+      }).then((r) => r.body?.cancel()).catch(() => {});
+    }
+  };
+  loading ??= (async () => {
     try {
-      if (fromGithub.length) {
-        ranges = parseRanges(fromGithub);
-        rangesAt = Date.now();
-        // keep it for the next isolate GitHub turns away (fire and forget)
-        if (base && key) {
-          void fetchFn(`${base}/rest/v1/ci_ranges?on_conflict=id`, {
-            method: "POST", headers: { ...h, prefer: "resolution=merge-duplicates,return=minimal" },
-            body: JSON.stringify({ id: 1, cidrs: fromGithub, source: "function", updated_at: new Date().toISOString() }),
-          }).then((r) => r.body?.cancel()).catch(() => {});
-        }
-      } else if (base && key) {
-        const r = await fetchFn(`${base}/rest/v1/ci_ranges?select=cidrs&id=eq.1`, { headers: h, signal: AbortSignal.timeout(2500) });
-        const rows = r.ok ? await r.json() as { cidrs?: string[] }[] : [];
-        if (!r.ok) await r.body?.cancel();
-        const cidrs = rows[0]?.cidrs ?? [];
-        if (cidrs.length) {
-          ranges = parseRanges(cidrs);
-          // the stored list is used for an hour, then GitHub is asked again
-          rangesAt = Date.now() - 11 * 3600_000;
+      // K100 (Oscar O84, cold start): the stored list first, one quick database read (written daily by ci-ranges.yml);
+      // GitHub, which often turns Supabase away and may take 2.5 s, then refreshes it after the answer
+      let stored: string[] = [];
+      if (base && key) {
+        try {
+          const r = await fetchFn(`${base}/rest/v1/ci_ranges?select=cidrs&id=eq.1`, { headers: h, signal: AbortSignal.timeout(2500) });
+          const rows = r.ok ? await r.json().catch(() => []) as { cidrs?: string[] }[] : (await r.body?.cancel(), []);
+          stored = Array.isArray(rows) ? rows[0]?.cidrs ?? [] : [];
+        } catch (e) {
+          console.warn("ci_ranges_store_failed", e instanceof Error ? e.message.slice(0, 80) : String(e));
         }
       }
-    } catch (e) {
-      console.warn("ci_ranges_store_failed", e instanceof Error ? e.message.slice(0, 80) : String(e));
+      if (stored.length) {
+        ranges = parseRanges(stored);
+        rangesAt = Date.now() - 11 * 3600_000; // GitHub is asked again within the hour
+        void fromGithub().then((l) => l.length && useGithub(l)).catch(() => {});
+        return;
+      }
+      const list = await fromGithub();
+      if (list.length) useGithub(list);
     } finally {
       if (!ranges.length) console.warn("ci_ranges_empty");
       loading = null;
@@ -274,7 +284,9 @@ export function withTestMode(
 ): (req: Request) => Promise<Response> {
   return async (req) => {
     if (req.method === "OPTIONS") return handler(req);
-    await loadCiRanges();
+    // a request with the test header is test traffic whatever the ranges say: it does not wait for them (K100)
+    if (req.headers.has("x-earmind-test")) void loadCiRanges().catch(() => {});
+    else await loadCiRanges();
     const info = detectTest(req, opts.ownerEmails ?? (Deno.env.get("OWNER_EMAIL") ?? "").split(","));
     if (info.test) {
       console.log("test_request", JSON.stringify({ fn, reason: info.reason, user: info.userId }));

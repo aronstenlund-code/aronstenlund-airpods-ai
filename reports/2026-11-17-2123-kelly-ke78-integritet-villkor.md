@@ -49,3 +49,14 @@ mikrofonen, samtycke före mikrofon (D21) och att EarMind inte sparar ljud är *
 
 ## Nästa
 Ke77 (köpdelen) i samma runda; sedan granskning av A133/A135/A136 när bilderna kommer.
+
+## Uppdatering 2026-11-18 11:10 (efter Angela Schrutes A142)
+Grenen `kelly/ke78-integritet`, commit 22f069c7. Bilderna i `reports/2026-11-17-ke78-bilder/` är tagna om.
+- **Kalender och kontakter** (fel i utkastet, stod "skickas inte till oss"): i Fler lägen skickas upp till 20
+  kalenderhändelser (titel, tid, plats) till servern och Anthropic när man frågar, och upp till fyra kontaktnamn när
+  flera passar; numret skickas aldrig, påminnelser läses inte (**verifierat i koden** av Angela, `LivePhoneTools`).
+  Nytt overifierat: att servern inte loggar eller sparar verktygens svar.
+- **Testläget** finns inte i Release (D227): markeringen är borta.
+- **Fotona:** raderas direkt efter analysen och det som blir kvar tas bort inom en timme (`drill-purge`, **verifierat i
+  koden** av Angela): markeringen (sv och en) är borta.
+- **Kvar: 16 overifierade punkter** (11 i integritet, 5 i villkor).
