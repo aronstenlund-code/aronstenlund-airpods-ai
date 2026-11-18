@@ -290,6 +290,74 @@ export async function shortenQuestions(
   }
 }
 
+/**
+ * Oscar O79 omtest (F1–F3): the last check of the finished list against the material, after the parts have been
+ * filled (the part calls' questions were never checked before). One call to the answer model (correctness, K2/D97).
+ */
+export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
+  `You check the finished list of questions for a spoken practice exam against the material it was made from. You get <material> and <questions> (JSON: i and q). Return ONLY {"questions": [...]} with an entry for each question you change or remove (none = {"questions": []}):
+- Every fact a question takes for granted (who, what, which war, who owed whom, a cause, a result, a date) must be what the material says. When a question takes for granted something the material does not say, or says differently, rewrite it as little as possible so that it assumes only what the material says: {"i": N, "q": "..."}. Example: the material says "skulder till Lübeck efter kriget" and the war was against Denmark; "Varför behövde kronan pengar efter kriget med Lübeck?" is wrong; write "Varför hade kronan skulder till Lübeck?".
+- A why-question whose cause the material does not give: rewrite it as a what- or how-question the material does answer: {"i": N, "q": "..."}.
+- A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {"i": N, "drop": true, "same_as": M}. Two questions on one topic that ask different things both stay.
+- Never change anything else: same language, same length or shorter, clear when only heard. No other text.`;
+
+/** Oscar O79 omtest: the result of the last check (questions fixed or removed; the order kept). */
+export async function finalCheck(
+  provider: LLMProvider,
+  cfg: DrillConfig,
+  questions: string[],
+  parts: number[],
+  material: string,
+  signal?: AbortSignal,
+): Promise<{ questions: string[]; parts: number[]; usage: StepUsage | null; fixed: number; dropped: number }> {
+  if (questions.length < 2 || !material) return { questions, parts, usage: null, fixed: 0, dropped: 0 };
+  try {
+    const r = await runLLM(provider, {
+      system: SYSTEM_PROMPT_DRILL_FINAL_CHECK,
+      user: `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n<questions>${sanitizeTagged(JSON.stringify(questions.map((q, i) => ({ i, q }))))}</questions>`,
+      maxTokens: 200 + questions.length * 60,
+      cacheSystem: true,
+      model: cfg.answerModel,
+      timeoutMs: 40_000,
+      signal,
+    }, cfg.answerPriceIn, cfg.answerPriceOut);
+    const out = [...questions];
+    const drop = new Set<number>();
+    let fixed = 0;
+    for (const x of Array.isArray(firstJson(r.text)?.questions) ? firstJson(r.text)!.questions as Record<string, unknown>[] : []) {
+      const i = Number(x?.i);
+      if (!Number.isInteger(i) || i < 0 || i >= out.length) continue;
+      if (x?.drop === true) {
+        const m = Number(x?.same_as);
+        if (i > 0 && Number.isInteger(m) && m >= 0 && m < i) drop.add(i);
+        continue;
+      }
+      const q = cleanQuestion(x?.q);
+      if (!q || words(q) < 2 || words(q) > words(out[i]) + 4 || leansOnMaterial(q) || out.some((o, k) => k !== i && o.toLowerCase() === q.toLowerCase())) continue;
+      if (q !== out[i]) (out[i] = q, fixed++);
+    }
+    // never the first, at most a third, and never the last question of a part (every part keeps one)
+    const left = new Map<number, number>();
+    for (const p of parts) left.set(p, (left.get(p) ?? 0) + 1);
+    const gone: number[] = [];
+    for (const i of [...drop].sort((a, b) => a - b)) {
+      if (gone.length >= Math.floor(out.length / 3)) break;
+      const p = parts[i] ?? -1;
+      if (p >= 0 && (left.get(p) ?? 0) <= 1) continue;
+      left.set(p, (left.get(p) ?? 0) - 1);
+      gone.push(i);
+    }
+    return {
+      questions: out.filter((_, i) => !gone.includes(i)),
+      parts: parts.filter((_, i) => !gone.includes(i)),
+      usage: r.usage, fixed, dropped: gone.length,
+    };
+  } catch (e) {
+    console.warn("drill_final_check_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
+    return { questions, parts, usage: null, fixed: 0, dropped: 0 };
+  }
+}
+
 /** K67: a question in Swedish (Swedish question word or å/ä/ö). */
 export function looksSwedish(q: string): boolean {
   return /^(?:vad|varför|hur|vilk|vem|när|var |vilket|beskriv|förklara|jämför|ge )/i.test(q.trim()) || /[åäö]/i.test(q);
@@ -858,6 +926,7 @@ export async function handleDrill(
     const parts = sections ?? (byLength > 1 ? splitParts(material, byLength) : [material]);
     const k = parts.length;
     let qs = before;
+    let qParts: number[] = before.map(() => -1);
     let cov: { parts: number; by: "sections" | "length"; before: number; after: number; added: number; target: number; max_share: number } | null = null;
     if (material && (k > 1 || target > before.length)) {
       const weak = (q: string) => (leansOnMaterial(q) ? 2 : 0) + (isRecall(q) ? 1 : 0);
@@ -918,9 +987,15 @@ export async function handleDrill(
       }
       // the material's order: by part, then as they came
       const sorted = chosen.map((c, i) => ({ ...c, i })).sort((x, y) => ((x.part < 0 ? 1e9 : x.part) - (y.part < 0 ? 1e9 : y.part)) || x.i - y.i);
-      if (sorted.length) qs = sorted.map((c) => c.q);
+      if (sorted.length) (qs = sorted.map((c) => c.q), qParts = sorted.map((c) => c.part));
       const counts = parts.map((_, i) => sorted.filter((c) => c.part === i).length);
       cov = { parts: parts.length, by: sections ? "sections" : "length", before: beforeCovered, after: counts.filter((n) => n > 0).length, added, target, max_share: Math.max(...counts) };
+    }
+    // the last check of the finished list against the material (claims, why without a cause, same answer)
+    const fc = material ? await finalCheck(provider, cfg, qs, qParts, material, signal) : null;
+    if (fc) {
+      qs = fc.questions;
+      if (fc.usage) steps.push(fc.usage);
     }
     const base = qs.map((question, i) => ({ id: `q${i + 1}`, question }));
     let items: DrillItem[] = base;
@@ -947,6 +1022,7 @@ export async function handleDrill(
           ...(sh.usage ? { shorten: sh.usage } : {}),
           ...(answers ? { answers } : {}),
           ...(cov ? { coverage: cov } : {}),
+          ...(fc?.usage ? { final_check: { ...fc.usage, fixed: fc.fixed, dropped: fc.dropped } } : {}),
           est_cost_usd: steps.reduce((n, u) => n + u.est_cost_usd, 0), // K83: the coverage calls included
           ms: Date.now() - t0,
         },
