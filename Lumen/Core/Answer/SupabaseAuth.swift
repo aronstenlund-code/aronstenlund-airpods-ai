@@ -70,7 +70,7 @@ final class InMemorySessionStore: SessionStore, @unchecked Sendable {
 
 /// Signs in anonymously and keeps the token fresh (`backend/README.md` "Connect the app").
 ///
-/// A143 (D225 point 4): nothing the user does may wait for the sign-in.
+/// A143 (D225 point 4, D228): nothing the user does may wait for the sign-in.
 /// - The sign-in starts when the app opens (`prepare`), and the token is renewed ahead of time when the app opens or
 ///   comes back with less than `renewAhead` left, so Spela finds a token that is already there.
 /// - A call to the auth server that gets no answer is given up after `requestTimeout` (the system's own limit is 60 s)
