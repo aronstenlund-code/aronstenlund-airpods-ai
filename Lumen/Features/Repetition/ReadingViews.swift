@@ -303,6 +303,21 @@ struct ReadingPlayerView: View {
                     Button("Avsluta") { model.end() }
                         .accessibilityHint("Avslutar uppläsningen. Du fortsätter från samma mening nästa gång.")
                     Spacer()
+                    // A150 (D231): a text from "Säg i AirPods" plays on its card on Start, and a tap on the card brought
+                    // this player up from below. It goes back down the same way and the text plays on; before this the
+                    // only way out was Avsluta, which stops it.
+                    if isSaying, !reader.isAtEnd, !model.isReadingAloudOff(drill) {
+                        Button {
+                            model.showsPlayer = false
+                        } label: {
+                            Image(systemName: "chevron.down")
+                                .font(.body.weight(.semibold))
+                                .frame(minWidth: 44, minHeight: 44)
+                                .contentShape(Rectangle())
+                        }
+                        .accessibilityLabel("Tillbaka till Start")
+                        .accessibilityHint("Texten spelas vidare.")
+                    }
                 }
             }
             VStack(spacing: 8) {
