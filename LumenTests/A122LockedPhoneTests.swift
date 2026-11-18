@@ -332,6 +332,20 @@ import Testing
         #expect(!A79A81RepetitionTests.bio(2).isSaid)
     }
 
+    /// Toby's T51 (2026-11-18, T28): a text made in Nytt prov without a name, subject or grade is named by the server
+    /// after its first heading, exactly what the field would have called it. It is an exam all the same.
+    @Test func aTextFromNyttProvNamedAfterItsHeadingIsAnExam() {
+        let parts = [DrillItem.textPart("Fotosyntes", part: .heading),
+                     DrillItem.textPart("Växter tillverkar socker av koldioxid och vatten.", part: .para)]
+        let draft = DrillTextDraft(title: "Fotosyntes", summary: DrillSummary(subject: "", grade: "", covers: ""),
+                                   parts: parts, chars: 59, countsAs: 1)
+        let made = draft.drill
+        var unmarked = made
+        unmarked.said = nil
+        #expect(unmarked.isSaid, "without the mark the rule for old texts takes it for a said text")
+        #expect(made.said == false && !made.isSaid, "the text from Nytt prov is marked as an exam")
+    }
+
     @Test func theCardsWordsAreKellys() {
         #expect(SayText.playTitle(10) == "Spela i 10 min" && SayText.playTitle(60) == "Spela i 1 timme")
         #expect(SayText.creditsLine(cost: 120, left: 1236) == "120 krediter")

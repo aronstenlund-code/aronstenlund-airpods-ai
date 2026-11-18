@@ -39,8 +39,15 @@ struct DrillTextDraft: Sendable, Equatable {
     /// that counts questions.
     var cost: Int? = nil
 
-    /// A105: the exam to save.
-    var drill: Drill { Drill.text(title: title, summary: summary, parts: parts) }
+    /// A105: the exam to save. Toby's T51 (2026-11-18): it is marked as not said. A text without a name, subject and
+    /// grade is named by the server after its first heading, which is what the Säg field would have called it too, so
+    /// `Drill.isSaid`'s rule for texts from before the mark took it for a said text: no exam on Start, only a capsule
+    /// under Senaste.
+    var drill: Drill {
+        var made = Drill.text(title: title, summary: summary, parts: parts)
+        made.said = false
+        return made
+    }
 
     /// D185: every started 800 characters is one question (the server's `counts_as` wins when it sends one).
     static func countsAs(chars: Int, perQuestion: Int = 800) -> Int {
