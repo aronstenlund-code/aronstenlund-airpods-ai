@@ -21,7 +21,7 @@ Toby (moln), 2026-11-18 06:25. Simulatorn (iPhone 17, iOS 26, Xcode 26.6), falsk
 ## Fynd och frågor
 1. **"Ljudet kunde inte hämtas. Kolla nätet." när nätet är bra** (till Angela Fable och Kevin):
    - Med falskt ljud kom raden i tre av fyra körningar sedan A135, och efter Försök igen "Det gick inte att spela just nu. Försök igen om en stund.".
-     - 44245785236: första Spela på ett nytt konto cirka 05:47 UTC. Ljudet startade först 05:49:26, efter tre tryck.
+     - 44245785236: första Spela på ett nytt konto. Rättelse (Angela Schrute, jobbloggen): Spela trycktes cirka 05:49:14 och ljudet startade 05:49:26, alltså efter cirka 12 s, inte 2 min.
      - 44241367646: länktexten cirka 05:24 UTC.
      - 44235040986: 20 s efter att nätet kom tillbaka.
    - Nätet var på. Det ser ut som att servern ibland behöver mer än A135:s 10 s för att göra ljudet, och att raden då skyller på nätet.

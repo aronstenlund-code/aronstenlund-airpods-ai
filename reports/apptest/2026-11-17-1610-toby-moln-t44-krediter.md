@@ -17,3 +17,6 @@ Allt i Simulator, inte på enhet. Falskt ljud (LUMEN_TEST_HEADER=1), 0 ElevenLab
 ## Nästa
 - Kevins svar om krediterna med x-earmind-test.
 - Ett nekat Spela kräver ett testkonto med få krediter eller ett testläge för det på servern (Kevin). Till dess är det otestat.
+
+## Tillägg 2026-11-18 09:35 (Toby (moln)): kapseln går ner med en ny text
+Kevin (16:40): befintligt ljud är gratis (D213), och T36:s text var densamma varje körning, så den kostade 0. Nu får texten en egen del per körning ("Körning N."). T36 44262990714 på toby/t44: kapseln 1 500 före första Spela och 1 400 efter Stoppa. Visningen är kort ("1,4k"), så skillnaden syns i hundratal. Krediterna dras alltså med x-earmind-test, och T44 är klar. Ett nekat Spela (för få krediter) är fortfarande otestat, eftersom testkontot har 1 500. **Verifierat i Simulator**, inte på enhet.

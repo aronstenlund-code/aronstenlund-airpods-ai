@@ -68,8 +68,9 @@ skanningslinjer, ASCII-konst, skrivmaskinsljud och glödeffekter. Resten av Prov
 | VoiceOver på fältet | Säg i AirPods, textfält |
 | VoiceOver på + | Lägg till material |
 | VoiceOver på Hur länge | Hur länge, {Upprepa 10 minuter} |
-| Spela utan svar, telefonen saknar nät | Ljudet kunde inte hämtas. Kolla nätet. · *knapp* Försök igen |
-| Spela utan svar efter 10 s, nätet uppe (T50) | Det tar längre tid än vanligt. · *knapp* Försök igen (knappen säger resten, Kelly 2026-11-18) |
+| Spela väntar, efter 8 s (D225, A144) | Det tar längre tid än vanligt. (snurran går vidare, ingen knapp) |
+| Spela ger upp efter 25 s, nätet uppe | Ljudet kunde inte hämtas. · *knapp* Försök igen (↻) |
+| Telefonen saknar nät | Ljudet kunde inte hämtas. Kolla nätet. · *knapp* Försök igen (↻) |
 
 ## 4b. Hur länge (D210, Kelly väljer formen)
 **Systemets `Menu`**, inte ett hjul. Elva val ryms i en meny utan att ta plats i fältet, menyn är samma form som

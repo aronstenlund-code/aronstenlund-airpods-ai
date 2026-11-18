@@ -241,6 +241,39 @@ import Testing
         #expect(shop.invite?.shareURL?.absoluteString == "https://earmind.vercel.app/i/k7m2xq")
     }
 
+    // MARK: Toby T48
+
+    @Test func withoutProductsTheSheetSaysSoAndRestoreAlwaysAnswers() async throws {
+        @MainActor final class Silent: StoreFront {
+            var gives: [StoreItem] = []
+            func items() async -> [StoreItem] { gives }
+            func buy(_ id: String, account: UUID?) async throws -> StoreOutcome { .cancelled }
+            func finish(_ transactionID: UInt64) async {}
+            /// The App Store without an Apple account: no answer for a long time.
+            func restore() async throws -> [StoreReceipt] {
+                try? await Task.sleep(for: .milliseconds(300))
+                return []
+            }
+            func listen(_ onReceipt: @escaping @MainActor (StoreReceipt) async -> Void) {}
+        }
+        let front = Silent()
+        let shop = CreditShop(front: front, server: FakeServer(), attest: FakeAttest(),
+                              defaults: try #require(UserDefaults(suiteName: "t48-\(UUID())")))
+        #expect(!shop.hasNoProducts, "nothing is said before the App Store has been asked")
+        await shop.load()
+        #expect(shop.hasNoProducts && ShopText.noProducts == "Paketen kunde inte hämtas från App Store just nu.")
+        front.gives = [StoreItem(id: StoreCatalog.ids[0], displayPrice: "10,00 kr", credits: 100)]
+        await shop.reload()
+        #expect(!shop.hasNoProducts && shop.packs.count == 1)
+
+        shop.restorePatience = .milliseconds(30)
+        await shop.restore()
+        #expect(shop.note == CreditShop.restoreFailedLine && !shop.isRestoring, "the button never spins for ever")
+        shop.restorePatience = .seconds(5)
+        await shop.restore()
+        #expect(shop.note == CreditShop.nothingToRestoreLine)
+    }
+
     // MARK: Kevin's later fields (K99)
 
     @Test func aPurchaseOfAnotherAccountIsFinishedAndAServerFaultIsNot() async throws {

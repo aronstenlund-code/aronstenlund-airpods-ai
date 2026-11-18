@@ -167,6 +167,8 @@ export const AUDIO_UNAVAILABLE_NOTICE = { code: AUDIO_UNAVAILABLE, message: "Upp
 export interface DrillDb {
   drill(id: string): Promise<DrillRow | null>;
   drills(userId: string): Promise<DrillRow[]>;
+  /** K100: how many drills the account has (up to the limit), without reading them */
+  drillCount?(userId: string): Promise<number>;
   saveDrill(row: DrillRow, isNew: boolean): Promise<void>;
   /** K88 (D211): the account's exam saved with this client_id, or null. */
   drillByClient?(userId: string, clientId: string): Promise<DrillRow | null>;
@@ -204,7 +206,8 @@ export interface DrillDb {
   /** K78 (D200): gives back n questions counted for audio that could not be made (never below 0). */
   refundQuota?(userId: string, n: number): Promise<void>;
   /** K78: a real file failed for lack of ElevenLabs credits since this time (then nothing new is sent now). */
-  recentUnavailable?(sinceIso: string, testVoice: boolean): Promise<boolean>;
+  /** testTag: null = real traffic (real failures); else only that tester's fake failures (K100) */
+  recentUnavailable?(sinceIso: string, testTag: string | null): Promise<boolean>;
   /** K78: remember how many of a drill's questions were given back, so they are given back once. */
   setRefunded?(drillId: string, n: number): Promise<void>;
   /** K64: which of these file hashes some question (drill_items) still uses. */
@@ -521,7 +524,7 @@ export function createDrillHandler(deps: DrillDeps) {
     for (const j of (await deps.db.audio(hashes)).filter((a) => a.voice_id === TEST_VOICE_ID && a.status !== "done")) {
       if (mode === "unavailable") {
         // K64: as if ElevenLabs had no credits: the app's "Ljudet kan inte göras just nu" without a real call
-        await deps.db.finish(j.hash, { status: "failed", error: `${AUDIO_UNAVAILABLE}: test (x-earmind-test: unavailable)`, done_at: new Date(now()).toISOString() });
+        await deps.db.finish(j.hash, { status: "failed", error: `${AUDIO_UNAVAILABLE}: test ${currentTest()?.tag ?? "x"} (x-earmind-test: unavailable)`, done_at: new Date(now()).toISOString() });
         continue;
       }
       try {
@@ -628,10 +631,13 @@ export function createDrillHandler(deps: DrillDeps) {
     return made;
   }
 
-  async function view(drill: DrillRow) {
-    const items = (await deps.db.items([drill.id])).sort((a, b) => a.position - b.position);
+  async function view(drill: DrillRow, known?: ItemRow[], knownAudio?: AudioRow[]) {
+    // K100: the cue lookups at the same time as the drill's own; the items the save just wrote are not read back
+    const cueP = cueView(drill.voice_model ?? deps.model, drill.voice_id);
+    const items = (known ? [...known] : await deps.db.items([drill.id])).sort((a, b) => a.position - b.position);
     const hashes = [...new Set(items.flatMap((i) => [i.question_hash, i.long_hash]).filter(Boolean))];
-    const audio = new Map((await deps.db.audio(hashes)).map((a) => [a.hash, a]));
+    // K100: a save that just looked the files up passes them (with the ones it queued as pending): not read again
+    const audio = new Map((knownAudio ?? await deps.db.audio(hashes)).map((a) => [a.hash, a]));
     const done = hashes.filter((h) => audio.get(h)?.status === "done");
     const urls = done.length ? await deps.storage.sign(done.map(audioPath)) : {};
     const file = (h: string) => {
@@ -651,7 +657,7 @@ export function createDrillHandler(deps: DrillDeps) {
       };
     };
     const chars = hashes.reduce((n, h) => n + (audio.get(h)?.text.length ?? 0), 0);
-    const cue = await cueView(drill.voice_model ?? deps.model, drill.voice_id);
+    const cue = await cueP;
     const model = drill.voice_model ?? deps.model;
     // K50: what ElevenLabs actually charged (character-cost), for the files that report it
     const charged = hashes.map((h) => audio.get(h)).filter((a) => a?.status === "done" && typeof a.credits === "number");
@@ -781,7 +787,8 @@ export function createDrillHandler(deps: DrillDeps) {
    * counted (the text can be edited for free until Starta prov). After start, a save queues only what changed (hashes).
    * `queue` = true is the start itself (and an old app without the flag: as before, the audio is made at save).
    */
-  async function saveDrill(user: { id: string }, b: Record<string, unknown> | null, queueNow: boolean, dry = false): Promise<Response> {
+  /** known (K100): the drill and its items when the caller has just read them (start), so they are not read again */
+  async function saveDrill(user: { id: string }, b: Record<string, unknown> | null, queueNow: boolean, dry = false, known?: { drill: DrillRow; items: (ItemRow & { id: string })[] }): Promise<Response> {
     const di = (b?.drill ?? {}) as Record<string, unknown>;
     const rawItems = Array.isArray(b?.items) ? b!.items as Record<string, unknown>[] : [];
     if (!rawItems.length) throw new HttpError(400, "invalid_request", "items: at least one question");
@@ -794,29 +801,38 @@ export function createDrillHandler(deps: DrillDeps) {
     if (di.client_id !== undefined && di.client_id !== null && clientIdOf(di.client_id) === null) {
       throw new HttpError(400, "invalid_request", "drill.client_id must be a UUID");
     }
-    if (clientId && deps.db.drillByClient && !dry) {
-      const same = await deps.db.drillByClient(user.id, clientId);
-      if (same) return await alreadySaved(same);
-    }
-    if (di.id !== undefined && di.id !== null) existing = await owned(user.id, di.id);
-    else if (!dry && (await deps.db.drills(user.id)).length >= DRILL_STORE_LIMITS.drillsPerUser) {
-      throw new HttpError(409, "too_many_drills", "Du har många prov sparade. Ta bort några gamla först.");
-    }
     // K96 (D220): the drill's voice from the catalog, chosen at the first save and locked after (D151)
     const askedVoice = typeof di.voice_id === "string" ? di.voice_id.trim() : "";
     if (askedVoice && !/^[A-Za-z0-9]{10,40}$/.test(askedVoice)) throw new HttpError(400, "invalid_request", "drill.voice_id is not a voice");
+    const hasId = di.id !== undefined && di.id !== null;
+    const styleAsked = typeof di.style === "string" ? cleanStyle(di.style) : "";
+    const catalogOf = async () => deps.db.catalogVoices
+      ? (await deps.db.catalogVoices().catch(() => [])).slice().sort((a, b) => a.voice_id.localeCompare(b.voice_id))
+      : [];
+    // K100 (D225): what a save reads first, all at once (each is one database call)
+    const [same, own0, count, voiceOk, settings0, catalog0] = await Promise.all([
+      clientId && deps.db.drillByClient && !dry ? deps.db.drillByClient(user.id, clientId) : Promise.resolve(null),
+      hasId ? (known && known.drill.id === di.id ? Promise.resolve(known.drill) : owned(user.id, di.id)) : Promise.resolve(null),
+      !hasId && !dry ? (deps.db.drillCount ? deps.db.drillCount(user.id) : deps.db.drills(user.id).then((d) => d.length)) : Promise.resolve(0),
+      askedVoice && !hasId ? deps.db.voiceAllowed?.(askedVoice).catch(() => false) ?? Promise.resolve(false) : Promise.resolve(true),
+      deps.db.settings?.().catch(() => null) ?? Promise.resolve(null),
+      !hasId && (di.mix_voices === true || (styleAsked && !askedVoice)) ? catalogOf() : Promise.resolve(null),
+    ]);
+    // K88 (D211): the same client_id again answers with the exam already saved and creates nothing new
+    if (same) return await alreadySaved(same);
+    existing = own0;
+    if (!existing && !dry && count >= DRILL_STORE_LIMITS.drillsPerUser) {
+      throw new HttpError(409, "too_many_drills", "Du har många prov sparade. Ta bort några gamla först.");
+    }
     if (askedVoice && existing && (existing.voice_id ?? "") !== askedVoice) {
       throw new HttpError(409, "voice_locked", "Rösten är redan vald för det här provet. Gör ett nytt prov för en annan röst.");
     }
-    if (askedVoice && !existing && !(await deps.db.voiceAllowed?.(askedVoice).catch(() => false))) {
+    if (askedVoice && !existing && !voiceOk) {
       throw new HttpError(400, "voice_not_in_catalog", "Den rösten går inte att välja.");
     }
     // K99 (D223): "Blanda röster" (chosen at the first save, then fixed) and the AI's choice of voice for a style
     const mix = existing ? !!existing.mix_voices : di.mix_voices === true;
-    const styleAsked = typeof di.style === "string" ? cleanStyle(di.style) : "";
-    const catalog = (mix || (styleAsked && !askedVoice && !existing)) && deps.db.catalogVoices
-      ? (await deps.db.catalogVoices().catch(() => [])).slice().sort((a, b) => a.voice_id.localeCompare(b.voice_id))
-      : [];
+    const catalog = catalog0 ?? (mix ? await catalogOf() : []);
     let picked: { voice_id: string; reason: string } | null = null;
     if (!existing && !askedVoice && !mix && styleAsked && catalog.length && deps.voicePicker) {
       picked = await deps.voicePicker(styleAsked, catalog).catch(() => null);
@@ -824,11 +840,12 @@ export function createDrillHandler(deps: DrillDeps) {
     }
     const ownVoice = existing ? existing.voice_id ?? null : askedVoice || picked?.voice_id || null;
     const vid = voiceFor(ownVoice || deps.voiceId)!;
-    // a part's voice when mixing: kept from before for the same item, else by lot (seed: the drill and the position)
+    // a part's voice when mixing: kept from before for the same item, else by lot. O81 F1: the seed is the part's own
+    // text, so the same text gets the same voice in any drill and its audio is reused (no new cost)
     const oldVoices = new Map<string, string | null>();
-    const lot = async (pos: number) => {
+    const lot = async (seed: string) => {
       if (!mix || catalog.length < 2) return null;
-      const d = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${drill.id}:${pos}`)));
+      const d = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`mix:${seed}`)));
       return catalog[((d[0] << 8) | d[1]) % catalog.length].voice_id;
     };
     const lw = Math.round(Number(di.long_words));
@@ -837,7 +854,6 @@ export function createDrillHandler(deps: DrillDeps) {
     if (di.voice_model !== undefined && di.voice_model !== null && !asked) {
       throw new HttpError(400, "invalid_request", "voice_model must be eleven_multilingual_v2, eleven_v3 or eleven_flash_v2_5 (A, B or C)");
     }
-    const settings0 = await deps.db.settings?.().catch(() => null) ?? null;
     if (asked === V4_MODEL && Number(settings0?.allow_eleven_v4) !== 1 && !(existing && (existing.voice_model ?? deps.model) === V4_MODEL)) {
       // K74 part 2: prepared, not on (no ElevenLabs v4 call until Aron says yes)
       throw new HttpError(409, "voice_model_unavailable", "Den rösten går inte att välja än.");
@@ -878,7 +894,7 @@ export function createDrillHandler(deps: DrillDeps) {
       ...(mix ? { mix_voices: true } : {}),
       ...((existing ? !!existing.said : di.said === true) ? { said: true } : {}),
     };
-    const oldItems = existing ? await deps.db.items([existing.id]) : [];
+    const oldItems = existing ? (known && known.drill.id === existing.id ? known.items : await deps.db.items([existing.id])) : [];
     const oldIds = new Set(oldItems.map((i) => i.id));
     for (const i of oldItems) oldVoices.set(i.id, i.voice_id ?? null);
     const rows: (ItemRow & { keep?: string })[] = [];
@@ -904,7 +920,7 @@ export function createDrillHandler(deps: DrillDeps) {
       const v = voicedPart(text, part, (x) => voiceText(x, lang, drill.voice_rules));
       if (!v.spoken) throw new HttpError(400, "invalid_request", `items[${pos}].text has nothing to read`);
       const id = typeof it?.id === "string" && oldIds.has(it.id) ? it.id : undefined;
-      const own = mix ? (id && oldVoices.get(id)) || await lot(pos) : null;
+      const own = mix ? (id && oldVoices.get(id)) || await lot(v.spoken) : null;
       const pv = own ? voiceFor(own)! : vid;
       const h = await audioHash(style ? styledKey(v.spoken, style) : v.spoken, voice, pv);
       files.set(h, files.get(h) ?? { hash: h, kind: "text", text: v.spoken, model: voice, voice_id: pv, seq: pos * 2, sentence_ends: v.ends });
@@ -925,7 +941,7 @@ export function createDrillHandler(deps: DrillDeps) {
       const l0 = longVoice(short, long, lang, drill.voice_rules);
       const l = pauseTag ? withPauseTag(l0.text, l0.shortChars) : l0;
       const id = typeof it?.id === "string" && oldIds.has(it.id) ? it.id : undefined;
-      const own = mix ? (id && oldVoices.get(id)) || await lot(pos) : null;
+      const own = mix ? (id && oldVoices.get(id)) || await lot(q) : null;
       const pv = own ? voiceFor(own)! : vid;
       const qh = await audioHash(style ? styledKey(q, style) : q, voice, pv);
       const lh = await audioHash(style ? styledKey(l.text, style) : l.text, voice, pv);
@@ -938,9 +954,12 @@ export function createDrillHandler(deps: DrillDeps) {
       });
     }
     // D144: only files no account has yet are generated and counted
-    const queue = queueNow || !!existing?.audio_started_at || b?.defer_audio !== true;
+    const queue = queueNow || !!existing?.audio_started_at || b?.start === true || b?.defer_audio !== true;
+    const startsNow = queue && !existing?.audio_started_at; // K98: the first play rewards the inviter (after the answer)
     if (queue) drill.audio_started_at = existing?.audio_started_at ?? new Date(now()).toISOString();
     else drill.audio_started_at = null;
+    // K100: creditsOut is read at the same time as the files (it is only used when something must be made)
+    const outP = queue && !dry ? creditsOut() : Promise.resolve(false);
     const existingAudio = await deps.db.audio([...files.keys()]);
     const have = new Set(existingAudio.map((a) => a.hash));
     // K55: a file that failed earlier is made again now (the text is wanted again); free, it was paid for nothing
@@ -958,7 +977,7 @@ export function createDrillHandler(deps: DrillDeps) {
     }
     // K78 (D200): ElevenLabs has just said it has no credits: nothing is sent, nothing is counted, the drill stays as
     // text (not started) and the app is told; the next Starta prov once credits are back makes the audio as usual
-    const out = queue && (fresh.length > 0 || failed.length > 0) && await creditsOut();
+    const out = queue && (fresh.length > 0 || failed.length > 0) && await outP;
     if (out) drill.audio_started_at = existing?.audio_started_at ?? null;
     if (queue && !out && failed.length) await deps.db.requeue(failed);
     // K90 (D213): the cost in credits (shown characters of the files that need new audio), known before anything is saved
@@ -973,15 +992,22 @@ export function createDrillHandler(deps: DrillDeps) {
       // K71 (D190): saved as text only; the audio (and the count) waits for Starta prov
       const lost = await saveOrSame(drill, !existing, 0);
       if (lost) return lost;
+      withIds(rows);
       await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
-      await analyse(saveRows(kind, oldItems, rows));
-      const saved = await deps.db.drill(drill.id);
+      later(analyse(saveRows(kind, oldItems, rows)));
+      const at = new Date(now()).toISOString();
+      const saved: DrillRow = { ...drill, created_at: existing?.created_at ?? at, updated_at: at };
       return json({
-        ...(await view(saved ?? drill)), new_chars: 0, chars_on_start: newChars, generated_questions: 0, cost, unit: "chars",
+        ...(await view(saved, rows, existingAudio)), new_chars: 0, chars_on_start: newChars, generated_questions: 0, cost, unit: "chars",
         ...(picked ? { voice_reason: picked.reason } : {}),
         ...(out ? { audio_unavailable: true, notice: AUDIO_UNAVAILABLE_NOTICE } : {}),
       });
     }
+    // K90 (D213): the credits are characters of new audio (cost above); audio any account already made is free.
+    // generated_questions stays for older apps: the questions (or text parts) that get new audio.
+    const freshSet = new Set(fresh.map((f) => f.hash));
+    const generated = rows.filter((r) => freshSet.has(r.question_hash) || freshSet.has(r.long_hash)).length;
+    // the day's character limit before the charge (a refused limit must never have taken bought credits)
     if (newChars > 0) {
       const rl = await enforceLimits(deps.rateLimiter, "drill_tts", user.id, deps.charLimits, newChars);
       if (!rl.allowed) {
@@ -990,41 +1016,60 @@ export function createDrillHandler(deps: DrillDeps) {
         });
       }
     }
-    // K90 (D213): the credits are characters of new audio (cost above); audio any account already made is free.
-    // generated_questions stays for older apps: the questions (or text parts) that get new audio.
-    const freshSet = new Set(fresh.map((f) => f.hash));
-    const generated = rows.filter((r) => freshSet.has(r.question_hash) || freshSet.has(r.long_hash)).length;
-    if (cost > 0) {
-      const q = await deps.db.useQuota(user.id, cost);
+    const q = cost > 0 ? await deps.db.useQuota(user.id, cost) : null;
+    if (q) {
       if (!q.ok) return json(creditsRefused(cost, q.used, q.lim, now()), 402);
       if (!q.unlimited) drill.charged_chars = (existing?.charged_chars ?? 0) + cost; // K93: an admin is charged nothing
     }
     // K95 (D220): the files made new get their tags now (Haiku), only those; the words are checked in code (style.ts)
     if (style && deps.styler && fresh.length) {
       await Promise.all(fresh.map(async (f) => {
-        const tagged = await deps.styler!(f.text, style).catch(() => null);
-        if (!tagged || tagged === f.text) return;
+        // O80 F2: the text's own square brackets ([1], [sic]) would be taken for tags and stop the style: read them as
+        // round ones (the same length, so every offset still holds)
+        const plain = f.text.replace(/\[/g, "(").replace(/\]/g, ")");
+        const tagged = await deps.styler!(plain, style).catch(() => null);
+        if (!tagged || tagged === plain) return;
         if (f.sentence_ends) f.sentence_ends = f.sentence_ends.map((e) => mapOffset(tagged, e));
         if (typeof f.short_chars === "number") f.short_chars = mapOffset(tagged, f.short_chars);
         f.text = tagged;
       }));
     }
-    // the audio is queued first: a failure leaves no half-saved drill (a queued file nobody uses costs nothing)
-    if (fresh.length) {
-      const at = new Date(now()).toISOString();
-      // every row with the same keys (PostgREST bulk insert, live 2026-11-13: HTTP 400 otherwise)
-      await deps.db.enqueue(fresh.map((f) => ({
-        hash: f.hash, kind: f.kind, text: f.text, short_chars: f.short_chars ?? null, model: f.model,
-        voice_id: f.voice_id, status: "pending", seq: f.seq ?? 0, queued_at: at, sentence_ends: f.sentence_ends ?? null,
-      })));
-    }
-    const lost = await saveOrSame(drill, !existing, cost);
+    // the audio is queued with the drill row (K100: at the same time; a queued file nobody uses costs nothing)
+    const at = new Date(now()).toISOString();
+    const [, lost] = await Promise.all([
+      fresh.length
+        ? deps.db.enqueue(fresh.map((f) => ({
+          // every row with the same keys (PostgREST bulk insert, live 2026-11-13: HTTP 400 otherwise)
+          hash: f.hash, kind: f.kind, text: f.text, short_chars: f.short_chars ?? null, model: f.model,
+          voice_id: f.voice_id, status: "pending", seq: f.seq ?? 0, queued_at: at, sentence_ends: f.sentence_ends ?? null,
+        })))
+        : Promise.resolve(),
+      saveOrSame(drill, !existing, cost),
+    ]);
     if (lost) return lost;
+    withIds(rows);
     await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
-    await analyse(saveRows(kind, oldItems, rows));
+    later(analyse(saveRows(kind, oldItems, rows)));
     if (fresh.length || failed.length) await kick([...files.keys()]);
-    const saved = await deps.db.drill(drill.id);
-    return json({ ...(await view(saved ?? drill)), new_chars: newChars, generated_questions: generated, cost, unit: "chars", ...(picked ? { voice_reason: picked.reason } : {}) });
+    if (startsNow && deps.onStarted) later(deps.onStarted(user.id).catch((e) => console.warn("invite_reward_failed", String(e).slice(0, 120))));
+    const saved: DrillRow = { ...drill, created_at: existing?.created_at ?? at, updated_at: at };
+    const nowAudio: AudioRow[] = [
+      ...existingAudio.map((a) => failed.includes(a.hash) ? { ...a, status: "pending" as const } : a),
+      ...fresh.map((f) => ({ ...f, status: "pending" as const, queued_at: at })),
+    ];
+    // with a background queue the files are still being made when the answer goes (without one, tests make them first)
+    return json({ ...(await view(saved, rows, deps.background ? nowAudio : undefined)), new_chars: newChars, generated_questions: generated, cost, unit: "chars", ...(picked ? { voice_reason: picked.reason } : {}) });
+  }
+
+  /** K100: new rows get their id here, so the answer can be built without reading them back */
+  function withIds(rows: ItemRow[]) {
+    for (const r of rows) if (!r.id) r.id = crypto.randomUUID();
+  }
+  /** K100: work the answer does not need runs after it (EdgeRuntime.waitUntil); it never fails the request */
+  function later(p: Promise<unknown>) {
+    const safe = p.catch((e) => console.warn("drill_later_failed", String(e).slice(0, 120)));
+    if (deps.background) deps.background(safe);
+    else void safe;
   }
 
   /** K88: the answer to a save whose client_id was already saved: that exam, in the same form, nothing new. */
@@ -1053,9 +1098,9 @@ export function createDrillHandler(deps: DrillDeps) {
   /** K78: ElevenLabs has no credits right now (a real file failed for that within UNAVAILABLE_RETRY_MS). */
   async function creditsOut(): Promise<boolean> {
     // a test sees only the test voice's fake failures (x-earmind-test: unavailable), real traffic only real ones
-    const test = !!currentTest()?.test;
+    const t = currentTest();
     if (!deps.db.recentUnavailable) return false;
-    return await deps.db.recentUnavailable(new Date(now() - UNAVAILABLE_RETRY_MS).toISOString(), test).catch(() => false);
+    return await deps.db.recentUnavailable(new Date(now() - UNAVAILABLE_RETRY_MS).toISOString(), t?.test ? t.tag ?? "x" : null).catch(() => false);
   }
 
   /**
@@ -1099,7 +1144,7 @@ export function createDrillHandler(deps: DrillDeps) {
     const items = its.map((i) => i.part
       ? { id: i.id, kind: i.part, text: i.long }
       : { id: i.id, question: i.question, short: i.short, long: i.long, ...(i.screen ? { screen: i.screen } : {}) });
-    return await saveDrill(user, { drill: { id: d.id }, items }, true);
+    return await saveDrill(user, { drill: { id: d.id }, items }, true, false, { drill: d, items: its as (ItemRow & { id: string })[] });
   }
 
   return async (req: Request): Promise<Response> => {
@@ -1397,10 +1442,8 @@ export function createDrillHandler(deps: DrillDeps) {
       if (action === "start") {
         // K71 (D190): Starta prov makes the audio: everything still missing is queued and counted now
         const d = await owned(user.id, b?.id);
-        const r = await startAudio(user, d);
-        // K98: the first play rewards the one who invited this account (once; never blocks the answer)
-        if (r.status === 200 && deps.onStarted) await deps.onStarted(user.id).catch((e) => console.warn("invite_reward_failed", String(e).slice(0, 120)));
-        return r;
+        // K98: the first play rewards the one who invited this account; K100: inside the save, after the answer
+        return await startAudio(user, d);
       }
       if (action === "cost") {
         // K92 (D215 punkt 8): what a save of this text would cost, without saving. Limited per account, so it is not

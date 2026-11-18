@@ -44,7 +44,7 @@ Det finns ingen äldre kvinna; biblioteket hade ingen på svenska.
 
 Båda kräver ett riktigt ljudprov, alltså krediter och Arons ja (TILL-ARON #28).
 
-## Beslut (D225)
+## Beslut (D226)
 Kines och Hindi är `review: true` från början, trots att D223 säger att de ska synas i appen. Skälet är att D223 också säger "varje röst provlyssnas på svenska före valet; en röst som inte går att förstå tas inte med". Det kan bara göras med krediter, vilket D180 förbjuder utan Arons ja. Därför finns två kandidater för varje. När Aron har lyssnat görs den han väljer synlig med en rad, som Deangelo kör:
 `update public.voice_catalog set review=false where name='Kines';` (eller 'Hindi', 'Kines B', 'Hindi B')
 

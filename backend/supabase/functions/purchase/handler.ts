@@ -107,6 +107,11 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
     const orig = t.originalTransactionId ?? t.transactionId;
     const sub = await deps.store.subByOriginal(orig);
     if (sub && sub.user_id !== userId) throw new Refusal(409, "purchase_other_account", "Prenumerationen hör till ett annat konto.");
+    // O78 F1: a refunded (or ended) subscription comes back only with a transaction bought after it ended, never
+    // with the old one StoreKit keeps on the phone
+    if (sub && sub.status !== "active" && !t.revocationDate && !(t.purchaseDate > Date.parse(sub.expires_at))) {
+      return { kind: "subscription", until: sub.expires_at, active: false, ...(sub.status === "revoked" ? { revoked: true } : {}) };
+    }
     const until = new Date(t.revocationDate ?? t.expiresDate ?? now()).toISOString();
     // never move an end date backwards because an older transaction came in late
     const keep = sub && !t.revocationDate && Date.parse(sub.expires_at) > Date.parse(until);
@@ -139,8 +144,9 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
       if (!bought) return json({ ok: true, ignored: "unknown_transaction" });
       if (type === "REFUND" || t.revocationDate) {
         // the bought credits are taken back once (a balance can go below 0: the next purchase pays it back)
-        await deps.store.addLedger({ ...bought, kind: "refund", transaction_id: `refund:${t.transactionId}`, credits: -bought.credits });
-        return json({ ok: true, refunded: bought.credits });
+        const taken = await deps.store.addLedger({ ...bought, kind: "refund", transaction_id: `refund:${t.transactionId}`, credits: -bought.credits });
+        // O78 F2: the same refund again takes nothing and says so
+        return json(taken ? { ok: true, refunded: bought.credits } : { ok: true, refunded: 0, already: true });
       }
       return json({ ok: true });
     }
@@ -154,6 +160,7 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
       await deps.store.upsertSub({ ...sub, status: "expired" });
       return json({ ok: true, status: "expired" });
     }
+    if (sub.status !== "active" && !(t.purchaseDate > Date.parse(sub.expires_at))) return json({ ok: true, status: sub.status, ignored: "older_than_end" });
     if (t.expiresDate && Date.parse(sub.expires_at) < t.expiresDate) {
       await deps.store.upsertSub({ ...sub, status: "active", expires_at: new Date(t.expiresDate).toISOString(), product_id: p.product_id });
     }

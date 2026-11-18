@@ -74,3 +74,8 @@ Deno.test("K78b (Oscar O71): GitHub answers 403, the stored list is used; GitHub
   assert(stored.some((b) => b.includes("30.0.0.0/8")), "kept for the next isolate");
   resetCiRangesForTest();
 });
+
+Deno.test("K100 testTag: the tester is the first word that is not a mode", async () => {
+  const { testTag } = await import("./testmode.ts");
+  assertEquals([testTag("oscar-qa unavailable"), testTag("kevin-t50"), testTag("unavailable"), testTag("Toby slow"), testTag(null)], ["oscar-qa", "kevin-t50", "x", "toby", "x"]);
+});
