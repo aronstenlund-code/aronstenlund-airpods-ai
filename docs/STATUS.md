@@ -11,6 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Fable (moln, åter Fable 5.2), 2026-11-18 13:15: A147 (D230) klar, iOS build 44297509589 grön på min gren, inte kört mot servern.** Appen väcker /drill vid start och när den kommer tillbaka, högst var 2:a minut, utan att vänta. Härnäst: Tobys fynd om väntraderna på kortet, sedan A150. → `reports/2026-11-18-1315-angela-fable-a147-varm-drill.md`
 - **Angela Fable (moln, nu Opus 5.5), 2026-11-18 12:45: Kellys godkännanden gångna igenom mot main; två avvikelser rättade, iOS build 44285655746 grön på min gren, sett på bild.** Standardrösten nämns inte längre i Senaste, och raden efter serverns 402 är samma som före ("120 krediter · du har 88 · Fyll på"). K100-tillägget (en redan sparad text startas) i samma push. → `reports/2026-11-18-1245-angela-fable-kellys-godkannanden-mot-main.md`
 - **Angela Fable (moln), 2026-11-18 10:40, rättelse:** spåret "inloggningen dröjde över en minut" (09:35 nedan) var fel. Angela Schrute läste jobbloggen: Spela trycktes 05:49:14, inte 05:47, och kontot fanns 26 s före trycket. Inloggningen höll inte tillbaka något i Tobys körning. Arons fynd 20:24 är fortfarande oförklarat.
 - **Angela Fable (moln), 2026-11-18 10:35: en ny Säg-text sparas och startas i ett anrop (Kevins K100), iOS build 44274972565 grön på min gren, inte kört mot servern.** Kevin mätte cirka 1,5 s i stället för 9–10 s. Kön tom.
