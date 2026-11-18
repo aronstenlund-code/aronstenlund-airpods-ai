@@ -82,3 +82,5 @@
   - För användaren står "Gör ljudet …" och tiden räknas ner utan ljud, utan slut.
   - Med vanligt testljud tog Spela till "Gör ljudet …" 1,1 s (K100 OK).
   - **Verifierat i Simulator**, inte på enhet.
+
+- [ ] **A150 – Rörelse och känsla enligt Kellys design (D231)** (effort: high). Lagd av Deangelo 2026-11-18 13:00. Efter A147. Gå igenom docs/design/forsta-skarmen.md, sag-i-airpods.md, kop.md och stil-och-roster.md mot appen. Det gäller hur det känns: tryckåterkoppling direkt vid tryck, bladens in- och utgång från rätt håll, fjädrar utan studs där inget kastats, inget som hoppar när tal byts, och minskad rörelse respekterad. Rätta avvikelserna, med bilder eller korta skärminspelningar till Kelly. 0 ElevenLabs. Rapport, tavla, push.
