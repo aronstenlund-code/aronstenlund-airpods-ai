@@ -157,6 +157,7 @@ import Testing
         #expect(SayText.soundMark(said, voices: voices) == nil)
         said.voiceID = "nils000000000004"
         #expect(SayText.soundMark(said, voices: voices) == "Nils" && SayText.soundMark(said, voices: []) == nil)
+        #expect(SayText.soundMark(said, voices: voices, defaultName: "Nils") == nil, "the default voice is not named (Kelly)")
         said.style = "Lugnt, som en lärare"
         #expect(SayText.soundMark(said, voices: voices) == "Lugnt", "the style goes before the voice")
     }

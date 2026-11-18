@@ -137,13 +137,14 @@ enum SayText {
 
     /// A136 (Kelly's review): what a capsule in "Senaste" says after the text: the style's first word, else the name
     /// of the chosen voice. Nil for a text with the server's own voice and no style.
-    static func soundMark(_ drill: Drill, voices: [SayVoice]) -> String? {
+    /// Kelly (stil-och-roster.md, A136 point 2): the voice's name only when it is not the default voice.
+    static func soundMark(_ drill: Drill, voices: [SayVoice], defaultName: String? = nil) -> String? {
         if let style = Drill.cleanStyle(drill.style), let word = style.split(whereSeparator: { $0 == " " || $0 == "," }).first {
             return String(word)
         }
         if drill.mixVoices == true { return mixCapsule } // A140
-        guard let id = drill.voiceID else { return nil }
-        return voices.first { $0.voice_id == id }?.name
+        guard let id = drill.voiceID, let name = voices.first(where: { $0.voice_id == id })?.name, name != defaultName else { return nil }
+        return name
     }
 
     /// A132 (Ke72): a said text as a capsule under the field: its beginning, at most about 24 characters.
@@ -315,7 +316,7 @@ struct SayInAirPodsField: View {
                             // Kelly (review of A136): the text is cut first; what tells two sounds apart stays.
                             HStack(spacing: 4) {
                                 Text(verbatim: SayText.capsule(drill.saidText))
-                                if let mark = SayText.soundMark(drill, voices: model.sayVoices) {
+                                if let mark = SayText.soundMark(drill, voices: model.sayVoices, defaultName: model.sayDefaultVoice) {
                                     Text(verbatim: "· \(mark)").foregroundStyle(.secondary)
                                 }
                             }
@@ -574,7 +575,10 @@ struct SayInAirPodsField: View {
     /// Ke72: the cost as a short line just above the main button; the server's own line when it refused (D212).
     @ViewBuilder
     private var costRow: some View {
-        if let refused, !isEmpty {
+        // Kelly (kop.md §2): after the server's no (402) the row is the same as before it, "120 krediter · du har 88 ·
+        // Fyll på", when the credits are known; the sheet that Fyll på opens says when new credits come.
+        let creditsShort = model.shop != nil && (credits.map { $0.cost > $0.left } ?? false)
+        if let refused, !isEmpty, !creditsShort {
             Text(verbatim: refused)
                 .font(.footnote.weight(.semibold))
                 .fixedSize(horizontal: false, vertical: true)

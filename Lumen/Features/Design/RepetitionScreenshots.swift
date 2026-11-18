@@ -54,6 +54,7 @@ enum RepetitionDemo {
                                       // Review pictures: A135 (the two lines after ten seconds), A139 (short numbers),
                                       // A136 (what a capsule in Senaste says), T48 (no products from the App Store)
                                       "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks", "repShopEmpty", "repSayWaiting",
+                                      "repShopRefused",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -296,9 +297,11 @@ enum RepetitionDemo {
         if name == "repHomeSaidMarks" { // A136 (Kelly's review): the style's first word, else the voice's name
             model.store.save(history)
             model.store.save(drill)
-            model.stageSayVoices([SayVoice(voice_id: "nils000000000004", name: "Nils")], defaultName: "Astrid")
+            model.stageSayVoices([SayVoice(voice_id: "nils000000000004", name: "Nils"),
+                                  SayVoice(voice_id: "astrid0000000001", name: "Astrid")], defaultName: "Astrid")
             for (text, style, voice) in [("HISTORIA – 1880–1918\nNationalism = stark kärlek till den egna nationen.", String?.none, String?.some("nils000000000004")),
-                                         (said, nil, nil), ("1918: Vapenstillestånd.", "Lugnt, som en lärare", nil)] {
+                                         (said, nil, nil), ("1918: Vapenstillestånd.", "Lugnt, som en lärare", nil),
+                                         ("Tre rader att kunna.", nil, "astrid0000000001")] {
                 var made = Drill.text(title: SaidText.title(text), summary: DrillSummary(subject: "", grade: "", covers: ""),
                                       parts: SaidText.parts(text).map { DrillItem.textPart($0, part: .para) })
                 made.said = true
@@ -317,7 +320,7 @@ enum RepetitionDemo {
         if name.hasPrefix("repShop") { // A134 (D218), A141 (D224): packs, the weekly card and the invitation
             model.store.save(history)
             model.store.save(drill)
-            let short = name == "repShopShort"
+            let short = name == "repShopShort" || name == "repShopRefused"
             var credits = DrillQuota(used: short ? 1412 : 264, limit: 1500, per: "month", resets: "2026-12-01")
             credits.unit = "chars"
             credits.remaining = short ? 88 : 1236
@@ -339,8 +342,10 @@ enum RepetitionDemo {
             let shop = CreditShop(front: front, server: server, defaults: shopDefaults)
             model.shop = shop
             Task { await shop.load() }
-            SayText.stagedForScreenshots = name == "repShopShort" || name == "repShopWeeklyHome" ? said : nil
-            SayText.stagedRefusal = nil
+            SayText.stagedForScreenshots = ["repShopShort", "repShopWeeklyHome", "repShopRefused"].contains(name) ? said : nil
+            // Kelly (kop.md §2): after the server's 402 the row is the same as before it.
+            SayText.stagedRefusal = name == "repShopRefused"
+                ? "Det här kostar 120 krediter. Du har 88 kvar. Nya krediter den 1 december." : nil
             SayText.stagedCost = 120
             return
         }
@@ -560,7 +565,7 @@ enum RepetitionDemo {
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
                  "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices",
                  "repShopShort", "repShopWeeklyHome", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
-                 "repSayWaiting":
+                 "repSayWaiting", "repShopRefused":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)
