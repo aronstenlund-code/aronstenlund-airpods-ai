@@ -40,6 +40,10 @@ def photo_pages(m, eid):
             pages.append({"media_type": "image/jpeg", "data": base64.b64encode(open(path, "rb").read()).decode()})
     return pages
 
+# K106: --answers also writes the answers as the app does (drill_answers with may_fix) and counts the short answers that
+# say the material does not answer the question ("framgår inte här"), Oscar's K102 omtest F1
+ANSWERS = "--answers" in _s.argv
+NOT_ANSWERED = re.compile(r"framgår inte|är inte känt|inte känt här|förklaras inte här|beskrivs inte här|står inte här|is not (explained|stated|known|described) here|not explained here", re.I)
 rows, total = [], 0.0
 for eid, m in O79.items():
     tok = T.signup(True)[0]
@@ -55,9 +59,24 @@ for eid, m in O79.items():
     row = {"eid": eid, "status": st, "questions": len(qs), "understanding": len(under), "share": round(len(under) / max(1, len(qs)), 2),
            "final_check_ms": fc.get("ms"), "fixed": fc.get("fixed"), "dropped": fc.get("dropped"), "refilled": fc.get("refilled"), "refill_ms": fc.get("refill_ms"),
            "total_ms": ms, "usd": round(cost, 4)}
+    shorts = {}
+    if ANSWERS and st == 200 and j.get("items"):
+        sa, ja, _ms = call({"action": "drill_answers", "may_fix": True, "subject": m["subject"], "notes": j.get("notes", ""),
+                            "items": [{"id": it["id"], "question": it["question"]} for it in j["items"]]}, tok)
+        for it in ja.get("items", []) if sa == 200 else []:
+            shorts[it["id"]] = (it.get("question", ""), it.get("short", ""))
+        cost2 = float(((ja.get("usage") or {}).get("est_cost_usd")) or 0); total += cost2
+        row["answers_status"] = sa
+        row["not_answered"] = sum(1 for q, sh in shorts.values() if NOT_ANSWERED.search(sh))
+        row["fixed_by_answers"] = sum(1 for it in j["items"] if it["id"] in shorts and shorts[it["id"]][0] != it["question"])
     rows.append(row)
     print(f"=== {eid}: " + json.dumps(row, ensure_ascii=False), flush=True)
-    for i, q in enumerate(qs, 1): print(f"  {i:2}. {'F' if q in under else ' '} {q}", flush=True)
+    for i, it in enumerate(j.get("items", []), 1):
+        q = it.get("question", "")
+        print(f"  {i:2}. {'F' if q in under else ' '} {q}", flush=True)
+        if it.get("id") in shorts:
+            fq, sh = shorts[it["id"]]
+            print(f"      {'→ ' + fq + ' | ' if fq != q else ''}{'!! ' if NOT_ANSWERED.search(sh) else ''}{sh}", flush=True)
 out = {"rows": rows, "usd": round(total, 3),
        "summary": {"questions": [r["questions"] for r in rows], "share": [r["share"] for r in rows], "final_check_ms": [r["final_check_ms"] for r in rows]}}
 print("=== K102 " + json.dumps(out["summary"], ensure_ascii=False) + f" | Claude {total:.3f} USD", flush=True)
