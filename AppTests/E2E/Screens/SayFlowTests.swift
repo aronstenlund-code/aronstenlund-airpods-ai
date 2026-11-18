@@ -47,6 +47,7 @@ final class SayFlowTests: XCTestCase {
         section("Spelaren från kortet: varv 2", { repeatInPlayer() })
         section("Pausa och hoppa (1 och 2 tryck)", { pauseAndSkip() })
         section("Senaste lägger tillbaka texten, inget Nästa prov (A132)", { recentsPutBack() })
+        section("Utan nät: samma text spelas, en ny säger till efter 10 s (A135)", { offlineSay() })
         section("Fältet växer högst 5 rader (A132)", { fieldStopsGrowing() })
         section("Krediter, + och Klistra in länk (A116, A117)", { plusLinkAndCredits() })
         section("Nytt prov: Klistra in länk finns (A116)", { newDrillLinkRow() })
@@ -286,6 +287,73 @@ final class SayFlowTests: XCTestCase {
         if text(starting: "Spelar i AirPods") != nil || timeLeft() != nil { ok = miss("a tap on the capsule started playing (it should only put the text back)") }
         screen("senaste-tillbaka", "The text back in the field from Senaste")
         return ok
+    }
+
+    /// T49 (D219, A135): sound that is on the phone plays without asking the server. With the network off, the text
+    /// that was played before (put back from Senaste) plays at once; a new text shows the spinner at most 10 s and then
+    /// "Ljudet kunde inte hämtas. Kontrollera nätet och försök igen." and the button "Försök igen". Senaste shows
+    /// every text once.
+    private func offlineSay() -> Bool {
+        goToStart()
+        guard network(on: false) else { return false }
+        defer { _ = network(on: true); goToStart() }
+        var ok = true
+        clearField()
+        guard let capsule = recentCapsules().first else { return miss("no capsule in Senaste to play offline") }
+        guard tap([capsule], "the capsule in Senaste (offline)") else { return false }
+        pause(1)
+        let t0 = Date()
+        guard tap(Self.playLabels, "Spela i … (offline, a played text)") else { return false }
+        var plays = false
+        let end = Date().addingTimeInterval(15)
+        repeat { plays = text(starting: "Spelar i AirPods") != nil || timeLeft() != nil; if !plays { pause(0.5) } } while !plays && Date() < end
+        log.append(String(format: "T49 the played text offline: playing %@ after %.1f s", plays ? "yes" : "no", Date().timeIntervalSince(t0)))
+        screen("utan-nat-samma", "Offline: the text that was played before")
+        if !plays { ok = miss("offline, the text that was played before did not play in 15 s") }
+        answerReminder()
+        stopOnCard()
+        clearField()
+        // A new text: no sound on the phone, so the server is needed.
+        let fresh = "Ny text utan nät \(Int(Date().timeIntervalSince1970) % 100000). Bladen är gröna."
+        guard focusField("Säg i AirPods (a new text, offline)") else { return miss("the field got no keyboard") }
+        field.typeText(fresh)
+        pause(1)
+        let t1 = Date()
+        guard tap(Self.playLabels, "Spela i … (offline, a new text)") else { return false }
+        var said: String?
+        let end2 = Date().addingTimeInterval(25)
+        repeat { said = text(starting: "Ljudet kunde inte hämtas"); if said == nil { pause(0.5) } } while said == nil && Date() < end2
+        let waited = Date().timeIntervalSince(t1)
+        log.append(String(format: "T49 a new text offline: '%@' after %.1f s, Försök igen: %@", said ?? "-", waited, find(["Försök igen"]) != nil ? "yes" : "no"))
+        screen("utan-nat-ny", "Offline: a new text")
+        if said == nil { ok = miss("offline, a new text gave no 'Ljudet kunde inte hämtas …' in 25 s") }
+        else if waited > 14 { note(String(format: "the line came after %.0f s (A135: at most 10 s)", waited)) }
+        if find(["Försök igen"]) == nil { ok = miss("no 'Försök igen' button after the line") }
+        if text(starting: "Spelar i AirPods") != nil { ok = miss("a new text played offline (there should be no sound for it)") }
+        clearField()
+        let capsules = recentCapsules()
+        log.append("T49 Senaste after the offline tries: \(capsules)")
+        if capsules.count > 1 { ok = miss("Senaste shows the text \(capsules.count) times (A135: once)") }
+        return ok
+    }
+
+    /// Asks t36.sh to turn the runner's network off or on (t36-net-off/on.request), and waits for it.
+    private func network(on: Bool) -> Bool {
+        let name = on ? "t36-net-on" : "t36-net-off"
+        let done = out.appendingPathComponent(name + ".done")
+        try? FileManager.default.removeItem(at: done)
+        try? "\(Date())\n".write(to: out.appendingPathComponent(name + ".request"), atomically: true, encoding: .utf8)
+        mark(on ? "NET-ON request" : "NET-OFF request")
+        let end = Date().addingTimeInterval(90)
+        while Date() < end {
+            if FileManager.default.fileExists(atPath: done.path) {
+                mark(on ? "NET-ON done" : "NET-OFF done")
+                pause(on ? 20 : 6) // NWPathMonitor and DHCP
+                return true
+            }
+            pause(2)
+        }
+        return miss("\(name): the runner did not answer in 90 s")
     }
 
     /// T46 (D215.4): while it is written in, the field grows to 5 rows and then scrolls inside.
