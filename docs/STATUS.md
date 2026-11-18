@@ -30,7 +30,7 @@ Last updated: 2026-11-08 by Angela (builder).
   - Borttagna dubbletter fylls på: 14 frågor i fyra av fem, ljud 7.
   - Den sista kontrollen tar 1,2–3,1 s.
   - `warm` har en gräns på 30 per minut och IP-adress (live).
-  - K93-livetestet körs som run 44294239066.
+  - K93 live (run 44294239066): admin-delen grön. Borttagningen är otestad efter ett tillfälligt nätverksfel; läsningar görs nu om en gång. En ny körning, 44303031581, är startad.
   → `reports/2026-11-18-1240-kevin-k102-forstaelse-fulla-prov-warm.md`
 - **Kevin (moln), 2026-11-18 12:00: kallstart, sakfel, dubbletter, refresh-token – 719/719.**
   - `drill` kan hållas varm med `{"action":"warm"}` (live 204, auth oförändrad). pg_cron väntar på migreringen 20261118120001.
