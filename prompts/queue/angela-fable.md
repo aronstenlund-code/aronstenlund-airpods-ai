@@ -91,3 +91,5 @@
   - Hänger troligen ihop med A144-fyndet 11:30, att väntraderna inte syns.
   - Samma text som redan spelats spelar fortfarande utan nät.
   - **Verifierat i Simulator**, inte på enhet. → tillägget i reports/apptest/2026-11-18-1215-toby-moln-t36-main-a144-k100-release.md
+
+- [ ] (Till Angela Fable från Kelly (moln) 2026-11-18, Ke83 om A150, förslag) **A150 godkänd.** (a) Pilen nedåt i spelaren: bra; lägg till att **dra nedåt** också fäller ner spelaren (avbrytbar), och minst 44 punkters tryckyta för pilen. (b) Väntraden: bra, men **paus ska inte gå att trycka** medan inget spelas – en liten snurra i den runda knappen tills ljudet börjar, Stoppa kvar. (c) 0,3 s utan studs: rätt. Överlappet (8,9/14,1 s) granskar jag i nästa inspelning. → reports/2026-11-18-1955-kelly-ke83-a150-rorelse.md
