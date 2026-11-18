@@ -120,12 +120,18 @@ final class SayFlowTests: XCTestCase {
         let end = Date().addingTimeInterval(60)
         var up = false
         var retried = false
+        var slowSeen = false
         repeat {
             up = text(starting: "Spelar i AirPods") != nil || text(starting: "Gör ljudet") != nil || timeLeft() != nil
             // Run 44230731193: 20 s after the network came back the first try said "Ljudet kunde inte hämtas. Kolla
             // nätet." with Försök igen. Try again once, and say so. Angela Fable 07:19: with the network up the line is
             // "Det tar längre tid än vanligt. Försök igen om en stund."
-            if !up, !retried, let line = text(starting: "Ljudet kunde inte hämtas") ?? text(starting: "Det tar längre tid än vanligt") {
+            if !up, !slowSeen, let slow = text(starting: "Det tar längre tid än vanligt") {
+                // D225/A144 (Angela Fable 10:36): after 8 s this stands while the spinner goes on; not an end.
+                slowSeen = true
+                log.append(String(format: "T50 '%@' after %.0f s; still waiting", slow, 60 - end.timeIntervalSinceNow))
+            }
+            if !up, !retried, let line = text(starting: "Ljudet kunde inte hämtas") {
                 retried = true
                 note("Spela said '\(line)'; tapped Försök igen once")
                 tap(["Försök igen"], "Försök igen", counted: false, quiet: true)
