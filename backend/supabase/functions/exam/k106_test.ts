@@ -68,3 +68,33 @@ Deno.test("K106 (live 18:00, Vasa): a two-part question without a comma is cut; 
   // the only question of its part stays even when it is near an earlier one
   assertEquals(dropNearSame(qs, [0, 1, 2, 3]).questions.length, 4);
 });
+
+Deno.test("K106 (live 18:14): a fix that repeats another question or asks two things is asked again with the others shown", async () => {
+  const seen: LLMRequest[] = [];
+  const llm: LLMProvider = {
+    name: "fake", model: "sonnet-fake",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      seen.push(req);
+      const again = req.user.includes("<other_questions>");
+      const answers = again
+        ? [{ id: "q2", question: "Vad gjorde Gustav Vasa med kyrkans jord?", short: "Han lät kronan ta över kyrkans jord och egendom.", rest: "1527." }]
+        : [
+          { id: "q1", short: "Kronan hade stora skulder till Lübeck efter kriget.", rest: "Mer." },
+          { id: "q2", question: "Vad hade kronan för skuld till Lübeck efter kriget?", short: "Kronan hade stora skulder till Lübeck.", rest: "Mer." },
+          { id: "q3", question: "Vilket ljud kan skada hörseln, och vad avgör hur starkt ett ljud är?", short: "Ljud över 85 decibel kan skada hörseln.", rest: "Mer." },
+        ];
+      yield { type: "text", text: JSON.stringify({ answers }) };
+      yield { type: "usage", inputTokens: 100, outputTokens: 50 };
+    },
+  };
+  const items = [
+    { id: "q1", question: "Vad hade kronan för skulder till Lübeck efter kriget?" },
+    { id: "q2", question: "Varför ville Gustav Vasa ta kyrkans rikedomar?" },
+    { id: "q3", question: "Varför kan starka ljud skada hörseln?" },
+  ];
+  const r = await answerItems(llm, DEFAULT_DRILL_CONFIG, items, { subject: "Historia", grade: "åk 8", notes: "n", longWords: 60, mayFix: true });
+  assertEquals(r.items[1].question, "Vad gjorde Gustav Vasa med kyrkans jord?", "the repeated question was replaced");
+  assertEquals(r.items[2].question, "Vilket ljud kan skada hörseln?", "a two-part fix is cut when the new try gives nothing better");
+  assert(seen.some((x) => x.user.includes("<other_questions>")));
+  assertEquals(oneAsk("What did Gutenberg take from earlier technology, and what was that technology used for?"), "What did Gutenberg take from earlier technology?");
+});

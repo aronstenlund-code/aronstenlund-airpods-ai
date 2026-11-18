@@ -312,8 +312,8 @@ export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
  */
 export function oneAsk(q: string): string {
   // live 18:00 (Vasa): "Vad var Dackefejden och varför var den viktig?" (also without the comma)
-  const m = /^(.{12,}?),\s+och\s+(?:varför|hur|vad|vilk\p{L}*|när|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim()) ??
-    /^((?:vad|vem|vilk\p{L}*|när|var|what|who|which|when)\s.{6,}?)\s+och\s+(?:varför|hur|vad|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim());
+  const m = /^(.{12,}?),\s+(?:och|and)\s+(?:varför|hur|vad|vilk\p{L}*|när|why|how|what|which|when)\s+[^?]{6,}\?$/iu.exec(q.trim()) ??
+    /^((?:vad|vem|vilk\p{L}*|när|var|what|who|which|when)\s.{6,}?)\s+(?:och|and)\s+(?:varför|hur|vad|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim());
   return m && words(m[1]) >= 3 ? m[1].replace(/[\s,]+$/, "") + "?" : q;
 }
 
@@ -625,6 +625,9 @@ export function notAnswered(short: string): boolean {
 export const MUST_FIX =
   "<must_fix>yes</must_fix> The notes do not answer this question as it is asked (your last answer said so). Put a new question in \"question\" about the same part of the notes that the notes do answer (an understanding question when they carry one: how, what followed, explain how X is linked to Y, compare), and answer that one. Never answer that something is not known.";
 
+export const OTHERS_RULE =
+  "The exam also has the questions in <other_questions>. A new question must ask ONE thing (never \"…, och …?\") and never what one of them asks, in any words.";
+
 export async function answerItems(
   provider: LLMProvider,
   cfg: DrillConfig,
@@ -635,14 +638,16 @@ export async function answerItems(
   const steps: StepUsage[] = [];
   const got = new Map<string, { short: string; long: string; question?: string; screen?: Screen }>();
   const lang = examLanguage(ctx.subject);
-  const ask = async (batch: { id: string; question: string }[], strict = true, mustFix = false) => {
+  const ask = async (batch: { id: string; question: string }[], strict = true, mustFix = false, others: string[] = []) => {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_ANSWERS,
       user: `<context>${sanitizeTagged(contextLine(ctx.subject, ctx.grade))}</context>\n<notes>\n${
         sanitizeTagged(ctx.notes || "(inga anteckningar)")
       }\n</notes>\n<long_words>${ctx.longWords}</long_words>${lang ? `\n<language>${lang}</language>` : ""}${
         ctx.mayFix ? "\n<may_fix>yes</may_fix>" : ""
-      }${mustFix ? `\n${MUST_FIX}` : ""}\n<questions>${sanitizeTagged(JSON.stringify(batch))}</questions>`,
+      }${mustFix ? `\n${MUST_FIX}` : ""}${
+        others.length ? `\n<other_questions>${sanitizeTagged(JSON.stringify(others))}</other_questions>\n${OTHERS_RULE}` : ""
+      }\n<questions>${sanitizeTagged(JSON.stringify(batch))}</questions>`,
       maxTokens: Math.min(8000, 400 + batch.length * Math.round(ctx.longWords * 3.2)),
       cacheSystem: true,
       model: cfg.answerModel,
@@ -677,7 +682,8 @@ export async function answerItems(
     const unanswered = items.filter((it) => { const a = got.get(it.id); return a && notAnswered(a.short); });
     if (unanswered.length) {
       const before = new Map(unanswered.map((it) => [it.id, got.get(it.id)!]));
-      await Promise.allSettled(unanswered.map((it) => ask([it], true, true)));
+      const othersOf = (id: string) => items.filter((x) => x.id !== id).map((x) => got.get(x.id)?.question ?? x.question);
+      await Promise.allSettled(unanswered.map((it) => ask([it], true, true, othersOf(it.id))));
       let fixed = 0;
       for (const it of unanswered) {
         const a = got.get(it.id);
@@ -685,6 +691,27 @@ export async function answerItems(
         else if (a.question) fixed++;
       }
       console.log("drill_unanswered", JSON.stringify({ found: unanswered.length, fixed }));
+    }
+    // K106 (live 18:14: the fixes made "Vad hade kronan för skuld till Lübeck …" twice and "Vilket ljud kan skada hörseln, och
+    // vad avgör …?"): a fixed question that asks two things or what another question asks gets one more try that sees the
+    // others; else it is cut to one question and kept
+    const finalQ = (id: string) => got.get(id)?.question ?? items.find((x) => x.id === id)!.question;
+    const bad = items.filter((it) => {
+      const a = got.get(it.id);
+      if (!a?.question) return false;
+      return oneAsk(a.question) !== a.question || items.some((x) => x.id !== it.id && nearDuplicate(finalQ(x.id), a.question!));
+    });
+    if (bad.length) {
+      const before = new Map(bad.map((it) => [it.id, got.get(it.id)!]));
+      await Promise.allSettled(bad.map((it) => ask([it], true, true, items.filter((x) => x.id !== it.id).map((x) => finalQ(x.id)))));
+      for (const it of bad) {
+        const a = got.get(it.id);
+        const dup = a?.question && items.some((x) => x.id !== it.id && nearDuplicate(finalQ(x.id), a.question!));
+        if (!a || notAnswered(a.short) || dup) got.set(it.id, before.get(it.id)!);
+        const k = got.get(it.id)!;
+        if (k.question) got.set(it.id, { ...k, question: oneAsk(k.question) });
+      }
+      console.log("drill_fix_same", JSON.stringify({ found: bad.length }));
     }
   }
   if (!got.size) {
