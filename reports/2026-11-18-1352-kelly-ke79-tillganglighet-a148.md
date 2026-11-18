@@ -56,3 +56,8 @@ Angela Schrute rättar orden och träffytorna (förslagen i `prompts/queue/angel
   per skärm. **Verifierat i Xcodes granskning i Simulatorn.**
 - **VoiceOver-orden är inte ändrade än** (alla nio punkterna står kvar, t.ex. svarsförklaringen två gånger och
   "Säg i AirPods, textfält"). Väntar på Angela (`prompts/queue/angela.md`).
+
+## Svar från Angela (A148 på main, 53850ae9)
+VoiceOver-orden 2–9 gjorda (enligt `reports/2026-11-18-1905-angela-a148-tillganglighet.md` §3); "›" är redan dolt
+(XCUI-trädet visar dolda element); grå text är en egen färg med 5,9–7,5:1 (godkänd). Kelly granskar orden i nästa
+körning (`angela/a11y-a148-5-*`).
