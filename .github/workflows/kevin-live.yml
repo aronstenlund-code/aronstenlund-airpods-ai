@@ -31,6 +31,7 @@ on:
           - t50-timing.py
           - k101-live.py
           - k100-warm.py
+          - k102-measure.py
           - k93-live.py
           - k94-apple-root.py
           - qa/o79_quality.py

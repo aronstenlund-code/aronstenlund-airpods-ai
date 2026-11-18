@@ -16,14 +16,19 @@ def post(body, headers):
 
 out = {}
 out["warm"] = [post({"action": "warm"}, {}) for _ in range(3)]
+# K102: with a token too (the app's client may send one), and a burst over the limit (30 a minute per address)
+out["warm_with_token"] = post({"action": "warm"}, {"authorization": "Bearer abc.def.ghi"})
+out["burst"] = [post({"action": "warm"}, {})[0] for _ in range(32)]
 out["list_no_token"] = post({"action": "list"}, {})
 out["list_bad_token"] = post({"action": "list"}, {"authorization": "Bearer abc.def.ghi"})
 tok = qa.signup()[0]
 h = qa.headers(tok); h["X-earmind-test"] = "kevin-warm"
 out["quota_test_account"] = post({"action": "quota"}, h)
-ok = {"warm_204": all(s == 204 for s, _ in out["warm"]), "no_token_401": out["list_no_token"][0] == 401,
+ok = {"warm_204": all(s == 204 for s, _ in out["warm"]), "warm_with_token_204": out["warm_with_token"][0] == 204,
+      "burst_only_204_or_429": all(s in (204, 429) for s in out["burst"]), "no_token_401": out["list_no_token"][0] == 401,
       "bad_token_401": out["list_bad_token"][0] == 401, "account_200": out["quota_test_account"][0] == 200}
 out["checks"] = ok
+out["burst_429"] = out["burst"].count(429)  # an instance counts on its own: 429 is likely, not certain
 print(json.dumps(out, indent=1))
 json.dump(out, open(os.path.join(HERE, "..", "reports", "qa", "data", time.strftime("%Y-%m-%d-%H%M%S") + "-k100-warm.json"), "w"), indent=1)
 sys.exit(0 if all(ok.values()) else 1)
