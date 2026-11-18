@@ -94,9 +94,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
     var listeningEventObserver: (@MainActor (ListeningEvent, Date) -> Void)?
     /// D87: the exam the Provläge turns belong to. The turns themselves are `provMode.turns` (G7 step 7a).
-    private(set) var activeExamID: UUID?
+    var activeExamID: UUID? { examStart.activeExamID }
     /// "Lägg till prov" → the microphone button: the next sentence is the exam, said aloud.
-    private(set) var awaitingExamStatement = false
+    var awaitingExamStatement: Bool { examStart.awaitingExamStatement }
     /// D84: the practice exam inside Provläge, its uploaded paper and Kevin's `/exam`.
     let examMaterials: ExamMaterials?
     let examClient: ExamClient?
@@ -431,6 +431,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         provMode.host = self
         turnQueue.host = self
         voiceCommands.host = self
+        examStart.host = self
         #if LUMEN_TESTMODE
         debugAudio.host = self
         #endif
@@ -872,253 +873,101 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Socialt läge and Rizzläge show and speak exactly one suggestion (D72).
     static let suggestionsShown = 1
 
+    /// How Provläge is started and which exam it is about is `ExamStartController` (D231, G7 step 7c): the Provläge
+    /// card and "Har du prov snart?", the profile and the exam said by voice, the saved exams and the one being
+    /// studied, the subject of an exam that is only an area, "Förhör mig" and "Få A-svar till provet". The screens
+    /// and the modes reach it through the model, as before.
+    let examStart = ExamStartController()
+
     /// The Provläge card on the main screen (D72): one tap, no setup in between.
     func startProvFromCard() async {
-        selectedMode = .prov
-        if !studyProfile.profile.onboarded {
-            // Ke35 (Toby T8b finding 6): no five questions first. Defaults (Automatiskt), changed in Inställningar
-            // or by voice ("kortare"); the subject is asked in the first quiz (A22).
-            var profile = studyProfile.profile
-            profile.onboarded = true
-            studyProfile.profile = profile
-        }
-        if examPlans?.upcoming().isEmpty != false, !provAskedForExam {
-            // Ke35: at most one question, and only without an exam: "Har du prov snart?". "Inte nu" starts anyway.
-            provAskedForExam = true
-            startsProvAfterExamStep = true
-            isShowingAddExam = true
-            return
-        }
-        if let plan = examPlans?.upcoming().first {
-            await startProv(for: plan)
-        } else {
-            await startStudy()
-        }
+        await examStart.startProvFromCard()
     }
 
     /// A66 (Toby T8c finding 1): at most one sheet each time the app is opened. The first start's share question is
     /// that opening's sheet; "EarMind kan mer än svara" and the logo vote wait for later openings.
     @ObservationIgnored var openingSheetShown = false
 
-    /// Ke35: Provläge asked for the exam once in this run of the app.
-    @ObservationIgnored private var provAskedForExam = false
     /// Ke35: the exam step was opened by Starta in Provläge; when it closes (saved or "Inte nu"), Provläge starts.
-    @ObservationIgnored var startsProvAfterExamStep = false
+    var startsProvAfterExamStep: Bool { examStart.startsProvAfterExamStep }
 
     /// Ke35: after "Har du prov snart?" from Starta in Provläge: with the exam if one was saved, else without.
     func startProvAfterExamStep() async {
-        guard startsProvAfterExamStep else { return }
-        startsProvAfterExamStep = false
-        if let plan = examPlans?.upcoming().first {
-            await startProv(for: plan)
-        } else {
-            await startStudy()
-        }
-        showsListeningScreen = problem != .microphoneDenied || isActiveSession
+        await examStart.startProvAfterExamStep()
     }
 
     /// D83: the first-start questions were answered (or skipped): save, put the exam in Minne, start.
     func finishStudyOnboarding(_ answers: StudyProfile) async {
-        var profile = answers
-        profile.onboarded = true
-        studyProfile.profile = profile
-        isShowingStudyOnboarding = false
-        studyProfileChanged()
-        await startStudy()
+        await examStart.finishStudyOnboarding(answers)
     }
 
     /// Settings or a voice command changed the profile: Minne follows (absolute exam date).
     func studyProfileChanged() {
-        memory.forget("provprofil")
-        for fact in studyProfile.profile.memoryFacts() { memory.add(fact, kind: .fact, source: .manual) }
-        refreshKeyterms()
+        examStart.studyProfileChanged()
     }
 
-    /// D84: "Lumen, jag går i åk 9 och ska snart ha prov i biologi". The phone's reading answers at once ("Biologi
-    /// åk 9, sparat."); Kevin's `/study-profile` then adds the subject's terms and what the phone could not read.
+    /// D84: "Lumen, jag går i åk 9 och ska snart ha prov i biologi".
     private func profileStatement(_ text: String) {
-        var profile = studyProfile.profile
-        let local = ProfileStatement.parse(text)
-        if let local {
-            local.apply(to: &profile)
-            studyProfile.profile = profile
-            studyProfileChanged()
-            saveSpokenExam(profile)
-            say(local.confirmation())
-            controller.log("Profile by voice (phone): \(local.confirmation())")
-        }
-        guard let studyProfileClient else {
-            if local == nil { say(language == .swedish ? "Jag uppfattade inte vad du läser." : "I did not catch what you study.") }
-            return
-        }
-        let body = StudyProfileClient.body(text: text, profile: studyProfile.profile, swedish: language == .swedish)
-        Task { [weak self] in
-            let reply = await studyProfileClient.read(body)
-            guard let self else { return }
-            guard let reply else {
-                if local == nil { self.say(self.language == .swedish ? "Jag uppfattade inte vad du läser." : "I did not catch what you study.") }
-                return
-            }
-            var updated = self.studyProfile.profile
-            reply.apply(to: &updated)
-            self.studyProfile.profile = updated
-            self.studyProfileChanged()
-            self.saveSpokenExam(updated)
-            self.controller.log("Profile by voice (server): \(reply.terms.count) terms")
-            if local == nil {
-                let heard = ProfileStatement(grade: updated.grade, course: updated.course.isEmpty ? nil : updated.course,
-                                             subject: updated.subject.isEmpty ? nil : updated.subject, examDate: updated.examDate)
-                if !heard.isEmpty { self.say(heard.confirmation()) }
-            }
-        }
-    }
-
-    /// D86: a said exam with a subject and a date is one of the saved exams too.
-    private func saveSpokenExam(_ profile: StudyProfile) {
-        guard let examPlans, !profile.subject.isEmpty, let date = profile.examDate, !profile.noExam else { return }
-        examPlans.save(ExamPlan(grade: profile.grade, course: profile.course, area: .of(subject: profile.subject),
-                                subject: profile.subject, date: date, topics: profile.topics ?? ""))
+        examStart.profileSaid(text)
     }
 
     /// The exam being studied: the one chosen, else the nearest exam in the profile's subject.
     func currentExamID() -> UUID? {
-        if let activeExamID, examPlans?.plans.contains(where: { $0.id == activeExamID }) == true { return activeExamID }
-        let subject = studyProfile.profile.subject
-        return examPlans?.upcoming().first { $0.subject.caseInsensitiveCompare(subject) == .orderedSame }?.id
+        examStart.currentExamID()
     }
 
     /// D86 "Spara prov": kept with the others, and Provläge's profile from now on. The subject's terms follow.
     func saveExamPlan(_ plan: ExamPlan) {
-        examPlans?.save(plan)
-        updateWidget() // A44
-        useExamPlan(plan)
-        controller.log("Exam saved: \(plan.name), \(plan.daysLeft()) days")
+        examStart.saveExamPlan(plan)
     }
 
     /// Provläge for this exam: its grade, subject, date and topics become the profile.
     func useExamPlan(_ plan: ExamPlan) {
-        if activeExamID != plan.id { provMode.forgetTurns() } // another exam: its turns are not this one's
-        activeExamID = plan.id
-        var profile = studyProfile.profile
-        plan.apply(to: &profile)
-        profile.onboarded = true
-        profile.terms = nil
-        studyProfile.profile = profile
-        studyProfileChanged()
-        guard let studyProfileClient else { return }
-        let body = StudyProfileClient.body(text: "", profile: profile, swedish: language == .swedish)
-        Task { [weak self] in
-            guard let reply = await studyProfileClient.read(body), let self else { return }
-            var updated = self.studyProfile.profile
-            if !reply.terms.isEmpty { updated.terms = Array(reply.terms.prefix(50)) }
-            self.studyProfile.profile = updated
-            self.refreshKeyterms()
-        }
+        examStart.useExamPlan(plan)
     }
 
     /// D86 start screen: an exam row's microphone, or "Få A-svar till provet".
     func startProv(for plan: ExamPlan, answersOnly: Bool = false, sayPlan: Bool = true) async {
-        useExamPlan(plan)
-        selectedMode = .prov
-        provAnswersOnly = answersOnly
-        await startStudy()
-        askSubjectIfOnlyArea(plan)
-        if sayPlan, !answersOnly, awaitingSubject == nil { provMode.studyPlan.sayPrompt(for: plan) }
-    }
-
-    /// A24: an exam that is only an area ("NO", from the first start) waits for its subject; the quiz can wait for it.
-    @ObservationIgnored private var awaitingSubject: (planID: UUID, area: ExamPlan.Area, quizAfter: Bool)?
-
-    private func askSubjectIfOnlyArea(_ plan: ExamPlan) {
-        guard study.isActive, mode == .prov, let area = SubjectQuestion.area(of: plan) else {
-            awaitingSubject = nil
-            return
-        }
-        awaitingSubject = (plan.id, area, false)
-        controller.log("Provläge: the exam is only an area (\(area.title)), the subject is asked for (A24)")
-        say(SubjectQuestion.prompt(for: area))
-    }
-
-    /// The answer to "Vilket ämne i NO …?". True: it was the subject (saved, and the quiz starts if it waited).
-    private func subjectAnswered(_ text: String) -> Bool {
-        guard let waiting = awaitingSubject else { return false }
-        awaitingSubject = nil
-        guard let subject = SubjectQuestion.subject(in: text, area: waiting.area),
-              var plan = examPlans?.plans.first(where: { $0.id == waiting.planID }) else {
-            if waiting.quizAfter { askForQuiz() } // not a subject: the words are a turn of their own, then the quiz
-            return false
-        }
-        plan.subject = subject
-        saveExamPlan(plan)
-        controller.log("Provläge: the subject is \(subject) (A24)")
-        if waiting.quizAfter { askForQuiz() } // before `say`: the quiz's request interrupts speech
-        say("Bra, \(plan.name.lowercased()).")
-        return true
+        await examStart.startProv(for: plan, answersOnly: answersOnly, sayPlan: sayPlan)
     }
 
     /// D97 (owner): "Få A-svar till provet" answers the student's questions and never quizzes; "Förhör mig" does both.
-    private(set) var provAnswersOnly = false
+    var provAnswersOnly: Bool { examStart.provAnswersOnly }
 
     func startAnswersOnly(for plan: ExamPlan) async {
-        await startProv(for: plan, answersOnly: true)
+        await examStart.startAnswersOnly(for: plan)
     }
 
     /// A18 (Kelly Ke9): Start's one blue button says what it does, "Förhör mig", the same words as the voice command.
-    /// Provläge for the exam, and the first quiz question at once.
     func startQuiz(for plan: ExamPlan) async {
-        beginFreshPass()
-        await startProv(for: plan, sayPlan: false)
-        guard study.isActive, mode == .prov else { return }
-        if awaitingSubject != nil {
-            awaitingSubject?.quizAfter = true // A24: the subject first, then the quiz
-            return
-        }
-        askForQuiz()
+        await examStart.startQuiz(for: plan)
     }
 
-    /// A33 (D109): the first start asks aloud after the first answer; the next utterance is the answer (a short one
-    /// is enough: "biologi på fredag"), read on the phone and by `/study-profile`. "Nej" declines.
-    @ObservationIgnored private var examAskedAloud = false
-    private(set) var examQuestionDeclined = false
+    /// A33 (D109): "Nej" to "Har du prov snart?".
+    var examQuestionDeclined: Bool { examStart.examQuestionDeclined }
 
     func askAboutExamByVoice(firstStart: Bool = true) async {
-        examQuestionDeclined = false
-        await listenForExamStatement()
-        examAskedAloud = true
-        examAskedAt = Date()
-        // A47: from Start the student asked to add one; the first start asks whether there is one at all.
-        say(firstStart ? "Har du prov snart? Säg vilket ämne och när." : "Vilket prov? Säg ämnet och när det är.")
+        await examStart.askAboutExamByVoice(firstStart: firstStart)
     }
 
-    /// A60 (Toby T8b finding 1): when the question was asked; the answer must come within `examAnswerWindow`.
-    @ObservationIgnored private var examAskedAt: Date?
-    nonisolated static let examAnswerWindow: TimeInterval = 30
+    nonisolated static let examAnswerWindow: TimeInterval = ExamStartController.examAnswerWindow
     /// A60: when listening was stopped. Scribe's last words arrive after that and are not a turn, a command or a
     /// profile (they became "Hur, sparat" and a word in the ear after Avsluta).
     @ObservationIgnored private var listeningStoppedAt: Date?
 
     /// A60: the exam step was closed (skipped, saved or "Inte nu"): the next sentence is an ordinary one again.
     func stopListeningForExamStatement() {
-        awaitingExamStatement = false
-        examAskedAloud = false
-        examAskedAt = nil
+        examStart.stopListeningForExamStatement()
     }
 
-    /// The utterance answers "Har du prov snart?": in time, and not a question of its own ("Hur många ben har en
-    /// spindel?"), unless it is about school.
+    /// The utterance answers "Har du prov snart?": in time, and not a question of its own, unless it is about school.
     nonisolated static func answersExamQuestion(_ text: String, askedAt: Date?, at date: Date) -> Bool {
-        guard let askedAt, date.timeIntervalSince(askedAt) < examAnswerWindow else { return false }
-        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        if trimmed.hasSuffix("?"), !ProfileStatement.isAboutSchool(trimmed) { return false }
-        return true
+        ExamStartController.answersExamQuestion(text, askedAt: askedAt, at: date)
     }
 
     /// "Lägg till prov" → "Eller säg det": listen, and the next sentence about an exam is saved as one.
     func listenForExamStatement() async {
-        awaitingExamStatement = true
-        if !isListening {
-            if canResume { await resume() } else { await startListening() }
-        }
+        await examStart.listenForExamStatement()
     }
 
     /// D83: `persona: "tutor"` + `persona_setup` with the profile, on every Provläge call.
@@ -3074,26 +2923,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             controller.log("Words handed over after listening stopped: not used (A60)")
             return
         }
-        if awaitingExamStatement, examAskedAloud, !segment.overlapsPlayback,
-           Self.answersExamQuestion(segment.text, askedAt: examAskedAt, at: date) {
-            // A33: the answer to the question Lumen asked aloud.
-            stopListeningForExamStatement()
-            discardAhead(reason: "the answer about an exam")
-            study.discardTurnText()
-            if ExamAnswer.isDecline(segment.text) {
-                examQuestionDeclined = true
-                say("Okej. Du kan lägga till ett prov på Start när du vill.")
-            } else {
-                profileStatement(ExamAnswer.statement(segment.text))
-            }
-            return
-        }
-        if awaitingExamStatement, ProfileStatement.isAboutSchool(segment.text) {
-            awaitingExamStatement = false
-            discardAhead(reason: "an exam said aloud")
-            profileStatement(segment.text)
-            return
-        }
+        // A33, A47: the answer to "Har du prov snart?", or an exam said aloud (`ExamStartController`, G7 step 7c).
+        if examStart.takesExamStatement(segment.text, overlapsPlayback: segment.overlapsPlayback, at: date) { return }
         if let identity = speakers?.identity(near: date, window: 4) { labelTranscript(identity, at: date) }
         if isOwnEcho(segment.text, at: date, startedAt: segment.startedAt, overlapsPlayback: segment.overlapsPlayback),
            !isWearerUsingSuggestion(segment.text, level: study.currentTurnLevelDBFS) {
@@ -3101,7 +2932,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         // A24: the answer to "Vilket ämne i NO är provet i?".
-        if awaitingSubject != nil, study.isActive, mode == .prov, !segment.overlapsPlayback, subjectAnswered(segment.text) {
+        if examStart.takesSubject(segment.text, overlapsPlayback: segment.overlapsPlayback) {
             discardAhead(reason: "the exam's subject")
             study.discardTurnText()
             return
@@ -3354,6 +3185,9 @@ extension ListeningModel: ProvModeHost {
 
 /// D231 (A149, G7 step 7b): what the voice channel uses (`VoiceCommandsHost`): the model's own calls, unchanged.
 extension ListeningModel: VoiceCommandsHost {}
+
+/// D231 (A149, G7 step 7c): what the exam start uses (`ExamStartHost`): the model's own state and calls, unchanged.
+extension ListeningModel: ExamStartHost {}
 
 /// D221 (A137, G7 step 7a): what the queue of split turns uses (`TurnQueueHost`): the model's own calls, unchanged.
 extension ListeningModel: TurnQueueHost {
