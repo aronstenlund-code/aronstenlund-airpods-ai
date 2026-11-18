@@ -83,3 +83,33 @@ Deno.test("K105: users using up their cap leave the test cap untouched", async (
   assertEquals(t.searched, true);
   assert(!("web_cap_test" in t.done));
 });
+
+import { detectTest } from "../_shared/testmode.ts";
+Deno.test("K105 (Oscar O89): a script without the header counts as a test; the app and the owner do not", () => {
+  const r = (h: Record<string, string>) => new Request("http://x/answer", { method: "POST", headers: h });
+  assertEquals(detectTest(r({ "user-agent": "Python-urllib/3.12" })).test, true);
+  assertEquals(detectTest(r({ "x-earmind-test": "oscar-qa", "user-agent": "EarMind/1 CFNetwork/3826 Darwin/25.0.0" })).test, true);
+  assertEquals(detectTest(r({ "user-agent": "EarMind/1 CFNetwork/3826.400.120 Darwin/25.0.0" })).test, false);
+});
+
+Deno.test("K105: the handler asks deps.isTest (a script call without the header uses the test cap)", async () => {
+  const limiter = new MemoryRateLimiter();
+  const keys: string[] = [];
+  const spy = { check: (k: string, l: number, w: number, c?: number) => (keys.push(k), limiter.check(k, l, w, c)), release: limiter.release.bind(limiter) };
+  const provider: LLMProvider = { name: "f", model: "claude-haiku-5-5", stream: () => (async function* () { yield { type: "text", text: "Svar." } as LLMChunk; })() };
+  const h = createHandler({
+    authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
+    rateLimiter: spy as unknown as MemoryRateLimiter,
+    provider,
+    recordUsage: () => {},
+    config: { ...DEFAULT_CONFIG, webSplitFromMs: 0 },
+    isTest: (req) => detectTest(req).test,
+  });
+  await (await h(new Request("http://x/answer", {
+    method: "POST",
+    headers: { "content-type": "application/json", "user-agent": "python-urllib/3.12" },
+    body: JSON.stringify({ fragment: "vem vann melodifestivalen 2024", mode: "text", language: "sv", context: {} }),
+  }))).text();
+  assert(keys.includes("answer-web-test:global:d"), keys.join(","));
+  assert(!keys.includes("answer-web:global:d"));
+});

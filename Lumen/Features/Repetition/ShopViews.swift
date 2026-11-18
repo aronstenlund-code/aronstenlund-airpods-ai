@@ -36,18 +36,18 @@ struct ShopSections: View {
                     row(item, title: ShopText.pack(item.credits ?? 0), line: nil, badge: item.id == StoreCatalog.bestValue)
                 }
             } header: {
-                Text("Fyll på")
+                Text("Fyll på").foregroundStyle(LumenColor.secondaryText) // A148: AA
             } footer: {
-                Text(verbatim: ShopText.examLine)
+                Text(verbatim: ShopText.examLine).foregroundStyle(LumenColor.secondaryText)
             }
         }
         if shop.hasNoProducts {
             // Toby T48: nothing came from the App Store. Said where the packs would be, with a way to ask again.
             Section {
-                Text(verbatim: ShopText.noProducts).foregroundStyle(.secondary)
+                Text(verbatim: ShopText.noProducts).foregroundStyle(LumenColor.secondaryText)
                 Button(ShopText.tryAgain) { Task { await shop.reload() } }
             } header: {
-                Text("Fyll på")
+                Text("Fyll på").foregroundStyle(LumenColor.secondaryText) // A148: AA
             }
         }
         if let card = shop.weeklyCard, !quota.hasWeeklyCard {
@@ -69,7 +69,12 @@ struct ShopSections: View {
                         .accessibilityAddTraits(.updatesFrequently)
                         .transition(SayMotion.appear)
                 }
-                if let card = shop.weeklyCard { Text(verbatim: ShopText.terms(price: card.displayPrice)) }
+                if let card = shop.weeklyCard {
+                    // A148: VoiceOver reads the path with commas, not the arrow signs.
+                    Text(verbatim: ShopText.terms(price: card.displayPrice))
+                        .foregroundStyle(LumenColor.secondaryText)
+                        .accessibilityLabel(ShopText.terms(price: card.displayPrice).replacingOccurrences(of: " › ", with: ", "))
+                }
                 links
             }
         }
@@ -102,7 +107,7 @@ struct ShopSections: View {
                             .foregroundStyle(.tint)
                     }
                 }
-                if let line { Text(verbatim: line).font(.footnote).foregroundStyle(.secondary) }
+                if let line { Text(verbatim: line).font(.footnote).foregroundStyle(LumenColor.secondaryText) }
             }
             if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
             Button {
@@ -118,7 +123,7 @@ struct ShopSections: View {
             .buttonBorderShape(.capsule)
             .tint(.accentColor)
             .disabled(shop.buying != nil)
-            .accessibilityLabel("Köp \(title) för \(item.displayPrice)")
+            .accessibilityLabel("Köp \(title) för \(item.displayPrice)" + (badge ? ", \(ShopText.bestValue.lowercased())" : "")) // Ke79
         }
     }
 
@@ -129,7 +134,7 @@ struct ShopSections: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: ShopText.inviteTitle)
                 Text(verbatim: shop.invite?.monthIsFull == true ? ShopText.inviteFullLine : ShopText.inviteLine)
-                    .font(.footnote).foregroundStyle(.secondary)
+                    .font(.footnote).foregroundStyle(LumenColor.secondaryText)
             }
             if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
             if let url = shop.invite?.shareURL {
@@ -154,18 +159,26 @@ struct ShopSections: View {
     private var links: some View {
         let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10)) : AnyLayout(HStackLayout(spacing: 16))
         return layout {
-            if let url = ShopText.termsURL { Link("Villkor", destination: url) }
-            if let url = ShopText.privacyURL { Link("Integritet", destination: url) }
+            // A148: each link is a finger's size (the audit: "Hit area is too small", 16 points high before).
+            if let url = ShopText.termsURL { Link(destination: url) { Self.linkLabel(Text("Villkor")) } }
+            if let url = ShopText.privacyURL { Link(destination: url) { Self.linkLabel(Text("Integritet")) } }
             Button {
                 Task { await shop.restore() }
             } label: {
-                if shop.isRestoring { ProgressView().controlSize(.small) } else { Text("Återställ köp") }
+                Self.linkLabel(Group {
+                    if shop.isRestoring { ProgressView().controlSize(.small) } else { Text("Återställ köp") }
+                })
             }
+            .accessibilityLabel("Återställ köp")
             .buttonStyle(.pressFeedback) // A150: answers the touch on the way down
             .foregroundStyle(.tint)
             .disabled(shop.isRestoring)
         }
         .font(.footnote)
+    }
+
+    private static func linkLabel(_ content: some View) -> some View {
+        content.frame(minWidth: 44, minHeight: 44).contentShape(Rectangle())
     }
 }
 

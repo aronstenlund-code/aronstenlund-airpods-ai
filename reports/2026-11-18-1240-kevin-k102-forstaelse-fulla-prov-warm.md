@@ -60,7 +60,12 @@ Skriptet `scripts/k102-measure.py` kör exam drill som appen gör (utan svar och
   - Läsningar (select och rpc som bara läser: `is_credit_admin`, `credit_balance`, `use_drill_chars` med 0) görs om en gång vid nätverksfel. Skrivningar görs aldrig om. Testat med fejk.
   - `k93-live.py` godtar bara svar med status 200.
 - **Ny körning** startad, med ett nytt testkonto och ett nytt markörprov (run-id står på tavlan).
+- **run 44303031581**, 12:20–14:05 UTC. Testkontot är d4dda596 ("K93 livetest 2"), som Deangelo lade in 12:24.
+  - **Verifierat live:** `became_admin` ja, `admin_no_402_no_charge` ja (save 200, start 200, `cost` 2 000 med `unlimited`, `used_after` 0, `list_unlimited`).
+  - `admin_removed: false`: raderna togs inte bort inom de 100 minuterna, eftersom borttagningen kräver Arons ja i Supabase-verktyget och det inte kom. Därför slutade körningen med exit 1.
+  - **Slutsats, som avtalat med Deangelo:** admin-delen är **verifierad live** (runs 44294239066 och 44303031581). Att ett konto som tas bort ur `credit_admins` räknas och nekas igen är **verifierat bara i tester**.
+  - De två testraderna (61e59f02 och d4dda596) ligger kvar i `credit_admins` tills Deangelo tar bort dem.
 
 ## Nästa
 - **Oscar:** O79 igen med D230; mät O84 kallstart när appen värmer (A147).
-- **Kevin:** påfyllningen för korta material; resultatet av K93.
+- **Kevin:** påfyllningen för korta material. K93 är klart enligt ovan.

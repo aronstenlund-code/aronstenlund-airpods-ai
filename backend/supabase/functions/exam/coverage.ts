@@ -232,5 +232,24 @@ export function nearDuplicate(a: string, b: string): boolean {
   if (!x.size || !y.size) return a.trim().toLowerCase() === b.trim().toLowerCase();
   let shared = 0;
   for (const w of x) if (y.has(w)) shared++;
-  return shared / Math.min(x.size, y.size) >= 0.75 && shared >= 2;
+  if (shared / Math.min(x.size, y.size) >= 0.75 && shared >= 2) return true;
+  // K106 (Oscar's K102 omtest F3, ljud: "Hur påverkar frekvensen tonhöjden?" / "Jämför hur hög och låg frekvens påverkar
+  // tonen."): a word whose root starts a compound in the other ("ton" in "tonhöjden") counts as the same word
+  const wa = contentWords(a), wb = contentWords(b);
+  let fuzzy = 0;
+  for (const w of wa) if (wb.some((v) => sameWord(w, v))) fuzzy++;
+  return fuzzy >= 2 && fuzzy / Math.min(wa.length, wb.length) >= 0.75;
+}
+function contentWords(t: string): string[] {
+  return [...new Set((t.toLowerCase().match(/\p{L}{5,}/gu) ?? []).filter((w) => !STOP.has(w)))];
+}
+/** The word without a common Swedish ending ("tonen" -> "ton", "frekvensen" -> "frekvens"). */
+function root(w: string): string {
+  const m = /^(\p{L}{3,}?)(?:erna|arna|orna|ernas|en|et|er|ar|or|n)$/u.exec(w);
+  return m ? m[1] : w;
+}
+function sameWord(a: string, b: string): boolean {
+  if (a.slice(0, 6) === b.slice(0, 6)) return true;
+  const [s, l] = root(a).length <= root(b).length ? [root(a), b] : [root(b), a];
+  return s.length >= 3 && s.length < l.length && l.startsWith(s) && l.length - s.length >= 4;
 }

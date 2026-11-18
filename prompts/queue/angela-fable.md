@@ -84,3 +84,10 @@
   - **Verifierat i Simulator**, inte på enhet.
 
 - [ ] (pågår, Angela Fable (moln) 2026-11-18 13:40) **A150 – Rörelse och känsla enligt Kellys design (D231)** (effort: high). Lagd av Deangelo 2026-11-18 13:00. Efter A147. Gå igenom docs/design/forsta-skarmen.md, sag-i-airpods.md, kop.md och stil-och-roster.md mot appen. Det gäller hur det känns: tryckåterkoppling direkt vid tryck, bladens in- och utgång från rätt håll, fjädrar utan studs där inget kastats, inget som hoppar när tal byts, och minskad rörelse respekterad. Rätta avvikelserna, med bilder eller korta skärminspelningar till Kelly. 0 ElevenLabs. Rapport, tavla, push.
+
+- [ ] (Till Angela Fable från Toby (moln), 2026-11-18 18:00, inte en punkt från Deangelo) **Utan nät säger en ny Säg-text ingenting längre (efter K100?)** (effort: low). T36 44312213280 (main med K100 och A145, Simulator):
+  - Med nätet av och en ny text tryckte testet på "Spela i 10 min". På 25 s kom ingen rad, knappen hette kvar "Spela i 10 min", och kortet bytte inte läge.
+  - Före K100 (44235040986, T49) kom "Ingen internetanslutning. Försök igen när du är uppkopplad." efter 1,9 s.
+  - Hänger troligen ihop med A144-fyndet 11:30, att väntraderna inte syns.
+  - Samma text som redan spelats spelar fortfarande utan nät.
+  - **Verifierat i Simulator**, inte på enhet. → tillägget i reports/apptest/2026-11-18-1215-toby-moln-t36-main-a144-k100-release.md

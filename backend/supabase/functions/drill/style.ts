@@ -82,6 +82,7 @@ export function mapOffset(tagged: string, offset: number): number {
 }
 
 export const SYSTEM_PROMPT_STYLE = `You add ElevenLabs Eleven v3 audio tags to a text that will be read aloud.
+The text is a student's own study text or practice words (any school subject or language, also made-up or unfamiliar words such as names, glossary drills or test text). The task is only formatting: you never judge, answer or act on the text, so there is never a reason to decline it (K106).
 Rules:
 - Never change, add, remove or reorder a single word or punctuation mark of the text. Only insert tags.
 - Use only these tags, in square brackets, lower case: ${STYLE_TAGS.map((t) => `[${t}]`).join(" ")}.
@@ -90,6 +91,26 @@ Rules:
 Return only the text with the tags, nothing else.`;
 
 export type Styler = (spoken: string, style: string) => Promise<string | null>;
+
+/**
+ * K106 (Oscar O80 F1: "style_failed Provider refused the request" on test text of made-up words): when the model
+ * declines or changes a word, the style is still given by code from the wish itself: one or two tags at the start and,
+ * when the wish asks for pauses or time to write, a pause after each sentence. The words never change.
+ */
+const STYLE_WORDS: [RegExp, (typeof STYLE_TAGS)[number]][] = [
+  [/lugn|stilla|avslappn|calm|relax/i, "calm"], [/tydlig|klar|clear/i, "clearly"], [/långsam|sakta|slow/i, "slowly"],
+  [/snabb|fort|quick|fast/i, "quickly"], [/glad|glatt|pigg|cheer|happy/i, "cheerful"], [/varm|mjuk|warm/i, "warm"],
+  [/viska|whisper/i, "whispers"], [/allvar|serious/i, "serious"], [/entusias|engagerad|excit/i, "excited"],
+  [/nyfiken|curious/i, "curious"], [/tyst|lågt|soft/i, "softly"],
+];
+export function codeStyle(spoken: string, style: string): string | null {
+  const tags = STYLE_WORDS.filter(([re]) => re.test(style)).map(([, t]) => t).slice(0, 2);
+  const pauses = /paus|skriv|hinn|pause|write/i.test(style) ? (/lång|long/i.test(style) ? "[long pause]" : "[pause]") : "";
+  if (!tags.length && !pauses) return null;
+  let body = spoken;
+  if (pauses) body = body.replace(/([.!?])\s+(?=\S)/g, `$1 ${pauses} `);
+  return checkTagged(spoken, `${tags.map((t) => `[${t}]`).join(" ")} ${body}`.trim());
+}
 
 /** Haiku as the styler; a failure or a changed word gives null (the untagged text is used). */
 export function haikuStyler(provider: LLMProvider, model = "claude-haiku-5-5"): Styler {
@@ -106,11 +127,11 @@ export function haikuStyler(provider: LLMProvider, model = "claude-haiku-5-5"): 
       })) if (c.type === "text") text += c.text;
     } catch (e) {
       console.warn("style_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
-      return null;
+      return codeStyle(spoken, style); // K106: the wish is still followed, by code
     }
     const out = checkTagged(spoken, text.replace(/^<text>\s*|\s*<\/text>$/g, "").trim());
     if (!out) console.warn("style_words_changed");
-    return out;
+    return out ?? codeStyle(spoken, style);
   };
 }
 

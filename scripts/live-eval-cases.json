@@ -1203,6 +1203,7 @@
   "turns": [
    {
     "q": "hur byter man däck",
+    "web": true,
     "expect_any": [
      "domkraft"
     ],
@@ -1220,6 +1221,7 @@
   "turns": [
    {
     "q": "recept på köttbullar",
+    "web": true,
     "expect_any": [
      "färs"
     ],

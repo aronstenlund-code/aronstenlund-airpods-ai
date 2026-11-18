@@ -290,7 +290,9 @@ class Backend:
         return json.load(r)["access_token"]
 
     def _post(self, path, body, tok):
-        h = {"apikey": KEY, "content-type": "application/json"}
+        # O89 (D234): the eval is test traffic; with the header its web answers count against the test cap
+        # (answer-web-test, 50 a day) and not against the users' 100
+        h = {"apikey": KEY, "content-type": "application/json", "x-earmind-test": "live-eval"}
         if tok:
             h["Authorization"] = "Bearer " + tok
         req = urllib.request.Request(URL + path, data=json.dumps(body).encode(), headers=h)
@@ -347,7 +349,9 @@ def reliable_domains():
     src = open(os.path.join(ROOT, "backend/supabase/functions/answer/web.ts"), encoding="utf-8").read()
     block = src[src.index("RELIABLE_DOMAINS = ["):]
     block = block[: block.index("];")]
-    return re.findall(r'"([^"]+)"', block)
+    # O89 (Deangelo 15:20, O88): reliable for practical questions (recipes, home and tools) in the eval only,
+    # not in the server's choice of sources
+    return re.findall(r'"([^"]+)"', block) + ["ica.se", "clasohlson.com"]
 
 
 def run(cases, rizz, domains, only, now):
@@ -391,6 +395,17 @@ def run(cases, rizz, domains, only, now):
             r = be.ask(u, body)
             problems = []
             text = r["text"]
+            if (r["done"] or {}).get("web_cap_test"):
+                # O89 (D234): the test traffic's web cap was full; the answer came without a search. Skipped, not a fault
+                rows.append(dict(id=case["id"], cat=case["cat"], turn=ti, q=turn["q"] or "(Rizz)", ttft=r["ttft_ms"], total=r["total_ms"],
+                                 answer=text[:300], problems=[], relation=None, expect=turn.get("expect"), silent=False,
+                                 relation_ok=None, skipped="web_cap_test",
+                                 cost=((r["done"] or {}).get("usage") or {}).get("est_cost_usd") or 0))
+                if text and not r["error"]:
+                    answers.append(split_source(text)[0])
+                    hist.append({"q": turn["q"], "a": text[:380]})
+                time.sleep(0.4)
+                continue
             if turn.get("expect_error"):
                 code = ((r["error"] or {}).get("error") or {}).get("code") if r["error"] else None
                 if r["error"] and r["error"].get("http") == 403 and (code in (None, turn["expect_error"])):
@@ -459,9 +474,11 @@ def pct(xs, p):
 def report(rows, date):
     cats = sorted({r["cat"] for r in rows})
     bad = [r for r in rows if r["problems"]]
+    skipped = [r for r in rows if r.get("skipped")]
     out = [f"# Live-eval {date}", "",
            f"Backend: {URL} (anonym inloggning, publik nyckel). **{len(rows)} turer, {len(rows) - len(bad)} utan anmärkning, "
-           f"{len(bad)} med anmärkning.**", "",
+           f"{len(bad)} med anmärkning.**" + (f" {len(skipped)} överhoppade (testtrafikens webbtak fullt, D234): "
+           + ", ".join(sorted({r['id'] for r in skipped})) + "." if skipped else ""), "",
            "| Kategori | Turer | Anmärkningar | p50 första ord (ms) | p95 (ms) |", "|---|---:|---:|---:|---:|"]
     for c in cats:
         rs = [r for r in rows if r["cat"] == c]

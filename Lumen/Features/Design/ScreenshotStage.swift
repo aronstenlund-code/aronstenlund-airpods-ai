@@ -7,6 +7,21 @@ struct ScreenshotStage: View {
     let name: String
     let container: AppContainer
 
+    /// A148: Radera konto without a server (nothing is deleted in a screenshot).
+    static func stagedDeletion(_ name: String) -> AccountDeletionModel {
+        let model = AccountDeletionModel(client: StagedDeleter(), wipe: {}, stopEverything: {})
+        switch name {
+        case "accountDeleting": model.stage(.deleting)
+        case "accountDeleteFailed": model.stage(.failed(AccountDeletionModel.line(.offline)))
+        default: break
+        }
+        return model
+    }
+
+    private final class StagedDeleter: AccountDeleting {
+        func deleteAccount() async -> Result<AccountDeletionReply, AccountDeletionFailure> { .failure(.offline) }
+    }
+
     static var requested: String? {
         let arguments = ProcessInfo.processInfo.arguments
         guard let index = arguments.firstIndex(of: "-LumenScreenshot"), index + 1 < arguments.count else { return nil }
@@ -109,6 +124,14 @@ struct ScreenshotStage: View {
             // A52 (Ke29): "Vad kan Lumen?" and the sheet after the first answer.
             case "canDo": NavigationStack { CapabilitiesView() }
             case "canDoIntro": CapabilitiesIntroSheet()
+            // A148: Inställningar › Konto › Radera konto (A145), as it stands, while it deletes, and after a failure.
+            case "accountDelete", "accountDeleting", "accountDeleteFailed":
+                NavigationStack {
+                    List { AccountSection(model: Self.stagedDeletion(name)) }
+                        .lumenForm()
+                        .navigationTitle("Inställningar")
+                        .navigationBarTitleDisplayMode(.inline)
+                }
             case "testModeSheet": TestModeSheet {} onCancel: {} // A76 (Ke45 ke45-bekrafta.png)
             case "listeningTest": ListeningScreen(model: model) {} // A76: the badge itself says "Testläge · ljud skickas"
             case "homeTest": NavigationStack { HomeView(model: model) } // A76: "Testläge" next to the gear

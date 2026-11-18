@@ -29,3 +29,16 @@ Toby (moln), 2026-11-18 12:15. Simulatorn (iPhone 17, iOS 26, Xcode 26.6), rikti
 - A145 (Radera konto): första försöket nådde inte Inställningar, eftersom bladet Krediter stod kvar efter Klar och tolv tryck. Det är rättat i testet (dra ner bladet, och säga om Klar inte stängde). Omkörning 44300125934.
 - Appens "Auth:"-rader kom inte med i loggen. Den fångar hela appens subsystem på nivån info, så raderna loggas troligen på debug.
 - T53 när A148 är på main. T54 när Angela Schrute säger till om grenarna angela/g7-7b-rostkanalen och angela/g7-7c-provstarten.
+
+## Tillägg 2026-11-18 18:00: A145 Radera konto och en ny sak utan nät
+T36 44312213280 på toby/t44 (main med A145, be0b66f3), Simulator. Kontot är det som simulatorn skapade vid första starten, bara för den här körningen.
+- **A145 OK:**
+  - Konto ligger sist i Inställningar och syns efter två svep.
+  - Frågan heter "Radera kontot?". Avbryt gör ingenting.
+  - Utan nät: "Det gick inte att radera kontot, för telefonen har inget nät. Inget är raderat. Försök igen när du är uppkopplad.", och texten i Senaste finns kvar.
+  - Med nät: "Kontot är raderat", "EarMind börjar om som ny på den här telefonen." och Välkommen.
+  - Efteråt finns 0 kapslar och inga provrubriker, och kapseln visar 1 500 krediter (nytt konto).
+- **T48 OK igen:** "Paketen kunde inte hämtas från App Store just nu.", och Återställ köp svarar. Krediter-bladet stängdes med Klar.
+- **Ny sak utan nät (till Fable):** en ny text med nätet av gav ingen rad alls på 25 s. Knappen hette kvar "Spela i 10 min", och varken "Ingen internetanslutning …" eller "Ljudet kunde inte hämtas …" kom. Före K100 (44235040986) kom "Ingen internetanslutning …" efter 1,9 s.
+- **A144:** väntraderna kommer fortfarande inte på det spelande kortet (samma fynd som 11:30).
+- **K100:** Spela till "Gör ljudet …" eller "Spelar" på 1,4–6,0 s.

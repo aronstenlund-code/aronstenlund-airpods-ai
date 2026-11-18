@@ -708,7 +708,8 @@ Deno.test("D230: removed duplicates are made up for (no near-duplicates, nothing
   const { cleanQuestion: cq, leansOnMaterial: lean } = await import("./drill.ts");
   assertEquals([cq("förklara hur X hänger ihop med Y?"), cq("Compare A and B"), cq("Vad är KPI")], ["Förklara hur X hänger ihop med Y.", "Compare A and B.", "Vad är KPI?"]);
   assertEquals([lean("Hur visar materialet skillnaden?"), lean("What does the text say about Luther?"), lean("Hur mäts inflationen?")], [true, true, false]);
-  assert(seen[0].user.includes("<count>2</count>") && seen[0].model === DEFAULT_DRILL_CONFIG.answerModel);
+  // K106: two more are asked for than needed (some may be the same as a kept one in other words)
+  assert(seen[0].user.includes("<count>4</count>") && seen[0].model === DEFAULT_DRILL_CONFIG.answerModel);
   assertEquals((await refillQuestions(llm, DEFAULT_DRILL_CONFIG, kept, 0, "m")).usage, null, "nothing removed: no call");
   // D230 in the prompts: understanding, not recall; half; no invented links
   assert(SYSTEM_PROMPT_DRILL_FINAL_CHECK.includes("never into a what-, when- or who-question") && SYSTEM_PROMPT_DRILL_FINAL_CHECK.includes("At least half"));
