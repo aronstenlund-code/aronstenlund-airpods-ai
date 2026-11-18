@@ -53,7 +53,7 @@ enum RepetitionDemo {
                                       "repSayPicked",
                                       // Review pictures: A135 (the two lines after ten seconds), A139 (short numbers),
                                       // A136 (what a capsule in Senaste says), T48 (no products from the App Store)
-                                      "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks", "repShopEmpty",
+                                      "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks", "repShopEmpty", "repSayWaiting",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -265,6 +265,20 @@ enum RepetitionDemo {
         }
         model.shop = nil
         SayText.stagedRetry = false
+        SayText.stagedStarting = false
+        if name == "repSayWaiting" { // A144 (D225, Kelly): after 8 s the line, and the spinner goes on
+            model.store.save(history)
+            model.store.save(drill)
+            var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = 1236
+            model.quota = credits
+            SayText.stagedForScreenshots = said
+            SayText.stagedCost = 120
+            SayText.stagedRefusal = SayText.slowServerLine
+            SayText.stagedStarting = true
+            return
+        }
         if name == "repSaySlow" || name == "repSayNoNet" || name == "repSayBig" { // A135 (D219.3), A139 (D222)
             model.store.save(history)
             model.store.save(drill)
@@ -545,7 +559,8 @@ enum RepetitionDemo {
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
                  "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices",
-                 "repShopShort", "repShopWeeklyHome", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks":
+                 "repShopShort", "repShopWeeklyHome", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
+                 "repSayWaiting":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)

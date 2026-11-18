@@ -39,6 +39,8 @@ enum SayText {
     static var stagedPicked: (voiceID: String, reason: String?)?
     /// A135: the button is "Försök igen" (with a staged line), for the screenshots.
     static var stagedRetry = false
+    /// A144: Spela still waits (the spinner), for the screenshots of the 8 s line.
+    static var stagedStarting = false
     #endif
 
     /// "10 min" … "1 timme" on the button.
@@ -424,6 +426,7 @@ struct SayInAirPodsField: View {
                 Task {
                     refused = line
                     canRetry = SayText.stagedRetry
+                    if SayText.stagedStarting { isStarting = true }
                 }
             }
             if SayText.stagedVoicesSheet { showsVoices = true }
