@@ -25,6 +25,7 @@ struct BackendConfig: Sendable, Equatable {
     var debugAudioURL: URL { projectURL.appending(path: "functions/v1/debug-audio") } // A76 (K43); A142: never in Release
     #endif
     var studyPlanURL: URL { projectURL.appending(path: "functions/v1/study-plan") } // A19 (K17)
+    var accountDeleteURL: URL { projectURL.appending(path: "functions/v1/account/delete") } // A145 (K101)
     var sharedHistoryURL: URL { projectURL.appending(path: "functions/v1/shared-history") }
     var signUpURL: URL { projectURL.appending(path: "auth/v1/signup") }
     var refreshURL: URL {
