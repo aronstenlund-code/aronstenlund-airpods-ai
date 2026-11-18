@@ -230,3 +230,5 @@
   - `warm`: 30/min per IP gav 429 live; med token 204.
   - `materialet` eller `the text` i en fråga avvisas nu.
   → `reports/2026-11-18-1240-kevin-k102-forstaelse-fulla-prov-warm.md`
+
+- [ ] **O86 – Nattens live-eval: de 22 anmärkningarna (D231)** (effort: high). Lagd av Deangelo 2026-11-18 13:00. reports/eval/ från 2026-11-18 (388 turer, 22 anmärkningar: fakta 2, kommando 4, logik 1, minne 1 m.fl.). Gruppera efter orsak, återskapa varje fel med en egen fråga om det går, och lämna fynd med exempel till Kevin. Bara Claude, 0 ElevenLabs. Rapport, push.
