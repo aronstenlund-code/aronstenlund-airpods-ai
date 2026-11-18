@@ -1,0 +1,7 @@
+repShopEmpty: 1 issues (dynamicType 1), audit 7 s
+
+
+
+ISSUE 1 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='Klar' identifier='' frame={{293, 50.000000000000007}, {62, 35.999999999999993}}

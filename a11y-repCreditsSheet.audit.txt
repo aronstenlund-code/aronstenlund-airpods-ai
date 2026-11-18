@@ -1,0 +1,19 @@
+repCreditsSheet: 4 issues (dynamicType 1, textClipped 3), audit 8 s
+
+
+
+ISSUE 1 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='Klar' identifier='' frame={{293, 50.000000000000007}, {62, 35.999999999999993}}
+
+ISSUE 2 [textClipped] Text clipped
+  Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.
+  element: 48 label='1 236' identifier='' frame={{103.25, 108}, {168.5, 72}}
+
+ISSUE 3 [textClipped] Text clipped
+  Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.
+  element: 48 label='krediter kvar den här månaden' identifier='' frame={{44, 182}, {287, 187.5}}
+
+ISSUE 4 [textClipped] Text clipped
+  Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.
+  element: 48 label='Så räknas det' identifier='' frame={{16, 395}, {343, 145.5}}

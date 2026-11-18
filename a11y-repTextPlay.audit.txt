@@ -1,0 +1,19 @@
+repTextPlay: 4 issues (dynamicType 3, textClipped 1), audit 3 s
+
+
+
+ISSUE 1 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Mening 6 av 11' identifier='' frame={{20, 81.5}, {202.5, 36}}
+
+ISSUE 2 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Biologiprovet' identifier='' frame={{106.5, 33.75}, {162, 36}}
+
+ISSUE 3 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='Avsluta' identifier='' frame={{20, 32}, {104, 39.5}}
+
+ISSUE 4 [textClipped] Text clipped
+  Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.
+  element: 48 label='Biologiprovet' identifier='' frame={{106.5, 33.75}, {162, 36}}

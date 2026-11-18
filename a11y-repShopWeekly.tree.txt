@@ -1,0 +1,61 @@
+Attributes: Application, 0x116da7d40, pid: 35170, label: 'EarMind'
+Element subtree:
+ →Application, 0x116da7d40, pid: 35170, label: 'EarMind'
+    Window (Main), 0x116da7e80, {{0.0, 0.0}, {375.0, 667.0}}
+      Other, 0x116da8000, {{0.0, 0.0}, {375.0, 667.0}}
+        Other, 0x116da8140, {{0.0, 0.0}, {375.0, 667.0}}
+          Other, 0x116da8280, {{-375.0, -667.0}, {1125.0, 2001.0}}
+          Other, 0x116da83c0, {{0.0, 0.0}, {375.0, 667.0}}
+            Other, 0x116da8500, {{0.0, 0.0}, {375.0, 667.0}}
+      Other, 0x116da8640, {{0.0, 0.0}, {375.0, 667.0}}
+        Other, 0x116da8780, {{-375.0, -667.0}, {1125.0, 2001.0}}
+        Other, 0x116da88c0, {{0.0, 30.0}, {375.0, 637.0}}
+          Other, 0x116da8a00, {{0.0, 30.0}, {375.0, 637.0}}
+            Other, 0x116da8b40, {{0.0, 30.0}, {375.0, 637.0}}
+              Other, 0x116da8c80, {{0.0, 30.0}, {375.0, 637.0}}
+                Other, 0x116da8dc0, {{0.0, 30.0}, {375.0, 637.0}}
+                  Other, 0x116da8f00, {{0.0, 30.0}, {375.0, 637.0}}
+                    NavigationBar, 0x116da9040, {{0.0, 46.0}, {375.0, 54.0}}, identifier: 'Krediter'
+                      StaticText, 0x116da9180, {{148.5, 55.0}, {77.5, 26.0}}, label: 'Krediter'
+                      Other, 0x116da92c0, {{293.0, 50.0}, {62.0, 36.0}}, label: 'Klar'
+                        Other, 0x116da9400, {{293.0, 50.0}, {62.0, 36.0}}
+                          Button, 0x116da9540, {{293.0, 50.0}, {62.0, 36.0}}, label: 'Klar'
+                    Other, 0x116da9680, {{0.0, 30.0}, {375.0, 637.0}}
+                      Other, 0x116da97c0, {{0.0, 30.0}, {375.0, 637.0}}
+                        Other, 0x116da9900, {{0.0, 30.0}, {375.0, 637.0}}
+                          Other, 0x116da9a40, {{0.0, 30.0}, {375.0, 637.0}}
+                            CollectionView, 0x116da9b80, {{0.0, 30.0}, {375.0, 637.0}}
+                              Other, 0x116da9cc0, {{-16.0, -1166.0}, {407.0, 1685.0}}
+                              Other, 0x116da9e00, {{0.0, 30.0}, {375.0, 637.0}}
+                              Other, 0x116da9f40, {{0.0, 30.0}, {375.0, 637.0}}
+                              Cell, 0x116daa080, {{16.0, 108.0}, {343.0, 393.5}}
+                                Other, 0x116daa1c0, {{16.0, 108.0}, {343.0, 393.5}}
+                                  Other, 0x116daa300, {{16.0, 108.0}, {343.0, 393.5}}
+                                    Other, 0x116daa440, {{16.0, 108.0}, {343.0, 393.5}}
+                                Other, 0x116daa580, {{16.0, 108.0}, {343.0, 393.5}}
+                                  Other, 0x116daa6c0, {{16.0, 108.0}, {343.0, 393.5}}
+                                    Other, 0x116daa800, {{16.0, 108.0}, {343.0, 393.5}}
+                                      StaticText, 0x116daa940, {{16.0, 108.0}, {343.0, 393.5}}, label: 'Veckokort, till 24 nov · 16 200 av 20 000 tecken kvar i veckan'
+                                        StaticText, 0x116daaa80, {{48.2, 108.0}, {278.5, 72.0}}, label: 'Veckokort'
+                                        StaticText, 0x116daabc0, {{42.5, 182.0}, {290.0, 311.5}}, label: 'till 24 nov · 16 200 av 20 000 tecken kvar i veckan'
+                              Other, 0x116daad00, {{-16.0, 519.0}, {407.0, 190.5}}
+                              Cell, 0x116daae40, {{16.0, 536.5}, {343.0, 155.5}}
+                                Other, 0x116daaf80, {{16.0, 536.5}, {343.0, 155.5}}
+                                  Other, 0x116dab0c0, {{16.0, 536.5}, {343.0, 155.5}}
+                                Other, 0x116dab200, {{16.0, 536.5}, {343.0, 155.5}}
+                                  Other, 0x116dab340, {{16.0, 536.5}, {343.0, 155.5}}
+                                    Other, 0x116dab480, {{16.0, 536.5}, {343.0, 155.5}}
+                                      Button, 0x116dab5c0, {{16.0, 536.5}, {343.0, 155.5}}, label: 'Hantera veckokortet'
+                              Other, 0x116dab700, {{342.0, 100.0}, {30.0, 567.0}}, label: 'Vertikal rullningslist, 3 sidor', value: 0 %
+                                Other, 0x116dab840, {{369.0, 637.0}, {3.0, 7.0}}
+                              Other, 0x116dab980, {{342.0, 100.0}, {30.0, 567.0}}, label: 'Vertikal rullningslist, 3 sidor', value: 0 %
+                                Other, 0x116dabac0, {{369.0, 637.0}, {3.0, 7.0}}
+                    Other, 0x116dabc00, {{0.0, 30.0}, {375.0, 637.0}}
+                      Other, 0x116dabd40, {{0.0, 30.0}, {375.0, 637.0}}
+Path to element:
+ →Application, 0x116da7d40, pid: 35170, label: 'EarMind'
+Query chain:
+ →Find: Target Application 'com.rsolutions.lumen'
+  Output: {
+    Application, 0x116dabe80, pid: 35170, label: 'EarMind'
+  }
