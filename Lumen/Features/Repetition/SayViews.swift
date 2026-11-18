@@ -81,10 +81,10 @@ enum SayText {
     // A140 (D223): mine, for Kelly to review.
     static let mixCapsule = "Blandat"
 
-    /// A140 (K99): the voice the server chose from the style, and why: "Astrid · Lugn och tydlig, som en lärare."
-    static func pickedLine(name: String, reason: String?) -> String {
+    /// A140 (K99, Kelly): why the server chose the voice in the capsule beside it: "Vald efter stilen · Lugn och tydlig."
+    static func pickedLine(reason: String?) -> String {
         let why = (reason ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        return why.isEmpty ? "\(name) är vald efter stilen." : "\(name) · \(why)"
+        return why.isEmpty ? "Vald efter stilen." : "Vald efter stilen · \(why)"
     }
 
     /// A140 (D223): "Spelar i AirPods · Astrid" while it plays.
@@ -530,8 +530,8 @@ struct SayInAirPodsField: View {
         .onAppear { if let staged = SayText.stagedStyle, style.isEmpty { style = staged } }
         #endif
         // A140 (K99): the voice the server chose for this style, and why. The capsule changes it before Spela.
-        if let picked, let name = model.sayVoiceName(picked.voiceID) {
-            Text(verbatim: SayText.pickedLine(name: name, reason: picked.reason))
+        if let picked, model.sayVoiceName(picked.voiceID) != nil {
+            Text(verbatim: SayText.pickedLine(reason: picked.reason))
                 .font(.footnote)
                 .opacity(0.7)
                 .fixedSize(horizontal: false, vertical: true)

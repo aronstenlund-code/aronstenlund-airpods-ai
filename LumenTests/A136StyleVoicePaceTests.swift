@@ -296,7 +296,8 @@ import Testing
         drill.items[1].voiceID = "astrid0000000001"
         #expect(model.speakingVoice(drill, part: 0) == "Nils" && model.speakingVoice(drill, part: 1) == "Astrid")
         #expect(SayText.playingLine(voice: "Nils") == "Spelar i AirPods · Nils" && SayText.playingLine(voice: nil) == "Spelar i AirPods")
-        #expect(SayText.pickedLine(name: "Gustav", reason: "Mörk och tydlig.") == "Gustav · Mörk och tydlig.")
+        #expect(SayText.pickedLine(reason: "Mörk och tydlig.") == "Vald efter stilen · Mörk och tydlig.")
+        #expect(SayText.pickedLine(reason: " ") == "Vald efter stilen.")
         #expect(SayText.soundMark(drill, voices: model.sayVoices) == "Blandat")
         // K99: voices under review and the default voice are read.
         let listing = try JSONDecoder().decode(SayVoice.Listing.self, from: Data(#"{"catalog":[{"voice_id":"hindi00000000006","name":"Hindi","review":true}],"default_voice":{"voice_id":"astrid0000000001","name":"Astrid","in_catalog":true}}"#.utf8))
