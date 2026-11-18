@@ -79,3 +79,8 @@ Stilraden staplas: röstkapseln på en rad, "Hur ska det låta?" under, i full b
    längst till höger. Rad 2: beskrivningen i hela radens bredd, vänsterkant i linje med ▶. Ingen avstavning.
    Biblioteksröst som inte finns i katalogen: **"Kan bara provlyssnas"** i stället för "Går inte att välja än" (säger
    vad man kan göra).
+
+## A140 (Kelly (moln), 2026-11-18)
+Godkända ord: **Blanda röster** · "Varje stycke får en egen röst, samma varje gång." · kapseln **Blandat** · **Att
+provlyssna** · "Spelar i AirPods · {röst}". AI:s val under stilraden: **"Vald efter stilen · {motivering}"**, utan
+motivering **"Vald efter stilen."** (namnet står redan i kapseln).
