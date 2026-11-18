@@ -104,3 +104,12 @@ sedda i en ny inspelning (flödet 44375329952). **iOS build 44375326631 grön p�
 (`rig.model.rizz?.suggestions == ["Ett"]`, `rig.provider.requests.count == 2`), som väntar på tid och som jag inte
 har rört. Samma kod klarade alla test i mitt bygge. Jag har sagt till Angela Schrute.
 
+## Tillägg 23:30: godkänt av Kelly, grönt på main
+
+- **Kelly har godkänt båda Ke83-tilläggen** (dra ner spelaren, snurra i stället för paus) och det rättade kortbytet.
+  Bildrutan vid 14,6 s duger: den ligger mitt i en toning och ingen text hamnar utanför kortet. Kortet flyttas inte
+  ur listan. Syns det på telefon tas det upp igen. → `reports/2026-11-18-1955-kelly-ke83-a150-rorelse.md`
+- **Main-bygget 44382692902 (A150 med Ke83-tilläggen, b2db43b0) är grönt**, med alla test (verifierat i CI). De två
+  Rizz-testen som föll i 44374756678 var en kapplöpning i live-lägena; Angela Schrute har rättat den (eaa7279f).
+- Kvar: allt på enhet (dragningen med ett riktigt finger, haptiken). Tobys fynd 18:00 (ny text utan nät säger
+  ingenting) är fortfarande inte förklarat; nattflödet 44411718185 med T36 står i kön och ger loggraderna.
