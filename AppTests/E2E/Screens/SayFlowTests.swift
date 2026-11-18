@@ -42,6 +42,18 @@ final class SayFlowTests: XCTestCase {
         addTeardownBlock { @MainActor [weak self] in
             self?.finish()
         }
+        // T53 (A148, Kelly Ke79): t53.sh runs the same class with the largest text (simctl content_size AX XXXL) and
+        // only the accessibility sections.
+        if env["LUMEN_T36_A11Y"] == "1" {
+            launch(header)
+            guard section("Första starten till Start (AX5)", { firstStart() }) else { return }
+            section("Första skärmen: VoiceOver-orden (Ke79)", { a11yFirstScreen() })
+            section("Kortet som spelar: en mening (Ke79 punkt 9)", { a11yPlayingCard() })
+            section("Senaste: hela texten och stilen (Ke79 punkt 4)", { a11yRecents() })
+            section("Kreditbladet och köpdelen (Ke79)", { a11yCredits() })
+            section("Radera konto: orden (A145, Ke79)", { a11yDeleteAccount() })
+            return
+        }
         launch(header)
         guard section("Första starten till Start", { firstStart() }) else { return }
         guard section("Säg i AirPods: skriv en text", { writeText() }) else { return }
@@ -689,6 +701,129 @@ final class SayFlowTests: XCTestCase {
     private func tapAlert(_ label: String) {
         let button = app.alerts.firstMatch.buttons[label]
         if button.exists { tapElement(button, "\(label) (Radera kontot?)") } else { log.append("MISS: no '\(label)' in the question") }
+    }
+
+    // MARK: T53 – accessibility with the largest text (A148, Kelly Ke79)
+
+    /// Xcode's accessibility audit of what is on screen; findings are written, never a failure (as A95's audit).
+    private func audit(_ name: String) {
+        var counts: [String: Int] = [:]
+        var lines: [String] = []
+        do {
+            try app.performAccessibilityAudit(for: .all) { issue in
+                let type = Self.auditName(issue.auditType)
+                counts[type, default: 0] += 1
+                var line = "AUDIT \(name) [\(type)] \(issue.compactDescription)"
+                if let e = issue.element, e.exists { line += " – \(e.elementType.rawValue) '\(e.label)' h=\(Int(e.frame.height))" }
+                lines.append(line)
+                return true
+            }
+        } catch { lines.append("AUDIT \(name): audit failed: \(error)") }
+        log.append("T53 audit \(name): \(counts.isEmpty ? "no findings" : counts.sorted { $0.key < $1.key }.map { "\($0.key) \($0.value)" }.joined(separator: ", "))")
+        log.append(contentsOf: lines.prefix(25))
+        screen("ax5-\(name)", "AX5: \(name)")
+    }
+
+    nonisolated private static func auditName(_ type: XCUIAccessibilityAuditType) -> String {
+        let names: [(XCUIAccessibilityAuditType, String)] = [
+            (.contrast, "contrast"), (.elementDetection, "elementDetection"), (.hitRegion, "hitRegion"),
+            (.sufficientElementDescription, "sufficientElementDescription"), (.dynamicType, "dynamicType"),
+            (.textClipped, "textClipped"), (.trait, "trait"),
+        ]
+        return names.first { type.contains($0.0) }?.1 ?? "type \(type.rawValue)"
+    }
+
+    /// A button's or field's VoiceOver label, read from the tree.
+    private func label(of kind: String, starting prefix: String) -> String? {
+        Self.labels(in: app.debugDescription, kind: kind).first { $0.hasPrefix(prefix) }
+    }
+
+    /// Ke79 points 2, 3 and 8, and the order of the first screen.
+    private func a11yFirstScreen() -> Bool {
+        goToStart()
+        var ok = true
+        guard focusField("Säg i AirPods (AX5)") else { return miss("the field got no keyboard") }
+        field.typeText(Self.text)
+        pause(2) // the cost comes about 0,7 s after the last key
+        if app.keyboards.count > 0 { app.swipeDown(velocity: .slow); pause(1) }
+        let fieldLabel = field.label
+        let cost = (Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Button")).first { $0.hasPrefix("Kostar ") }
+        let tempo = label(of: "Button", starting: "Tempo") ?? "-"
+        let howLong = label(of: "Button", starting: "Hur länge") ?? "-"
+        let play = label(of: "Button", starting: "Spela") ?? "-"
+        log.append("T53 field '\(fieldLabel)', cost '\(cost ?? "-")', tempo '\(tempo)', how long '\(howLong)', play '\(play)'")
+        if fieldLabel != "Säg i AirPods" { ok = miss("the field reads '\(fieldLabel)' (Ke79 2: 'Säg i AirPods'; iOS adds 'textfält')") }
+        if cost == nil { ok = miss("no cost read as 'Kostar N krediter' (Ke79 3)") }
+        if tempo != "Tempo, normal" { ok = miss("tempo reads '\(tempo)' (Ke79 8: 'Tempo, normal')") }
+        if !howLong.hasPrefix("Hur länge, ") { ok = miss("no 'Hur länge, …'") }
+        // The "›" mark must not be read (Ke79 1): it is hidden, so it must not stand as a text of its own.
+        if Self.labels(in: app.debugDescription, kind: "StaticText").contains("›") { note("'›' stands as a text in the tree (Ke79 1; Angela: hidden, the tree shows hidden elements)") }
+        audit("start-text")
+        return ok
+    }
+
+    /// Ke79 point 9: "Spelar i AirPods med <röst>, N minuter kvar" as one element.
+    private func a11yPlayingCard() -> Bool {
+        guard playFromCard() else { return false }
+        pause(4)
+        let all = Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Other") + Self.labels(in: app.debugDescription, kind: "Button")
+        let one = all.first { $0.hasPrefix("Spelar i AirPods") && $0.contains("kvar") }
+        log.append("T53 playing card: '\(one ?? all.filter { $0.hasPrefix("Spelar") || $0.hasSuffix("kvar") }.joined(separator: "' + '"))'")
+        audit("start-spelar")
+        stopOnCard()
+        guard let one else { return miss("the playing card is not one sentence 'Spelar i AirPods med …, N minuter kvar' (Ke79 9)") }
+        return one.contains("minut") || miss("the playing card reads '\(one)' (Ke79 9: '… N minuter kvar')")
+    }
+
+    /// Ke79 point 4: a capsule reads the whole text (at most 80 characters), and its style or voice.
+    private func a11yRecents() -> Bool {
+        goToStart()
+        pause(2)
+        let caps = Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Klorofyllet") }
+        log.append("T53 Senaste capsules: \(caps)")
+        guard let first = caps.first else { return miss("no capsule in Senaste") }
+        if first.contains("…") && first.count < 30 { return miss("the capsule reads the cut text '\(first)' (Ke79 4: the whole text)") }
+        return first.hasPrefix("Klorofyllet i bladen fångar ljuset") || miss("the capsule reads '\(first)'")
+    }
+
+    /// Ke79: Bäst värde in the buy button, 44 points for Villkor, Integritet, Återställ köp; audit of the sheet.
+    private func a11yCredits() -> Bool {
+        goToStart()
+        let capsule = Self.labels(in: app.debugDescription, kind: "Button").first { $0.contains("krediter kvar") || $0.contains("kredit kvar") }
+        guard let capsule, tap([capsule], "the credit capsule (AX5)") else { return miss("no credit capsule") }
+        let end = Date().addingTimeInterval(15)
+        repeat { if app.debugDescription.contains("Paketen kunde inte hämtas") || app.debugDescription.contains("label: 'Köp ") { break }; pause(1) } while Date() < end
+        var ok = true
+        let buys = Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Köp ") }
+        log.append("T53 buy buttons: \(buys.isEmpty ? "none (no products in a UI test)" : buys.joined(separator: " | "))")
+        if let best = buys.first(where: { $0.contains("2 000") || $0.contains("2\u{00A0}000") }), !best.hasSuffix("bäst värde") { ok = miss("'\(best)' lacks ', bäst värde' (Ke79 7)") }
+        for name in ["Villkor", "Integritet", "Återställ köp"] {
+            var element = app.links.matching(NSPredicate(format: "label ==[c] %@", name)).firstMatch
+            if !element.exists { element = app.buttons.matching(NSPredicate(format: "label ==[c] %@", name)).firstMatch }
+            var swipes = 0
+            while !element.exists || !element.isHittable, swipes < 8 { app.swipeUp(); swipes += 1 }
+            let h = element.exists ? Int(element.frame.height) : -1
+            log.append("T53 '\(name)': height \(h)")
+            if h >= 0, h < 44 { note("'\(name)' is \(h) points high; its tap area may still be 44 (the audit's hitRegion says)") }
+            if h < 0 { ok = miss("no '\(name)' in Krediter") }
+        }
+        audit("krediter")
+        dismissCredits()
+        return ok
+    }
+
+    /// A145 with the largest text: the button, the question and its words; nothing is deleted here (Avbryt).
+    private func a11yDeleteAccount() -> Bool {
+        guard openAccount() else { return false }
+        audit("installningar-konto")
+        guard askDelete() else { return false }
+        let alert = app.alerts.firstMatch
+        let buttons = alert.buttons.allElementsBoundByIndex.map(\.label)
+        log.append("T53 Radera kontot?: '\(alert.label)', buttons \(buttons)")
+        tapAlert("Avbryt")
+        pause(1)
+        let ok = buttons.contains("Radera konto") && buttons.contains("Avbryt")
+        return ok || miss("the question lacks Radera konto or Avbryt (\(buttons))")
     }
 
     /// Asks t36.sh to turn the runner's network off or on (t36-net-off/on.request), and waits for it.
