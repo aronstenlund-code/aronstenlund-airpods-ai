@@ -304,6 +304,20 @@ import Testing
         #expect(listing.catalog?.first?.isUnderReview == true && listing.default_voice?.name == "Astrid")
     }
 
+    @Test func theMarkOfASaidTextIsKeptOnTheServer() throws {
+        var drill = Drill.text(title: "T", summary: A79A81RepetitionTests.summary, parts: [DrillItem.textPart("En.", part: .para)])
+        #expect((DrillCloudClient.saveBody(drill)["drill"] as? [String: Any])?["said"] == nil)
+        drill.said = false
+        #expect((DrillCloudClient.saveBody(drill)["drill"] as? [String: Any])?["said"] == nil, "only the mark itself is sent")
+        drill.said = true
+        #expect((DrillCloudClient.saveBody(drill)["drill"] as? [String: Any])?["said"] as? Bool == true)
+        let json = { (said: String) in #"{"drill":{"id":"srv-9","title":"Hej","kind":"text","said":\#(said)},"items":[{"id":"i1","position":0,"part":"para","text":"Hej.","audio":{"text":{"status":"pending"}}}],"audio":{"done":0,"total":1,"failed":0}}"# }
+        let marked = Drill.from(try JSONDecoder().decode(DrillCloudView.self, from: Data(json("true").utf8)))
+        #expect(marked.said == true && marked.isSaid, "fetched to a new phone: a said text, whatever its title")
+        let unmarked = Drill.from(try JSONDecoder().decode(DrillCloudView.self, from: Data(json("false").utf8)))
+        #expect(unmarked.said == nil, "false is not trusted until the server's column exists")
+    }
+
     @Test func theCatalogIsReadOnceAndAnEmptyOneShowsNoVoices() async throws {
         let (model, _, _, _) = try model("a136-voices")
         await model.loadSayVoices()

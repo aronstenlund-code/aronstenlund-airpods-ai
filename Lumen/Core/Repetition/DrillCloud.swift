@@ -23,6 +23,9 @@ struct DrillCloudView: Decodable, Sendable, Equatable {
         var voice_id: String? = nil
         /// A140 (K99): the voices are mixed (one per part, in `items[].voice_id`).
         var mix_voices: Bool? = nil
+        /// Kevin 2026-11-18: a text from "Säg i AirPods". Only `true` is trusted: until the server's column exists it
+        /// answers false for every text, and the phone's own mark (or its guess) stands then.
+        var said: Bool? = nil
     }
 
     struct File: Decodable, Sendable, Equatable {
@@ -436,6 +439,9 @@ final class DrillCloudClient: DrillCloudSyncing {
         if drill.serverID == nil, let voice = drill.voiceID { info["voice_id"] = voice }
         // A140 (K99): mixed voices are chosen at the first save and locked there.
         if drill.serverID == nil, drill.mixVoices == true { info["mix_voices"] = true }
+        // The mark of a text from "Säg i AirPods" is kept on the server (never removed there), so a text fetched to
+        // another phone is not guessed at by its title (Angela Schrute's finding, T28).
+        if drill.said == true { info["said"] = true }
         // A107 (D190, K71): saving never makes sound; Starta prov does. After the start the server makes only the
         // changed files (D144), with or without the flag.
         if drill.isText {
@@ -661,6 +667,7 @@ extension Drill {
         if let style = Drill.cleanStyle(view.drill.style) { drill.style = style } // A136 (K95)
         if let voice = view.drill.voice_id { drill.voiceID = voice } // A136 (K96): locked on the server
         if view.drill.mix_voices == true { drill.mixVoices = true } // A140 (K99)
+        if view.drill.said == true { drill.said = true } // the server's mark; false is not trusted yet (see `Info.said`)
         if let started = view.drill.audio_started { drill.audioStarted = started ? nil : false } // A107 (K71)
         if let cost = view.startCost { drill.startCost = cost } // A131 (K90): the server's number, kept for the card
         if let kind = view.drill.kind.flatMap(DrillKind.init(rawValue:)) {
