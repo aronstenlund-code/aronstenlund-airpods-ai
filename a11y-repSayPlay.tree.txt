@@ -1,0 +1,37 @@
+Attributes: Application, 0x11782b700, pid: 34858, label: 'EarMind'
+Element subtree:
+ →Application, 0x11782b700, pid: 34858, label: 'EarMind'
+    Window (Main), 0x11782b840, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x11782b980, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x11782bac0, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x11782aa80, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x11782ad00, {{0.0, 0.0}, {402.0, 874.0}}
+              StaticText, 0x11782ae40, {{106.5, 75.2}, {189.0, 18.0}}, label: 'Fotosyntes: koldioxid + vatten + …'
+              Button, 0x11782af80, {{20.0, 74.0}, {55.0, 20.3}}, label: 'Avsluta'
+              StaticText, 0x11782a940, {{20.0, 104.3}, {362.0, 56.0}}, label: 'Spelar i AirPods, Varv 3 · 7:08 kvar av 10 min'
+                StaticText, 0x11782bd40, {{20.0, 104.3}, {127.3, 18.0}}, label: 'Spelar i AirPods'
+                  Other, 0x11782be80, {{20.0, 109.3}, {8.0, 8.0}}
+                  StaticText, 0x117829f40, {{34.0, 104.3}, {113.3, 18.0}}, label: 'Spelar i AirPods'
+                StaticText, 0x11782a080, {{20.0, 130.3}, {192.0, 18.0}}, label: 'Varv 3 · 7:08 kvar av 10 min'
+                ProgressIndicator, 0x11782a1c0, {{20.0, 156.3}, {362.0, 4.0}}, value: 100 %
+                  ProgressIndicator, 0x11782a300, {{20.0, 146.3}, {362.0, 24.0}}, value: 100 %
+              StaticText, 0x11782a440, {{20.0, 168.3}, {362.0, 552.0}}, label: 'Cellandning: socker + syre blir energi, koldioxid och vatten.', value: Fotosyntes: koldio...
+                Other, 0x11782a580, {{20.0, 687.3}, {362.0, 30.0}}, label: 'Horisontell rullningslist, 1 sida', value: 0 %
+                  Other, 0x11782a6c0, {{23.0, 714.3}, {356.0, 3.0}}
+              Button, 0x11782a800, {{81.0, 750.3}, {44.0, 44.0}}, identifier: 'backward.fill', label: 'Förra meningen'
+              Button, 0x11782bc00, {{179.0, 750.3}, {44.0, 44.0}}, identifier: 'pause.fill', label: 'Pausa'
+              Button, 0x11782abc0, {{277.0, 750.3}, {44.0, 44.0}}, identifier: 'forward.fill', label: 'Nästa mening'
+              Other, 0x11782b0c0, {{41.2, 816.3}, {319.7, 15.7}}, label: 'Paus: 1 tryck. Nästa mening: 2 tryck. Förra meningen: 3 tryck.'
+                StaticText, 0x11782b200, {{41.2, 817.5}, {10.3, 13.3}}, label: 'Paus, 1 tryck på AirPods'
+                StaticText, 0x11782b340, {{57.5, 816.3}, {29.3, 15.7}}, label: 'Paus, 1 tryck på AirPods'
+                StaticText, 0x1178a4000, {{102.8, 817.5}, {20.7, 13.3}}, label: 'Nästa mening, 2 tryck på AirPods'
+                StaticText, 0x1178a4140, {{129.5, 816.3}, {83.3, 15.7}}, label: 'Nästa mening, 2 tryck på AirPods'
+                StaticText, 0x1178a4280, {{228.8, 817.5}, {31.0, 13.3}}, label: 'Förra meningen, 3 tryck på AirPods'
+                StaticText, 0x1178a43c0, {{265.8, 816.3}, {95.0, 15.7}}, label: 'Förra meningen, 3 tryck på AirPods'
+Path to element:
+ →Application, 0x11782b700, pid: 34858, label: 'EarMind'
+Query chain:
+ →Find: Target Application 'com.rsolutions.lumen'
+  Output: {
+    Application, 0x1178a4500, pid: 34858, label: 'EarMind'
+  }

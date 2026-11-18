@@ -1,0 +1,7 @@
+repPaused: 1 issues (hitRegion 1), audit 2 s
+
+
+
+ISSUE 1 [hitRegion] Hit area is too small
+  The size of this SwiftUI.AccessibilityNode is too small for user to interact.
+  element: (none)

@@ -1,0 +1,36 @@
+Attributes: Application, 0x11a524c80, pid: 43928, label: 'EarMind'
+Element subtree:
+ →Application, 0x11a524c80, pid: 43928, label: 'EarMind'
+    Window (Main), 0x11a525680, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x11a526d00, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x11a525180, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x11a526f80, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x11a526e40, {{0.0, 0.0}, {402.0, 874.0}}
+              StaticText, 0x11a525e00, {{156.0, 75.2}, {90.0, 18.0}}, label: 'Biologiprovet'
+              Button, 0x11a526440, {{20.0, 74.0}, {55.0, 20.3}}, label: 'Avsluta'
+              StaticText, 0x11a526580, {{20.0, 104.3}, {362.0, 30.0}}, label: 'Mening 6 av 11, Fotosyntesen'
+                StaticText, 0x11a5266c0, {{20.0, 104.3}, {106.0, 18.0}}, label: 'Mening 6 av 11'
+                StaticText, 0x11a526800, {{289.3, 104.3}, {92.7, 18.0}}, label: 'Fotosyntesen'
+                ProgressIndicator, 0x11a526940, {{20.0, 130.3}, {362.0, 4.0}}, value: 55 %
+                  ProgressIndicator, 0x11a526a80, {{20.0, 120.3}, {362.0, 24.0}}, value: 55 %
+              StaticText, 0x11a526bc0, {{20.0, 142.3}, {362.0, 578.0}}, label: 'Med ljusets energi blir de till socker och syre.', value: Fotosyntesen
+Växte...
+                Other, 0x11a525540, {{20.0, 687.3}, {362.0, 30.0}}, label: 'Horisontell rullningslist, 1 sida', value: 0 %
+                  Other, 0x11a525900, {{23.0, 714.3}, {356.0, 3.0}}
+              Button, 0x11a5257c0, {{81.0, 750.3}, {44.0, 44.0}}, identifier: 'backward.fill', label: 'Förra meningen'
+              Button, 0x11a524b40, {{179.0, 750.3}, {44.0, 44.0}}, identifier: 'pause.fill', label: 'Pausa'
+              Button, 0x11a524f00, {{277.0, 750.3}, {44.0, 44.0}}, identifier: 'forward.fill', label: 'Nästa mening'
+              Other, 0x11a524dc0, {{41.2, 816.3}, {319.7, 15.7}}, label: 'Paus: 1 tryck. Nästa mening: 2 tryck. Förra meningen: 3 tryck.'
+                StaticText, 0x11a5275c0, {{41.2, 817.5}, {10.3, 13.3}}, label: 'Paus, 1 tryck på AirPods'
+                StaticText, 0x11a525040, {{57.5, 816.3}, {29.3, 15.7}}, label: 'Paus, 1 tryck på AirPods'
+                StaticText, 0x11a525400, {{102.8, 817.5}, {20.7, 13.3}}, label: 'Nästa mening, 2 tryck på AirPods'
+                StaticText, 0x11a5252c0, {{129.5, 816.3}, {83.3, 15.7}}, label: 'Nästa mening, 2 tryck på AirPods'
+                StaticText, 0x11a527340, {{228.8, 817.5}, {31.0, 13.3}}, label: 'Förra meningen, 3 tryck på AirPods'
+                StaticText, 0x11a527200, {{265.8, 816.3}, {95.0, 15.7}}, label: 'Förra meningen, 3 tryck på AirPods'
+Path to element:
+ →Application, 0x11a524c80, pid: 43928, label: 'EarMind'
+Query chain:
+ →Find: Target Application 'com.rsolutions.lumen'
+  Output: {
+    Application, 0x11a5270c0, pid: 43928, label: 'EarMind'
+  }

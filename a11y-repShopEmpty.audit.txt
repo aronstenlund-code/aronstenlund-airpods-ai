@@ -1,0 +1,11 @@
+repShopEmpty: 2 issues (contrast 1, dynamicType 1), audit 4 s
+
+
+
+ISSUE 1 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='Klar' identifier='' frame={{326.33333333333331, 82}, {55.666666666666686, 36}}
+
+ISSUE 2 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: (none)
