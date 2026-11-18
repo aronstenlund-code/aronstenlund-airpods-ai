@@ -54,7 +54,7 @@ enum RepetitionDemo {
                                       // Review pictures: A135 (the two lines after ten seconds), A139 (short numbers),
                                       // A136 (what a capsule in Senaste says), T48 (no products from the App Store)
                                       "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks", "repShopEmpty", "repSayWaiting",
-                                      "repShopRefused",
+                                      "repShopRefused", "repSayOnCardWaiting",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -435,10 +435,13 @@ enum RepetitionDemo {
                                   parts: SaidText.parts(said).map { DrillItem.textPart($0, part: .para) })
             let reader = ReadingPlayer(parts: text.readingParts, audio: { _ in nil }, source: FileRepetitionAudioSource(),
                                        timer: TaskRepetitionTimer())
-            reader.stageForScreenshot(.reading, sentence: 1)
-            let goesRound = name == "repSayPlay" || name == "repSayOnCard"
-            model.session.stageSaying(text, reader: reader, minutes: goesRound ? 10 : nil, lap: goesRound ? 3 : 1)
-            if name == "repSayOnCard" { // A132 (D215.6, Ke72): it plays on the card on Start
+            // Toby (T36 after K100): the card says "Gör ljudet …" before there is any sound; after 8 s the line (D225).
+            let waits = name == "repSayOnCardWaiting"
+            reader.stageForScreenshot(waits ? .waitingForAudio : .reading, sentence: waits ? 0 : 1)
+            let goesRound = name == "repSayPlay" || name == "repSayOnCard" || waits
+            model.session.stageSaying(text, reader: reader, minutes: goesRound ? 10 : nil, lap: goesRound && !waits ? 3 : 1, waiting: waits)
+            SayText.stagedWaitNote = waits ? SayText.slowServerLine : nil
+            if name == "repSayOnCard" || waits { // A132 (D215.6, Ke72): it plays on the card on Start
                 model.stageSayVoices([], defaultName: "Astrid") // A140 (D223): the voice that speaks is named
                 var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
                 credits.unit = "chars"
@@ -565,7 +568,7 @@ enum RepetitionDemo {
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
                  "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices",
                  "repShopShort", "repShopWeeklyHome", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
-                 "repSayWaiting", "repShopRefused":
+                 "repSayWaiting", "repShopRefused", "repSayOnCardWaiting":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)

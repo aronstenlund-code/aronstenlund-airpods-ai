@@ -41,6 +41,8 @@ enum SayText {
     static var stagedRetry = false
     /// A144: Spela still waits (the spinner), for the screenshots of the 8 s line.
     static var stagedStarting = false
+    /// Toby (T36): the line on the playing card while the first sound is waited for, for the screenshots.
+    static var stagedWaitNote: String?
     #endif
 
     /// "10 min" … "1 timme" on the button.
@@ -83,10 +85,17 @@ enum SayText {
 
     enum Wait: Equatable { case quiet, slow, gaveUp }
 
-    /// What Spela shows after this long without an answer.
-    static func wait(after elapsed: Duration, online: Bool) -> Wait {
-        if !online || elapsed >= giveUpAfter { return .gaveUp }
+    /// What Spela shows after this long without an answer (or, with the answer, without any sound yet).
+    static func wait(after elapsed: Duration, online: Bool, giveUpAfter limit: Duration = giveUpAfter) -> Wait {
+        if !online || elapsed >= limit { return .gaveUp }
         return elapsed >= slowAfter ? .slow : .quiet
+    }
+
+    /// Toby (T36 after K100): the server now answers in a second or two and the card says "Gör ljudet …" before
+    /// there is any sound, so the same clock goes on until the first sound. Making the sound of a long first part
+    /// takes its time, and that is not an error: a second more per 100 characters, at most two minutes in all.
+    static func giveUpAfter(waitingForChars chars: Int) -> Duration {
+        giveUpAfter + .seconds(min(95, max(0, chars) / 100))
     }
 
     /// A136 (D220, Kelly Ke75): the words of the style row and of "Skriv i takt".
@@ -177,6 +186,8 @@ struct SayInAirPodsField: View {
     /// A135: which press is waited for, and that the last one took too long (the button is then Försök igen).
     @State private var attempt = 0
     @State private var canRetry = false
+    /// Toby (T36): said on the playing card while the first sound is still waited for (D225: after 8 s).
+    @State private var waitNote: String?
     /// K92: the server's answer for the text it was asked about.
     @State private var asked: (text: String, sound: SaySound, cost: Int, left: Int?, voiceID: String?, reason: String?)?
     /// A140 (D223): "Blanda röster", off by default, kept to the next time.
@@ -360,6 +371,12 @@ struct SayInAirPodsField: View {
         .foregroundStyle(SayText.accent)
         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         .accessibilityElement(children: .combine)
+        if waiting, !reader.hasSounded, let waitNote {
+            Text(verbatim: waitNote)
+                .font(.footnote.weight(.semibold))
+                .fixedSize(horizontal: false, vertical: true)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+        }
         Button {
             model.showsPlayer = true
         } label: {
@@ -431,6 +448,7 @@ struct SayInAirPodsField: View {
                 }
             }
             if SayText.stagedVoicesSheet { showsVoices = true }
+            if let note = SayText.stagedWaitNote { waitNote = note }
         }
         #endif
         // A116: presented from outside the field's dark colour scheme, so the system's sheets look as usual.
@@ -882,23 +900,38 @@ struct SayInAirPodsField: View {
             // A135 (D219.3, Aron's phone 20:24): no spinner without an end. A144 (D225): looked at once a second.
             // After 8 s the line says that it takes longer than usual and the spinner goes on; after 25 s, or without
             // a network, it gives up: the error line and Försök igen. Nothing starts to play by itself later.
+            // Toby (T36 after K100): the server answers fast now, and the card turns to "Gör ljudet …" before there
+            // is any sound. The same clock goes on there until the first sound is heard; a text that plays is left
+            // alone, and so is the player with the text on the screen.
             let started = ContinuousClock.now
+            let firstPart = SaidText.parts(text).first?.count ?? 0
             var saidSlow = false
+            waitNote = nil
             while true {
                 try? await Task.sleep(for: .seconds(1))
-                guard mine == attempt, isStarting, !model.isSayingOnCard, !model.showsPlayer else { return }
+                guard mine == attempt, !model.showsPlayer else { waitNote = nil; return }
+                let onCard = model.isSayingOnCard
+                if onCard {
+                    guard let reader = model.session.reader, !reader.hasSounded else { waitNote = nil; return }
+                    if reader.isPaused { continue }
+                } else if !isStarting {
+                    return
+                }
                 let online = NetworkStatus.shared.isOnline
-                switch SayText.wait(after: ContinuousClock.now - started, online: online) {
+                let limit = onCard ? SayText.giveUpAfter(waitingForChars: firstPart) : SayText.giveUpAfter
+                switch SayText.wait(after: ContinuousClock.now - started, online: online, giveUpAfter: limit) {
                 case .quiet:
                     continue
                 case .slow:
+                    if onCard { waitNote = SayText.slowServerLine } else { refused = SayText.slowServerLine }
                     if !saidSlow {
                         saidSlow = true
-                        refused = SayText.slowServerLine
                         AccessibilityNotification.Announcement(SayText.slowServerLine).post()
                     }
                 case .gaveUp:
                     model.giveUpSay()
+                    if onCard { model.end() } // back to the field; the sound goes on being made for Försök igen
+                    waitNote = nil
                     isStarting = false
                     canRetry = true
                     let line = SayText.slowLine(online: online)

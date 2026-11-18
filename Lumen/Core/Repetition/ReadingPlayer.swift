@@ -198,6 +198,10 @@ final class ReadingPlayer {
     var onStep: (@MainActor (String) -> Void)?
     /// A108 (D194): the text was read to its end.
     var onEnd: (@MainActor () -> Void)?
+    /// Toby (T36 after K100): some sound of this text has started to play. Until then the text is only waited for:
+    /// the time of a repetition does not run, and "Säg i AirPods" may still give up (D225).
+    private(set) var hasSounded = false
+    var onFirstSound: (@MainActor () -> Void)?
 
     static let audioRetrySeconds = 1.0
 
@@ -434,6 +438,10 @@ final class ReadingPlayer {
             let start = audio.start(of: position.sentence)
             if start > 0 { player.seek(to: start) }
             go()
+            if !hasSounded {
+                hasSounded = true
+                onFirstSound?()
+            }
         } catch {
             failuresInARow += 1
             step("could not open \(audio.url.lastPathComponent): \(error.localizedDescription)")
