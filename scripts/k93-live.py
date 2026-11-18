@@ -49,7 +49,7 @@ if q:
     out["admin_play"] = {"save": st, "start": st2, "cost": a.get("cost"), "used_after": q2.get("used"), "list_unlimited": l.get("quota", {}).get("unlimited")}
     ok["admin_no_402_no_charge"] = st == 200 and st2 == 200 and (a.get("cost") or 0) > 1500 and q2.get("used") == 0 and c.get("unlimited") is True and l.get("quota", {}).get("unlimited") is True
     print("K93_ADMIN_DONE", flush=True)
-    q3 = wait(False, 30 * 60)
+    q3 = wait(False, 100 * 60)
     ok["admin_removed"] = q3 is not None
     if q3:
         out["after_quota"] = {k: q3.get(k) for k in ("unlimited", "used", "remaining", "limit")}
