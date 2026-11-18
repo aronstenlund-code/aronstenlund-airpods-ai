@@ -1036,13 +1036,23 @@ export class QuestionTrim {
   }
 }
 
+/**
+ * K103 (Oscar O86 tillägg: "Climate Action Tracker (tvåtusen tjugofem)" in a web answer): a parenthesis is never
+ * read; what is inside becomes an aside between commas. Only the spoken answer (NumberStream), never the drill voice
+ * text, whose hashes must stay the same (K74).
+ */
+export function noParens(s: string): string {
+  if (!/[()]/.test(s)) return s;
+  return s.replace(/[ \t]*\([ \t]*/g, ", ").replace(/[ \t]*\)/g, ",").replace(/,[ \t]*([.!?,;:])/g, "$1").replace(/^, /, "");
+}
+
 // ---------- 3. digits -> words across chunk boundaries ----------
 export class NumberStream {
   private buf = "";
   private tail = ""; // last raw text already passed on (context for the phone-number guard)
 
   private say(raw: string): string {
-    const out = toSpeech(raw, this.tail);
+    const out = noParens(toSpeech(raw, this.tail));
     this.tail = (this.tail + raw).slice(-120);
     return out;
   }

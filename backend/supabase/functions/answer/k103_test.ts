@@ -3,7 +3,7 @@ import { assert, assertEquals, assertStringIncludes } from "jsr:@std/assert@1.0.
 import { textForVoice } from "./handler.ts";
 import { WEB_PROMPT, TEXT_PROMPT } from "./web.ts";
 import { SYSTEM_PROMPT_SOCIALLINE } from "./socialroute.ts";
-import { AnswerPost, NumberStream, socialLineSentence } from "./speech.ts";
+import { AnswerPost, NumberStream, noParens, socialLineSentence } from "./speech.ts";
 import { afterNumbers } from "./speechsym.ts";
 
 Deno.test("K103 B1: a song is said without line breaks; a self-correction drops the wrong start", () => {
@@ -51,4 +51,16 @@ Deno.test("K103 B5: a social line is the line to say: advice about the other per
   assertEquals(run(["Skojar du? ", "Då får du visa mig att du inte är det!"]), "Skojar du? Då får du visa mig att du inte är det!", "said to the other person: kept");
   assertEquals(socialLineSentence("Tråkig? "), "Tråkig? ");
   assertStringIncludes(SYSTEM_PROMPT_SOCIALLINE, "never advice about X to the user");
+});
+
+Deno.test("K103 (O86 tillägg): a parenthesis in a web answer is not read; its inside becomes an aside", () => {
+  const ns = new NumberStream();
+  const said = ["Enligt Climate Action Tracker (", "2025) är det ", "för lite."].map((c) => ns.push(c)).join("") + ns.finish();
+  assertEquals(said.replace(/ {2,}/g, " "), "Enligt Climate Action Tracker, tvåtusen tjugofem, är det för lite.");
+  assertEquals(noParens("Det var varmast (enligt SMHI)."), "Det var varmast, enligt SMHI.");
+});
+
+Deno.test("K103 B1: the prompt holds the exact words of Helan går, each word apart", () => {
+  assertStringIncludes(TEXT_PROMPT, "Och den som inte helan tar, han heller inte halvan får.");
+  assertStringIncludes(TEXT_PROMPT, "sjung hopp faderallan lallan lej");
 });
