@@ -1,0 +1,7 @@
+accountDeleteFailed: 1 issues (contrast 1), audit 3 s
+
+
+
+ISSUE 1 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: 9 label='Radera konto' identifier='' frame={{16, 156.33333333333334}, {370, 52}}

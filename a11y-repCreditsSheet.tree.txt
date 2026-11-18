@@ -1,0 +1,118 @@
+Attributes: Application, 0x117bf1e00, pid: 31293, label: 'EarMind'
+Element subtree:
+ →Application, 0x117bf1e00, pid: 31293, label: 'EarMind'
+    Window (Main), 0x117bf1f40, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x117bf2080, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x117bf21c0, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x117bf35c0, {{-402.0, -874.0}, {1206.0, 2622.0}}, identifier: 'PopoverDismissRegion', label: 'avfärda popup'
+          Other, 0x117bf2580, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x117bf3ac0, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x117bf2bc0, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x117bf2d00, {{-402.0, -874.0}, {1206.0, 2622.0}}, identifier: 'PopoverDismissRegion', label: 'avfärda popup'
+        Other, 0x117bf2e40, {{8.0, 295.6}, {386.0, 570.4}}
+          Button, 0x117bf2f80, {{164.5, 290.8}, {73.0, 24.0}}, label: 'Handtag för blad', value: Halv skärm
+          Other, 0x117bf30c0, {{8.0, 295.6}, {386.0, 570.4}}
+            Other, 0x117bf3200, {{8.0, 295.6}, {386.0, 570.4}}
+              Other, 0x117bf3340, {{8.0, 295.6}, {386.0, 570.4}}
+                Other, 0x117bf3480, {{8.0, 295.6}, {386.0, 570.4}}
+                  Other, 0x117bf2440, {{8.0, 295.6}, {386.0, 570.4}}
+                    NavigationBar, 0x117bf26c0, {{8.0, 311.0}, {386.0, 51.9}}, identifier: 'Krediter'
+                      StaticText, 0x117bf2800, {{170.0, 322.2}, {62.1, 19.8}}, label: 'Krediter'
+                      Other, 0x117bf2940, {{321.3, 314.8}, {53.5, 34.6}}, label: 'Klar'
+                        Other, 0x117bf3c00, {{321.3, 314.8}, {53.5, 34.6}}
+                          Button, 0x117bf3e80, {{321.3, 314.8}, {53.5, 34.6}}, label: 'Klar'
+                    Other, 0x117bf1a40, {{8.0, 295.6}, {386.0, 570.4}}
+                      Other, 0x117bf1b80, {{8.0, 295.6}, {386.0, 570.4}}
+                        Other, 0x117bf2300, {{8.0, 295.6}, {386.0, 570.4}}
+                          Other, 0x117bf3700, {{8.0, 295.6}, {386.0, 570.4}}
+                            CollectionView, 0x117bf3840, {{8.0, 295.6}, {386.0, 570.4}}
+                              Other, 0x117bf3980, {{-7.4, -770.2}, {416.7, 1225.9}}
+                              Other, 0x117bf2a80, {{8.0, 295.6}, {386.0, 570.4}}
+                                Other, 0x117bf4000, {{8.0, 295.6}, {386.0, 119.8}}
+                              Other, 0x117bf4140, {{8.0, 295.6}, {386.0, 570.4}}
+                              Cell, 0x117bf4280, {{23.4, 370.5}, {355.3, 68.2}}
+                                Other, 0x117bf43c0, {{23.4, 370.5}, {355.3, 68.2}}
+                                  Other, 0x117bf4500, {{23.4, 370.5}, {355.3, 68.2}}
+                                    Other, 0x117bf4640, {{23.4, 370.5}, {355.3, 68.2}}
+                                Other, 0x117bf4780, {{23.4, 370.5}, {355.3, 68.2}}
+                                  Other, 0x117bf48c0, {{23.4, 370.5}, {355.3, 68.2}}
+                                    Other, 0x117bf4a00, {{23.4, 370.5}, {355.3, 68.2}}
+                                      StaticText, 0x117bf4b40, {{23.4, 370.5}, {355.3, 68.2}}, label: '1 236, krediter kvar den här månaden'
+                                        StaticText, 0x117bf4c80, {{154.6, 370.5}, {92.8, 39.0}}, label: '1 236'
+                                        StaticText, 0x117bf4dc0, {{89.5, 411.5}, {223.1, 19.5}}, label: 'krediter kvar den här månaden'
+                              Other, 0x117bf4f00, {{-7.4, 455.7}, {416.7, 1438.4}}
+                              Cell, 0x117bf5040, {{23.4, 455.7}, {355.3, 38.7}}
+                                Other, 0x117bf5180, {{23.4, 455.7}, {355.3, 38.7}}
+                                Other, 0x117bf52c0, {{23.4, 455.7}, {355.3, 38.7}}
+                                  Other, 0x117bf5400, {{23.4, 455.7}, {355.3, 38.7}}
+                                    Other, 0x117bf5540, {{23.4, 455.7}, {355.3, 38.7}}
+                                      StaticText, 0x117bf5680, {{23.4, 455.7}, {355.3, 38.7}}, label: 'Så räknas det'
+                              Cell, 0x117bf57c0, {{23.4, 494.4}, {355.3, 49.9}}
+                                Other, 0x117bf5900, {{23.4, 494.4}, {355.3, 49.9}}
+                                  Other, 0x117bf5a40, {{23.4, 494.4}, {355.3, 49.9}}
+                                    Other, 0x117bf5b80, {{23.4, 494.4}, {355.3, 49.9}}
+                                Other, 0x117bf5cc0, {{23.4, 494.4}, {355.3, 49.9}}
+                                  Other, 0x117bf5e00, {{23.4, 494.4}, {355.3, 49.9}}
+                                    Other, 0x117bf5f40, {{23.4, 494.4}, {355.3, 49.9}}
+                                      StaticText, 0x117bf6080, {{38.7, 509.6}, {123.2, 19.5}}, label: '1 tecken nytt ljud'
+                                      StaticText, 0x117bf61c0, {{23.4, 494.4}, {355.3, 49.9}}, label: '1 tecken nytt ljud, 1 kredit'
+                              Cell, 0x117bf6300, {{23.4, 544.3}, {355.3, 49.9}}
+                                Other, 0x117bf6440, {{23.4, 544.3}, {355.3, 49.9}}
+                                  Other, 0x117bf6580, {{23.4, 544.3}, {355.3, 49.9}}
+                                    Other, 0x117bf66c0, {{23.4, 544.3}, {355.3, 49.9}}
+                                Other, 0x117bf6800, {{23.4, 544.3}, {355.3, 49.9}}
+                                  Other, 0x117bf6940, {{23.4, 544.3}, {355.3, 49.9}}
+                                    Other, 0x117bf6a80, {{23.4, 544.3}, {355.3, 49.9}}
+                                      StaticText, 0x117bf6bc0, {{38.7, 559.5}, {152.4, 19.5}}, label: 'Ljud som redan finns'
+                                      StaticText, 0x117bf6d00, {{23.4, 544.3}, {355.3, 49.9}}, label: 'Ljud som redan finns, 0'
+                              Other, 0x117bf6e40, {{38.7, 543.4}, {324.5, 1.0}}
+                                Other, 0x117bf6f80, {{38.7, 543.4}, {324.5, 1.0}}
+                              Cell, 0x117bf70c0, {{23.4, 594.3}, {355.3, 49.9}}
+                                Other, 0x117bf7200, {{23.4, 594.3}, {355.3, 49.9}}
+                                  Other, 0x117bf7340, {{23.4, 594.3}, {355.3, 49.9}}
+                                    Other, 0x117bf7480, {{23.4, 594.3}, {355.3, 49.9}}
+                                Other, 0x117bf75c0, {{23.4, 594.3}, {355.3, 49.9}}
+                                  Other, 0x117bf7700, {{23.4, 594.3}, {355.3, 49.9}}
+                                    Other, 0x117bf7840, {{23.4, 594.3}, {355.3, 49.9}}
+                                      StaticText, 0x117bf7980, {{38.7, 609.5}, {152.4, 19.5}}, label: 'Upprepa samma text'
+                                      StaticText, 0x117bf7ac0, {{23.4, 594.3}, {355.3, 49.9}}, label: 'Upprepa samma text, 0'
+                              Other, 0x117bf7c00, {{38.7, 593.3}, {324.5, 1.0}}
+                                Other, 0x117bf7d40, {{38.7, 593.3}, {324.5, 1.0}}
+                              Cell, 0x117bf7e80, {{23.4, 644.2}, {355.3, 49.9}}
+                                Other, 0x117de4000, {{23.4, 644.2}, {355.3, 49.9}}
+                                  Other, 0x117de4140, {{23.4, 644.2}, {355.3, 49.9}}
+                                    Other, 0x117de4280, {{23.4, 644.2}, {355.3, 49.9}}
+                                Other, 0x117de43c0, {{23.4, 644.2}, {355.3, 49.9}}
+                                  Other, 0x117de4500, {{23.4, 644.2}, {355.3, 49.9}}
+                                    Other, 0x117de4640, {{23.4, 644.2}, {355.3, 49.9}}
+                                      StaticText, 0x117de4780, {{38.7, 659.4}, {295.1, 19.5}}, label: 'Prov som andra har delat eller publicerat'
+                                      StaticText, 0x117de48c0, {{23.4, 644.2}, {355.3, 49.9}}, label: 'Prov som andra har delat eller publicerat, 0'
+                              Other, 0x117de4a00, {{38.7, 643.2}, {324.5, 1.0}}
+                                Other, 0x117de4b40, {{38.7, 643.2}, {324.5, 1.0}}
+                              Cell, 0x117de4c80, {{23.4, 694.1}, {355.3, 59.2}}
+                                Other, 0x117de4dc0, {{23.4, 694.1}, {355.3, 59.2}}
+                                Other, 0x117de4f00, {{23.4, 694.1}, {355.3, 59.2}}
+                                  Other, 0x117de5040, {{23.4, 694.1}, {355.3, 59.2}}
+                                    Other, 0x117de5180, {{23.4, 694.1}, {355.3, 59.2}}
+                                      StaticText, 0x117de52c0, {{23.4, 694.1}, {355.3, 59.2}}, label: 'En text på 764 tecken kostar 764 krediter. Du får 1 500 krediter varje månad. Nya krediter den 1 december. Oanvända krediter sparas inte.'
+                              Other, 0x117de5400, {{362.3, 362.9}, {28.8, 447.1}}, label: 'Vertikal rullningslist, 1 sida', value: 0 %
+                                Other, 0x117de5540, {{388.2, 810.3}, {2.9, 6.7}}
+                              Other, 0x117de5680, {{362.3, 362.9}, {28.8, 447.1}}, label: 'Vertikal rullningslist, 1 sida', value: 0 %
+                                Other, 0x117de57c0, {{388.2, 810.3}, {2.9, 6.7}}
+                    Other, 0x117de5900, {{8.0, 295.6}, {386.0, 570.4}}
+                      Other, 0x117de5a40, {{8.0, 295.6}, {386.0, 570.4}}
+          Other, 0x117de5b80, {{8.0, 295.6}, {386.0, 570.4}}
+            Other, 0x117de5cc0, {{8.0, 295.6}, {386.0, 570.4}}
+              Other, 0x117de5e00, {{8.0, 295.6}, {386.0, 570.4}}
+                Other, 0x117de5f40, {{8.0, 295.6}, {386.0, 570.4}}
+                  Other, 0x117de6080, {{8.0, 295.6}, {386.0, 570.4}}
+                    Other, 0x117de61c0, {{8.0, 295.6}, {386.0, 570.4}}
+                Other, 0x117de6300, {{8.0, 295.6}, {386.0, 570.4}}
+                  Other, 0x117de6440, {{8.0, 295.6}, {386.0, 570.4}}
+Path to element:
+ →Application, 0x117bf1e00, pid: 31293, label: 'EarMind'
+Query chain:
+ →Find: Target Application 'com.rsolutions.lumen'
+  Output: {
+    Application, 0x117de6580, pid: 31293, label: 'EarMind'
+  }

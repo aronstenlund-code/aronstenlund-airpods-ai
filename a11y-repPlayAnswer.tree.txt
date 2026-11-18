@@ -1,0 +1,39 @@
+Attributes: Application, 0x11a31f980, pid: 39197, label: 'EarMind'
+Element subtree:
+ →Application, 0x11a31f980, pid: 39197, label: 'EarMind'
+    Window (Main), 0x11a31f200, {{0.0, 0.0}, {402.0, 874.0}}
+      Other, 0x11a31fd40, {{0.0, 0.0}, {402.0, 874.0}}
+        Other, 0x11a31f480, {{0.0, 0.0}, {402.0, 874.0}}
+          Other, 0x11a31f5c0, {{0.0, 0.0}, {402.0, 874.0}}
+            Other, 0x11a31ed00, {{0.0, 0.0}, {402.0, 874.0}}
+              ScrollView, 0x11a31f0c0, {{0.0, 0.0}, {402.0, 874.0}}
+                Other, 0x11a31ef80, {{0.0, 62.0}, {402.0, 668.0}}
+                  StaticText, 0x11a31fac0, {{20.0, 82.0}, {362.0, 30.0}}, label: 'Fråga 2 av 5 · Varv 2, Biologiprovet'
+                    StaticText, 0x11a31fc00, {{20.0, 82.0}, {145.7, 18.0}}, label: 'Fråga 2 av 5 · Varv 2'
+                    StaticText, 0x11a31fe80, {{292.0, 82.0}, {90.0, 18.0}}, label: 'Biologiprovet'
+                    ProgressIndicator, 0x11a31ebc0, {{20.0, 108.0}, {362.0, 4.0}}, value: 40 %
+                      ProgressIndicator, 0x11a31f840, {{20.0, 98.0}, {362.0, 24.0}}, value: 40 %
+                  StaticText, 0x11a31f340, {{86.2, 330.7}, {229.7, 81.7}}, label: 'Vad bildas vid fotosyntesen?'
+                  StaticText, 0x11a31b0c0, {{22.0, 426.3}, {358.0, 64.3}}, label: 'Socker och syre bildas av koldioxid och vatten. Sockret ger växten energi och byggmaterial, och syret används av djur i cellandningen.'
+                  Other, 0x11a604000, {{147.3, 510.7}, {109.5, 20.3}}, label: 'Långt svar'
+                    Image, 0x11a604140, {{147.3, 512.0}, {16.3, 18.0}}, identifier: 'waveform', label: 'waveform'
+                    StaticText, 0x11a604280, {{147.3, 510.7}, {109.5, 20.3}}, label: 'Långt svar'
+                Other, 0x11a6043c0, {{369.0, 62.0}, {30.0, 668.0}}, label: 'Vertikal rullningslist, 1 sida', value: 0 %
+                  Other, 0x11a604500, {{396.0, 65.0}, {3.0, 662.0}}
+                Other, 0x11a604640, {{369.0, 62.0}, {30.0, 668.0}}, label: 'Vertikal rullningslist, 1 sida', value: 0 %
+                  Other, 0x11a604780, {{396.0, 65.0}, {3.0, 662.0}}
+              StaticText, 0x11a6048c0, {{70.0, 750.0}, {262.0, 15.7}}, label: 'Långt svar, 1 tryck på AirPods, Långt svar, 1 tryck på AirPods, Kort svar, 2 tryck på AirPods, Kort svar, 2 tryck på AirPods, Paus, 3 tryck på AirPods, Paus, 3 tryck på AirPods'
+                StaticText, 0x11a604a00, {{70.0, 751.2}, {10.3, 13.3}}, label: 'Långt svar, 1 tryck på AirPods'
+                StaticText, 0x11a604b40, {{86.3, 750.0}, {66.3, 15.7}}, label: 'Långt svar, 1 tryck på AirPods'
+                StaticText, 0x11a604c80, {{168.7, 751.2}, {20.7, 13.3}}, label: 'Kort svar, 2 tryck på AirPods'
+                StaticText, 0x11a604dc0, {{195.3, 750.0}, {54.3, 15.7}}, label: 'Kort svar, 2 tryck på AirPods'
+                StaticText, 0x11a604f00, {{265.7, 751.2}, {31.0, 13.3}}, label: 'Paus, 3 tryck på AirPods'
+                StaticText, 0x11a605040, {{302.7, 750.0}, {29.3, 15.7}}, label: 'Paus, 3 tryck på AirPods'
+              Button, 0x11a605180, {{20.0, 781.7}, {362.0, 50.3}}, label: 'Avsluta'
+Path to element:
+ →Application, 0x11a31f980, pid: 39197, label: 'EarMind'
+Query chain:
+ →Find: Target Application 'com.rsolutions.lumen'
+  Output: {
+    Application, 0x11a6052c0, pid: 39197, label: 'EarMind'
+  }
