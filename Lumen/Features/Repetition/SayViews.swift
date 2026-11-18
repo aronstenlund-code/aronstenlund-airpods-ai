@@ -68,13 +68,24 @@ enum SayText {
     static let lockLine = "Du kan låsa telefonen. Det hörs i AirPods ändå."
     static let hasPlayedKey = "say.hasPlayed"
 
-    /// A135 (D219.3): how long Spela shows its spinner, and what is said after that.
-    static let patience: Duration = .seconds(10)
+    /// A144 (D225, after Toby's T50 and Kevin's times: saving and starting a new text takes 9–10 s today). While
+    /// Spela waits for a new text: after 8 s it says that it takes longer than usual, which is not an error (the
+    /// spinner goes on); after 25 s, or as soon as the phone knows it has no network, it gives up with the error line
+    /// and Försök igen. Sound that is already on the phone plays at once and never comes here.
+    static let slowAfter: Duration = .seconds(8)
+    static let giveUpAfter: Duration = .seconds(25)
+    static let slowServerLine = "Det tar längre tid än vanligt." // Kelly
     static let slowLine = "Ljudet kunde inte hämtas. Kolla nätet." // Kelly: the button says the rest
-    /// Toby T50: the network is up and the server is slow (a new text can take longer than ten seconds to save).
-    /// The words must not blame the network then (Kelly: the button says the rest).
-    static let slowServerLine = "Det tar längre tid än vanligt."
-    static func slowLine(online: Bool) -> String { online ? slowServerLine : slowLine }
+    static let failedLine = "Ljudet kunde inte hämtas." // the network is up: it is not blamed
+    static func slowLine(online: Bool) -> String { online ? failedLine : slowLine }
+
+    enum Wait: Equatable { case quiet, slow, gaveUp }
+
+    /// What Spela shows after this long without an answer.
+    static func wait(after elapsed: Duration, online: Bool) -> Wait {
+        if !online || elapsed >= giveUpAfter { return .gaveUp }
+        return elapsed >= slowAfter ? .slow : .quiet
+    }
 
     /// A136 (D220, Kelly Ke75): the words of the style row and of "Skriv i takt".
     static let stylePrompt = "Hur ska det låta?"
@@ -861,16 +872,34 @@ struct SayInAirPodsField: View {
             isStarting = false
         }
         Task {
-            // A135 (D219.3, Aron's phone 20:24): no spinner without an end. After 10 s it is said that the sound could
-            // not be fetched, and the button is Försök igen. Nothing starts to play by itself later.
-            try? await Task.sleep(for: SayText.patience)
-            guard mine == attempt, isStarting, !model.isSayingOnCard, !model.showsPlayer else { return }
-            model.giveUpSay()
-            isStarting = false
-            canRetry = true
-            let line = SayText.slowLine(online: NetworkStatus.shared.isOnline)
-            refused = line
-            AccessibilityNotification.Announcement(line).post()
+            // A135 (D219.3, Aron's phone 20:24): no spinner without an end. A144 (D225): looked at once a second.
+            // After 8 s the line says that it takes longer than usual and the spinner goes on; after 25 s, or without
+            // a network, it gives up: the error line and Försök igen. Nothing starts to play by itself later.
+            let started = ContinuousClock.now
+            var saidSlow = false
+            while true {
+                try? await Task.sleep(for: .seconds(1))
+                guard mine == attempt, isStarting, !model.isSayingOnCard, !model.showsPlayer else { return }
+                let online = NetworkStatus.shared.isOnline
+                switch SayText.wait(after: ContinuousClock.now - started, online: online) {
+                case .quiet:
+                    continue
+                case .slow:
+                    if !saidSlow {
+                        saidSlow = true
+                        refused = SayText.slowServerLine
+                        AccessibilityNotification.Announcement(SayText.slowServerLine).post()
+                    }
+                case .gaveUp:
+                    model.giveUpSay()
+                    isStarting = false
+                    canRetry = true
+                    let line = SayText.slowLine(online: online)
+                    refused = line
+                    AccessibilityNotification.Announcement(line).post()
+                    return
+                }
+            }
         }
     }
 }

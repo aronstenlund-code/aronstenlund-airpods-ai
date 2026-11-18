@@ -275,7 +275,7 @@ enum RepetitionDemo {
             model.quota = credits
             SayText.stagedForScreenshots = said
             SayText.stagedCost = big ? 1251 : 120
-            SayText.stagedRefusal = big ? nil : SayText.slowLine(online: name == "repSaySlow")
+            SayText.stagedRefusal = big ? nil : name == "repSaySlow" ? SayText.failedLine : SayText.slowLine
             SayText.stagedRetry = !big
             return
         }

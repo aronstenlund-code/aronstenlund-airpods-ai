@@ -465,7 +465,11 @@ import Testing
         let left = Set(try FileManager.default.contentsOfDirectory(atPath: audio.fileURL("x").deletingLastPathComponent().path).filter { $0.hasSuffix(".mp3") })
         #expect(removed == 2 && left == ["new.mp3", "playing.mp3"], "the oldest go first, never what is playing")
         #expect(SayText.slowLine == "Ljudet kunde inte hämtas. Kolla nätet.")
-        #expect(SayText.patience == .seconds(10) && !SayText.slowLine.isEmpty)
+        // A144 (D225): told after 8 s, given up after 25 s or without a network.
+        #expect(SayText.slowAfter == .seconds(8) && SayText.giveUpAfter == .seconds(25))
+        #expect(SayText.wait(after: .seconds(7), online: true) == .quiet && SayText.wait(after: .seconds(8), online: true) == .slow)
+        #expect(SayText.wait(after: .seconds(24), online: true) == .slow && SayText.wait(after: .seconds(25), online: true) == .gaveUp)
+        #expect(SayText.wait(after: .seconds(1), online: false) == .gaveUp, "the phone knows it has no network: at once")
     }
 
     // MARK: A139 (D222): short numbers for credits
