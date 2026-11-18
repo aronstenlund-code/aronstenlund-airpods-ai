@@ -120,8 +120,21 @@ final class SupabaseAuth {
         return sub
     }
 
+    /// A145: the account was deleted and the app starts again with a new container. This one never signs in again,
+    /// so nothing left of the old app makes a stray anonymous account or reaches the server.
+    private var isRetired = false
+
+    func retire() {
+        isRetired = true
+        renewal?.cancel()
+        session = nil
+        if let foregroundObserver { NotificationCenter.default.removeObserver(foregroundObserver) }
+        foregroundObserver = nil
+    }
+
     /// A valid access token: cached, refreshed, or from a fresh anonymous sign-up.
     func accessToken() async throws(AnswerError) -> String {
+        if isRetired { throw .unauthorized(detail: "the account was deleted") }
         if let session, session.isValid(at: now()) {
             return session.accessToken
         }
@@ -143,6 +156,7 @@ final class SupabaseAuth {
     /// A143: the app opened or came back. The sign-in (a new install) or the renewal (the token has run out, or has
     /// less than `renewAhead` left) starts now, in the background, so that the first thing the user does finds a token.
     func prepare() {
+        guard !isRetired else { return }
         if let session, session.isValid(at: now(), margin: Self.renewAhead) { return }
         guard renewal == nil else { return }
         if let session {

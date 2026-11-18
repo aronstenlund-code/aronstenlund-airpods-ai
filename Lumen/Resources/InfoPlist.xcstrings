@@ -109,13 +109,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "EarMind listens to the room through your microphone to transcribe speech and answer questions in your AirPods. Audio becomes text and is not saved by EarMind. Sleep mode keeps its clips only on your phone."
+            "value": "EarMind only listens after you start a listening mode. The audio is sent to a speech recognition service to become text. EarMind does not save the audio. Sleep mode keeps its clips only on your phone."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "EarMind lyssnar genom mikrofonen för att skriva ut tal och svara på frågor i dina AirPods. Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon."
+            "value": "EarMind lyssnar bara när du har startat ett läge som lyssnar. Ljudet skickas till en taligenkänningstjänst och blir text. EarMind sparar inte ljudet. Sömnläget sparar klippen bara på din telefon."
           }
         }
       }
@@ -160,13 +160,13 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "EarMind can use the iPhone's own speech recognition, as a fallback or when you switch off cloud recognition in Settings."
+            "value": "EarMind only listens after you start a listening mode. The iPhone's own speech recognition turns the audio into text on the phone: as a fallback, when you switch off cloud recognition in Settings, and for Sleep mode and Mina svar. That audio does not leave the phone."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "EarMind kan använda iPhonens egen taligenkänning, som reserv eller när du stänger av molnet i Inställningar."
+            "value": "EarMind lyssnar bara när du har startat ett läge som lyssnar. iPhonens egen taligenkänning gör ljudet till text på telefonen: som reserv, när du har stängt av molnet i Inställningar, och för Sömnläget och Mina svar. Det ljudet lämnar inte telefonen."
           }
         }
       }

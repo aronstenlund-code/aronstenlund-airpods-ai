@@ -126,6 +126,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var myAnswers: MyAnswerStore?
     /// D142 (A78–A81): the repetition mode, the new standard (no microphone).
     var repetition: RepetitionModel?
+    /// A145 (K101): "Radera konto" in Inställningar. Set by AppContainer.
+    var accountDeletion: AccountDeletionModel?
     @ObservationIgnored var myAnswersClient: MyAnswersClient?
     /// A59 (K36): Spotify control through the server, for testers.
     var spotifyConnection: SpotifyConnection?
