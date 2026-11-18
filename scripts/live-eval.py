@@ -349,7 +349,9 @@ def reliable_domains():
     src = open(os.path.join(ROOT, "backend/supabase/functions/answer/web.ts"), encoding="utf-8").read()
     block = src[src.index("RELIABLE_DOMAINS = ["):]
     block = block[: block.index("];")]
-    return re.findall(r'"([^"]+)"', block)
+    # O89 (Deangelo 15:20, O88): reliable for practical questions (recipes, home and tools) in the eval only,
+    # not in the server's choice of sources
+    return re.findall(r'"([^"]+)"', block) + ["ica.se", "clasohlson.com"]
 
 
 def run(cases, rizz, domains, only, now):
