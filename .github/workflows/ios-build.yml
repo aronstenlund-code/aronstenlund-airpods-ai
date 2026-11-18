@@ -170,7 +170,7 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             2>&1 | tee build-logs/xcodebuild-test.log | xcbeautify --renderer github-actions
 
-      # A142 (D218 point 4, D226): the App Store build (Release) must compile and must not contain the test mode, which
+      # A142 (D218 point 4, D227): the App Store build (Release) must compile and must not contain the test mode, which
       # sends the microphone's audio to us (D140). The test mode is compiled only with LUMEN_TESTMODE (Debug and Beta).
       # The Debug build from the step above is the control: the same search must find the test mode there, or the
       # search itself is broken.
@@ -202,7 +202,7 @@ jobs:
           IN_RELEASE="$(LC_ALL=C grep -rlaE "$MARKS" "$RELEASE" || true)"
           if [ -n "$IN_RELEASE" ]; then
             echo "$IN_RELEASE"
-            echo "::error::The test mode (D140) is in the Release build. It may only be in Debug and Beta (A142, D226)"
+            echo "::error::The test mode (D140) is in the Release build. It may only be in Debug and Beta (A142, D227)"
             exit 1
           fi
           echo "Release check: no test mode in the Release build"
@@ -226,7 +226,7 @@ jobs:
           BETA="DerivedData-beta/Build/Products/Beta-iphoneos/Lumen.app"
           test -d "$BETA"
           LC_ALL=C grep -rlaE 'functions/v1/debug-audio' "$BETA" >/dev/null || {
-            echo "::error::The test mode is missing from the Beta build (A142, D226)"; exit 1; }
+            echo "::error::The test mode is missing from the Beta build (A142, D227)"; exit 1; }
           echo "Beta check: the test mode is in the Beta build"
 
       # D70: an unsigned .ipa the owner installs with Sideloadly (Windows, free Apple ID). Only after every step above

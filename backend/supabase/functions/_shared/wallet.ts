@@ -36,14 +36,13 @@ const BIG = 1_000_000;
 
 export function makeUseQuota(s: WalletStore) {
   return async (u: string, n: number): Promise<QuotaAnswer> => {
-    if (await s.isAdmin(u).catch(() => false)) {
-      const m = await s.monthly(u, 0);
-      return { ok: true, used: m.used, lim: m.used + BIG, unlimited: true };
-    }
-    const [m, bought, until, wlim, g] = await Promise.all([
+    // K100: everything the wallet reads, at once (admin included)
+    const [admin, m, bought, until, wlim, g] = await Promise.all([
+      s.isAdmin(u).catch(() => false),
       s.monthly(u, 0), s.purchased(u).catch(() => 0), s.subscriptionUntil(u).catch(() => null), s.weekLimit().catch(() => 20_000),
       s.gifts ? s.gifts(u).catch(() => null) : Promise.resolve(null),
     ]);
+    if (admin) return { ok: true, used: m.used, lim: m.used + BIG, unlimited: true };
     const wk = until ? await s.week(u, 0, wlim) : { ok: true, used: 0 };
     const freeLeft = Math.max(0, m.lim - m.used);
     const weekLeft = until ? Math.max(0, wlim - wk.used) : 0;

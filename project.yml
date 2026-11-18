@@ -14,7 +14,7 @@ options:
 fileGroups:
   - StoreKit
 
-# A142 (D218 point 4, D226): three configurations. Debug is the daily build. Beta is the optimised build for TestFlight
+# A142 (D218 point 4, D227): three configurations. Debug is the daily build. Beta is the optimised build for TestFlight
 # and our testers. Release is the App Store build. The test mode (D140, sends the microphone's audio to us) is compiled
 # only with LUMEN_TESTMODE, which Debug and Beta set and Release never does (ios-build.yml builds Release and checks).
 configs:

@@ -146,3 +146,28 @@ Deno.test("K98 invitation: an account that shares a key (the same install) with 
   }
   assertEquals(code, "invite_same_device");
 });
+
+Deno.test("O82: an account that has played cannot be invited; the same key again is 'already'; the SQL path's cap is used", async () => {
+  const { claimInvite, RewardRefusal, welcome } = await import("../_shared/rewards.ts");
+  const m = memStore();
+  const played = new Set(["old"]);
+  m.s.hasPlayed = (u) => Promise.resolve(played.has(u));
+  await m.s.createInviteCode("inviter", "abcdefgh");
+  await welcome(m.s, "inviter", "KI");
+  await welcome(m.s, "old", "KO");
+  const e = await claimInvite(m.s, "old", "abcdefgh").catch((x) => x);
+  assertEquals([e instanceof RewardRefusal, e.code], [true, "invite_not_new"]);
+  assertEquals((await welcome(m.s, "old", "KO")).reason, "already");
+  assertEquals((await welcome(m.s, "someone", "KO")).reason, "key_used");
+  // with the SQL function: its answer decides (cap, credits, already given)
+  await welcome(m.s, "new1", "K1");
+  await claimInvite(m.s, "new1", "abcdefgh");
+  const answers: (number | "cap" | null)[] = ["cap", 2000, 0];
+  m.s.rewardInvite = () => Promise.resolve(answers.shift()!);
+  assertEquals(await onFirstPlay(m.s, "new1"), { rewarded: 0, reason: "month_cap" });
+  assertEquals(await onFirstPlay(m.s, "new1"), { rewarded: 2000 });
+  assertEquals(await onFirstPlay(m.s, "new1"), { rewarded: 0 });
+  // null (the function is not there yet): the older steps, one at a time per inviter
+  m.s.rewardInvite = () => Promise.resolve(null);
+  assertEquals((await onFirstPlay(m.s, "new1")).rewarded, 2000);
+});

@@ -39,6 +39,15 @@ struct ShopSections: View {
                 Text(verbatim: ShopText.examLine)
             }
         }
+        if shop.hasNoProducts {
+            // Toby T48: nothing came from the App Store. Said where the packs would be, with a way to ask again.
+            Section {
+                Text(verbatim: ShopText.noProducts).foregroundStyle(.secondary)
+                Button(ShopText.tryAgain) { Task { await shop.reload() } }
+            } header: {
+                Text("Fyll på")
+            }
+        }
         if let card = shop.weeklyCard, !quota.hasWeeklyCard {
             Section {
                 row(card, title: ShopText.weeklyTitle,
@@ -152,8 +161,11 @@ struct ShopSections: View {
 /// The Simulator screenshots: the four products without the App Store, and a server that answers nothing.
 @MainActor
 final class StagedStoreFront: StoreFront {
+    /// The App Store gives nothing (Toby T48).
+    var isEmpty = false
     func items() async -> [StoreItem] {
-        [StoreItem(id: StoreCatalog.entries[0].id, displayPrice: "10,00 kr", credits: 100),
+        if isEmpty { return [] }
+        return [StoreItem(id: StoreCatalog.entries[0].id, displayPrice: "10,00 kr", credits: 100),
          StoreItem(id: StoreCatalog.entries[1].id, displayPrice: "39,00 kr", credits: 500),
          StoreItem(id: StoreCatalog.entries[2].id, displayPrice: "110,00 kr", credits: 2000),
          StoreItem(id: StoreCatalog.weekly, displayPrice: "79,00 kr", credits: nil)]
