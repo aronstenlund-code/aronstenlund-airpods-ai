@@ -30,6 +30,12 @@ schemes:
       targets:
         Lumen: all
         LumenScreenTour: [test]
+    # T48 (A134): the products of StoreKit/Lumen.storekit, so the buy sheet has prices and a test purchase can be made
+    # (StoreKit testing in the Simulator, never a real purchase). Run 44253148974: this reaches `xcodebuild run`, not the
+    # UI test (that needs a test plan), so T36 makes no test purchase yet.
+    run:
+      config: Debug
+      storeKitConfiguration: StoreKit/Lumen.storekit
     test:
       config: Debug
       gatherCoverageData: false
