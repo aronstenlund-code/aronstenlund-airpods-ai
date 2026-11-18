@@ -297,9 +297,58 @@ export async function shortenQuestions(
 export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
   `You check the finished list of questions for a spoken practice exam against the material it was made from. You get <material> and <questions> (JSON: i and q). Return ONLY {"questions": [...]} with an entry for each question you change or remove (none = {"questions": []}):
 - Every fact a question takes for granted (who, what, which war, who owed whom, a cause, a result, a date) must be what the material says. When a question takes for granted something the material does not say, or says differently, rewrite it as little as possible so that it assumes only what the material says: {"i": N, "q": "..."}. Example: the material says "skulder till Lübeck efter kriget" and the war was against Denmark; "Varför behövde kronan pengar efter kriget med Lübeck?" is wrong; write "Varför hade kronan skulder till Lübeck?".
-- A why-question whose cause the material does not give: rewrite it as a what- or how-question the material does answer: {"i": N, "q": "..."}.
+- A why-question whose cause the material does not give: rewrite it into an understanding question the material does carry, never into a what-, when- or who-question (D230): "Förklara hur X hänger ihop med Y", "Vad blev följden av X?", "Jämför X och Y", "Hur påverkade X Y?" (or the same in the exam's language): {"i": N, "q": "..."}. The new question may only ask about a link the material itself makes.
+- At least half of the questions must be understanding questions (why, how, explain, compare, what followed). When fewer are, rewrite plain recall questions (what is, when, who, which) into understanding questions the material carries, the earliest first, until half are.
 - A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {"i": N, "drop": true, "same_as": M}. Two questions on one topic that ask different things both stay.
 - Never change anything else: same language, same length or shorter, clear when only heard. No other text.`;
+
+/** D230: a question that asks for understanding (a cause, a link, a result, a comparison), not a recalled fact. */
+export function isUnderstanding(q: string): boolean {
+  const t = q.trim().toLowerCase();
+  return /^(?:varför|hur |förklara|jämför|beskriv hur|på vilket sätt|vad (?:blev|blir) följden|vad (?:hände|händer|händer det) (?:när|om|med|efter)|vilka följder|vilken betydelse|vad betydde|why|how |explain|compare|in what way|what (?:happened|happens) (?:when|if|to|after)|what (?:was|were) the (?:effects?|results?|consequences?))/.test(t) ||
+    /hänger ihop|skillnaden mellan|leder till|ledde till|påverka|the difference between|led to|lead to|affect/.test(t);
+}
+
+export const SYSTEM_PROMPT_DRILL_REFILL =
+  `You write extra questions for a spoken practice exam. You get <material>, <kept> (the questions the exam already has) and <count>. Return ONLY {"questions": ["...", ...]} with exactly <count> new questions:
+- Each is an understanding question the material carries (why, how, explain how X is linked to Y, what followed, compare), answered by the material itself. Never assume a fact, cause or link the material does not state.
+- Never ask what a kept question asks, in any words: a question whose answer would be the same as, or part of, a kept question's answer is wrong.
+- Spread them over parts of the material that the kept questions touch least. The language of the material; short and clear when only heard. No other text.`;
+
+/** D230: questions removed as duplicates are made up for, so the exam has the count it should (one call). */
+export async function refillQuestions(
+  provider: LLMProvider,
+  cfg: DrillConfig,
+  kept: string[],
+  n: number,
+  material: string,
+  signal?: AbortSignal,
+): Promise<{ questions: string[]; usage: StepUsage | null }> {
+  if (n <= 0 || !material) return { questions: [], usage: null };
+  try {
+    const r = await runLLM(provider, {
+      system: SYSTEM_PROMPT_DRILL_REFILL,
+      user: `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n<kept>${sanitizeTagged(JSON.stringify(kept))}</kept>\n<count>${n}</count>`,
+      maxTokens: 150 + n * 80,
+      cacheSystem: true,
+      model: cfg.answerModel,
+      timeoutMs: 40_000,
+      signal,
+    }, cfg.answerPriceIn, cfg.answerPriceOut);
+    const out: string[] = [];
+    const j = firstJson(r.text);
+    for (const x of Array.isArray(j?.questions) ? j!.questions as unknown[] : []) {
+      const q = cleanQuestion(x);
+      if (!q || words(q) < 2 || leansOnMaterial(q) || out.length >= n) continue;
+      if ([...kept, ...out].some((k) => k.toLowerCase() === q.toLowerCase() || nearDuplicate(k, q))) continue;
+      out.push(q);
+    }
+    return { questions: out, usage: r.usage };
+  } catch (e) {
+    console.warn("drill_refill_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
+    return { questions: [], usage: null };
+  }
+}
 
 /** Oscar O79 omtest: the result of the last check (questions fixed or removed; the order kept). */
 export async function finalCheck(
@@ -927,6 +976,7 @@ export async function handleDrill(
     const k = parts.length;
     let qs = before;
     let qParts: number[] = before.map(() => -1);
+    let fcRefill: StepUsage | null = null;
     let cov: { parts: number; by: "sections" | "length"; before: number; after: number; added: number; target: number; max_share: number } | null = null;
     if (material && (k > 1 || target > before.length)) {
       const weak = (q: string) => (leansOnMaterial(q) ? 2 : 0) + (isRecall(q) ? 1 : 0);
@@ -993,9 +1043,25 @@ export async function handleDrill(
     }
     // the last check of the finished list against the material (claims, why without a cause, same answer)
     const fc = material ? await finalCheck(provider, cfg, qs, qParts, material, signal) : null;
+    let refilled = 0;
     if (fc) {
       qs = fc.questions;
+      qParts = fc.parts;
       if (fc.usage) steps.push(fc.usage);
+      // D230 (2): the removed duplicates are made up for, placed in the part they draw on (the material's order)
+      if (fc.dropped > 0) {
+        const rf = await refillQuestions(provider, cfg, qs, fc.dropped, material, signal);
+        if (rf.usage) steps.push(rf.usage);
+        if (rf.questions.length) {
+          const at = parts.length > 1 ? placeQuestions(rf.questions, parts) : rf.questions.map(() => 0);
+          const all = [...qs.map((q, i) => ({ q, part: qParts[i] ?? -1, i })), ...rf.questions.map((q, k) => ({ q, part: at[k], i: qs.length + k }))];
+          all.sort((x, y) => ((x.part < 0 ? 1e9 : x.part) - (y.part < 0 ? 1e9 : y.part)) || x.i - y.i);
+          qs = all.map((x) => x.q);
+          qParts = all.map((x) => x.part);
+          refilled = rf.questions.length;
+        }
+        fcRefill = rf.usage;
+      }
     }
     const base = qs.map((question, i) => ({ id: `q${i + 1}`, question }));
     let items: DrillItem[] = base;
@@ -1022,7 +1088,7 @@ export async function handleDrill(
           ...(sh.usage ? { shorten: sh.usage } : {}),
           ...(answers ? { answers } : {}),
           ...(cov ? { coverage: cov } : {}),
-          ...(fc?.usage ? { final_check: { ...fc.usage, fixed: fc.fixed, dropped: fc.dropped } } : {}),
+          ...(fc?.usage ? { final_check: { ...fc.usage, fixed: fc.fixed, dropped: fc.dropped, refilled, ...(fcRefill ? { refill_ms: fcRefill.ms } : {}), understanding: qs.filter(isUnderstanding).length, questions: qs.length } } : {}),
           est_cost_usd: steps.reduce((n, u) => n + u.est_cost_usd, 0), // K83: the coverage calls included
           ms: Date.now() - t0,
         },

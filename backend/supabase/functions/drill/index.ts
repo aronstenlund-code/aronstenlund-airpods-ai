@@ -131,14 +131,37 @@ const authenticate = createJwtAuthenticator({ supabaseUrl: base, hs256Secret: en
  * any account and answers 204 with no body. Every other action authenticates as before (the function is deployed
  * without the gateway's JWT check, like purchase; the handler checks the token itself).
  */
+export const WARM_PER_IP_PER_MINUTE = 30; // a class behind one school network still fits (the app: once per 2 min)
+const WARM_WORK_EVERY_MS = 15_000;
+const warmByIp = new Map<string, { n: number; t0: number }>();
+let lastWarm = 0;
+let warming: Promise<unknown> | null = null;
+
 function warmable(h: (req: Request) => Promise<Response>): (req: Request) => Promise<Response> {
   return async (req) => {
-    if (req.method === "POST" && !req.headers.has("authorization") && Number(req.headers.get("content-length") ?? "0") < 64) {
+    // K102 (D230, A147): the app sends it with or without a token; it reads nothing of any account either way
+    if (req.method === "POST" && Number(req.headers.get("content-length") ?? "0") < 64) {
       const action = await req.clone().json().then((b) => (b as { action?: unknown })?.action).catch(() => null);
       if (action === "warm") {
-        const t0 = Date.now();
-        await Promise.all([settingsMemo().catch(() => {}), catalogMemo().catch(() => {}), loadCiRanges().catch(() => {}), authenticate.warm?.()]);
-        console.log("drill_warm", JSON.stringify({ ms: Date.now() - t0 }));
+        // Oscar O85: at most WARM_PER_IP_PER_MINUTE per address and minute (429 beyond; nothing breaks without warm)
+        const ip = (req.headers.get("x-forwarded-for") ?? "").split(",")[0].trim() || "-";
+        const now = Date.now();
+        const c = warmByIp.get(ip);
+        if (!c || now - c.t0 >= 60_000) {
+          if (warmByIp.size > 5000) for (const [k, v] of warmByIp) if (now - v.t0 >= 60_000) warmByIp.delete(k);
+          warmByIp.set(ip, { n: 1, t0: now });
+        } else if (++c.n > WARM_PER_IP_PER_MINUTE) {
+          return new Response(null, { status: 429, headers: { "retry-after": String(Math.ceil((c.t0 + 60_000 - now) / 1000)) } });
+        }
+        // the work itself at most once per 15 s in this instance (the rest of the calls only start it)
+        if (now - lastWarm >= WARM_WORK_EVERY_MS && !warming) {
+          lastWarm = now;
+          const t0 = now;
+          warming = Promise.all([settingsMemo().catch(() => {}), catalogMemo().catch(() => {}), loadCiRanges().catch(() => {}), authenticate.warm?.()])
+            .then(() => console.log("drill_warm", JSON.stringify({ ms: Date.now() - t0 })))
+            .finally(() => (warming = null));
+          await warming;
+        }
         return new Response(null, { status: 204 });
       }
     }
