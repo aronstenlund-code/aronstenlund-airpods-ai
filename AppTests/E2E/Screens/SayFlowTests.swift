@@ -48,6 +48,7 @@ final class SayFlowTests: XCTestCase {
         section("Pausa och hoppa (1 och 2 tryck)", { pauseAndSkip() })
         section("Senaste lägger tillbaka texten, inget Nästa prov (A132)", { recentsPutBack() })
         section("Utan nät: samma text spelas, en ny säger till efter 10 s (A135)", { offlineSay() })
+        section("Stil och Skriv i takt (A136, A140)", { styleAndPace() })
         section("Fältet växer högst 5 rader (A132)", { fieldStopsGrowing() })
         section("Krediter, + och Klistra in länk (A116, A117)", { plusLinkAndCredits() })
         section("Nytt prov: Klistra in länk finns (A116)", { newDrillLinkRow() })
@@ -345,6 +346,64 @@ final class SayFlowTests: XCTestCase {
         let capsules = recentCapsules()
         log.append("T49 Senaste after the offline tries: \(capsules)")
         if capsules.count > 1 { ok = miss("Senaste shows the text \(capsules.count) times (A135: once)") }
+        return ok
+    }
+
+    /// T50 (D220, A136/A140): with text in the field the card has the style row "Hur ska det låta?" (four suggestions
+    /// above the keyboard), the voice capsule only when the server has a catalogue, and "Skriv i takt" first in the
+    /// tempo menu (capsule "I takt"). A style asks the cost again. Played with fake audio; the app logs the pauses as
+    /// "Reading: pace: N words, pause X s" (t36.sh prints them). 0 ElevenLabs.
+    private func styleAndPace() -> Bool {
+        goToStart()
+        var ok = true
+        if !((field.value as? String) ?? "").contains("Klorofyllet") { clearField(); retype() }
+        let styleField = app.textFields.matching(NSPredicate(format: "label ==[c] 'Hur ska det låta?'")).firstMatch
+        guard styleField.waitForExistence(timeout: 8) else { screen("utan-stil", "No style row"); return miss("no 'Hur ska det låta?' with text in the field") }
+        let voice = find(["Röst, *"])
+        log.append("T50 voice capsule: \(voice?.label ?? "none (no catalogue from /voices)")")
+        let costBefore = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.contains("krediter") && !$0.contains("kvar") }
+        tapElement(styleField, "Hur ska det låta?")
+        pause(1.5)
+        let suggestions = ["Tydligt", "Lugnt", "Glatt", "Viskande"]
+        let seen = suggestions.filter { app.buttons.matching(NSPredicate(format: "label ==[c] %@", $0)).firstMatch.exists }
+        log.append("T50 suggestions above the keyboard: \(seen.isEmpty ? "none" : seen.joined(separator: ", "))")
+        screen("stil-forslag", "The style row with its suggestions (A136)")
+        if seen.count < 4 { ok = miss("the suggestions above the keyboard are not all there (\(seen))") }
+        if seen.contains("Lugnt") { tap(["Lugnt"], "Lugnt (suggestion)") } else { styleField.typeText("Lugnt") }
+        pause(2) // the cost is asked again with the style (about 0,7 s after the last key)
+        let styleValue = (styleField.value as? String) ?? ""
+        let costAfter = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.contains("krediter") && !$0.contains("kvar") }
+        log.append("T50 style: '\(styleValue)', cost before \(costBefore ?? "-"), after \(costAfter ?? "-")")
+        if !styleValue.contains("Lugnt") { ok = miss("the suggestion did not write 'Lugnt' in the style row") }
+        if costAfter == nil { note("no cost by Spela with a style") }
+        // Skriv i takt, first in the tempo menu.
+        if app.keyboards.count > 0 { app.swipeDown(velocity: .slow); pause(1) }
+        guard tap(["Tempo*"], "Tempo") else { return false }
+        pause(1)
+        let paceFirst = find(["Skriv i takt"]) != nil
+        screen("tempo-meny", "The tempo menu with Skriv i takt")
+        guard paceFirst, tap(["Skriv i takt"], "Skriv i takt") else { closeMenu(); return miss("no 'Skriv i takt' in the tempo menu") }
+        pause(1)
+        let tempoLabel = find(["Tempo*"])?.label ?? "-"
+        log.append("T50 tempo after Skriv i takt: \(tempoLabel)")
+        if tempoLabel != "Tempo, Skriv i takt" { ok = miss("the tempo capsule is '\(tempoLabel)', not 'Tempo, Skriv i takt'") }
+        mark("PACE-PLAY start")
+        guard playFromCard() else { return false }
+        answerReminder()
+        pause(25)
+        screen("i-takt-spelar", "Playing in pace (I takt)")
+        let playing = text(starting: "Spelar i AirPods") ?? "-"
+        log.append("T50 playing in pace: \(playing), \(timeLeft() ?? "-")")
+        mark("PACE-PLAY end")
+        stopOnCard()
+        // Back to 1,0× and no style, for the sections after this one.
+        if tap(["Tempo*"], "Tempo (back)", counted: false) { pause(1); tap(["1,0×"], "1,0×", counted: false, quiet: true); pause(1) }
+        if styleField.exists, !((styleField.value as? String) ?? "").isEmpty, styleField.value as? String != "Hur ska det låta?" {
+            tapElement(styleField, "Hur ska det låta? (clear)", counted: false)
+            styleField.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 12))
+            if app.keyboards.count > 0 { app.swipeDown(velocity: .slow) }
+        }
+        log.append("T50 Senaste after a text with a style: \(Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Klorofyllet") })")
         return ok
     }
 
