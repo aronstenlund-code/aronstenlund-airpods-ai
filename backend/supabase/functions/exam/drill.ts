@@ -162,13 +162,16 @@ export function cleanQuestion(q: unknown): string {
   let s = oneLine(q, 200).replace(/^(?:\d+[.)]|[-•*])\s*/, "").replace(/^["'„”»«]+|["'„”»«]+$/g, "").trim();
   if (!s) return "";
   s = s.replace(/[.!:;,]+$/, "");
-  if (!s.endsWith("?")) s += "?";
+  // D230: an instruction ("Förklara hur …", "Jämför …") ends with a full stop, not a question mark
+  const ask = /^(?:förklara|jämför|beskriv|redogör|explain|compare|describe)\b/i.test(s);
+  if (ask) s = s.replace(/\?+$/, "") + ".";
+  else if (!s.endsWith("?")) s += "?";
   return s[0].toUpperCase() + s.slice(1);
 }
 
 /** A question that points at the material ("i texten", "exemplet", "på bilden"): unclear when only heard (O55). */
 export function leansOnMaterial(q: string): boolean {
-  return /\b(?:i texten|enligt texten|nämns|i materialet|på bilden|i bilden|i figuren|i tabellen|i exemplet|\w*exemplet|uppgiften|ovan)\b/i.test(q);
+  return /\b(?:i texten|enligt texten|nämns|i materialet|materialet|texten (?:säger|visar|beskriver)|visar texten|på bilden|i bilden|i figuren|i tabellen|i exemplet|\w*exemplet|uppgiften|ovan|the text|the material|the passage|in the notes)\b/i.test(q);
 }
 
 /** A question that asks only for a fact or a definition (R3 wants at least 70 % understanding questions). */

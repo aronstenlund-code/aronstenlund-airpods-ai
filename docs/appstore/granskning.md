@@ -121,7 +121,7 @@ anonymt konto per installation (`auth/v1/signup` utan e-post) [V].
 3. **Rapporterade frågor (D135):** "med samtycke läser utvecklaren dem, raderas inom 14 dagar". Om det finns i appen ska
    det in som Användarinnehåll, syfte produktförbättring. **[O]**
 4. **Minnen (D37 m.fl.) i Fler lägen** sparas på servern? Om ja: Användarinnehåll, kopplat. **[O]**
-5. **Mikrofontexten (D138)** säger inte att ljudet skickas till en taligenkänningstjänst. Apple (5.1.1) vill att
+5. ~~**Mikrofontexten (D138)**~~ **Klart (D229, A146).** Två avvikelser från D229 som Kelly stöder (sanna och ger mer): meningen om Sömnläget står kvar, och taligenkänningens text säger att iPhonens egen igenkänning håller ljudet på telefonen. Deangelo bekräftar. Gällde: texten sa inte att ljudet skickas till en taligenkänningstjänst. Apple (5.1.1) vill att
    texten säger vad datan används till. Kelly stöder Angela Schrutes förslag: "Ljudet skickas till en
    taligenkänningstjänst, blir text och sparas inte av EarMind." Deangelo beslutar (ändrar D138). **[V] att texten saknar det**
 6. **Integritetspolicy** krävs (URL i App Store Connect) och saknas. Förslag: en sida på earmind.vercel.app/integritet
@@ -146,7 +146,8 @@ anonymt konto per installation (`auth/v1/signup` utan e-post) [V].
 > auto-renewable subscription; price, renewal and how to cancel are shown next to the purchase button, with links to
 > Terms and Privacy.
 >
-> 5. Account: no sign-in is needed (anonymous account per install). [Aron: add here how the reviewer gets credits, e.g.
+> 5. Account: no sign-in is needed (anonymous account per install). The account and everything on the server can be
+> deleted in the app: Settings › Account › Delete account (A145). [Aron: add here how the reviewer gets credits, e.g.
 > that the review build/account has unlimited credits. Do not put any password in this repository.]
 >
 > 6. AirPods are not required; the app also plays through the phone speaker.
