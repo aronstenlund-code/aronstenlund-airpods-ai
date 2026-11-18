@@ -44,6 +44,14 @@ def photo_pages(m, eid):
 # say the material does not answer the question ("framgår inte här"), Oscar's K102 omtest F1
 ANSWERS = "--answers" in _s.argv
 NOT_ANSWERED = re.compile(r"framgår inte|är inte känt|inte känt här|förklaras inte här|beskrivs inte här|står inte här|is not (explained|stated|known|described) here|not explained here", re.I)
+# K107: pairs of questions whose short answers say the same thing (Oscar's F3/F5): at least 4 shared content stems
+# (first 6 letters of words of 5+ letters) and 60 % of the shorter answer's
+STOPW = set("eftersom därför mellan medan också andra eller under efter innan genom alltså sedan dessa deras detta denna".split())
+def stems(t): return {w[:6] for w in re.findall(r"[a-zåäöéü]{5,}", t.lower()) if w not in STOPW}
+def same_answer(a, b):
+    x, y = stems(a), stems(b)
+    sh = len(x & y)
+    return sh >= 4 and sh / max(1, min(len(x), len(y))) >= 0.6
 rows, total = [], 0.0
 for eid, m in O79.items():
     tok = T.signup(True)[0]
@@ -71,6 +79,10 @@ for eid, m in O79.items():
         row["answers_status"] = sa
         row["not_answered"] = sum(1 for q, sh in shorts.values() if NOT_ANSWERED.search(sh))
         row["fixed_by_answers"] = sum(1 for it in j["items"] if it["id"] in shorts and shorts[it["id"]][0] != it["question"])
+        sl = [shorts[it["id"]][1] for it in j["items"] if it["id"] in shorts]
+        pairs = [(a + 1, b + 1) for a in range(len(sl)) for b in range(a + 1, len(sl)) if same_answer(sl[a], sl[b])]
+        row["same_answer_pairs"] = len(pairs)
+        row["pairs"] = pairs
     rows.append(row)
     print(f"=== {eid}: " + json.dumps(row, ensure_ascii=False), flush=True)
     for i, it in enumerate(j.get("items", []), 1):
@@ -80,7 +92,8 @@ for eid, m in O79.items():
             fq, sh = shorts[it["id"]]
             print(f"      {'→ ' + fq + ' | ' if fq != q else ''}{'!! ' if NOT_ANSWERED.search(sh) else ''}{sh}", flush=True)
 out = {"rows": rows, "usd": round(total, 3),
-       "summary": {"questions": [r["questions"] for r in rows], "share": [r["share"] for r in rows], "final_check_ms": [r["final_check_ms"] for r in rows]}}
+       "summary": {"questions": [r["questions"] for r in rows], "target": [r.get("target") for r in rows], "share": [r["share"] for r in rows],
+                   "same_answer_pairs": [r.get("same_answer_pairs") for r in rows], "final_check_ms": [r["final_check_ms"] for r in rows]}}
 print("=== K102 " + json.dumps(out["summary"], ensure_ascii=False) + f" | Claude {total:.3f} USD", flush=True)
 json.dump(out, open(HERE.parent / "reports" / "qa" / "data" / (time.strftime("%Y-%m-%d-%H%M%S") + "-k102-measure.json"), "w", encoding="utf8"), ensure_ascii=False, indent=1)
 _s.exit(0 if all(r["status"] == 200 for r in rows) else 1)

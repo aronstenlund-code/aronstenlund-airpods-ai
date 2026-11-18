@@ -298,13 +298,14 @@ export async function shortenQuestions(
  * filled (the part calls' questions were never checked before). One call to the answer model (correctness, K2/D97).
  */
 export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
-  `You check the finished list of questions for a spoken practice exam against the material it was made from. You get <material> and <questions> (JSON: i and q). Return ONLY {"questions": [...]} with an entry for each question you change or remove (none = {"questions": []}):
+  `You check the finished list of questions for a spoken practice exam against the material it was made from. You get <material> and <questions> (JSON: i and q). Return ONLY {"questions": [...], "sources": [...]} with an entry in "questions" for each question you change or remove (none = []):
 - Every fact a question takes for granted (who, what, which war, who owed whom, a cause, a result, a date) must be what the material says. When a question takes for granted something the material does not say, or says differently, rewrite it as little as possible so that it assumes only what the material says: {"i": N, "q": "..."}. Example: the material says "skulder till Lübeck efter kriget" and the war was against Denmark; "Varför behövde kronan pengar efter kriget med Lübeck?" is wrong; write "Varför hade kronan skulder till Lübeck?".
 - A why-question whose cause the material does not give: rewrite it into an understanding question the material does carry, never into a what-, when- or who-question (D230): "Förklara hur X hänger ihop med Y", "Vad blev följden av X?", "Jämför X och Y", "Hur påverkade X Y?" (or the same in the exam's language): {"i": N, "q": "..."}. The new question may only ask about a link the material itself makes.
 - At least half of the questions must be understanding questions (why, how, explain, compare, what followed). When fewer are, rewrite plain recall questions (what is, when, who, which) into understanding questions the material carries, the earliest first, until half are.
 - A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {"i": N, "drop": true, "same_as": M}. Two questions on one topic that ask different things both stay.
 - A question the material does not answer (a how or why whose way or cause it never gives): rewrite it into one about the same part that the material answers (D230 forms first). A question that asks two things, of which the material answers one: keep only that one (K106, Oscar).
-- Never change anything else: same language, same length or shorter, clear when only heard. No other text.`;
+- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return "sources": [{"i": N, "s": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer. Two questions answered by the same sentence(s) ask the same thing for the student, even when worded differently.
+- Never change anything else: same language, same length or shorter, clear when only heard. Return {"questions": [...], "sources": [...]}. No other text.`;
 
 /**
  * K106 (Oscar's K102 omtest F1, Vasa 14: "Vad var fogdarnas uppgift …, och varför skapade han en egen här?" was answered
@@ -312,7 +313,7 @@ export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
  */
 export function oneAsk(q: string): string {
   // live 18:00 (Vasa): "Vad var Dackefejden och varför var den viktig?" (also without the comma)
-  const m = /^(.{12,}?),\s+(?:och|and)\s+(?:varför|hur|vad|vilk\p{L}*|när|why|how|what|which|when)\s+[^?]{6,}\?$/iu.exec(q.trim()) ??
+  const m = /^(.{12,}?),\s+(?:och|and)\s+(?:varför|hur|vad|vilk\p{L}*|när|var|why|how|what|which|when|where)\s+[^?]{6,}\?$/iu.exec(q.trim()) ??
     /^((?:vad|vem|vilk\p{L}*|när|var|what|who|which|when)\s.{6,}?)\s+(?:och|and)\s+(?:varför|hur|vad|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim());
   return m && words(m[1]) >= 3 ? m[1].replace(/[\s,]+$/, "") + "?" : q;
 }
@@ -386,6 +387,32 @@ export async function refillQuestions(
   }
 }
 
+/** K107: the material as numbered sentences for the last check (paragraph lines, then sentence ends), at most 8 000 characters. */
+export function numberedSentences(material: string, maxChars = 8000): string[] {
+  const out: string[] = [];
+  let n = 0;
+  for (const par of material.split(/\n+/)) {
+    for (const piece of par.split(/(?<=[.!?])\s+(?=[\p{Lu}\d"„»])/u)) {
+      const t = piece.trim();
+      if (!t) continue;
+      if (n + t.length > maxChars) return out;
+      n += t.length;
+      out.push(t);
+    }
+  }
+  return out;
+}
+
+/**
+ * K107 (Oscar's omtest K106 F3/F5: "en tiondel av energin" answered three questions): a later question whose answer comes
+ * from the same sentences as an earlier one's (one set inside the other) is the same question for the student.
+ */
+export function sameSource(a: number[] | undefined, b: number[] | undefined): boolean {
+  if (!a?.length || !b?.length) return false;
+  const A = new Set(a), B = new Set(b);
+  return [...B].every((x) => A.has(x)) || [...A].every((x) => B.has(x));
+}
+
 /** Oscar O79 omtest: the result of the last check (questions fixed or removed; the order kept). */
 export async function finalCheck(
   provider: LLMProvider,
@@ -399,8 +426,8 @@ export async function finalCheck(
   try {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_FINAL_CHECK,
-      user: `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n<questions>${sanitizeTagged(JSON.stringify(questions.map((q, i) => ({ i, q }))))}</questions>`,
-      maxTokens: 200 + questions.length * 60,
+      user: `<material>\n${sanitizeTagged(numberedSentences(material).map((t, k) => `[${k + 1}] ${t}`).join("\n"))}\n</material>\n<questions>${sanitizeTagged(JSON.stringify(questions.map((q, i) => ({ i, q }))))}</questions>`,
+      maxTokens: 200 + questions.length * 75,
       cacheSystem: true,
       model: cfg.answerModel,
       timeoutMs: 40_000,
@@ -409,7 +436,14 @@ export async function finalCheck(
     const out = [...questions];
     const drop = new Set<number>();
     let fixed = 0;
-    for (const x of Array.isArray(firstJson(r.text)?.questions) ? firstJson(r.text)!.questions as Record<string, unknown>[] : []) {
+    const reply = firstJson(r.text);
+    const src = new Map<number, number[]>();
+    for (const x of Array.isArray(reply?.sources) ? reply!.sources as Record<string, unknown>[] : []) {
+      const i = Number(x?.i);
+      const ss = Array.isArray(x?.s) ? (x!.s as unknown[]).map(Number).filter((k) => Number.isInteger(k) && k > 0).slice(0, 3) : [];
+      if (Number.isInteger(i) && i >= 0 && i < questions.length && ss.length) src.set(i, ss);
+    }
+    for (const x of Array.isArray(reply?.questions) ? reply!.questions as Record<string, unknown>[] : []) {
       const i = Number(x?.i);
       if (!Number.isInteger(i) || i < 0 || i >= out.length) continue;
       if (x?.drop === true) {
@@ -421,6 +455,19 @@ export async function finalCheck(
       if (!q || words(q) < 2 || words(q) > words(out[i]) + 4 || leansOnMaterial(q) || out.some((o, k) => k !== i && o.toLowerCase() === q.toLowerCase())) continue;
       if (q !== out[i]) (out[i] = q, fixed++);
     }
+    // K107: the same answer sentences as an earlier question that stays = the same question (the later one goes)
+    let sameSrc = 0;
+    for (let i = 1; i < out.length; i++) {
+      if (drop.has(i) || !src.has(i)) continue;
+      for (let k = 0; k < i; k++) {
+        if (!drop.has(k) && sameSource(src.get(k), src.get(i))) {
+          drop.add(i);
+          sameSrc++;
+          break;
+        }
+      }
+    }
+    if (sameSrc) console.log("drill_same_source", JSON.stringify({ dropped: sameSrc, sources: src.size, questions: out.length }));
     // never the first, at most a third, and never the last question of a part (every part keeps one)
     const left = new Map<number, number>();
     for (const p of parts) left.set(p, (left.get(p) ?? 0) + 1);
