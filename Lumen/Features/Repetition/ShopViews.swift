@@ -10,6 +10,8 @@ struct ShopSections: View {
     let quota: DrillQuota
     @State private var managing = false
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    private var reduceMotion: Bool { SayMotion.reduces(systemReduceMotion) }
 
     var body: some View {
         if !shop.newRewards.isEmpty {
@@ -65,12 +67,16 @@ struct ShopSections: View {
                 if let note = shop.note {
                     Text(verbatim: note).font(.footnote.weight(.semibold)).foregroundStyle(.primary)
                         .accessibilityAddTraits(.updatesFrequently)
+                        .transition(SayMotion.appear)
                 }
                 if let card = shop.weeklyCard { Text(verbatim: ShopText.terms(price: card.displayPrice)) }
                 links
             }
         }
         .task { await shop.loadInvite() }
+        // A150: a purchase that the server has taken is felt once (the number above rolls up at the same moment).
+        .sensoryFeedback(trigger: quota.left) { old, new in new > old ? .success : nil }
+        .sensoryFeedback(trigger: shop.note) { _, new in new == CreditShop.failedLine || new == CreditShop.restoreFailedLine ? .error : nil }
     }
 
     /// A product: its name (and a line under it), and the price as a tinted capsule. With the largest text the price
@@ -96,11 +102,11 @@ struct ShopSections: View {
             Button {
                 Task { await shop.buy(item) }
             } label: {
-                if shop.buying == item.id {
-                    ProgressView().controlSize(.small).frame(minWidth: 44)
-                } else {
-                    Text(verbatim: item.displayPrice).font(.subheadline.weight(.semibold)).monospacedDigit().lineLimit(1)
-                }
+                // A150 (D231): the price keeps its place while the spinner shows, so the button never changes width.
+                Text(verbatim: item.displayPrice).font(.subheadline.weight(.semibold)).monospacedDigit().lineLimit(1)
+                    .opacity(shop.buying == item.id ? 0 : 1)
+                    .overlay { if shop.buying == item.id { ProgressView().controlSize(.small).transition(SayMotion.appear) } }
+                    .animation(SayMotion.change(reduceMotion), value: shop.buying)
             }
             .buttonStyle(.bordered)
             .buttonBorderShape(.capsule)
@@ -149,7 +155,7 @@ struct ShopSections: View {
             } label: {
                 if shop.isRestoring { ProgressView().controlSize(.small) } else { Text("Återställ köp") }
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressFeedback) // A150: answers the touch on the way down
             .foregroundStyle(.tint)
             .disabled(shop.isRestoring)
         }

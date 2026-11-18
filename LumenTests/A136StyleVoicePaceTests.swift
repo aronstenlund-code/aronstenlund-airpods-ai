@@ -420,6 +420,15 @@ import Testing
         #expect(session.repeatSecondsLeft == 0)
     }
 
+    /// A150 (D231): nothing here was thrown, so nothing bounces; with Reduce Motion a short cross-fade and no movement.
+    @Test func theCardMovesWithoutBounceAndFadesWithReduceMotion() {
+        #expect(SayMotion.change(false) == .smooth(duration: 0.3), "a spring without overshoot")
+        #expect(SayMotion.change(true) == .easeOut(duration: 0.15))
+        #expect(SayMotion.number(false) == .numericText() && SayMotion.number(true) == .opacity)
+        #expect(SayMotion.reduces(true) && !SayMotion.reduces(false))
+        #expect(PressFeedbackStyle.pressFeedback.scale == 1 && PressFeedbackStyle.pressFeedbackRound.scale < 1)
+    }
+
     @Test func theCatalogIsReadOnceAndAnEmptyOneShowsNoVoices() async throws {
         let (model, _, _, _) = try model("a136-voices")
         await model.loadSayVoices()

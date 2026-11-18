@@ -43,6 +43,8 @@ enum SayText {
     static var stagedStarting = false
     /// Toby (T36): the line on the playing card while the first sound is waited for, for the screenshots.
     static var stagedWaitNote: String?
+    /// A150: the card goes through its states by itself, for the recording of how it moves.
+    static var stagedMotion = false
     #endif
 
     /// "10 min" … "1 timme" on the button.
@@ -219,6 +221,33 @@ struct SayInAirPodsField: View {
     @FocusState private var focused: Bool
     @Environment(\.colorScheme) private var scheme
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    private var reduceMotion: Bool { SayMotion.reduces(systemReduceMotion) }
+
+    /// A150 (D231): what decides how the card looks. When any of it changes, the card moves to its new shape with a
+    /// spring that does not overshoot (a cross-fade with Reduce Motion) instead of jumping there. Typing does not
+    /// animate anything: only the first and the last character change the shape.
+    private struct CardLook: Hashable {
+        var plays: Bool
+        var isEmpty: Bool
+        var cost: Int?
+        var left: Int?
+        var refused: String?
+        var waitNote: String?
+        var picked: String?
+        var materialNote: String?
+        var hasPlayed: Bool
+        var canRetry: Bool
+        var isStarting: Bool
+        var isReading: Bool
+        var hasVoices: Bool
+    }
+
+    private var shape: CardLook {
+        CardLook(plays: playing != nil, isEmpty: isEmpty, cost: credits?.cost, left: credits?.left, refused: refused,
+              waitNote: waitNote, picked: picked?.voiceID, materialNote: materialNote, hasPlayed: hasPlayed,
+              canRetry: canRetry, isStarting: isStarting, isReading: isReadingMaterial, hasVoices: !model.sayVoices.isEmpty)
+    }
 
     private var chars: Int { SaidText.chars(text) }
     private var counts: Int { SaidText.countsAs(text, perQuestion: model.quota?.prices?.read?.chars_per_question) }
@@ -282,10 +311,19 @@ struct SayInAirPodsField: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             card
-            if playing == nil { recents }
+            if playing == nil { recents.transition(SayMotion.appear) }
+        }
+        .animation(SayMotion.change(reduceMotion), value: playing != nil)
+        // A150: the phone answers what the eye may miss: a no from the server or a Spela that gave up is felt once.
+        .sensoryFeedback(trigger: refused) { _, new in
+            guard let new, new != SayText.slowServerLine else { return nil }
+            return .error
         }
         .task(id: Asked(text: text, sound: sound)) { await askCost(for: text, sound: sound) } // cancelled and asked again
         .task { await model.loadSayVoices() }
+        #if DEBUG
+        .task { if SayText.stagedMotion { await runMotionDemo() } }
+        #endif
         .onChange(of: sound) { refused = nil; canRetry = false }
         .onChange(of: isEmpty) { _, empty in if empty { style = "" } } // the style belongs to the text
         .onAppear { lookAtClipboard(); setStage() }
@@ -301,6 +339,37 @@ struct SayInAirPodsField: View {
     }
 
     private func lookAtClipboard() { clipboardHasText = UIPasteboard.general.hasStrings }
+
+    #if DEBUG
+    /// A150 (D231): the card's changes, one after another, for the Simulator recording that Kelly reviews: a text
+    /// arrives, the cost comes and changes, Spela waits, the card plays, and Spela gives up. No server, no sound.
+    private func runMotionDemo() async {
+        func pause(_ seconds: Double) async { try? await Task.sleep(for: .seconds(seconds)) }
+        await pause(2.5)
+        text = "Fotosyntes: koldioxid + vatten + ljus blir socker och syre."
+        await pause(1.5)
+        asked = (text, sound, 120, nil, nil, nil)
+        await pause(1.5)
+        asked = (text, sound, 1251, nil, nil, nil)
+        await pause(1.5)
+        isStarting = true
+        await pause(1)
+        refused = SayText.slowServerLine
+        await pause(1.5)
+        isStarting = false
+        refused = nil
+        RepetitionDemo.stagePlaying(model, text: text, waiting: true)
+        await pause(1.5)
+        waitNote = SayText.slowServerLine
+        await pause(1.5)
+        waitNote = nil
+        RepetitionDemo.stagePlaying(model, text: text, waiting: false)
+        await pause(2)
+        model.end()
+        refused = SayText.failedLine
+        canRetry = true
+    }
+    #endif
 
     /// D215.1: at most one filled button on Start. Spela is filled when there is a text that can be played (or one
     /// plays); then Starta prov is toned down.
@@ -341,8 +410,10 @@ struct SayInAirPodsField: View {
                         .contextMenu {
                             Button("Ta bort", systemImage: "trash", role: .destructive) { model.delete(drill) }
                         }
+                        .transition(SayMotion.appear)
                     }
                 }
+                .animation(SayMotion.change(reduceMotion), value: said.map(\.id)) // A150: a removed capsule fades, the rest close the gap
                 .padding(.horizontal, 2)
             }
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -376,6 +447,7 @@ struct SayInAirPodsField: View {
                 .font(.footnote.weight(.semibold))
                 .fixedSize(horizontal: false, vertical: true)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .transition(SayMotion.appear)
         }
         Button {
             model.showsPlayer = true
@@ -388,7 +460,7 @@ struct SayInAirPodsField: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(.pressFeedback) // A150: answers the touch on the way down
         .dynamicTypeSize(...DynamicTypeSize.accessibility3)
         .accessibilityHint("Öppnar spelaren med meningarna")
         HStack(spacing: 12) {
@@ -396,12 +468,13 @@ struct SayInAirPodsField: View {
                 model.session.press(.long)
             } label: {
                 Image(systemName: reader.isPaused ? "play.fill" : "pause.fill")
+                    .contentTransition(.symbolEffect(.replace)) // A150: the symbol changes in place
                     .font(.headline)
                     .foregroundStyle(Color.black)
                     .frame(width: 44, height: 44)
                     .background(SayText.accent, in: Circle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressFeedbackRound)
             .accessibilityLabel(reader.isPaused ? "Fortsätt" : "Pausa")
             TimelineView(.periodic(from: .now, by: 1)) { _ in
                 Text(verbatim: "\(SayText.clock(model.session.repeatSecondsLeft)) kvar" + (reader.isPaused ? " · pausad" : ""))
@@ -415,8 +488,10 @@ struct SayInAirPodsField: View {
                 model.end()
             } label: {
                 Text("Stoppa").font(.body).lineLimit(1).fixedSize()
+                    .frame(minHeight: 44) // A150: a whole finger's height to hit
+                    .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressFeedback)
             .foregroundStyle(SayText.accent)
         }
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
@@ -424,12 +499,15 @@ struct SayInAirPodsField: View {
 
     private var card: some View {
         VStack(alignment: .leading, spacing: 10) {
+            // A150 (D231): the two faces of the card change by fading where they stand, and the card takes its new
+            // height with a spring that does not overshoot.
             if let playing {
-                playingCard(playing.reader, playing.drill)
+                Group { playingCard(playing.reader, playing.drill) }.transition(SayMotion.appear)
             } else {
-                writingCard
+                Group { writingCard }.transition(SayMotion.appear)
             }
         }
+        .animation(SayMotion.change(reduceMotion), value: shape)
         .onChange(of: text) { refused = nil; canRetry = false }
         .padding(16)
         .foregroundStyle(SayText.ink)
@@ -497,14 +575,12 @@ struct SayInAirPodsField: View {
         .dynamicTypeSize(...DynamicTypeSize.accessibility3) // the field stays a field on a small screen
         // Ke72 §2: without focus the three rows fade downwards, so a longer text is seen to go on.
         .mask {
-            if focused || isEmpty {
-                Rectangle()
-            } else {
-                LinearGradient(stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.62),
-                                       .init(color: .black.opacity(0.25), location: 1)],
-                               startPoint: .top, endPoint: .bottom)
-            }
+            // A150: one gradient whose last stop fades, so the change with the focus is a fade and not a jump.
+            LinearGradient(stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.62),
+                                   .init(color: .black.opacity(focused || isEmpty ? 1 : 0.25), location: 1)],
+                           startPoint: .top, endPoint: .bottom)
         }
+        .animation(SayMotion.change(reduceMotion), value: focused)
         if isReadingMaterial || materialNote != nil {
             HStack(spacing: 8) {
                 if isReadingMaterial { ProgressView().controlSize(.small) }
@@ -514,15 +590,16 @@ struct SayInAirPodsField: View {
             }
             .accessibilityElement(children: .combine)
         }
-        if !isEmpty { styleRow }
+        if !isEmpty { Group { styleRow }.transition(SayMotion.appear) }
         if !hasPlayed { // D215.2: said until Spela has been pressed once, then never
             Text(verbatim: SayText.lockLine)
                 .font(.footnote)
                 .opacity(0.7)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
                 .fixedSize(horizontal: false, vertical: true)
+                .transition(SayMotion.appear)
         }
-        costRow
+        Group { costRow }.transition(SayMotion.appear)
         controls
     }
 
@@ -605,7 +682,7 @@ struct SayInAirPodsField: View {
             if model.shop != nil, tooMany || refused.contains("krediter") {
                 Button(ShopText.refill) { showsCredits = true }
                     .font(.footnote.weight(.semibold))
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressFeedback)
                     .foregroundStyle(SayText.accent)
                     .frame(minHeight: 32)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
@@ -625,12 +702,14 @@ struct SayInAirPodsField: View {
                         Text(SayText.refillLine(line))
                             .multilineTextAlignment(typeSize.isAccessibilitySize ? .leading : .trailing)
                             .fixedSize(horizontal: false, vertical: true)
-                            .frame(minHeight: 32)
+                            .frame(minHeight: 44) // A150: a whole finger's height to hit
+                            .contentShape(Rectangle())
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.pressFeedback)
                     .accessibilityLabel("\(line). \(ShopText.refill)")
                 } else {
-                    Text(verbatim: line)
+                    // A150: the number rolls in place when the server's answer comes or the text changes.
+                    Text(verbatim: line).contentTransition(SayMotion.number(reduceMotion))
                 }
             }
             .font(short ? .footnote.weight(.semibold) : .footnote)
@@ -744,7 +823,7 @@ struct SayInAirPodsField: View {
             } label: {
                 HStack(spacing: 6) {
                     // Kelly: Försök igen must not look as if it plays at once.
-                    if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: canRetry ? "arrow.clockwise" : "play.fill").accessibilityHidden(true) }
+                    if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: canRetry ? "arrow.clockwise" : "play.fill").contentTransition(.symbolEffect(.replace)).accessibilityHidden(true) }
                     // In a row of its own (the largest text) it may shrink; it must never be wider than the card.
                     Text(verbatim: canRetry ? "Försök igen" : SayText.playTitle(minutes)).lineLimit(1)
                         .fixedSize(horizontal: !wide, vertical: false)

@@ -5,6 +5,16 @@ import SwiftUI
 /// (no student text). The screenshot mode uses the mocks (no network, no ElevenLabs).
 @MainActor
 enum RepetitionDemo {
+    /// A150: a text from "Säg i AirPods" on its card, waiting for its first sound or playing, without sound.
+    @MainActor static func stagePlaying(_ model: RepetitionModel, text said: String, waiting: Bool) {
+        let text = Drill.text(title: SaidText.title(said), summary: DrillSummary(subject: "", grade: "", covers: ""),
+                              parts: SaidText.parts(said).map { DrillItem.textPart($0, part: .para) })
+        let reader = ReadingPlayer(parts: text.readingParts, audio: { _ in nil }, source: FileRepetitionAudioSource(),
+                                   timer: TaskRepetitionTimer())
+        reader.stageForScreenshot(waiting ? .waitingForAudio : .reading, sentence: 0)
+        model.session.stageSaying(text, reader: reader, minutes: 10, lap: 1, waiting: waiting)
+    }
+
     static let scenes: Set<String> = ["repHome", "repHomeEmpty", "repMaterial", "repList", "repEdit", "repControls",
                                       "repControlsDone", "repControlsMissing", "repShareReady", "repMakeError", "repPlayFirst",
                                       "repPlayThink", "repPlayAnswer", "repPaused", "repWaiting",
@@ -55,6 +65,8 @@ enum RepetitionDemo {
                                       // A136 (what a capsule in Senaste says), T48 (no products from the App Store)
                                       "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks", "repShopEmpty", "repSayWaiting",
                                       "repShopRefused", "repSayOnCardWaiting",
+                                      // A150 (D231): the card going through its states, recorded; the same with Reduce Motion
+                                      "repMotion", "repMotionReduced",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -267,6 +279,24 @@ enum RepetitionDemo {
         model.shop = nil
         SayText.stagedRetry = false
         SayText.stagedStarting = false
+        SayText.stagedMotion = false
+        SayMotion.forcedReduceMotion = false
+        if name == "repMotion" || name == "repMotionReduced" { // A150 (D231): how the card moves, recorded for Kelly
+            model.store.save(history)
+            model.store.save(drill)
+            var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = 1236
+            model.quota = credits
+            model.stageSayVoices([], defaultName: "Astrid")
+            UserDefaults.standard.set(true, forKey: SayText.hasPlayedKey)
+            SayText.stagedForScreenshots = nil
+            SayText.stagedRefusal = nil
+            SayText.stagedCost = nil
+            SayText.stagedMotion = true
+            SayMotion.forcedReduceMotion = name == "repMotionReduced"
+            return
+        }
         if name == "repSayWaiting" { // A144 (D225, Kelly): after 8 s the line, and the spinner goes on
             model.store.save(history)
             model.store.save(drill)
@@ -568,7 +598,7 @@ enum RepetitionDemo {
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
                  "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices",
                  "repShopShort", "repShopWeeklyHome", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
-                 "repSayWaiting", "repShopRefused", "repSayOnCardWaiting":
+                 "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced":
                 NavigationStack { HomeView(model: listening) }
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)

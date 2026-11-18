@@ -20,6 +20,14 @@ on:
       screens:
         description: "Screens to take, separated by spaces"
         required: true
+      record:
+        description: "A150: screens to record as video (light only), separated by spaces; frames are pushed as one picture"
+        required: false
+        default: ""
+      record_seconds:
+        description: "Seconds to record per screen"
+        required: false
+        default: "18"
 
 permissions:
   contents: write
@@ -111,6 +119,21 @@ jobs:
               xcrun simctl io "$UDID" screenshot "shots/${appearance}-${screen}.png"
             done
           done
+          # A150 (D231): how things move. The scene runs through its states by itself; the recording becomes a
+          # sheet of frames (10 a second) and a small video, for the review of motion.
+          RECORD="${{ inputs.record }}"
+          if [ -n "$RECORD" ]; then
+            xcrun simctl ui "$UDID" appearance light
+            for screen in $RECORD; do
+              xcrun simctl launch --terminate-running-process "$UDID" com.rsolutions.lumen -LumenScreenshot "$screen" -AppleLanguages "(sv)" -AppleLocale sv_SE
+              sleep 1
+              xcrun simctl io "$UDID" recordVideo --codec h264 --force "shots/motion-${screen}.mov" &
+              REC=$!
+              sleep "${{ inputs.record_seconds || '18' }}"
+              kill -INT "$REC" || true
+              wait "$REC" || true
+            done
+          fi
           ls -la shots
           # Crash reports, if any, go with the pictures.
           mkdir -p shots/crashes
@@ -130,6 +153,16 @@ jobs:
             sips -Z 1400 "$f" >/dev/null
             pngquant --force --ext .png --quality 60-90 "$f" || true
           done
+          # A150: every recording as frames in one picture (12 across, 10 a second) and as a small video.
+          if ls motion-*.mov >/dev/null 2>&1; then
+            brew install ffmpeg >/dev/null 2>&1 || true
+            for f in motion-*.mov; do
+              n="${f%.mov}"
+              ffmpeg -loglevel error -y -i "$f" -vf "fps=10,scale=260:-1,tile=12x16" -frames:v 1 "$n-frames.jpg" || true
+              ffmpeg -loglevel error -y -i "$f" -vf "scale=392:-2" -c:v libx264 -crf 30 -pix_fmt yuv420p -an "$n.mp4" || true
+              rm -f "$f"
+            done
+          fi
           {
             echo "run: ${GITHUB_RUN_ID}"
             echo "commit: ${GITHUB_SHA}"
