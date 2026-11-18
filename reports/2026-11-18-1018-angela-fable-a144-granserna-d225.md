@@ -30,3 +30,12 @@ Själva väntan i vyn (en koll per sekund) är inte testad.
 
 ## Kvar hos andra
 Kevin gör save och start snabbare (K100), Angela Schrute tar inloggningen som höll tillbaka Spela (A143).
+
+## Tillägg 10:35: ett anrop i stället för två (Kevins K100)
+- En ny Säg-text sparas och startas nu i **ett anrop** (`save` med `start: true`). Kevin mätte cirka 1,5 s mot
+  servern, mot 9–10 s för de två anropen tidigare. Prov med frågor, och en server utan det nya anropet, går den
+  gamla vägen. **iOS build 44274972565 grön på min gren**; test i `A136StyleVoicePaceTests`. Appen har inte kört
+  anropet mot servern.
+- **Mitt fel 10:20:** jag pushade konfliktmarkörer i `prompts/queue/angela-fable.md` till main (sammanfogningen gav
+  en konflikt, och mitt skript gick vidare). Rättat några minuter senare; Kevins K100-rad står kvar som egen rad.
+
