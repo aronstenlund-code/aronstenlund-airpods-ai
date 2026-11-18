@@ -14,6 +14,14 @@ on:
         description: "Branch or commit whose app code to test (empty = main). The tests and scripts always come from main."
         required: false
         default: ""
+      tests_ref:
+        description: "Branch whose tests to use with app_ref (empty = main), e.g. a Toby branch with test fixes."
+        required: false
+        default: ""
+      only:
+        description: "Only these tests, e.g. 'T24 T30' (empty = all). The other lines in the day's file are kept."
+        required: false
+        default: ""
 
 concurrency:
   # One group per app branch (T33): a group keeps only one pending run, so main and a branch must not share one.
@@ -21,22 +29,41 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  # T45: `only` picks some of the tests (a rerun of two reds without six runners); a matrix cannot be cut by `if`.
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.pick.outputs.matrix }}
+    steps:
+      - id: pick
+        env:
+          ONLY: ${{ inputs.only }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          all = [
+              {"id": "T24", "title": "hela repetitionsflödet", "script": "fullflow.sh", "out": "fullflow"},
+              {"id": "T27", "title": "prov utan nät", "script": "offline.sh", "out": "offline"},
+              {"id": "T28", "title": "läsläget", "script": "reading.sh", "out": "reading"},
+              {"id": "T29", "title": "A107 redigera och Starta prov", "script": "a107.sh", "out": "a107"},
+              {"id": "T30", "title": "streak och påminnelse", "script": "t30.sh", "out": "t30"},
+              {"id": "T36", "title": "Säg i AirPods", "script": "t36.sh", "out": "t36"},
+          ]
+          only = os.environ.get("ONLY", "").split()
+          pick = [t for t in all if not only or t["id"] in only]
+          print("matrix=" + json.dumps({"include": pick}))
+          PY
+
   test:
     name: ${{ matrix.id }} ${{ matrix.title }}
+    needs: plan
     runs-on: macos-26
     timeout-minutes: 110
     strategy:
       fail-fast: false
       # T47 (D217): at most two macOS runners at once, so the iOS builds of the other sessions are not queued 20–30 min.
       max-parallel: 2
-      matrix:
-        include:
-          - { id: T24, title: "hela repetitionsflödet", script: fullflow.sh, out: fullflow }
-          - { id: T27, title: "prov utan nät", script: offline.sh, out: offline }
-          - { id: T28, title: "läsläget", script: reading.sh, out: reading }
-          - { id: T29, title: "A107 redigera och Starta prov", script: a107.sh, out: a107 }
-          - { id: T30, title: "streak och påminnelse", script: t30.sh, out: t30 }
-          - { id: T36, title: "Säg i AirPods", script: t36.sh, out: t36 }
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v5
         with:
@@ -49,9 +76,10 @@ jobs:
         if: inputs.app_ref != ''
         run: |
           set -euo pipefail
-          git fetch -q origin main
-          git checkout origin/main -- AppTests/E2E scripts/apptest
-          echo "App from ${{ inputs.app_ref }} ($(git rev-parse --short HEAD)), tests from main ($(git rev-parse --short origin/main))"
+          T="${{ inputs.tests_ref || 'main' }}"
+          git fetch -q origin "$T"
+          git checkout FETCH_HEAD -- AppTests/E2E scripts/apptest
+          echo "App from ${{ inputs.app_ref }} ($(git rev-parse --short HEAD)), tests from $T ($(git rev-parse --short FETCH_HEAD))"
 
       - name: Select Xcode 26
         run: |
@@ -125,12 +153,18 @@ jobs:
           TITLE="Nattlig apptest $DAY"
           # A branch run (T33) gets its own file, so it never overwrites main's line for the day.
           if [ -n "$REF" ]; then SAFE="$(echo "$REF" | tr '/' '-')"; FILE="reports/apptest/nightly/$DAY-$SAFE.md"; TITLE="Apptest på grenen $REF $DAY"; fi
+          if [ -n "${{ inputs.tests_ref }}" ]; then FILE="${FILE%.md}-tester-$(echo "${{ inputs.tests_ref }}" | tr '/' '-').md"; TITLE="$TITLE (tester från ${{ inputs.tests_ref }})"; fi
           mkdir -p reports/apptest/nightly
           {
             echo "# $TITLE $(TZ=Europe/Stockholm date +%H:%M) (simulatorn, inte enhet, falskt ljud, 0 ElevenLabs)"
             echo
-            for id in T24 T27 T28 T29 T30 T36; do cat "status/$id.md" 2>/dev/null || echo "- **$id**: ingen status (jobbet startade inte)"; done
-          } > "$FILE"
+            for id in T24 T27 T28 T29 T30 T36; do
+              if [ -f "status/$id.md" ]; then cat "status/$id.md"
+              elif [ -n "${{ inputs.only }}" ] && [ -f "$FILE" ] && grep -q "^- \*\*$id\*\*" "$FILE"; then grep "^- \*\*$id\*\*" "$FILE" | head -n 1
+              else echo "- **$id**: ingen status (jobbet startade inte)"; fi
+            done
+          } > "$FILE.new"
+          mv "$FILE.new" "$FILE"
           cat "$FILE"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
