@@ -1,7 +1,7 @@
 import { wordsToNumber } from "../answer/svnum.ts";
 import { HttpError } from "../_shared/errors.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
-import { allocate, codeCap, coverage, nearDuplicate, partCount, placeQuestions, shares, splitParts } from "./coverage.ts";
+import { allocate, codeCap, coverage, nearDuplicate, partCount, placeQuestions, sectionParts, shares, splitParts } from "./coverage.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 
 /**
@@ -852,10 +852,13 @@ export async function handleDrill(
     const material = (text || p.notes || "").trim();
     const before = trimQuestions(sh.questions, possible);
     const target = material ? Math.max(possible, codeCap(material.length, count)) : possible;
-    const k = partCount(material.length, target);
-    const parts = k > 1 ? splitParts(material, k) : [material];
+    // O79 F1 (Oscar): the material's own sections (headings, else paragraphs) are the parts; length only as a fallback
+    const sections = sectionParts(material, target);
+    const byLength = partCount(material.length, target);
+    const parts = sections ?? (byLength > 1 ? splitParts(material, byLength) : [material]);
+    const k = parts.length;
     let qs = before;
-    let cov: { parts: number; before: number; after: number; added: number; target: number; max_share: number } | null = null;
+    let cov: { parts: number; by: "sections" | "length"; before: number; after: number; added: number; target: number; max_share: number } | null = null;
     if (material && (k > 1 || target > before.length)) {
       const weak = (q: string) => (leansOnMaterial(q) ? 2 : 0) + (isRecall(q) ? 1 : 0);
       // candidates: step 1's (shortened) questions, the weak ones last within their part
@@ -917,7 +920,7 @@ export async function handleDrill(
       const sorted = chosen.map((c, i) => ({ ...c, i })).sort((x, y) => ((x.part < 0 ? 1e9 : x.part) - (y.part < 0 ? 1e9 : y.part)) || x.i - y.i);
       if (sorted.length) qs = sorted.map((c) => c.q);
       const counts = parts.map((_, i) => sorted.filter((c) => c.part === i).length);
-      cov = { parts: parts.length, before: beforeCovered, after: counts.filter((n) => n > 0).length, added, target, max_share: Math.max(...counts) };
+      cov = { parts: parts.length, by: sections ? "sections" : "length", before: beforeCovered, after: counts.filter((n) => n > 0).length, added, target, max_share: Math.max(...counts) };
     }
     const base = qs.map((question, i) => ({ id: `q${i + 1}`, question }));
     let items: DrillItem[] = base;
