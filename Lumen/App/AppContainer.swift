@@ -35,6 +35,17 @@ final class AppContainer {
     var testPresses: TestPresses?
     #endif
 
+    /// The mock mode of the repetition flow (`-RepetitionMock YES` and the screenshots): Debug only, never in the builds
+    /// for testers or the App Store. A142: a property, not a constant in `init`. With `let mock = false` the first
+    /// Release build ever (44264496532) stopped on "will never be executed" for every `mock ? … : …`.
+    private static var isMockMode: Bool {
+        #if DEBUG
+        UserDefaults.standard.bool(forKey: "RepetitionMock") || ScreenshotStage.requested != nil
+        #else
+        false
+        #endif
+    }
+
     init() {
         let graph = AudioGraph()
         let session = AudioSessionManager()
@@ -140,11 +151,7 @@ final class AppContainer {
         // K47 for sharing. The mock mode (-RepetitionMock YES, Debug only: the Simulator tests and screenshots) uses
         // fixed questions, the phone only and the iPhone's own voice: 0 model calls and 0 ElevenLabs characters.
         let drillStore = DrillStore()
-        #if DEBUG
-        let mock = UserDefaults.standard.bool(forKey: "RepetitionMock") || ScreenshotStage.requested != nil
-        #else
-        let mock = false
-        #endif
+        let mock = Self.isMockMode
         let drillCloud: (any DrillCloudSyncing)? = mock ? nil : DrillCloudClient(config: .lumen, auth: auth, http: http) as any DrillCloudSyncing
         let maker: any DrillMaking = mock ? MockDrillMaker() as any DrillMaking
             : DrillClient(config: .lumen, auth: auth, http: http) as any DrillMaking
