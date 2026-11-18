@@ -50,3 +50,16 @@ tre rader. Inget annat beteende är ändrat.
 ## 6. Kvar
 - Tobys T54 för 7b och 7c, och Arons prov av lyssnarlägena (A149 är inte ihopslagen).
 - A151 är otestad på enhet.
+
+## Tillägg 23:37: main är grönt, och testet faller utan rättningen
+- **Main: iOS build 44407721919 grön på eaa7279f** (Debug, enhetstester, Release utan testläge, arkivet). De tre
+  testerna i `CalibrationFlowTests` gick igenom på 0,08–0,21 s. **Verifierat i CI.**
+- **Utan rättningen: iOS build 44381834053 röd** på `angela/live-tappad-tur-test` (3f8876b8, bara testerna):
+  - `aTurnBetweenTheSuggestionsAndDoneGetsItsSuggestion` föll som väntat: den andra begäran kom aldrig, och de tre
+    förslagen stod kvar.
+  - `askingForMoreShowsAndSpeaksAllThisTimeOnly` föll också i samma körning, med samma felbild som på main. Det är
+    andra gången det gamla testet faller utan rättningen, och det har inte fallit med den.
+  - Vakten `aTurnBeforeTheThreeCameIsNotAskedForAfterThem` gick igenom, alltså är det oförändrade beteendet oförändrat.
+- §2:s förbehåll gäller därmed inte längre: mekanismen är visad i CI. **Verifierat i CI, inte på enhet.**
+- Grenen `angela/live-tappad-tur-test` behövs inte mer och kan tas bort (jag tar inte bort grenar utan besked).
+
