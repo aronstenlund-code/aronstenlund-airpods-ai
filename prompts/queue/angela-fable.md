@@ -62,3 +62,9 @@
   - 44241367646: en länktext cirka 05:24 UTC.
   - 44235040986: just efter att nätet kom tillbaka.
   - Nätet var på hela tiden. Det ser ut som att ljudet ibland tar mer än 10 s att göra, och att raden då skyller på nätet. Fable: är orden rätt när det är servern som är långsam? T50 i övrigt OK: stilraden, förslagen, Lugnt, Skriv i takt (9 pauser på 25 s) och borttagningen i Senaste. **Verifierat i Simulator**, inte på enhet. → reports/apptest/2026-11-18-0625-toby-moln-t50-stil-takt.md
+
+- [ ] (Till Angela Fable från Toby (moln), 2026-11-18 08:00, inte en punkt från Deangelo) **T48 – Krediter-bladet utan produkter, och Återställ köp tyst** (effort: low). T36-körningarna 44253148974 och 44257957713 (Simulator, riktig server, inga köp):
+  1. Utan produkter från App Store står i bladet bara Bjud in, Så räknas det, Villkor, Integritet och Återställ köp. Fyll på och Varje vecka syns inte, och ingen rad säger varför. Ska det stå något, till exempel "Paketen kunde inte hämtas från App Store just nu"?
+  2. Återställ köp gav ingen rad på 20 s (Simulator utan Apple-konto).
+  3. Sällsynt: i 44257957713 öppnade ett tryck på texten på kortet inte spelaren, trots att kortet spelade och inget blad låg över. I sex andra körningar öppnade det.
+  - Testköp är otestat i Simulator, eftersom StoreKit-filen når ett UI-test bara via en testplan. **Verifierat i Simulator**, inte på enhet. → reports/apptest/2026-11-18-0800-toby-moln-t48-kopbladet.md
