@@ -17,6 +17,9 @@ enum SayText {
     static let fieldDark = Color(red: 0x15 / 255, green: 0x18 / 255, blue: 0x1F / 255)
     static let ink = Color(red: 0xE7 / 255, green: 0xE9 / 255, blue: 0xEF / 255)
     static let accent = Color(red: 0x7F / 255, green: 0x9B / 255, blue: 0xFF / 255)
+    /// A148: the fields' placeholders. 0.45 was 3.8:1 on the card ("Contrast failed" in the audit); 0.6 is 6:1 and
+    /// still clearly lighter than a written text.
+    static let promptOpacity = 0.6
 
     /// A124 (D210, Aron 2026-11-17): how long the text goes round: 10 min to 1 hour in steps of 5. It replaces
     /// "En gång" and 5/10/20. Spela plays at once; nothing starts later.
@@ -467,7 +470,7 @@ struct SayInAirPodsField: View {
     private var writingCard: some View {
         HStack(alignment: .top, spacing: 8) { // the empty field keeps three rows: the mark stands at the first
             Text(verbatim: "›").foregroundStyle(SayText.accent).accessibilityHidden(true)
-            TextField("", text: $text, prompt: Text(typeSize.isAccessibilitySize ? "Skriv här" : "Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(0.45)),
+            TextField("", text: $text, prompt: Text(typeSize.isAccessibilitySize ? "Skriv här" : "Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(SayText.promptOpacity)),
                       axis: .vertical)
                 // A132 (D215.4): at most 5 rows, then it scrolls inside; 3 rows when it is not being written in.
                 .lineLimit(focused ? (typeSize.isAccessibilitySize ? 2...5 : 3...5) : (typeSize.isAccessibilitySize ? 2...3 : 3...3))
@@ -530,7 +533,7 @@ struct SayInAirPodsField: View {
                 .accessibilityLabel("Röst, \(voiceLabel)")
                 .smallSayControl()
             }
-            TextField("", text: $style, prompt: Text(verbatim: SayText.stylePrompt).foregroundStyle(SayText.ink.opacity(0.45)))
+            TextField("", text: $style, prompt: Text(verbatim: SayText.stylePrompt).foregroundStyle(SayText.ink.opacity(SayText.promptOpacity)))
                 .font(.subheadline)
                 .focused($styleFocused)
                 .tint(SayText.accent)
