@@ -10,7 +10,7 @@ import { rewardStore } from "../_shared/rewards_db.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
 import { secret } from "../_shared/secrets.ts";
 import { parseVoices } from "../tts/voices.ts";
-import { currentTest, silentMp3, TEST_VOICE_ID, withTestMode } from "../_shared/testmode.ts";
+import { currentTest, loadCiRanges, silentMp3, TEST_VOICE_ID, withTestMode } from "../_shared/testmode.ts";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { memo } from "../_shared/memo.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type PublicationRow, type SchoolRow, type ShareRow } from "./handler.ts";
@@ -122,9 +122,33 @@ const timedStyler = (f: ReturnType<typeof haikuStyler>): ReturnType<typeof haiku
   }
 };
 
-Deno.serve(withCors(withTestMode("drill", timed(
+const authenticate = createJwtAuthenticator({ supabaseUrl: base, hs256Secret: env.get("SUPABASE_JWT_SECRET") });
+
+/**
+ * K100 (Oscar O84, cold start 11 s): pg_cron posts {"action":"warm"} without a token every few minutes (migration
+ * 20261118120001). It starts this function and does ahead of the user what the first request would wait for: the
+ * database connection, the settings and the voice catalog, GitHub's ranges and the signing keys. It reads nothing of
+ * any account and answers 204 with no body. Every other action authenticates as before (the function is deployed
+ * without the gateway's JWT check, like purchase; the handler checks the token itself).
+ */
+function warmable(h: (req: Request) => Promise<Response>): (req: Request) => Promise<Response> {
+  return async (req) => {
+    if (req.method === "POST" && !req.headers.has("authorization") && Number(req.headers.get("content-length") ?? "0") < 64) {
+      const action = await req.clone().json().then((b) => (b as { action?: unknown })?.action).catch(() => null);
+      if (action === "warm") {
+        const t0 = Date.now();
+        await Promise.all([settingsMemo().catch(() => {}), catalogMemo().catch(() => {}), loadCiRanges().catch(() => {}), authenticate.warm?.()]);
+        console.log("drill_warm", JSON.stringify({ ms: Date.now() - t0 }));
+        return new Response(null, { status: 204 });
+      }
+    }
+    return await h(req);
+  };
+}
+
+Deno.serve(warmable(withCors(withTestMode("drill", timed(
   createDrillHandler({
-    authenticate: createJwtAuthenticator({ supabaseUrl: base, hs256Secret: env.get("SUPABASE_JWT_SECRET") }),
+    authenticate,
     rateLimiter: new SupabaseRateLimiter(db),
     // K95 (D220): Haiku adds v3 tags for "Hur ska det låta?" (only for files that are made new)
     styler: stylerProvider ? timedStyler(haikuStyler(stylerProvider)) : undefined,
@@ -344,4 +368,4 @@ Deno.serve(withCors(withTestMode("drill", timed(
       : null,
   }))),
   extraOriginsFromEnv(),
-));
+)));

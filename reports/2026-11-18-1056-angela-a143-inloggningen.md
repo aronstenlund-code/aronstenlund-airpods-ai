@@ -68,7 +68,7 @@ det syns i appens logg som "the refresh token was refused, signing up a new anon
 - **CI:** iOS build 44273843720 (manuell körning på grenen, med main och A142) är grön: Debug-bygget, alla
   LumenTests, Release och Beta. *Verifierat i CI.* De nya testerna står i loggen som godkända. Det parametriserade
   testet (429, 500, 502, 503) skrivs inte ut med namn i loggen, men sviten `SupabaseAuthRenewalTests` är grön.
-  Main efter ihopslagningen: iOS build 44280856886 — resultatet står på tavlan.
+  Main efter ihopslagningen: iOS build 44280856886 grön. *Verifierat i CI.*
 - **Nya tester** (`SupabaseAuthRenewalTests`): inloggning vid appstart; ett anrop under tiden delar den; en token med
   lite kvar förnyas utan att någon väntar; en färsk token lämnas; signup och refresh utan svar görs om en gång; två
   tidsgränser i rad ger upp och behåller kontot; 429, 500, 502 och 503 vid förnyelsen behåller kontot; ett 401 förnyar

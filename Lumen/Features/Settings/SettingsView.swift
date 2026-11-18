@@ -74,6 +74,9 @@ struct SettingsView: View {
                     })
                 }
             }
+            if let deletion = model.accountDeletion {
+                AccountSection(model: deletion) // A145 (Ke78, K101)
+            }
             Section("Mer") {
                 if model.canSaveNote {
                     Button("Spara samtalet som anteckning") { model.saveNote() }

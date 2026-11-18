@@ -1,0 +1,143 @@
+{
+ "summary": {
+  "n": 10,
+  "answered": 10,
+  "correct": 10,
+  "natural": 10,
+  "slips": 0,
+  "cost_mean_usd": 0.00297,
+  "first_ms_p50": 1595
+ },
+ "rows": [
+  {
+   "q": "vad är fotosyntes",
+   "status": 200,
+   "answer": "Fotosyntes är processen där växter, alger och vissa bakterier använder ljusenergi för att omvandla koldioxid och vatten till glukos och syre. Den sker i kloroplasterna med hjälp av klorofyll, och det är därför växter är gröna.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.01207,
+   "ms": 2262
+  },
+  {
+   "q": "varför är himlen blå",
+   "status": 200,
+   "answer": "Solljuset sprids i atmosfären, och blått ljus har kortare våglängd än rött, så det sprids mycket mer åt alla håll. Därför ser vi blått från hela himlen, kallat Rayleighspridning.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0018819000000000002,
+   "ms": 1505
+  },
+  {
+   "q": "hur fungerar en vaccin",
+   "status": 200,
+   "answer": "Ett vaccin visar immunförsvaret en ofarlig bit av en sjukdomsalstrare, till exempel ett virusprotein eller en försvagad virusform. Kroppen bildar då antikroppar och minnesceller, så att den känner igen och bekämpar det riktiga smittämnet snabbt om du senare utsätts för det.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Short, correct answer; 'en vaccin' in the question is a minor gender slip, and the answer correctly uses 'ett vaccin'.",
+   "cost": 0.0022894,
+   "ms": 1941
+  },
+  {
+   "q": "vem var Gustav Vasa",
+   "status": 200,
+   "answer": "Gustav Vasa var Sveriges kung femtonhundratjugotre till femtonhundrasextio och grundade det moderna svenska riket efter att ha lett befrielsekriget mot den danske kungen Kristian två. Han införde reformationen, så Sverige blev protestantiskt, och gjorde kungamakten ärftlig femtonhundrafyrtiofyra.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Facts correct: king 1523-1560, liberation war against Christian II, reformation (Västerås 1527), hereditary monarchy 1544. Two sentences, spoken style.",
+   "cost": 0.0021994000000000002,
+   "ms": 1844
+  },
+  {
+   "q": "vad är skillnaden mellan väder och klimat",
+   "status": 200,
+   "answer": "Väder är hur atmosfären är just nu eller de närmaste dagarna, som regn, vind och temperatur. Klimat är genomsnittsvädret på en plats över lång tid, vanligen minst trettio år.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0018644000000000002,
+   "ms": 1226
+  },
+  {
+   "q": "hur räknar man ut procent",
+   "status": 200,
+   "answer": "Dela delen med helheten och gångra med hundra. Till exempel femton av sextio är femton delat med sextio, alltså noll komma två fem, gånger hundra vilket blir tjugofem procent.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Minor: 'gångra' is nonstandard (should be 'multiplicera' or 'gånga'), but it is understandable and the example is correct.",
+   "cost": 0.0017469,
+   "ms": 1256
+  },
+  {
+   "q": "varför har vi skottår",
+   "status": 200,
+   "answer": "Jorden går runt solen på ungefär trehundrasextiofem komma två fyra dagar, inte exakt trehundrasextiofem. Därför lägger vi till en extra dag, den tjugonionde februari, vart fjärde år, så att kalendern inte glider ifrån årstiderna.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0019119,
+   "ms": 2348
+  },
+  {
+   "q": "vad är en atom",
+   "status": 200,
+   "answer": "En atom är den minsta byggstenen i ett grundämne. Den består av en kärna av protoner och neutroner, med elektroner som rör sig runt kärnan.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0016569,
+   "ms": 1595
+  },
+  {
+   "q": "hur uppstår regnbågar",
+   "status": 200,
+   "answer": "Regnbågen uppstår när solljus bryts in i regndroppar, reflekteras mot droppens insida och bryts igen när det går ut. Olika färger bryts olika mycket, så ljuset delas upp i ett spektrum, med rött ytterst och violett innerst, och du ser det när solen står bakom dig.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0021994000000000002,
+   "ms": 1530
+  },
+  {
+   "q": "vad betyder demokrati",
+   "status": 200,
+   "answer": "Demokrati betyder folkstyre, från grekiskans demos för folk och kratos för makt. Det är ett styrelseskick där makten utgår från folket, som väljer sina företrädare i fria och allmänna val.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0018444000000000002,
+   "ms": 1314
+  }
+ ]
+}
