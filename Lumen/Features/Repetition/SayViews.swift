@@ -370,7 +370,24 @@ struct SayInAirPodsField: View {
             setStage()
             // What was counted while it played shows in the capsule when it has stopped.
             if !plays { Task { await model.refreshQuota() } }
+            // A text that has played and stopped leaves no press waiting: Spela can be pressed again, whatever became
+            // of the answer that press waited for.
+            if !plays, isStarting {
+                Log.repetition.info("Say: the card stopped while a press still waited; Spela is free again")
+                isStarting = false
+            }
         }
+        // Toby (T36 44312213280, without a network): the press on Spela did not reach `play()` at all (the keyboard
+        // stayed up and Senaste got no new text), so the button could not be pressed. Why is in the log from now on.
+        .onChange(of: blocked) { _, why in
+            let line = why.map { "cannot be pressed (" + $0 + ")" } ?? "can be pressed"
+            Log.repetition.info("Say: Spela \(line, privacy: .public)")
+        }
+    }
+
+    /// Why Spela cannot be pressed although there is a text; nil when it can (or the field is empty).
+    private var blocked: String? {
+        isEmpty ? nil : isStarting ? "an earlier press is still waiting" : tooMany ? "the text costs more than is left" : nil
     }
 
     private func lookAtClipboard() { clipboardHasText = UIPasteboard.general.hasStrings }
@@ -1069,10 +1086,13 @@ struct SayInAirPodsField: View {
             waitNote = nil
             while true {
                 try? await Task.sleep(for: .seconds(1))
-                guard mine == attempt, !model.showsPlayer else { waitNote = nil; return }
+                guard mine == attempt else { waitNote = nil; return }
+                // The text plays (or is read on the screen): nothing is waited for any more, so the button must not
+                // stay "starting" after this, even if the call that started it has not come back.
+                guard !model.showsPlayer else { waitNote = nil; isStarting = false; return }
                 let onCard = model.isSayingOnCard
                 if onCard {
-                    guard let reader = model.session.reader, !reader.hasSounded else { waitNote = nil; return }
+                    guard let reader = model.session.reader, !reader.hasSounded else { waitNote = nil; isStarting = false; return }
                     if reader.isPaused { continue }
                 } else if !isStarting {
                     return
