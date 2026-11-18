@@ -36,6 +36,8 @@ export type LLMChunk =
   | { type: "text"; text: string }
   /** K11: text a web search result gave for a citation (`cited_text`), to check verbatim quotes. */
   | { type: "cite"; cited: string }
+  /** K104 (D233): the model started a web search or fetch (once per request); nothing is spoken, no cost. */
+  | { type: "searching"; tool: "web_search" | "web_fetch" }
   /** K19: one web search result (only with `wantSources`). */
   | { type: "source"; url: string; title: string }
   /** K35: a client tool call the app runs (input null = the model's JSON did not parse). */

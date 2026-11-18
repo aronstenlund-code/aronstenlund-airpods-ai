@@ -207,6 +207,7 @@ export class AnthropicProvider implements LLMProvider {
     const serverTools = (req.tools ?? []).some((t) => typeof (t as { type?: unknown })?.type === "string");
     const gate = serverTools || req.holdTextBeforeTool ? new WebTextGate(req.holdUntilEnd === true) : null;
     let emitted = false;
+    let searchingSent = false;
     try {
       const model = req.model ?? this.cfg.model;
       let tools = req.tools;
@@ -344,6 +345,14 @@ export class AnthropicProvider implements LLMProvider {
                 yield { type: "source", url: r.url, title: typeof r.title === "string" ? r.title : "" };
               }
             }
+          }
+        }
+        // K104 (D233): tell the caller at once that a web search began (the answer waits for it)
+        if (!searchingSent && ev.type === "content_block_start") {
+          const cb = ev.content_block as { type?: string; name?: string } | undefined;
+          if (cb?.type === "server_tool_use") {
+            searchingSent = true;
+            yield { type: "searching", tool: cb.name === "web_fetch" ? "web_fetch" : "web_search" };
           }
         }
         const chunk = mapAnthropicEvent(ev);

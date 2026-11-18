@@ -267,6 +267,16 @@ export function isRankQuestion(t: string): boolean {
     !/(?<![\p{L}])(?:jag|mig|min|mitt|mina|vi|vår|våra|du|din|ditt|dina)(?![\p{L}])/iu.test(t);
 }
 
+/**
+ * K104 (D233): `x-earmind-test: <tag> model-haiku|model-sonnet` picks the model of a call with web tools, for the
+ * measurement of Haiku against Sonnet on searched answers. Only calls that search: Sonnet is then what Provläge and
+ * texts already use (same web caps), so the header gives nobody a model they cannot already reach.
+ */
+export function testModelPick(h: string | null): "haiku" | "sonnet" | null {
+  const m = /(?:^|\s)model-(haiku|sonnet)(?:\s|$)/i.exec(h ?? "");
+  return m ? (m[1].toLowerCase() as "haiku" | "sonnet") : null;
+}
+
 export const DEFAULT_CONFIG: HandlerConfig = {
   confidenceThreshold: 0.45,
   maxTokens: 256,
@@ -1468,7 +1478,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K7.6: a word or logic problem in Provläge gets the model's thinking (it said "Tom är nio" before working
       // out eight); everything else keeps thinking off for the first word
       const wordProblem = !!tutorModel && isWordProblem(body.fragment);
-      const modelUsed = isRizz ? (cfg.rizzModel ?? provider.model) : tutorModel ?? provider.model;
+      // K104 (D233): a test may pick the model of the searched call (Haiku vs Sonnet measurement); only a call with web tools
+      const pick = testModelPick(req.headers.get("x-earmind-test"));
+      const pickModel = (t: unknown[] | undefined) =>
+        pick && t?.length ? (pick === "haiku" ? provider.model : (cfg.tutorModel ?? "claude-sonnet-5-5")) : undefined;
+      let modelUsed = pickModel(textOn || (webOn && need) ? [true] : undefined) ?? (isRizz ? (cfg.rizzModel ?? provider.model) : tutorModel ?? provider.model);
       const priceIn = isRizz
         ? (cfg.rizzPriceInPerMTok ?? cfg.priceInPerMTok)
         : tutorModel
@@ -1639,6 +1653,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
           ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem, think: wordProblem } : {}),
           ...(careful ? { think: true } : {}),
+          ...(pickModel(tools) ? { model: pickModel(tools) } : {}),
           signal: ac.signal,
         })[Symbol.asyncIterator]();
       const firstP = iterator.next().then((r) => {
@@ -1812,6 +1827,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let headBuf: string | null = askSearch || (direct && !plan) ? "" : null;
           let crisisMarked = false;
           let crisisLate = false;
+          let searchingSent = false; // K104: the `searching` event was sent
           let toolPending = false; // K35: a phone tool call was sent; the app runs it and sends a tool_round
           let serverTool: { name: SpotifyToolName; input: Record<string, unknown> } | null = null; // K36, run after the turn
           let serverToolDone: { name: string; status: string; playing?: string } | null = null;
@@ -1945,6 +1961,14 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               return;
             }
             if (chunk.type === "source") return; // only the K19 link search asks for sources
+            if (chunk.type === "searching") {
+              // K104 (D233): the app plays a quiet tone after 1.5 s instead of spoken filler (D46); once per answer
+              if (!searchingSent && ttftMs === null) {
+                searchingSent = true;
+                send("searching", { tool: chunk.tool, ms: Math.round(now() - t0) });
+              }
+              return;
+            }
             if (chunk.type === "tool_use" && isSpotifyTool(chunk.name)) {
               const input = spotifyOn ? validateSpotifyInput(chunk.name, chunk.input) : null;
               if (!input || toolPending || serverTool) {
@@ -2095,6 +2119,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               const ac2 = new AbortController();
               acs.push(ac2);
               retries++;
+              if (pickModel(retryTools)) modelUsed = pickModel(retryTools)!;
               it = llm.stream({
                 system: retrySystem,
                 user: userFor({ ...body, context: { ...body.context, recent_qa: history } }, {
@@ -2108,6 +2133,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
                 ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem, think: wordProblem } : {}),
           ...(careful ? { think: true } : {}),
+                ...(pickModel(retryTools) ? { model: pickModel(retryTools) } : {}),
                 signal: ac2.signal,
               })[Symbol.asyncIterator]();
               // T17b: the two-level state belongs to one attempt (a retry's text went to "more" and was never said)
