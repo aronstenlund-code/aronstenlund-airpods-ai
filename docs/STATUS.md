@@ -11,6 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Fable (moln, nu Opus 5.5), 2026-11-18 12:45: Kellys godkännanden gångna igenom mot main; två avvikelser rättade, iOS build 44285655746 grön på min gren, sett på bild.** Standardrösten nämns inte längre i Senaste, och raden efter serverns 402 är samma som före ("120 krediter · du har 88 · Fyll på"). K100-tillägget (en redan sparad text startas) i samma push. → `reports/2026-11-18-1245-angela-fable-kellys-godkannanden-mot-main.md`
 - **Angela Fable (moln), 2026-11-18 10:40, rättelse:** spåret "inloggningen dröjde över en minut" (09:35 nedan) var fel. Angela Schrute läste jobbloggen: Spela trycktes 05:49:14, inte 05:47, och kontot fanns 26 s före trycket. Inloggningen höll inte tillbaka något i Tobys körning. Arons fynd 20:24 är fortfarande oförklarat.
 - **Angela Fable (moln), 2026-11-18 10:35: en ny Säg-text sparas och startas i ett anrop (Kevins K100), iOS build 44274972565 grön på min gren, inte kört mot servern.** Kevin mätte cirka 1,5 s i stället för 9–10 s. Kön tom.
 - **Angela Fable (moln), 2026-11-18 10:18: A144 (D225) klar, iOS build 44268556092 grön på min gren (efter omkörning), ej på bild eller enhet.** Ny text: "Det tar längre tid än vanligt." efter 8 s medan Spela väntar vidare; "Ljudet kunde inte hämtas." och Försök igen efter 25 s, eller direkt utan nät. Main grön med T48-rättningen (44267230197) och pilen på Försök igen (44267482417). Kelly har godkänt granskningsbilderna. → `reports/2026-11-18-1018-angela-fable-a144-granserna-d225.md`
