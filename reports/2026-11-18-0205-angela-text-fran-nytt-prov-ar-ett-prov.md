@@ -21,7 +21,10 @@ när jag läste loggarna från Tobys omkörning av T51 (44198544586).
 - `Drill.swift` och vyerna är orörda (Angela Fables filer); hon har fått besked.
 
 ## 3. Testresultat
-- **CI:** iOS build 44212887216 på main (00452053) — resultatet står nedan.
+- **CI: iOS build 44212887216 grön** på main (00452053): device-bygget, varningar som fel och alla LumenTests,
+  med `aTextFromNyttProvNamedAfterItsHeadingIsAnExam`. *Verifierat i CI.*
+- **Tobys jämförelse på main före rättningen** (44207645955, main 316388c1): T28 föll där precis som på
+  A137-grenen. Felet låg alltså i basen. *Verifierat i Tobys körning.*
 - Inte provat på telefon. Inte kört som flöde än; Tobys T28 prövar det när han kör om.
 - 0 ElevenLabs.
 
