@@ -1,0 +1,12 @@
+run: 44309786844
+commit: 97a028636e83e1e3e389bdfafff3ddd52ba2bf61
+device: iPhone 17 Pro Max
+repHomeSaidMarks.png: 1320 2868 
+repPlayAnswer.png: 1320 2868 
+repSayCredits.png: 1320 2868 
+repSayOnCard.png: 1320 2868 
+repSayPicked.png: 1320 2868 
+repSayVoices.png: 1320 2868 
+repShop.png: 1320 2868 
+repTextNew.png: 1320 2868 
+repTextPlay.png: 1320 2868 
