@@ -52,6 +52,7 @@ final class SayFlowTests: XCTestCase {
         section("Fältet växer högst 5 rader (A132)", { fieldStopsGrowing() })
         section("Krediter, + och Klistra in länk (A116, A117)", { plusLinkAndCredits() })
         section("Nytt prov: Klistra in länk finns (A116)", { newDrillLinkRow() })
+        section("Krediter: köpbladet (A134, A141)", { shopSheet() })
         section("Ta bort i Senaste", { cleanUp() })
     }
 
@@ -406,6 +407,94 @@ final class SayFlowTests: XCTestCase {
         }
         log.append("T50 Senaste after a text with a style: \(Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Klorofyllet") })")
         return ok
+    }
+
+    /// T48 (D218, D224, A134/A141): a tap on the capsule opens Krediter with Fyll på (100, 500, 2 000, Bäst värde),
+    /// Varje vecka (Veckokort), Bjud in and Villkor · Integritet · Återställ köp. With the scheme's StoreKit file
+    /// (StoreKit testing, never a real purchase) a cancelled purchase changes nothing, and a made one is refused by the
+    /// server (a local transaction), so the line says the purchase could not be put in and the capsule stays.
+    private func shopSheet() -> Bool {
+        goToStart()
+        pause(2)
+        let before = creditsLeft()
+        guard tap(["* krediter kvar", "*krediter kvar", "* kredit kvar"], "the credit capsule") else {
+            let any = Self.labels(in: app.debugDescription, kind: "Button").first { $0.contains("krediter kvar") }
+            guard let any, tap([any], "the credit capsule") else { return miss("no credit capsule on Start") }
+            return shopSheetOpen(before: before)
+        }
+        return shopSheetOpen(before: before)
+    }
+
+    private func shopSheetOpen(before: Int?) -> Bool {
+        pause(3)
+        var ok = true
+        let tree = app.debugDescription
+        let all = (Self.labels(in: tree, kind: "StaticText") + Self.labels(in: tree, kind: "Button") + Self.labels(in: tree, kind: "Link"))
+            .map { $0.replacingOccurrences(of: "\u{00A0}", with: " ") }
+        let want = ["Fyll på", "100 krediter", "500 krediter", "2 000 krediter", "Bäst värde", "Ett prov ≈ 6 000 krediter.",
+                    "Varje vecka", "Veckokort", "Bjud in", "Få 2 000 krediter", "Villkor", "Integritet", "Återställ köp"]
+        let missing = want.filter { w in !all.contains { $0.localizedCaseInsensitiveContains(w) } }
+        let buys = all.filter { $0.hasPrefix("Köp ") }
+        log.append("T48 Krediter: missing \(missing.isEmpty ? "none" : missing.joined(separator: ", ")); buy buttons \(buys)")
+        screen("krediter-blad", "Krediter with Fyll på, Varje vecka, Bjud in (A134)")
+        if !missing.isEmpty { ok = miss("Krediter lacks \(missing.joined(separator: ", "))") }
+        // Återställ köp: no purchases on this Simulator.
+        if tap(["Återställ köp"], "Återställ köp") {
+            var line: String?
+            let end = Date().addingTimeInterval(20)
+            repeat { line = text(starting: "Det fanns inga köp") ?? text(starting: "Det gick inte att hämta köpen"); if line == nil { pause(1) } } while line == nil && Date() < end
+            log.append("T48 Återställ köp: \(line ?? "no line in 20 s")")
+            if line == nil { note("Återställ köp gave no line in 20 s") }
+        }
+        // A test purchase, only when the products came from the StoreKit file.
+        guard let buy = buys.first(where: { $0.contains("100 krediter") }) ?? buys.first else {
+            note("no prices in Krediter (the StoreKit file did not reach the app): no test purchase")
+            closeSheet()
+            return ok
+        }
+        // 1. Cancelled.
+        guard tap([buy], "\(buy) (to cancel)") else { closeSheet(); return false }
+        let cancelled = storeSheet(confirm: false)
+        pause(3)
+        let lineAfterCancel = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix("Köpet") }
+        log.append("T48 cancelled purchase: sheet \(cancelled), line \(lineAfterCancel ?? "none")")
+        if lineAfterCancel != nil { ok = miss("a cancelled purchase said '\(lineAfterCancel!)' (A134: it says nothing)") }
+        // 2. Made: the server refuses a local transaction.
+        guard tap([buy], "\(buy)") else { closeSheet(); return false }
+        let made = storeSheet(confirm: true)
+        var line: String?
+        let end = Date().addingTimeInterval(40)
+        repeat { line = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix("Köpet") }; if line == nil { pause(1) } } while line == nil && Date() < end
+        log.append("T48 test purchase: sheet \(made), line \(line ?? "none in 40 s")")
+        screen("krediter-kop", "After a StoreKit test purchase")
+        if made, line == nil { note("no line after a test purchase in 40 s") }
+        closeSheet()
+        goToStart()
+        pause(3)
+        let after = creditsLeft()
+        log.append("T48 capsule: \(before.map(String.init) ?? "-") before, \(after.map(String.init) ?? "-") after the test purchase")
+        if let before, let after, after > before { note("the capsule went up after a test purchase (\(before) → \(after)); the server took a local transaction") }
+        return ok
+    }
+
+    /// The StoreKit test sheet (in the app or over it). Confirms or cancels it; false when no sheet came.
+    private func storeSheet(confirm: Bool) -> Bool {
+        let yes = ["Köp", "Purchase", "Buy", "Bekräfta", "Confirm", "Prenumerera", "Subscribe"]
+        let no = ["Avbryt", "Cancel", "Stäng", "Close"]
+        let end = Date().addingTimeInterval(20)
+        repeat {
+            for host in [app!, springboard!] {
+                for label in (confirm ? yes : no) {
+                    let b = host.buttons.matching(NSPredicate(format: "label ==[c] %@", label)).allElementsBoundByIndex.first { $0.exists && $0.isHittable }
+                    if let b { b.tap(); testTaps += 1; log.append("T48 store sheet: tapped \(label)"); pause(2)
+                        if confirm, let ok = ["OK", "Okej"].lazy.compactMap({ l in host.buttons.matching(NSPredicate(format: "label ==[c] %@", l)).allElementsBoundByIndex.first { $0.exists && $0.isHittable } }).first { ok.tap(); testTaps += 1 }
+                        return true }
+                }
+            }
+            pause(1)
+        } while Date() < end
+        log.append("T48 store sheet: none seen (\(confirm ? "confirm" : "cancel"))")
+        return false
     }
 
     /// Asks t36.sh to turn the runner's network off or on (t36-net-off/on.request), and waits for it.
