@@ -36,3 +36,7 @@
 ## Test
 Bildstorlek kontrollerad (7 × 1320 × 2868). Bilderna granskade som bild här (sett i Simulatorn, **inte på telefon**).
 Teckenantal räknade med Python.
+
+## Tillägg 2026-11-18 (bild 4)
+Angela Fables scen `repSayVoicesUser` (röstbladet utan "Att provlyssna") tagen i full storlek (körning 44374827725,
+main 25b5551, 1320 × 2868) och inlagd som **bild 4 "Välj en röst."**. Nu **8 bilder**, alla 1320 × 2868.

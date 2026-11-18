@@ -232,6 +232,15 @@ final class SayFlowTests: XCTestCase {
         return true
     }
 
+    /// Hides the keyboard without typing into the field: a tap on the screen's title area.
+    private func hideKeyboard() {
+        guard app.keyboards.count > 0 else { return }
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.07)).tap(); testTaps += 1
+        pause(1)
+        if app.keyboards.count > 0 { app.swipeDown(velocity: .slow); pause(1) }
+        log.append("keyboard hidden: \(app.keyboards.count == 0)")
+    }
+
     /// Run 44159967813 (slow Simulator, 112 s to Start): typeText failed with "Neither element nor any descendant has
     /// keyboard focus" after one tap. Tap until the keyboard is up, at most 3 times.
     @discardableResult
@@ -363,6 +372,9 @@ final class SayFlowTests: XCTestCase {
         guard focusField("Säg i AirPods (a new text, offline)") else { return miss("the field got no keyboard") }
         field.typeText(fresh)
         pause(1)
+        // Angela Fable 00:15: log the button before the press; the keyboard is hidden first so the tap reaches Spela.
+        hideKeyboard()
+        if let play = find(Self.playLabels) { log.append("T49 Spela before the press offline: '\(play.label)', enabled \(play.isEnabled), hittable \(play.isHittable)") }
         let t1 = Date()
         guard tap(Self.playLabels, "Spela i … (offline, a new text)") else { return false }
         var said: String?
@@ -1241,7 +1253,12 @@ final class SayFlowTests: XCTestCase {
         // Run 44151565954 (A132): the card's Pausa and its text were on screen but not "hittable" to XCTest; swiping
         // only scrolled the page away. An element that is inside the window is tapped at its centre, and said so.
         let frame = element.frame
-        if !element.isHittable, !frame.isEmpty, app.windows.firstMatch.frame.contains(CGPoint(x: frame.midX, y: frame.midY)) {
+        // Angela Fable 00:15 (44312213280): a centre tap on a button under the keyboard lands on the keyboard. Never
+        // tap through it.
+        let keyboard = app.keyboards.firstMatch
+        let underKeyboard = keyboard.exists && keyboard.frame.contains(CGPoint(x: frame.midX, y: frame.midY))
+        if !element.isHittable, underKeyboard { log.append("\(step): '\(element.label)' is under the keyboard; hiding it"); hideKeyboard(); element = find(labels) ?? element }
+        if !element.isHittable, !underKeyboard, !frame.isEmpty, app.windows.firstMatch.frame.contains(CGPoint(x: frame.midX, y: frame.midY)) {
             log.append("NOT HITTABLE (tapped at its centre): \(step): '\(element.label)' at \(Int(frame.midX)),\(Int(frame.midY))")
             element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
             if counted { taps += 1 } else { testTaps += 1 }

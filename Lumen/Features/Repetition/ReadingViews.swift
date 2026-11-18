@@ -236,8 +236,17 @@ struct ReadingPlayerView: View {
     let drill: Drill
     @State private var follows = true
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    private var reduceMotion: Bool { SayMotion.reduces(systemReduceMotion) }
+    /// A150 (Kelly Ke83): how far the player is pulled down by the finger, and the height it can go.
+    @State private var pull: CGFloat = 0
+    @State private var height: CGFloat = 0
+    @State private var isFolding = false
 
     private var session: RepetitionSession { model.session }
+
+    /// A150: a text from "Säg i AirPods" that plays can be folded down to its card on Start, where it plays on.
+    private var canFold: Bool { isSaying && !reader.isAtEnd && !model.isReadingAloudOff(drill) }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -251,7 +260,63 @@ struct ReadingPlayerView: View {
         .safeAreaInset(edge: .bottom) { bottom }
         .background(Color(.systemBackground))
         .onChange(of: reader.currentHeading) { follows = true } // Ke63 §3.2: the next heading takes the text back
+        // A150 (Kelly Ke83): the player follows the finger down, with Start behind it, and can be let go half-way.
+        .offset(y: SayMotion.pulled(pull))
+        .presentationBackground(.clear)
+        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height = $0 }
+        .accessibilityAction(.escape) { if canFold { model.showsPlayer = false } }
+        #if DEBUG
+        .task { if SayText.stagedFold { await runFoldDemo() } }
+        #endif
     }
+
+    /// The pull on the top of the player (the text below scrolls, so it is not pulled from there).
+    private var foldGesture: some Gesture {
+        DragGesture(minimumDistance: 10, coordinateSpace: .global)
+            .onChanged { value in
+                guard canFold, !isFolding else { return }
+                pull = value.translation.height // one to one, from where it was taken hold of
+            }
+            .onEnded { value in
+                guard canFold, !isFolding else { return }
+                if SayMotion.folds(projected: value.predictedEndTranslation.height, height: height) {
+                    fold(velocity: value.velocity.height)
+                } else {
+                    withAnimation(SayMotion.settle(reduceMotion)) { pull = 0 }
+                }
+            }
+    }
+
+    /// Goes on down at the speed the finger had, and is gone when it is out of sight. Nothing stops: the text plays
+    /// on its card on Start.
+    private func fold(velocity: CGFloat) {
+        isFolding = true
+        let left = max(height - pull, 1)
+        let down: Animation = reduceMotion ? .easeOut(duration: 0.15)
+            : .interpolatingSpring(duration: 0.3, bounce: 0, initialVelocity: velocity / left)
+        withAnimation(down) {
+            pull = max(height, 1)
+        } completion: {
+            var gone = Transaction()
+            gone.disablesAnimations = true // it is already out of sight
+            withTransaction(gone) { model.showsPlayer = false }
+        }
+    }
+
+    #if DEBUG
+    /// The Simulator recording: a pull that is let go half-way and goes back, then one that folds the player down.
+    private func runFoldDemo() async {
+        func pause(_ seconds: Double) async { try? await Task.sleep(for: .seconds(seconds)) }
+        await pause(1.5)
+        withAnimation(.linear(duration: 0.5)) { pull = 150 }
+        await pause(0.7)
+        withAnimation(SayMotion.settle(reduceMotion)) { pull = 0 }
+        await pause(1.2)
+        withAnimation(.linear(duration: 0.4)) { pull = 260 }
+        await pause(0.45)
+        fold(velocity: 900)
+    }
+    #endif
 
     // MARK: Top
 
@@ -291,6 +356,10 @@ struct ReadingPlayerView: View {
 
     private var top: some View {
         VStack(spacing: 10) {
+            if canFold {
+                // The same handle as on the system's sheets: this can be pulled down.
+                Capsule().fill(LumenColor.secondaryText.opacity(0.4)).frame(width: 36, height: 5).accessibilityHidden(true)
+            }
             ZStack {
                 Text(verbatim: drill.title)
                     .font(.subheadline)
@@ -303,6 +372,21 @@ struct ReadingPlayerView: View {
                     Button("Avsluta") { model.end() }
                         .accessibilityHint("Avslutar uppläsningen. Du fortsätter från samma mening nästa gång.")
                     Spacer()
+                    // A150 (D231): a text from "Säg i AirPods" plays on its card on Start, and a tap on the card brought
+                    // this player up from below. It goes back down the same way and the text plays on; before this the
+                    // only way out was Avsluta, which stops it.
+                    if isSaying, !reader.isAtEnd, !model.isReadingAloudOff(drill) {
+                        Button {
+                            model.showsPlayer = false
+                        } label: {
+                            Image(systemName: "chevron.down")
+                                .font(.body.weight(.semibold))
+                                .frame(minWidth: 44, minHeight: 44)
+                                .contentShape(Rectangle())
+                        }
+                        .accessibilityLabel("Tillbaka till Start")
+                        .accessibilityHint("Texten spelas vidare.")
+                    }
                 }
             }
             VStack(spacing: 8) {
@@ -327,6 +411,8 @@ struct ReadingPlayerView: View {
         .padding(.top, 12)
         .padding(.bottom, 8)
         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+        .contentShape(Rectangle())
+        .gesture(foldGesture)
     }
 
     // MARK: The text

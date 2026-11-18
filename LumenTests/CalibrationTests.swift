@@ -105,6 +105,26 @@ import Testing
         let settings: ModeSettings
     }
 
+    private struct HeldRig {
+        let model: ListeningModel
+        let apple: FakeTTSProvider
+    }
+
+    private func makeRig(provider: HeldProvider) -> HeldRig {
+        let h = ControllerHarness()
+        let apple = FakeTTSProvider(name: "apple")
+        let settings = ModeSettings(defaults: freshDefaults())
+        settings.confirmAdult()
+        let microphones = MicrophoneSettings(defaults: freshDefaults())
+        for mode in ConversationMode.allCases { microphones.setSource(.iPhone, for: mode) }
+        let study = StudySessionController(settings: StudySettings(defaults: freshDefaults()), session: h.controller)
+        let model = ListeningModel(controller: h.controller, consent: FakeConsentStore(granted: true), transcription: makeTestCoordinator(h.controller),
+                                   activation: makeTestActivation(), answers: makeTestAnswerEngine(provider), speaker: makeTestSpeaker(h.playback, apple: apple),
+                                   voices: makeTestVoiceCatalog(), notes: makeTestNotes(), prep: makeTestPrep(), study: study,
+                                   history: makeTestHistory(), memory: makeTestMemory(), microphone: microphones, modeSettings: settings)
+        return HeldRig(model: model, apple: apple)
+    }
+
     private func freshDefaults() -> UserDefaults {
         let suite = "lumen.tests.calibrationflow.\(UUID().uuidString)"
         let defaults = UserDefaults(suiteName: suite)!
@@ -129,23 +149,27 @@ import Testing
     }
 
     /// One spoken turn at `level` that ended a moment ago (same paths as the microphone).
-    private func speak(_ text: String, level: Double, rig: Rig) {
+    private func speak(_ text: String, level: Double, rig: Rig) { speak(text, level: level, model: rig.model) }
+
+    private func speak(_ text: String, level: Double, model: ListeningModel) {
         var time = Date().addingTimeInterval(-4)
         for _ in 0..<15 {
-            rig.model.study.level(level, at: time)
+            model.study.level(level, at: time)
             time = time.addingTimeInterval(0.04)
         }
-        rig.model.receiveFinalTranscript(text, at: time)
+        model.receiveFinalTranscript(text, at: time)
         for _ in 0..<45 {
-            rig.model.study.level(-70, at: time)
+            model.study.level(-70, at: time)
             time = time.addingTimeInterval(0.04)
         }
     }
 
-    private func quiet(_ rig: Rig) async {
-        _ = await waitUntil { !rig.model.speaker.isSpeaking && !rig.model.speaker.hasPendingSpeech }
-        rig.model.study.resumeListening()
-        rig.model.study.level(-70, at: Date())
+    private func quiet(_ rig: Rig) async { await quiet(rig.model) }
+
+    private func quiet(_ model: ListeningModel) async {
+        _ = await waitUntil { !model.speaker.isSpeaking && !model.speaker.hasPendingSpeech }
+        model.study.resumeListening()
+        model.study.level(-70, at: Date())
     }
 
     @Test func lumenCommaIsStoredAndSentWithEveryRequest() async {
@@ -190,6 +214,94 @@ import Testing
         speak("Vad gör ni i helgen", level: -40, rig: rig)
         #expect(await waitUntil { rig.provider.requests.count == 2 })
         #expect(await waitUntil { rig.model.rizz?.suggestions == ["Ett"] })
+    }
+
+    /// A point where the scripted answer waits until the test lets it go on.
+    @MainActor final class Hold {
+        private var isOpen = false
+        private var waiting: [CheckedContinuation<Void, Never>] = []
+
+        func wait() async {
+            if isOpen { return }
+            await withCheckedContinuation { waiting.append($0) }
+        }
+
+        func release() {
+            isOpen = true
+            for one in waiting { one.resume() }
+            waiting = []
+        }
+    }
+
+    /// The answer to "ge mig tre": its three suggestions and its `done` come when the test lets them. Later requests
+    /// answer at once.
+    @MainActor final class HeldProvider: AnswerProvider {
+        let name = "cloud"
+        private(set) var requests: [AnswerRequest] = []
+        let beforeSuggestions = Hold()
+        let beforeDone = Hold()
+
+        func answer(_ request: AnswerRequest) -> AsyncThrowingStream<AnswerEvent, any Error> {
+            requests.append(request)
+            let isFirst = requests.count == 1
+            return AsyncThrowingStream { continuation in
+                let task = Task { @MainActor in
+                    if isFirst { await self.beforeSuggestions.wait() }
+                    continuation.yield(.suggestions(["Ett", "Två", "Tre"]))
+                    if isFirst { await self.beforeDone.wait() }
+                    continuation.yield(.done(AnswerDone(answered: true)))
+                    continuation.finish()
+                }
+                continuation.onTermination = { _ in task.cancel() }
+            }
+        }
+    }
+
+    /// Main build 44374756678: the other person's turn ended after the three suggestions came but before the
+    /// instruction's `done`. It waited for the instruction and was then dropped, so their line got no suggestion
+    /// (and `askingForMoreShowsAndSpeaksAllThisTimeOnly` failed whenever `done` was the slower of the two).
+    @Test func aTurnBetweenTheSuggestionsAndDoneGetsItsSuggestion() async {
+        let provider = HeldProvider()
+        provider.beforeSuggestions.release()
+        let rig = makeRig(provider: provider)
+        await rig.model.startHandsFree(.social)
+        rig.model.study.level(-70, at: Date())
+
+        rig.model.receiveFinalTranscript("Lumen, ge mig tre pickup lines", at: Date())
+        #expect(await waitUntil { rig.model.rizz?.suggestions == ["Ett", "Två", "Tre"] })
+        #expect(await waitUntil { ["Ett", "Två", "Tre"].allSatisfy { line in rig.apple.calls.contains { $0.text == line } } })
+        #expect(rig.model.liveMode.isInstructing, "the instruction's `done` has not come")
+
+        await quiet(rig.model)
+        speak("Vad gör ni i helgen", level: -40, model: rig.model)
+        #expect(provider.requests.count == 1, "the instruction goes first")
+        #expect(rig.model.rizz?.suggestions == ["Ett", "Två", "Tre"], "and nothing replaces the three meanwhile")
+
+        provider.beforeDone.release()
+        #expect(await waitUntil { provider.requests.count == 2 }, "the turn that waited is asked for")
+        #expect(provider.requests.last?.persona?.social?.calibrate == nil, "as an ordinary suggestion")
+        #expect(await waitUntil { rig.model.rizz?.suggestions == ["Ett"] })
+        #expect(await waitUntil { !rig.model.liveMode.isInstructing })
+    }
+
+    /// As before: a turn that ended before the three came is not asked for after them (nothing replaces them at once).
+    @Test func aTurnBeforeTheThreeCameIsNotAskedForAfterThem() async {
+        let provider = HeldProvider()
+        let rig = makeRig(provider: provider)
+        await rig.model.startHandsFree(.social)
+        rig.model.study.level(-70, at: Date())
+
+        rig.model.receiveFinalTranscript("Lumen, ge mig tre pickup lines", at: Date())
+        #expect(await waitUntil { provider.requests.count == 1 && rig.model.liveMode.isInstructing })
+        speak("Vad gör ni i helgen", level: -40, model: rig.model) // while the instruction is on its way
+        #expect(provider.requests.count == 1)
+
+        provider.beforeSuggestions.release()
+        #expect(await waitUntil { rig.model.rizz?.suggestions == ["Ett", "Två", "Tre"] })
+        provider.beforeDone.release()
+        #expect(await waitUntil { !rig.model.liveMode.isInstructing })
+        try? await Task.sleep(for: .milliseconds(100))
+        #expect(provider.requests.count == 1 && rig.model.rizz?.suggestions == ["Ett", "Två", "Tre"])
     }
 
     @Test func theWordsBeforeTheNameStayConversation() async {

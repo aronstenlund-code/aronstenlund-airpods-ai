@@ -98,3 +98,52 @@ Deno.test("K106 (live 18:14): a fix that repeats another question or asks two th
   assert(seen.some((x) => x.user.includes("<other_questions>")));
   assertEquals(oneAsk("What did Gutenberg take from earlier technology, and what was that technology used for?"), "What did Gutenberg take from earlier technology?");
 });
+
+Deno.test("K106 (live 18:24): the refill's questions are one question each too", async () => {
+  const { refillQuestions } = await import("./drill.ts");
+  const llm: LLMProvider = {
+    name: "fake", model: "sonnet-fake",
+    async *stream(): AsyncIterable<LLMChunk> {
+      yield { type: "text", text: JSON.stringify({ questions: ["Vilka ämnen bryter nedbrytarna ner döda djur till, och hur tar växterna upp dem?"] }) } as LLMChunk;
+    },
+  };
+  const r = await refillQuestions(llm, DEFAULT_DRILL_CONFIG, ["Vad är en toppkonsument?"], 1, "material");
+  assertEquals(r.questions, ["Vilka ämnen bryter nedbrytarna ner döda djur till?"]);
+});
+
+Deno.test("K106 (Oscar omtest K106 F1): a second 'fact' try when the first fix is still unanswered; alike answers alone change nothing", async () => {
+  const seen: LLMRequest[] = [];
+  const llm: LLMProvider = {
+    name: "fake", model: "sonnet-fake",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      seen.push(req);
+      let answers;
+      if (req.user.includes("<must_fix>fact</must_fix>")) {
+        answers = [{ id: "q1", question: "Vad gjorde bönderna i Dalarna?", short: "Bönderna i Dalarna gick med i upproret mot danskarna.", rest: "Mer." }];
+      } else if (req.user.includes("<must_fix>yes</must_fix>") && req.user.includes('"q1"')) {
+        answers = [{ id: "q1", question: "Hur fick Gustav Vasa med sig bönderna?", short: "Hur han fick med sig dem förklaras inte närmare här.", rest: "Mer." }];
+      } else if (req.user.includes("<must_fix>yes</must_fix>") && req.user.includes('"q3"')) {
+        answers = [{ id: "q3", question: "Vart försvinner resten av energin?", short: "Resten av energin används till att röra sig och hålla värmen och blir till slut värme.", rest: "Mer." }];
+      } else {
+        answers = [
+          { id: "q1", short: "Varför bönderna följde honom är inte känt här.", rest: "Mer." },
+          { id: "q2", short: "Bara ungefär en tiondel av energin följer med till nästa nivå i näringskedjan.", rest: "Mer." },
+          { id: "q3", short: "Eftersom bara ungefär en tiondel av energin följer med till nästa nivå i näringskedjan.", rest: "Mer." },
+        ];
+      }
+      yield { type: "text", text: JSON.stringify({ answers }) };
+      yield { type: "usage", inputTokens: 100, outputTokens: 50 };
+    },
+  };
+  const items = [
+    { id: "q1", question: "Varför fick Gustav Vasa med sig bönderna?" },
+    { id: "q2", question: "Vad händer med energin från en nivå till nästa?" },
+    { id: "q3", question: "Varför finns det fler växter än växtätare?" },
+  ];
+  const r = await answerItems(llm, DEFAULT_DRILL_CONFIG, items, { subject: "Biologi", grade: "åk 8", notes: "n", longWords: 60, mayFix: true });
+  assertEquals(r.items[0].question, "Vad gjorde bönderna i Dalarna?");
+  assertEquals(notAnswered(r.items[0].short!), false);
+  // live 18:38: alike short ANSWERS alone never change a question (that moved good questions to other topics)
+  assertEquals(r.items[2].question, "Varför finns det fler växter än växtätare?");
+  assertEquals(r.items[1].question, "Vad händer med energin från en nivå till nästa?");
+});

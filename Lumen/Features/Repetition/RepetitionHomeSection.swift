@@ -28,6 +28,8 @@ struct RepetitionHomeSection: View {
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
     @AppStorage("repetition.textControlsChecked") private var textControlsChecked = false // A106 (Ke63 §4.1)
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
+    private var reduceMotion: Bool { SayMotion.reduces(systemReduceMotion) }
 
     /// A100 (Deangelo 2026-11-14, Toby T21 finding 2): "Fler lägen · Beta · använder mikrofonen" is shown only once
     /// the user has started a first exam (the control check before the first Starta prov sets `controlsChecked`).
@@ -326,6 +328,7 @@ struct RepetitionHomeSection: View {
                     }
                     .buttonStyle(.bordered)
                     .tint(.accentColor)
+                    .transition(SayMotion.appear)
                 } else {
                     Button {
                         start(drill)
@@ -333,8 +336,11 @@ struct RepetitionHomeSection: View {
                         FilledButtonLabel { startLabel(saved) } // A95
                     }
                     .buttonStyle(.borderedProminent)
+                    .transition(SayMotion.appear)
                 }
             }
+            // A150 (D231): the filled button changes places with Spela by fading, not by jumping.
+            .animation(SayMotion.change(reduceMotion), value: model.sayHoldsTheStage)
             .controlSize(.large)
             .disabled(!model.canStart(drill) && !model.isReadingAloudOff(drill)) // A112b: the text can be opened
             .accessibilityHint(drill.isText ? "Läser upp texten i dina AirPods. EarMind använder inte mikrofonen."
@@ -451,7 +457,7 @@ struct RepetitionHomeSection: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(.pressFeedback) // A150: the row answers the touch on the way down
             .accessibilityHint("Öppnar provet")
             Button {
                 start(drill)

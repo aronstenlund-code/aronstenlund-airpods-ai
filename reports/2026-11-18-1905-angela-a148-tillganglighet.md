@@ -101,3 +101,13 @@ Första omgången på 17 Pro saknar scenen `repSayText` (körningen avbröts i d
 ## 8. Kvar
 - Kellys granskning av bilderna (Ke79), särskilt taken för textstorlek på Säg-kortet.
 - En granskning i mörkt läge, om Deangelo vill ha den.
+
+## Tillägg 23:03: omgång 5 och 6
+- **Omgång 5** (44363450625, main 9b8c9dcf, med Kellys ord): Kelly godkände orden. Nytt fynd i fem scener: "för liten
+  tryckyta" på de två rader som slogs ihop till en VoiceOver-mening (tryckraden i spelarna, raden på kortet som
+  spelar). Kontrasten på 17 Pro var oförändrat 17.
+- **Rättat (main eaa7279f):** raderna är märkta som text. VoiceOver säger klockans minuter (7:07 är "7 minuter kvar",
+  sista minuten "under en minut kvar").
+- **Omgång 6** (44369572808, de fem scenerna): 0 fynd om tryckyta på 17 Pro och på SE med AX5. **Verifierat i
+  Simulatorns granskning, inte med VoiceOver på telefon.**
+

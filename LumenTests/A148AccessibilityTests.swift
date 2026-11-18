@@ -30,8 +30,11 @@ import UIKit
 
     @Test func theCardThatPlaysIsOneSentence() {
         #expect(SayText.spokenPlaying(voice: "Astrid", secondsLeft: 420, paused: false) == "Spelar i AirPods med Astrid, 7 minuter kvar")
-        #expect(SayText.spokenPlaying(voice: nil, secondsLeft: 30, paused: false) == "Spelar i AirPods, 1 minut kvar")
-        #expect(SayText.spokenPlaying(voice: "Astrid", secondsLeft: 61, paused: true) == "Spelar i AirPods med Astrid, 2 minuter kvar, pausad")
+        // Kelly Ke79 round 5: the minutes on the clock, never one more (7:07 is 7).
+        #expect(SayText.spokenPlaying(voice: "Astrid", secondsLeft: 427, paused: false) == "Spelar i AirPods med Astrid, 7 minuter kvar")
+        #expect(SayText.spokenPlaying(voice: nil, secondsLeft: 30, paused: false) == "Spelar i AirPods, under en minut kvar")
+        #expect(SayText.spokenPlaying(voice: nil, secondsLeft: 0, paused: false) == "Spelar i AirPods, under en minut kvar")
+        #expect(SayText.spokenPlaying(voice: "Astrid", secondsLeft: 61, paused: true) == "Spelar i AirPods med Astrid, 1 minut kvar, pausad")
     }
 
     // MARK: Contrast (WCAG AA: 4.5:1 for small text)
