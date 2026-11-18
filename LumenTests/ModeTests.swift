@@ -638,6 +638,33 @@ import Testing
         #expect(prov.turns.isEmpty)
     }
 
+    /// D231 (A149, G7 step 7b): the voice channel ("Lumen, …", the short commands and the tips) is
+    /// `VoiceCommandsController`. The model and the screens reach it through the model, as before.
+    @Test func theVoiceChannelIsItsOwnPart() {
+        let rig = makeRig(events: [], microphone: .iPhone)
+        let voice = rig.model.voiceCommands
+        #expect(voice.host === rig.model)
+        #expect(rig.model.tipNotice == nil && voice.tipNotice == nil)
+        #expect(rig.model.commandsLine(for: .prov) == voice.commandsLine(for: .prov))
+
+        // Words that are not for Lumen are conversation.
+        #expect(!voice.heard(in: "vi ses i morgon", at: Date()))
+
+        // A level 1 command is done on the phone: "kortare" sets the session's length, through the model or the part.
+        rig.model.runCommand(.shorter)
+        #expect(rig.model.answers.sessionLength == .short)
+        voice.runCommand(.longer)
+        #expect(rig.model.answers.sessionLength == .long)
+
+        // "Lumen, kortare" is for Lumen. The same command again within 5 s is one command (the partial and the final
+        // result both carry it), so the length chosen in between stays.
+        #expect(voice.heard(in: "Lumen, kortare", at: Date()))
+        #expect(rig.model.answers.sessionLength == .short)
+        voice.runCommand(.longer)
+        #expect(voice.heard(in: "Lumen, kortare", at: Date()))
+        #expect(rig.model.answers.sessionLength == .long)
+    }
+
     /// D199 step 4 (A119): each mode says what the app must show before it starts; the model shows the sheet or
     /// says the line. The same checks as before the move.
     @Test func eachModeSaysWhatItNeedsBeforeItStarts() async {

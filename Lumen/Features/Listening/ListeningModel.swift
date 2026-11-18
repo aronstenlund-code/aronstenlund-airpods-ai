@@ -26,7 +26,6 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// The hands-free mode to go back to when listening returns after a pause or an interruption (D74).
     private var resumeMode: ConversationMode?
     /// The last voice command and when, so a command seen both as a final result and as a turn runs once.
-    private var lastVoice: (intent: VoiceIntent, at: Date)?
     /// D80: the answer being made before the pause is over. Spoken only when the pause comes and the words did not go on.
     private var ahead: AheadAnswer?
     /// A8.3: the Diagnostics turn rows of the answer in flight and of the answer made ahead.
@@ -39,7 +38,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// The turn being timed, logged at the first sound (D80).
     private var timeline: TurnTimeline?
     /// When the last words were heard (partial or final), for the half-pause TTS prefetch.
-    private var lastHeardAt: Date?
+    private(set) var lastHeardAt: Date?
     private var prefetchTask: Task<Void, Never>?
     /// When the last answer was completed, so a complaint right after it can be reported (D80).
     private(set) var lastAnswerAt: Date?
@@ -244,8 +243,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @ObservationIgnored private var lastAppCommand: (command: AppCommand, previousMode: ConversationMode, wasListening: Bool, at: Date)?
     static let undoWindow: TimeInterval = 5
     /// The tip on the screen, until the next answer.
-    private(set) var tipNotice: String?
-    private var tipTask: Task<Void, Never>?
+    var tipNotice: String? { voiceCommands.tipNotice }
     /// "Sparade kommandot …" after a spoken save, shown once.
     private(set) var commandNotice: String?
     private let warmer: BackendWarmer?
@@ -432,6 +430,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         standardMode.host = self
         provMode.host = self
         turnQueue.host = self
+        voiceCommands.host = self
         #if LUMEN_TESTMODE
         debugAudio.host = self
         #endif
@@ -1299,164 +1298,43 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     // The question gate's timer at the pause (D78, A68, A72) is `StandardModeController` now (D199 step 5).
 
-    /// "Lumen, …" in every mode. True when the words were for Lumen: they are never conversation.
+    /// "Lumen, …" in every mode: what the words mean, the short commands without the name, and the tips are
+    /// `VoiceCommandsController` (D231, G7 step 7b). The screens and the modes use them through the model, as before.
+    /// What touches the session and the sound stays here: the switch, the pause and the stop by voice, the music,
+    /// the loudness and "upprepa".
+    let voiceCommands = VoiceCommandsController()
+
+    /// True when the words were for Lumen: they are never conversation.
     @discardableResult
     private func handleVoice(in text: String, at date: Date) -> Bool {
-        let utterance = VoiceChannel.parse(text)
-        guard let intent = utterance.intent ?? universalIntent(text) else { return false }
-        study.discardTurnText()
-        if let before = utterance.before, study.isActive { study.transcriptFinal(before, at: date) }
-        perform(intent)
-        return true
-    }
-
-    /// A7: "upprepa", "viska", "kortare", "utveckla" … as the whole utterance count without "Lumen", only in
-    /// Provläge and Frågor (the speaker is the user there) and only with the setting on.
-    private func universalIntent(_ text: String) -> VoiceIntent? {
-        guard mode == .prov || mode == .standard, speaker.settings.universalCommands,
-              let action = CommandBook.shared.table.universal(text) else { return nil }
-        return action.level == 1 ? .command(action) : .instruction(action.instruction)
+        voiceCommands.heard(in: text, at: date)
     }
 
     /// A13.3: the "Förhör mig" button on Provläge's empty screen: the same as saying "Lumen, förhör mig".
     func askForQuiz() {
-        tips.markUsed(.quizMe)
-        instruct("förhör mig")
+        voiceCommands.askForQuiz()
     }
 
-    /// A9.1: a used command is never tipped.
-    private func markUsed(_ intent: VoiceIntent) {
-        switch intent {
-        case .switchTo: tips.markUsed(.switchMode)
-        case .pause: tips.markUsed(.musicHandOff)
-        case .stopListening: tips.markUsed(.stop)
-        case .music(let action), .command(let action): tips.markUsed(action)
-        case .complaint: tips.markUsed(.wrong)
-        case .instruction(let text):
-            if let action = CommandAction.allCases.first(where: { $0.level == 2 && $0.instruction == text }) { tips.markUsed(action) }
-            else if text.hasPrefix("förhör mig") { tips.markUsed(.quizMe) }
-        case .remember, .forget, .rule: break
-        }
-    }
-
-    /// A9.1: after an answer, in a natural pause, at most one tip per session and per day. Never during an exam
-    /// session, a mini test, Intervjuläge's question or while anything is heard or said.
     private func scheduleTip() {
-        tipTask?.cancel()
-        guard tips.enabled, !tips.tippedThisSession, conversation.answers.count >= 2 else { return }
-        tipTask = Task { [weak self] in
-            try? await Task.sleep(for: .seconds(Self.tipPause))
-            guard let self, !Task.isCancelled, self.isListening else { return }
-            let quietFor = self.lastHeardAt.map { Date().timeIntervalSince($0) } ?? .infinity
-            var busy = self.exam != nil || self.practice != nil || self.miniTest != nil || self.speaker.isSpeaking || self.speaker.hasPendingSpeech
-                || self.activation.pendingDueAt != nil || self.activation.hasQueued || quietFor < Self.tipPause
-                || self.transcription.hasWaitingWords || self.transcription.vadSpeaking() == true // A56 (Toby T5b finding 3)
-            if case .answering = self.answers.status { busy = true }
-            guard let action = self.tips.next(for: self.mode, busy: busy) else { return }
-            let text = CommandTips.tip(action, table: CommandBook.shared.table)
-            self.tips.tipped(action)
-            self.tipNotice = text
-            self.controller.log("Tip: \(action.rawValue)")
-            self.say(text)
-        }
+        voiceCommands.scheduleTip()
     }
-
-    static let tipPause: TimeInterval = 4
 
     /// The listening screen's line: the three most useful commands for the mode, from the command table.
     func commandsLine(for shown: ConversationMode) -> String {
-        CommandTips.line(for: shown, table: CommandBook.shared.table)
+        voiceCommands.commandsLine(for: shown)
     }
 
     private func perform(_ intent: VoiceIntent) {
-        let now = Date()
-        if let last = lastVoice, last.intent == intent, now.timeIntervalSince(last.at) < 5 { return }
-        lastVoice = (intent, now)
-        markUsed(intent)
-        switch intent {
-        case .switchTo(let target):
-            controller.log("Voice: switch to \(target.rawValue)")
-            Task { await switchByVoice(to: target) }
-        case .pause:
-            controller.log("Voice: pause")
-            Task { await pauseByVoice() }
-        case .stopListening:
-            controller.log("Voice: stop listening")
-            Task { await stopByVoice() }
-        case .instruction(let text):
-            controller.log("Voice: instruction (\(text.count) characters)") // the words stay out of the log
-            // A9.3: these presets are also corrections of the answer just given.
-            if ["förklara enklare", "ge ett exempel"].contains(text) { learnCorrection(text == "ge ett exempel" ? "mer exempel" : "enklare") }
-            instruct(text)
-        case .remember(let text):
-            if memory.add(text, kind: .fact, source: .voice) != nil {
-                controller.log("Voice: remembered (\(text.count) characters)")
-                say(language == .swedish ? "Sparat." : "Saved.")
-                refreshKeyterms()
-            }
-        case .forget(let text):
-            let removed = memory.forget(text)
-            controller.log("Voice: forgot \(removed) item(s)")
-            say(removed > 0 ? (language == .swedish ? "Glömt." : "Forgotten.")
-                            : (language == .swedish ? "Hittade inget att glömma." : "Nothing to forget."))
-            refreshKeyterms()
-        case .rule(let text):
-            if memory.add(text, kind: .rule, source: .voice) != nil {
-                controller.log("Voice: rule saved")
-                say(language == .swedish ? "Regel sparad." : "Rule saved.")
-            }
-        case .music(let action):
-            controller.log("Voice: music \(action.rawValue)")
-            Task { await musicByVoice(action) }
-        case .complaint:
-            controller.log("Voice feedback: the last turn goes to /feedback")
-            learnCorrection("det där var fel")
-            Task { await reportPreviousTurn() }
-        case .command(let action):
-            controller.log("Voice: command \(action.rawValue)")
-            runCommand(action)
-        }
+        voiceCommands.perform(intent)
     }
 
-    /// A7 level 1: done on the phone, no API call. Confirmed briefly, only when nothing else is being said.
+    /// A7 level 1: done on the phone, no API call.
     func runCommand(_ action: CommandAction) {
-        func confirm(_ line: String?) {
-            guard let line, !speaker.isSpeaking, !speaker.hasPendingSpeech else { return }
-            say(line)
-        }
-        switch action {
-        case .repeatAnswer:
-            repeatLastAnswer()
-        case .whisper, .louder:
-            let settings = speaker.settings
-            if action == .louder, settings.speechGain >= 1 {
-                confirm("Det är redan högsta volymen i EarMind. Höj på telefonen.")
-                return
-            }
-            settings.speechGain = action == .whisper ? settings.speechGain * 0.6 : settings.speechGain / 0.6
-            applySpeechVolume()
-            controller.log("Voice gain \(String(format: "%.2f", settings.speechGain))")
-            confirm(action.confirmation)
-        case .shorter, .longer:
-            learnCorrection(action == .shorter ? "kortare" : "längre")
-            answers.sessionLength = action == .shorter ? .short : .long
-            controller.log("Session length \(answers.sessionLength?.rawValue ?? "-")")
-            confirm(action.confirmation)
-        case .saveAnswer:
-            confirm(saveNote() != nil ? action.confirmation : "Det finns inget svar att spara.")
-        case .nextExam:
-            if let plan = examPlans?.nearest() {
-                say("\(plan.name), \(plan.whenLine()).")
-            } else {
-                say("Du har inget prov inlagt.")
-            }
-        default:
-            break
-        }
+        voiceCommands.runCommand(action)
     }
 
     /// A7 "upprepa": the last answer's audio again from memory (no TTS call). Recorded while the answer played.
-    private func repeatLastAnswer() {
+    func repeatLastAnswer() {
         // A17: the kept audio for 120 s; after that the same text is read again (no new answer is made).
         if let last = lastAnswerAt, Date().timeIntervalSince(last) > Self.repeatAudioAge,
            let text = conversation.answers.last?.answer, !text.isEmpty {
@@ -1515,7 +1393,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// A7: Lumen's loudness = the mode's level (Rizzläge speaks quietly, D43) × the user's "viska"/"högre".
-    private func applySpeechVolume() {
+    func applySpeechVolume() {
         controller.playback.speechVolume = (rizz != nil ? Self.rizzVolume : 1) * Float(speaker.settings.speechGain)
     }
 
@@ -1572,14 +1450,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         say(VoiceChannel.spokenName(target))
     }
 
-    private func pauseByVoice() async {
+    func pauseByVoice() async {
         guard isListening else { return }
         say(language == .swedish ? "Pausar." : "Pausing.")
         await speechDone()
         await controller.pause()
     }
 
-    private func stopByVoice() async {
+    func stopByVoice() async {
         if silentQuiz != nil {
             provMode.silentQuiz.end() // A20.2: the first "sluta" ends the quiz, the next one Provläge
             return
@@ -2878,8 +2756,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     func answerStarted(_ request: ActivationRequest, source: String) {
         if request.trigger == .rizz { return } // suggestions have no answer of their own
         if bufferAhead(.started(request, source: source)) { return }
-        tipTask?.cancel()
-        tipNotice = nil
+        voiceCommands.clearTip()
         standardMode.more.close(why: "a new answer")
         conversation.beginAnswer(question: request.query, source: source, at: request.createdAt,
                                  isOwnQuestion: request.trigger.isUsersOwnWords)
@@ -3057,7 +2934,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
 
     /// The spoken command: the last answer, or the suggestion on screen in Rizzläge. Confirms by voice.
-    private func reportPreviousTurn() async {
+    func reportPreviousTurn() async {
         let suggestion = rizz?.current.map { AnswerTurn(question: "", answer: $0, source: "rizz", isOwnQuestion: false) }
         guard let turn = suggestion ?? conversation.answers.last else {
             reportNotice = language == .swedish ? "Inget svar att rapportera" : "No answer to report"
@@ -3474,6 +3351,9 @@ extension ListeningModel: ProvModeHost {
         studyHistory.save()
     }
 }
+
+/// D231 (A149, G7 step 7b): what the voice channel uses (`VoiceCommandsHost`): the model's own calls, unchanged.
+extension ListeningModel: VoiceCommandsHost {}
 
 /// D221 (A137, G7 step 7a): what the queue of split turns uses (`TurnQueueHost`): the model's own calls, unchanged.
 extension ListeningModel: TurnQueueHost {
