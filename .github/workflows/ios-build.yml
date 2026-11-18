@@ -75,7 +75,7 @@ jobs:
     name: Build (iOS 26) + unit tests
     # Phase 1a 3.1: macOS 26 image with Xcode 26.x (actions/runner-images "macos-26").
     runs-on: macos-26
-    timeout-minutes: 60
+    timeout-minutes: 80
     steps:
       - uses: actions/checkout@v5
 
@@ -169,6 +169,65 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             2>&1 | tee build-logs/xcodebuild-test.log | xcbeautify --renderer github-actions
+
+      # A142 (D218 point 4, D226): the App Store build (Release) must compile and must not contain the test mode, which
+      # sends the microphone's audio to us (D140). The test mode is compiled only with LUMEN_TESTMODE (Debug and Beta).
+      # The Debug build from the step above is the control: the same search must find the test mode there, or the
+      # search itself is broken.
+      - name: Release build has no test mode (A142)
+        run: |
+          set -euo pipefail
+          mkdir -p build-logs
+          xcodebuild build \
+            -project Lumen.xcodeproj \
+            -scheme Lumen \
+            -configuration Release \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath DerivedData-release \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            2>&1 | tee build-logs/xcodebuild-release.log | xcbeautify --renderer github-actions
+          RELEASE="DerivedData-release/Build/Products/Release-iphoneos/Lumen.app"
+          DEBUG="DerivedData/Build/Products/Debug-iphoneos/Lumen.app"
+          test -d "$RELEASE" && test -d "$DEBUG"
+          # The server address of the test mode and the types that keep and send the audio.
+          MARKS='functions/v1/debug-audio|DebugAudioWriter|DebugAudioClient|DebugPieceStore|DebugAudioController|DebugTurnBody'
+          IN_DEBUG="$(LC_ALL=C grep -rlaE "$MARKS" "$DEBUG" || true)"
+          if [ -z "$IN_DEBUG" ]; then
+            echo "::error::The control failed: the test mode was not found in the Debug build, so the search proves nothing"
+            exit 1
+          fi
+          echo "Control: the test mode is in the Debug build ($(echo "$IN_DEBUG" | wc -l | tr -d ' ') files)"
+          IN_RELEASE="$(LC_ALL=C grep -rlaE "$MARKS" "$RELEASE" || true)"
+          if [ -n "$IN_RELEASE" ]; then
+            echo "$IN_RELEASE"
+            echo "::error::The test mode (D140) is in the Release build. It may only be in Debug and Beta (A142, D226)"
+            exit 1
+          fi
+          echo "Release check: no test mode in the Release build"
+
+      # A142: the build for TestFlight and our testers (Beta) on request: it must compile and must have the test mode.
+      - name: Beta build has the test mode (A142, manual runs)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          set -euo pipefail
+          mkdir -p build-logs
+          xcodebuild build \
+            -project Lumen.xcodeproj \
+            -scheme Lumen \
+            -configuration Beta \
+            -destination 'generic/platform=iOS' \
+            -derivedDataPath DerivedData-beta \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGN_IDENTITY="" \
+            2>&1 | tee build-logs/xcodebuild-beta.log | xcbeautify --renderer github-actions
+          BETA="DerivedData-beta/Build/Products/Beta-iphoneos/Lumen.app"
+          test -d "$BETA"
+          LC_ALL=C grep -rlaE 'functions/v1/debug-audio' "$BETA" >/dev/null || {
+            echo "::error::The test mode is missing from the Beta build (A142, D226)"; exit 1; }
+          echo "Beta check: the test mode is in the Beta build"
 
       # D70: an unsigned .ipa the owner installs with Sideloadly (Windows, free Apple ID). Only after every step above
       # is green, and only for main or a manual run. Debug configuration: Diagnostics and the WAV export stay in.
