@@ -70,3 +70,9 @@ körning (`angela/a11y-a148-5-*`).
 1. **"8 minuter kvar" när det står 7:07:** avrunda nedåt (7:07 → "7 minuter kvar"); under 1 minut: "under en minut kvar".
 2. **Spelar-raden** (den hopslagna) får fyndet "hit area too small" (15 punkter hög): den ska inte vara tryckbar; ta bort
    knappegenskapen från den hopslagna raden, eller gör hela raden minst 44 hög om den ska gå att trycka på.
+
+## Körning 6 (angela/a11y-a148-6-17pro, 44369572808, main eaa7279f)
+"Spelar i AirPods med Astrid, 7 minuter kvar" (7:07 avrundat nedåt) och 0 fynd om tryckyta i repSayOnCard, repPaused,
+repPlayAnswer, repSayPlay och repTextPlay. **Verifierat i Xcodes granskning i Simulatorn.** Litet kvar, valfritt:
+spelaren läser "Varv 3 · 7:07 kvar av 10 min" som klockslag; samma avrundning ("7 minuter kvar av 10") vore enhetligt.
+**Ke79 avslutad.**
