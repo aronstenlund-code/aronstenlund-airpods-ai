@@ -1046,13 +1046,22 @@ export function noParens(s: string): string {
   return s.replace(/[ \t]*\([ \t]*/g, ", ").replace(/[ \t]*\)/g, ",").replace(/,[ \t]*([.!?,;:])/g, "$1").replace(/^, /, "");
 }
 
+/**
+ * K103 (live 13:32, k9-neg-5: "Scenario RCP4.5" kept the digit 4): a number glued to a code of three or more capital
+ * letters ("RCP4.5", "SSP585") is said apart from it, with a decimal comma. Two-letter codes (CO2, H2O) are formulas
+ * and are left to the formula rules. Only the spoken answer, never the drill voice text (K74).
+ */
+export function codeNumbers(s: string): string {
+  return s.replace(/(?<![\p{L}\d])(\p{Lu}{3,})(\d+)(?:\.(\d+))?(?![\p{L}\d])/gu, (_m, c: string, a: string, b?: string) => `${c} ${a}${b ? "," + b : ""}`);
+}
+
 // ---------- 3. digits -> words across chunk boundaries ----------
 export class NumberStream {
   private buf = "";
   private tail = ""; // last raw text already passed on (context for the phone-number guard)
 
   private say(raw: string): string {
-    const out = noParens(toSpeech(raw, this.tail));
+    const out = noParens(toSpeech(codeNumbers(raw), this.tail));
     this.tail = (this.tail + raw).slice(-120);
     return out;
   }
