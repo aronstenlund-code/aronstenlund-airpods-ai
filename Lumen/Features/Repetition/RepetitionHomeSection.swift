@@ -258,13 +258,16 @@ struct RepetitionHomeSection: View {
                         } icon: {
                             Image(systemName: "flame").accessibilityHidden(true) // A95 (Toby): not read as "Flamma"
                         }
+                        .foregroundStyle(LumenColor.secondaryText) // A148: AA, as the other grey text
                     }
                 }
             }
 
             if model.examDrills.count > 1 {
-                Section("Andra prov") {
+                Section {
                     ForEach(model.examDrills.dropFirst()) { drill in otherExam(drill) }
+                } header: {
+                    Text("Andra prov").foregroundStyle(LumenColor.secondaryText) // A148: AA
                 }
             }
 

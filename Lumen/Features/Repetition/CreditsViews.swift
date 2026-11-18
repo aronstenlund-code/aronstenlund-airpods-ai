@@ -136,9 +136,10 @@ struct CreditsSheet: View {
                                 LabeledContent(row.title, value: row.value)
                             }
                         } header: {
-                            Text("Så räknas det")
+                            Text("Så räknas det").foregroundStyle(LumenColor.secondaryText) // A148: AA
                         } footer: {
                             Text(verbatim: CreditText.footnote(limit: quota.limit, resetsDay: quota.resetsDay))
+                                .foregroundStyle(LumenColor.secondaryText)
                         }
                     } else if !rows.isEmpty {
                         Section {

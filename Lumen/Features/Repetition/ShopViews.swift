@@ -34,9 +34,9 @@ struct ShopSections: View {
                     row(item, title: ShopText.pack(item.credits ?? 0), line: nil, badge: item.id == StoreCatalog.bestValue)
                 }
             } header: {
-                Text("Fyll på")
+                Text("Fyll på").foregroundStyle(LumenColor.secondaryText) // A148: AA
             } footer: {
-                Text(verbatim: ShopText.examLine)
+                Text(verbatim: ShopText.examLine).foregroundStyle(LumenColor.secondaryText)
             }
         }
         if shop.hasNoProducts {
@@ -45,7 +45,7 @@ struct ShopSections: View {
                 Text(verbatim: ShopText.noProducts).foregroundStyle(LumenColor.secondaryText)
                 Button(ShopText.tryAgain) { Task { await shop.reload() } }
             } header: {
-                Text("Fyll på")
+                Text("Fyll på").foregroundStyle(LumenColor.secondaryText) // A148: AA
             }
         }
         if let card = shop.weeklyCard, !quota.hasWeeklyCard {
@@ -69,6 +69,7 @@ struct ShopSections: View {
                 if let card = shop.weeklyCard {
                     // A148: VoiceOver reads the path with commas, not the arrow signs.
                     Text(verbatim: ShopText.terms(price: card.displayPrice))
+                        .foregroundStyle(LumenColor.secondaryText)
                         .accessibilityLabel(ShopText.terms(price: card.displayPrice).replacingOccurrences(of: " › ", with: ", "))
                 }
                 links

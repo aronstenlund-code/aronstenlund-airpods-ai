@@ -20,7 +20,9 @@ struct AccountSection: View {
                 }
                 .accessibilityElement(children: .combine)
             } else {
-                Button("Radera konto", role: .destructive) { asks = true }
+                Button(role: .destructive) { asks = true } label: {
+                    Text("Radera konto").foregroundStyle(LumenColor.redText) // A148: the system's red is 3.6:1
+                }
             }
             Button("Hantera prenumerationer") { managesSubscriptions = true }
                 .manageSubscriptionsSheet(isPresented: $managesSubscriptions)

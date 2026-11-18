@@ -24,6 +24,9 @@ enum LumenColor {
     /// label is 3.4:1 on white ("nearly passed" in the accessibility audit). #5C5C63 is 6.6:1 on white and 5.9:1 on
     /// the grouped background; #ABABB3 is 7.5:1 on the dark cards.
     static let secondaryText = dynamic(0x5C5C63, 0xABABB3)
+    /// A148: red text that passes AA. The system's red is 3.6:1 on white ("nearly passed"); #C0271F is 5.9:1 on white
+    /// and #FF8A80 is 7.5:1 on the dark cards.
+    static let redText = dynamic(0xC0271F, 0xFF8A80)
     static let blue = dynamic(0x2346C8, 0x7F9BFF)
     static let red = Color(uiColor: .systemRed)
     static let onBlue = dynamic(0xFFFFFF, 0x0E1630)
