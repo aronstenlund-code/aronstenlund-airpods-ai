@@ -151,3 +151,18 @@ Deno.test("K104 (live 13:49: `searching` came 2 ms before the first word): the d
   assert(seen[0][1] < 150, `searching after ${seen[0][1]} ms`);
   assert(seen[2][1] >= 250);
 });
+
+import { isSearchMeta } from "./speech.ts";
+Deno.test("K104 (Oscar O88 N1): a sentence about sources, the web or own knowledge is never said; the answer is", () => {
+  for (const s of [
+    "Det här är ett recept som inte kräver aktuell information, så jag svarar direkt från kunskap.",
+    "Tyvärr kan jag inte se vilka källor som finns just nu, så jag svarar utan webbuppslag.",
+    "Jag svarar utifrån min egen kunskap.",
+  ]) assert(isSearchMeta(s), s);
+  for (const s of [
+    "Så här gör du pannkakor: vispa tre ägg med sex deciliter mjölk.",
+    "Det här är ett recept som passar barn.",
+    "Källan till Nilen ligger i Östafrika.",
+    "Kunskap om vulkaner kommer från mätningar.",
+  ]) assertEquals(isSearchMeta(s), false, s);
+});
