@@ -281,7 +281,8 @@ Deno.test("K51 D159: never more questions than the material carries; answers onl
   const j = await (await h(post({ action: "drill", text: "kort material", questions: 20 }))).json();
   assertEquals([j.questions_asked, j.questions_possible, j.items.length], [20, 3, 3]);
   assertEquals(j.note, "Materialet räckte till 3 frågor.");
-  const asked = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(llm.calls.at(-1)!.user)![1]);
+  // the first answer call (K106: identical answers are asked again one by one afterwards)
+  const asked = JSON.parse(/<questions>([\s\S]*)<\/questions>/.exec(llm.calls.find((c) => c.system.includes("You write the answers"))!.user)![1]);
   assertEquals(asked.length, 3, "no Claude answers for questions that are not made");
   // when the material carries enough: no note
   const full = mkPlan({ summary: {}, notes: "", questions_possible: 25, questions: ["Varför A?", "Varför B?", "Varför C?"] });
