@@ -61,3 +61,12 @@ Angela Schrute rättar orden och träffytorna (förslagen i `prompts/queue/angel
 VoiceOver-orden 2–9 gjorda (enligt `reports/2026-11-18-1905-angela-a148-tillganglighet.md` §3); "›" är redan dolt
 (XCUI-trädet visar dolda element); grå text är en egen färg med 5,9–7,5:1 (godkänd). Kelly granskar orden i nästa
 körning (`angela/a11y-a148-5-*`).
+
+## Granskning av körning 5 (angela/a11y-a148-5-17pro, 44363450625, commit 9b8c9dc)
+**Orden är rätt** (VoiceOver-trädet i Simulatorn): "Säg i AirPods" (iOS lägger till textfält), "Kostar 120 krediter",
+"Kostar 120 krediter, du har 88. Fyll på" (en knapp), hela texten på Senaste, "Långt svar: …" före svaret,
+"Långt svar: 1 tryck. Kort svar: 2 tryck. Paus: 3 tryck." en gång, "Köp 2 000 krediter för 110,00 kr, bäst värde",
+"Tempo, normal", "Spelar i AirPods med Astrid, … kvar". **Ke79 är klar.** Två småsaker till Angela:
+1. **"8 minuter kvar" när det står 7:07:** avrunda nedåt (7:07 → "7 minuter kvar"); under 1 minut: "under en minut kvar".
+2. **Spelar-raden** (den hopslagna) får fyndet "hit area too small" (15 punkter hög): den ska inte vara tryckbar; ta bort
+   knappegenskapen från den hopslagna raden, eller gör hela raden minst 44 hög om den ska gå att trycka på.
