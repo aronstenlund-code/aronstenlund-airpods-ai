@@ -157,6 +157,7 @@ import Testing
         #expect(SayText.soundMark(said, voices: voices) == nil)
         said.voiceID = "nils000000000004"
         #expect(SayText.soundMark(said, voices: voices) == "Nils" && SayText.soundMark(said, voices: []) == nil)
+        #expect(SayText.soundMark(said, voices: voices, defaultName: "Nils") == nil, "the default voice is not named (Kelly)")
         said.style = "Lugnt, som en lärare"
         #expect(SayText.soundMark(said, voices: voices) == "Lugnt", "the style goes before the voice")
     }
@@ -359,6 +360,34 @@ import Testing
         store.save(exam)
         #expect(await audio.startAudio(exam))
         #expect(cloud.oneCalls.count == 1 && cloud.saves.count == 1 && cloud.startCalls == 1)
+    }
+
+    /// Kevin: a text sent again after a timeout is answered with the saved exam, unstarted; the app starts it.
+    @Test func anAlreadySavedTextIsStartedWithStart() async throws {
+        let (model, cloud, store, audio) = try model("k100-already")
+        cloud.oneCall = true
+        cloud.alreadySaved = true
+        let said = try #require(await model.say("En text som sparades förut.", repeatMinutes: 10))
+        model.end()
+        for _ in 0..<50 where audio.preparing.contains(said.id) { try? await Task.sleep(for: .milliseconds(2)) }
+        #expect(cloud.oneCalls.count == 1 && cloud.startCalls == 1 && store.drill(said.id)?.awaitsAudioStart == false)
+    }
+
+    /// A147 (D230): the server is woken when the app opens or comes back, at most once per 2 minutes.
+    @Test func theServerIsWokenAtMostEveryTwoMinutes() async throws {
+        let (model, cloud, _, _) = try model("a147-warm")
+        var now = Date(timeIntervalSince1970: 1_800_000_000)
+        model.clock = { now }
+        model.warmServer()
+        model.warmServer() // back again at once: not again
+        now += 119
+        model.warmServer()
+        for _ in 0..<50 where cloud.warms < 1 { try? await Task.sleep(for: .milliseconds(2)) }
+        #expect(cloud.warms == 1)
+        now += 2
+        model.appBecameActive()
+        for _ in 0..<50 where cloud.warms < 2 { try? await Task.sleep(for: .milliseconds(2)) }
+        #expect(cloud.warms == 2, "after two minutes, coming back wakes it again")
     }
 
     @Test func theCatalogIsReadOnceAndAnEmptyOneShowsNoVoices() async throws {

@@ -61,6 +61,10 @@ print("ok   " if ok else "FEL  ", "O85 1: allt utan giltig token ger 401 (ingen 
 print("     " + json.dumps(res, ensure_ascii=False)[:2500], flush=True)
 print("ok   " if w_ok else "FEL  ", "O85 2: warm utan token ger 204 utan innehåll", json.dumps([[s, b, ms] for s, b, ms in w]), flush=True)
 print("ok   " if s_ok == 200 else "FEL  ", "O85 3: riktig token fungerar som förut", s_ok, drills, flush=True)
+# K102: warm-gräns 30/min per IP och warm även med token
+burst = [raw({"action": "warm"}, {"content-type": "application/json"})[0] for _ in range(40)]
+wt = raw({"action": "warm"}, {"content-type": "application/json", "apikey": T.KEY, "authorization": f"Bearer {tok}"})
+print("     O85 4: 40 warm i rad:", json.dumps({str(k): burst.count(k) for k in sorted(set(burst))}), "| warm med riktig token:", wt[0], wt[1][:60], flush=True)
 for d in json.loads(T.call("POST", "/functions/v1/drill", {"action": "list"}, tok)[2] or b"{}").get("drills") or []:
     T.call("POST", "/functions/v1/drill", {"action": "delete", "id": d["id"]}, tok)
 print(f"\n=== O85 {'3/3' if ok and w_ok and s_ok == 200 else 'FEL'}")

@@ -73,7 +73,7 @@
 - [x] klar 2026-11-18 10:18 → reports/2026-11-18-1018-angela-fable-a144-granserna-d225.md (Angela Fable (moln); 44268556092 grön på min gren efter omkörning; inte sett på bild eller mot servern) **A144 – Gränserna i D225** (effort: low). Lagd av Deangelo 2026-11-18 09:45. Svar på ditt förslag: för en ny text visas "Det tar längre tid än vanligt." efter 8 s (inte ett fel), och felraden med Försök igen kommer först efter 25 s eller när telefonen vet att nätet saknas. Ljud som redan finns på telefonen spelas direkt, som förut. Tester med fejkade tider. Rapport, push.
 - [x] inlagt 2026-11-18 10:35 (ett anrop för en ny Säg-text; 44274972565 grön på min gren; inte kört mot servern) → reports/2026-11-18-1018-angela-fable-a144-granserna-d225.md (Från Kevin (moln) 2026-11-18 10:00, till Angela Fable; stod i A144-raden) **Kevin (moln) 2026-11-18 10:00, K100:** skicka för en ny Säg-text `save` med `start: true` (utan `defer_audio`) i stället för save + start. Det blir ett anrop: median 1,4 s, max 1,6 s live (två anrop nu 2,9 s / 4,7 s). Svaret har samma form som starts (`drill.audio_started: true`, delarna med `audio.*.status` pending tills klart). → `reports/2026-11-18-1000-kevin-o78-k100-oscar.md`
 
-- [ ] **A147 – Värm /drill när appen öppnas (D230)** (effort: low). Lagd av Deangelo 2026-11-18 12:25. Skicka `{"action":"warm"}` till /drill (utan token) när appen startar eller kommer tillbaka till förgrunden, högst en gång per 2 minuter, och utan att vänta på svaret. Så slipper användarens första Spela den kalla starten (7–11 s, Oscar O84). Test, rapport, push.
+- [x] klar 2026-11-18 13:15 → reports/2026-11-18-1315-angela-fable-a147-varm-drill.md (Angela Fable (moln); 44297509589 grön på min gren; inte kört mot servern) **A147 – Värm /drill när appen öppnas (D230)** (effort: low). Lagd av Deangelo 2026-11-18 12:25. Skicka `{"action":"warm"}` till /drill (utan token) när appen startar eller kommer tillbaka till förgrunden, högst en gång per 2 minuter, och utan att vänta på svaret. Så slipper användarens första Spela den kalla starten (7–11 s, Oscar O84). Test, rapport, push. **Kevin (moln) 12:40:** `warm` svarar 204 med eller utan token (läser inga kontodata). Det tillåts 30 per minut och IP-adress; fler ger 429, som du kan ignorera. Vänta aldrig på svaret. → `reports/2026-11-18-1240-kevin-k102-forstaelse-fulla-prov-warm.md`
 
 - [ ] (Till Angela Fable från Toby (moln), 2026-11-18 11:30, inte en punkt från Deangelo) **A144 + K100: väntraderna syns inte när kortet redan spelar** (effort: low). T36-körning 44283940066 (main a948c551 med K100, Simulator):
   - Med `x-earmind-test: slow` (ljudet blir aldrig klart) går kortet efter Spela direkt till spelläget. Där står "Gör ljudet …" med tiden som räknas ner ("9:17 kvar") och Pausa/Stoppa.
@@ -82,3 +82,12 @@
   - För användaren står "Gör ljudet …" och tiden räknas ner utan ljud, utan slut.
   - Med vanligt testljud tog Spela till "Gör ljudet …" 1,1 s (K100 OK).
   - **Verifierat i Simulator**, inte på enhet.
+
+- [ ] **A150 – Rörelse och känsla enligt Kellys design (D231)** (effort: high). Lagd av Deangelo 2026-11-18 13:00. Efter A147. Gå igenom docs/design/forsta-skarmen.md, sag-i-airpods.md, kop.md och stil-och-roster.md mot appen. Det gäller hur det känns: tryckåterkoppling direkt vid tryck, bladens in- och utgång från rätt håll, fjädrar utan studs där inget kastats, inget som hoppar när tal byts, och minskad rörelse respekterad. Rätta avvikelserna, med bilder eller korta skärminspelningar till Kelly. 0 ElevenLabs. Rapport, tavla, push.
+
+- [ ] (Till Angela Fable från Toby (moln), 2026-11-18 18:00, inte en punkt från Deangelo) **Utan nät säger en ny Säg-text ingenting längre (efter K100?)** (effort: low). T36 44312213280 (main med K100 och A145, Simulator):
+  - Med nätet av och en ny text tryckte testet på "Spela i 10 min". På 25 s kom ingen rad, knappen hette kvar "Spela i 10 min", och kortet bytte inte läge.
+  - Före K100 (44235040986, T49) kom "Ingen internetanslutning. Försök igen när du är uppkopplad." efter 1,9 s.
+  - Hänger troligen ihop med A144-fyndet 11:30, att väntraderna inte syns.
+  - Samma text som redan spelats spelar fortfarande utan nät.
+  - **Verifierat i Simulator**, inte på enhet. → tillägget i reports/apptest/2026-11-18-1215-toby-moln-t36-main-a144-k100-release.md

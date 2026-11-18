@@ -138,6 +138,11 @@ Every stage logs timestamps (`os_signpost`) from Phase 1 on.
 Phase 2–4 endpoints:
 - `POST /stt-token` → returns a provider single-use token (no API key on device).
 - `POST /answer` → classifier + answer, streamed (SSE).
+  - **K104 (D233), `event: searching`:** `data: {"tool": "web_search" | "web_fetch", "ms": <ms since the request>}`.
+    - Sent once per answer, as soon as the model starts a web search or fetch. It always comes before the first `delta` of that answer, and may come before `meta`.
+    - Nothing is spoken for it and it costs nothing. The answer itself comes as usual as `delta` and `done`.
+    - The app plays a quiet tone after 1.5 s if no `delta` has come yet (A151). D46 forbids spoken filler.
+    - Because the stream starts when the search starts, an error after the search comes as `event: error` with `fallback: true` inside the stream, not as an HTTP status.
 - `POST /tts` → streams audio (proxy) — or token-based direct connection if the provider supports single-use TTS tokens [ASSUMPTION – verify].
 - Auth: anonymous Supabase auth per install first; rate limiting per user from day one (cost protection).
 

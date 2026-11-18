@@ -1,0 +1,117 @@
+name: Kelly App Store screenshots (full size)
+
+# Kelly Ke80 (D232): App Store pictures in full size (iPhone 17 Pro Max, 6.9": 1320 x 2868). Same steps as Angela
+# Fable's "Fable screens" (which scales down to 1400 px), but nothing is scaled or compressed, only light appearance,
+# and the app starts with `-say.hasPlayed YES` so the line about the locked phone (D209, not tried on a phone) is not
+# in the pictures. One macOS machine per run (D217). Started by hand. Demo data only, no ElevenLabs (D180).
+# Fetch with: git fetch origin <branch>; git archive FETCH_HEAD | tar -x -C <dir>
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Branch the pictures are pushed to (e.g. kelly/appstore-shots-ke80)"
+        required: true
+      screens:
+        description: "Screens to take, separated by spaces"
+        required: true
+      device:
+        description: "Simulator name"
+        required: false
+        default: "iPhone 17 Pro Max"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: kelly-appstore-shots
+  cancel-in-progress: false
+
+jobs:
+  screenshots:
+    runs-on: macos-26
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+
+      - name: Generate project
+        run: |
+          set -euo pipefail
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Pick and boot the simulator
+        id: sim
+        run: |
+          set -euo pipefail
+          JSON="$(xcrun simctl list devices available -j)"
+          RUNTIME="$(echo "$JSON" | jq -r '.devices | keys[] | select(test("iOS-26"))' | sort -V | tail -n 1)"
+          WANT="${{ inputs.device || 'iPhone 17 Pro Max' }}"
+          UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" --arg want "$WANT" '.devices[$rt][] | select(.name == $want) | .udid' | head -n 1)"
+          if [ -z "$UDID" ]; then
+            TYPE="$(xcrun simctl list devicetypes -j | jq -r --arg want "$WANT" '.devicetypes[] | select(.name == $want) | .identifier' | head -n 1)"
+            test -n "$TYPE"
+            UDID="$(xcrun simctl create "$WANT" "$TYPE" "$RUNTIME")"
+          fi
+          echo "udid=$UDID" >> "$GITHUB_OUTPUT"
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+
+      - name: Build for the Simulator
+        run: |
+          set -euo pipefail
+          xcodebuild build \
+            -project Lumen.xcodeproj \
+            -scheme Lumen \
+            -configuration Debug \
+            -destination "id=${{ steps.sim.outputs.udid }}" \
+            -derivedDataPath DerivedData \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | xcbeautify --renderer github-actions
+
+      - name: Take the screenshots (full size, light)
+        run: |
+          set -euo pipefail
+          UDID="${{ steps.sim.outputs.udid }}"
+          APP="$(ls -d DerivedData/Build/Products/Debug-iphonesimulator/Lumen.app)"
+          xcrun simctl install "$UDID" "$APP"
+          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 \
+            --cellularMode active --cellularBars 4 --wifiBars 3 || true
+          xcrun simctl ui "$UDID" appearance light
+          mkdir -p shots
+          for screen in ${{ inputs.screens }}; do
+            xcrun simctl launch --terminate-running-process "$UDID" com.rsolutions.lumen -LumenScreenshot "$screen" \
+              -say.hasPlayed YES -AppleLanguages "(sv)" -AppleLocale sv_SE
+            sleep 10
+            if ! xcrun simctl spawn "$UDID" launchctl list | grep -q com.rsolutions.lumen; then
+              echo "::warning::$screen: the app is not running (crash?)"
+            fi
+            xcrun simctl io "$UDID" screenshot "shots/${screen}.png"
+          done
+          sips -g pixelWidth -g pixelHeight shots/*.png
+
+      - name: Push the pictures to their branch (not scaled)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ inputs.branch }}
+        run: |
+          set -euo pipefail
+          cd shots
+          {
+            echo "run: ${GITHUB_RUN_ID}"
+            echo "commit: ${GITHUB_SHA}"
+            echo "device: ${{ inputs.device }}"
+            for f in *.png; do echo "$f: $(sips -g pixelWidth -g pixelHeight "$f" | awk '/pixel/ {printf "%s ", $2}')"; done
+          } > RUN.txt
+          git init -q -b pictures
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Kelly App Store shots ${GITHUB_RUN_ID} (${GITHUB_SHA:0:7}) [skip eval]"
+          git push -f "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "pictures:refs/heads/${BRANCH}"

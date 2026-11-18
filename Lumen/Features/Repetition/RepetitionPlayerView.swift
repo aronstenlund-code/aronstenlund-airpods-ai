@@ -44,7 +44,7 @@ struct RepetitionPlayerView: View {
                 compactLine(player)
             } else {
                 Spacer()
-                Text(verbatim: endedLine).foregroundStyle(.secondary)
+                Text(verbatim: endedLine).foregroundStyle(LumenColor.secondaryText)
                 Spacer()
             }
         }
@@ -63,7 +63,7 @@ struct RepetitionPlayerView: View {
                 case .thinking:
                     if player.isFirstLap, player.lap == 0 { Text("Tryck på AirPods för svaret") } // Kelly N1
                 case .answer(_, let kind):
-                    Text(kind == .long ? "Långt svar" : "Kort svar").foregroundStyle(.secondary)
+                    Text(kind == .long ? "Långt svar" : "Kort svar").foregroundStyle(LumenColor.secondaryText)
                 case .waitingForAudio:
                     if let soundProblem {
                         // A100 (K62). Kelly: the question stays the biggest thing on the screen, so this long
@@ -71,7 +71,7 @@ struct RepetitionPlayerView: View {
                         Text(verbatim: soundProblem)
                             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     } else {
-                        Text("Gör ljudet …").foregroundStyle(.secondary)
+                        Text("Gör ljudet …").foregroundStyle(LumenColor.secondaryText)
                     }
                 case .question, .idle:
                     EmptyView()
@@ -98,7 +98,7 @@ struct RepetitionPlayerView: View {
                         Spacer(minLength: 0)
                     } else {
                         Spacer()
-                        Text(verbatim: endedLine).foregroundStyle(.secondary)
+                        Text(verbatim: endedLine).foregroundStyle(LumenColor.secondaryText)
                         Spacer()
                     }
                 }
@@ -213,7 +213,7 @@ struct RepetitionPlayerView: View {
                 }
             }
             .font(.subheadline)
-            .foregroundStyle(.secondary)
+            .foregroundStyle(LumenColor.secondaryText)
             ProgressView(value: Double(player.index + 1), total: Double(max(player.count, 1)))
                 .tint(Color.primary)
                 .accessibilityHidden(true)
@@ -239,9 +239,11 @@ struct RepetitionPlayerView: View {
                 .accessibilityAction(named: player.isPaused ? "Fortsätt" : "Paus") { session.press(.pauseToggle) }
             if !compact, case .answer(_, let kind) = player.phase, let item, !player.isPaused {
                 Text(verbatim: kind == .short ? item.shownShort : item.shownLong) // A102
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(LumenColor.secondaryText)
                     .multilineTextAlignment(.center)
                     .lineLimit(8)
+                    // Ke79: VoiceOver says which answer it is before the answer.
+                    .accessibilityLabel("\(kind == .short ? "Kort svar" : "Långt svar"): \(kind == .short ? item.shownShort : item.shownLong)")
             } else if case .waitingForAudio = player.phase, let item, model.soundIsNotComing(drill) {
                 // A112 (D200): reading aloud is off for now, so the answer is here as text. With the largest text it
                 // scrolls in the room it has (it was cut off after two lines on iPhone SE).
@@ -263,16 +265,16 @@ struct RepetitionPlayerView: View {
     private func status(_ player: RepetitionPlayer) -> some View {
         if player.isPaused {
             VStack(spacing: 8) {
-                Image(systemName: "pause.circle.fill").font(.system(size: 56)).foregroundStyle(.secondary)
+                Image(systemName: "pause.circle.fill").font(.system(size: 56)).foregroundStyle(LumenColor.secondaryText)
                     .accessibilityHidden(true) // A95: "Pausad" is the next line
-                Text("Pausad").font(.subheadline.weight(.semibold)).foregroundStyle(.secondary)
+                Text("Pausad").font(.subheadline.weight(.semibold)).foregroundStyle(LumenColor.secondaryText)
                 Text("Tryck på AirPods för att fortsätta")
                     .font(.title3.bold())
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                 Text("Fortsätter från början av meningen")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(LumenColor.secondaryText)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -285,13 +287,13 @@ struct RepetitionPlayerView: View {
                     if player.isFirstLap, player.lap == 0 {
                         Text("Tryck på AirPods för svaret").font(.headline) // Kelly N1
                     } else {
-                        Text("Tänk").font(.headline).foregroundStyle(.secondary)
+                        Text("Tänk").font(.headline).foregroundStyle(LumenColor.secondaryText)
                     }
                 }
             case .answer(_, let kind):
                 Label(kind == .long ? "Långt svar" : "Kort svar", systemImage: "waveform")
                     .font(.headline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(LumenColor.secondaryText)
                     .accessibilityElement(children: .ignore) // A95: the words, not the symbol's name
                     .accessibilityLabel(kind == .long ? "Långt svar" : "Kort svar")
             case .waitingForAudio:
@@ -318,7 +320,7 @@ struct RepetitionPlayerView: View {
                             Text(verbatim: "\(made.ready) av \(made.total) klara").font(.footnote).monospacedDigit()
                         }
                     }
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(LumenColor.secondaryText)
                     .accessibilityElement(children: .combine)
                 }
             case .question, .idle:
@@ -395,7 +397,16 @@ struct PressesRow: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
+        // Ke79: once, as one sentence ("Långt svar: 1 tryck. Kort svar: 2 tryck. Paus: 3 tryck."). Combined, each row
+        // was read twice (its own label and its texts).
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spoken)
+    }
+
+    private var spoken: String {
+        let rows = titles?.map { (dots: $0.dots, title: $0.title) }
+            ?? [(1, "Långt svar"), (2, "Kort svar"), (3, paused ? "Fortsätt" : "Paus")]
+        return rows.map { "\($0.title): \($0.dots) tryck." }.joined(separator: " ")
     }
 
     private func item(_ event: RepetitionEvent, _ dots: Int, _ title: String) -> some View {

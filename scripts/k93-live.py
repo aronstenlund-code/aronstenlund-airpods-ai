@@ -26,7 +26,8 @@ def wait(flag, secs=420):
     end = time.time() + secs
     while time.time() < end:
         st, q = call({"action": "quota"}, tok)
-        if bool(q.get("unlimited")) == flag: return q
+        # only a real answer counts (run 44294239066: a 500 from a dropped connection read as "no longer admin")
+        if st == 200 and "limit" in q and bool(q.get("unlimited")) == flag: return q
         time.sleep(10)
     return None
 

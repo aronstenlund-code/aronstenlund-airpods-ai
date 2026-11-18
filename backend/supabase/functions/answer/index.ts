@@ -6,6 +6,7 @@ import { MemoryRateLimiter, SupabaseRateLimiter } from "../_shared/ratelimit.ts"
 import { restDbFromEnv } from "../_shared/restdb.ts";
 import { envInt, supabaseUsageSink } from "../_shared/usage.ts";
 import { createHandler, DEFAULT_CONFIG } from "./handler.ts";
+import { detectTest, loadCiRanges } from "../_shared/testmode.ts";
 import { providerFromEnv } from "./llm/factory.ts";
 import { withQaLog } from "./qalog.ts";
 import { TokenCrypto } from "../_shared/crypto.ts";
@@ -39,7 +40,17 @@ const spotifyApp = spotifyId && spotifySecret
   : null;
 const connStore = restConnectionStore(db);
 
+// K105 (Oscar O89): all test traffic counts against the test web cap, also scripts and CI without the header. The CI
+// ranges load in the background (an answer never waits for them); until then header, test account and script count.
+const ownerEmails = (env.get("OWNER_EMAIL") ?? "").split(",");
+let ciLoad: Promise<void> | null = null;
+const isTest = (req: Request) => {
+  ciLoad ??= loadCiRanges().catch(() => {}).finally(() => { ciLoad = null; });
+  return detectTest(req, ownerEmails).test;
+};
+
 const handler = createHandler({
+  isTest,
   authenticate: createJwtAuthenticator({
     supabaseUrl,
     hs256Secret: env.get("SUPABASE_JWT_SECRET"),
@@ -95,6 +106,8 @@ const handler = createHandler({
       perDay: envInt(env, "WEB_PER_DAY", DEFAULT_CONFIG.webLimits!.perDay),
       globalPerDay: envInt(env, "WEB_GLOBAL_PER_DAY", DEFAULT_CONFIG.webLimits!.globalPerDay),
     },
+    // K105 (D234): the share of the global web cap for test calls (x-earmind-test); users get the rest
+    webTestGlobalPerDay: envInt(env, "WEB_TEST_GLOBAL_PER_DAY", DEFAULT_CONFIG.webTestGlobalPerDay!),
   },
 });
 

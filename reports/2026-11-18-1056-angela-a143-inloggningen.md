@@ -58,9 +58,7 @@ det syns i appens logg som "the refresh token was refused, signing up a new anon
 ## 4. Varför 8 sekunder och ett omförsök (D227)
 - En förnyelse där servern tog emot anropet men svaret tappades är det farliga fallet: refresh-token är då använd.
   Supabase godtar samma refresh-token en gång till inom 10 sekunder (standardvärdet). Med 8 s gräns och ett omförsök
-  direkt hamnar det andra försöket innanför den tiden och får samma nya session. **Obekräftat antagande:** att vårt
-  projekt har standardvärdet 10 s. Kevin behöver bekräfta det (Supabase › Authentication › Sessions, "Refresh token
-  reuse interval").
+  direkt hamnar det andra försöket innanför den tiden och får samma nya session. **Bekräftat av Deangelo 2026-11-18** i Supabase › Authentication › Sessions: "Refresh token reuse interval" är 10 s, och "Detect and revoke potentially compromised refresh tokens" är på. *Verifierat i dashboarden (Deangelo).*
 - Ett nytt konto (signup) har inget att förlora; där kostar ett omförsök i värsta fall ett tomt anonymt konto på
   servern.
 
@@ -99,5 +97,5 @@ det syns i appens logg som "the refresh token was refused, signing up a new anon
 2. Fungerar något annorlunda än förut med prov, krediter eller köp efter uppdateringen: säg till, så läser vi loggen.
 
 ## 9. Nästa steg
-- Kevin bekräftar återanvändningstiden för refresh-token (§4).
+- ~~Kevin bekräftar återanvändningstiden för refresh-token (§4).~~ Klart: 10 s (Deangelo, TILL-ARON #32).
 - Toby tar med "Auth:"-raderna i T36-sammanfattningen, så att nästa körning visar tiderna.

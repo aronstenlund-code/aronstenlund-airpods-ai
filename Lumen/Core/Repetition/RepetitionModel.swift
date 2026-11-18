@@ -387,7 +387,21 @@ final class RepetitionModel {
     /// that had ended (the voice service was out, a file failed, 20 minutes had passed) nothing asked again while the
     /// app stayed open, so the counter stood still until a restart. Coming back to the app asks again.
     func appBecameActive() {
+        warmServer()
         askForMissingSound()
+    }
+
+    /// A147 (D230): the server is woken when the app opens or comes back, at most once per 2 minutes, without waiting.
+    static let warmEvery: TimeInterval = 120
+    @ObservationIgnored var clock: () -> Date = { Date() }
+    @ObservationIgnored private var lastWarm: Date?
+
+    func warmServer() {
+        guard let cloud else { return }
+        let now = clock()
+        if let lastWarm, now.timeIntervalSince(lastWarm) < Self.warmEvery { return }
+        lastWarm = now
+        Task { await cloud.warm() }
     }
 
     @ObservationIgnored private var foregroundObserver: (any NSObjectProtocol)?
@@ -395,6 +409,7 @@ final class RepetitionModel {
     /// The app's own start (`AppContainer`): from now on, coming back to the app asks for the sound that is missing.
     func watchForeground() {
         guard foregroundObserver == nil else { return }
+        warmServer() // A147: the app's own start
         foregroundObserver = NotificationCenter.default.addObserver(forName: UIApplication.didBecomeActiveNotification,
                                                                     object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated { self?.appBecameActive() }
