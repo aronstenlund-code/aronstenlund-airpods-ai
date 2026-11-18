@@ -427,6 +427,13 @@ import Testing
         #expect(SayMotion.number(false) == .numericText() && SayMotion.number(true) == .opacity)
         #expect(SayMotion.reduces(true) && !SayMotion.reduces(false))
         #expect(PressFeedbackStyle.pressFeedback.scale == 1 && PressFeedbackStyle.pressFeedbackRound.scale < 1)
+        // Kelly Ke83: the player follows the finger down one to one and resists upwards; where the pull is going
+        // decides whether it folds down.
+        #expect(SayMotion.pulled(120) == 120 && SayMotion.pulled(0) == 0)
+        #expect(SayMotion.pulled(-100) < 0 && SayMotion.pulled(-100) > -100, "upwards it gives a little")
+        #expect(SayMotion.folds(projected: 300, height: 800) && !SayMotion.folds(projected: 200, height: 800))
+        #expect(!SayMotion.folds(projected: 300, height: 0), "not before the height is known")
+        #expect(SayMotion.settle(false) == .spring(response: 0.3, dampingFraction: 0.8) && SayMotion.settle(true) == .easeOut(duration: 0.15))
     }
 
     @Test func theCatalogIsReadOnceAndAnEmptyOneShowsNoVoices() async throws {

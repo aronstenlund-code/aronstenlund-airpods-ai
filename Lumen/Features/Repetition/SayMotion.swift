@@ -43,6 +43,24 @@ enum SayMotion {
                     removal: .opacity.animation(.easeOut(duration: reduceMotion ? 0.05 : 0.1)))
     }
 
+    /// Kelly Ke83: the player of a said text is pulled down with a finger. It follows the finger one to one
+    /// downwards; upwards there is nowhere to go, so it gives a little and resists more the further it is pulled.
+    static func pulled(_ translation: CGFloat) -> CGFloat {
+        translation >= 0 ? translation : -pow(-translation, 0.7)
+    }
+
+    /// Where a pull is going decides, not where it is: a quick flick folds the player down from near the top, a slow
+    /// pull that stops short lets it go back (the gesture's own projection of where it would come to rest).
+    static func folds(projected: CGFloat, height: CGFloat) -> Bool {
+        height > 0 && projected > height * 0.3
+    }
+
+    /// After a pull that was let go: back to its place with the little bounce a thing that was moved has; with
+    /// Reduce Motion a short ease.
+    static func settle(_ reduceMotion: Bool) -> Animation {
+        reduceMotion ? .easeOut(duration: 0.15) : .spring(response: 0.3, dampingFraction: 0.8)
+    }
+
     /// The check mark of the chosen row: it grows a little as it appears, and only fades with Reduce Motion.
     static func mark(_ reduceMotion: Bool) -> AnyTransition {
         reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.6))

@@ -48,6 +48,8 @@ enum SayText {
     static var stagedWaitNote: String?
     /// A150: the card goes through its states by itself, for the recording of how it moves.
     static var stagedMotion = false
+    /// A150 (Kelly Ke83): the player pulls itself down, for the recording.
+    static var stagedFold = false
     #endif
 
     /// "10 min" … "1 timme" on the button.
@@ -271,12 +273,14 @@ struct SayInAirPodsField: View {
         var isStarting: Bool
         var isReading: Bool
         var hasVoices: Bool
+        var waitsForSound: Bool
     }
 
     private var shape: CardLook {
         CardLook(plays: playing != nil, isEmpty: isEmpty, cost: credits?.cost, left: credits?.left, refused: refused,
               waitNote: waitNote, picked: picked?.voiceID, materialNote: materialNote, hasPlayed: hasPlayed,
-              canRetry: canRetry, isStarting: isStarting, isReading: isReadingMaterial, hasVoices: !model.sayVoices.isEmpty)
+              canRetry: canRetry, isStarting: isStarting, isReading: isReadingMaterial, hasVoices: !model.sayVoices.isEmpty,
+                 waitsForSound: playing.map { $0.reader.phase == .waitingForAudio && !$0.reader.hasSounded } ?? false)
     }
 
     private var chars: Int { SaidText.chars(text) }
@@ -502,6 +506,17 @@ struct SayInAirPodsField: View {
         .dynamicTypeSize(...DynamicTypeSize.accessibility3)
         .accessibilityHint("Öppnar spelaren med meningarna")
         HStack(spacing: 12) {
+            if waiting, !reader.hasSounded {
+                // Kelly Ke83: nothing is heard yet, so there is nothing to pause. A small spinner stands where the
+                // pause button will be; Stoppa is there all the time.
+                ProgressView()
+                    .controlSize(.small)
+                    .tint(SayText.ink)
+                    .frame(width: 44, height: 44)
+                    .background(SayText.accent.opacity(0.25), in: Circle())
+                    .accessibilityHidden(true) // the row above says "Gör ljudet"
+                    .transition(SayMotion.appear)
+            } else {
             Button {
                 model.session.press(.long)
             } label: {
@@ -514,6 +529,8 @@ struct SayInAirPodsField: View {
             }
             .buttonStyle(.pressFeedbackRound)
             .accessibilityLabel(reader.isPaused ? "Fortsätt" : "Pausa")
+            .transition(SayMotion.appear)
+            }
             TimelineView(.periodic(from: .now, by: 1)) { _ in
                 Text(verbatim: "\(SayText.clock(model.session.repeatSecondsLeft)) kvar" + (reader.isPaused ? " · pausad" : ""))
                     .font(.body.weight(.semibold))

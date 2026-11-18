@@ -69,6 +69,8 @@ enum RepetitionDemo {
                                       "repShopRefused", "repSayOnCardWaiting",
                                       // A150 (D231): the card going through its states, recorded; the same with Reduce Motion
                                       "repMotion", "repMotionReduced",
+                                      // A150 (Kelly Ke83): the player of a said text pulled down by a finger, recorded
+                                      "repMotionFold",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -282,7 +284,24 @@ enum RepetitionDemo {
         SayText.stagedRetry = false
         SayText.stagedStarting = false
         SayText.stagedMotion = false
+        SayText.stagedFold = false
         SayMotion.forcedReduceMotion = false
+        if name == "repMotionFold" { // A150 (Kelly Ke83): the player over Start, pulled down (the view pulls itself)
+            model.store.save(history)
+            model.store.save(drill)
+            var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = 1236
+            model.quota = credits
+            model.stageSayVoices([], defaultName: "Astrid")
+            SayText.stagedForScreenshots = nil
+            SayText.stagedRefusal = nil
+            SayText.stagedCost = nil
+            stagePlaying(model, text: said, waiting: false)
+            model.showsPlayer = true
+            SayText.stagedFold = true
+            return
+        }
         if name == "repMotion" || name == "repMotionReduced" { // A150 (D231): how the card moves, recorded for Kelly
             model.store.save(history)
             model.store.save(drill)
@@ -603,6 +622,8 @@ enum RepetitionDemo {
                  "repShopShort", "repShopWeeklyHome", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
                  "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced":
                 NavigationStack { HomeView(model: listening) }
+            case "repMotionFold": // the player as the app shows it: a cover over Start
+                NavigationStack { HomeView(model: listening) }.modifier(RepetitionOverlay(model: model))
             // A106 (Kelly Ke63): Läs upp texten
             case "repTextNew": readingForm(model, .choice)
             case "repTextConfirm":
