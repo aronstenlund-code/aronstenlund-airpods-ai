@@ -75,8 +75,14 @@ struct ShopSections: View {
         }
         .task { await shop.loadInvite() }
         // A150: a purchase that the server has taken is felt once (the number above rolls up at the same moment).
-        .sensoryFeedback(trigger: quota.left) { old, new in new > old ? .success : nil }
-        .sensoryFeedback(trigger: shop.note) { _, new in new == CreditShop.failedLine || new == CreditShop.restoreFailedLine ? .error : nil }
+        .sensoryFeedback(trigger: quota.left) { (old: Int, new: Int) -> SensoryFeedback? in
+            new > old ? .success : nil
+        }
+        .sensoryFeedback(trigger: shop.note) { (_: String?, new: String?) -> SensoryFeedback? in
+            guard let new else { return nil }
+            let failed = new == CreditShop.failedLine || new == CreditShop.restoreFailedLine
+            return failed ? .error : nil
+        }
     }
 
     /// A product: its name (and a line under it), and the price as a tinted capsule. With the largest text the price

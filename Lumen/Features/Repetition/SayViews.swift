@@ -315,7 +315,7 @@ struct SayInAirPodsField: View {
         }
         .animation(SayMotion.change(reduceMotion), value: playing != nil)
         // A150: the phone answers what the eye may miss: a no from the server or a Spela that gave up is felt once.
-        .sensoryFeedback(trigger: refused) { _, new in
+        .sensoryFeedback(trigger: refused) { (_: String?, new: String?) -> SensoryFeedback? in
             guard let new, new != SayText.slowServerLine else { return nil }
             return .error
         }
