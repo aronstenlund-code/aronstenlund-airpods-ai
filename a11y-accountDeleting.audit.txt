@@ -1,0 +1,19 @@
+accountDeleting: 4 issues (contrast 4), audit 2 s
+
+
+
+ISSUE 1 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: 48 label='Konto' identifier='' frame={{16, 116}, {370, 40.333333333333343}}
+
+ISSUE 2 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: 48 label='Raderar kontot …' identifier='' frame={{32, 268.33333333333337}, {130.66666666666666, 20.333333333333314}}
+
+ISSUE 3 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: 48 label='Har du veckokortet? Det avslutas inte när kontot raderas. Säg upp det i Inställningar › ditt namn › Prenumerationer.' identifier='' frame={{32, 294.66666666666669}, {332.33333333333331, 64.333333333333314}}
+
+ISSUE 4 [contrast] Contrast failed
+  Contrast failed for SwiftUI.AccessibilityNode
+  element: 48 label='Radera konto' identifier='' frame={{32, 172.16666666666666}, {101, 20.333333333333343}}

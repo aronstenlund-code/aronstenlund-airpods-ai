@@ -1,0 +1,63 @@
+repShopWeekly: 15 issues (contrast 8, dynamicType 4, hitRegion 3), audit 8 s
+
+
+
+ISSUE 1 [hitRegion] Hit area is too small
+  The size of this SwiftUI.AccessibilityNode is too small for user to interact.
+  element: (none)
+
+ISSUE 2 [hitRegion] Hit area is too small
+  The size of this SwiftUI.AccessibilityNode is too small for user to interact.
+  element: (none)
+
+ISSUE 3 [hitRegion] Hit area is too small
+  The size of this SwiftUI.AccessibilityNode is too small for user to interact.
+  element: (none)
+
+ISSUE 4 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='när en kompis har spelat sin första text' identifier='' frame={{32, 683.33333333333337}, {234.66666666666663, 15.666666666666629}}
+
+ISSUE 5 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='Bjud in' identifier='' frame={{297.33333333333331, 664}, {72.666666666666686, 32}}
+
+ISSUE 6 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Få 2 000 krediter' identifier='' frame={{32, 661}, {130, 20.333333333333371}}
+
+ISSUE 7 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='Klar' identifier='' frame={{326.33333333333331, 82}, {55.666666666666686, 36}}
+
+ISSUE 8 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: (none)
+
+ISSUE 9 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: (none)
+
+ISSUE 10 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: (none)
+
+ISSUE 11 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: (none)
+
+ISSUE 12 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: 48 label='när en kompis har spelat sin första text' identifier='' frame={{32, 683.33333333333337}, {234.66666666666663, 15.666666666666629}}
+
+ISSUE 13 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: (none)
+
+ISSUE 14 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: (none)
+
+ISSUE 15 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: 48 label='till 24 nov · 16 200 av 20 000 tecken kvar i veckan' identifier='' frame={{42.333333333333343, 182.66666666666666}, {317.33333333333337, 42.333333333333343}}

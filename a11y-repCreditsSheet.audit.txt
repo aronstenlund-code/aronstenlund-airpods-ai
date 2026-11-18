@@ -1,0 +1,39 @@
+repCreditsSheet: 9 issues (contrast 3, dynamicType 2, textClipped 4), audit 7 s
+
+
+
+ISSUE 1 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: 48 label='Så räknas det' identifier='' frame={{23.363184079601989, 455.67495854063026}, {355.27363184079604, 38.728026533996626}}
+
+ISSUE 2 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: 48 label='En text på 764 tecken kostar 764 krediter. Du får 1 500 krediter varje månad. Nya krediter den 1 december. Oanvända krediter sparas inte.' identifier='' frame={{23.363184079601989, 694.12437810945266}, {355.27363184079604, 59.212271973466045}}
+
+ISSUE 3 [contrast] Contrast nearly passed
+  Contrast is not high enough for SwiftUI.AccessibilityNode unless font size is larger.
+  element: 48 label='krediter kvar den här månaden' identifier='' frame={{89.456882255389743, 411.50580431177445}, {223.08623548922048, 19.52404643449421}}
+
+ISSUE 4 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='Klar' identifier='' frame={{321.34494195688222, 314.84577114427861}, {53.451077943615246, 34.567164179104509}}
+
+ISSUE 5 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='En text på 764 tecken kostar 764 krediter. Du får 1 500 krediter varje månad. Nya krediter den 1 december. Oanvända krediter sparas inte.' identifier='' frame={{23.363184079601989, 694.12437810945266}, {355.27363184079604, 59.212271973466045}}
+
+ISSUE 6 [textClipped] Text clipped
+  Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.
+  element: 48 label='Så räknas det' identifier='' frame={{23.363184079601989, 455.67495854063026}, {355.27363184079604, 38.728026533996626}}
+
+ISSUE 7 [textClipped] Text clipped
+  Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.
+  element: 48 label='1 236' identifier='' frame={{154.59038142620233, 370.53731343283584}, {92.819237147595373, 39.048092868988476}}
+
+ISSUE 8 [textClipped] Text clipped
+  Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.
+  element: 48 label='En text på 764 tecken kostar 764 krediter. Du får 1 500 krediter varje månad. Nya krediter den 1 december. Oanvända krediter sparas inte.' identifier='' frame={{23.363184079601989, 694.12437810945266}, {355.27363184079604, 59.212271973466045}}
+
+ISSUE 9 [textClipped] Text clipped
+  Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.
+  element: 48 label='krediter kvar den här månaden' identifier='' frame={{89.456882255389743, 411.50580431177445}, {223.08623548922048, 19.52404643449421}}
