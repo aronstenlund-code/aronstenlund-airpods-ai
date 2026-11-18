@@ -74,3 +74,33 @@ tonas, tryckstilen. Resten av A150 är utseende och går inte att enhetstesta; d
 
 ## Farhågor
 Inga. Inget här döljer något; "Spelar i AirPods" står kvar hela tiden det spelar, också när spelaren fälls ner.
+
+## Tillägg 20:40: Kellys Ke83 och den nya inspelningen
+Kelly godkände A150 (`reports/2026-11-18-1955-kelly-ke83-a150-rorelse.md`) med två tillägg. Båda är byggda och
+sedda i en ny inspelning (flödet 44375329952). **iOS build 44375326631 grön på min gren.**
+
+1. **Spelaren går att dra ner.** Den följer fingret ett till ett nedåt, med Start synligt bakom. Släpper man
+   halvvägs går den tillbaka (med den lilla studs en sak som flyttats har); är dragningen på väg ner fälls spelaren
+   ner i fingrets fart och texten spelas vidare på kortet. Det som avgör är vart dragningen är på väg, inte var den
+   är. Uppåt ger den efter lite och håller emot. Greppet är spelarens övre del (med samma handtag som systemets
+   blad), eftersom texten under rullar. VoiceOver har "Tillbaka till Start" på pilen och svarar på gesten för att
+   backa. Pilen har 44 punkters tryckyta.
+   - `spelaren-dras-ner.jpg` (och `.mp4`): 1,4–2,1 s dras ner och släpps, 2,2–2,4 s tillbaka; 3,4–3,9 s dras och
+     fälls ner, 3,9 s kortet på Start spelar.
+2. **Ingen paus medan inget hörs.** Tills första ljudet börjar står en liten snurra där pausknappen ska vara.
+   Stoppa finns hela tiden. (`stillbilder-2-snurra-handtag-rostblad.jpg`, första rutan.)
+
+**Det rättade kortbytet, nu sett:**
+- Till spelkortet (`kortbyte-efter-rattning-1-till-spelkortet.jpg`, 8,5–8,7 s): rent. Inget överlapp, inget utanför
+  kortet.
+- Tillbaka till fältet (`kortbyte-efter-rattning-2-till-faltet.jpg`, 14,5–14,7 s): **inte helt rent.** I en bildruta
+  (0,1 s) syns det gamla läget svagt under det nya, och den nya textens första rad är kapad i kortets överkant.
+  Förut var det två rutor med text ovanpå text och text utanför kortet. Resten beror på att listans rad ändrar höjd
+  runt innehållet; det kommer jag inte åt utan att bygga om kortet utanför listan. Kelly får avgöra om det duger.
+
+**Inte sett:** dragningen med ett riktigt finger (inspelningen drar spelaren i kod), haptiken, och allt på enhet.
+
+**Main-bygget 44374756678 (A150 utan Ke83-tilläggen) föll på två test i Rizz-läget**
+(`rig.model.rizz?.suggestions == ["Ett"]`, `rig.provider.requests.count == 2`), som väntar på tid och som jag inte
+har rört. Samma kod klarade alla test i mitt bygge. Jag har sagt till Angela Schrute.
+
