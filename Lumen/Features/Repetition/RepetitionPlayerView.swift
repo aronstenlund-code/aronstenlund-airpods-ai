@@ -242,6 +242,8 @@ struct RepetitionPlayerView: View {
                     .foregroundStyle(LumenColor.secondaryText)
                     .multilineTextAlignment(.center)
                     .lineLimit(8)
+                    // Ke79: VoiceOver says which answer it is before the answer.
+                    .accessibilityLabel("\(kind == .short ? "Kort svar" : "Långt svar"): \(kind == .short ? item.shownShort : item.shownLong)")
             } else if case .waitingForAudio = player.phase, let item, model.soundIsNotComing(drill) {
                 // A112 (D200): reading aloud is off for now, so the answer is here as text. With the largest text it
                 // scrolls in the room it has (it was cut off after two lines on iPhone SE).
@@ -395,7 +397,16 @@ struct PressesRow: View {
             }
         }
         .frame(maxWidth: .infinity)
-        .accessibilityElement(children: .combine)
+        // Ke79: once, as one sentence ("Långt svar: 1 tryck. Kort svar: 2 tryck. Paus: 3 tryck."). Combined, each row
+        // was read twice (its own label and its texts).
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spoken)
+    }
+
+    private var spoken: String {
+        let rows = titles?.map { (dots: $0.dots, title: $0.title) }
+            ?? [(1, "Långt svar"), (2, "Kort svar"), (3, paused ? "Fortsätt" : "Paus")]
+        return rows.map { "\($0.title): \($0.dots) tryck." }.joined(separator: " ")
     }
 
     private func item(_ event: RepetitionEvent, _ dots: Int, _ title: String) -> some View {

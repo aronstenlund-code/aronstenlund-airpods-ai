@@ -150,6 +150,33 @@ enum SayText {
         return name
     }
 
+    // MARK: A148 (Kelly Ke79): what VoiceOver says
+
+    /// "Kostar 120 krediter", "Kostar 120 krediter, du har 88". "Ingår" and "Veckans tak är nått" stand as they are.
+    static func spokenCost(_ line: String) -> String {
+        let spoken = line.replacingOccurrences(of: " · ", with: ", ")
+        return spoken.first?.isNumber == true ? "Kostar \(spoken)" : spoken
+    }
+
+    /// "Tempo, normal" for 1,0×; "Tempo, 1,25 gånger" else.
+    static func spokenTempo(_ value: Double) -> String {
+        value == 1 ? "Tempo, normal" : "Tempo, \(tempo(value).replacingOccurrences(of: "×", with: " gånger"))"
+    }
+
+    /// A capsule in Senaste: the whole text (the screen cuts it with "…"), then its style or voice.
+    static func spokenCapsule(_ text: String, mark: String?) -> String {
+        let flat = text.split(whereSeparator: \.isNewline).joined(separator: " ")
+        let whole = flat.count > 300 ? String(flat.prefix(300)) : flat
+        return mark.map { "\(whole), \($0)" } ?? whole
+    }
+
+    /// The card while it plays, as one: "Spelar i AirPods med Astrid, 7 minuter kvar".
+    static func spokenPlaying(voice: String?, secondsLeft: Int, paused: Bool) -> String {
+        let minutes = max(1, Int((Double(secondsLeft) / 60).rounded(.up)))
+        let left = minutes == 1 ? "1 minut kvar" : "\(minutes) minuter kvar"
+        return "Spelar i AirPods" + (voice.map { " med \($0)" } ?? "") + ", \(left)" + (paused ? ", pausad" : "")
+    }
+
     /// A132 (Ke72): a said text as a capsule under the field: its beginning, at most about 24 characters.
     static func capsule(_ text: String) -> String {
         let flat = text.split(whereSeparator: \.isNewline).joined(separator: " ")
@@ -329,6 +356,8 @@ struct SayInAirPodsField: View {
                         .buttonStyle(.bordered)
                         .buttonBorderShape(.capsule)
                         .tint(.primary)
+                        // Ke79: the whole text and its style or voice, not the cut one with "…".
+                        .accessibilityLabel(SayText.spokenCapsule(drill.saidText, mark: SayText.soundMark(drill, voices: model.sayVoices, defaultName: model.sayDefaultVoice)))
                         .accessibilityHint("Lägger tillbaka texten i fältet")
                         .contextMenu {
                             Button("Ta bort", systemImage: "trash", role: .destructive) { model.delete(drill) }
@@ -354,15 +383,21 @@ struct SayInAirPodsField: View {
     @ViewBuilder
     private func playingCard(_ reader: ReadingPlayer, _ drill: Drill) -> some View {
         let waiting = reader.phase == .waitingForAudio
-        HStack(spacing: 6) {
-            Circle().fill(SayText.accent).frame(width: 8, height: 8).accessibilityHidden(true)
-            // A140 (D223): which voice speaks now (the part's own when they are mixed).
-            Text(verbatim: waiting ? "Gör ljudet …" : SayText.playingLine(voice: model.speakingVoice(drill, part: reader.position?.part)))
-                .font(.footnote.weight(.semibold))
+        // Ke79: every 20 s, so the minutes VoiceOver says are the ones on the clock below.
+        TimelineView(.periodic(from: .now, by: 20)) { _ in
+            HStack(spacing: 6) {
+                Circle().fill(SayText.accent).frame(width: 8, height: 8).accessibilityHidden(true)
+                // A140 (D223): which voice speaks now (the part's own when they are mixed).
+                Text(verbatim: waiting ? "Gör ljudet …" : SayText.playingLine(voice: model.speakingVoice(drill, part: reader.position?.part)))
+                    .font(.footnote.weight(.semibold))
+            }
+            .foregroundStyle(SayText.accent)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            .accessibilityElement(children: .ignore)
+            // Ke79: the row as one: "Spelar i AirPods med Astrid, 7 minuter kvar". The clock below is for the eye.
+            .accessibilityLabel(waiting ? "Gör ljudet" : SayText.spokenPlaying(voice: model.speakingVoice(drill, part: reader.position?.part),
+                                                                               secondsLeft: Int(model.session.repeatSecondsLeft), paused: reader.isPaused))
         }
-        .foregroundStyle(SayText.accent)
-        .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-        .accessibilityElement(children: .combine)
         Button {
             model.showsPlayer = true
         } label: {
@@ -395,6 +430,7 @@ struct SayInAirPodsField: View {
                     .monospacedDigit()
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
+                    .accessibilityHidden(true) // Ke79: said in the row above, in minutes
             }
             Spacer(minLength: 8)
             Button {
@@ -476,7 +512,7 @@ struct SayInAirPodsField: View {
                 .lineLimit(focused ? (typeSize.isAccessibilitySize ? 2...5 : 3...5) : (typeSize.isAccessibilitySize ? 2...3 : 3...3))
                 .focused($focused)
                 .tint(SayText.accent)
-                .accessibilityLabel("Säg i AirPods, textfält")
+                .accessibilityLabel("Säg i AirPods") // Ke79: VoiceOver says "textfält" itself
         }
         .font(.body.monospaced())
         .dynamicTypeSize(...DynamicTypeSize.accessibility3) // the field stays a field on a small screen
@@ -619,9 +655,9 @@ struct SayInAirPodsField: View {
                             .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
-                    .accessibilityLabel("\(line). \(ShopText.refill)")
+                    .accessibilityLabel("\(SayText.spokenCost(line)). \(ShopText.refill)") // Ke79
                 } else {
-                    Text(verbatim: line)
+                    Text(verbatim: line).accessibilityLabel(SayText.spokenCost(line)) // Ke79: "Kostar 120 krediter"
                 }
             }
             .font(short ? .footnote.weight(.semibold) : .footnote)
@@ -705,7 +741,7 @@ struct SayInAirPodsField: View {
         } label: {
             Text(verbatim: inPace ? SayText.paceCapsule : SayText.tempo(tempo)).monospacedDigit().lineLimit(1).fixedSize()
         }
-        .accessibilityLabel(inPace ? "Tempo, \(SayText.paceTitle)" : "Tempo, \(SayText.tempo(tempo))")
+        .accessibilityLabel(inPace ? "Tempo, \(SayText.paceTitle)" : SayText.spokenTempo(tempo)) // Ke79
         .smallSayControl()
     }
 
