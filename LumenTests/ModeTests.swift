@@ -638,6 +638,32 @@ import Testing
         #expect(prov.turns.isEmpty)
     }
 
+    /// D231 (A149, G7 step 7c): how Provläge is started and which exam it is about is `ExamStartController`. The
+    /// model and the screens reach it through the model, as before.
+    @Test func theExamStartIsItsOwnPart() {
+        let rig = makeRig(events: [], microphone: .iPhone)
+        let start = rig.model.examStart
+        #expect(start.host === rig.model)
+        #expect(start.activeExamID == nil && rig.model.activeExamID == nil)
+        #expect(!rig.model.provAnswersOnly && !rig.model.examQuestionDeclined && !rig.model.startsProvAfterExamStep)
+        #expect(rig.model.currentExamID() == start.currentExamID())
+
+        // Nothing was asked: ordinary words are not an exam said aloud, and not a subject.
+        #expect(!rig.model.awaitingExamStatement)
+        #expect(!start.takesExamStatement("Biologi på fredag", overlapsPlayback: false, at: Date()))
+        #expect(!start.takesSubject("biologi", overlapsPlayback: false))
+
+        // "Har du prov snart?" is answered in time; the rule is the part's, and the model's name for it still works.
+        let asked = Date()
+        #expect(ExamStartController.answersExamQuestion("Biologi på fredag", askedAt: asked, at: asked.addingTimeInterval(5)))
+        #expect(!ListeningModel.answersExamQuestion("Biologi på fredag", askedAt: asked,
+                                                    at: asked.addingTimeInterval(ExamStartController.examAnswerWindow + 15)))
+
+        // The exam step is closed: the next sentence is an ordinary one.
+        start.stopListeningForExamStatement()
+        #expect(!rig.model.awaitingExamStatement)
+    }
+
     /// D199 step 4 (A119): each mode says what the app must show before it starts; the model shows the sheet or
     /// says the line. The same checks as before the move.
     @Test func eachModeSaysWhatItNeedsBeforeItStarts() async {
