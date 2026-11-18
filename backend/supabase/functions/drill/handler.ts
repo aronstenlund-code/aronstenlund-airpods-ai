@@ -824,11 +824,12 @@ export function createDrillHandler(deps: DrillDeps) {
     }
     const ownVoice = existing ? existing.voice_id ?? null : askedVoice || picked?.voice_id || null;
     const vid = voiceFor(ownVoice || deps.voiceId)!;
-    // a part's voice when mixing: kept from before for the same item, else by lot (seed: the drill and the position)
+    // a part's voice when mixing: kept from before for the same item, else by lot. O81 F1: the seed is the part's own
+    // text, so the same text gets the same voice in any drill and its audio is reused (no new cost)
     const oldVoices = new Map<string, string | null>();
-    const lot = async (pos: number) => {
+    const lot = async (seed: string) => {
       if (!mix || catalog.length < 2) return null;
-      const d = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`${drill.id}:${pos}`)));
+      const d = new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`mix:${seed}`)));
       return catalog[((d[0] << 8) | d[1]) % catalog.length].voice_id;
     };
     const lw = Math.round(Number(di.long_words));
@@ -904,7 +905,7 @@ export function createDrillHandler(deps: DrillDeps) {
       const v = voicedPart(text, part, (x) => voiceText(x, lang, drill.voice_rules));
       if (!v.spoken) throw new HttpError(400, "invalid_request", `items[${pos}].text has nothing to read`);
       const id = typeof it?.id === "string" && oldIds.has(it.id) ? it.id : undefined;
-      const own = mix ? (id && oldVoices.get(id)) || await lot(pos) : null;
+      const own = mix ? (id && oldVoices.get(id)) || await lot(v.spoken) : null;
       const pv = own ? voiceFor(own)! : vid;
       const h = await audioHash(style ? styledKey(v.spoken, style) : v.spoken, voice, pv);
       files.set(h, files.get(h) ?? { hash: h, kind: "text", text: v.spoken, model: voice, voice_id: pv, seq: pos * 2, sentence_ends: v.ends });
@@ -925,7 +926,7 @@ export function createDrillHandler(deps: DrillDeps) {
       const l0 = longVoice(short, long, lang, drill.voice_rules);
       const l = pauseTag ? withPauseTag(l0.text, l0.shortChars) : l0;
       const id = typeof it?.id === "string" && oldIds.has(it.id) ? it.id : undefined;
-      const own = mix ? (id && oldVoices.get(id)) || await lot(pos) : null;
+      const own = mix ? (id && oldVoices.get(id)) || await lot(q) : null;
       const pv = own ? voiceFor(own)! : vid;
       const qh = await audioHash(style ? styledKey(q, style) : q, voice, pv);
       const lh = await audioHash(style ? styledKey(l.text, style) : l.text, voice, pv);
@@ -1002,8 +1003,11 @@ export function createDrillHandler(deps: DrillDeps) {
     // K95 (D220): the files made new get their tags now (Haiku), only those; the words are checked in code (style.ts)
     if (style && deps.styler && fresh.length) {
       await Promise.all(fresh.map(async (f) => {
-        const tagged = await deps.styler!(f.text, style).catch(() => null);
-        if (!tagged || tagged === f.text) return;
+        // O80 F2: the text's own square brackets ([1], [sic]) would be taken for tags and stop the style: read them as
+        // round ones (the same length, so every offset still holds)
+        const plain = f.text.replace(/\[/g, "(").replace(/\]/g, ")");
+        const tagged = await deps.styler!(plain, style).catch(() => null);
+        if (!tagged || tagged === plain) return;
         if (f.sentence_ends) f.sentence_ends = f.sentence_ends.map((e) => mapOffset(tagged, e));
         if (typeof f.short_chars === "number") f.short_chars = mapOffset(tagged, f.short_chars);
         f.text = tagged;

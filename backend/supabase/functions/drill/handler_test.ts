@@ -1142,6 +1142,26 @@ Deno.test("K99 mix_voices: each part gets a catalog voice by lot, kept on later 
   assertEquals([again.cost, again.items.map((i: { voice_id?: string }) => i.voice_id)], [0, voices]);
 });
 
+Deno.test("O81: with mixed voices the same text gets the same voice in a new drill, so its audio is reused (cost 0)", async () => {
+  const w = world({ catalog: CAT });
+  const parts = ["Första meningen här.", "Andra meningen här.", "Tredje meningen här.", "Fjärde meningen här."].map((text) => ({ kind: "para", text }));
+  const a = await (await w.h("u1")(post({ action: "save", drill: { kind: "text", mix_voices: true }, items: parts }))).json();
+  const b = await (await w.h("u2")(post({ action: "save", drill: { kind: "text", mix_voices: true }, items: parts }))).json();
+  assertEquals(b.items.map((i: { voice_id?: string }) => i.voice_id), a.items.map((i: { voice_id?: string }) => i.voice_id));
+  assertEquals([a.cost > 0, b.cost], [true, 0]);
+});
+
+Deno.test("O80 F2: a text with its own square brackets ([1], [sic]) still gets its style", async () => {
+  const seen: string[] = [];
+  const w = world({ styler: (t) => (seen.push(t), Promise.resolve(`[calm] ${t}`)) });
+  const r = await (await w.h("u1")(post({ action: "save", drill: { kind: "text", style: "Lugnt" }, items: [{ kind: "para", text: "Enligt källan [1] var det så [sic]." }] }))).json();
+  assertEquals(r.status ?? 200, 200);
+  assert(seen.length === 1 && !/[\[\]]/.test(seen[0]), seen.join("|"));
+  const f = [...w.audio.values()].find((x) => x.kind === "text")!;
+  // the voice text rules (D196) already read them as pauses; the tag is kept and no other bracket is left
+  assert(f.text.startsWith("[calm] ") && !/\[(1|sic)\]/.test(f.text), f.text);
+});
+
 Deno.test("K99 the AI picks a catalog voice for a style when none is chosen; a voice not in the list is ignored; a chosen voice wins", async () => {
   const asked: string[] = [];
   const w = world({ catalog: CAT, picker: (s) => (asked.push(s), Promise.resolve({ voice_id: "VoiceKinesSv002", reason: "Lugn och tydlig röst." })) });

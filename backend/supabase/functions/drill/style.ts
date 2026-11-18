@@ -117,7 +117,7 @@ export function haikuStyler(provider: LLMProvider, model = "claude-haiku-5-5"): 
 // ---------- K99 (D223): the AI picks a voice ----------
 export interface CatalogVoiceLite { voice_id: string; name: string; description?: string | null; accent?: string | null; gender?: string | null; age?: string | null }
 
-export const SYSTEM_PROMPT_VOICE_PICK = `You choose the voice that best fits how a listener wants a Swedish text to sound. You get <style> (the listener's wish, e.g. "lugnt", "glatt", "med skånsk dialekt") and <voices> (JSON: id, name, description, accent, gender, age). Return ONLY {"voice_id": "<one id from the list>", "reason": "<one short Swedish sentence, at most 12 words, why>"}. Choose only from the list; when nothing fits better, choose the calmest clear voice.`;
+export const SYSTEM_PROMPT_VOICE_PICK = `You choose the voice that best fits how a listener wants a Swedish text to sound. You get <style> (the listener's wish, e.g. "lugnt", "glatt", "med skånsk dialekt") and <voices> (JSON: id, name, description, accent, gender, age). Return ONLY {"voice_id": "<one id from the list>", "reason": "<one short Swedish sentence, at most 12 words, why>"}. Choose only from the list; when nothing fits better, choose the calmest clear voice. When the wish names something no voice in the list has (an accent, a dialect, an age, a gender), the reason must say so plainly, e.g. "Ingen röst med kinesisk brytning finns ännu, så en lugn och tydlig röst." Never claim that a voice has a quality its entry does not show.`;
 
 /** Haiku as the voice picker; anything not on the list gives null (the default voice is used). */
 export function haikuVoicePicker(provider: LLMProvider, model = "claude-haiku-5-5") {
