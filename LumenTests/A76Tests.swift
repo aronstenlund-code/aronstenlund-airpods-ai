@@ -66,4 +66,27 @@ import Testing
         #expect(TestModeSettings.soundNote.contains("14 dagar"))
         #expect(TestModeSettings.soundNote.hasSuffix("Sömnläget sparar klippen bara på din telefon."))
     }
+
+    /// A142 (D218 point 4): the tests run on the Debug build, which has the test mode. That the App Store build has
+    /// none is checked in CI, on the Release build itself (ios-build.yml).
+    @Test func theTestModeIsInTheTestersBuild() {
+        #expect(TestModeBuild.isAvailable)
+    }
+
+    /// A142: the App Store build installed over a tester's build keeps none of the waiting audio and no switch.
+    @Test func theAppStoreBuildRemovesWhatATestersBuildLeft() throws {
+        let folder = FileManager.default.temporaryDirectory.appendingPathComponent("a142-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let store = DebugPieceStore(folder: folder)
+        let now = Date()
+        store.save(DebugPiece(id: "waiting", startedAt: now.addingTimeInterval(-60), endedAt: now, audioFile: "waiting.m4a", mode: "standard"))
+        try Data([1, 2, 3]).write(to: folder.appendingPathComponent("waiting.m4a"))
+        let defaults = UserDefaults(suiteName: "a142-\(UUID().uuidString)")!
+        defaults.set(true, forKey: TestModeSettings.enabledKey)
+
+        TestModeBuild.removeLeftovers(folder: folder, defaults: defaults)
+
+        #expect(!FileManager.default.fileExists(atPath: folder.path), "no audio is left on the phone")
+        #expect(!TestModeSettings(defaults: defaults).isEnabled, "nothing is on by itself in a later tester's build")
+    }
 }

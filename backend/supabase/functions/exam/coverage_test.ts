@@ -1,6 +1,6 @@
 // K83 (D206): coverage of the whole material, in code. Invented material only, a scripted model.
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
-import { coverage, mergeCoverage, partCount, placeQuestions, splitParts } from "./coverage.ts";
+import { coverage, isHeading, mergeCoverage, partCount, placeQuestions, sectionParts, splitParts } from "./coverage.ts";
 import { DEFAULT_DRILL_CONFIG, handleDrill } from "./drill.ts";
 import type { LLMChunk, LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 
@@ -127,4 +127,41 @@ Deno.test("K86 near duplicates: the same question in other words is caught, diff
   assert(nearDuplicate("Varför är klimatet i Skandinavien mildare än i Kanada på samma breddgrad?", "Hur gör Golfströmmen att Skandinavien får ett mildare klimat än Kanada på samma breddgrad?"));
   assert(!nearDuplicate("Varför måste en reaktionsformel balanseras?", "Hur räknar man ut molmassan för vatten?"));
   assert(!nearDuplicate("Varför går samma ström genom en seriekoppling?", "Varför fortsätter lamporna lysa i en parallellkoppling?"));
+});
+
+// ---------- O79 F1 (Oscar): the material's own sections are the parts ----------
+const SEC = [
+  ["Vad inflation är", "Inflation betyder att den allmänna prisnivån stiger, så att samma pengar räcker till mindre. Den mäts med konsumentprisindex, KPI, som SCB räknar fram varje månad."],
+  ["Orsaker", "Priserna kan stiga när efterfrågan är större än det som produceras, eller när det blir dyrare att producera, till exempel när energin blir dyrare."],
+  ["Riksbanken", "Riksbanken försöker hålla inflationen nära två procent. När inflationen är för hög höjer Riksbanken styrräntan, så att lån blir dyrare och efterfrågan minskar."],
+  ["Vem vinner och förlorar", "De som har fasta inkomster eller pengar på ett sparkonto med låg ränta förlorar köpkraft. Den som har stora lån med fast ränta kan i stället vinna på det."],
+  ["2022 och efteråt", "År 2022 steg inflationen i Sverige till över tio procent, mest på grund av dyrare energi och livsmedel. Riksbanken höjde räntan flera gånger under 2022 och 2023."],
+];
+const secText = (xs: string[][]) => xs.map(([h, p]) => `${h}\n\n${p}`).join("\n\n");
+
+Deno.test("O79 F1: headings make the parts (each heading with its text), so the last section is a part of its own", () => {
+  const parts = sectionParts(secText(SEC), 14)!;
+  assertEquals(parts.length, 5);
+  assertEquals(parts.map((p) => p.split("\n")[0]), SEC.map(([h]) => h));
+  assert(parts[4].includes("År 2022"));
+  // the length split (the old way) put the last section inside a bigger part
+  assertEquals(splitParts(secText(SEC), partCount(secText(SEC).length, 14)).length < 5, true);
+});
+
+Deno.test("O79 F1: paragraphs without headings are the parts; one paragraph or one title gives null (length split)", () => {
+  const pars = SEC.map(([, p]) => p).join("\n\n");
+  assertEquals(sectionParts(pars, 14)!.length, 5);
+  assertEquals(sectionParts(SEC[0][1], 14), null);
+  assertEquals(sectionParts(`Inflation\n\n${SEC.map(([, p]) => p).join(" ")}`, 14), null, "a single heading is a title");
+  assertEquals(sectionParts(secText(SEC), 1), null, "one question: no parts");
+});
+
+Deno.test("O79 F1: more sections than questions are joined (shortest neighbours) until each can get one; tiny ones join the next", () => {
+  const parts = sectionParts(secText(SEC), 3)!;
+  assertEquals(parts.length, 3);
+  assertEquals(parts.join("\n\n").replace(/\s+/g, " "), secText(SEC).replace(/\s+/g, " "), "nothing lost, order kept");
+  const tiny = sectionParts("Del A\n\nKort.\n\nDel B\n\n" + SEC[1][1] + "\n\nDel C\n\n" + SEC[2][1], 10)!;
+  assertEquals(tiny.length, 2, "a section under 120 characters joins the next");
+  assertEquals(sectionParts(Array.from({ length: 20 }, (_, i) => `Stycke ${i}: ${SEC[i % 5][1]}`).join("\n\n"), 30)!.length, 8, "at most 8 parts");
+  assertEquals([isHeading("2022 och efteråt"), isHeading("## Orsaker"), isHeading("Det här är en mening."), isHeading("Fråga: vad är KPI?")], [true, true, false, false]);
 });

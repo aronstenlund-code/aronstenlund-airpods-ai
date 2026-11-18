@@ -130,6 +130,152 @@ final class SSEStubProtocol: URLProtocol, @unchecked Sendable {
         #expect(store.load() == expired, "a new anonymous user would orphan the old one")
         #expect(http.requests.count == 1, "no sign-up attempt")
     }
+
+    // MARK: A143 (D225 point 4): the sign-in never holds the user back, and the account is kept
+
+    private let t0 = Date(timeIntervalSince1970: 1_700_000_000)
+
+    private func expiredSession() -> SupabaseSession {
+        SupabaseSession(accessToken: "old", refreshToken: "r1", expiresAt: t0.addingTimeInterval(-10))
+    }
+
+    /// Lets the background sign-in run until `done` (the fake network answers at once).
+    private func settle(until done: () -> Bool) async {
+        for _ in 0..<200 where !done() { await Task.yield() }
+    }
+
+    @Test func theSignInStartsWhenTheAppOpens() async throws {
+        let http = FakeHTTP([.init(status: 200, body: Fixtures.tokenJSON(access: "jwt"))])
+        let auth = SupabaseAuth(config: config, store: InMemorySessionStore(), http: http, now: { t0 })
+
+        auth.prepare()
+        await settle { auth.hasSession }
+
+        #expect(http.requests.map { $0.url?.path } == ["/auth/v1/signup"], "signed in before anyone asked for a token")
+        #expect(try await auth.accessToken() == "jwt")
+        #expect(http.requests.count == 1, "the first call finds the token there")
+    }
+
+    @Test func aCallDuringTheSignInAtAppOpenSharesIt() async throws {
+        let http = FakeHTTP([.init(status: 200, body: Fixtures.tokenJSON(access: "jwt"))])
+        let auth = SupabaseAuth(config: config, store: InMemorySessionStore(), http: http, now: { t0 })
+
+        auth.prepare()
+        #expect(try await auth.accessToken() == "jwt")
+        #expect(http.requests.count == 1, "one anonymous user, not one for the app start and one for the call")
+    }
+
+    @Test func aTokenWithLittleLeftIsRenewedAheadAndNobodyWaits() async throws {
+        let soon = SupabaseSession(accessToken: "old", refreshToken: "r1", expiresAt: t0.addingTimeInterval(120))
+        let http = FakeHTTP([.init(status: 200, body: Fixtures.tokenJSON(access: "jwt2", refresh: "r2"))])
+        let auth = SupabaseAuth(config: config, store: InMemorySessionStore(soon), http: http, now: { t0 })
+
+        #expect(try await auth.accessToken() == "old", "still valid: no call waits")
+        #expect(http.requests.isEmpty)
+        auth.prepare()
+        await settle { !http.requests.isEmpty }
+        #expect(http.requests.map { $0.url?.path } == ["/auth/v1/token"], "renewed in the background")
+
+        // The renewal's answer is stored on the main actor's next turns; meanwhile the old token still answers.
+        var token = "old"
+        for _ in 0..<200 where token == "old" {
+            await Task.yield()
+            token = (try? await auth.accessToken()) ?? "old"
+        }
+        #expect(token == "jwt2")
+        #expect(http.requests.count == 1)
+    }
+
+    @Test func aFreshTokenIsLeftAloneWhenTheAppOpens() async {
+        let fresh = SupabaseSession(accessToken: "jwt", refreshToken: "r1", expiresAt: t0.addingTimeInterval(3600))
+        let http = FakeHTTP()
+        let auth = SupabaseAuth(config: config, store: InMemorySessionStore(fresh), http: http, now: { t0 })
+
+        auth.prepare()
+        for _ in 0..<50 { await Task.yield() }
+
+        #expect(http.requests.isEmpty)
+    }
+
+    @Test func aSignUpThatGetsNoAnswerIsTriedOnceMore() async throws {
+        let http = FakeHTTP([.init(status: 0, body: "", error: URLError(.timedOut)),
+                             .init(status: 200, body: Fixtures.tokenJSON(access: "jwt"))])
+        let auth = SupabaseAuth(config: config, store: InMemorySessionStore(), http: http, now: { t0 })
+
+        #expect(try await auth.accessToken() == "jwt")
+        #expect(http.requests.map { $0.url?.path } == ["/auth/v1/signup", "/auth/v1/signup"])
+        #expect(http.requests[0].timeoutInterval == SupabaseAuth.requestTimeout, "8 s, not the system's 60 s")
+    }
+
+    @Test func aRefreshThatGetsNoAnswerIsTriedOnceMoreWithTheSameToken() async throws {
+        let store = InMemorySessionStore(expiredSession())
+        let http = FakeHTTP([.init(status: 0, body: "", error: URLError(.timedOut)),
+                             .init(status: 200, body: Fixtures.tokenJSON(access: "jwt2", refresh: "r2"))])
+        let auth = SupabaseAuth(config: config, store: store, http: http, now: { t0 })
+
+        #expect(try await auth.accessToken() == "jwt2")
+        #expect(http.requests.map { $0.url?.path } == ["/auth/v1/token", "/auth/v1/token"], "never a new sign-up")
+        #expect(http.json(1)["refresh_token"] as? String == "r1")
+        #expect(store.load()?.refreshToken == "r2")
+    }
+
+    @Test func twoTimeoutsInARowGiveUpAndKeepTheAccount() async {
+        let expired = expiredSession()
+        let store = InMemorySessionStore(expired)
+        let http = FakeHTTP([.init(status: 0, body: "", error: URLError(.timedOut)),
+                             .init(status: 0, body: "", error: URLError(.timedOut))])
+        let auth = SupabaseAuth(config: config, store: store, http: http, now: { t0 })
+
+        do {
+            _ = try await auth.accessToken()
+            Issue.record("expected an error")
+        } catch {
+            #expect(AnswerError.from(error) == .transport(detail: "timed out"))
+        }
+        #expect(http.requests.count == 2, "one more try, not more")
+        #expect(store.load() == expired)
+    }
+
+    /// Before A143 every answer that was not a success made a new anonymous user, also the server's own trouble.
+    @Test(arguments: [429, 500, 502, 503])
+    func theServersTroubleDuringRefreshKeepsTheAccount(status: Int) async {
+        let expired = expiredSession()
+        let store = InMemorySessionStore(expired)
+        let http = FakeHTTP([.init(status: status, body: "{\"code\":\(status),\"error_code\":\"over_request_rate_limit\",\"msg\":\"busy\"}")])
+        let auth = SupabaseAuth(config: config, store: store, http: http, now: { t0 })
+
+        do {
+            _ = try await auth.accessToken()
+            Issue.record("expected an error")
+        } catch {
+            guard case .backend(let got, _) = AnswerError.from(error) else { Issue.record("wrong error \(error)"); return }
+            #expect(got == status)
+        }
+        #expect(store.load() == expired, "the account and its refresh token are kept")
+        #expect(http.requests.map { $0.url?.path } == ["/auth/v1/token"], "no new anonymous user")
+    }
+
+    @Test func onlyARefusedRefreshTokenStartsANewAccount() {
+        #expect([400, 401, 403, 404].allSatisfy(SupabaseAuth.refusesTheRefreshToken))
+        #expect(![408, 429, 500, 502, 503, 504].contains(where: SupabaseAuth.refusesTheRefreshToken))
+    }
+
+    /// A 401 from one of our functions: the token is renewed with the refresh token. Before A143 the session was
+    /// thrown away, and the next call made a new anonymous user.
+    @Test func a401FromOurFunctionsRenewsTheTokenAndKeepsTheAccount() async throws {
+        let valid = SupabaseSession(accessToken: "jwt", refreshToken: "r1", expiresAt: t0.addingTimeInterval(3600))
+        let store = InMemorySessionStore(valid)
+        let http = FakeHTTP([.init(status: 200, body: Fixtures.tokenJSON(access: "jwt2", refresh: "r2"))])
+        let auth = SupabaseAuth(config: config, store: store, http: http, now: { t0 })
+
+        auth.invalidate()
+
+        #expect(auth.hasSession)
+        #expect(store.load()?.refreshToken == "r1", "the refresh token is still on the phone")
+        #expect(try await auth.accessToken() == "jwt2")
+        #expect(http.requests.map { $0.url?.path } == ["/auth/v1/token"])
+        #expect(http.json(0)["refresh_token"] as? String == "r1")
+    }
 }
 
 @MainActor

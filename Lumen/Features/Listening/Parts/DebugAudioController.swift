@@ -1,6 +1,9 @@
 import Foundation
 import Observation
 
+// A142 (D218 point 4): the whole part is compiled only for us and our testers (Debug, Beta), never for the App Store.
+#if LUMEN_TESTMODE
+
 /// D221 (A138, G7 step 7d): what the test mode's debug audio uses of `ListeningModel`. The audio stream is the
 /// model's: the part asks for a subscription to the capture's chunks and gives it back; it changes nothing in what is
 /// recorded, routed or played.
@@ -145,3 +148,4 @@ final class DebugAudioController {
         }
     }
 }
+#endif

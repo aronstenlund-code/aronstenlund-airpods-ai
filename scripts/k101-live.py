@@ -34,7 +34,7 @@ out["after"] = {"list_status": st3, "list_drills": len(l.get("drills", []) or []
 ok["saved"] = st == 200 and bool(did)
 ok["confirm_required"] = st1 == 400 and out["no_confirm"]["code"] == "confirm_required"
 ok["deleted"] = st2 == 200 and d.get("deleted") is True and (d.get("removed") or {}).get("audio_files", 0) >= 1
-ok["drill_gone"] = st4 in (401, 404) and (st3 != 200 or out["after"]["list_drills"] == 0)
+ok["drill_gone"] = st4 in (401, 404) and (st3 == 401 or (st3 == 200 and out["after"]["list_drills"] == 0))
 ok["again_no_error"] = st5 in (200, 401)
 out["checks"] = ok
 print(json.dumps(out, ensure_ascii=False, indent=1))

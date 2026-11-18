@@ -105,22 +105,27 @@ anonymt konto per installation (`auth/v1/signup` utan e-post) [V].
 | **Köp › Köphistorik** | Ja, när köpen finns | Ja | Appens funktioner | Transaktionen kontrolleras på servern för att ge krediter [O: A134/K94 inte byggda] |
 | **Användningsdata › Produktinteraktion** | Ja | Ja | Appens funktioner (kostnadskontroll) | Servern loggar per anrop vilken funktion, tid och kostnad, ingen text (D48, usage-rader) [V] |
 | **Diagnostik** | Nej | – | – | Ingen kraschrapportering i appen [V]. Apples egna kraschrapporter räknas inte |
-| Kontakter, kalender, påminnelser | Nej | – | – | Läses bara på telefonen i Fler lägen och skickas inte [V enligt Info.plist-texten] |
+| **Kontakter › Kontakter** | Ja, bara i Fler lägen (beta) | Nej | Appens funktioner | När flera kontakter passar ett namn skickas upp till fyra namn till servern så att EarMind kan fråga vem du menar; numret skickas aldrig [V i koden, `LivePhoneTools.callContact`, A142]. Rättat 2026-11-18 (stod "Nej") |
+| **Användarinnehåll › Annat** (kalenderhändelser) | Ja, bara i Fler lägen (beta) | Nej | Appens funktioner | När man frågar vad som finns i kalendern skickas upp till 20 händelser (titel, tid, plats) till servern för svaret [V i koden, A142]. Apple har ingen egen kalender-kategori; "Annat användarinnehåll" är närmast. Rättat 2026-11-18 |
+| Påminnelser, larm | Nej | – | – | Appen lägger bara till och läser inget [V i koden, A142] |
 | Kontaktuppgifter (e-post) | Nej i appen | – | – | E-post samlas bara på webbsidans väntelista, inte i appen [V] |
 | Plats, hälsa, finans, sökhistorik | Nej | – | – | [V] |
 
 **Måste rättas eller beslutas före inskickning (till Deangelo/Aron):**
-1. **Testläget (D140) skickar allt bakgrundsljud till oss** när det är på (raderas efter 14 dagar). Det får inte finnas i
+1. ~~**Testläget (D140) skickar allt bakgrundsljud till oss**~~ **Klart (D227, A142): testläget finns inte i Release.** Gällde: när det är på (raderas efter 14 dagar). Det får inte finnas i
    App Store-versionen utan att deklareras. Förslag: **testläget finns bara i TestFlight/Debug**, inte i release. Annars
    måste Ljuddata deklareras som "kopplad till användaren" med syftet produktförbättring. **[O] hög**
-2. **Kamerans text i Info.plist** säger "The text is read on the iPhone; the photo is not saved." Fotona skickas till
+2. ~~**Kamerans text i Info.plist**~~ **Klart (A142).** Gällde: texten sa "The text is read on the iPhone; the photo is not saved." Fotona skickas till
    servern för att göra frågorna, så första halvan stämmer inte. Förslag: "Take a photo of the page you are studying.
    The photo is sent once to make your questions and is not saved." (Angela Schrute) **[V] att texten är fel**
 3. **Rapporterade frågor (D135):** "med samtycke läser utvecklaren dem, raderas inom 14 dagar". Om det finns i appen ska
    det in som Användarinnehåll, syfte produktförbättring. **[O]**
 4. **Minnen (D37 m.fl.) i Fler lägen** sparas på servern? Om ja: Användarinnehåll, kopplat. **[O]**
-5. **Integritetspolicy** krävs (URL i App Store Connect) och saknas. Förslag: en sida på earmind.vercel.app/integritet
-   (Kelly kan skriva den) med samma uppgifter som tabellen. **saknas**
+5. **Mikrofontexten (D138)** säger inte att ljudet skickas till en taligenkänningstjänst. Apple (5.1.1) vill att
+   texten säger vad datan används till. Kelly stöder Angela Schrutes förslag: "Ljudet skickas till en
+   taligenkänningstjänst, blir text och sparas inte av EarMind." Deangelo beslutar (ändrar D138). **[V] att texten saknar det**
+6. **Integritetspolicy** krävs (URL i App Store Connect) och saknas. Förslag: en sida på earmind.vercel.app/integritet
+   med samma uppgifter som tabellen. **Utkast klart (Ke78, grenen `kelly/ke78-integritet`), väntar på Arons ja (TILL-ARON #30)**
 
 ## 3. Granskningsanteckningar (App Review Information › Notes), på engelska
 > EarMind reads text aloud in the user's earbuds to help them study.

@@ -48,3 +48,17 @@ Deno.test("SupabaseRateLimiter maps the multi-window RPC result", async () => {
     p_cost: 3,
   });
 });
+
+Deno.test("K101: an rpc error keeps the Postgres code (never the message); the wallet says 401 account_deleted for a deleted user", async () => {
+  const { f } = fake(409, { code: "23503", message: "insert or update on table \"drill_quota\" violates foreign key constraint", details: "Key (user_id)=(x) is not present" });
+  const db = new RestDb("https://p.supabase.co", "svc-key", f);
+  const e = (await db.rpc("use_drill_chars", { p_user: "x", p_n: 0 }).catch((x) => x)) as Error;
+  assertEquals(e.message, "rpc use_drill_chars failed: HTTP 409 23503");
+  const { useQuotaFromDb } = await import("./wallet_db.ts");
+  const { HttpError } = await import("./errors.ts");
+  const err = await useQuotaFromDb(db)("x", 0).catch((x) => x);
+  assertEquals([err instanceof HttpError, err.status, err.code], [true, 401, "account_deleted"]);
+  // another error stays an error (no code in it)
+  const other = (await new RestDb("https://p.supabase.co", "k", fake(500, "boom").f).rpc("x", {}).catch((x) => x)) as Error;
+  assertEquals(other.message, "rpc x failed: HTTP 500");
+});
