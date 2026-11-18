@@ -373,6 +373,23 @@ import Testing
         #expect(cloud.oneCalls.count == 1 && cloud.startCalls == 1 && store.drill(said.id)?.awaitsAudioStart == false)
     }
 
+    /// A147 (D230): the server is woken when the app opens or comes back, at most once per 2 minutes.
+    @Test func theServerIsWokenAtMostEveryTwoMinutes() async throws {
+        let (model, cloud, _, _) = try model("a147-warm")
+        var now = Date(timeIntervalSince1970: 1_800_000_000)
+        model.clock = { now }
+        model.warmServer()
+        model.warmServer() // back again at once: not again
+        now += 119
+        model.warmServer()
+        for _ in 0..<50 where cloud.warms < 1 { try? await Task.sleep(for: .milliseconds(2)) }
+        #expect(cloud.warms == 1)
+        now += 2
+        model.appBecameActive()
+        for _ in 0..<50 where cloud.warms < 2 { try? await Task.sleep(for: .milliseconds(2)) }
+        #expect(cloud.warms == 2, "after two minutes, coming back wakes it again")
+    }
+
     @Test func theCatalogIsReadOnceAndAnEmptyOneShowsNoVoices() async throws {
         let (model, _, _, _) = try model("a136-voices")
         await model.loadSayVoices()

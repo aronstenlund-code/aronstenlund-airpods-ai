@@ -346,6 +346,8 @@ protocol DrillCloudSyncing: AnyObject, Sendable {
     /// K100 (D225): saves a new exam and starts its sound in one call (`save` with `start: true`). Nil from a
     /// server (or a mock) without it; the exam is then saved and started in two calls as before.
     func saveStarting(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView?
+    /// A147 (D230, K102): wakes the server so the first Spela does not wait for its cold start. No account, no answer.
+    func warm() async
 }
 
 /// A136 (K96): a voice from the server's catalog (or from the voice library, then not selectable).
@@ -409,6 +411,7 @@ extension DrillCloudSyncing {
     func voiceLibrary(search: String) async throws(DrillCloudError) -> [SayVoice] { [] }
     var defaultVoiceName: String? { nil }
     func saveStarting(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView? { nil }
+    func warm() async {}
     func accountID() async -> String? { nil }
     /// Mocks written before K71: a started exam is what `status` says.
     func start(id: String) async throws(DrillCloudError) -> DrillCloudView { try await status(id: id) }
@@ -504,6 +507,19 @@ final class DrillCloudClient: DrillCloudSyncing {
 
     func saveStarting(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView? {
         try await call(Self.saveStartingBody(drill), timeout: 60) as DrillCloudView
+    }
+
+    /// A147 (D230, K102): `{"action":"warm"}` without a token; the server answers 204 and reads nothing of any account.
+    /// Nothing waits for it and nothing is said when it fails (it only saves the first Spela some seconds).
+    func warm() async {
+        var request = URLRequest(url: config.projectURL.appending(path: "functions/v1/drill"))
+        request.httpMethod = "POST"
+        request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.markTestTraffic()
+        request.timeoutInterval = 15
+        request.httpBody = Data(#"{"action":"warm"}"#.utf8)
+        _ = try? await http.data(for: request)
     }
 
     /// K92 (D215.8): the same body as `save`, with the action `cost`.

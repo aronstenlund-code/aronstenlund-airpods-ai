@@ -35,6 +35,10 @@ import Testing
         var idPerExam = false
         private var currentID = "srv-1"
 
+        /// A147: how many times the server was woken.
+        var warms = 0
+        func warm() async { warms += 1 }
+
         /// K100: the server saves and starts in one call.
         var oneCall = false
         var oneCalls: [[String: Any]] = []
