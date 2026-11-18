@@ -631,12 +631,13 @@ export function createDrillHandler(deps: DrillDeps) {
     return made;
   }
 
-  async function view(drill: DrillRow, known?: ItemRow[]) {
+  async function view(drill: DrillRow, known?: ItemRow[], knownAudio?: AudioRow[]) {
     // K100: the cue lookups at the same time as the drill's own; the items the save just wrote are not read back
     const cueP = cueView(drill.voice_model ?? deps.model, drill.voice_id);
     const items = (known ? [...known] : await deps.db.items([drill.id])).sort((a, b) => a.position - b.position);
     const hashes = [...new Set(items.flatMap((i) => [i.question_hash, i.long_hash]).filter(Boolean))];
-    const audio = new Map((await deps.db.audio(hashes)).map((a) => [a.hash, a]));
+    // K100: a save that just looked the files up passes them (with the ones it queued as pending): not read again
+    const audio = new Map((knownAudio ?? await deps.db.audio(hashes)).map((a) => [a.hash, a]));
     const done = hashes.filter((h) => audio.get(h)?.status === "done");
     const urls = done.length ? await deps.storage.sign(done.map(audioPath)) : {};
     const file = (h: string) => {
@@ -997,7 +998,7 @@ export function createDrillHandler(deps: DrillDeps) {
       const at = new Date(now()).toISOString();
       const saved: DrillRow = { ...drill, created_at: existing?.created_at ?? at, updated_at: at };
       return json({
-        ...(await view(saved, rows)), new_chars: 0, chars_on_start: newChars, generated_questions: 0, cost, unit: "chars",
+        ...(await view(saved, rows, existingAudio)), new_chars: 0, chars_on_start: newChars, generated_questions: 0, cost, unit: "chars",
         ...(picked ? { voice_reason: picked.reason } : {}),
         ...(out ? { audio_unavailable: true, notice: AUDIO_UNAVAILABLE_NOTICE } : {}),
       });
@@ -1052,7 +1053,12 @@ export function createDrillHandler(deps: DrillDeps) {
     if (fresh.length || failed.length) await kick([...files.keys()]);
     if (startsNow && deps.onStarted) later(deps.onStarted(user.id).catch((e) => console.warn("invite_reward_failed", String(e).slice(0, 120))));
     const saved: DrillRow = { ...drill, created_at: existing?.created_at ?? at, updated_at: at };
-    return json({ ...(await view(saved, rows)), new_chars: newChars, generated_questions: generated, cost, unit: "chars", ...(picked ? { voice_reason: picked.reason } : {}) });
+    const nowAudio: AudioRow[] = [
+      ...existingAudio.map((a) => failed.includes(a.hash) ? { ...a, status: "pending" as const } : a),
+      ...fresh.map((f) => ({ ...f, status: "pending" as const, queued_at: at })),
+    ];
+    // with a background queue the files are still being made when the answer goes (without one, tests make them first)
+    return json({ ...(await view(saved, rows, deps.background ? nowAudio : undefined)), new_chars: newChars, generated_questions: generated, cost, unit: "chars", ...(picked ? { voice_reason: picked.reason } : {}) });
   }
 
   /** K100: new rows get their id here, so the answer can be built without reading them back */

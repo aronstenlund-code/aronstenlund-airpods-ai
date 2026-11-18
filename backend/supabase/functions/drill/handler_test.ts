@@ -5,7 +5,7 @@ import { questionKey } from "./length.ts";
 import { runWithTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
-function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean; styler?: (t: string, s: string) => Promise<string | null>; catalog?: { voice_id: string; name: string }[]; picker?: (s: string, v: { voice_id: string }[]) => Promise<{ voice_id: string; reason: string } | null> } = {}) {
+function world(opts: { background?: (p: Promise<unknown>) => void; perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean; styler?: (t: string, s: string) => Promise<string | null>; catalog?: { voice_id: string; name: string }[]; picker?: (s: string, v: { voice_id: string }[]) => Promise<{ voice_id: string; reason: string } | null> } = {}) {
   let busy = opts.busy ?? 0;
   let out = !!opts.outOfCredits; // K78: credits can come back
   const quota = new Map<string, number>();
@@ -159,6 +159,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
       authenticate: () => Promise.resolve(owner ? { id: user, isAnonymous: false, email: "owner@example.com", amr: ["otp"] } : { id: user, isAnonymous: true }),
       ownerEmails: ["owner@example.com"],
       styler: opts.styler,
+      ...(opts.background ? { background: opts.background } : {}),
       onStarted: (u: string) => (started.push(u), Promise.resolve()),
       voicePicker: opts.picker,
       analysis: (r) => {
@@ -1063,6 +1064,17 @@ Deno.test("K100: save with start:true makes a Säg text in one call (audio start
   // the item ids given at save are the ones the drill keeps
   const g = await (await w.h("u1")(post({ action: "get", id: s.drill.id }))).json();
   assertEquals(g.items.map((i: { id: string }) => i.id), s.items.map((i: { id: string }) => i.id));
+});
+
+Deno.test("K100 with a background queue: the answer says pending without reading the files again; the files are made after", async () => {
+  const bg: Promise<unknown>[] = [];
+  const w = world({ credits: 1500, background: (p) => void bg.push(p) });
+  const text = [{ kind: "para", text: "Ring mamma klockan sex i kväll." }];
+  const s = await (await w.h("u1")(post({ action: "save", start: true, drill: { kind: "text" }, items: text }))).json();
+  assertEquals([s.drill.audio_started, s.items[0].audio.text.status, s.cost], [true, "pending", text[0].text.length]);
+  await Promise.all(bg);
+  const g = await (await w.h("u1")(post({ action: "get", id: s.drill.id }))).json();
+  assertEquals(g.items[0].audio.text.status, "done");
 });
 
 Deno.test("K93 (D216): an admin is never charged or refused; quota, list and cost say unlimited; another account is unchanged", async () => {
