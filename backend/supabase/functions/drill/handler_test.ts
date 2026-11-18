@@ -9,6 +9,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
   let busy = opts.busy ?? 0;
   let out = !!opts.outOfCredits; // K78: credits can come back
   const quota = new Map<string, number>();
+  const started: string[] = [];
   const admins = new Set<string>(); // K93: credit_admins
   const credits = new Set<string>(); // K61 (D177): "user|question key" counted in /help try
   const models: string[] = [];
@@ -158,6 +159,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
       authenticate: () => Promise.resolve(owner ? { id: user, isAnonymous: false, email: "owner@example.com", amr: ["otp"] } : { id: user, isAnonymous: true }),
       ownerEmails: ["owner@example.com"],
       styler: opts.styler,
+      onStarted: (u: string) => (started.push(u), Promise.resolve()),
       voicePicker: opts.picker,
       analysis: (r) => {
         logged.push(...r);
@@ -197,7 +199,7 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
       usdPer1kChars: 0.08,
       charLimits: { perMinute: 1e9, perDay: opts.perDay ?? 1e9, globalPerDay: 1e9 },
     });
-  return { h, limiter, admins, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, logged, setBusy: (n: number) => (busy = n), setOut: (v: boolean) => (out = v) };
+  return { h, limiter, started, admins, drills, items, audio, uploads, spoken, shares, pubs, quota, credits, models, logged, setBusy: (n: number) => (busy = n), setOut: (v: boolean) => (out = v) };
 }
 const CUE = "Tryck en gång för svaret.";
 const post = (b: unknown) => new Request("http://x/drill", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(b) });
@@ -1041,6 +1043,26 @@ Deno.test("T28: drill.said marks a Säg text at its first save, is kept, shown i
   const code = (await (await w.h("u1")(post({ action: "share", id: s.drill.id }))).json()).code;
   const imp = await (await w.h("u2")(post({ action: "import", code }))).json();
   assertEquals((imp.drill ?? imp).said ?? false, false);
+});
+
+Deno.test("K100: save with start:true makes a Säg text in one call (audio started, counted once); the inviter's reward runs once", async () => {
+  const w = world({ credits: 1500 });
+  const text = [{ kind: "para", text: "Ring mamma klockan fem i dag." }];
+  const s = await (await w.h("u1")(post({ action: "save", start: true, defer_audio: true, drill: { kind: "text", said: true, client_id: crypto.randomUUID() }, items: text }))).json();
+  assertEquals([s.drill.audio_started, s.cost, w.quota.get("u1"), w.started], [true, text[0].text.length, text[0].text.length, ["u1"]]);
+  assert(s.items[0].id, "the item has its id in the answer");
+  // the same drill started again: nothing new, no second reward
+  const again = await (await w.h("u1")(post({ action: "start", id: s.drill.id }))).json();
+  assertEquals([again.cost, w.started.length, again.items[0].id], [0, 1, s.items[0].id]);
+  // the two-call way (save, then start) rewards once too
+  const d = await (await w.h("u2")(post({ action: "save", defer_audio: true, drill: { kind: "text" }, items: [{ kind: "para", text: "Köp mjölk på vägen hem." }] }))).json();
+  assertEquals([d.drill.audio_started, w.started.length], [false, 1]);
+  await w.h("u2")(post({ action: "start", id: d.drill.id }));
+  await w.h("u2")(post({ action: "start", id: d.drill.id }));
+  assertEquals(w.started, ["u1", "u2"]);
+  // the item ids given at save are the ones the drill keeps
+  const g = await (await w.h("u1")(post({ action: "get", id: s.drill.id }))).json();
+  assertEquals(g.items.map((i: { id: string }) => i.id), s.items.map((i: { id: string }) => i.id));
 });
 
 Deno.test("K93 (D216): an admin is never charged or refused; quota, list and cost say unlimited; another account is unchanged", async () => {

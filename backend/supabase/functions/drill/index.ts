@@ -12,6 +12,7 @@ import { secret } from "../_shared/secrets.ts";
 import { parseVoices } from "../tts/voices.ts";
 import { currentTest, silentMp3, TEST_VOICE_ID, withTestMode } from "../_shared/testmode.ts";
 import { AsyncLocalStorage } from "node:async_hooks";
+import { memo } from "../_shared/memo.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type PublicationRow, type SchoolRow, type ShareRow } from "./handler.ts";
 
 const env = Deno.env;
@@ -42,6 +43,9 @@ globalThis.fetch = (async (input: Request | URL | string, init?: RequestInit) =>
 }) as typeof fetch;
 
 const db = restDbFromEnv(); // after the fetch above, so its calls are counted
+// K100: read at most once a minute per instance (both change rarely and only by hand)
+const settingsMemo = memo(async () => Object.fromEntries(((await db.select("drill_settings", "select=key,value")) as { key: string; value: number }[]).map((r) => [r.key, Number(r.value)])));
+const catalogMemo = memo(async () => (await db.select("voice_catalog", "select=voice_id,name,description,accent,gender,age,review&enabled=eq.true&limit=60")) as { voice_id: string; name: string; review?: boolean | null }[]);
 const stylerProvider = providerFromEnv(Deno.env);
 const rewards = rewardStore(db);
 const base = env.get("SUPABASE_URL")!.replace(/\/+$/, "");
@@ -143,6 +147,8 @@ Deno.serve(withCors(withTestMode("drill", timed(
     db: {
       drill: async (id) => ((await db.select("drills", `select=*&id=eq.${encodeURIComponent(id)}&limit=1`)) as DrillRow[])[0] ?? null,
       drills: async (u) => (await db.select("drills", `select=*&user_id=eq.${encodeURIComponent(u)}&order=updated_at.desc&limit=500`)) as DrillRow[],
+      // K100: only the ids, for the per-account limit
+      drillCount: async (u) => ((await db.select("drills", `select=id&user_id=eq.${encodeURIComponent(u)}&limit=500`)) as unknown[]).length,
       drillByClient: async (u, c) =>
         ((await db.select("drills", `select=*&user_id=eq.${encodeURIComponent(u)}&client_id=eq.${encodeURIComponent(c)}&limit=1`)) as DrillRow[])[0] ?? null,
       saveDrill: async (row) => {
@@ -249,10 +255,10 @@ Deno.serve(withCors(withTestMode("drill", timed(
       },
       // ---------- K61 ----------
       // K99 (D223): the catalog voices everyone may use (not under review) for mixing and the AI's choice
-      catalogVoices: async () => (await db.select("voice_catalog", "select=voice_id,name,description,accent,gender,age&enabled=eq.true&review=eq.false&limit=40").catch(() => [])) as { voice_id: string; name: string }[],
+      catalogVoices: async () => (await catalogMemo().catch(() => [])).filter((v) => !v.review).slice(0, 40).map(({ review: _r, ...v }) => v),
       // K96 (D220): a voice may be chosen only from the curated catalog
-      voiceAllowed: async (id) => ((await db.select("voice_catalog", `select=voice_id&voice_id=eq.${encodeURIComponent(id)}&enabled=eq.true&limit=1`).catch(() => [])) as unknown[]).length > 0,
-      settings: async () => Object.fromEntries(((await db.select("drill_settings", "select=key,value")) as { key: string; value: number }[]).map((r) => [r.key, Number(r.value)])),
+      voiceAllowed: async (id) => (await catalogMemo().catch(() => [])).some((v) => v.voice_id === id),
+      settings: () => settingsMemo(),
       tryCredits: async (u, keys) => {
         if (!keys.length) return [];
         const r = (await db.select("drill_try_credits", `select=question_key&user_id=eq.${encodeURIComponent(u)}&question_key=in.(${keys.map((k) => `"${k.replace(/["\\]/g, "")}"`).map(encodeURIComponent).join(",")})`)) as { question_key: string }[];
