@@ -1,6 +1,6 @@
 // K106 (D232): Oscar's K102 omtest in the exam drill: questions the material does not answer, full exams, the near pair.
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
-import { answerItems, DEFAULT_DRILL_CONFIG, notAnswered, oneAsk } from "./drill.ts";
+import { answerItems, DEFAULT_DRILL_CONFIG, dropNearSame, notAnswered, oneAsk } from "./drill.ts";
 import { nearDuplicate } from "./coverage.ts";
 import type { LLMChunk, LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 
@@ -51,4 +51,20 @@ Deno.test("K106 F3: the ljud pair is one question; different topics on one subje
   assertEquals(nearDuplicate("Hur påverkar temperaturen fotosyntesen?", "Hur påverkar ljuset fotosyntesen?"), false);
   assertEquals(nearDuplicate("Vad är frekvens?", "Hur mäts ljudets styrka i decibel?"), false);
   assertEquals(nearDuplicate("Varför steg priserna efter kriget?", "Hur påverkade kriget handeln med Lübeck?"), false);
+});
+
+Deno.test("K106 (live 18:00, Vasa): a two-part question without a comma is cut; a later near-same question goes", () => {
+  assertEquals(oneAsk("Vad var Dackefejden och varför var den viktig?"), "Vad var Dackefejden?");
+  assertEquals(oneAsk("Hur hänger utsläppen och temperaturen ihop?"), "Hur hänger utsläppen och temperaturen ihop?");
+  const qs = [
+    "Hur gick Gustav Vasas uppror mot danskarna till?",
+    "Vad beslutades vid riksdagen i Västerås 1527?",
+    "Förklara hur Gustav Vasas uppror mot danskarna hänger ihop med att han blev kung.",
+    "Hur byggde Gustav Vasa upp en starkare kungamakt?",
+  ];
+  const r = dropNearSame(qs, [0, 1, 0, 2]);
+  assertEquals(r.questions, [qs[0], qs[1], qs[3]]);
+  assertEquals(r.dropped, 1);
+  // the only question of its part stays even when it is near an earlier one
+  assertEquals(dropNearSame(qs, [0, 1, 2, 3]).questions.length, 4);
 });

@@ -311,8 +311,30 @@ export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
  * only in its first part): one question asks one thing; the added "…, och varför/hur …?" part goes.
  */
 export function oneAsk(q: string): string {
-  const m = /^(.{12,}?),\s+och\s+(?:varför|hur|vad|vilk\p{L}*|när|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim());
+  // live 18:00 (Vasa): "Vad var Dackefejden och varför var den viktig?" (also without the comma)
+  const m = /^(.{12,}?),\s+och\s+(?:varför|hur|vad|vilk\p{L}*|när|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim()) ??
+    /^((?:vad|vem|vilk\p{L}*|när|var|what|who|which|when)\s.{6,}?)\s+och\s+(?:varför|hur|vad|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim());
   return m && words(m[1]) >= 3 ? m[1].replace(/[\s,]+$/, "") + "?" : q;
+}
+
+/**
+ * K106 (live 18:00, Vasa: the final check's rewrites "Hur gick Gustav Vasas uppror till?" and "Förklara hur Gustav
+ * Vasas uppror hänger ihop med att han blev kung." got the same answer): a later question that asks what an earlier
+ * one asks goes; every part keeps at least one question (the refill makes up the count).
+ */
+export function dropNearSame(qs: string[], parts: number[]): { questions: string[]; parts: number[]; dropped: number } {
+  const left = new Map<number, number>();
+  for (const p of parts) left.set(p, (left.get(p) ?? 0) + 1);
+  const keep: number[] = [];
+  for (let i = 0; i < qs.length; i++) {
+    const p = parts[i] ?? -1;
+    if (keep.some((j) => nearDuplicate(qs[j], qs[i])) && (p < 0 || (left.get(p) ?? 0) > 1)) {
+      left.set(p, (left.get(p) ?? 0) - 1);
+      continue;
+    }
+    keep.push(i);
+  }
+  return { questions: keep.map((i) => qs[i]), parts: keep.map((i) => parts[i] ?? -1), dropped: qs.length - keep.length };
 }
 
 /** D230: a question that asks for understanding (a cause, a link, a result, a comparison), not a recalled fact. */
@@ -1081,7 +1103,12 @@ export async function handleDrill(
     // the last check of the finished list against the material (claims, why without a cause, same answer)
     const fc = material ? await finalCheck(provider, cfg, qs, qParts, material, signal) : null;
     let refilled = 0;
-    if (fc) fc.questions = fc.questions.map(oneAsk);
+    if (fc) {
+      const same = dropNearSame(fc.questions.map(oneAsk), fc.parts);
+      fc.questions = same.questions;
+      fc.parts = same.parts;
+      fc.dropped += same.dropped;
+    }
     if (fc) {
       qs = fc.questions;
       qParts = fc.parts;
