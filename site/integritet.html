@@ -8,7 +8,7 @@ header img{width:28px;height:28px;border-radius:7px}a{color:var(--blue)}h1{font-
 p,li{color:var(--ink)}.meta{color:var(--mut);font-size:.9375rem}nav.lang{font-size:.9375rem;margin:8px 0 0}
 mark.o{background:var(--warn);color:inherit;padding:0 3px;border-radius:3px}.o-box{background:var(--warn);border-radius:10px;padding:12px 14px;margin:16px 0;font-size:.9375rem}
 hr{border:0;border-top:1px solid var(--line);margin:40px 0}</style></head><body><header><img src="img/ikon-64.webp" alt=""><a href="./" style="color:inherit;text-decoration:none">EarMind</a></header>
-<main><div class="o-box"><strong>Utkast, inte publicerat.</strong> 13 punkter är gulmarkerade: de är inte verifierade och ska kontrolleras eller strykas innan sidan publiceras.</div><h1>Integritet</h1>
+<main><div class="o-box"><strong>Utkast, inte publicerat.</strong> 11 punkter är gulmarkerade: de är inte verifierade och ska kontrolleras eller strykas innan sidan publiceras.</div><h1>Integritet</h1>
 <p>Senast ändrad den 17 november 2026. <a href="#in-english">In English</a></p>
 <h2 id="kort">Kort</h2>
 <ul>
@@ -26,7 +26,7 @@ hr{border:0;border-top:1px solid var(--line);margin:40px 0}</style></head><body>
 <h2 id="det-du-skriver-fotar-och-l-gger-till">Det du skriver, fotar och lägger till</h2>
 <ul>
 <li><strong>Säg i AirPods och Läs upp texten:</strong> texten skickas till vår server. Ljudet görs av ElevenLabs. Texten och ljudet sparas på ditt konto och på telefonen. Samma text som redan har ljud återanvänds.</li>
-<li><strong>Frågor och svar:</strong> foton, dokument, länkar och text skickas till vår server och till Anthropic (Claude), som läser materialet och skriver frågor och svar. Fotona och dokumenten används en gång och sparas inte efter att frågorna är gjorda <mark class="o">Overifierat: att lagringen töms efter varje prov är inte kontrollerat i databasen</mark>.</li>
+<li><strong>Frågor och svar:</strong> foton, dokument, länkar och text skickas till vår server och till Anthropic (Claude), som läser materialet och skriver frågor och svar. Fotona och dokumenten används en gång. De raderas direkt när frågorna är gjorda, också om det misslyckas, och det som ändå blir kvar tas bort inom en timme.</li>
 <li><strong>Hur ska det låta?:</strong> texten du skriver där skickas till Anthropic, som lägger till tecken för hur rösten ska låta. Själva texten ändras inte.</li>
 <li><strong>Publicera och dela:</strong> ett prov du delar eller publicerar kan ses av andra. Foton och dokument följer aldrig med. Ditt användarnamn visas bara om du själv slår på det.</li>
 </ul>
@@ -40,10 +40,14 @@ hr{border:0;border-top:1px solid var(--line);margin:40px 0}</style></head><body>
 <li>Texten skickas till Anthropic för att få ett svar. Det som sparas är en kort sammanfattning <mark class="o">Overifierat: om sammanfattningen sparas på telefonen eller på servern</mark>.</li>
 <li>Det du ber appen komma ihåg sparas på telefonen.</li>
 <li>Sömnläget sparar sina ljudklipp bara på telefonen.</li>
-<li><mark class="o">Overifierat: Testläget (D140) skickar bakgrundsljud till oss när det är på. Det ska inte finnas i App Store-versionen; finns det kvar måste det beskrivas här.</mark></li>
 </ul>
 <h2 id="kalender-p-minnelser-och-kontakter">Kalender, påminnelser och kontakter</h2>
-<p>Om du ber om det kan appen lägga in händelser och påminnelser eller slå upp ett nummer. Det sker på telefonen och skickas inte till oss.</p>
+<p>I lägena som lyssnar kan du be appen lägga in händelser och påminnelser, berätta vad som finns i kalendern eller ringa en kontakt. Appen frågar om lov först.</p>
+<ul>
+<li><strong>Kalendern:</strong> när du frågar vad som finns skickas de händelser du frågar om (titel, tid och plats, högst 20) till vår server och till Anthropic, för att svaret ska kunna skrivas. De sparas inte <mark class="o">Overifierat: att servern inte loggar eller sparar verktygens svar är inte kontrollerat</mark>.</li>
+<li><strong>Kontakter:</strong> numret stannar på telefonen. Passar flera kontakter namnet du säger skickas deras namn (högst fyra) till vår server, så att appen kan fråga vem du menar.</li>
+<li><strong>Påminnelser:</strong> appen lägger bara till dem och läser inget.</li>
+</ul>
 <h2 id="k-p">Köp</h2>
 <p>Betalningen sköts av Apple. Vi får uppgifter om köpet (vilken produkt och när) för att ge dig krediter eller veckokortet, men aldrig ditt kort eller ditt namn.</p>
 <h2 id="loggar">Loggar</h2>
@@ -71,9 +75,10 @@ hr{border:0;border-top:1px solid var(--line);margin:40px 0}</style></head><body>
 <p>Last updated 17 November 2026.</p>
 <ul>
 <li><strong>Account:</strong> the app creates an anonymous account on your phone, with no name, email or phone number.</li>
-<li><strong>What you type, snap or add</strong> is sent to our server and to our AI providers to make audio (ElevenLabs) and questions and answers (Anthropic, Claude). Photos and documents are used once and not stored <mark class="o">Overifierat: storage cleanup not verified</mark>. Texts, questions, answers and audio are stored on your account so you can play them again.</li>
+<li><strong>What you type, snap or add</strong> is sent to our server and to our AI providers to make audio (ElevenLabs) and questions and answers (Anthropic, Claude). Photos and documents are used once and deleted right after; anything left over is removed within an hour. Texts, questions, answers and audio are stored on your account so you can play them again.</li>
 <li><strong>Analysis:</strong> questions and answers created or edited in the app are sent to the developer for analysis and deleted once delivered <mark class="o">Overifierat: retention period</mark>. Photos and documents are never sent.</li>
 <li><strong>Start quiz and Say in AirPods never use the microphone.</strong></li>
+<li><strong>Calendar and contacts (listening modes only):</strong> when you ask what is in your calendar, the events you ask about (up to 20) are sent to our server to write the answer; if several contacts match a name, up to four names are sent so the app can ask which one. Phone numbers are never sent.</li>
 <li><strong>Listening modes (More modes, beta)</strong> ask for permission first and always show a bar while listening. Audio is streamed to ElevenLabs for speech recognition and is not stored by EarMind; ElevenLabs may keep it under its own terms.</li>
 <li><strong>Purchases</strong> are handled by Apple. We receive the purchase details needed to give you credits or the weekly pass, never your card or name.</li>
 <li><strong>No ads, no tracking, no selling of data.</strong></li>

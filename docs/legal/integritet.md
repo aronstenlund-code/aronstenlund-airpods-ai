@@ -18,7 +18,7 @@ När du öppnar appen första gången skapas ett anonymt konto hos vår databasl
 
 ## Det du skriver, fotar och lägger till
 - **Säg i AirPods och Läs upp texten:** texten skickas till vår server. Ljudet görs av ElevenLabs. Texten och ljudet sparas på ditt konto och på telefonen. Samma text som redan har ljud återanvänds.
-- **Frågor och svar:** foton, dokument, länkar och text skickas till vår server och till Anthropic (Claude), som läser materialet och skriver frågor och svar. Fotona och dokumenten används en gång och sparas inte efter att frågorna är gjorda [[O: att lagringen töms efter varje prov är inte kontrollerat i databasen]].
+- **Frågor och svar:** foton, dokument, länkar och text skickas till vår server och till Anthropic (Claude), som läser materialet och skriver frågor och svar. Fotona och dokumenten används en gång. De raderas direkt när frågorna är gjorda, också om det misslyckas, och det som ändå blir kvar tas bort inom en timme.
 - **Hur ska det låta?:** texten du skriver där skickas till Anthropic, som lägger till tecken för hur rösten ska låta. Själva texten ändras inte.
 - **Publicera och dela:** ett prov du delar eller publicerar kan ses av andra. Foton och dokument följer aldrig med. Ditt användarnamn visas bara om du själv slår på det.
 
@@ -32,10 +32,12 @@ För att göra frågor och svar bättre skickas de frågor och svar som skapas e
 - Texten skickas till Anthropic för att få ett svar. Det som sparas är en kort sammanfattning [[O: om sammanfattningen sparas på telefonen eller på servern]].
 - Det du ber appen komma ihåg sparas på telefonen.
 - Sömnläget sparar sina ljudklipp bara på telefonen.
-- [[O: Testläget (D140) skickar bakgrundsljud till oss när det är på. Det ska inte finnas i App Store-versionen; finns det kvar måste det beskrivas här.]]
 
 ## Kalender, påminnelser och kontakter
-Om du ber om det kan appen lägga in händelser och påminnelser eller slå upp ett nummer. Det sker på telefonen och skickas inte till oss.
+I lägena som lyssnar kan du be appen lägga in händelser och påminnelser, berätta vad som finns i kalendern eller ringa en kontakt. Appen frågar om lov först.
+- **Kalendern:** när du frågar vad som finns skickas de händelser du frågar om (titel, tid och plats, högst 20) till vår server och till Anthropic, för att svaret ska kunna skrivas. De sparas inte [[O: att servern inte loggar eller sparar verktygens svar är inte kontrollerat]].
+- **Kontakter:** numret stannar på telefonen. Passar flera kontakter namnet du säger skickas deras namn (högst fyra) till vår server, så att appen kan fråga vem du menar.
+- **Påminnelser:** appen lägger bara till dem och läser inget.
 
 ## Köp
 Betalningen sköts av Apple. Vi får uppgifter om köpet (vilken produkt och när) för att ge dig krediter eller veckokortet, men aldrig ditt kort eller ditt namn.
@@ -71,9 +73,10 @@ EarMind är gjord för elever från 13 år [[O: åldersgränsen i App Store är 
 Last updated 17 November 2026.
 
 - **Account:** the app creates an anonymous account on your phone, with no name, email or phone number.
-- **What you type, snap or add** is sent to our server and to our AI providers to make audio (ElevenLabs) and questions and answers (Anthropic, Claude). Photos and documents are used once and not stored [[O: storage cleanup not verified]]. Texts, questions, answers and audio are stored on your account so you can play them again.
+- **What you type, snap or add** is sent to our server and to our AI providers to make audio (ElevenLabs) and questions and answers (Anthropic, Claude). Photos and documents are used once and deleted right after; anything left over is removed within an hour. Texts, questions, answers and audio are stored on your account so you can play them again.
 - **Analysis:** questions and answers created or edited in the app are sent to the developer for analysis and deleted once delivered [[O: retention period]]. Photos and documents are never sent.
 - **Start quiz and Say in AirPods never use the microphone.**
+- **Calendar and contacts (listening modes only):** when you ask what is in your calendar, the events you ask about (up to 20) are sent to our server to write the answer; if several contacts match a name, up to four names are sent so the app can ask which one. Phone numbers are never sent.
 - **Listening modes (More modes, beta)** ask for permission first and always show a bar while listening. Audio is streamed to ElevenLabs for speech recognition and is not stored by EarMind; ElevenLabs may keep it under its own terms.
 - **Purchases** are handled by Apple. We receive the purchase details needed to give you credits or the weekly pass, never your card or name.
 - **No ads, no tracking, no selling of data.**
