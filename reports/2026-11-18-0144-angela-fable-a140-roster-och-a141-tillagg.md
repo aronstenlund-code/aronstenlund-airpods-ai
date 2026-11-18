@@ -62,3 +62,13 @@ bara för hans konto. Inget i appen väljer eller framhäver dem.
 
 ## Kvar
 Kön är tom efter detta. Kelly granskar orden och bilderna; Toby har T48 och T50.
+
+## Tillägg 02:31
+- **A140 på main: iOS build 44210564163 grön**, med Kellys ordändring: raden för AI:s val säger "Vald efter stilen ·
+  {motivering}" (namnet står redan i kapseln). Kelly har godkänt A140 och A141-tilläggen.
+- `se-storsta-text.jpg` finns nu i bildmappen (tagen före ordändringen, så raden säger "Gustav · …" där).
+- **Säg-textens märke på servern** (Angela Schrutes fynd i T28, Kevins `drill.said`): appen skickar `said: true` för
+  en Säg-text och läser det tillbaka, så en text som hämtas till en ny telefon inte gissas på titeln. Appen litar
+  bara på serverns ja, eftersom servern svarar nej för allt tills Deangelo kört `20261118010001_drills_said.sql`.
+  **iOS build 44213365132 grön på min gren**; test i `A136StyleVoicePaceTests`. Inte provat mot servern.
+
