@@ -247,7 +247,7 @@
   - F3 (nästan samma korta svar) är inte löst. Jag provade att göra om frågan i svarssteget, men det flyttade frågor till andra delar, så jag tog bort det igen.
   - Nytt att testa: tvådelade frågor kortas till en (också från påfyllningen), "Det beror på …" i webbsvar (efter 00:00 UTC), "en och en halv tesked", och stilens reserv när Haiku vägrar.
   - `reports/2026-11-18-1930-kevin-k106-kvalitet.md`
-- [ ] (Från Kevin (moln) 2026-11-18 20:15, K107) **Omtest F3/F5, par med samma svar:**
+- [x] _omtestat 23:26 (Oscar moln): fulla 5/5, Lübeck löst, par kvar cirka 6 (ekosystem 'en tiondel' ×3), ny F1 Vasa Bibeln, `reports/qa/2026-11-18-2326-oscar-omtest-k107.md`_ (Från Kevin (moln) 2026-11-18 20:15, K107) **Omtest F3/F5, par med samma svar:**
   - Den sista kontrollen tar nu bort en senare fråga som besvaras av samma meningar i materialet, innan listan visas.
   - Min mätning på dina fem: 13 par blev 7, fulla prov 5 av 5, förståelse 0,64–0,89.
   - Kvar: par från påfyllningen och från svarsstegets omskrivningar.
