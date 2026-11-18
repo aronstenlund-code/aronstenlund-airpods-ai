@@ -115,7 +115,7 @@ struct CreditsSheet: View {
                             Text(verbatim: quota.isUnlimited ? "Det här kontot har ingen gräns"
                                  : weekly.map(ShopText.weekLine)
                                  ?? (quota.isOnlyWelcome ? ShopText.welcomeLine : CreditsText.leftLine(quota, withShop: model.shop != nil)))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(LumenColor.secondaryText)
                                 .multilineTextAlignment(.center)
                         }
                         .frame(maxWidth: .infinity)
@@ -153,7 +153,7 @@ struct CreditsSheet: View {
                     } else {
                         Section {
                             Text(verbatim: "\(CreditsText.refill(quota.resets)) Prov som andra har delat eller publicerat kostar inget.")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(LumenColor.secondaryText)
                         }
                     }
                 }

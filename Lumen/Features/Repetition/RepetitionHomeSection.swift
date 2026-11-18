@@ -298,13 +298,13 @@ struct RepetitionHomeSection: View {
         let saved = place(drill)
         return VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text("Nästa prov").font(.footnote).foregroundStyle(.secondary)
+                Text("Nästa prov").font(.footnote).foregroundStyle(LumenColor.secondaryText)
                 Text(verbatim: drill.title)
                     .font(.title2.bold())
                     .accessibilityAddTraits(.isHeader)
                 Text(verbatim: facts(drill, saved: saved))
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(LumenColor.secondaryText)
                     .monospacedDigit()
             }
             .accessibilityElement(children: .combine) // A95: "Nästa prov, Biologiprovet, Du var på fråga 3 av 5"
@@ -443,7 +443,7 @@ struct RepetitionHomeSection: View {
             } label: {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(verbatim: drill.title).foregroundStyle(.primary)
-                    Text(verbatim: detail).font(.subheadline).foregroundStyle(.secondary).monospacedDigit()
+                    Text(verbatim: detail).font(.subheadline).foregroundStyle(LumenColor.secondaryText).monospacedDigit()
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .contentShape(Rectangle())
@@ -470,7 +470,7 @@ struct RepetitionHomeSection: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(verbatim: title).foregroundStyle(Color.primary)
                     if let detail {
-                        Text(verbatim: detail).font(.subheadline).foregroundStyle(Color.secondary)
+                        Text(verbatim: detail).font(.subheadline).foregroundStyle(LumenColor.secondaryText)
                     }
                 }
                 Spacer(minLength: 0)

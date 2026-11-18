@@ -20,6 +20,10 @@ enum LumenColor {
     static let grid = Color(uiColor: .separator)
     static let ink = Color(uiColor: .label)
     static let muted = Color(uiColor: .secondaryLabel)
+    /// A148 (D218 point 4): secondary text that passes WCAG AA (4.5:1) in small sizes. The system's own secondary
+    /// label is 3.4:1 on white ("nearly passed" in the accessibility audit). #5C5C63 is 6.6:1 on white and 5.9:1 on
+    /// the grouped background; #ABABB3 is 7.5:1 on the dark cards.
+    static let secondaryText = dynamic(0x5C5C63, 0xABABB3)
     static let blue = dynamic(0x2346C8, 0x7F9BFF)
     static let red = Color(uiColor: .systemRed)
     static let onBlue = dynamic(0xFFFFFF, 0x0E1630)

@@ -11,34 +11,36 @@ struct AccountSection: View {
 
     var body: some View {
         Section {
-            Button(role: .destructive) {
-                asks = true
-            } label: {
+            if model.isDeleting {
+                // A148: while it deletes the row says so in readable text; a greyed button did not pass the contrast.
                 HStack {
-                    Text("Radera konto")
+                    Text("Raderar kontot …").foregroundStyle(LumenColor.ink)
                     Spacer()
-                    if model.isDeleting { ProgressView() }
+                    ProgressView()
                 }
-            }
-            .disabled(model.isDeleting)
-            .alert(AccountDeletionModel.question, isPresented: $asks) {
-                Button("Radera konto", role: .destructive) { Task { await model.delete() } }
-                Button("Avbryt", role: .cancel) {}
-            } message: {
-                Text(verbatim: AccountDeletionModel.questionDetail)
+                .accessibilityElement(children: .combine)
+            } else {
+                Button("Radera konto", role: .destructive) { asks = true }
             }
             Button("Hantera prenumerationer") { managesSubscriptions = true }
                 .manageSubscriptionsSheet(isPresented: $managesSubscriptions)
+                .alert(AccountDeletionModel.question, isPresented: $asks) {
+                    Button("Radera konto", role: .destructive) { Task { await model.delete() } }
+                    Button("Avbryt", role: .cancel) {}
+                } message: {
+                    Text(verbatim: AccountDeletionModel.questionDetail)
+                }
         } header: {
-            Text("Konto")
+            Text("Konto").foregroundStyle(LumenColor.secondaryText)
         } footer: {
             VStack(alignment: .leading, spacing: 6) {
-                if model.isDeleting {
-                    Text("Raderar kontot …")
-                } else if let line = model.failureLine {
+                if let line = model.failureLine {
                     Text(verbatim: line).foregroundStyle(LumenColor.ink)
                 }
+                // A148: VoiceOver reads the path with commas, not the arrow signs.
                 Text(verbatim: AccountDeletionModel.passLine)
+                    .foregroundStyle(LumenColor.secondaryText)
+                    .accessibilityLabel(AccountDeletionModel.passLine.replacingOccurrences(of: " › ", with: ", "))
             }
         }
     }

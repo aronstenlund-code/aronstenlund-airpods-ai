@@ -304,7 +304,7 @@ struct SayInAirPodsField: View {
         if !said.isEmpty {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    Text("Senaste").font(.footnote).foregroundStyle(.secondary)
+                    Text("Senaste").font(.footnote).foregroundStyle(LumenColor.secondaryText)
                     ForEach(said) { drill in
                         Button {
                             text = String(drill.saidText.prefix(SaidText.maxChars))
@@ -317,7 +317,7 @@ struct SayInAirPodsField: View {
                             HStack(spacing: 4) {
                                 Text(verbatim: SayText.capsule(drill.saidText))
                                 if let mark = SayText.soundMark(drill, voices: model.sayVoices, defaultName: model.sayDefaultVoice) {
-                                    Text(verbatim: "· \(mark)").foregroundStyle(.secondary)
+                                    Text(verbatim: "· \(mark)").foregroundStyle(LumenColor.secondaryText)
                                 }
                             }
                             .font(.footnote)
@@ -540,6 +540,7 @@ struct SayInAirPodsField: View {
                 }
                 .accessibilityLabel(SayText.stylePrompt)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .frame(minHeight: 44) // A148: a finger's size (the audit: "Hit area is too small")
                 .toolbar {
                     // Ke75 §2: four suggestions above the keyboard; a tap writes the word.
                     if styleFocused {
@@ -607,7 +608,8 @@ struct SayInAirPodsField: View {
                         Text(SayText.refillLine(line))
                             .multilineTextAlignment(typeSize.isAccessibilitySize ? .leading : .trailing)
                             .fixedSize(horizontal: false, vertical: true)
-                            .frame(minHeight: 32)
+                            .frame(minHeight: 44) // A148: a finger's size (the audit: "Hit area is too small")
+                            .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("\(line). \(ShopText.refill)")
@@ -738,7 +740,9 @@ struct SayInAirPodsField: View {
             .buttonStyle(.borderedProminent)
             .buttonBorderShape(.capsule)
             .tint(SayText.accent)
-            .foregroundStyle(Color.black)
+            // A148: a button that cannot be pressed still says what it is. Black on the dimmed fill was unreadable
+            // ("Contrast failed" in the audit); the card's own text colour is 9:1 on it.
+            .foregroundStyle(isEmpty || isStarting || tooMany ? SayText.ink.opacity(0.85) : Color.black)
             .disabled(isEmpty || isStarting || tooMany)
             .dynamicTypeSize(...DynamicTypeSize.accessibility1) // as the small buttons beside it
         }
