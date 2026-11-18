@@ -122,9 +122,17 @@ export async function* sseJson(
  * before the first tool block is therefore held back and dropped if a tool call follows; text after a tool
  * result streams live. Without any tool call the held text is released when the message ends.
  */
+/** Text that only talks about searching (never an answer): held back like any preface before a tool call. */
+const SEARCH_TALK = /\b(?:sök\w*|letar|kollar|slår upp|ska se efter|search\w*|let me|i'll|i will|looking up)\b/iu;
+/** K103 (Oscar O86 A1): a first sentence this long that is not about searching is the answer itself. */
+const RELEASE_CHARS = 40;
+
 export class WebTextGate {
   private toolUsed = false;
   private held = "";
+  /** K103: the answer began without a tool call and has been passed on; what follows streams at once. */
+  released = false;
+  constructor(private readonly holdUntilEnd = false) {}
 
   /** Returns the chunks to pass on for this event. */
   filter(ev: { type: string; [k: string]: unknown }, mapped: LLMChunk | null): LLMChunk[] {
@@ -133,6 +141,7 @@ export class WebTextGate {
       if (
         t === "server_tool_use" || t === "web_search_tool_result" || t === "web_fetch_tool_result" || t === "tool_use"
       ) {
+        if (this.released && !this.toolUsed) console.warn("web_gate_released_then_tool", "{}");
         this.toolUsed = true;
         this.held = "";
       }
@@ -144,8 +153,16 @@ export class WebTextGate {
       return h ? [{ type: "text", text: h }] : [];
     }
     if (mapped?.type === "text") {
-      if (this.toolUsed) return [mapped];
+      if (this.toolUsed || this.released) return [mapped];
       this.held += mapped.text;
+      // K103 (Oscar O86 A1: "Helan går" waited 3.3 s for the whole text): when the model answers without a tool,
+      // the first whole sentence (long enough, not about searching) starts the answer instead of waiting for the end
+      if (!this.holdUntilEnd && this.held.length >= RELEASE_CHARS && /[.!?](?:\s|$)/u.test(this.held) && !SEARCH_TALK.test(this.held)) {
+        this.released = true;
+        const h = this.held;
+        this.held = "";
+        return [{ type: "text", text: h }];
+      }
       return [];
     }
     return mapped ? [mapped] : [];
@@ -188,7 +205,7 @@ export class AnthropicProvider implements LLMProvider {
       : AbortSignal.timeout(timeoutMs);
     // only server tools (web search / fetch, they have a `type`) hold back text; K35 phone tools stream as usual
     const serverTools = (req.tools ?? []).some((t) => typeof (t as { type?: unknown })?.type === "string");
-    const gate = serverTools || req.holdTextBeforeTool ? new WebTextGate() : null;
+    const gate = serverTools || req.holdTextBeforeTool ? new WebTextGate(req.holdUntilEnd === true) : null;
     let emitted = false;
     try {
       const model = req.model ?? this.cfg.model;

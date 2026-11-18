@@ -1088,6 +1088,8 @@ export interface PostOptions {
   trimQuestion: boolean;
   /** Social lines: keep only the first line (D51: no tips, no questions about context). */
   firstLineOnly?: boolean;
+  /** K103 (Oscar O86 B5): a social line is the line to say; advice to the user about the other person goes. */
+  socialLine?: boolean;
   /** D65: tutor mode: check questions must be short single questions (others are dropped). */
   tutor?: boolean;
   /** D53: the stream starts with a `[[REL ...]]` relation tag that is split off. */
@@ -1186,6 +1188,22 @@ export function quoteVerified(quote: string, cited: string): boolean {
   return hit / Math.max(1, w.length - 1) >= 0.75;
 }
 
+/**
+ * K103 (Oscar O86 B5, "Haha, då får du visa honom att du är allt annat än tråkig. Vad sa han sen?"): in a social line
+ * a sentence that advises the user about the other person (he/she in the third person) is not something to say, and
+ * "om du vill svara …: \"…\"" keeps only the quoted line. A line said to the other person ("visa mig …") stays.
+ */
+const SOCIAL_ADVICE = /^\s*(?:(?:haha|hah|okej|ok|aha|asså|alltså)[,!.]?\s+)?(?:men\s+)?(?:då\s+)?(?:(?:får|kan|borde|ska|måste|bör)\s+du|säg\s+(?:att|till)|svara\s+(?:att|med)|du\s+(?:kan|får|borde)\s+(?:säga|svara|visa))\b[^.!?]*\b(?:honom|henne|hen|han|hon|dem)\b/iu;
+export function socialLineSentence(sentence: string): string {
+  const quoted = /:\s*["“”«»„]([^"“”«»„]{3,200})["“”«»„]?\s*$/u.exec(sentence);
+  if (quoted) return quoted[1].trim() + " ";
+  if (/^\s*(?:men\s+)?om du vill (?:svara|säga)\b/iu.test(sentence)) return "";
+  if (SOCIAL_ADVICE.test(sentence)) return "";
+  // a question to the user about the other person ("Vad sa han sen?") is not a line to say either
+  if (/^\s*(?:vad|varför|hur|när)\b[^?]*\b(?:han|hon|hen)\b[^?]*\?\s*$/iu.test(sentence)) return "";
+  return sentence.replace(/["“”«»„]/g, "");
+}
+
 export class AnswerPost {
   readonly dup: DupGuard;
   readonly trim: QuestionTrim;
@@ -1199,6 +1217,7 @@ export class AnswerPost {
   private readonly level: MetaGate;
   private readonly lead: MetaGate;
   private readonly quote: MetaGate;
+  private readonly social: MetaGate;
   private cited = "";
   /** K11: a quote was dropped because the search did not give its words (the handler may ask again). */
   unverifiedQuote = false;
@@ -1274,6 +1293,7 @@ export class AnswerPost {
       if (marks % 2 === 1) openQuote = true;
       return "";
     });
+    this.social = new MetaGate(opts.socialLine === true, () => false, socialLineSentence);
     this.quizOnly = opts.quizOnly === true;
     this.src = new SourceTap(opts.web === true || opts.source === true);
     this.en = new EnglishGate(opts.web === true || opts.dropEnglish === true, opts.dropEnglish === true);
@@ -1356,7 +1376,7 @@ ${text}`;
     c.source += t2.length;
     const t3 = this.en.push(t2);
     c.english += t3.length;
-    const t4 = this.lead.push(this.level.push(this.input.push(this.meta.push(this.quote.push(t3)))));
+    const t4 = this.lead.push(this.level.push(this.input.push(this.meta.push(this.social.push(this.quote.push(t3))))));
     c.meta += t4.length;
     const a = this.dup.push(this.gate.push(this.imeta.push(t4)));
     c.gate += a.length;
@@ -1376,7 +1396,8 @@ ${text}`;
     const t = this.strip.push(t0) + this.strip.finish();
     const s = this.src.push(t) + this.src.finish();
     const e0q = this.en.push(s) + this.en.finish();
-    const e0 = this.quote.push(e0q) + this.quote.finish();
+    const e0a = this.quote.push(e0q) + this.quote.finish();
+    const e0 = this.social.push(e0a) + this.social.finish();
     const e1 = this.meta.push(e0) + this.meta.finish();
     const e2i = this.input.push(e1) + this.input.finish();
     const e2a = this.level.push(e2i) + this.level.finish();
