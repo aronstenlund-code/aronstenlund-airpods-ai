@@ -1,0 +1,37 @@
+repSayOnCard: 8 issues (dynamicType 6, elementDetection 1, textClipped 1), audit 10 s
+
+
+
+ISSUE 1 [elementDetection] Potentially inaccessible text
+  This element appears to display text that should be represented using the accessibility API.
+  element: (none)
+
+ISSUE 2 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='Fotosyntes: koldioxid + vatten + ljus blir socker och syre.
+Cellandning: socker + syre blir energi, koldioxid och vatten.' identifier='' frame={{32, 136.5}, {311, 144}}
+
+ISSUE 3 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='1,2k krediter kvar' identifier='' frame={{19.999999999999993, 24}, {172.5, 36}}
+
+ISSUE 4 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Spelar i AirPods · Astrid' identifier='' frame={{46, 94}, {285, 32.5}}
+
+ISSUE 5 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='6:59 kvar' identifier='' frame={{88, 295.75}, {122, 33.5}}
+
+ISSUE 6 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 9 label='Stoppa' identifier='' frame={{256, 295.75}, {87, 33.5}}
+
+ISSUE 7 [dynamicType] Dynamic Type font sizes are partially unsupported
+  User will not be able to change the font size of this SwiftUI.AccessibilityNode
+  element: 48 label='Nytt prov' identifier='' frame={{20, 624}, {157, 34}}
+
+ISSUE 8 [textClipped] Text clipped
+  Text of this SwiftUI.AccessibilityNode may be clipped at larger Dynamic Type sizes.
+  element: 9 label='Fotosyntes: koldioxid + vatten + ljus blir socker och syre.
+Cellandning: socker + syre blir energi, koldioxid och vatten.' identifier='' frame={{32, 136.5}, {311, 144}}

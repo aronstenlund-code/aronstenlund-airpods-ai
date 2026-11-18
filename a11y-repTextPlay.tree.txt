@@ -1,0 +1,28 @@
+Attributes: Application, 0x11790d040, pid: 25683, label: 'EarMind'
+Element subtree:
+ →Application, 0x11790d040, pid: 25683, label: 'EarMind'
+    Window (Main), 0x11790c3c0, {{0.0, 0.0}, {375.0, 667.0}}
+      Other, 0x11790cb40, {{0.0, 0.0}, {375.0, 667.0}}
+        Other, 0x11790d180, {{0.0, 0.0}, {375.0, 667.0}}
+          Other, 0x11790d400, {{0.0, 0.0}, {375.0, 667.0}}
+            Other, 0x11790d540, {{0.0, 0.0}, {375.0, 667.0}}
+              StaticText, 0x11790c280, {{106.5, 33.8}, {162.0, 36.0}}, label: 'Biologiprovet'
+              Button, 0x11790c140, {{20.0, 32.0}, {104.0, 39.5}}, label: 'Avsluta'
+              StaticText, 0x11790c8c0, {{20.0, 81.5}, {335.0, 48.0}}, label: 'Mening 6 av 11'
+                StaticText, 0x11790ca00, {{20.0, 81.5}, {202.5, 36.0}}, label: 'Mening 6 av 11'
+                ProgressIndicator, 0x11790c640, {{20.0, 125.5}, {335.0, 4.0}}, value: 55 %
+                  ProgressIndicator, 0x11790cdc0, {{20.0, 115.5}, {335.0, 24.0}}, value: 55 %
+              StaticText, 0x11790d7c0, {{20.0, 137.5}, {335.0, 437.5}}, label: 'Med ljusets energi blir de till socker och syre.', value: Fotosyntesen
+Växte...
+                Other, 0x11790c500, {{20.0, 542.0}, {335.0, 30.0}}, label: 'Horisontell rullningslist, 1 sida', value: 0 %
+                  Other, 0x11790cc80, {{23.0, 569.0}, {326.0, 3.0}}
+              Button, 0x11790cf00, {{67.5, 605.0}, {44.0, 44.0}}, identifier: 'backward.fill', label: 'Förra meningen'
+              Button, 0x11790d680, {{165.5, 605.0}, {44.0, 44.0}}, identifier: 'pause.fill', label: 'Pausa'
+              Button, 0x11790d900, {{263.5, 605.0}, {44.0, 44.0}}, identifier: 'forward.fill', label: 'Nästa mening'
+Path to element:
+ →Application, 0x11790d040, pid: 25683, label: 'EarMind'
+Query chain:
+ →Find: Target Application 'com.rsolutions.lumen'
+  Output: {
+    Application, 0x11790d2c0, pid: 25683, label: 'EarMind'
+  }
