@@ -112,8 +112,16 @@ final class SayFlowTests: XCTestCase {
         // Run 44100858965: the lines tick every second; read the tree, for up to 60 s.
         let end = Date().addingTimeInterval(60)
         var up = false
+        var retried = false
         repeat {
             up = text(starting: "Spelar i AirPods") != nil || text(starting: "Gör ljudet") != nil || timeLeft() != nil
+            // Run 44230731193: 20 s after the network came back the first try said "Ljudet kunde inte hämtas. Kolla
+            // nätet." with Försök igen. Try again once, and say so.
+            if !up, !retried, let line = text(starting: "Ljudet kunde inte hämtas") {
+                retried = true
+                note("Spela said '\(line)'; tapped Försök igen once")
+                tap(["Försök igen"], "Försök igen", counted: false, quiet: true)
+            }
             if !up { pause(2) }
         } while !up && Date() < end
         if up { answerReminder(); return true }
@@ -322,13 +330,16 @@ final class SayFlowTests: XCTestCase {
         guard tap(Self.playLabels, "Spela i … (offline, a new text)") else { return false }
         var said: String?
         let end2 = Date().addingTimeInterval(25)
-        repeat { said = text(starting: "Ljudet kunde inte hämtas"); if said == nil { pause(0.5) } } while said == nil && Date() < end2
+        // Run 44230731193: when the phone knows it is offline the line is "Ingen internetanslutning. Försök igen när du är
+        // uppkopplad." at once (and the button stays Spela); "Ljudet kunde inte hämtas …" + Försök igen is for a network
+        // that is there but does not answer. Either says what is wrong; Försök igen is required only with the second.
+        repeat { said = text(starting: "Ljudet kunde inte hämtas") ?? text(starting: "Ingen internetanslutning"); if said == nil { pause(0.5) } } while said == nil && Date() < end2
         let waited = Date().timeIntervalSince(t1)
         log.append(String(format: "T49 a new text offline: '%@' after %.1f s, Försök igen: %@", said ?? "-", waited, find(["Försök igen"]) != nil ? "yes" : "no"))
         screen("utan-nat-ny", "Offline: a new text")
-        if said == nil { ok = miss("offline, a new text gave no 'Ljudet kunde inte hämtas …' in 25 s") }
+        if said == nil { ok = miss("offline, a new text gave no line ('Ljudet kunde inte hämtas …' or 'Ingen internetanslutning …') in 25 s") }
         else if waited > 14 { note(String(format: "the line came after %.0f s (A135: at most 10 s)", waited)) }
-        if find(["Försök igen"]) == nil { ok = miss("no 'Försök igen' button after the line") }
+        if said?.hasPrefix("Ljudet kunde inte hämtas") == true, find(["Försök igen"]) == nil { ok = miss("no 'Försök igen' button after the line") }
         if text(starting: "Spelar i AirPods") != nil { ok = miss("a new text played offline (there should be no sound for it)") }
         clearField()
         let capsules = recentCapsules()
