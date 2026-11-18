@@ -97,12 +97,12 @@ struct SayVoicesSheet: View {
                     Section {
                         if let found {
                             ForEach(found) { row($0) }
-                            if found.isEmpty { Text("Inga röster hittades.").foregroundStyle(.secondary) }
+                            if found.isEmpty { Text("Inga röster hittades.").foregroundStyle(LumenColor.secondaryText) }
                         } else if isSearching {
-                            HStack(spacing: 8) { ProgressView(); Text("Söker …").foregroundStyle(.secondary) }
+                            HStack(spacing: 8) { ProgressView(); Text("Söker …").foregroundStyle(LumenColor.secondaryText) }
                         } else {
                             Text(verbatim: NetworkStatus.shared.isOnline ? "Det gick inte att söka just nu." : NetworkStatus.noNetworkLine)
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(LumenColor.secondaryText)
                         }
                     } footer: {
                         Text(verbatim: Self.footnote)
@@ -164,7 +164,7 @@ struct SayVoicesSheet: View {
                     .disabled(!voice.canBeChosen)
                 }
                 if !line.isEmpty {
-                    Text(verbatim: line).font(.footnote).foregroundStyle(.secondary)
+                    Text(verbatim: line).font(.footnote).foregroundStyle(LumenColor.secondaryText)
                         .fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -213,7 +213,7 @@ struct SayVoicesSheet: View {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(verbatim: voice.name).foregroundStyle(.primary)
                         let line = subtitle(of: voice)
-                        if !line.isEmpty { Text(verbatim: line).font(.footnote).foregroundStyle(.secondary) }
+                        if !line.isEmpty { Text(verbatim: line).font(.footnote).foregroundStyle(LumenColor.secondaryText) }
                     }
                     Spacer(minLength: 8)
                     if chosen == voice.voice_id, !mix {
