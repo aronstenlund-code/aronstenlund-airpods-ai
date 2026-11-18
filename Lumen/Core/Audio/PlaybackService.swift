@@ -16,6 +16,8 @@ protocol PlaybackServicing: AnyObject {
     var speechVolume: Float { get set }
 
     func playTestTone(frequency: Double, duration: Double) throws(AudioError)
+    /// A151 (D233): a quiet, soft tone from the same graph. `level` is the peak, 0…0.3 (the other tones are 0.3).
+    func playQuietTone(frequency: Double, duration: Double, level: Double) throws(AudioError)
     /// Speaks `text` through our engine (not the system's) using `AVSpeechSynthesizer.write`.
     /// `voiceIdentifier` picks a specific `AVSpeechSynthesisVoice`; nil = the default voice for `language`.
     func speak(_ text: String, language: String, voiceIdentifier: String?) async throws(AudioError)
@@ -52,6 +54,21 @@ extension PlaybackServicing {
     func startRecordingSpeech() {}
     func stopRecordingSpeech() {}
     func replayRecordedSpeech() throws(AudioError) -> Bool { false }
+}
+
+/// The app's own tones (test tone, cues, the search tone): a sine with a linear fade in and out. Pure.
+enum ToneShape {
+    /// `level` is the peak (0…1), `fade` the seconds of fade at each end.
+    static func samples(frequency: Double, duration: Double, level: Double, fade: Double, sampleRate: Double) -> [Float] {
+        let frames = Int(sampleRate * duration)
+        guard frames > 0 else { return [] }
+        let ramp = max(1, sampleRate * fade)
+        return (0..<frames).map { i in
+            let t = Double(i) / sampleRate
+            let envelope = min(1.0, min(Double(i), Double(frames - i)) / ramp)
+            return Float(level * sin(2 * .pi * frequency * t) * envelope)
+        }
+    }
 }
 
 /// Measures the time from a play request to the first non-silent buffer leaving the time-pitch node.
@@ -228,24 +245,29 @@ final class PlaybackService: PlaybackServicing {
     // MARK: - Test tone
 
     func playTestTone(frequency: Double = 440, duration: Double = 0.6) throws(AudioError) {
+        try scheduleTone(frequency: frequency, duration: duration, level: 0.3, fade: 0.01)
+        Log.playback.info("Test tone \(Int(frequency)) Hz, \(duration) s")
+    }
+
+    func playQuietTone(frequency: Double, duration: Double, level: Double) throws(AudioError) {
+        try scheduleTone(frequency: frequency, duration: duration, level: min(max(level, 0), 0.3), fade: 0.04)
+        Log.playback.info("Quiet tone \(Int(frequency)) Hz, \(duration) s, level \(level)")
+    }
+
+    private func scheduleTone(frequency: Double, duration: Double, level: Double, fade: Double) throws(AudioError) {
         try graph.ensureRunning()
         let sampleRate = playbackFormat.sampleRate
-        let frames = AVAudioFrameCount(sampleRate * duration)
-        guard let buffer = AVAudioPCMBuffer(pcmFormat: playbackFormat, frameCapacity: frames),
+        let samples = ToneShape.samples(frequency: frequency, duration: duration, level: level, fade: fade, sampleRate: sampleRate)
+        let frames = AVAudioFrameCount(samples.count)
+        guard frames > 0, let buffer = AVAudioPCMBuffer(pcmFormat: playbackFormat, frameCapacity: frames),
               let channel = buffer.floatChannelData?[0] else {
             throw .playbackFormatUnavailable
         }
         buffer.frameLength = frames
-        let ramp = sampleRate * 0.01
-        for i in 0..<Int(frames) {
-            let t = Double(i) / sampleRate
-            let envelope = min(1.0, min(Double(i), Double(Int(frames) - i)) / ramp)
-            channel[i] = Float(0.3 * sin(2 * .pi * frequency * t) * envelope)
-        }
+        for (i, sample) in samples.enumerated() { channel[i] = sample }
         requestPlayback()
         player.scheduleBuffer(buffer, completionHandler: nil)
         if !player.isPlaying { player.play() }
-        Log.playback.info("Test tone \(Int(frequency)) Hz, \(duration) s")
     }
 
     // MARK: - TTS through our engine
