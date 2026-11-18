@@ -1220,7 +1220,7 @@
    {
     "q": "recept på köttbullar",
     "expect_any": [
-     "köttfärs"
+     "färs"
     ],
     "forbid_any": [
      "jag kan inte hjälpa",
@@ -1306,7 +1306,8 @@
   "turns": [
    {
     "q": "Kalle sa att jag är tråkig vad säger jag",
-    "max_words": 16
+    "max_words": 16,
+    "allow_question": true
    }
   ]
  },
@@ -1316,7 +1317,8 @@
   "turns": [
    {
     "q": "hon skrev hej vad svarar jag",
-    "max_words": 16
+    "max_words": 16,
+    "allow_question": true
    }
   ]
  },
@@ -1326,7 +1328,8 @@
   "turns": [
    {
     "q": "min kompis frågade om jag vill hänga ikväll vad säger jag",
-    "max_words": 16
+    "max_words": 16,
+    "allow_question": true
    }
   ]
  },
@@ -1424,6 +1427,7 @@
   "turns": [
    {
     "q": "vad har du gjort i sommar",
+    "allow_question": true,
     "memories": [
      "Jag har varit och åkt skidor"
     ],

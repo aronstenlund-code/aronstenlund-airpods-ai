@@ -419,6 +419,10 @@ export function afterNumbers(text: string): string {
     return `${n} ${/^(?:en|ett|halv|halva)$/i.test(n) ? one : many}`;
   });
   s = s.replace(RULER_WORD, (_m, name: string, w: string) => `${name} den ${CARD_TO_ORD[w] ?? w}`);
+  // K103 (Oscar O86 B3): a dash left between two numbers in words is a range ("ett komma fyra – fem komma sju")
+  s = s.replace(new RegExp(String.raw`(?<![\p{L}])(${NUM_WORD}|noll|komma \p{L}+)\s+[–—−]\s+(?=${NUM_WORD}(?![\p{L}])|noll(?![\p{L}]))`, "giu"), "$1 till ");
+  // O86 (praktiskt-04): "ägg" is an ett-word ("en ägg" was said)
+  s = s.replace(/(?<![\p{L}])([Ee])n ägg(?![\p{L}])/gu, (_m, e: string) => `${e}tt ägg`);
   // "mol" is an en-word ("en mol"), a recurring slip in the model's Swedish
   s = s.replace(/(?<![\p{L}])([Ee])tt mol(?![\p{L}])/gu, (_m, e: string) => `${e}n mol`);
   // K2 (Oscar's D87 review): the commonest gender slips, only article directly before the noun.

@@ -1,99 +1,117 @@
-# App Store: bilder och text (Kelly, Ke56, D160, 2026-11-13)
+# App Store-produktsidan (Kelly (moln), Ke80, D232, 2026-11-18)
 
-> **Ersatt 2026-11-17 (Ke76):** texterna, integritetsuppgifterna och granskningsanteckningarna gäller nu i
-> `granskning.md`. Bilderna nedan görs om efter nya första skärmen (Ke74).
+**Klar att lägga in, men inget är uppladdat eller inskickat.** Det görs bara efter Arons ja (TILL-ARON #27).
+Integritetsuppgifter, granskningsanteckningar och engelsk text: `granskning.md`. Kontrollen av vad texten lovar: §5.
 
-**Förberedelse. Inget är inlagt i App Store Connect och inget skickas in.** Att publicera eller skicka in görs bara
-efter Arons ja (CLAUDE.md). Ersätter utkastet i `docs/marketing/appstore/` (Ke25), som beskrev lyssningen före D142.
+## 1. Bilder (6,9 tum, 1320 × 2868)
+Rubrik ovanför en oförändrad skärmbild ur appen (Apple-stil, D160): grå bakgrund, mörk ram, ingen skugga.
+Skärmbilderna är tagna i **full storlek** på iPhone 17 Pro Max med Kellys bildflöde `kelly-appstore-shots.yml`
+(inga nedskalningar; appen startas med `say.hasPlayed`, så raden om låst skärm syns inte). Rådata: grenen
+`kelly/appstore-shots-ke80`. Rubrikerna är satta i Inter Display (molnet); byt till SF Pro Display på en Mac om Aron vill
+(kommandot sist).
 
-## Bilder (6,9 tum, 1320 × 2868), Ke74 2026-11-17
-| # | Fil | Rubrik | Rad under | Scen i appen |
+| # | Fil | Rubrik | Rad under | Scen |
 |---|---|---|---|---|
 | 1 | `69-1.jpg` | Skriv. Lyssna. | Det du skriver läses upp i dina hörlurar. | `repSayCredits` |
-| 2 | `69-2.jpg` | Om och om igen. | Välj 10 minuter upp till en timme. | `repSayOnCard` |
-| 3 | `69-3.jpg` | Fota boken. | Frågor med svar, eller hela texten uppläst. | `repTextNew` |
-| 4 | `69-4.jpg` | Tryck för svaret. | 1 gång för långt svar, 2 för kort, 3 för paus. | `repPlayAnswer` |
-| 5 | `69-5.jpg` | Följ texten. | Meningen som läses är markerad. | `repTextPlay` |
+| 2 | `69-2.jpg` | Om och om igen. | Från 10 minuter upp till en timme. | `repSayOnCard` |
+| 3 | `69-3.jpg` | Hur ska det låta? | Skriv det, så väljer EarMind en röst. | `repSayPicked` |
+| 4 | `69-4.jpg` | Välj en röst. | Lyssna först. Det kostar inget. | `repSayVoices` |
+| 5 | `69-5.jpg` | Spela igen. | Det senaste ligger kvar under fältet. | `repHomeSaidMarks` |
+| 6 | `69-6.jpg` | Fota boken. | Frågor med svar, eller hela texten uppläst. | `repTextNew` |
+| 7 | `69-7.jpg` | Tryck för svaret. | 1 gång för långt svar, 2 för kort, 3 för paus. | `repPlayAnswer` |
+| 8 | `69-8.jpg` | Börja gratis. | 5 000 krediter att börja med, 1 500 varje månad. | `repShop` |
 
-- **Förslag, inte slutliga:** skärmbilderna är från iPhone 17 Pro Max (grenen `kelly/screens-ke74-promax`, körning
-  44160416467, 5398a2b) men **nedskalade till 644 × 1400 av bildflödet** och uppskalade igen, så de är lite mjuka.
-  Slutliga bilder tas med "Simulator screenshots" på 17 Pro Max i full upplösning, och rubrikerna med SF Pro Display.
-  Rubrikerna här är DejaVu Sans (molnet).
-- Bild 1 visar appens rad "Du kan låsa telefonen. Det hörs i AirPods ändå." Den är **inte provad på telefon** (D209).
-  Provar Aron den inte före inskickning: ta bilden igen efter första Spela (raden visas då inte).
-- **Äldre bilder (Ke56/Ke62):** **Skärmbilderna är exakta:** CI "Simulator screenshots" **43578038498** på **iPhone 17 Pro Max** (1320 × 2868,
-  main 508aeb2, efter A87, A83 och A92), inte uppskalade. **Rubrikerna är fortfarande Segoe UI**, eftersom SF Pro
-  inte finns i Windows. Gör om dem med SF Pro Display på en Mac före inskickning (kommandot nedan).
-- Bild 5 visar Prov från din skola i stället för Dela-scenen, eftersom Dela bara syns som en symbol i verktygsraden.
-- Gör om dem med `python -I docs/appstore/_src/appstore.py <mapp> <SF-Pro-Display-Bold.otf> <SF-Pro-Display-Regular.otf>`.
-- Apple-stil: grå bakgrund (#F5F5F7), rubrik och en rad, telefonen i en enkel mörk ram och ingen skugga eller gradient.
-  Varje bild är en oförändrad skärmbild ur appen.
-- Rad 4 bygger på Arons text (A90). Hela meningen står i beskrivningen.
-- Bild 1–3 syns i sökresultatet och berättar hela idén: fota → frågor → starta.
+Bild 1–3 syns i sökresultatet och berättar idén: skriv, lyssna, välj hur det låter. Inget om låst skärm (D209 inte
+provat på telefon) och inget som antyder dold användning: varje bild visar appen öppen och synlig.
 
-## Texter (tecken räknade med Python)
+## 2. Texter (tecken räknade med Python)
 | Fält | Gräns | Text | Tecken |
 |---|---|---|---|
 | Namn | 30 | EarMind | 7 |
-| Underrubrik | 30 | Plugga utan att röra mobilen | 28 |
-| Reklamtext | 170 | Fota materialet och få provfrågor med A-svar. Frågorna läses upp i dina hörlurar, och du styr med tryck. Telefonen kan ligga i fickan. | 134 |
-| Nyckelord | 100 | `prov,plugga,förhör,provfrågor,instudering,repetition,läxor,glosor,hörlurar,quiz,skola,gymnasiet` | 95 |
+| Undertitel | 30 | Lyssna och plugga i hörlurarna | 30 |
+| Reklamtext | 170 | Skriv det du vill höra, eller fota boken. EarMind läser upp det i dina hörlurar, om och om igen, eller gör provfrågor med svar. | 127 |
+| Nyckelord | 100 | `plugga,prov,förhör,glosor,uppläsning,läxor,repetition,instudering,provfrågor,skola,gymnasiet,röster` | 99 |
+| Support-URL | – | https://earmind.vercel.app | – |
+| Marknadsförings-URL | – | https://earmind.vercel.app | – |
+| Integritets-URL | – | https://earmind.vercel.app/integritet (**Ke78, inte publicerad**: Arons ja först) | – |
+| Villkor (EULA) | – | Apples standard-EULA, och länken https://earmind.vercel.app/villkor i beskrivningen (krav för prenumeration, 3.1.2; **inte publicerad**) | – |
+| Kategori | – | Utbildning (primär), Produktivitet (sekundär) | – |
+| Åldersgräns | – | **13+** (förslag, se §4) | – |
 
-"AirPods" står inte i namnet, underrubriken eller nyckelorden (D122, Apples riktlinjer för varumärken). Det används
-bara i beskrivningen och på bild 3, som "fungerar med" och "i dina AirPods".
+"AirPods" står inte i namnet, undertiteln eller nyckelorden (D122, Apples varumärkesregler), bara i beskrivningen.
 
-**Beskrivning** (2052 av 4 000 tecken, uppdaterad Ke62 2026-11-15):
+**Beskrivning** (1862 av 4 000 tecken):
 
-> Plugga med AirPods utan att röra mobilen. Fota materialet till ditt prov, så gör EarMind provfrågor med A-svar och läser upp dem i dina hörlurar. Du styr med tryck och kan ha telefonen i fickan.
+> Skriv det du vill höra, eller fota boken. EarMind läser upp det i dina hörlurar, om och om igen.
 >
-> FOTA MATERIALET
-> • Fota sidor ur boken, välj bilder, lägg till en PDF eller Word-fil eller klistra in text.
-> • Välj årskurs och antal frågor. EarMind visar vad provet handlar om, och stämmer det inte skriver du en rad så rättas det.
-> • Har du gjort frågor i ChatGPT kan du klistra in dem med Gör med ChatGPT.
-> • Språkprov får frågor och svar på språket du pluggar.
-> • Fotona och dokumenten används en gång för att göra frågorna och sparas inte.
+> SÄG I AIRPODS
+> • Skriv eller klistra in en text och tryck Spela. Den läses upp om och om igen, från 10 minuter upp till en timme.
+> • Skriv hur det ska låta, till exempel "lugnt, som en lärare", så väljer EarMind en röst som passar. Eller välj själv och lyssna först.
+> • Skriv i takt läser långsamt med pauser, så att du hinner skriva.
+> • Du ser hela tiden att det spelas och hur länge det är kvar, och du stoppar när du vill.
 >
-> FRÅGOR MED A-SVAR
-> • Frågor som testar att du förstår, inte bara att du minns.
-> • Varje fråga får ett kort svar och ett långt A-svar.
+> FOTA BOKEN
+> • Fota sidor, välj bilder, lägg till en PDF eller Word-fil eller klistra in en länk.
+> • Få provfrågor med ett kort och ett långt svar, eller hela texten uppläst.
 > • Ändra, ta bort eller lägg till egna frågor och svar.
-> • Välj bland tre röster och ställ in tempot.
 >
 > STARTA PROV
-> • Frågorna läses upp i dina hörlurar, med betänketid efter varje.
-> • Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta.
-> • Listan börjar om i samma ordning tills du avslutar.
-> • Starta prov använder aldrig mikrofonen.
+> • Frågorna läses upp i dina hörlurar. Tryck 1 gång för det långa svaret, 2 gånger för det korta och 3 gånger för paus.
+> • Starta prov och Säg i AirPods använder aldrig mikrofonen.
 >
-> DELA OCH HITTA PROV
-> • Dela provet med en länk när ljudet är klart. Kompisarna får samma frågor, svar och ljud.
-> • Publicera prov för din skola, och lägg till prov som andra på skolan har gjort under Prov från din skola.
-> • Fotona och dokumenten delas aldrig, och ditt namn visas bara om du själv väljer det.
+> DELA MED KLASSEN
+> • Dela ett prov med en länk eller publicera det för din skola. Foton och dokument delas aldrig.
 >
-> FRÅGA OM EARMIND
-> Undrar du hur något fungerar frågar du hjälpen i appen.
->
-> GRATIS ATT BÖRJA
-> 15 nya frågor med ljud per månad ingår. Prov som andra har delat eller publicerat räknas inte.
+> KREDITER
+> • Nya konton får 5 000 krediter att börja med, och 1 500 krediter ingår varje månad.
+> • 1 kredit är 1 tecken nytt ljud. Ljud som redan finns och upprepningar kostar inget.
+> • Bjud in en kompis och få 2 000 krediter när kompisen har spelat sin första text.
+> • Köp fler krediter eller ett veckokort i appen. Veckokortet förnyas varje vecka tills du säger upp det.
 >
 > FLER LÄGEN (BETA)
-> EarMind har också lägen som lyssnar på vad du säger och svarar i örat, till exempel förhör med rösten och intervjuträning. De är i beta och frågar om mikrofonen först när du startar dem.
+> EarMind har också lägen som lyssnar på vad du säger och svarar i örat, till exempel förhör med rösten. De frågar om lov och om mikrofonen innan de startar, och visar hela tiden att de lyssnar.
 >
 > Fungerar med AirPods. EarMind är inte gjord av eller kopplad till Apple. Svar från AI kan vara fel, så kontrollera mot din kursbok.
+>
+> Villkor: https://earmind.vercel.app/villkor
+> Integritet: https://earmind.vercel.app/integritet
 
-## Måste stämma innan inskickning (kontrolleras på telefon)
-| Påstående | Kontroll |
+## 3. Måste vara sant när den skickas in
+1. **Ke78 publicerad** (integritet och villkor), annars fungerar inte länkarna. Arons ja (TILL-ARON #30).
+2. **Produkterna** (tre paket och veckokortet) finns i App Store Connect och skickas med bygget; annars ser granskaren
+   bara "Paketen kunde inte hämtas …". (TILL-ARON #27)
+3. **Byggnummer** på bilderna: tagna från main `{commit}` (se `kelly/appstore-shots-ke80`/RUN.txt). Ändras en skärm
+   före inskickning: kör flödet igen och `appstore.py`.
+
+## 4. Åldersgräns (förslag 13+)
+Apples frågeformulär (2025: 4+, 9+, 13+, 16+, 18+). Svar som Kelly föreslår, **Aron svarar ärligt i formuläret**:
+- Mogna eller suggestiva teman: **sällsynt/milt** (Rizzläget i Fler lägen ger flirtförslag, D112, inget sexuellt).
+- Innehåll som AI skapar: ja (svar, frågor, röstval). Användare kan publicera prov för sin skola (rapporteras och döljs).
+- Inget våld, inga droger, inget spel om pengar, ingen obegränsad webb.
+Det ger troligen **13+**, vilket stämmer med integritetssidan ("från 13 år"). **untested assumption**: Apples svar
+avgör.
+
+## 5. Kontroll: lovar texten mer än appen gör?
+Mot `granskning.md` §1 och dagens main. [V] i koden eller beslut, [S] sett i Simulatorn, [L] provat live mot servern
+(Oscar), **[O]** inte provat på telefon.
+| Påstående | Status |
 |---|---|
-| "Starta prov använder aldrig mikrofonen." | R9 på telefon (Toby T18) |
-| "Listan börjar om i samma ordning" | R5d |
-| Tryckens text | A90 på telefon, alla AirPods-modeller i beta (R11) |
-| "Dela provet med en länk" | A81/K47 på telefon. Universal links kräver domänen |
-| ~~"andra Bluetooth-hörlurar"~~ | Struket i Ke62 (inte provat) |
-| "Fotona … sparas inte" | B4, K53 (bucket `drill_material` ska tömmas efter att frågorna gjorts: Kevin bekräftar) |
-| Lägen i beta | Namnen följer `Shared/capabilities.json` |
-| "15 nya frågor med ljud per månad ingår" | D155. Ändras gränsen eller kommer abonnemanget (D157), ändras raden |
-| "Gör med ChatGPT", "Publicera prov", "Fråga om EarMind", röst och tempo | Byggda (A93, A83, A92, A84), provade i simulatorn men inte på telefon |
+| Upprepas 10 min till 1 timme (D210) | [S] A124/A132 |
+| "Skriv hur det ska låta … väljer EarMind en röst", "välj själv och lyssna först" | [S] A136/A140, [L] O81 (14 röster, AI-val med motivering) |
+| Skriv i takt med pauser | [S] A136; pausernas längd **[O]** |
+| "Du ser att det spelas och hur länge det är kvar" | [S] A132 |
+| Länk, PDF, Word som material | [S] A116; hämtningen K81 **[O]** live |
+| 1, 2, 3 tryck | [V]; **[O]** alla AirPods-modeller |
+| Starta prov och Säg använder aldrig mikrofonen | [V]; **[O]** orange prick på telefon (R9) |
+| Dela med länk, publicera för skolan | [S] A81/A83; att länken öppnar appen **[O]** |
+| 5 000 att börja med, 1 500 i månaden, inbjudan 2 000 | [V] D213/D224, [L] O82 |
+| Köp och veckokort | [S] A134 med låtsasbutik; **[O]** StoreKit-filen (T48) och produkterna i App Store Connect |
+| Fler lägen frågar om lov och visar att de lyssnar | [V] D21, `ListeningModel` |
+| **Står inte i texten:** låst skärm (D209), "andra hörlurar", att ljudet fungerar utan nät | medvetet utelämnat |
 
-## Kvar
-Integritetspolicy (krävs, saknas sedan Ke25), åldersgräns (Ke25 föreslog 13+), integritetsetiketter efter D149 (publicerade
-prov) och D151 (röstval), skärmbilder från A87 på 17 Pro Max och Arons ja.
+## Göra om bilderna
+```
+gh workflow run kelly-appstore-shots.yml --ref main -f branch=kelly/appstore-shots-ke80 -f screens="repSayCredits repSayOnCard repSayPicked repSayVoices repHomeSaidMarks repTextNew repPlayAnswer repShop"
+python3 -I docs/appstore/_src/appstore.py <mapp med bilderna> [<fet font> <vanlig font>]
+```
+Utan fontargument används Inter Display (finns i molnet). Äldre underlag (Ke56/Ke62/Ke74) finns i git-historiken.

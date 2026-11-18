@@ -106,6 +106,17 @@ const ASK_START = /^(?:och |men |så |lumen,? |earmind,? )?(?:vad|vem|vilk(?:en|
 export const EMPTY_RETRY_NOTE =
   "Your previous reply could not be read aloud. Answer the question now from what you know, in one or two plain Swedish sentences, with \"cirka\" for a number you are not exactly sure of. Write no marker, no source list and no question back.";
 
+/** K103 (O86 B1): a song or poem as it is said: a self-correction at the start drops what came before it, and a line
+ *  break becomes a pause (a comma after a word), so two lines never run together. */
+export function textForVoice(t: string, first: boolean): string {
+  const fix = first ? TEXT_SELF_FIX.exec(t) : null;
+  const s = fix ? t.slice(fix.index + fix[0].length) : t;
+  return s.replace(/([\p{L}\p{N}])[ \t]*(?:\r?\n)+[ \t]*(?=\S)/gu, "$1, ").replace(/[ \t]*(?:\r?\n)+[ \t]*/gu, " ");
+}
+
+/** K103 (O86 B1): the model correcting itself in the middle of a song text; what came before it is dropped. */
+export const TEXT_SELF_FIX = /^[\s\S]*?(?:jag är (?:inte )?(?:osäker|säker) på (?:den )?(?:exakta |rätta )?texten|här (?:kommer|är) (?:den |en )?(?:vedertagna|riktiga|korrekta|rätta|vanliga) (?:versionen|texten))[^:\n]*[:.]\s*/iu;
+
 export function askLike(text: string): boolean {
   if (/\?/.test(text)) return true;
   if (/(?<![\p{L}])(?:och )?om [^.]{1,60}(?<![\p{L}])då\s*$/iu.test(text.trim())) return true; // "och om x är två då"
@@ -1621,6 +1632,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           ...(phoneTools && !body.toolRound && (ACTION_REQUEST.test(body.fragment) || (spotifyOn && MUSIC_REQUEST.test(body.fragment)))
             ? { holdTextBeforeTool: true }
             : {}),
+          // K103: a song, poem or quote is held whole (a self-correction is cut); other web answers start early (A1)
+          ...(textReq ? { holdUntilEnd: true } : {}),
           // D72 live test: "den andra statsministern" was answered wrong from memory: ordinal facts search.
           ...(tools && ordinal ? { toolChoice: { type: "any" } } : {}),
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
@@ -1687,6 +1700,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             // D83: profile "Inga kontrollfrågor" = no check question, also in Provläge (enforced in code)
             trimQuestion: direct && !plan && (!tutor || noChecks),
             firstLineOnly: plan?.kind === "socialline",
+            socialLine: plan?.kind === "socialline", // K103 (O86 B5)
             relationTag,
             web: webOn || !!need,
             dropEnglish: !!phoneTools && body.language === "sv",
@@ -1723,6 +1737,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               t = t.replace(/\s*\|\s*/gu, ", ").replace(/,\s*,/gu, ",")
                 .replace(/(?<![\p{L}])(?:Nickname|Population|Area|Elevation|Founded|Website|Coordinates|Type|Country|Region)\s*:\s*/gu, "");
             }
+            // K103 (Oscar O86 B1): a song or poem is said, not shown: a self-correction ("Jag är osäker på den exakta
+            // texten, så här kommer den vedertagna versionen:") drops what came before it, and line breaks become
+            // pauses instead of reaching the voice (the words of two lines never run together)
+            if (textOn) t = textForVoice(t, answerChars === 0);
             if (!t.trim()) return;
             flushMeta();
             if (ttftMs === null) ttftMs = now() - t0;
@@ -2102,6 +2120,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 previousAnswers: [],
                 trimQuestion: false,
                 firstLineOnly: plan?.kind === "socialline",
+            socialLine: plan?.kind === "socialline", // K103 (O86 B5)
                 relationTag,
                 web: (webOn || !!need || searched) && !emptyRetried,
                 dropEnglish: !!phoneTools && body.language === "sv",

@@ -224,7 +224,7 @@
   - `{"action":"warm"}` för drill. pg_cron var 2:a min när Deangelo har kört 20261118120001; mät O84 kallstart efter vila igen.
   → `reports/2026-11-18-1200-kevin-kallstart-sakfel-dubbletter-auth.md`
 - [x] _klar 2026-11-18 12:01 (Oscar moln, eget initiativ), `reports/qa/2026-11-18-1201-oscar-o85-drill-utan-gateway.md`_ **O85 – drill utan gatewayens JWT-kontroll (Kevin 6ff8914e).** Alla åtgärder nekar utan giltig token (401 för ingen, skräp, alg none, fel nyckel, ändrat innehåll, publika nyckeln); warm 204 tomt; riktig token fungerar. Lågt fynd: warm utan gräns.
-- [ ] (Från Kevin (moln) 2026-11-18 12:40) **K102 klart att testa:**
+- [x] _testat 2026-11-18 (Oscar moln): min körning 11:43 UTC gick mot slutversionen, se `reports/qa/2026-11-18-1250-oscar-omtest-k102.md` (med tillägg 13:23); kvar F1 "framgår inte här", F3 korta material_ (Från Kevin (moln) 2026-11-18 12:40) **K102 klart att testa:**
   - Varför utan orsak blir förståelsefrågor, minst hälften förståelse. Mätt: 0,71–1,0 på dina fem.
   - Borttagna dubbletter fylls på (14 i fyra av fem; ljud 7).
   - `warm`: 30/min per IP gav 429 live; med token 204.
@@ -232,3 +232,6 @@
   → `reports/2026-11-18-1240-kevin-k102-forstaelse-fulla-prov-warm.md`
 
 - [x] _klar 2026-11-18 13:06 (Oscar moln): 16 långsamt (3 orsaker), 4 falsklarm, 5 innehållsfel, `reports/qa/2026-11-18-1306-oscar-o86-live-eval.md`_ **O86 – Nattens live-eval: de 22 anmärkningarna (D231)** (effort: high). Lagd av Deangelo 2026-11-18 13:00. reports/eval/ från 2026-11-18 (388 turer, 22 anmärkningar: fakta 2, kommando 4, logik 1, minne 1 m.fl.). Gruppera efter orsak, återskapa varje fel med en egen fråga om det går, och lämna fynd med exempel till Kevin. Bara Claude, 0 ElevenLabs. Rapport, push.
+
+- [x] _klar 2026-11-18 14:06 (Oscar moln): 4 falsklarm borta, 6 ändrade turer av 388 (alla väntade), 6 inloggningar i stället för 12, `reports/qa/2026-11-18-1405-oscar-o87-eval-regler.md`_ **O87 – Evalens regler och konton (D232)** (effort: medium). Lagd av Deangelo 2026-11-18 14:05. Ändra `scripts/live-eval.py` (Deangelo ger dig uppdraget) enligt din tabell C i O86: `allow_question: true` för socialt och minne-01 (behåll `max_words`), `expect_any: ["färs"]` i praktiskt-04, "det beror på" räknas bara som brasklapp när "att" inte följer. Låt live-eval återanvända samma testkonton i alla omgångar (som du gjorde i o86_eval_reproduce.py) så att inloggningen inte ger 429. Visa med en körning av de fyra fallen att larmen är borta och att inget annat fall ändrade utfall. 0 ElevenLabs. Rapport, push.
+- [ ] **O88 – Omtest av O86 efter Kevins K103 (D232)** (effort: high). Lagd av Deangelo 2026-11-18 14:05. När Kevin säger att K103 är live: kör de 22 fallen två omgångar med serverns tider; jämför före och efter för A1–A3 och B1–B5. Fynd till kevin.md. 0 ElevenLabs. Rapport, push.

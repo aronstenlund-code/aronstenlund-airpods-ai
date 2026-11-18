@@ -77,7 +77,9 @@ def generic_checks(text, prev_answers, turn, ttft_ms):
         out.append("markdown i talad text")
     low = spoken.lower()
     for h in HEDGES:
-        if h in low and h not in [x.lower() for x in turn.get("allow_hedge", [])]:
+        # O87 (D232, Oscar O86 C): "Det beror på att virus saknar …" is an explanation, not a hedge
+        hit = re.search(re.escape(h) + r"(?!\s+att\b)", low) if h == "det beror på" else h in low
+        if hit and h not in [x.lower() for x in turn.get("allow_hedge", [])]:
             out.append(f"brasklapp/utfyllnad: {h!r}")
             break
     for l in LEAKS:
@@ -275,8 +277,12 @@ def calibration_checks(new, options, turn):
 
 # ---------------------------------------------------------------- transport
 class Backend:
+    # O87 (D232): one list of sessions per process, so a second run() (a rerun of some cases) reuses the accounts
+    # instead of signing up 12 new ones each time (the signup limit answered 429 in Oscar's O86 round 3)
+    _shared_tokens: list = []
+
     def __init__(self):
-        self.tokens = []
+        self.tokens = Backend._shared_tokens
         self.i = 0
 
     def signup(self):

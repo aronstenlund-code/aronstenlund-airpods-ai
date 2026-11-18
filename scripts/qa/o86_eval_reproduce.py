@@ -30,6 +30,22 @@ def ask(self, u, body):
 
 
 LE.Backend.ask = ask
+# samma konton i alla omgångar (live-eval skapar annars 12 nya per omgång, och inloggningen ger 429 i omgång 3)
+_shared_tokens = []
+_real_init = LE.Backend.__init__
+
+
+def _init(self):
+    _real_init(self)
+    self.tokens = _shared_tokens
+
+
+LE.Backend.__init__ = _init
+import os  # noqa: E402
+ARGV = dict(a[2:].split("=", 1) for a in sys.argv[1:] if a.startswith("--") and "=" in a)
+if ARGV.get("ids"):
+    IDS = ARGV["ids"].split(",")
+ROUNDS = int(ARGV.get("rounds", "3"))
 ROOT = HERE.parent.parent
 cases = json.load(open(ROOT / "scripts" / "live-eval-cases.json", encoding="utf-8"))
 real = ROOT / "scripts" / "real-user-cases.json"
@@ -40,7 +56,7 @@ domains = LE.reliable_domains()
 now = dt.datetime.now(dt.timezone.utc)
 print("fall hittade:", sorted({c["id"] for c in cases if c["id"] in IDS}), "saknas:", sorted(set(IDS) - {c["id"] for c in cases}), flush=True)
 rows_all = []
-for rnd in range(3):
+for rnd in range(ROUNDS):
     DONE.clear()
     rows = LE.run(cases, rizz, domains, set(IDS), now)
     meta = {d["q"]: d for d in DONE}

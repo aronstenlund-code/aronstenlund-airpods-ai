@@ -65,7 +65,9 @@ skanningslinjer, ASCII-konst, skrivmaskinsljud och glödeffekter. Resten av Prov
 | Platshållare vid största text | Skriv här |
 | Spelaren, överst | ● Spelar i AirPods |
 | Spelaren, rad | Varv {3} · {7:12} kvar av {10} min  |
-| VoiceOver på fältet | Säg i AirPods, textfält |
+| VoiceOver på fältet | Säg i AirPods (iOS lägger till "textfält"; Ke79) |
+| VoiceOver på kostnaden | Kostar {120} krediter |
+| VoiceOver på Senaste | {hela texten}, {stil eller röst} · hint: Lägger tillbaka texten |
 | VoiceOver på + | Lägg till material |
 | VoiceOver på Hur länge | Hur länge, {Upprepa 10 minuter} |
 | Spela väntar, efter 8 s (D225, A144) | Det tar längre tid än vanligt. (snurran går vidare, ingen knapp) |

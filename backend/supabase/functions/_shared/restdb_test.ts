@@ -62,3 +62,14 @@ Deno.test("K101: an rpc error keeps the Postgres code (never the message); the w
   const other = (await new RestDb("https://p.supabase.co", "k", fake(500, "boom").f).rpc("x", {}).catch((x) => x)) as Error;
   assertEquals(other.message, "rpc x failed: HTTP 500");
 });
+
+Deno.test("K93 live: a read is sent once more after a dropped connection; a write never is", async () => {
+  let n = 0;
+  const flaky = ((_url: string) => (n++ === 0 ? Promise.reject(new TypeError("connection reset")) : Promise.resolve(Response.json([{ ok: 1 }])))) as typeof fetch;
+  assertEquals(await new RestDb("https://p.supabase.co", "k", flaky).select("t", "select=*"), [{ ok: 1 }]);
+  n = 0;
+  assertEquals(await new RestDb("https://p.supabase.co", "k", flaky).rpcRead("is_credit_admin", {}), [{ ok: 1 }]);
+  n = 0;
+  await assertRejects(() => new RestDb("https://p.supabase.co", "k", flaky).rpc("use_drill_chars", { p_n: 5 }));
+  assertEquals(n, 1, "a write is sent once");
+});
