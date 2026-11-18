@@ -318,6 +318,29 @@ import Testing
         #expect(unmarked.said == nil, "false is not trusted until the server's column exists")
     }
 
+    /// Toby T50: the server took more than Spela's ten seconds, and Försök igen said "Det gick inte att spela just nu".
+    @Test func aSecondPressWaitsForTheFirstPressesAnswer() async throws {
+        let folder = try A79A81RepetitionTests.folder("t50-slow")
+        let store = DrillStore(url: folder.appendingPathComponent("drills.json"))
+        let cloud = A107StartAudioTests.DeferredCloud()
+        cloud.saveDelay = .milliseconds(80)
+        let audio = CloudDrillAudio(cloud: cloud, store: store, folder: folder, pollInterval: .milliseconds(1), maxPolls: 20)
+        var drill = Drill.text(title: "T", summary: A79A81RepetitionTests.summary, parts: [DrillItem.textPart("En rad.", part: .para)])
+        drill.audioStarted = false
+        store.save(drill)
+
+        let first = Task { await audio.startAudio(drill) }
+        try? await Task.sleep(for: .milliseconds(20)) // the first press is asking the server now
+        #expect(store.drill(drill.id)?.serverID == nil, "the save has not answered yet")
+        let second = await audio.startAudio(drill)
+        #expect(second && store.drill(drill.id)?.serverID != nil && store.drill(drill.id)?.awaitsAudioStart == false,
+                "the second press has the first one's answer: the exam is saved and started")
+        #expect(await first.value)
+        #expect(cloud.saves.count == 1 && cloud.startCalls == 1, "saved and started once")
+        #expect(SayText.slowLine(online: true) == "Det tar längre tid än vanligt.")
+        #expect(SayText.slowLine(online: false) == "Ljudet kunde inte hämtas. Kolla nätet.")
+    }
+
     @Test func theCatalogIsReadOnceAndAnEmptyOneShowsNoVoices() async throws {
         let (model, _, _, _) = try model("a136-voices")
         await model.loadSayVoices()

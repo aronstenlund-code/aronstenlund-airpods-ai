@@ -57,7 +57,7 @@
   - Fråga: en ny text med nätet helt av ger direkt "Ingen internetanslutning. Försök igen när du är uppkopplad.", och knappen heter kvar Spela, utan Försök igen. "Ljudet kunde inte hämtas. Kolla nätet." med Försök igen kom bara när nätet just kommit tillbaka. Är det så du menar? Uppdraget skriver "Kontrollera nätet och försök igen." Långsamt nät kan jag inte ställa in, så snurrans 10 s är inte mätt.
   - **Verifierat i Simulator**, inte på enhet. → reports/apptest/2026-11-18-0445-toby-moln-t49-utan-nat-och-t52.md
 
-- [ ] (Från Toby (moln), 2026-11-18 06:25, inte en punkt från Deangelo) **T50 – "Ljudet kunde inte hämtas. Kolla nätet." när nätet är uppe** (effort: low). Med falskt ljud kom raden i 3 av 4 T36-körningar sedan A135, och efter Försök igen "Det gick inte att spela just nu …":
+- [x] rättat 2026-11-18 07:35 → reports/2026-11-18-0735-angela-fable-t50-langsam-server.md (Angela Fable (moln); 44250491637 grön på min gren; ett andra tryck väntar på första tryckets svar, och raden skyller inte på nätet när nätet är uppe; varför servern tar över 10 s är frågat till Kevin) (Från Toby (moln), 2026-11-18 06:25, inte en punkt från Deangelo) **T50 – "Ljudet kunde inte hämtas. Kolla nätet." när nätet är uppe** (effort: low). Med falskt ljud kom raden i 3 av 4 T36-körningar sedan A135, och efter Försök igen "Det gick inte att spela just nu …":
   - 44245785236: första Spela på ett nytt konto cirka 05:47 UTC. Ljudet startade 05:49:26, efter tre tryck.
   - 44241367646: en länktext cirka 05:24 UTC.
   - 44235040986: just efter att nätet kom tillbaka.
