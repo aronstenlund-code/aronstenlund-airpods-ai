@@ -502,11 +502,13 @@ struct SayInAirPodsField: View {
             // A150 (D231): the two faces of the card change by fading where they stand, and the card takes its new
             // height with a spring that does not overshoot.
             if let playing {
-                Group { playingCard(playing.reader, playing.drill) }.transition(SayMotion.appear)
+                Group { playingCard(playing.reader, playing.drill) }.transition(SayMotion.swap(reduceMotion))
             } else {
-                Group { writingCard }.transition(SayMotion.appear)
+                Group { writingCard }.transition(SayMotion.swap(reduceMotion))
             }
         }
+        // The card grows and shrinks from its top edge, and what is on its way in or out stays inside it.
+        .frame(maxWidth: .infinity, alignment: .topLeading)
         .animation(SayMotion.change(reduceMotion), value: shape)
         .onChange(of: text) { refused = nil; canRetry = false }
         .padding(16)
@@ -514,6 +516,7 @@ struct SayInAirPodsField: View {
         .background(scheme == .dark ? SayText.fieldDark : SayText.field, in: RoundedRectangle(cornerRadius: 16))
         // Kelly S3: in dark mode the field is almost the colour of the screen, so a hairline shows where it ends.
         .overlay { if scheme == .dark { RoundedRectangle(cornerRadius: 16).strokeBorder(Color.white.opacity(0.12), lineWidth: 0.5) } }
+        .clipShape(RoundedRectangle(cornerRadius: 16)) // A150: nothing shows outside the card while it changes
         .environment(\.colorScheme, .dark) // the system's controls are dark inside the field, in light mode too
         #if DEBUG
         .onAppear {

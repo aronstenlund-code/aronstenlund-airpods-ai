@@ -35,6 +35,14 @@ enum SayMotion {
     /// Something that appears or leaves where it stands. Never a slide: nothing here comes from somewhere.
     static var appear: AnyTransition { .opacity }
 
+    /// Two faces of the same surface change places (the card that is written in, and the card that plays): the old
+    /// one is gone before the new one comes, so two texts are never read on top of each other. (Seen in the
+    /// recording of 2026-11-18: a plain cross-fade showed both for two frames.)
+    static func swap(_ reduceMotion: Bool) -> AnyTransition {
+        .asymmetric(insertion: .opacity.animation(.easeIn(duration: reduceMotion ? 0.1 : 0.18).delay(reduceMotion ? 0.05 : 0.12)),
+                    removal: .opacity.animation(.easeOut(duration: reduceMotion ? 0.05 : 0.1)))
+    }
+
     /// The check mark of the chosen row: it grows a little as it appears, and only fades with Reduce Motion.
     static func mark(_ reduceMotion: Bool) -> AnyTransition {
         reduceMotion ? .opacity : .opacity.combined(with: .scale(scale: 0.6))
