@@ -28,8 +28,9 @@ export class RestDb {
       body: JSON.stringify(args),
     });
     if (!r.ok) {
-      await r.body?.cancel();
-      throw new Error(`rpc ${name} failed: HTTP ${r.status}`);
+      // the Postgres error code (e.g. 23503: the user is gone) is kept, never the message (it may hold data)
+      const code = await r.json().then((j) => String((j as { code?: unknown })?.code ?? "")).catch(() => "");
+      throw new Error(`rpc ${name} failed: HTTP ${r.status}${/^[0-9A-Z]{5}$/.test(code) ? ` ${code}` : ""}`);
     }
     return await r.json();
   }
