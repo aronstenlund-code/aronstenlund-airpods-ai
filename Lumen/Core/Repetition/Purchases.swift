@@ -150,6 +150,23 @@ struct InviteLink: Decodable, Sendable, Equatable {
     var code: String
     var url: String
     var app_url: String? = nil
+    /// K99: the invitation credits given this month, the month's ceiling in invitations, what one gives, and the
+    /// rewards of the last 30 days (newest first).
+    var month_rewarded: Int? = nil
+    var month_max: Int? = nil
+    var invite_credits: Int? = nil
+    var rewards: [Reward]? = nil
+
+    struct Reward: Decodable, Sendable, Equatable {
+        var credits: Int
+        var at: String
+    }
+
+    /// The month's ceiling is reached: more invitations give credits next month.
+    var monthIsFull: Bool {
+        guard let month_rewarded, let month_max, let each = invite_credits, each > 0 else { return false }
+        return month_rewarded / each >= month_max
+    }
 
     var shareURL: URL? { URL(string: url) }
 
@@ -375,7 +392,14 @@ final class CreditShop {
             _ = try await server.verify(jws: receipt.jws)
         } catch {
             Log.repetition.error("Purchase verify: \(error.errorCode, privacy: .public)")
-            return false // not finished: the App Store gives it back, and it is tried again
+            // Kevin (K94): a purchase that belongs to another account (409) has given that account its credits; it is
+            // finished here, quietly. Any other no (422, 5xx, no network) may be the server's fault: not finished, so
+            // the App Store gives it back and it is tried again.
+            if case .refused(let status, _, _) = error, status == 409 {
+                await front.finish(receipt.transactionID)
+                return true
+            }
+            return false
         }
         await front.finish(receipt.transactionID)
         await onWalletChanged?()
@@ -386,9 +410,20 @@ final class CreditShop {
 
     /// The account's invitation link (the same every time).
     func loadInvite() async {
-        guard invite == nil else { return }
-        invite = try? await server.inviteCode()
+        guard let link = try? await server.inviteCode() else { return }
+        invite = link
+        // K99: a reward not seen before is said once ("+2 000 krediter för en inbjudan.").
+        let seen = defaults.string(forKey: Self.seenRewardKey) ?? ""
+        let fresh = (link.rewards ?? []).filter { $0.at > seen }
+        if let newest = fresh.map(\.at).max() {
+            defaults.set(newest, forKey: Self.seenRewardKey)
+            newRewards = fresh.map(\.credits)
+        }
     }
+
+    /// The rewards for invitations that have come since the sheet was last shown (their credits).
+    private(set) var newRewards: [Int] = []
+    static let seenRewardKey = "credits.seenInviteReward"
 
     /// `earmind://invite/<code>`: kept until the server has it. It is claimed after the welcome check, since the
     /// server wants a proven installation first.
@@ -478,6 +513,10 @@ enum ShopText {
     static let weeklyTitle = "Veckokort"
     static let inviteTitle = "Få 2 000 krediter"
     static let inviteLine = "när en kompis har spelat sin första text"
+    static let inviteFullLine = "Du har bjudit in 10 i månaden. Fler ger krediter nästa månad."
+    static let welcomeLine = "välkomstkrediter"
+    /// Ke77 §1c, without a name (the accounts are anonymous): "+2 000 krediter för en inbjudan."
+    static func rewardLine(_ credits: Int) -> String { "+\(CreditText.number(credits)) krediter för en inbjudan." }
     static let inviteButton = "Bjud in"
     static let refill = "Fyll på"
     static let included = "Ingår"

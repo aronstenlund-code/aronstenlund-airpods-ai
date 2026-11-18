@@ -113,7 +113,8 @@ struct CreditsSheet: View {
                                 .font(.system(.largeTitle, design: .rounded).weight(.bold))
                                 .monospacedDigit()
                             Text(verbatim: quota.isUnlimited ? "Det här kontot har ingen gräns"
-                                 : weekly.map(ShopText.weekLine) ?? CreditsText.leftLine(quota, withShop: model.shop != nil))
+                                 : weekly.map(ShopText.weekLine)
+                                 ?? (quota.isOnlyWelcome ? ShopText.welcomeLine : CreditsText.leftLine(quota, withShop: model.shop != nil)))
                                 .foregroundStyle(.secondary)
                                 .multilineTextAlignment(.center)
                         }

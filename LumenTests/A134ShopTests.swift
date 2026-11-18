@@ -241,6 +241,59 @@ import Testing
         #expect(shop.invite?.shareURL?.absoluteString == "https://earmind.vercel.app/i/k7m2xq")
     }
 
+    // MARK: Kevin's later fields (K99)
+
+    @Test func aPurchaseOfAnotherAccountIsFinishedAndAServerFaultIsNot() async throws {
+        let (shop, front, server, _, _) = try make("a134-409")
+        server.verifyError = .refused(status: 409, code: "purchase_other_account", message: "")
+        #expect(await shop.deliver(Self.receipt) && front.finished == [42], "its credits went to the account that bought it")
+        server.verifyError = .refused(status: 422, code: "purchase_invalid", message: "")
+        #expect(await !shop.deliver(StoreReceipt(jws: "x", transactionID: 43)) && front.finished == [42])
+        server.verifyError = .refused(status: 500, code: "http_500", message: "")
+        #expect(await !shop.deliver(StoreReceipt(jws: "x", transactionID: 44)) && front.finished == [42])
+    }
+
+    @Test func aRewardedInvitationIsSaidOnceAndTheMonthsCeilingIsKnown() async throws {
+        let json = #"{"code":"k7m2xq","url":"https://earmind.vercel.app/i/k7m2xq","app_url":"earmind://invite/k7m2xq","month_rewarded":20000,"month_max":10,"invite_credits":2000,"rewards":[{"credits":2000,"at":"2026-11-18T09:00:00.000Z"},{"credits":2000,"at":"2026-11-12T09:00:00.000Z"}]}"#
+        let link = try JSONDecoder().decode(InviteLink.self, from: Data(json.utf8))
+        #expect(link.monthIsFull && link.rewards?.count == 2)
+        var few = link
+        few.month_rewarded = 4000
+        #expect(!few.monthIsFull)
+        #expect(ShopText.rewardLine(2000) == "+2\u{00A0}000 krediter för en inbjudan.")
+        #expect(ShopText.inviteFullLine == "Du har bjudit in 10 i månaden. Fler ger krediter nästa månad.")
+
+        @MainActor final class Rewarding: PurchaseServing {
+            var link: InviteLink
+            init(_ link: InviteLink) { self.link = link }
+            func verify(jws: String) async throws(DrillCloudError) -> PurchaseReply { PurchaseReply() }
+            func attestChallenge() async throws(DrillCloudError) -> String { throw .offline("test") }
+            func welcome(keyID: String, challenge: String, attestation: String) async throws(DrillCloudError) -> PurchaseReply { PurchaseReply() }
+            func inviteCode() async throws(DrillCloudError) -> InviteLink { link }
+            func claimInvite(_ code: String) async throws(DrillCloudError) {}
+        }
+        let defaults = try #require(UserDefaults(suiteName: "a141-rewards-\(UUID())"))
+        let server = Rewarding(link)
+        let shop = CreditShop(front: FakeFront(), server: server, attest: FakeAttest(), defaults: defaults)
+        await shop.loadInvite()
+        #expect(shop.newRewards == [2000, 2000], "both are new the first time")
+        let next = CreditShop(front: FakeFront(), server: server, attest: FakeAttest(), defaults: defaults)
+        await next.loadInvite()
+        #expect(next.newRewards.isEmpty, "said once")
+        server.link.rewards?.insert(InviteLink.Reward(credits: 2000, at: "2026-11-19T08:00:00.000Z"), at: 0)
+        await next.loadInvite()
+        #expect(next.newRewards == [2000])
+    }
+
+    @Test func onlyWelcomeCreditsAreCalledWelcomeCredits() throws {
+        let fresh = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"unit":"chars","limit":1500,"used":0,"remaining":5000,"purchased":5000,"gift":{"left":5000,"welcome":5000,"invite":0}}"#.utf8))
+        #expect(fresh.isOnlyWelcome && ShopText.welcomeLine == "välkomstkrediter")
+        let more = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"unit":"chars","limit":1500,"used":0,"remaining":6500,"purchased":5000,"gift":{"left":5000,"welcome":5000,"invite":0}}"#.utf8))
+        #expect(!more.isOnlyWelcome, "with the month's credits it is 'krediter kvar' again")
+        let none = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"unit":"chars","limit":1500,"used":0,"remaining":1236}"#.utf8))
+        #expect(!none.isOnlyWelcome)
+    }
+
     // MARK: The words and the numbers
 
     @Test func theWordsAreKellys() {

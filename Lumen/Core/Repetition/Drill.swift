@@ -68,7 +68,15 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
 
     /// A136: how this text sounds (its voice and style). The same text with another sound is another exam, since the
     /// server locks both per exam.
-    var sound: SaySound { SaySound(voiceID: voiceID, style: style) }
+    var sound: SaySound { SaySound(voiceID: voiceID, style: style, mix: mixVoices == true) }
+
+    /// A140 (D223, K99): "Blanda röster": the server draws a voice per part when the text is first saved (the same at
+    /// every lap). Locked after the first save. Nil = one voice.
+    var mixVoices: Bool?
+    /// A140 (K99): the voice was chosen by the server from the style ("Hur ska det låta?"), not by the user, and why
+    /// (a short Swedish sentence).
+    var voicePicked: Bool?
+    var voiceReason: String?
 
     /// A136: the style as it is sent and compared: trimmed, at most what the server takes; nil when empty.
     static func cleanStyle(_ style: String?) -> String? {
@@ -179,6 +187,8 @@ struct DrillItem: Codable, Identifiable, Equatable, Sendable {
     /// A136 (D220.1): [start_ms, end_ms] per spoken word in the part's file, for "Skriv i takt". Nil for a file made
     /// before the server kept them; the pauses then come after each sentence.
     var wordTimesMs: [[Int]]?
+    /// A140 (K99): the voice of this part when the text's voices are mixed.
+    var voiceID: String?
 
     init(id: UUID = UUID(), question: String, short: String, long: String, serverID: String? = nil) {
         self.id = id
@@ -407,11 +417,17 @@ enum DrillText {
 struct SaySound: Equatable, Hashable, Sendable {
     var voiceID: String?
     var style: String?
+    /// A140 (D223): "Blanda röster". No single voice is chosen then.
+    var mix: Bool
 
-    init(voiceID: String? = nil, style: String? = nil) {
-        self.voiceID = voiceID
+    init(voiceID: String? = nil, style: String? = nil, mix: Bool = false) {
+        self.voiceID = mix ? nil : voiceID
         self.style = Drill.cleanStyle(style)
+        self.mix = mix
     }
+
+    /// A140 (K99): no voice is chosen but there is a style: the server chooses a voice from it.
+    var serverPicksVoice: Bool { voiceID == nil && !mix && style != nil }
 
     static let plain = SaySound()
 

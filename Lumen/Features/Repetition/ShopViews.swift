@@ -12,6 +12,14 @@ struct ShopSections: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
+        if !shop.newRewards.isEmpty {
+            // Ke77 §1c (K99): an invitation has given credits since the sheet was last shown.
+            Section {
+                ForEach(Array(shop.newRewards.enumerated()), id: \.offset) { _, credits in
+                    Text(verbatim: ShopText.rewardLine(credits)).font(.subheadline.weight(.semibold))
+                }
+            }
+        }
         if let subscription = quota.subscription, quota.hasWeeklyCard {
             Section {
                 Button(ShopText.manage) { managing = true }
@@ -99,7 +107,8 @@ struct ShopSections: View {
         layout {
             VStack(alignment: .leading, spacing: 2) {
                 Text(verbatim: ShopText.inviteTitle)
-                Text(verbatim: ShopText.inviteLine).font(.footnote).foregroundStyle(.secondary)
+                Text(verbatim: shop.invite?.monthIsFull == true ? ShopText.inviteFullLine : ShopText.inviteLine)
+                    .font(.footnote).foregroundStyle(.secondary)
             }
             if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
             if let url = shop.invite?.shareURL {
@@ -157,11 +166,20 @@ final class StagedStoreFront: StoreFront {
 
 @MainActor
 final class StagedPurchaseServer: PurchaseServing {
+    /// An invitation has just given credits.
+    var rewarded = false
     func verify(jws: String) async throws(DrillCloudError) -> PurchaseReply { PurchaseReply() }
     func attestChallenge() async throws(DrillCloudError) -> String { throw .offline("staged") }
     func welcome(keyID: String, challenge: String, attestation: String) async throws(DrillCloudError) -> PurchaseReply { PurchaseReply() }
     func inviteCode() async throws(DrillCloudError) -> InviteLink {
-        InviteLink(code: "k7m2xq", url: "https://earmind.vercel.app/i/k7m2xq", app_url: "earmind://invite/k7m2xq")
+        var link = InviteLink(code: "k7m2xq", url: "https://earmind.vercel.app/i/k7m2xq", app_url: "earmind://invite/k7m2xq")
+        if rewarded {
+            link.month_rewarded = 2000
+            link.month_max = 10
+            link.invite_credits = 2000
+            link.rewards = [InviteLink.Reward(credits: 2000, at: "2026-11-18T09:00:00.000Z")]
+        }
+        return link
     }
     func claimInvite(_ code: String) async throws(DrillCloudError) {}
 }
