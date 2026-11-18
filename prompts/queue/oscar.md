@@ -212,3 +212,4 @@
   - Nytt: `x-earmind-test: <namn> unavailable` håller bara tillbaka ljudet för samma `<namn>`; ditt O72 med `oscar-qa` fungerar som förut.
   - Fråga O80 F1: loggen säger `style_failed Provider refused the request` (Haiku `refusal`) 20:21:23 – vilken text var det?
   → `reports/2026-11-18-1000-kevin-o78-k100-oscar.md`
+- [x] _klar 2026-11-18 10:52 (Oscar moln), `reports/qa/2026-11-18-1052-oscar-o84-k100-tid.md`_ **O84 – K100 live: tid för save + start (D225) och list efter radering** (Deangelo 2026-11-18). Ett anrop klarar målet (2,7 s / 4,9 s), två anrop inte (4,7 s / 8,5 s), kall start 11 s; list efter radering 401.
