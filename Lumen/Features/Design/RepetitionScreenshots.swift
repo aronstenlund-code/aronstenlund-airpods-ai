@@ -284,7 +284,7 @@ enum RepetitionDemo {
             model.store.save(drill)
             model.stageSayVoices([SayVoice(voice_id: "nils000000000004", name: "Nils")], defaultName: "Astrid")
             for (text, style, voice) in [("HISTORIA – 1880–1918\nNationalism = stark kärlek till den egna nationen.", String?.none, String?.some("nils000000000004")),
-                                         (said, "Lugnt, som en lärare", nil), (said, nil, nil)] {
+                                         (said, nil, nil), ("1918: Vapenstillestånd.", "Lugnt, som en lärare", nil)] {
                 var made = Drill.text(title: SaidText.title(text), summary: DrillSummary(subject: "", grade: "", covers: ""),
                                       parts: SaidText.parts(text).map { DrillItem.textPart($0, part: .para) })
                 made.said = true
