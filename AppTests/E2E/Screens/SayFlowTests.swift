@@ -449,13 +449,21 @@ final class SayFlowTests: XCTestCase {
         let hard = missing.filter { !needsProducts.contains($0) }
         if !hard.isEmpty { ok = miss("Krediter lacks \(hard.joined(separator: ", "))") }
         if buys.isEmpty, !missing.isEmpty { note("no products in Krediter, so Fyll på and Varje vecka are not there (\(missing.joined(separator: ", ")))") }
+        // Angela Fable 09:28 (T48): without products Fyll på stays with "Paketen kunde inte hämtas från App Store just nu."
+        // and Försök igen.
+        if buys.isEmpty {
+            let said = all.first { $0.hasPrefix("Paketen kunde inte hämtas") }
+            log.append("T48 without products: \(said ?? "no line")")
+            if said == nil { ok = miss("no products and no 'Paketen kunde inte hämtas från App Store just nu.' in Krediter") }
+        }
         // Återställ köp: no purchases on this Simulator.
         if tap(["Återställ köp"], "Återställ köp") {
             var line: String?
             let end = Date().addingTimeInterval(20)
             repeat { line = text(starting: "Det fanns inga köp") ?? text(starting: "Det gick inte att hämta köpen"); if line == nil { pause(1) } } while line == nil && Date() < end
             log.append("T48 Återställ köp: \(line ?? "no line in 20 s")")
-            if line == nil { note("Återställ köp gave no line in 20 s") }
+            // Angela Fable 09:28: Återställ köp always answers, after at most 15 s.
+            if line == nil { ok = miss("Återställ köp gave no line in 20 s (A134 after T48: at most 15 s)") }
         }
         // A test purchase, only when the products came from the StoreKit file.
         guard let buy = buys.first(where: { $0.contains("100 krediter") }) ?? buys.first else {
