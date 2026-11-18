@@ -1,7 +1,7 @@
 import { wordsToNumber } from "../answer/svnum.ts";
 import { HttpError } from "../_shared/errors.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
-import { allocate, codeCap, coverage, nearDuplicate, partCount, placeQuestions, sectionParts, shares, splitParts } from "./coverage.ts";
+import { allocate, codeCap, coverage, nearDuplicate, stems, partCount, placeQuestions, sectionParts, shares, splitParts } from "./coverage.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 
 /**
@@ -311,8 +311,30 @@ export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
  * only in its first part): one question asks one thing; the added "…, och varför/hur …?" part goes.
  */
 export function oneAsk(q: string): string {
-  const m = /^(.{12,}?),\s+och\s+(?:varför|hur|vad|vilk\p{L}*|när|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim());
+  // live 18:00 (Vasa): "Vad var Dackefejden och varför var den viktig?" (also without the comma)
+  const m = /^(.{12,}?),\s+(?:och|and)\s+(?:varför|hur|vad|vilk\p{L}*|när|why|how|what|which|when)\s+[^?]{6,}\?$/iu.exec(q.trim()) ??
+    /^((?:vad|vem|vilk\p{L}*|när|var|what|who|which|when)\s.{6,}?)\s+(?:och|and)\s+(?:varför|hur|vad|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim());
   return m && words(m[1]) >= 3 ? m[1].replace(/[\s,]+$/, "") + "?" : q;
+}
+
+/**
+ * K106 (live 18:00, Vasa: the final check's rewrites "Hur gick Gustav Vasas uppror till?" and "Förklara hur Gustav
+ * Vasas uppror hänger ihop med att han blev kung." got the same answer): a later question that asks what an earlier
+ * one asks goes; every part keeps at least one question (the refill makes up the count).
+ */
+export function dropNearSame(qs: string[], parts: number[]): { questions: string[]; parts: number[]; dropped: number } {
+  const left = new Map<number, number>();
+  for (const p of parts) left.set(p, (left.get(p) ?? 0) + 1);
+  const keep: number[] = [];
+  for (let i = 0; i < qs.length; i++) {
+    const p = parts[i] ?? -1;
+    if (keep.some((j) => nearDuplicate(qs[j], qs[i])) && (p < 0 || (left.get(p) ?? 0) > 1)) {
+      left.set(p, (left.get(p) ?? 0) - 1);
+      continue;
+    }
+    keep.push(i);
+  }
+  return { questions: keep.map((i) => qs[i]), parts: keep.map((i) => parts[i] ?? -1), dropped: qs.length - keep.length };
 }
 
 /** D230: a question that asks for understanding (a cause, a link, a result, a comparison), not a recalled fact. */
@@ -352,7 +374,7 @@ export async function refillQuestions(
     const out: string[] = [];
     const j = firstJson(r.text);
     for (const x of Array.isArray(j?.questions) ? j!.questions as unknown[] : []) {
-      const q = cleanQuestion(x);
+      const q = oneAsk(cleanQuestion(x)); // K106 (live 18:24: "Vilka ämnen …, och hur tar växterna upp dem?" came from here)
       if (!q || words(q) < 2 || leansOnMaterial(q) || out.length >= n) continue;
       if ([...kept, ...out].some((k) => k.toLowerCase() === q.toLowerCase() || nearDuplicate(k, q))) continue;
       out.push(q);
@@ -598,10 +620,22 @@ export function contextLine(subject: string, grade: string): string {
 /** Step 2: the answers in batches of 5 in parallel; a batch that fails or misses a question is asked once more. */
 /** K106: a short answer that says the notes do not answer the question ("framgår inte här", "is not explained here"). */
 export function notAnswered(short: string): boolean {
-  return /(?:framgår inte|är inte känt|inte känt här|förklaras inte här|beskrivs inte här|står inte här|går inte att säga här|is not (?:explained|stated|known|described) here|isn't (?:explained|stated) here|not explained here)/i.test(short);
+  return /(?:framgår inte|är inte känt|inte känt här|förklaras inte(?: närmare)? här|beskrivs inte(?: närmare)? här|står inte här|sägs inte här|går inte att säga här|is not (?:explained|stated|known|described|said)(?: further)? here|isn't (?:explained|stated|said) here|not explained here|doesn't say why|does not say why)/i.test(short);
 }
 export const MUST_FIX =
   "<must_fix>yes</must_fix> The notes do not answer this question as it is asked (your last answer said so). Put a new question in \"question\" about the same part of the notes that the notes do answer (an understanding question when they carry one: how, what followed, explain how X is linked to Y, compare), and answer that one. Never answer that something is not known.";
+
+/** K106: two short answers that say the same thing (at least 4 shared content stems, 60 % of the shorter one). */
+export function sameAnswer(a: string, b: string): boolean {
+  const x = stems(a), y = stems(b);
+  let shared = 0;
+  for (const w of x) if (y.has(w)) shared++;
+  return shared >= 4 && shared / Math.min(x.size, y.size) >= 0.6;
+}
+export const MUST_FIX_FACT =
+  "<must_fix>fact</must_fix> The notes do not give the reason or the way this question asks for. Put a plain question in \"question\" that asks what, who or when about a fact this part of the notes states (\"Vad gjorde …?\", \"Vad hände …?\"), and answer it. Never answer that something is not known or not explained.";
+export const OTHERS_RULE =
+  "The exam also has the questions in <other_questions>. A new question must ask ONE thing (never \"…, och …?\") and never what one of them asks, in any words, and its answer must not be the answer to one of them (another fact or link from the same part of the notes).";
 
 export async function answerItems(
   provider: LLMProvider,
@@ -613,14 +647,16 @@ export async function answerItems(
   const steps: StepUsage[] = [];
   const got = new Map<string, { short: string; long: string; question?: string; screen?: Screen }>();
   const lang = examLanguage(ctx.subject);
-  const ask = async (batch: { id: string; question: string }[], strict = true, mustFix = false) => {
+  const ask = async (batch: { id: string; question: string }[], strict = true, mustFix: boolean | "fact" = false, others: string[] = []) => {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_ANSWERS,
       user: `<context>${sanitizeTagged(contextLine(ctx.subject, ctx.grade))}</context>\n<notes>\n${
         sanitizeTagged(ctx.notes || "(inga anteckningar)")
       }\n</notes>\n<long_words>${ctx.longWords}</long_words>${lang ? `\n<language>${lang}</language>` : ""}${
         ctx.mayFix ? "\n<may_fix>yes</may_fix>" : ""
-      }${mustFix ? `\n${MUST_FIX}` : ""}\n<questions>${sanitizeTagged(JSON.stringify(batch))}</questions>`,
+      }${mustFix === "fact" ? `\n${MUST_FIX_FACT}` : mustFix ? `\n${MUST_FIX}` : ""}${
+        others.length ? `\n<other_questions>${sanitizeTagged(JSON.stringify(others))}</other_questions>\n${OTHERS_RULE}` : ""
+      }\n<questions>${sanitizeTagged(JSON.stringify(batch))}</questions>`,
       maxTokens: Math.min(8000, 400 + batch.length * Math.round(ctx.longWords * 3.2)),
       cacheSystem: true,
       model: cfg.answerModel,
@@ -655,7 +691,11 @@ export async function answerItems(
     const unanswered = items.filter((it) => { const a = got.get(it.id); return a && notAnswered(a.short); });
     if (unanswered.length) {
       const before = new Map(unanswered.map((it) => [it.id, got.get(it.id)!]));
-      await Promise.allSettled(unanswered.map((it) => ask([it], true, true)));
+      const othersOf = (id: string) => items.filter((x) => x.id !== id).map((x) => got.get(x.id)?.question ?? x.question);
+      await Promise.allSettled(unanswered.map((it) => ask([it], true, true, othersOf(it.id))));
+      // K106 (Oscar omtest K106 F1: "… är inte känt här" after the first try): once more, a plain fact question
+      const still = unanswered.filter((it) => { const a = got.get(it.id); return !a || notAnswered(a.short); });
+      if (still.length) await Promise.allSettled(still.map((it) => ask([it], true, "fact", othersOf(it.id))));
       let fixed = 0;
       for (const it of unanswered) {
         const a = got.get(it.id);
@@ -663,6 +703,29 @@ export async function answerItems(
         else if (a.question) fixed++;
       }
       console.log("drill_unanswered", JSON.stringify({ found: unanswered.length, fixed }));
+    }
+    // K106 (live 18:14: the fixes made "Vad hade kronan för skuld till Lübeck …" twice and "Vilket ljud kan skada hörseln, och
+    // vad avgör …?"): a fixed question that asks two things or what another question asks gets one more try that sees the
+    // others; else it is cut to one question and kept
+    const finalQ = (id: string) => got.get(id)?.question ?? items.find((x) => x.id === id)!.question;
+    // (K106, live 18:38: also asking again when only the short ANSWERS were alike moved good questions to other parts of the
+    // material, after the student had already seen the list; so only the question texts decide here)
+    const bad = items.filter((it) => {
+      const a = got.get(it.id);
+      if (!a?.question) return false;
+      return oneAsk(a.question) !== a.question || items.some((x) => x.id !== it.id && nearDuplicate(finalQ(x.id), a.question!));
+    });
+    if (bad.length) {
+      const before = new Map(bad.map((it) => [it.id, got.get(it.id)!]));
+      await Promise.allSettled(bad.map((it) => ask([it], true, true, items.filter((x) => x.id !== it.id).map((x) => finalQ(x.id)))));
+      for (const it of bad) {
+        const a = got.get(it.id);
+        const dup = a?.question && items.some((x) => x.id !== it.id && nearDuplicate(finalQ(x.id), a.question!));
+        if (!a || notAnswered(a.short) || dup) got.set(it.id, before.get(it.id)!);
+        const k = got.get(it.id)!;
+        if (k.question) got.set(it.id, { ...k, question: oneAsk(k.question) });
+      }
+      console.log("drill_fix_same", JSON.stringify({ found: bad.length }));
     }
   }
   if (!got.size) {
@@ -1081,7 +1144,12 @@ export async function handleDrill(
     // the last check of the finished list against the material (claims, why without a cause, same answer)
     const fc = material ? await finalCheck(provider, cfg, qs, qParts, material, signal) : null;
     let refilled = 0;
-    if (fc) fc.questions = fc.questions.map(oneAsk);
+    if (fc) {
+      const same = dropNearSame(fc.questions.map(oneAsk), fc.parts);
+      fc.questions = same.questions;
+      fc.parts = same.parts;
+      fc.dropped += same.dropped;
+    }
     if (fc) {
       qs = fc.questions;
       qParts = fc.parts;

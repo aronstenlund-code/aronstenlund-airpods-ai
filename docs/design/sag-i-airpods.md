@@ -90,7 +90,9 @@ skanningslinjer, ASCII-konst, skrivmaskinsljud och glödeffekter. Resten av Prov
 
 ## Söktonen (Kelly (moln), Ke81, D233, A151, 2026-11-18)
 Spelas i AirPods en gång per svar när ett sökt svar dröjer mer än 1,5 s (aldrig i provläget). Gjord i kod med
-`docs/design/_src/soktonen.py` (bara Pythons standardbibliotek, ingen ElevenLabs); filerna i `docs/design/ljud/`.
+`docs/design/_src/soktonen.py` (bara Pythons standardbibliotek, ingen ElevenLabs). WAV-filerna hamnar i `docs/design/ljud/` men
+checka inte in (`*.wav` står i `.gitignore`); kör skriptet för att lyssna. **I appen räknas tonen fram med samma formel**
+(Angela Schrute, A148/A151, `ToneShape.Search`), så ingen fil behövs.
 Alla tre: 44,1 kHz mono WAV, topp **−26 dBFS**, mjuk attack och avklingning (börjar och slutar på noll, inga klick), och
 **ingen tonhöjd som stiger** (låter som en notis) eller **sjunker** (låter som ett fel).
 
@@ -100,7 +102,7 @@ Alla tre: 44,1 kHz mono WAV, topp **−26 dBFS**, mjuk attack och avklingning (b
 | B "Puls" | `soktonen-b.wav` | två mjuka slag på samma ton, E4 330 Hz | 0,32 s | Säger tydligare "vänta", men två slag läses lätt som ett meddelande (som ett "pling-pling"), och mönstret är mer påträngande om någon pratar. |
 | C "Trä" | `soktonen-c.wav` | ett kort, dovt slag, C5 523 Hz med en oharmonisk delton | 0,30 s | Kortast och tydligast, men slaget har en skarp början och liknar en knapptryckning eller ett systemljud. |
 
-**Till Angela Schrute (A151):** ta in `docs/design/ljud/soktonen.wav` i appen. Spela den på **full spelarvolym** (filen är
+**Till Angela Schrute (A151):** gjort: variant A räknas i appen (`ToneShape.Search`). Spela den på **full spelarvolym** (filen är
 redan tyst, −26 dBFS; användarens volym styr resten), avbryt med en kort uttoning (cirka 50 ms) när första ordet kommer.
 **Otestat på enhet:** hur den låter i AirPods mot ett pågående samtal måste Aron höra; är den för svag eller stark
 ändras `PEAK_DBFS` i skriptet.

@@ -19,3 +19,7 @@ G4 392 Hz + svag överton 784 Hz, 0,36 s, tonar in 90 ms och ut 200 ms, topp −
 
 ## Nästa
 Angela Schrute tar in filen i A151 (efter K104 `searching`).
+
+## Rättelse 2026-11-18 (efter Angela Schrute)
+WAV-filerna kom **inte** med i repot: `*.wav` står i `.gitignore`. Regeln står kvar. Angela räknar variant A i appen
+med samma formel (`ToneShape.Search`), så ingen fil behövs; skriptet är källan. Texterna är rättade.

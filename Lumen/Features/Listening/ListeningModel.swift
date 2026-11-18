@@ -139,6 +139,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var pendingToolConfirm: String? { tools.pendingConfirm }
     /// D221 (G7 step 7d): the tool call, the confirm question and the second call are `PhoneToolsController`.
     let tools = PhoneToolsController()
+    /// D233 (A151): the quiet tone while an answer searches the web.
+    let searchTone = SearchToneController()
     @ObservationIgnored private var lastSent: (request: ActivationRequest, persona: PersonaRequest?)?
     /// A38 (K31): the days with a quiz answer, and the streak they make (shown on Start).
     @ObservationIgnored private var quizDays = QuizDays.load()
@@ -434,6 +436,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         debugAudio.host = self
         #endif
         tools.host = self
+        searchTone.host = self
         pagePhoto.host = self
         flipCards.host = self
     }
@@ -2796,6 +2799,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .completed(let latencyMs, let done): answerCompleted(latencyMs: latencyMs, done: done)
         case .skipped(let request): answerSkipped(request)
         case .report: answerReportRequested()
+        case .searching(let date): searchTone.searching(since: date) // A151: the wait counts from the search
         }
     }
 
@@ -2881,6 +2885,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                                  isOwnQuestion: request.trigger.isUsersOwnWords)
         controller.playback.startRecordingSpeech() // A7 "upprepa"
         if study.isActive { study.answerStarted() }
+        searchTone.answerBegan() // A151
     }
 
     func answerQuestionReconstructed(_ question: String) {
@@ -2888,8 +2893,17 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         conversation.setAnswerQuestion(question)
     }
 
+    /// D233 (A151): the answer searches the web. While it is made ahead of the pause nothing may sound (D80); the
+    /// moment is kept and the tone's wait counts from it when the answer is delivered.
+    func answerSearching() {
+        let now = Date()
+        if bufferAhead(.searching(at: now)) { return }
+        searchTone.searching(since: now)
+    }
+
     func answerDelta(_ text: String) {
         if bufferAhead(.delta(text)) { return }
+        searchTone.firstWord() // A151
         if timeline?.firstTokenAt == nil { timeline?.firstTokenAt = Date() }
         latency.markFirstText(provider: answers.activeProvider.name)
         conversation.appendAnswerText(text)
@@ -3472,6 +3486,21 @@ extension ListeningModel: TurnQueueHost {
 #if LUMEN_TESTMODE
 extension ListeningModel: DebugAudioHost {} // A142: the test mode's part exists only with the flag
 #endif
+
+/// D233 (A151): what the search tone uses (`SearchToneHost`).
+extension ListeningModel: SearchToneHost {
+    var searchToneAllowed: Bool {
+        let answering = if case .answering = answers.status { true } else { false }
+        return SearchToneController.allowed(listening: isListening, mode: mode, instructing: liveMode.isInstructing,
+                                            answering: answering, speaking: speaker.isSpeaking,
+                                            trigger: pendingQuestion?.trigger,
+                                            builtInSpeaker: controller.snapshot?.outputsToBuiltInSpeaker ?? false)
+    }
+
+    func playSearchTone() {
+        try? controller.playback.playSearchTone()
+    }
+}
 
 extension ListeningModel: PhoneToolsHost, PagePhotoHost, FlipCardsHost {
     var lastSentRequest: (request: ActivationRequest, persona: PersonaRequest?)? { lastSent }

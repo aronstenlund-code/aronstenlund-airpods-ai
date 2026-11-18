@@ -178,6 +178,9 @@ final class FakeAnswerSink: AnswerSink {
     func answerCompleted(latencyMs: Double?, done: AnswerDone?) { completed.append((latencyMs, done)) }
     func answerSkipped(_ request: ActivationRequest) { skipped.append(request) }
     func answerFailed(_ message: String, wantsFallback: Bool) { failures.append((message, wantsFallback)) }
+    /// A151: `searching` events, and how many words had come before each.
+    private(set) var searches: [Int] = []
+    func answerSearching() { searches.append(deltas.count) }
 }
 
 @MainActor

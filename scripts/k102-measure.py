@@ -58,7 +58,9 @@ for eid, m in O79.items():
     cost = float(u.get("est_cost_usd") or 0); total += cost
     row = {"eid": eid, "status": st, "questions": len(qs), "understanding": len(under), "share": round(len(under) / max(1, len(qs)), 2),
            "final_check_ms": fc.get("ms"), "fixed": fc.get("fixed"), "dropped": fc.get("dropped"), "refilled": fc.get("refilled"), "refill_ms": fc.get("refill_ms"),
-           "total_ms": ms, "usd": round(cost, 4)}
+           "total_ms": ms, "usd": round(cost, 4),
+           # K106: what the server aimed for (the model's questions_possible or the code's cap) and how it was reached
+           "target": (u.get("coverage") or {}).get("target"), "questions_possible": j.get("questions_possible")}
     shorts = {}
     if ANSWERS and st == 200 and j.get("items"):
         sa, ja, _ms = call({"action": "drill_answers", "may_fix": True, "subject": m["subject"], "notes": j.get("notes", ""),
