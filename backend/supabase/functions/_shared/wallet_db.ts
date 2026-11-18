@@ -12,10 +12,12 @@ export function walletStore(db: RestDb): WalletStore {
   });
   const one = <T>(r: unknown) => (Array.isArray(r) ? r[0] : r) as T;
   return {
-    isAdmin: async (u) => (await db.rpc("is_credit_admin", { p_user: u }).catch(() => false)) === true,
+    isAdmin: async (u) => (await db.rpcRead("is_credit_admin", { p_user: u }).catch(() => false)) === true,
     monthly: async (u, n) => {
       try {
-        return one<{ ok: boolean; used: number; lim: number }>(await db.rpc("use_drill_chars", { p_user: u, p_n: n })) ?? { ok: false, used: 0, lim: 0 };
+        // n = 0 only reads the month's count: safe to send again after a dropped connection (n > 0 never is)
+        const r = n === 0 ? await db.rpcRead("use_drill_chars", { p_user: u, p_n: 0 }) : await db.rpc("use_drill_chars", { p_user: u, p_n: n });
+        return one<{ ok: boolean; used: number; lim: number }>(r) ?? { ok: false, used: 0, lim: 0 };
       } catch (e) {
         // K101: a still valid token of a deleted account (its quota row cannot be made: foreign key 23503)
         if (/ 23503$/.test(String((e as Error)?.message ?? ""))) throw new HttpError(401, "account_deleted", "Kontot finns inte längre.");
@@ -23,7 +25,7 @@ export function walletStore(db: RestDb): WalletStore {
       }
     },
     refundMonthly: async (u, n) => void await db.rpc("refund_drill_chars", { p_user: u, p_n: n }),
-    purchased: async (u) => Number(await db.rpc("credit_balance", { p_user: u }).catch(() => 0)) || 0,
+    purchased: async (u) => Number(await db.rpcRead("credit_balance", { p_user: u }).catch(() => 0)) || 0,
     usePurchased: async (u, n) => (await db.rpc("use_purchased_credits", { p_user: u, p_n: n })) === true,
     subscriptionUntil: async (u) => {
       const rows = (await db.select("store_subscriptions", `select=expires_at&user_id=eq.${encodeURIComponent(u)}&status=eq.active&expires_at=gt.${encodeURIComponent(new Date().toISOString())}&order=expires_at.desc&limit=1`).catch(() => [])) as { expires_at: string }[];
