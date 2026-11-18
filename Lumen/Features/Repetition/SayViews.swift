@@ -37,6 +37,8 @@ enum SayText {
     static var stagedVoicesSheet = false
     /// A140: the voice the server chose from the style, for the screenshots (no server there).
     static var stagedPicked: (voiceID: String, reason: String?)?
+    /// A135: the button is "Försök igen" (with a staged line), for the screenshots.
+    static var stagedRetry = false
     #endif
 
     /// "10 min" … "1 timme" on the button.
@@ -407,7 +409,12 @@ struct SayInAirPodsField: View {
         #if DEBUG
         .onAppear {
             if let staged = SayText.stagedForScreenshots, text.isEmpty { text = staged }
-            if let line = SayText.stagedRefusal { Task { refused = line } } // after the text's own onChange
+            if let line = SayText.stagedRefusal { // after the text's own onChange
+                Task {
+                    refused = line
+                    canRetry = SayText.stagedRetry
+                }
+            }
             if SayText.stagedVoicesSheet { showsVoices = true }
         }
         #endif

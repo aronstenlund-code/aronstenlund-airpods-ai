@@ -340,7 +340,21 @@ final class CreditShop {
             listens = true
             front.listen { [weak self] receipt in _ = await self?.deliver(receipt) }
         }
-        if items.isEmpty { items = await front.items() }
+        if items.isEmpty {
+            items = await front.items()
+            hasAsked = true
+        }
+    }
+
+    /// Toby T48: the App Store has been asked and gave no products (no network, not set up yet, the Simulator). The
+    /// sheet then says so instead of showing nothing where the packs would be.
+    private(set) var hasAsked = false
+    var hasNoProducts: Bool { hasAsked && items.isEmpty }
+
+    /// Asked again from the sheet.
+    func reload() async {
+        items = await front.items()
+        hasAsked = true
     }
 
     func buy(_ item: StoreItem) async {
@@ -372,18 +386,42 @@ final class CreditShop {
         isRestoring = true
         note = nil
         defer { isRestoring = false }
-        do {
-            let receipts = try await front.restore()
-            var delivered = 0
-            for receipt in receipts {
-                if await deliver(receipt) { delivered += 1 }
+        // Toby T48: without an Apple account the App Store never answered, and the button span for ever. After a
+        // while the sheet says that it did not work. What the App Store gives later is still handed to the server.
+        let race = Race()
+        let receipts: [StoreReceipt]? = await withCheckedContinuation { continuation in
+            Task { [weak self, front] in
+                let found = try? await front.restore()
+                if race.isOpen {
+                    race.isOpen = false
+                    continuation.resume(returning: found)
+                } else if let found {
+                    for receipt in found { _ = await self?.deliver(receipt) }
+                }
             }
-            if receipts.isEmpty { note = Self.nothingToRestoreLine } else if delivered == 0 { note = Self.restoreFailedLine }
-        } catch {
-            Log.repetition.error("Restore: \(error.localizedDescription, privacy: .public)")
-            note = Self.restoreFailedLine
+            Task {
+                try? await Task.sleep(for: restorePatience)
+                if race.isOpen {
+                    race.isOpen = false
+                    continuation.resume(returning: nil)
+                }
+            }
         }
+        guard let receipts else {
+            note = Self.restoreFailedLine
+            return
+        }
+        var delivered = 0
+        for receipt in receipts {
+            if await deliver(receipt) { delivered += 1 }
+        }
+        if receipts.isEmpty { note = Self.nothingToRestoreLine } else if delivered == 0 { note = Self.restoreFailedLine }
     }
+
+    /// How long "Återställ köp" waits for the App Store.
+    @ObservationIgnored var restorePatience: Duration = .seconds(15)
+
+    @MainActor private final class Race { var isOpen = true }
 
     /// Gives the server the signed transaction. True when the server has it (also when it already had it).
     @discardableResult
@@ -508,6 +546,9 @@ final class CreditShop {
 /// Ke73/Ke77: the words of the purchase part of the credits sheet.
 enum ShopText {
     static let bestValue = "Bäst värde"
+    // Toby T48 (his words; Kelly reviews).
+    static let noProducts = "Paketen kunde inte hämtas från App Store just nu."
+    static let tryAgain = "Försök igen"
     static let examLine = "Ett prov ≈ 6 000 krediter."
     static let creditsPerExam = 6000
     static let weeklyTitle = "Veckokort"
