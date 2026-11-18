@@ -140,6 +140,11 @@ grep -E "Reading:|offline|Offline|network|Network|drill_audio|download" "$OUT/lo
   grep -E "Test press|Reading: (paused|go on|next|previous|tap on|start at)" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | head -n 30
   echo '```'
   echo
+  echo "Spela (appens logg, Say:, Angela Fable 2026-11-18 19:08):"
+  echo '```'
+  grep -E "Say: (Spela pressed|answered|gave up)" "$OUT/logs/app.log" 2>/dev/null | cut -c1-240 | head -n 30
+  echo '```'
+  echo
   echo "Inloggningen (appens logg, Auth:, Angela Schrute 2026-11-18):"
   echo '```'
   grep -E "Auth:" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | head -n 15
