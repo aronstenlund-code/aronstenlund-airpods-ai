@@ -50,6 +50,7 @@ final class SayFlowTests: XCTestCase {
         section("Pausa och hoppa (1 och 2 tryck)", { pauseAndSkip() })
         section("Senaste lägger tillbaka texten, inget Nästa prov (A132)", { recentsPutBack() })
         section("Utan nät: samma text spelas, en ny säger till efter 10 s (A135)", { offlineSay() })
+        section("Långsamt ljud: 8 s och 25 s (A144, D225)", { slowSound() })
         section("Stil och Skriv i takt (A136, A140)", { styleAndPace() })
         section("Fältet växer högst 5 rader (A132)", { fieldStopsGrowing() })
         section("Krediter, + och Klistra in länk (A116, A117)", { plusLinkAndCredits() })
@@ -138,7 +139,11 @@ final class SayFlowTests: XCTestCase {
             }
             if !up { pause(2) }
         } while !up && Date() < end
-        if up { answerReminder(); return true }
+        if up {
+            // K100 (D225): a new text is saved and started in one call, so Spela should answer in a few seconds.
+            log.append(String(format: "K100 Spela → '%@' after %.1f s", text(starting: "Spelar i AirPods") ?? text(starting: "Gör ljudet") ?? timeLeft() ?? "-", 60 - end.timeIntervalSinceNow))
+            answerReminder(); return true
+        }
         screen("ingen-spelning", "Spela did not show 'Spelar i AirPods' on the card")
         return miss("no 'Spelar i AirPods' on the card after Spela")
     }
@@ -271,7 +276,7 @@ final class SayFlowTests: XCTestCase {
     /// Put it at the end first (bottom right of the field), then delete; check, and say so if text is left.
     private func clearField() {
         let value = (field.value as? String) ?? ""
-        guard value.contains("Klorofyllet") || value.contains("Bladen") || value.localizedCaseInsensitiveContains("example") else { return }
+        guard value.contains("Klorofyllet") || value.contains("Bladen") || value.contains("Långsamt") || value.localizedCaseInsensitiveContains("example") else { return }
         guard focusField("Säg i AirPods (to clear it)", counted: false) else { return }
         for _ in 0..<2 {
             field.coordinate(withNormalizedOffset: CGVector(dx: 0.97, dy: 0.95)).tap(); testTaps += 1
@@ -280,7 +285,7 @@ final class SayFlowTests: XCTestCase {
             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: now.count + 5))
             pause(1)
             let left = (field.value as? String) ?? ""
-            if !(left.contains("Klorofyllet") || left.contains("Bladen") || left.localizedCaseInsensitiveContains("example")) { return }
+            if !(left.contains("Klorofyllet") || left.contains("Bladen") || left.contains("Långsamt") || left.localizedCaseInsensitiveContains("example")) { return }
         }
         log.append("clearField: text left in the field: \(((field.value as? String) ?? "").prefix(40))")
     }
@@ -363,6 +368,45 @@ final class SayFlowTests: XCTestCase {
         let capsules = recentCapsules()
         log.append("T49 Senaste after the offline tries: \(capsules)")
         if capsules.count > 1 { ok = miss("Senaste shows the text \(capsules.count) times (A135: once)") }
+        return ok
+    }
+
+    /// D225/A144 with fake times: `x-earmind-test: slow` keeps the drill files pending (K64), so a new text never gets
+    /// its sound. After 8 s "Det tar längre tid än vanligt." stands while the spinner goes on; only after 25 s comes
+    /// "Ljudet kunde inte hämtas." with Försök igen. The app is relaunched with LUMEN_TEST_HEADER=slow and back after.
+    private func slowSound() -> Bool {
+        launch("slow")
+        defer { launch(header); _ = wait(["Nytt prov"], 15) }
+        guard wait(["Nytt prov"], 20) != nil else { return miss("Start not shown after the relaunch with slow") }
+        var ok = true
+        clearField()
+        let slowText = "Långsamt ljud \(Int(Date().timeIntervalSince1970) % 1_000_000). Rötterna tar upp vatten."
+        guard focusField("Säg i AirPods (slow)") else { return miss("the field got no keyboard") }
+        field.typeText(slowText)
+        pause(1.5)
+        guard tap(Self.playLabels, "Spela i … (slow)") else { return false }
+        let t0 = Date()
+        var slowAt: Double?
+        var failAt: Double?
+        var playedAt: Double?
+        while Date().timeIntervalSince(t0) < 45, failAt == nil {
+            let now = Date().timeIntervalSince(t0)
+            if slowAt == nil, text(starting: "Det tar längre tid än vanligt") != nil { slowAt = now }
+            if text(starting: "Ljudet kunde inte hämtas") != nil { failAt = now }
+            if playedAt == nil, text(starting: "Spelar i AirPods") != nil { playedAt = now }
+            pause(0.5)
+        }
+        let retry = find(["Försök igen"]) != nil
+        log.append(String(format: "A144 slow: 'Det tar längre tid än vanligt.' at %@ s, 'Ljudet kunde inte hämtas.' at %@ s, Försök igen %@, playing %@",
+                          slowAt.map { String(format: "%.1f", $0) } ?? "-", failAt.map { String(format: "%.1f", $0) } ?? "-",
+                          retry ? "yes" : "no", playedAt.map { String(format: "at %.1f s", $0) } ?? "no"))
+        screen("langsamt", "Slow sound: after the wait")
+        if let a = slowAt { if a < 6 || a > 12 { ok = miss(String(format: "'Det tar längre tid än vanligt.' came after %.1f s (A144: 8 s)", a)) } }
+        else { ok = miss("no 'Det tar längre tid än vanligt.' in 45 s") }
+        if let b = failAt { if b < 22 || b > 32 { ok = miss(String(format: "'Ljudet kunde inte hämtas.' came after %.1f s (A144: 25 s)", b)) } }
+        else { ok = miss("no 'Ljudet kunde inte hämtas.' in 45 s") }
+        if failAt != nil, !retry { ok = miss("no Försök igen with 'Ljudet kunde inte hämtas.'") }
+        clearField()
         return ok
     }
 
