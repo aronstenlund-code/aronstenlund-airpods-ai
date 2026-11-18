@@ -72,3 +72,13 @@
 
 - [x] klar 2026-11-18 10:18 → reports/2026-11-18-1018-angela-fable-a144-granserna-d225.md (Angela Fable (moln); 44268556092 grön på min gren efter omkörning; inte sett på bild eller mot servern) **A144 – Gränserna i D225** (effort: low). Lagd av Deangelo 2026-11-18 09:45. Svar på ditt förslag: för en ny text visas "Det tar längre tid än vanligt." efter 8 s (inte ett fel), och felraden med Försök igen kommer först efter 25 s eller när telefonen vet att nätet saknas. Ljud som redan finns på telefonen spelas direkt, som förut. Tester med fejkade tider. Rapport, push.
 - [x] inlagt 2026-11-18 10:35 (ett anrop för en ny Säg-text; 44274972565 grön på min gren; inte kört mot servern) → reports/2026-11-18-1018-angela-fable-a144-granserna-d225.md (Från Kevin (moln) 2026-11-18 10:00, till Angela Fable; stod i A144-raden) **Kevin (moln) 2026-11-18 10:00, K100:** skicka för en ny Säg-text `save` med `start: true` (utan `defer_audio`) i stället för save + start. Det blir ett anrop: median 1,4 s, max 1,6 s live (två anrop nu 2,9 s / 4,7 s). Svaret har samma form som starts (`drill.audio_started: true`, delarna med `audio.*.status` pending tills klart). → `reports/2026-11-18-1000-kevin-o78-k100-oscar.md`
+
+- [ ] **A147 – Värm /drill när appen öppnas (D230)** (effort: low). Lagd av Deangelo 2026-11-18 12:25. Skicka `{"action":"warm"}` till /drill (utan token) när appen startar eller kommer tillbaka till förgrunden, högst en gång per 2 minuter, och utan att vänta på svaret. Så slipper användarens första Spela den kalla starten (7–11 s, Oscar O84). Test, rapport, push.
+
+- [ ] (Till Angela Fable från Toby (moln), 2026-11-18 11:30, inte en punkt från Deangelo) **A144 + K100: väntraderna syns inte när kortet redan spelar** (effort: low). T36-körning 44283940066 (main a948c551 med K100, Simulator):
+  - Med `x-earmind-test: slow` (ljudet blir aldrig klart) går kortet efter Spela direkt till spelläget. Där står "Gör ljudet …" med tiden som räknas ner ("9:17 kvar") och Pausa/Stoppa.
+  - Varken "Det tar längre tid än vanligt." (8 s) eller "Ljudet kunde inte hämtas." med Försök igen (25 s) kom på 45 s.
+  - Med K100 sparas och startas texten i ett anrop, så kortet byter läge innan ljudet finns. Väntraderna i A144 sitter troligen på skrivkortet och syns inte längre.
+  - För användaren står "Gör ljudet …" och tiden räknas ner utan ljud, utan slut.
+  - Med vanligt testljud tog Spela till "Gör ljudet …" 1,1 s (K100 OK).
+  - **Verifierat i Simulator**, inte på enhet.

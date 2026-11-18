@@ -39,13 +39,13 @@ export function bearerToken(req: Request): string | null {
 export function createJwtAuthenticator(opts: {
   supabaseUrl: string;
   hs256Secret?: string;
-}): Authenticator {
+}): Authenticator & { warm?: () => Promise<void> } {
   const base = opts.supabaseUrl.replace(/\/+$/, "");
   const issuer = `${base}/auth/v1`;
   const jwks = createRemoteJWKSet(new URL(`${issuer}/.well-known/jwks.json`));
   const secret = opts.hs256Secret ? new TextEncoder().encode(opts.hs256Secret) : null;
 
-  return async (req) => {
+  const fn: Authenticator & { warm?: () => Promise<void> } = async (req) => {
     const token = bearerToken(req);
     if (!token) throw new HttpError(401, "unauthorized", "Missing bearer token");
     try {
@@ -68,4 +68,9 @@ export function createJwtAuthenticator(opts: {
       throw new HttpError(401, "unauthorized", "Invalid or expired token");
     }
   };
+  // K100 (Oscar O84): the signing keys fetched ahead of the first user (a warm-up call), not during their request
+  fn.warm = async () => {
+    await (jwks as unknown as { reload?: () => Promise<void> }).reload?.().catch(() => {});
+  };
+  return fn;
 }

@@ -34,6 +34,8 @@ final class AppContainer {
     /// Toby T27/T28: AirPods presses from a UI test (`LUMEN_TEST_PRESSES=1`), Debug only.
     var testPresses: TestPresses?
     #endif
+    /// A145: the account was deleted; the app makes a new container (`AppHolder`). The text is K101's notice, if any.
+    var onRestart: (@MainActor (String?) -> Void)?
 
     /// The mock mode of the repetition flow (`-RepetitionMock YES` and the screenshots): Debug only, never in the builds
     /// for testers or the App Store. A142: a property, not a constant in `init`. With `let mock = false` the first
@@ -44,6 +46,11 @@ final class AppContainer {
         #else
         false
         #endif
+    }
+
+    /// A145: this container is being replaced after the account was deleted. Its sign-in never runs again.
+    func retire() {
+        auth.retire()
     }
 
     init() {
@@ -189,6 +196,15 @@ final class AppContainer {
             if listening?.isActiveSession == true { await listening?.endSession() }
         }
         listening.repetition = repetitionModel
+        // A145 (Ke78, K101): Radera konto. The server first; then everything stops, the phone forgets the account,
+        // and the app starts as new.
+        let deletion = AccountDeletionModel(client: AccountClient(config: .lumen, auth: auth, http: http),
+                                            wipe: { _ = LocalWipe.live().run() },
+                                            stopEverything: { [weak listening, weak repetitionModel] in
+            if listening?.isActiveSession == true { await listening?.endSession() }
+            repetitionModel?.end()
+        })
+        listening.accountDeletion = deletion
         repetitionModel.watchForeground() // K87: back in the app, the sound that is missing is asked for again
         // A108 (D194): a tap on the practice reminder opens the latest exam on Start.
         LumenNotifications.openDrill = { [weak repetitionModel] id in repetitionModel?.openDrill = id }
@@ -202,6 +218,7 @@ final class AppContainer {
         diagnostics.micComparison = MicComparisonModel(listening: listening)
         diagnostics.speechRecording = SpeechRecordingModel(listening: listening)
         diagnostics.studyRecording = StudyRecordingModel(listening: listening)
+        listening.accountDeletion?.onDeleted = { [weak self] notice in self?.onRestart?(notice) }
         #if DEBUG
         if let shot = ScreenshotStage.requested { ScreenshotStage.seed(self, for: shot) } // A2: demo data, Simulator only
         testPresses = TestPresses(session: repetitionSession)

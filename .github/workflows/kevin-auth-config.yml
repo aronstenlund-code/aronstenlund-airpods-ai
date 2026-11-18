@@ -1,0 +1,30 @@
+name: Kevin auth config (read only)
+
+# Kevin (moln, 2026-11-18, Angela Schrute A143): reads two Supabase Auth settings through the Management API and
+# prints only them: whether refresh tokens rotate with reuse detection, and the reuse interval in seconds. Nothing is
+# changed (GET only), no other field and no secret is printed.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Read the refresh token settings
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+        run: |
+          set -eo pipefail
+          code=$(curl -s -o body.json -w "%{http_code}" -H "Authorization: Bearer $SUPABASE_ACCESS_TOKEN" \
+            "https://api.supabase.com/v1/projects/xjczbzfkmbjdebwlccki/config/auth")
+          echo "HTTP $code"
+          if [ "$code" = "200" ]; then
+            jq '{refresh_token_rotation_enabled, security_refresh_token_reuse_interval, jwt_exp, sessions_timebox, sessions_inactivity_timeout}' body.json
+          else
+            jq -r '.message // .error // "no message"' body.json 2>/dev/null | head -c 200 || true
+          fi
+          rm -f body.json
