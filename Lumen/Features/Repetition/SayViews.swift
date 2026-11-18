@@ -170,10 +170,11 @@ enum SayText {
         return mark.map { "\(whole), \($0)" } ?? whole
     }
 
-    /// The card while it plays, as one: "Spelar i AirPods med Astrid, 7 minuter kvar".
+    /// The card while it plays, as one: "Spelar i AirPods med Astrid, 7 minuter kvar". The minutes are the ones on
+    /// the clock (7:07 is "7 minuter kvar", Kelly Ke79 round 5), and the last minute is "under en minut kvar".
     static func spokenPlaying(voice: String?, secondsLeft: Int, paused: Bool) -> String {
-        let minutes = max(1, Int((Double(secondsLeft) / 60).rounded(.up)))
-        let left = minutes == 1 ? "1 minut kvar" : "\(minutes) minuter kvar"
+        let minutes = max(0, secondsLeft) / 60
+        let left = minutes == 0 ? "under en minut kvar" : minutes == 1 ? "1 minut kvar" : "\(minutes) minuter kvar"
         return "Spelar i AirPods" + (voice.map { " med \($0)" } ?? "") + ", \(left)" + (paused ? ", pausad" : "")
     }
 
@@ -397,6 +398,7 @@ struct SayInAirPodsField: View {
             // Ke79: the row as one: "Spelar i AirPods med Astrid, 7 minuter kvar". The clock below is for the eye.
             .accessibilityLabel(waiting ? "Gör ljudet" : SayText.spokenPlaying(voice: model.speakingVoice(drill, part: reader.position?.part),
                                                                                secondsLeft: Int(model.session.repeatSecondsLeft), paused: reader.isPaused))
+            .accessibilityAddTraits(.isStaticText) // Ke79 round 5: it is read, not pressed
         }
         Button {
             model.showsPlayer = true

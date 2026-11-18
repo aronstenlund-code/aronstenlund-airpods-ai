@@ -401,6 +401,7 @@ struct PressesRow: View {
         // was read twice (its own label and its texts).
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(spoken)
+        .accessibilityAddTraits(.isStaticText) // Ke79 round 5: it is read, not pressed
     }
 
     private var spoken: String {
