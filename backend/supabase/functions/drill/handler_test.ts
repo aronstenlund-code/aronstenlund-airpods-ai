@@ -124,9 +124,9 @@ function world(opts: { perDay?: number; noSynth?: boolean; credits?: number; bus
       quota.set(u, Math.max(0, (quota.get(u) ?? 0) - n));
       return Promise.resolve();
     },
-    recentUnavailable: (since: string, test: boolean) =>
-      Promise.resolve([...audio.values()].some((a) => a.status === "failed" && (a.error ?? "").startsWith("audio_unavailable") &&
-        (a.voice_id === TEST_VOICE_ID) === test && (a.done_at ?? "") >= since)),
+    recentUnavailable: (since: string, tag: string | null) =>
+      Promise.resolve([...audio.values()].some((a) => a.status === "failed" && (a.error ?? "").startsWith(tag ? `audio_unavailable: test ${tag} ` : "audio_unavailable") &&
+        (a.voice_id === TEST_VOICE_ID) === !!tag && (a.done_at ?? "") >= since)),
     setRefunded: (id: string, n: number) => {
       drills.get(id)!.refunded_chars = n;
       return Promise.resolve();
@@ -902,6 +902,10 @@ Deno.test("K78 a test account's fake out-of-credits stays among test files (D180
     await (await w.h("t2")(post({ action: "save", items: [{ question: "Vad är is?", short: "Fruset vatten.", long: "Fruset vatten." }] }))).json());
   assertEquals(t2.audio_unavailable, true, "the next test save sees the test's fake failure");
   assertEquals(t2.generated_questions, 0);
+  // K100: another tester (another first word in x-earmind-test) is not held back by it
+  const t3 = await runWithTest({ test: true, reason: "header", userId: "t3", tag: "kevin-t50" }, async () =>
+    await (await w.h("t3")(post({ action: "save", items: [{ question: "Vad är ånga?", short: "Kokat vatten.", long: "Kokat vatten." }] }))).json());
+  assertEquals([t3.audio_unavailable, t3.generated_questions], [undefined, 1]);
 });
 
 Deno.test("K78 get on a drill kept as text while credits are out says audio_unavailable too", async () => {

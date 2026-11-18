@@ -160,12 +160,15 @@ Deno.serve(withCors(withTestMode("drill", timed(
       items: (ids) => chunked(ids, 50, async (p) => (await db.select("drill_items", `select=*&drill_id=in.(${list(p)})&order=position.asc`)) as (ItemRow & { id: string })[]),
       replaceItems: async (drillId, keepIds, rows) => {
         const d = `drill_id=eq.${encodeURIComponent(drillId)}`;
-        await db.deleteWhere("drill_items", keepIds.length ? `${d}&id=not.in.(${list(keepIds)})` : d);
         const now = new Date().toISOString();
         const kept = rows.filter((r) => r.id).map((r) => ({ ...r, updated_at: now }));
         const fresh = rows.filter((r) => !r.id);
-        if (kept.length) await db.upsert("drill_items", kept, "id");
-        if (fresh.length) await db.insertMany("drill_items", fresh);
+        // K100: the three at once (the delete never touches the rows written here: their ids are kept)
+        await Promise.all([
+          db.deleteWhere("drill_items", keepIds.length ? `${d}&id=not.in.(${list(keepIds)})` : d),
+          kept.length ? db.upsert("drill_items", kept, "id") : Promise.resolve(),
+          fresh.length ? db.insertMany("drill_items", fresh) : Promise.resolve(),
+        ]);
       },
       deleteDrill: async (id) => {
         await db.deleteWhere("drills", `id=eq.${encodeURIComponent(id)}`);
@@ -222,8 +225,8 @@ Deno.serve(withCors(withTestMode("drill", timed(
       refundQuota: async (u, n) => {
         await db.rpc("refund_drill_chars", { p_user: u, p_n: n }); // K90 (D213): characters
       },
-      recentUnavailable: async (since, test) =>
-        (await db.select("drill_audio_files", `select=hash&status=eq.failed&error=like.audio_unavailable*&voice_id=${test ? "eq" : "neq"}.${TEST_VOICE_ID}&done_at=gte.${encodeURIComponent(since)}&limit=1`)).length > 0,
+      recentUnavailable: async (since, tag) =>
+        (await db.select("drill_audio_files", `select=hash&status=eq.failed&error=like.${encodeURIComponent(tag ? `audio_unavailable: test ${tag} *` : "audio_unavailable*")}&voice_id=${tag ? "eq" : "neq"}.${TEST_VOICE_ID}&done_at=gte.${encodeURIComponent(since)}&limit=1`)).length > 0,
       setRefunded: async (id, n) => {
         await db.updateWhere("drills", `id=eq.${encodeURIComponent(id)}`, { refunded_chars: n }); // K90: characters given back
       },

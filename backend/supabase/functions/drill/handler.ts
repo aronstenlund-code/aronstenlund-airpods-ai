@@ -204,7 +204,8 @@ export interface DrillDb {
   /** K78 (D200): gives back n questions counted for audio that could not be made (never below 0). */
   refundQuota?(userId: string, n: number): Promise<void>;
   /** K78: a real file failed for lack of ElevenLabs credits since this time (then nothing new is sent now). */
-  recentUnavailable?(sinceIso: string, testVoice: boolean): Promise<boolean>;
+  /** testTag: null = real traffic (real failures); else only that tester's fake failures (K100) */
+  recentUnavailable?(sinceIso: string, testTag: string | null): Promise<boolean>;
   /** K78: remember how many of a drill's questions were given back, so they are given back once. */
   setRefunded?(drillId: string, n: number): Promise<void>;
   /** K64: which of these file hashes some question (drill_items) still uses. */
@@ -521,7 +522,7 @@ export function createDrillHandler(deps: DrillDeps) {
     for (const j of (await deps.db.audio(hashes)).filter((a) => a.voice_id === TEST_VOICE_ID && a.status !== "done")) {
       if (mode === "unavailable") {
         // K64: as if ElevenLabs had no credits: the app's "Ljudet kan inte göras just nu" without a real call
-        await deps.db.finish(j.hash, { status: "failed", error: `${AUDIO_UNAVAILABLE}: test (x-earmind-test: unavailable)`, done_at: new Date(now()).toISOString() });
+        await deps.db.finish(j.hash, { status: "failed", error: `${AUDIO_UNAVAILABLE}: test ${currentTest()?.tag ?? "x"} (x-earmind-test: unavailable)`, done_at: new Date(now()).toISOString() });
         continue;
       }
       try {
@@ -1057,9 +1058,9 @@ export function createDrillHandler(deps: DrillDeps) {
   /** K78: ElevenLabs has no credits right now (a real file failed for that within UNAVAILABLE_RETRY_MS). */
   async function creditsOut(): Promise<boolean> {
     // a test sees only the test voice's fake failures (x-earmind-test: unavailable), real traffic only real ones
-    const test = !!currentTest()?.test;
+    const t = currentTest();
     if (!deps.db.recentUnavailable) return false;
-    return await deps.db.recentUnavailable(new Date(now() - UNAVAILABLE_RETRY_MS).toISOString(), test).catch(() => false);
+    return await deps.db.recentUnavailable(new Date(now() - UNAVAILABLE_RETRY_MS).toISOString(), t?.test ? t.tag ?? "x" : null).catch(() => false);
   }
 
   /**
