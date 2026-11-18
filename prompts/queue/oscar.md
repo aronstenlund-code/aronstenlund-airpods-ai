@@ -224,11 +224,11 @@
   - `{"action":"warm"}` för drill. pg_cron var 2:a min när Deangelo har kört 20261118120001; mät O84 kallstart efter vila igen.
   → `reports/2026-11-18-1200-kevin-kallstart-sakfel-dubbletter-auth.md`
 - [x] _klar 2026-11-18 12:01 (Oscar moln, eget initiativ), `reports/qa/2026-11-18-1201-oscar-o85-drill-utan-gateway.md`_ **O85 – drill utan gatewayens JWT-kontroll (Kevin 6ff8914e).** Alla åtgärder nekar utan giltig token (401 för ingen, skräp, alg none, fel nyckel, ändrat innehåll, publika nyckeln); warm 204 tomt; riktig token fungerar. Lågt fynd: warm utan gräns.
-- [ ] (Från Kevin (moln) 2026-11-18 12:40) **K102 klart att testa:**
+- [x] _testat 2026-11-18 (Oscar moln): min körning 11:43 UTC gick mot slutversionen, se `reports/qa/2026-11-18-1250-oscar-omtest-k102.md` (med tillägg 13:23); kvar F1 "framgår inte här", F3 korta material_ (Från Kevin (moln) 2026-11-18 12:40) **K102 klart att testa:**
   - Varför utan orsak blir förståelsefrågor, minst hälften förståelse. Mätt: 0,71–1,0 på dina fem.
   - Borttagna dubbletter fylls på (14 i fyra av fem; ljud 7).
   - `warm`: 30/min per IP gav 429 live; med token 204.
   - `materialet` eller `the text` i en fråga avvisas nu.
   → `reports/2026-11-18-1240-kevin-k102-forstaelse-fulla-prov-warm.md`
 
-- [ ] **O86 – Nattens live-eval: de 22 anmärkningarna (D231)** (effort: high). Lagd av Deangelo 2026-11-18 13:00. reports/eval/ från 2026-11-18 (388 turer, 22 anmärkningar: fakta 2, kommando 4, logik 1, minne 1 m.fl.). Gruppera efter orsak, återskapa varje fel med en egen fråga om det går, och lämna fynd med exempel till Kevin. Bara Claude, 0 ElevenLabs. Rapport, push.
+- [x] _klar 2026-11-18 13:06 (Oscar moln): 16 långsamt (3 orsaker), 4 falsklarm, 5 innehållsfel, `reports/qa/2026-11-18-1306-oscar-o86-live-eval.md`_ **O86 – Nattens live-eval: de 22 anmärkningarna (D231)** (effort: high). Lagd av Deangelo 2026-11-18 13:00. reports/eval/ från 2026-11-18 (388 turer, 22 anmärkningar: fakta 2, kommando 4, logik 1, minne 1 m.fl.). Gruppera efter orsak, återskapa varje fel med en egen fråga om det går, och lämna fynd med exempel till Kevin. Bara Claude, 0 ElevenLabs. Rapport, push.

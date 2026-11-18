@@ -51,10 +51,15 @@ Skriptet `scripts/k102-measure.py` kör exam drill som appen gör (utan svar och
 - Migreringen `20261118120001_k100_warm_drill.sql` (pg_cron) behövs inte längre, eftersom appen värmer i stället (D230). Den får ligga kvar oanvänd tills Deangelo säger annat.
 
 ## K93-livetestet
-- **run 44294239066**, startad 11:23 UTC.
-- Det väntar på att testkontot blir admin till 12:13 UTC. Markörprovet heter "K93 markör …".
-- Därefter väntar det upp till 100 minuter på att kontot tas bort.
-- Resultatet läses när körningen är klar.
+- **run 44294239066**, 11:23–11:59 UTC. Testkontot är 61e59f02 ("K93 markör 1795001015"), som Deangelo lade in 11:50.
+- **Verifierat live:**
+  - `became_admin`: ja.
+  - `admin_no_402_no_charge`: ja. Med 2 000 tecken gav save och start 200, inget drogs (`used` 0), och `cost` och `list` visade `unlimited`.
+- **Borttagningen är inte testad.** Klockan 11:59:33 gav ett quota-anrop 500. En nystartad instans fick "connection reset" mot databasen (`rpc/use_drill_chars`). Skriptet läste felsvaret som "inte längre admin", och efterkontrollen såg därför fortfarande `unlimited` (`after_counted_and_refused: false`). Felet låg i skriptet och i ett tillfälligt nätverksfel, inte i admin-logiken.
+- **Rättat:**
+  - Läsningar (select och rpc som bara läser: `is_credit_admin`, `credit_balance`, `use_drill_chars` med 0) görs om en gång vid nätverksfel. Skrivningar görs aldrig om. Testat med fejk.
+  - `k93-live.py` godtar bara svar med status 200.
+- **Ny körning** startad, med ett nytt testkonto och ett nytt markörprov (run-id står på tavlan).
 
 ## Nästa
 - **Oscar:** O79 igen med D230; mät O84 kallstart när appen värmer (A147).

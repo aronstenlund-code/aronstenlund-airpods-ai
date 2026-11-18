@@ -143,9 +143,32 @@ export class RestDb {
     return m ? Number(m[1]) : 0;
   }
 
+  /**
+   * K93 live (11:59:33, "connection reset" from a just started instance): a read is sent once more when the connection
+   * fails before any answer. Only reads (GET, and rpc calls marked read-only): a write is never sent twice.
+   */
+  private async once(url: string, init: RequestInit): Promise<Response> {
+    try {
+      return await this.fetchImpl(url, init);
+    } catch (e) {
+      console.warn("restdb_retry", String((e as Error)?.message ?? e).slice(0, 80));
+      return await this.fetchImpl(url, init);
+    }
+  }
+
+  /** An rpc call that only reads (the caller says so): retried once when the connection fails. */
+  async rpcRead(name: string, args: unknown): Promise<unknown> {
+    const r = await this.once(`${this.baseUrl}/rest/v1/rpc/${name}`, { method: "POST", headers: this.headers(), body: JSON.stringify(args) });
+    if (!r.ok) {
+      const code = await r.json().then((j) => String((j as { code?: unknown })?.code ?? "")).catch(() => "");
+      throw new Error(`rpc ${name} failed: HTTP ${r.status}${/^[0-9A-Z]{5}$/.test(code) ? ` ${code}` : ""}`);
+    }
+    return await r.json();
+  }
+
   /** GET /rest/v1/<table>?<query>; returns the parsed rows. */
   async select(table: string, query: string): Promise<unknown[]> {
-    const r = await this.fetchImpl(`${this.baseUrl}/rest/v1/${table}?${query}`, {
+    const r = await this.once(`${this.baseUrl}/rest/v1/${table}?${query}`, {
       headers: this.headers(),
     });
     if (!r.ok) {
