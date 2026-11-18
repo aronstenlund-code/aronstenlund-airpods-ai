@@ -67,12 +67,34 @@ async function chunked<T>(xs: string[], n: number, f: (part: string[]) => Promis
 
 const rt = (globalThis as { EdgeRuntime?: { waitUntil?: (p: Promise<unknown>) => void } }).EdgeRuntime;
 
-Deno.serve(withCors(withTestMode("drill",
+/** T50 (Toby): a request slower than 3 s says which action it was and how long it took (no text, no ids). */
+function timed(h: (req: Request) => Promise<Response>): (req: Request) => Promise<Response> {
+  return async (req) => {
+    const t0 = Date.now();
+    const action = req.method === "POST" ? await req.clone().json().then((b) => String(b?.action ?? "").slice(0, 20)).catch(() => "") : req.method;
+    const r = await h(req);
+    const ms = Date.now() - t0;
+    if (ms > 3000) console.log("drill_slow", JSON.stringify({ action, ms, status: r.status }));
+    return r;
+  };
+}
+/** the same for each Haiku tagging call (K95), the likely slow part of a save with a style */
+const timedStyler = (f: ReturnType<typeof haikuStyler>): ReturnType<typeof haikuStyler> => async (t, s) => {
+  const t0 = Date.now();
+  try {
+    return await f(t, s);
+  } finally {
+    const ms = Date.now() - t0;
+    if (ms > 1000) console.log("drill_styler_slow", JSON.stringify({ ms, chars: t.length }));
+  }
+};
+
+Deno.serve(withCors(withTestMode("drill", timed(
   createDrillHandler({
     authenticate: createJwtAuthenticator({ supabaseUrl: base, hs256Secret: env.get("SUPABASE_JWT_SECRET") }),
     rateLimiter: new SupabaseRateLimiter(db),
     // K95 (D220): Haiku adds v3 tags for "Hur ska det låta?" (only for files that are made new)
-    styler: stylerProvider ? haikuStyler(stylerProvider) : undefined,
+    styler: stylerProvider ? timedStyler(haikuStyler(stylerProvider)) : undefined,
     // K98 (D224): the first Starta prov / Spela rewards the inviter
     onStarted: (u) => onFirstPlay(rewards, u),
     // K99 (D223): Haiku picks the catalog voice that fits "Hur ska det låta?"
@@ -282,6 +304,6 @@ Deno.serve(withCors(withTestMode("drill",
         },
       }
       : null,
-  })),
+  }))),
   extraOriginsFromEnv(),
 ));
