@@ -17,7 +17,7 @@ import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type Pu
 const env = Deno.env;
 
 /** T50: what a slow request spent its time on: the outbound calls per kind (count, summed ms; parallel calls overlap). */
-type Spent = Record<string, { n: number; ms: number }> & { _steps?: string[]; _t0?: number };
+type Spent = { kinds: Record<string, { n: number; ms: number }>; steps?: string[]; t0: number };
 const spent = new AsyncLocalStorage<Spent>();
 const realFetch = globalThis.fetch;
 globalThis.fetch = (async (input: Request | URL | string, init?: RequestInit) => {
@@ -30,13 +30,13 @@ globalThis.fetch = (async (input: Request | URL | string, init?: RequestInit) =>
   try {
     return await realFetch(input, init);
   } finally {
-    const e = (st[k] ??= { n: 0, ms: 0 });
+    const e = (st.kinds[k] ??= { n: 0, ms: 0 });
     e.n++;
     e.ms += Date.now() - t0;
     // the step list (test requests only): table, rpc or storage path without the query, start offset and duration
-    if (st._steps && st._steps.length < 80) {
+    if (st.steps && st.steps.length < 80) {
       const path = new URL(url).pathname.replace(/^\/(rest|storage)\/v1\//, "").replace(/\/[0-9a-f]{2}\/[0-9a-f]{64}\.mp3$/, "/<file>").slice(0, 40);
-      st._steps.push(`${t0 - (st._t0 ?? t0)}+${Date.now() - t0} ${init?.method ?? "GET"} ${path}`);
+      st.steps.push(`${t0 - st.t0}+${Date.now() - t0} ${init?.method ?? "GET"} ${path}`);
     }
   }
 }) as typeof fetch;
@@ -100,11 +100,10 @@ function timed(h: (req: Request) => Promise<Response>): (req: Request) => Promis
     const t0 = Date.now();
     const action = req.method === "POST" ? await req.clone().json().then((b) => String(b?.action ?? "").slice(0, 20)).catch(() => "") : req.method;
     const test = req.headers.has("x-earmind-test");
-    const calls: Spent = test ? { _steps: [], _t0: t0 } : {};
+    const calls: Spent = { kinds: {}, t0, ...(test ? { steps: [] } : {}) };
     const r = await spent.run(calls, () => h(req));
     const ms = Date.now() - t0;
-    const { _steps, _t0, ...kinds } = calls;
-    if (ms > 3000 || test) console.log("drill_slow", JSON.stringify({ action, ms, status: r.status, calls: kinds, ...(test ? { steps: _steps } : {}) }));
+    if (ms > 3000 || test) console.log("drill_slow", JSON.stringify({ action, ms, status: r.status, calls: calls.kinds, ...(test ? { steps: calls.steps } : {}) }));
     return r;
   };
 }
