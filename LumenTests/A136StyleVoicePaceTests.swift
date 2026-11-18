@@ -341,6 +341,26 @@ import Testing
         #expect(SayText.slowLine(online: false) == "Ljudet kunde inte hämtas. Kolla nätet.")
     }
 
+    /// K100 (D225): a new said text is saved and started in one call.
+    @Test func aNewSaidTextIsSavedAndStartedInOneCall() async throws {
+        let (model, cloud, store, audio) = try model("k100-onecall")
+        cloud.oneCall = true
+        let said = try #require(await model.say("1918: Vapenstillestånd den 11 november.", repeatMinutes: 10))
+        model.end()
+        for _ in 0..<50 where audio.preparing.contains(said.id) { try? await Task.sleep(for: .milliseconds(2)) }
+        #expect(cloud.oneCalls.count == 1 && cloud.saves.isEmpty && cloud.startCalls == 0, "one call, not save and then start")
+        #expect(cloud.oneCalls.first?["start"] as? Bool == true && cloud.oneCalls.first?["defer_audio"] == nil)
+        #expect(store.drill(said.id)?.serverID != nil && store.drill(said.id)?.awaitsAudioStart == false)
+
+        // An exam with questions, and a server without the one call, go the old way.
+        var exam = A79A81RepetitionTests.bio(2)
+        exam.audioStarted = false
+        exam.needsUpload = true
+        store.save(exam)
+        #expect(await audio.startAudio(exam))
+        #expect(cloud.oneCalls.count == 1 && cloud.saves.count == 1 && cloud.startCalls == 1)
+    }
+
     @Test func theCatalogIsReadOnceAndAnEmptyOneShowsNoVoices() async throws {
         let (model, _, _, _) = try model("a136-voices")
         await model.loadSayVoices()

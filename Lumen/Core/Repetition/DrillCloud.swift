@@ -343,6 +343,9 @@ protocol DrillCloudSyncing: AnyObject, Sendable {
     func voiceLibrary(search: String) async throws(DrillCloudError) -> [SayVoice]
     /// K99: the name of the voice the server uses when none is chosen, known after `voices()`.
     var defaultVoiceName: String? { get }
+    /// K100 (D225): saves a new exam and starts its sound in one call (`save` with `start: true`). Nil from a
+    /// server (or a mock) without it; the exam is then saved and started in two calls as before.
+    func saveStarting(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView?
 }
 
 /// A136 (K96): a voice from the server's catalog (or from the voice library, then not selectable).
@@ -405,6 +408,7 @@ extension DrillCloudSyncing {
     func voices() async throws(DrillCloudError) -> [SayVoice] { [] }
     func voiceLibrary(search: String) async throws(DrillCloudError) -> [SayVoice] { [] }
     var defaultVoiceName: String? { nil }
+    func saveStarting(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView? { nil }
     func accountID() async -> String? { nil }
     /// Mocks written before K71: a started exam is what `status` says.
     func start(id: String) async throws(DrillCloudError) -> DrillCloudView { try await status(id: id) }
@@ -488,6 +492,18 @@ final class DrillCloudClient: DrillCloudSyncing {
         let reply: Reply = try await call(["action": "list"], timeout: 20)
         lastQuota = reply.quota
         return reply.drills
+    }
+
+    /// K100 (D225): the body of `save` with `start: true` and without `defer_audio`: one call instead of two.
+    static func saveStartingBody(_ drill: Drill) -> [String: Any] {
+        var body = saveBody(drill)
+        body["defer_audio"] = nil
+        body["start"] = true
+        return body
+    }
+
+    func saveStarting(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView? {
+        try await call(Self.saveStartingBody(drill), timeout: 60) as DrillCloudView
     }
 
     /// K92 (D215.8): the same body as `save`, with the action `cost`.
@@ -1097,13 +1113,22 @@ final class CloudDrillAudio: DrillAudioProviding {
         defer { if holds { preparing.remove(drill.id) } }
         guard var current = store.drill(drill.id) else { return false }
         do throws(DrillCloudError) {
+            // K100 (D225): a new text from "Säg i AirPods" is saved and started in one call (about 1,5 s instead of
+            // two calls of 4–6 s each, which is what made Spela give up after ten seconds).
+            var startedView: DrillCloudView?
             if current.serverID == nil || current.needsUpload == true {
-                current = Drill.from(try await cloud.save(current), merging: current)
+                if current.serverID == nil, current.said == true, let both = try await cloud.saveStarting(current) {
+                    startedView = both
+                    current = Drill.from(both, merging: current)
+                } else {
+                    current = Drill.from(try await cloud.save(current), merging: current)
+                }
                 current.needsUpload = nil
                 store.save(current)
             }
             guard let id = current.serverID else { return false }
-            let view = try await cloud.start(id: id)
+            let view: DrillCloudView
+            if let startedView { view = startedView } else { view = try await cloud.start(id: id) }
             guard var latest = store.drill(drill.id) else { return false }
             if view.audio_unavailable == true, view.drill.audio_started == false {
                 // A112 (K78, D200): the voice service's credits are out. Nothing was queued or counted; the exam stays

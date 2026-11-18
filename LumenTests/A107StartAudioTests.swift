@@ -35,6 +35,18 @@ import Testing
         var idPerExam = false
         private var currentID = "srv-1"
 
+        /// K100: the server saves and starts in one call.
+        var oneCall = false
+        var oneCalls: [[String: Any]] = []
+        func saveStarting(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView? {
+            guard oneCall else { return nil }
+            if let saveError { throw saveError }
+            oneCalls.append(DrillCloudClient.saveStartingBody(drill))
+            items = drill.items
+            started = true
+            return view()
+        }
+
         /// Toby T50: a save that takes its time (a cold server, a text with a style).
         var saveDelay: Duration?
 
