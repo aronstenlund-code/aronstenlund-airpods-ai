@@ -45,7 +45,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: kevin-live
+  group: kevin-live-${{ inputs.script }}
   cancel-in-progress: false
 
 jobs:
