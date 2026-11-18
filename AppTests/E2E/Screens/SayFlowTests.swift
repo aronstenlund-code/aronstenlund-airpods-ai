@@ -576,22 +576,31 @@ final class SayFlowTests: XCTestCase {
     }
 
     /// A132: a said text is removed with a long press on its capsule in Senaste ("Ta bort").
+    /// Run 44241367646: with a style the same text is saved twice (A136: another style is another exam), and Senaste
+    /// shows a text once (A135), so removing one shows the other. Remove until none is left (at most 3), then look again
+    /// after 10 s: none may come back.
     private func cleanUp() -> Bool {
         goToStart()
         pause(2)
         let before = recentCapsules().count
-        guard before > 0, let capsule = find([recentCapsules()[0]]) else { note("no capsule in Senaste to remove"); return true }
-        capsule.press(forDuration: 1.2); testTaps += 1
-        guard tap(["Ta bort"], "Ta bort (long press in Senaste)") else { return false }
-        pause(1)
-        _ = confirmDestructive("Ta bort")
+        guard before > 0 else { note("no capsule in Senaste to remove"); return true }
+        var removed = 0
+        for _ in 0..<3 {
+            guard let label = recentCapsules().first, let capsule = find([label]) else { break }
+            capsule.press(forDuration: 1.2); testTaps += 1
+            guard tap(["Ta bort"], "Ta bort (long press in Senaste)") else { return false }
+            pause(1)
+            _ = confirmDestructive("Ta bort")
+            removed += 1
+            pause(3)
+        }
         // Angela Fable 13:30 (run 44064540048): a removed reading came back after a 404. Look again after 10 s.
         pause(10)
         goToStart()
         let after = recentCapsules().count
-        log.append("T36 capsules for the text in Senaste: \(before) before Ta bort, \(after) 10 s after")
+        log.append("T36 capsules for the text in Senaste: \(before) before, \(removed) removed, \(after) 10 s after")
         screen("borta-10s", "Start 10 s after Ta bort in Senaste")
-        if after >= before { return miss("the removed text is still (or back) in Senaste after 10 s (\(before) → \(after))") }
+        if after > 0 { return miss("the text is still (or back) in Senaste after removing \(removed) (\(after) left)") }
         return true
     }
 
