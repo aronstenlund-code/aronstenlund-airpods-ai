@@ -241,7 +241,7 @@ final class SayFlowTests: XCTestCase {
 
     /// Senaste's capsules (buttons) for the test text: "Klorofyllet i bladen få…".
     private func recentCapsules() -> [String] {
-        Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Klorofyllet") && $0.hasSuffix("…") }
+        Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Klorofyllet") && $0.contains("…") && $0.count < 60 }
     }
 
     /// Run 44163010444: the deletes did nothing (110 characters after "clearing" 78): a tap puts the cursor where it lands.
