@@ -223,3 +223,4 @@
   - Sista kontrollen av frågelistan mot materialet: Lübeck rättad, inflation 2/14 och dina printing- och ljudpar borta live. Varför-frågor utan orsak blir vad/hur (Vasa 3/13 förståelse).
   - `{"action":"warm"}` för drill. pg_cron var 2:a min när Deangelo har kört 20261118120001; mät O84 kallstart efter vila igen.
   → `reports/2026-11-18-1200-kevin-kallstart-sakfel-dubbletter-auth.md`
+- [x] _klar 2026-11-18 12:01 (Oscar moln, eget initiativ), `reports/qa/2026-11-18-1201-oscar-o85-drill-utan-gateway.md`_ **O85 – drill utan gatewayens JWT-kontroll (Kevin 6ff8914e).** Alla åtgärder nekar utan giltig token (401 för ingen, skräp, alg none, fel nyckel, ändrat innehåll, publika nyckeln); warm 204 tomt; riktig token fungerar. Lågt fynd: warm utan gräns.
