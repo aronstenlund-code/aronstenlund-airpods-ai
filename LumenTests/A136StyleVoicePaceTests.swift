@@ -337,7 +337,7 @@ import Testing
                 "the second press has the first one's answer: the exam is saved and started")
         #expect(await first.value)
         #expect(cloud.saves.count == 1 && cloud.startCalls == 1, "saved and started once")
-        #expect(SayText.slowLine(online: true) == "Det tar längre tid än vanligt. Försök igen om en stund.")
+        #expect(SayText.slowLine(online: true) == "Det tar längre tid än vanligt.")
         #expect(SayText.slowLine(online: false) == "Ljudet kunde inte hämtas. Kolla nätet.")
     }
 

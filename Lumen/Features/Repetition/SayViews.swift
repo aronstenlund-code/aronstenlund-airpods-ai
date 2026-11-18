@@ -70,8 +70,8 @@ enum SayText {
     static let patience: Duration = .seconds(10)
     static let slowLine = "Ljudet kunde inte hämtas. Kolla nätet." // Kelly: the button says the rest
     /// Toby T50: the network is up and the server is slow (a new text can take longer than ten seconds to save).
-    /// The words must not blame the network then. Mine, for Kelly to review.
-    static let slowServerLine = "Det tar längre tid än vanligt. Försök igen om en stund."
+    /// The words must not blame the network then (Kelly: the button says the rest).
+    static let slowServerLine = "Det tar längre tid än vanligt."
     static func slowLine(online: Bool) -> String { online ? slowServerLine : slowLine }
 
     /// A136 (D220, Kelly Ke75): the words of the style row and of "Skriv i takt".
