@@ -21,18 +21,32 @@ def call(body, tok):
 
 tok = qa.signup()[0]
 rows = []
-for i, style in enumerate([None, None, None, "Lugnt", "Glatt"]):
+# two calls (save with defer_audio, then start) as the app does today, one call (save with start:true, K100), and a style
+plan = [("two", None)] * 6 + [("one", None)] * 6 + [("two", "Lugnt"), ("one", "Glatt")]
+for i, (way, style) in enumerate(plan):
     text = f"Kevin mäter {tag} gång {i}: ring mamma klockan fem och köp mjölk på vägen hem."
     drill = {"kind": "text", "title": f"T50 tid {tag} {i}", "client_id": str(uuid.uuid4()), "said": True}
     if style: drill["style"] = style
-    st, s, ms_save = call({"action": "save", "defer_audio": True, "drill": drill, "items": [{"kind": "para", "text": text}]}, tok)
-    st2, a, ms_start = call({"action": "start", "id": s.get("drill", {}).get("id")}, tok) if st == 200 else (st, {}, 0)
-    rows.append({"i": i, "style": style, "save": st, "save_ms": ms_save, "start": st2, "start_ms": ms_start, "sum_ms": ms_save + ms_start,
-                 "said": s.get("drill", {}).get("said"), "style_saved": s.get("drill", {}).get("style")})
+    items = [{"kind": "para", "text": text}]
+    if way == "two":
+        st, s, ms_save = call({"action": "save", "defer_audio": True, "drill": drill, "items": items}, tok)
+        st2, a, ms_start = call({"action": "start", "id": s.get("drill", {}).get("id")}, tok) if st == 200 else (st, {}, 0)
+    else:
+        st, s, ms_save = call({"action": "save", "start": True, "drill": drill, "items": items}, tok)
+        st2, a, ms_start = st, s, 0
+    rows.append({"i": i, "way": way, "style": style, "save": st, "save_ms": ms_save, "start": st2, "start_ms": ms_start, "sum_ms": ms_save + ms_start,
+                 "started": (a.get("drill") or {}).get("audio_started"), "said": (s.get("drill") or {}).get("said")})
     print(json.dumps(rows[-1], ensure_ascii=False), flush=True)
-    time.sleep(3)
-out = {"rows": rows, "checks": {"all_200": all(r["save"] == 200 and r["start"] == 200 for r in rows)}}
-print(json.dumps(out, ensure_ascii=False, indent=1))
+    time.sleep(2)
+
+def stats(xs):
+    xs = sorted(xs)
+    if not xs: return None
+    return {"n": len(xs), "median": xs[len(xs) // 2] if len(xs) % 2 else (xs[len(xs) // 2 - 1] + xs[len(xs) // 2]) // 2, "p95": xs[min(len(xs) - 1, round(0.95 * (len(xs) - 1)))], "max": xs[-1]}
+out = {"rows": rows, "two_calls": stats([r["sum_ms"] for r in rows if r["way"] == "two" and not r["style"]]),
+       "one_call": stats([r["sum_ms"] for r in rows if r["way"] == "one" and not r["style"]]),
+       "checks": {"all_200": all(r["save"] == 200 and r["start"] == 200 for r in rows), "all_started": all(r["started"] for r in rows)}}
+print(json.dumps({k: out[k] for k in ("two_calls", "one_call", "checks")}, ensure_ascii=False, indent=1))
 p = os.path.join(HERE, "..", "reports", "qa", "data", time.strftime("%Y-%m-%d-%H%M%S") + "-t50-timing.json")
 json.dump(out, open(p, "w", encoding="utf8"), ensure_ascii=False, indent=1)
 sys.exit(0 if out["checks"]["all_200"] else 1)
