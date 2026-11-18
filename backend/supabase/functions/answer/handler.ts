@@ -325,6 +325,8 @@ export interface Deps {
   localLimiter?: RateLimiter;
   /** Wall clock (tests); default `new Date()`. */
   clock?: () => Date;
+  /** K105 (Oscar O89): is this call test traffic (header, test account, script, CI)? Default: the test header. */
+  isTest?: (req: Request) => boolean;
   /** null = no provider configured -> 503 provider_unconfigured (fail closed). */
   provider: LLMProvider | null;
   recordUsage: (rec: UsageRecord) => void | Promise<void>;
@@ -393,7 +395,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
     const t0 = now();
     const cold = served++ === 0;
     // K105 (D234): test calls have their own web cap; `done.web_cap_test` says when it is used up
-    const webTest = req.headers.has("x-earmind-test");
+    const webTest = deps.isTest ? deps.isTest(req) : req.headers.has("x-earmind-test");
     let webCapTest = false;
     const webLimit = async (userId: string) => {
       const c = webCap(cfg, webTest, (deps.clock ?? (() => new Date()))().getTime());

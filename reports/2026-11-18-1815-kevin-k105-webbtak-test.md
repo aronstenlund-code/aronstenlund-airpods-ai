@@ -1,11 +1,18 @@
 # K105 (D234): eget webbtak för testtrafik; K93 avslutat
 
-Kevin (moln), 2026-11-18. 0 ElevenLabs och 0 Claude, eftersom inga liveanrop gjordes. Tester: **739/739**. Commit 4be7dc3b, deploy-backend 44355766934.
+Kevin (moln), 2026-11-18. 0 ElevenLabs och 0 Claude, eftersom inga liveanrop gjordes. Tester: **741/741**. Commits 4be7dc3b och O89-rättningen, deploy-backend 44355766934.
 
 ## K105: taket delat, summan 150 som förut
 - **Testanrop**, det vill säga anrop med huvudet `x-earmind-test`, räknas mot `answer-web-test:global:d` med **50 per dygn**. **Övriga anrop** räknas mot `answer-web:global:d` med **100 per dygn**.
   - Användartaket räknas fram som hela taket minus testtakets andel, så summan blir alltid hela taket. Hela taket är `WEB_GLOBAL_PER_DAY`, 150 som förut. Testtakets andel är `WEB_TEST_GLOBAL_PER_DAY`, 50.
   - Om miljövariabeln för hela taket är satt ändras alltså bara fördelningen. Testtaket kan aldrig bli större än hela taket.
+- **Vad som räknas som test (Oscar O89, rättat samma runda):** inte bara huvudet. Serverns vanliga testregel (`detectTest`) gäller, alltså:
+  - huvudet `x-earmind-test`;
+  - ett konto som är märkt som test;
+  - ett skript (python, curl och liknande) eller ett anrop utan user agent;
+  - ett anrop från GitHubs Actions-IP.
+
+  Aron, inloggad med e-post, är aldrig test utan huvudet, och appen räknas som användare. CI-listan laddas i bakgrunden, så ett svar väntar aldrig på den. Innan den har laddats räknas CI-anrop utan huvud och med appens user agent mot användartaket. Det gäller bara Tobys simulator, och hans konto märks som test av de andra funktionerna. Verifierat i test.
 - **Taken per användare** (5 per minut, 20 per dygn) gäller som förut, för testkonton under namnet `answer-web-test:u:…`.
 - **Alla fyra ställen som tar webbtaket** använder samma regel: textbegäran, webbfråga, `[[SÖK]]`-omförsöket och länksökningen (K19).
 - **Fältet `done.web_cap_test: true`** kommer bara när ett testanrop nekas för att testtakets globala dygnstak är slut. Svaret kommer då ur minnet som vid ett fullt användartak. Fältet kommer aldrig på vanliga anrop.

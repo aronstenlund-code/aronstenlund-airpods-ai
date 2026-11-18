@@ -65,7 +65,7 @@ for rnd in range(ROUNDS):
         r["round"] = rnd + 1
         r["server"] = m
         rows_all.append(r)
-        print(json.dumps({"rnd": rnd + 1, "id": r["id"], "turn": r["turn"], "ttft": r["ttft"], "problems": r["problems"],
+        print(json.dumps({"rnd": rnd + 1, "id": r["id"], "turn": r["turn"], "ttft": r["ttft"], "problems": r["problems"], "skipped": r.get("skipped"),
                           "timing": m.get("timing"), "type": (m.get("breakdown") or {}).get("answer_type"), "web": m.get("web"),
                           "model": m.get("model"), "source": m.get("source"), "svar": r["answer"][:220]}, ensure_ascii=False), flush=True)
 
@@ -80,4 +80,6 @@ for (cid, t), rs in by.items():
                       "web": [((r["server"] or {}).get("web")) for r in rs], "anmärkningar": probs,
                       "antal med anmärkning": sum(1 for r in rs if r["problems"])}, ensure_ascii=False), flush=True)
 cost = sum(r.get("cost") or 0 for r in rows_all)
-print(f"=== O86 turer {len(rows_all)}, med anmärkning {sum(1 for r in rows_all if r['problems'])}, Claude {cost:.3f} USD")
+skipped = [r for r in rows_all if r.get("skipped")]
+print(f"=== O86 turer {len(rows_all)}, med anmärkning {sum(1 for r in rows_all if r['problems'])}, överhoppade (webbtak för test, D234) {len(skipped)}"
+      + (f": {sorted({r['id'] for r in skipped})}" if skipped else "") + f", Claude {cost:.3f} USD")
