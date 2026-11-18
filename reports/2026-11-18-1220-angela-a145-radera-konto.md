@@ -48,7 +48,7 @@ användarens, inte EarMinds.
   frågar igen; 429, inget nät och serverfel sägs för sig; inget på telefonen rörs när servern säger nej; efter ja kommer
   stopp, sedan radering, sedan omstart med beskedet; filer, inställningar och inloggning glöms; den gamla inloggningen
   loggar aldrig in igen.
-- **Main efter ihopslagningen:** iOS build 44293876104 — resultatet står på tavlan.
+- **Main efter ihopslagningen:** iOS build 44293876104 grön, också Release-steget. *Verifierat i CI.*
 - **Inte provat i Simulator eller på telefon.** Omstarten med ny behållare är inte provad någonstans.
 - 0 ElevenLabs.
 
