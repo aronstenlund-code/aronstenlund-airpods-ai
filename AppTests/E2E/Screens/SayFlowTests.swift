@@ -27,7 +27,9 @@ final class SayFlowTests: XCTestCase {
     private var unclear: [String] = []
     private var out: URL!
 
-    static let text = "Klorofyllet i bladen fångar ljuset. Växten gör socker av vatten och koldioxid."
+    /// T44 (Kevin 2026-11-17 16:40): sound that already exists is free (D213), so the text gets a part of its own each
+    /// run; otherwise the capsule never goes down with x-earmind-test.
+    static let text = "Klorofyllet i bladen fångar ljuset. Växten gör socker av vatten och koldioxid. Körning \(Int(Date().timeIntervalSince1970) % 1_000_000)."
 
     func testSay() throws {
         continueAfterFailure = true
@@ -85,6 +87,8 @@ final class SayFlowTests: XCTestCase {
         log.append("T36 field value: \(value)")
         if !value.contains("Klorofyllet") { return miss("the text did not get into the field (value '\(value)')") }
         // A132 (Ke72): the cost stands by the button as "120 krediter" (or "… · du har 88").
+        creditsAtStart = creditsLeft()
+        pause(1.5) // the cost comes from the server about 0,7 s after the last key (A132 point 8)
         let cost = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.contains("krediter") && !$0.contains("kvar") }
         log.append("T46 cost by the button: \(cost ?? "-")")
         if cost == nil, find(["Räknas som 1 fråga*", "Kostar *"]) == nil { note("no cost by Spela ('N krediter', A132)") }
@@ -103,6 +107,7 @@ final class SayFlowTests: XCTestCase {
     static let cardText = [text, "Klorofyllet i bladen fångar ljuset.*"]
 
     private var lockLineBefore = false
+    private var creditsAtStart: Int?
 
     /// Taps "Spela i 10 min" and waits for the card's "Spelar i AirPods" (or "Gör ljudet …") on Start.
     private func playFromCard() -> Bool {
@@ -282,6 +287,10 @@ final class SayFlowTests: XCTestCase {
         var ok = true
         let texts = Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Other")
         let examHeads = texts.filter { ["nästa prov", "andra prov"].contains($0.lowercased()) }
+        pause(3)
+        let afterPlay = creditsLeft()
+        log.append("T44 capsule: \(creditsAtStart.map(String.init) ?? "-") before the first Spela of a new text, \(afterPlay.map(String.init) ?? "-") after Stoppa")
+        if let a = creditsAtStart, let b = afterPlay, b >= a { note("T44: the capsule did not go down after a new text (\(a) → \(b))") }
         log.append("T46 exam headings on Start after a said text: \(examHeads.isEmpty ? "none" : examHeads.joined(separator: ", "))")
         if !examHeads.isEmpty { ok = miss("a said text shows as \(examHeads.joined(separator: "/")) (A132: only in Senaste)") }
         let capsules = recentCapsules()
