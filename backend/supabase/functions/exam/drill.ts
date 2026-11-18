@@ -708,25 +708,19 @@ export async function answerItems(
     // vad avgör …?"): a fixed question that asks two things or what another question asks gets one more try that sees the
     // others; else it is cut to one question and kept
     const finalQ = (id: string) => got.get(id)?.question ?? items.find((x) => x.id === id)!.question;
-    // K106 (Oscar omtest K106 F3: ekosystem 4/5/6 all "en tiondel av energin"): a later question whose short answer is the
-    // same as an earlier one's is asked again too, with the others shown
-    const sameShort = (it: { id: string }) => {
-      const a = got.get(it.id);
-      const i = items.findIndex((x) => x.id === it.id);
-      return !!a && items.slice(0, i).some((x) => { const b = got.get(x.id); return !!b && sameAnswer(b.short, a.short); });
-    };
+    // (K106, live 18:38: also asking again when only the short ANSWERS were alike moved good questions to other parts of the
+    // material, after the student had already seen the list; so only the question texts decide here)
     const bad = items.filter((it) => {
       const a = got.get(it.id);
-      if (!a) return false;
-      if (!a.question) return sameShort(it);
-      return oneAsk(a.question) !== a.question || items.some((x) => x.id !== it.id && nearDuplicate(finalQ(x.id), a.question!)) || sameShort(it);
+      if (!a?.question) return false;
+      return oneAsk(a.question) !== a.question || items.some((x) => x.id !== it.id && nearDuplicate(finalQ(x.id), a.question!));
     });
     if (bad.length) {
       const before = new Map(bad.map((it) => [it.id, got.get(it.id)!]));
       await Promise.allSettled(bad.map((it) => ask([it], true, true, items.filter((x) => x.id !== it.id).map((x) => finalQ(x.id)))));
       for (const it of bad) {
         const a = got.get(it.id);
-        const dup = (a?.question && items.some((x) => x.id !== it.id && nearDuplicate(finalQ(x.id), a.question!))) || (a && sameShort(it));
+        const dup = a?.question && items.some((x) => x.id !== it.id && nearDuplicate(finalQ(x.id), a.question!));
         if (!a || notAnswered(a.short) || dup) got.set(it.id, before.get(it.id)!);
         const k = got.get(it.id)!;
         if (k.question) got.set(it.id, { ...k, question: oneAsk(k.question) });

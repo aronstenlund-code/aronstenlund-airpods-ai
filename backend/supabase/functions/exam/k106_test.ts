@@ -111,7 +111,7 @@ Deno.test("K106 (live 18:24): the refill's questions are one question each too",
   assertEquals(r.questions, ["Vilka ämnen bryter nedbrytarna ner döda djur till?"]);
 });
 
-Deno.test("K106 (Oscar omtest K106 F1/F3): a second 'fact' try when the first fix is still unanswered; a repeated short answer is asked again", async () => {
+Deno.test("K106 (Oscar omtest K106 F1): a second 'fact' try when the first fix is still unanswered; alike answers alone change nothing", async () => {
   const seen: LLMRequest[] = [];
   const llm: LLMProvider = {
     name: "fake", model: "sonnet-fake",
@@ -143,6 +143,7 @@ Deno.test("K106 (Oscar omtest K106 F1/F3): a second 'fact' try when the first fi
   const r = await answerItems(llm, DEFAULT_DRILL_CONFIG, items, { subject: "Biologi", grade: "åk 8", notes: "n", longWords: 60, mayFix: true });
   assertEquals(r.items[0].question, "Vad gjorde bönderna i Dalarna?");
   assertEquals(notAnswered(r.items[0].short!), false);
-  assertEquals(r.items[2].question, "Vart försvinner resten av energin?", "the repeated answer was replaced");
-  assertEquals(r.items[1].question, "Vad händer med energin från en nivå till nästa?", "the first of the pair stays");
+  // live 18:38: alike short ANSWERS alone never change a question (that moved good questions to other topics)
+  assertEquals(r.items[2].question, "Varför finns det fler växter än växtätare?");
+  assertEquals(r.items[1].question, "Vad händer med energin från en nivå till nästa?");
 });
