@@ -95,6 +95,8 @@ const handler = createHandler({
       perDay: envInt(env, "WEB_PER_DAY", DEFAULT_CONFIG.webLimits!.perDay),
       globalPerDay: envInt(env, "WEB_GLOBAL_PER_DAY", DEFAULT_CONFIG.webLimits!.globalPerDay),
     },
+    // K105 (D234): the share of the global web cap for test calls (x-earmind-test); users get the rest
+    webTestGlobalPerDay: envInt(env, "WEB_TEST_GLOBAL_PER_DAY", DEFAULT_CONFIG.webTestGlobalPerDay!),
   },
 });
 

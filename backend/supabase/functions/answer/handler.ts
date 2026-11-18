@@ -232,6 +232,11 @@ export interface HandlerConfig {
   limits: Limits;
   /** D46 item 8: caps for requests that use web search/fetch (they cost real money per search). */
   webLimits?: Limits;
+  /** K105 (D234): of webLimits.globalPerDay, this many a day are for test calls (`x-earmind-test`); the rest for users. */
+  webTestGlobalPerDay?: number;
+  /** K105: the split starts at this time (ms); before it every call shares one cap as before, so the day already
+   *  used up (18 Nov) gets no extra searches. */
+  webSplitFromMs?: number;
   /** K12: spoken instructions (commands, calibrations, free instructions) are counted apart from questions. */
   commandLimits?: Limits;
   /** D52: model + prices (USD / MTok) for Rizz suggestions (Sonnet 5.5 by default; Haiku for the rest). */
@@ -285,6 +290,8 @@ export const DEFAULT_CONFIG: HandlerConfig = {
   maxAnswerCharsStudy: 1800,
   limits: { perMinute: 20, perDay: 400, globalPerDay: 5000 },
   webLimits: { perMinute: 5, perDay: 20, globalPerDay: 150 }, // Oscar O20: a recipe and two follow-ups in a minute
+  webTestGlobalPerDay: 50, // K105 (D234): tests filled the shared cap on 17 and 18 Nov; users keep 100, tests 50
+  webSplitFromMs: Date.parse("2026-11-19T00:00:00Z"), // K105: from the next day's window on, never more than 150 a day
   // K12 (Toby T6 #7: 429 on quick instructions in Socialt/Rizz): instructions have their own budget
   commandLimits: { perMinute: 15, perDay: 300, globalPerDay: 3000 },
   // Oscar 2026-11-08: 40 (was 20) and aborted calls are given back here too
@@ -360,6 +367,18 @@ export function providerErrorToHttp(e: unknown): HttpError {
   return new HttpError(502, "provider_unavailable", "LLM provider unavailable", { fallback: true });
 }
 
+/** K105 (D234): the web cap's scope and limits for this call. Test calls (`x-earmind-test`) count against their own
+ *  global cap, so tests never use up users' web answers; the two caps add up to webLimits.globalPerDay as before. */
+export const WEB_TEST_GLOBAL_KEY = "answer-web-test:global:d";
+export function webCap(cfg: HandlerConfig, test: boolean, nowMs = Date.now()): { scope: string; limits: Limits } {
+  const base = cfg.webLimits ?? DEFAULT_CONFIG.webLimits!;
+  if (nowMs < (cfg.webSplitFromMs ?? 0)) return { scope: "answer-web", limits: base };
+  const testCap = Math.min(base.globalPerDay, Math.max(0, cfg.webTestGlobalPerDay ?? DEFAULT_CONFIG.webTestGlobalPerDay ?? 0));
+  return test
+    ? { scope: "answer-web-test", limits: { ...base, globalPerDay: testCap } }
+    : { scope: "answer-web", limits: { ...base, globalPerDay: base.globalPerDay - testCap } };
+}
+
 export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
   const now = deps.now ?? (() => performance.now());
   const cfg = deps.config;
@@ -373,6 +392,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
     }
     const t0 = now();
     const cold = served++ === 0;
+    // K105 (D234): test calls have their own web cap; `done.web_cap_test` says when it is used up
+    const webTest = req.headers.has("x-earmind-test");
+    let webCapTest = false;
+    const webLimit = async (userId: string) => {
+      const c = webCap(cfg, webTest, (deps.clock ?? (() => new Date()))().getTime());
+      const r = await enforceLimits(deps.rateLimiter, c.scope, userId, c.limits);
+      if (!r.allowed && webTest && r.deniedKey === WEB_TEST_GLOBAL_KEY) webCapTest = true;
+      return r;
+    };
     try {
       if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use POST");
       const declared = Number(req.headers.get("content-length") ?? "0");
@@ -776,7 +804,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         !demo && !personaPlan(body) && body.mode !== "interview_prep" &&
         (body.mode === "auto" ? isDirectResourceRequest(body.fragment) : isResourceRequest(body.fragment))
       ) {
-        const wl = await enforceLimits(deps.rateLimiter, "answer-web", user.id, cfg.webLimits ?? DEFAULT_CONFIG.webLimits!);
+        const wl = await webLimit(user.id);
         const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
         if (!rl.allowed) {
           throw new HttpError(429, "rate_limited", "Too many requests", { fallback: true, retryAfterSec: rl.retryAfterSec });
@@ -858,6 +886,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             relation: null,
             source: resource ? domainOf(resource.url) : null,
             memory_add: null,
+            ...(webCapTest ? { web_cap_test: true } : {}),
             resource,
           }),
         ];
@@ -1347,21 +1376,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       let webNote: string | undefined;
       let textOn = false;
       if (textReq) {
-        const wl = await enforceLimits(
-          deps.rateLimiter,
-          "answer-web",
-          user.id,
-          cfg.webLimits ?? DEFAULT_CONFIG.webLimits!,
-        );
+        const wl = await webLimit(user.id);
         textOn = wl.allowed; // without search the rules still apply, from the model's own knowledge
       }
       if (need) {
-        const wl = await enforceLimits(
-          deps.rateLimiter,
-          "answer-web",
-          user.id,
-          cfg.webLimits ?? DEFAULT_CONFIG.webLimits!,
-        );
+        const wl = await webLimit(user.id);
         webOn = wl.allowed;
         if (!webOn) webNote = WEB_UNAVAILABLE_NOTE;
         else if (followSource) webNote = SAME_SOURCE_NOTE(followSource);
@@ -2059,7 +2078,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 if (m) history = history.filter((x) => x.a !== m);
               } else if (searchMarked && attempt === 0) {
                 // K16.1: the model is not sure: search once (within the web caps), or say it does not know
-                const wl = await enforceLimits(deps.rateLimiter, "answer-web", user.id, cfg.webLimits ?? DEFAULT_CONFIG.webLimits!);
+                const wl = await webLimit(user.id);
                 if (wl.allowed) {
                   retrySystem = systemPrompt.replace(SEARCH_MARK_RULE, "") + WEB_PROMPT;
                   retryTools = webTools({ search: true, fetch: false });
@@ -2332,6 +2351,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               relation: post.relation ?? parser.meta?.relation ?? null,
               source: post.source,
               memory_add: null,
+              ...(webCapTest ? { web_cap_test: true } : {}),
               calibration,
               ...(toolPending ? { tool_pending: true } : {}),
               ...(serverToolDone ? { server_tool: serverToolDone } : {}),
