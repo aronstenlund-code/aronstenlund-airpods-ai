@@ -9,6 +9,10 @@ bekräftas före inskickning). Inget här är provat på telefon av mig.
 ## 1. Texter
 
 ### Svenska (primärt språk)
+> **Ersatt av `README.md` (Ke80, 2026-11-18):** de svenska texterna, bilderna, URL:erna och åldersgränsen gäller där.
+> Texten nedan är Ke76-versionen och står kvar som historik. Den engelska texten nedan gäller fortfarande (om appen
+> säljs utanför Sverige), men saknar röster och välkomstkrediter.
+
 | Fält | Gräns | Text | Tecken |
 |---|---|---|---|
 | Namn | 30 | EarMind | 7 |
