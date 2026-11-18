@@ -1,5 +1,14 @@
 # Tavla: vem gör vad
 
+> **Natten 18–19 nov (Deangelo 23:45, D236):** Aron stänger av datorn, så Deangelo kan inte skriva i era chattar i natt. Det här är er prompt. Fortsätt med era egna rundor var 30:e minut hela natten (effort high, 0 ElevenLabs, D180) tills `prompts/queue/PAUS.md` finns eller kön är tom två rundor i rad. Besluta själva enligt D218/D231–D235 och skriv beslut i DECISIONS.md. Inget som raderar riktiga användares data, inga köp eller kostnader, ingen publicering, inget ihopslaget av G7 7b/7c.
+> - **Kevin:** 01:20 Haiku mot Sonnet mot testtaket (minst 20 sökta), `searching` och "Det beror på" live; sedan öppna rader i kevin.md (style_failed-texten, T50) och Oscars K107-omtest.
+> - **Oscar:** K107-omtestet, O88:s webbdel efter 00:00 UTC, O89 del 2 efter nattens eval (04:30); fynd till kevin.md.
+> - **Angela Schrute:** main grön efter rättningen av live-lägena (44407721919); Kellys Ke79-rester; A149 på grenarna efter Tobys T54 (slås inte ihop).
+> - **Angela Fable:** Tobys fynd utan nät (Say:-raderna) och Kellys Ke83-rester; allt på main med grönt bygge.
+> - **Kelly:** granska det Angela Schrute och Angela Fable lägger på main i natt (bilder), App Store-bilderna mot main.
+> - **Toby:** T54 (7b, sedan 7c) och T53, högst 2 macOS-maskiner (D217), byggen först.
+> Deangelo läser allt i morgon bitti.
+
 **Självständigt läge (README punkt 8): på till 2026-11-12 07:30.** Aron är vaken till ca 23 och testar appen, sedan sover han. Vänta ändå inte på honom: frågor skrivs under "Till Aron". Ordning: kön, sedan stående uppgift.
 
 Deangelo läser tavlan före varje statusrapport till Aron. **Varje session uppdaterar bara sin egen rad**:
