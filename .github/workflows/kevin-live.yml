@@ -32,6 +32,7 @@ on:
           - k94-apple-root.py
           - qa/o79_quality.py
           - k98-attest-root.py
+          - k99-voice-search.py
       args:
         description: "Arguments (optional)"
         required: false

@@ -28,6 +28,7 @@ function memStore(settings: Record<string, number> = {}) {
       return Promise.resolve(true);
     },
     invitesThisMonth: (inv) => Promise.resolve(ledger.filter((x) => x.user_id === inv && x.kind === "invite").length),
+    inviteRewards: (inv) => Promise.resolve(ledger.filter((x) => x.user_id === inv && x.kind === "invite").map((x) => ({ credits: x.credits, at: "2026-11-18T00:00:00Z" })).reverse()),
   };
   return { s, ledger, keys };
 }
@@ -127,6 +128,9 @@ Deno.test("K98 invitation: a code per account; the invitee on another device pla
   const capped = await onFirstPlay(w.m.s, "friend3");
   assertEquals([capped.rewarded, capped.reason], [0, "month_cap"]);
   assertEquals(w.m.ledger.filter((x) => x.user_id === "inviter" && x.kind === "invite").reduce((n, x) => n + x.credits, 0), 4000);
+  // A141: the sheet sees the month's count, the cap and each reward (no names: accounts are anonymous)
+  const st = (await w.call({ action: "invite_code" }, "inviter")).body;
+  assertEquals([st.month_rewarded, st.month_max, st.invite_credits, st.rewards.length, st.rewards[0].credits], [2, 2, 2000, 2, 2000]);
 });
 
 Deno.test("K98 invitation: an account that shares a key (the same install) with the inviter is refused", async () => {

@@ -26,6 +26,19 @@ export interface RewardStore {
   markRewarded(invitee: string): Promise<boolean>;
   /** invite credits the inviter got this month (Stockholm) */
   invitesThisMonth(inviter: string): Promise<number>;
+  /** Angela Fable (A141): the invite credits this account got since `since` (newest first, at most 20) */
+  inviteRewards?(inviter: string, since: string): Promise<{ credits: number; at: string }[]>;
+}
+
+/** Angela Fable (A141): what the invitation sheet shows. Accounts are anonymous, so there are no names. */
+export async function inviteStatus(s: RewardStore, userId: string) {
+  const st = await s.settings().catch(() => ({}));
+  const since = new Date(Date.now() - 30 * 86400_000).toISOString();
+  const [month, rewards] = await Promise.all([
+    s.invitesThisMonth(userId).catch(() => 0),
+    s.inviteRewards ? s.inviteRewards(userId, since).catch(() => []) : Promise.resolve([]),
+  ]);
+  return { month_rewarded: month, month_max: n(st, "invite_month_max"), invite_credits: n(st, "invite_credits"), rewards };
 }
 
 export const DEFAULTS = { welcome_credits: 5000, invite_credits: 2000, invite_month_max: 10 };

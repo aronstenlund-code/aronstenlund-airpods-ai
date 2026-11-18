@@ -48,9 +48,18 @@ Deno.test("GET /voices returns names + ids and a default, nothing else", async (
   assertEquals(await res.json(), {
     voices: [{ name: "Astrid", id: A }, { name: "Elin", id: E }],
     default_id: A,
+    default_voice: { voice_id: A, name: "Astrid", in_catalog: false },
   });
   const res2 = await createVoicesHandler(deps({ defaultVoiceId: O }))(get());
   assertEquals((await res2.json()).default_id, O);
+});
+
+Deno.test("A140: default_voice names the default with the catalog's name when it is there, else 'Standard'", async () => {
+  const cat = [{ voice_id: O, name: "Jonas", review: false }];
+  const j = await (await createVoicesHandler(deps({ defaultVoiceId: O, catalog: () => Promise.resolve(cat) }))(get())).json();
+  assertEquals(j.default_voice, { voice_id: O, name: "Jonas", in_catalog: true });
+  const k = await (await createVoicesHandler(deps({ defaultVoiceId: "ZZZZZZZZZZZZZZZZZZZZ" }))(get())).json();
+  assertEquals(k.default_voice.name, "Standard");
 });
 
 Deno.test("GET /voices: auth required, GET only, empty list is fine", async () => {
@@ -87,4 +96,17 @@ Deno.test("K96 (D220): the catalog with previews; the library search is only a l
   let last = 200;
   for (let i = 0; i < 9; i++) last = (await h(new Request("http://x/voices?library=1"))).status;
   assertEquals([last, (await h(new Request("http://x/voices?library=1"))).status], [200, 429]);
+});
+
+Deno.test("K99 (D223): voices under review are shown only to admin", async () => {
+  const { createVoicesHandler } = await import("./handler.ts");
+  const { MemoryRateLimiter } = await import("../_shared/ratelimit.ts");
+  const mk = (admin: boolean) => createVoicesHandler({
+    authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
+    rateLimiter: new MemoryRateLimiter(), voices: [], defaultVoiceId: null,
+    catalog: () => Promise.resolve([{ voice_id: "AAAAAAAAAAAA", name: "Sara" }, { voice_id: "BBBBBBBBBBBB", name: "Pirat", review: true }]),
+    isAdmin: () => Promise.resolve(admin),
+  });
+  assertEquals((await (await mk(false)(new Request("http://x/voices"))).json()).catalog.map((v: { name: string }) => v.name), ["Sara"]);
+  assertEquals((await (await mk(true)(new Request("http://x/voices"))).json()).catalog.map((v: { name: string }) => v.name), ["Sara", "Pirat"]);
 });

@@ -34,6 +34,9 @@ export function rewardStore(db: RestDb): RewardStore {
       return (await one<{ inviter_id: string }>("invite_claims", `select=inviter_id&invitee_id=eq.${q(i)}`))?.inviter_id === inv;
     },
     markRewarded: async (i) => (await db.updateWhere("invite_claims", `invitee_id=eq.${q(i)}&rewarded_at=is.null`, { rewarded_at: new Date().toISOString() })) > 0,
+    inviteRewards: async (inv, since) =>
+      ((await db.select("credit_ledger", `select=credits,created_at&user_id=eq.${q(inv)}&kind=eq.invite&created_at=gte.${q(since)}&order=created_at.desc&limit=20`)) as { credits: number; created_at: string }[])
+        .map((r) => ({ credits: Number(r.credits) || 0, at: r.created_at })),
     invitesThisMonth: async (inv) => {
       const d = new Date();
       const start = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), 1)).toISOString();

@@ -22,11 +22,12 @@ const handler = createVoicesHandler({
   voices,
   defaultVoiceId: env.get("ELEVENLABS_VOICE_ID") ?? null,
   // K96 (D220): the curated list, sorted; only enabled voices
-  catalog: async () => (await db.select("voice_catalog", "select=voice_id,name,gender,age,accent,language,preview_url,description&enabled=eq.true&order=sort.asc,name.asc&limit=40")) as CatalogVoice[],
+  catalog: async () => (await db.select("voice_catalog", "select=voice_id,name,gender,age,accent,language,preview_url,description,review&enabled=eq.true&order=sort.asc,name.asc&limit=40")) as CatalogVoice[],
+  isAdmin: async (u) => (await db.rpc("is_credit_admin", { p_user: u }).catch(() => false)) === true,
   // K96: ElevenLabs' voice library, Swedish (listing costs no credits; no audio is made)
   searchLibrary: xi
     ? async (q) => {
-      const p = new URLSearchParams({ language: "sv", page_size: "30", page: String(q.page ?? 0) });
+      const p = new URLSearchParams({ page_size: "30", page: String(q.page ?? 0), ...(q.anyLanguage ? {} : { language: "sv" }) });
       if (q.search) p.set("search", q.search);
       if (q.accent) p.set("accent", q.accent);
       if (q.gender) p.set("gender", q.gender);

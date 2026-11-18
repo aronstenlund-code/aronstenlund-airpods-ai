@@ -162,6 +162,12 @@ final class AppContainer {
         repetitionModel.publishing = drillCloud as? DrillCloudClient // A83 (K49)
         repetitionModel.help = mock ? MockHelp() as any HelpAnswering
             : HelpClient(config: .lumen, auth: auth, http: http) as any HelpAnswering // A92 (K57)
+        if let drillCloud { // A134 (D218, K94), A141 (K98): purchases, welcome credits and invitations
+            let shop = CreditShop(front: AppStoreFront(), server: PurchaseClient(config: .lumen, auth: auth, http: http))
+            shop.accountID = { await drillCloud.accountID() }
+            shop.onWalletChanged = { [weak repetitionModel] in await repetitionModel?.refreshQuota() }
+            repetitionModel.shop = shop
+        }
         repetitionModel.stopListening = { [weak listening] in
             if listening?.isActiveSession == true { await listening?.endSession() }
         }

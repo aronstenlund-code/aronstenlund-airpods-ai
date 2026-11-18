@@ -35,6 +35,8 @@ enum SayText {
     /// A136: a style already written, and the voice sheet open, for the screenshots.
     static var stagedStyle: String?
     static var stagedVoicesSheet = false
+    /// A140: the voice the server chose from the style, for the screenshots (no server there).
+    static var stagedPicked: (voiceID: String, reason: String?)?
     #endif
 
     /// "10 min" … "1 timme" on the button.
@@ -75,6 +77,18 @@ enum SayText {
     static let voiceCapsule = "Röst" // no voice chosen: the server's own
     static let inPaceKey = "say.inPace"
     static let voiceKey = "say.voiceID"
+    static let mixKey = "say.mixVoices"
+    // A140 (D223): mine, for Kelly to review.
+    static let mixCapsule = "Blandat"
+
+    /// A140 (K99, Kelly): why the server chose the voice in the capsule beside it: "Vald efter stilen · Lugn och tydlig."
+    static func pickedLine(reason: String?) -> String {
+        let why = (reason ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+        return why.isEmpty ? "Vald efter stilen." : "Vald efter stilen · \(why)"
+    }
+
+    /// A140 (D223): "Spelar i AirPods · Astrid" while it plays.
+    static func playingLine(voice: String?) -> String { voice.map { "Spelar i AirPods · \($0)" } ?? "Spelar i AirPods" }
 
     /// A132 (Ke72): the main button says how long: "Spela i 10 min", "Spela i 1 timme".
     static func playTitle(_ minutes: Int) -> String { "Spela i \(howLong(minutes))" }
@@ -82,6 +96,35 @@ enum SayText {
     /// A132 (Ke72): the cost as two words by the button: "120 krediter", "0 krediter", or "120 krediter · du har 88".
     static func creditsLine(cost: Int, left: Int) -> String {
         cost > left ? "\(CreditText.credits(cost)) · du har \(CreditText.short(left, .down))" : CreditText.credits(cost)
+    }
+
+    /// A134 (Ke73 §3): the cost by the button with the weekly card. While the week covers the text it is "Ingår"; when
+    /// nothing covers it, "Veckans tak är nått"; when the week is out and other credits pay, the usual line.
+    static func costLine(cost: Int, left: Int, subscription: DrillQuota.Subscription?) -> String {
+        guard let subscription, subscription.active == true else { return creditsLine(cost: cost, left: left) }
+        if cost > left { return ShopText.weekIsOut }
+        return ShopText.weekIsOut(subscription) ? creditsLine(cost: cost, left: left) : ShopText.included
+    }
+
+    /// A134 (Ke73 §2): "120 krediter · du har 88 · Fyll på" as one text, the last words in the accent colour.
+    static func refillLine(_ line: String) -> AttributedString {
+        var all = AttributedString("\(line) · ")
+        all.foregroundColor = ink
+        var link = AttributedString(ShopText.refill)
+        link.foregroundColor = accent
+        all.append(link)
+        return all
+    }
+
+    /// A136 (Kelly's review): what a capsule in "Senaste" says after the text: the style's first word, else the name
+    /// of the chosen voice. Nil for a text with the server's own voice and no style.
+    static func soundMark(_ drill: Drill, voices: [SayVoice]) -> String? {
+        if let style = Drill.cleanStyle(drill.style), let word = style.split(whereSeparator: { $0 == " " || $0 == "," }).first {
+            return String(word)
+        }
+        if drill.mixVoices == true { return mixCapsule } // A140
+        guard let id = drill.voiceID else { return nil }
+        return voices.first { $0.voice_id == id }?.name
     }
 
     /// A132 (Ke72): a said text as a capsule under the field: its beginning, at most about 24 characters.
@@ -115,13 +158,17 @@ struct SayInAirPodsField: View {
     @State private var attempt = 0
     @State private var canRetry = false
     /// K92: the server's answer for the text it was asked about.
-    @State private var asked: (text: String, sound: SaySound, cost: Int, left: Int?)?
+    @State private var asked: (text: String, sound: SaySound, cost: Int, left: Int?, voiceID: String?, reason: String?)?
+    /// A140 (D223): "Blanda röster", off by default, kept to the next time.
+    @AppStorage(SayText.mixKey) private var mixVoices = false
     /// A136 (D220.2): "Hur ska det låta?", for this text. Empty = no style.
     @State private var style = ""
     @FocusState private var styleFocused: Bool
     /// A136 (D220.3): the chosen catalog voice ("" = the server's own), kept to the next time.
     @AppStorage(SayText.voiceKey) private var storedVoice = ""
     @State private var showsVoices = false
+    /// A134 (Ke73 §2): "Fyll på" by the cost opens the credits sheet with the packs.
+    @State private var showsCredits = false
     /// A136 (D220.1): "Skriv i takt" instead of a tempo, kept to the next time.
     @AppStorage(SayText.inPaceKey) private var inPace = false
     @Environment(\.scenePhase) private var scenePhase
@@ -152,7 +199,18 @@ struct SayInAirPodsField: View {
     /// A136: the chosen voice, if the catalog still has it.
     private var voice: SayVoice? { model.sayVoices.first { $0.voice_id == storedVoice } }
     /// A136: how the text is to sound. The same text with another voice or style is new sound (and another exam).
-    private var sound: SaySound { SaySound(voiceID: voice?.voice_id, style: style) }
+    private var sound: SaySound { SaySound(voiceID: voice?.voice_id, style: style, mix: mixVoices && !model.sayVoices.isEmpty) }
+    /// A140 (K99): with a style and no chosen voice the server chooses one. What it chose for this text: from its
+    /// answer about the cost, or from the text as it was played before.
+    private var picked: (voiceID: String, reason: String?)? {
+        guard sound.serverPicksVoice else { return nil }
+        #if DEBUG
+        if let staged = SayText.stagedPicked { return staged }
+        #endif
+        if let same = sameAsMade, same.voicePicked == true, let id = same.voiceID { return (id, same.voiceReason) }
+        if let asked, asked.text == text, asked.sound == sound, let id = asked.voiceID { return (id, asked.reason) }
+        return nil
+    }
     private var readingAloudOff: Bool { sameAsMade.map(model.isReadingAloudOff) ?? false }
     /// The month does not cover the text (only a new text counts; the same sound again is free).
     private var tooMany: Bool {
@@ -181,7 +239,7 @@ struct SayInAirPodsField: View {
         guard model.quota?.isCredits == true, model.quota?.isUnlimited != true, SaidText.chars(text) > 0 else { return }
         try? await Task.sleep(for: .milliseconds(700))
         guard !Task.isCancelled, let answer = await model.sayCost(text, sound: sound), !Task.isCancelled else { return }
-        asked = (text, sound, answer.cost, answer.remaining)
+        asked = (text, sound, answer.cost, answer.remaining, answer.voice_id, answer.voice_reason)
     }
 
     /// What the cost is asked about: asked again when the text, the style or the voice changes.
@@ -232,9 +290,18 @@ struct SayInAirPodsField: View {
                             text = String(drill.saidText.prefix(SaidText.maxChars))
                             // A136 (Ke75 §7.3): one tap puts back all three: the text, its voice and its style.
                             style = drill.style ?? ""
-                            storedVoice = drill.voiceID ?? ""
+                            storedVoice = drill.voicePicked == true ? "" : drill.voiceID ?? "" // a voice the server chose is chosen again
+                            mixVoices = drill.mixVoices == true
                         } label: {
-                            Text(verbatim: SayText.capsule(drill.saidText)).font(.footnote).lineLimit(1)
+                            // Kelly (review of A136): the text is cut first; what tells two sounds apart stays.
+                            HStack(spacing: 4) {
+                                Text(verbatim: SayText.capsule(drill.saidText))
+                                if let mark = SayText.soundMark(drill, voices: model.sayVoices) {
+                                    Text(verbatim: "· \(mark)").foregroundStyle(.secondary)
+                                }
+                            }
+                            .font(.footnote)
+                            .lineLimit(1)
                         }
                         .buttonStyle(.bordered)
                         .buttonBorderShape(.capsule)
@@ -266,7 +333,9 @@ struct SayInAirPodsField: View {
         let waiting = reader.phase == .waitingForAudio
         HStack(spacing: 6) {
             Circle().fill(SayText.accent).frame(width: 8, height: 8).accessibilityHidden(true)
-            Text(waiting ? "Gör ljudet …" : "Spelar i AirPods").font(.footnote.weight(.semibold))
+            // A140 (D223): which voice speaks now (the part's own when they are mixed).
+            Text(verbatim: waiting ? "Gör ljudet …" : SayText.playingLine(voice: model.speakingVoice(drill, part: reader.position?.part)))
+                .font(.footnote.weight(.semibold))
         }
         .foregroundStyle(SayText.accent)
         .dynamicTypeSize(...DynamicTypeSize.accessibility2)
@@ -340,7 +409,8 @@ struct SayInAirPodsField: View {
         #endif
         // A116: presented from outside the field's dark colour scheme, so the system's sheets look as usual.
         .sheet(isPresented: $isTakingPhotos) { camera.ignoresSafeArea() }
-        .sheet(isPresented: $showsVoices) { SayVoicesSheet(model: model, chosen: $storedVoice) }
+        .sheet(isPresented: $showsVoices) { SayVoicesSheet(model: model, chosen: $storedVoice, mix: $mixVoices) }
+        .sheet(isPresented: $showsCredits) { CreditsSheet(model: model) }
         .photosPicker(isPresented: $isPickingPhotos, selection: $photoItems, maxSelectionCount: 20, matching: .images)
         .onChange(of: photoItems) { _, items in Task { await addPhotos(items) } }
         .fileImporter(isPresented: $isImporting,
@@ -427,11 +497,11 @@ struct SayInAirPodsField: View {
                     showsVoices = true
                 } label: {
                     HStack(spacing: 4) {
-                        Text(verbatim: voice?.name ?? SayText.voiceCapsule).lineLimit(1)
+                        Text(verbatim: voiceLabel).lineLimit(1)
                         Image(systemName: "chevron.down").font(.caption2.weight(.semibold)).accessibilityHidden(true)
                     }
                 }
-                .accessibilityLabel("Röst, \(voice?.name ?? "EarMinds egen")")
+                .accessibilityLabel("Röst, \(voiceLabel)")
                 .smallSayControl()
             }
             TextField("", text: $style, prompt: Text(verbatim: SayText.stylePrompt).foregroundStyle(SayText.ink.opacity(0.45)))
@@ -459,6 +529,21 @@ struct SayInAirPodsField: View {
         #if DEBUG
         .onAppear { if let staged = SayText.stagedStyle, style.isEmpty { style = staged } }
         #endif
+        // A140 (K99): the voice the server chose for this style, and why. The capsule changes it before Spela.
+        if let picked, model.sayVoiceName(picked.voiceID) != nil {
+            Text(verbatim: SayText.pickedLine(reason: picked.reason))
+                .font(.footnote)
+                .opacity(0.7)
+                .fixedSize(horizontal: false, vertical: true)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+        }
+    }
+
+    /// The voice capsule: "Blandat", the chosen voice, the one the server chose from the style, else the server's own
+    /// voice by name (Kelly), else "Röst".
+    private var voiceLabel: String {
+        if sound.mix { return SayText.mixCapsule }
+        return voice?.name ?? picked.flatMap { model.sayVoiceName($0.voiceID) } ?? model.sayDefaultVoice ?? SayText.voiceCapsule
     }
 
     /// Ke72: the cost as a short line just above the main button; the server's own line when it refused (D212).
@@ -469,16 +554,43 @@ struct SayInAirPodsField: View {
                 .font(.footnote.weight(.semibold))
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.updatesFrequently)
+            // A134 (D218): the server said the credits do not cover it; the packs are one tap away.
+            if model.shop != nil, tooMany || refused.contains("krediter") {
+                Button(ShopText.refill) { showsCredits = true }
+                    .font(.footnote.weight(.semibold))
+                    .buttonStyle(.plain)
+                    .foregroundStyle(SayText.accent)
+                    .frame(minHeight: 32)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            }
         } else if readingAloudOff {
             Text(verbatim: CloudDrillAudio.unavailableLine).font(.footnote).opacity(0.7).fixedSize(horizontal: false, vertical: true)
         } else if let credits {
             let short = credits.cost > credits.left
-            Text(verbatim: SayText.creditsLine(cost: credits.cost, left: credits.left))
-                .font(short ? .footnote.weight(.semibold) : .footnote)
-                .monospacedDigit()
-                .opacity(short ? 1 : 0.7)
-                .frame(maxWidth: .infinity, alignment: typeSize.isAccessibilitySize ? .leading : .trailing)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            let line = SayText.costLine(cost: credits.cost, left: credits.left, subscription: model.quota?.subscription)
+            Group {
+                if short, model.shop != nil {
+                    // A134 (Ke73 §2): "120 krediter · du har 88 · Fyll på"; the last words open the packs.
+                    Button {
+                        showsCredits = true
+                    } label: {
+                        // Kelly (review of A134): one text that flows, so "Fyll på" breaks like any word.
+                        Text(SayText.refillLine(line))
+                            .multilineTextAlignment(typeSize.isAccessibilitySize ? .leading : .trailing)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .frame(minHeight: 32)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(line). \(ShopText.refill)")
+                } else {
+                    Text(verbatim: line)
+                }
+            }
+            .font(short ? .footnote.weight(.semibold) : .footnote)
+            .monospacedDigit()
+            .opacity(short ? 1 : 0.7)
+            .frame(maxWidth: .infinity, alignment: typeSize.isAccessibilitySize ? .leading : .trailing)
+            .dynamicTypeSize(...DynamicTypeSize.accessibility2)
         } else if !isEmpty, model.quota?.isCredits != true {
             // A server that still counts questions.
             Text(verbatim: SayText.costLine(counts: counts, left: sameAsMade == nil ? model.quota?.left : nil, readingAloudOff: false))
@@ -721,13 +833,14 @@ struct SayInAirPodsField: View {
         let minutes: Int? = self.minutes // A124: it always goes round for the chosen time
         let sound = self.sound // A136: its voice and style
         let inPace = self.inPace
+        let picked = self.picked // A140: the voice the server chose, as it was shown
         refused = nil
         canRetry = false
         attempt += 1
         let mine = attempt
         Task {
             // A130: the model knows whether this text is already an exam (the same text never becomes two).
-            let drill = await model.say(text, repeatMinutes: minutes, sound: sound, inPace: inPace)
+            let drill = await model.say(text, repeatMinutes: minutes, sound: sound, inPace: inPace, picked: picked)
             guard mine == attempt, isStarting else { return } // given up meanwhile: the line below stands
             if let drill {
                 refused = model.sayRefusal(drill)

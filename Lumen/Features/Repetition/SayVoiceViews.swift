@@ -50,14 +50,21 @@ struct SayVoicesSheet: View {
     let model: RepetitionModel
     /// The chosen voice's id; empty = the server's own voice.
     @Binding var chosen: String
+    /// A140 (D223): "Blanda röster": the server draws a voice per part. Off by default.
+    @Binding var mix: Bool
     @State private var search = ""
     @State private var found: [SayVoice]?
     @State private var isSearching = false
     @State private var preview = VoicePreview()
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     static let footnote = "Provlyssning kostar inget. En ny röst blir nytt ljud."
-    static let notInCatalog = "Går inte att välja än"
+    // A140 (D223): mine, for Kelly to review.
+    static let mixTitle = "Blanda röster"
+    static let mixLine = "Varje stycke får en egen röst, samma varje gång."
+    static let reviewTitle = "Att provlyssna"
+    static let notInCatalog = "Kan bara provlyssnas" // Kelly"
 
     private var query: String { search.trimmingCharacters(in: .whitespaces) }
 
@@ -66,11 +73,25 @@ struct SayVoicesSheet: View {
             List {
                 if query.isEmpty {
                     Section {
-                        ForEach(model.sayVoices) { row($0) }
+                        Toggle(Self.mixTitle, isOn: $mix)
+                    } footer: {
+                        Text(verbatim: Self.mixLine)
+                    }
+                    Section {
+                        ForEach(model.sayVoices.filter { !$0.isUnderReview }) { row($0) }
                     } header: {
                         Text("Svenska röster")
                     } footer: {
                         Text(verbatim: Self.footnote)
+                    }
+                    // K99 (D223): voices under review; the server gives them to the owner's account only.
+                    let review = model.sayVoices.filter(\.isUnderReview)
+                    if !review.isEmpty {
+                        Section {
+                            ForEach(review) { row($0) }
+                        } header: {
+                            Text(verbatim: Self.reviewTitle)
+                        }
                     }
                 } else {
                     Section {
@@ -118,31 +139,84 @@ struct SayVoicesSheet: View {
         isSearching = false
     }
 
+    /// Kelly (review of A136): with the largest text the row is stacked: ▶, the name and the check mark on a row, then
+    /// the description in the whole width, without hyphenation.
+    @ViewBuilder
     private func row(_ voice: SayVoice) -> some View {
-        HStack(spacing: 12) {
-            if voice.previewURL != nil {
-                Button {
-                    preview.toggle(voice)
-                } label: {
-                    Image(systemName: preview.playingID == voice.id ? "pause.circle.fill" : "play.circle.fill")
-                        .font(.title2)
-                        .foregroundStyle(.tint)
-                        .frame(minWidth: 44, minHeight: 44)
+        if typeSize.isAccessibilitySize {
+            let line = subtitle(of: voice)
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 12) {
+                    playButton(voice)
+                    Button {
+                        choose(voice)
+                    } label: {
+                        HStack(spacing: 8) {
+                            Text(verbatim: voice.name).foregroundStyle(.primary)
+                            Spacer(minLength: 8)
+                            if chosen == voice.voice_id, !mix {
+                                Image(systemName: "checkmark").font(.body.weight(.semibold)).foregroundStyle(.tint).accessibilityLabel("Vald")
+                            }
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!voice.canBeChosen)
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(preview.playingID == voice.id ? "Pausa \(voice.name)" : "Provlyssna \(voice.name)")
+                if !line.isEmpty {
+                    Text(verbatim: line).font(.footnote).foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
+        } else {
+            wideRow(voice)
+        }
+    }
+
+    private func subtitle(of voice: SayVoice) -> String {
+        voice.canBeChosen ? voice.line : [voice.line, Self.notInCatalog].filter { !$0.isEmpty }.joined(separator: " · ")
+    }
+
+    private func choose(_ voice: SayVoice) {
+        guard voice.canBeChosen else { return }
+        if mix {
+            mix = false // one voice is chosen instead of the mix
+            chosen = voice.voice_id
+        } else {
+            chosen = chosen == voice.voice_id ? "" : voice.voice_id
+        }
+    }
+
+    @ViewBuilder
+    private func playButton(_ voice: SayVoice) -> some View {
+        if voice.previewURL != nil {
             Button {
-                if voice.canBeChosen { chosen = chosen == voice.voice_id ? "" : voice.voice_id }
+                preview.toggle(voice)
+            } label: {
+                Image(systemName: preview.playingID == voice.id ? "pause.circle.fill" : "play.circle.fill")
+                    .font(.title2)
+                    .foregroundStyle(.tint)
+                    .frame(minWidth: 44, minHeight: 44)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(preview.playingID == voice.id ? "Pausa \(voice.name)" : "Provlyssna \(voice.name)")
+        }
+    }
+
+    private func wideRow(_ voice: SayVoice) -> some View {
+        HStack(spacing: 12) {
+            playButton(voice)
+            Button {
+                choose(voice)
             } label: {
                 HStack(spacing: 8) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(verbatim: voice.name).foregroundStyle(.primary)
-                        let line = voice.canBeChosen ? voice.line : [voice.line, Self.notInCatalog].filter { !$0.isEmpty }.joined(separator: " · ")
+                        let line = subtitle(of: voice)
                         if !line.isEmpty { Text(verbatim: line).font(.footnote).foregroundStyle(.secondary) }
                     }
                     Spacer(minLength: 8)
-                    if chosen == voice.voice_id {
+                    if chosen == voice.voice_id, !mix {
                         Image(systemName: "checkmark").font(.body.weight(.semibold)).foregroundStyle(.tint)
                             .accessibilityLabel("Vald")
                     }

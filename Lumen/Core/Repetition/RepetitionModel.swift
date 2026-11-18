@@ -154,6 +154,9 @@ final class RepetitionModel {
     @ObservationIgnored var stopListening: (@MainActor () async -> Void)?
     /// A92 (D166, K57): "Fråga om EarMind". Nil: the row and the ? button are not shown.
     @ObservationIgnored var help: (any HelpAnswering)?
+    /// A134 (D218): buying credits and the weekly card. Nil in the mock mode and in tests without a shop: the credits
+    /// sheet then has no purchase part.
+    var shop: CreditShop?
 
     /// A83 (K49): Publicera prov and Prov från din skola. Nil in the mock mode.
     @ObservationIgnored var publishing: (any DrillPublishingService)?
@@ -234,7 +237,14 @@ final class RepetitionModel {
         let plain: (String) -> String = { $0.split(whereSeparator: \.isWhitespace).joined(separator: " ") }
         let parts = SaidText.parts(text).map(plain)
         guard !parts.isEmpty else { return nil }
-        return saidDrills.first { $0.sound == sound && $0.items.map { plain($0.long) } == parts }
+        return saidDrills.first { drill in
+            guard drill.items.map({ plain($0.long) }) == parts else { return false }
+            // A140 (K99): with a style and no chosen voice the server chose one; that text is this one again.
+            if sound.serverPicksVoice, drill.voicePicked == true {
+                return Drill.cleanStyle(drill.style) == sound.style && drill.mixVoices != true
+            }
+            return drill.sound == sound
+        }
     }
 
     // MARK: Making (A79)
@@ -645,7 +655,24 @@ final class RepetitionModel {
     /// A136 (K96): the voices a text can be given, from the server's catalog. Empty until it has been read (and
     /// while the catalog is empty); the field then shows no voice to choose.
     private(set) var sayVoices: [SayVoice] = []
+    /// K99: the name of the voice the server uses when none is chosen ("Astrid"); nil until the server has said it.
+    private(set) var sayDefaultVoice: String?
     @ObservationIgnored private var askedForVoices = false
+
+    /// A140: the name of a catalog voice.
+    func sayVoiceName(_ id: String?) -> String? {
+        guard let id else { return nil }
+        return sayVoices.first { $0.voice_id == id }?.name
+    }
+
+    /// A140 (D223): the voice that speaks now, while a text from "Säg i AirPods" plays: the part's own voice when
+    /// they are mixed, else the text's voice, else the server's own.
+    func speakingVoice(_ drill: Drill, part: Int?) -> String? {
+        if drill.mixVoices == true, let part, drill.items.indices.contains(part), let name = sayVoiceName(drill.items[part].voiceID) {
+            return name
+        }
+        return sayVoiceName(drill.voiceID) ?? (drill.voiceID == nil && drill.mixVoices != true ? sayDefaultVoice : nil)
+    }
 
     /// Read once per app run, and again after a failure.
     func loadSayVoices() async {
@@ -653,6 +680,7 @@ final class RepetitionModel {
         askedForVoices = true
         do throws(DrillCloudError) {
             sayVoices = try await cloud.voices()
+            sayDefaultVoice = cloud.defaultVoiceName
         } catch {
             askedForVoices = false
             Log.repetition.info("Voices: \(error.userMessage, privacy: .public)")
@@ -667,8 +695,9 @@ final class RepetitionModel {
 
     #if DEBUG
     /// The Simulator screenshots: a catalog without the server.
-    func stageSayVoices(_ voices: [SayVoice]) {
+    func stageSayVoices(_ voices: [SayVoice], defaultName: String? = nil) {
         sayVoices = voices
+        sayDefaultVoice = defaultName
         askedForVoices = true
     }
     #endif
@@ -717,7 +746,7 @@ final class RepetitionModel {
         return saidDrills.filter { drill in
             // A136 (Ke75 §7.3): a text is kept with its voice and style, so the same words with another sound are two.
             let words = drill.items.map { $0.long.split(whereSeparator: \.isWhitespace).joined(separator: " ") }.joined(separator: "\n")
-            return seen.insert("\(words)\u{1F}\(drill.voiceID ?? "")\u{1F}\(Drill.cleanStyle(drill.style) ?? "")").inserted
+            return seen.insert("\(words)\u{1F}\(drill.voiceID ?? "")\u{1F}\(Drill.cleanStyle(drill.style) ?? "")\u{1F}\(drill.mixVoices == true)").inserted
         }
     }
 
@@ -732,8 +761,11 @@ final class RepetitionModel {
             ?? Drill.text(title: SaidText.title(text), summary: DrillSummary(subject: "", grade: "", covers: ""),
                           parts: parts.map { DrillItem.textPart($0, part: .para) })
         // A136 (K95, K96): the server counts with the style and the voice, so a new sound shows its cost before Spela.
-        drill.style = sound.style
-        drill.voiceID = sound.voiceID
+        if drill.serverID == nil { // the voice and the mix are locked on a saved text
+            drill.style = sound.style
+            drill.voiceID = sound.voiceID
+            drill.mixVoices = sound.mix ? true : nil
+        }
         return try? await cloud.cost(drill)
     }
 
@@ -755,7 +787,8 @@ final class RepetitionModel {
     /// characters (D185), and repeating the same sound costs nothing. Without credits the text is shown and nothing is
     /// counted (D200). Always with the player on the screen; nothing is scheduled and nothing plays hidden.
     @discardableResult
-    func say(_ text: String, repeatMinutes: Int?, sound: SaySound = .plain, inPace: Bool = false) async -> Drill? {
+    func say(_ text: String, repeatMinutes: Int?, sound: SaySound = .plain, inPace: Bool = false,
+             picked: (voiceID: String, reason: String?)? = nil) async -> Drill? {
         let parts = SaidText.parts(text)
         guard !parts.isEmpty else { return nil }
         sayAttempt += 1
@@ -773,6 +806,13 @@ final class RepetitionModel {
         made.said = true // A132 (D215): kept as "Senaste" under the field, never as an exam on Start
         made.style = sound.style // A136 (D220): how it should sound, and in which voice (locked at this save)
         made.voiceID = sound.voiceID
+        made.mixVoices = sound.mix ? true : nil // A140 (K99)
+        if sound.serverPicksVoice, let picked {
+            // A140 (K99): the voice the server chose for this style, as it was shown before Spela.
+            made.voiceID = picked.voiceID
+            made.voicePicked = true
+            made.voiceReason = picked.reason
+        }
         made = Self.withSoundAlreadyHere(made, from: store.drills) // A135 (D219.1)
         let drill = save(made)
         lastSaid = (text, sound, drill.id)
@@ -1023,6 +1063,7 @@ final class RepetitionModel {
     }
 
     func handle(_ url: URL) -> Bool {
+        if shop?.handle(url) == true { return true } // A141 (K98): an invitation, `earmind://invite/<code>`
         guard let code = DrillShareClient.code(in: url) else { return false }
         open(code: code)
         return true

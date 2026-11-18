@@ -150,6 +150,15 @@ import Testing
         // Ke75 §2: a suggestion is written alone, or after a comma when there is text already.
         #expect(SaySound.adding("Lugnt", to: "") == "Lugnt" && SaySound.adding("Glatt", to: "Lugnt ") == "Lugnt, glatt")
         #expect(SaySound.adding("Viskande", to: "Lugnt,") == "Lugnt, viskande")
+        #expect(SayVoicesSheet.notInCatalog == "Kan bara provlyssnas")
+        // Kelly's review: a capsule in Senaste says the style's first word, else the chosen voice's name.
+        var said = Drill.text(title: "T", summary: A79A81RepetitionTests.summary, parts: [DrillItem.textPart("En rad.", part: .para)])
+        let voices = [SayVoice(voice_id: "nils000000000004", name: "Nils")]
+        #expect(SayText.soundMark(said, voices: voices) == nil)
+        said.voiceID = "nils000000000004"
+        #expect(SayText.soundMark(said, voices: voices) == "Nils" && SayText.soundMark(said, voices: []) == nil)
+        said.style = "Lugnt, som en lärare"
+        #expect(SayText.soundMark(said, voices: voices) == "Lugnt", "the style goes before the voice")
     }
 
     // MARK: Säg i AirPods with a sound
@@ -222,6 +231,91 @@ import Testing
         new.style = nil
         new.voiceID = "nils000000000004"
         #expect(RepetitionModel.withSoundAlreadyHere(new, from: [old]).items[0].longAudio == nil, "another voice is other sound")
+    }
+
+    // MARK: A140 (D223): mixed voices and the server's choice
+
+    @Test func mixedVoicesAreSentAtTheFirstSaveAndReadPerPart() throws {
+        var drill = Drill.text(title: "T", summary: A79A81RepetitionTests.summary, parts: [DrillItem.textPart("En.", part: .para)])
+        drill.mixVoices = true
+        #expect((DrillCloudClient.saveBody(drill)["drill"] as? [String: Any])?["mix_voices"] as? Bool == true)
+        drill.serverID = "srv-1"
+        #expect((DrillCloudClient.saveBody(drill)["drill"] as? [String: Any])?["mix_voices"] == nil, "locked after the first save")
+        // A mix has no single voice, and it is another sound than one voice.
+        #expect(SaySound(voiceID: "astrid0000000001", mix: true).voiceID == nil && SaySound(mix: true) != .plain)
+        #expect(!SaySound(style: "Lugnt", mix: true).serverPicksVoice && SaySound(style: "Lugnt").serverPicksVoice)
+        #expect(!SaySound(voiceID: "astrid0000000001", style: "Lugnt").serverPicksVoice && !SaySound.plain.serverPicksVoice)
+
+        let json = #"{"id":"i1","position":0,"part":"para","text":"En.","voice_id":"nils000000000004","audio":{"text":{"status":"done","url":"https://x/a.mp3"}}}"#
+        let item = try JSONDecoder().decode(DrillCloudView.Item.self, from: Data(json.utf8))
+        #expect(item.voice_id == "nils000000000004")
+        let info = try JSONDecoder().decode(DrillCloudView.Info.self, from: Data(#"{"id":"x","mix_voices":true}"#.utf8))
+        #expect(info.mix_voices == true)
+        let cost = try JSONDecoder().decode(DrillCost.self, from: Data(#"{"cost":120,"remaining":1236,"voice_id":"gustav000000003","voice_reason":"Mörk och tydlig."}"#.utf8))
+        #expect(cost.voice_id == "gustav000000003" && cost.voice_reason == "Mörk och tydlig.")
+    }
+
+    @Test func theVoiceTheServerChoseIsKeptAndTheTextIsTheSameNextTime() async throws {
+        let (model, cloud, store, audio) = try model("a140-picked")
+        let text = "1918: Vapenstillestånd den 11 november."
+        let styled = SaySound(style: "Lugnt")
+        let said = try #require(await model.say(text, repeatMinutes: 10, sound: styled, picked: ("gustav000000003", "Mörk och tydlig.")))
+        model.end()
+        for _ in 0..<50 where audio.preparing.contains(said.id) { try? await Task.sleep(for: .milliseconds(2)) }
+        let kept = try #require(store.drill(said.id))
+        #expect(kept.voiceID == "gustav000000003" && kept.voicePicked == true && kept.voiceReason == "Mörk och tydlig.")
+        #expect((cloud.saves.first?["drill"] as? [String: Any])?["voice_id"] as? String == "gustav000000003", "the voice that was shown is the one saved")
+
+        // The same text and style, still no voice chosen: the same exam (the server is not asked to choose again).
+        #expect(model.saidDrill(for: text, sound: styled)?.id == said.id)
+        #expect(model.saidDrill(for: text, sound: SaySound(style: "Glatt")) == nil)
+        let saves = cloud.saves.count
+        let again = try #require(await model.say(text, repeatMinutes: 10, sound: styled))
+        model.end()
+        for _ in 0..<50 where audio.preparing.contains(again.id) { try? await Task.sleep(for: .milliseconds(2)) }
+        #expect(again.id == said.id && cloud.saves.count == saves)
+        // A voice chosen by hand is not overridden by a choice of the server's.
+        let own = try #require(await model.say("En annan text.", repeatMinutes: 10, sound: SaySound(voiceID: "astrid0000000001", style: "Lugnt"),
+                                               picked: ("gustav000000003", nil)))
+        model.end()
+        #expect(store.drill(own.id)?.voiceID == "astrid0000000001" && store.drill(own.id)?.voicePicked == nil)
+    }
+
+    @Test func theVoiceThatSpeaksIsNamed() throws {
+        let (model, _, _, _) = try model("a140-speaks")
+        model.stageSayVoices([SayVoice(voice_id: "astrid0000000001", name: "Astrid"), SayVoice(voice_id: "nils000000000004", name: "Nils")],
+                             defaultName: "Standard")
+        var drill = Drill.text(title: "T", summary: A79A81RepetitionTests.summary,
+                               parts: [DrillItem.textPart("En.", part: .para), DrillItem.textPart("Två.", part: .para)])
+        #expect(model.speakingVoice(drill, part: 0) == "Standard", "no voice chosen: the server's own")
+        drill.voiceID = "astrid0000000001"
+        #expect(model.speakingVoice(drill, part: 1) == "Astrid")
+        drill.voiceID = nil
+        drill.mixVoices = true
+        drill.items[0].voiceID = "nils000000000004"
+        drill.items[1].voiceID = "astrid0000000001"
+        #expect(model.speakingVoice(drill, part: 0) == "Nils" && model.speakingVoice(drill, part: 1) == "Astrid")
+        #expect(SayText.playingLine(voice: "Nils") == "Spelar i AirPods · Nils" && SayText.playingLine(voice: nil) == "Spelar i AirPods")
+        #expect(SayText.pickedLine(reason: "Mörk och tydlig.") == "Vald efter stilen · Mörk och tydlig.")
+        #expect(SayText.pickedLine(reason: " ") == "Vald efter stilen.")
+        #expect(SayText.soundMark(drill, voices: model.sayVoices) == "Blandat")
+        // K99: voices under review and the default voice are read.
+        let listing = try JSONDecoder().decode(SayVoice.Listing.self, from: Data(#"{"catalog":[{"voice_id":"hindi00000000006","name":"Hindi","review":true}],"default_voice":{"voice_id":"astrid0000000001","name":"Astrid","in_catalog":true}}"#.utf8))
+        #expect(listing.catalog?.first?.isUnderReview == true && listing.default_voice?.name == "Astrid")
+    }
+
+    @Test func theMarkOfASaidTextIsKeptOnTheServer() throws {
+        var drill = Drill.text(title: "T", summary: A79A81RepetitionTests.summary, parts: [DrillItem.textPart("En.", part: .para)])
+        #expect((DrillCloudClient.saveBody(drill)["drill"] as? [String: Any])?["said"] == nil)
+        drill.said = false
+        #expect((DrillCloudClient.saveBody(drill)["drill"] as? [String: Any])?["said"] == nil, "only the mark itself is sent")
+        drill.said = true
+        #expect((DrillCloudClient.saveBody(drill)["drill"] as? [String: Any])?["said"] as? Bool == true)
+        let json = { (said: String) in #"{"drill":{"id":"srv-9","title":"Hej","kind":"text","said":\#(said)},"items":[{"id":"i1","position":0,"part":"para","text":"Hej.","audio":{"text":{"status":"pending"}}}],"audio":{"done":0,"total":1,"failed":0}}"# }
+        let marked = Drill.from(try JSONDecoder().decode(DrillCloudView.self, from: Data(json("true").utf8)))
+        #expect(marked.said == true && marked.isSaid, "fetched to a new phone: a said text, whatever its title")
+        let unmarked = Drill.from(try JSONDecoder().decode(DrillCloudView.self, from: Data(json("false").utf8)))
+        #expect(unmarked.said == nil, "false is not trusted until the server's column exists")
     }
 
     @Test func theCatalogIsReadOnceAndAnEmptyOneShowsNoVoices() async throws {

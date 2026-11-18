@@ -91,6 +91,7 @@ struct RepetitionHomeSection: View {
         }
         .onChange(of: model.showsPlayer) { offerReminder() }
         .onChange(of: model.asksForReminders) { offerReminder() }
+        .onChange(of: model.isSayingOnCard) { offerReminder() }
         .onAppear { offerReminder() }
         .task { model.prepareAllAudio() }
         .task { await model.refreshQuota() } // A117: the capsule's number
@@ -413,10 +414,12 @@ struct RepetitionHomeSection: View {
     }
 
     private func offerReminder() {
-        guard model.asksForReminders, !model.showsPlayer, !askingReminder else { return }
+        // Toby T46: a text from "Säg i AirPods" plays on its card, and the question came up over it after the first
+        // lap, hiding Pausa and Stoppa. It waits until nothing plays on the card.
+        guard model.asksForReminders, !model.showsPlayer, !model.isSayingOnCard, !askingReminder else { return }
         Task {
             try? await Task.sleep(for: .milliseconds(700))
-            if model.asksForReminders, !model.showsPlayer { askingReminder = true }
+            if model.asksForReminders, !model.showsPlayer, !model.isSayingOnCard { askingReminder = true }
         }
     }
 

@@ -1,0 +1,103 @@
+{
+  "identifier" : "4C554D45",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "10.00",
+      "familyShareable" : false,
+      "internalID" : "6700000101",
+      "localizations" : [
+        {
+          "description" : "100 krediter till nytt ljud i EarMind.",
+          "displayName" : "100 krediter",
+          "locale" : "sv"
+        }
+      ],
+      "productID" : "com.rsolutions.lumen.credits.100",
+      "referenceName" : "100 krediter",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "39.00",
+      "familyShareable" : false,
+      "internalID" : "6700000102",
+      "localizations" : [
+        {
+          "description" : "500 krediter till nytt ljud i EarMind.",
+          "displayName" : "500 krediter",
+          "locale" : "sv"
+        }
+      ],
+      "productID" : "com.rsolutions.lumen.credits.500",
+      "referenceName" : "500 krediter",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "110.00",
+      "familyShareable" : false,
+      "internalID" : "6700000103",
+      "localizations" : [
+        {
+          "description" : "2 000 krediter till nytt ljud i EarMind.",
+          "displayName" : "2 000 krediter",
+          "locale" : "sv"
+        }
+      ],
+      "productID" : "com.rsolutions.lumen.credits.2000",
+      "referenceName" : "2 000 krediter",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6700000100",
+    "_developerTeamID" : "",
+    "_failTransactionsEnabled" : false,
+    "_locale" : "sv",
+    "_storefront" : "SWE",
+    "_storeKitErrors" : [
+
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21700001",
+      "localizations" : [
+
+      ],
+      "name" : "Veckokort",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "79.00",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6700000104",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Upp till 20 000 tecken nytt ljud i veckan.",
+              "displayName" : "Veckokort",
+              "locale" : "sv"
+            }
+          ],
+          "productID" : "com.rsolutions.lumen.sub.week",
+          "recurringSubscriptionPeriod" : "P1W",
+          "referenceName" : "Veckokort",
+          "subscriptionGroupID" : "21700001",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}
