@@ -45,3 +45,18 @@ hämtar dem; Återställ köp svarar även när App Store aldrig gör det.
 - Att App Store verkligen svarar tomt (och inte med fel) när produkterna saknas i App Store Connect; båda fallen
   ger samma rad.
 - Att 15 sekunder är rätt väntan för Återställ köp på en riktig telefon med Apple-konto.
+
+## Tillägg 09:35: Kevins tider för T50 (`reports/2026-11-18-0810-kevin-t50-svar-och-k93.md`)
+**Slutsats: felet är delat, och gränsen på 10 sekunder är för kort för en ny text.**
+- Servern svarade 200 på varje anrop, men **save tog 4,7–5,8 s och start 4,5–4,6 s**. Tillsammans 9–10,5 s, alltså
+  runt appens gräns. Kallstart och stil var inte orsaken (under 0,1 s, och ingen av texterna hade stil). Cirka
+  1–1,5 s per save försvinner när Deangelo kör `20261118010001_drills_said.sql`.
+- Appen ger upp efter 10 s för save + start tillsammans. Ett normalt svar är 6–9 s, så raden kommer av och till
+  utan att något är fel. **Förslag till Deangelo (D219.3): 20 s för en ny text; ljud som redan finns på telefonen
+  spelas ändå direkt.** Jag har inte ändrat gränsen, eftersom den är ett beslut.
+- **Nytt spår, inte utrett:** på det nya kontot tryckte Toby Spela cirka 05:47, men kontot skapades först 05:48:49
+  och inga anrop nådde servern före det. Appen väntade alltså över en minut på inloggningen innan något skickades.
+  Det liknar Arons fynd 20:24 i går (servern såg inget anrop på två minuter). Inloggningen är Angela Schrutes del
+  (`SupabaseAuth`); jag har skickat det till henne och Kevin.
+- Varför ett save av en kort text tar 5 s har jag frågat Kevin.
+
