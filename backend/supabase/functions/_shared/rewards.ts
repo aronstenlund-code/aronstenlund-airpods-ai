@@ -26,6 +26,13 @@ export interface RewardStore {
   markRewarded(invitee: string): Promise<boolean>;
   /** invite credits the inviter got this month (Stockholm) */
   invitesThisMonth(inviter: string): Promise<number>;
+  /**
+   * O82 F1: check the month's cap, mark the claim and add the credits in one database transaction (SQL function
+   * invite_reward). Returns the credits given, 0 (already given) or "cap"; null when the function is not there yet.
+   */
+  rewardInvite?(invitee: string, credits: number, max: number): Promise<number | "cap" | null>;
+  /** O82 F3: has this account ever started a text or an exam? (an invitation is for new accounts) */
+  hasPlayed?(userId: string): Promise<boolean>;
   /** Angela Fable (A141): the invite credits this account got since `since` (newest first, at most 20) */
   inviteRewards?(inviter: string, since: string): Promise<{ credits: number; at: string }[]>;
 }
@@ -61,7 +68,8 @@ export async function welcome(s: RewardStore, userId: string, keyId: string): Pr
   if (credits <= 0) return { added: 0, reason: "off" };
   // once per account AND once per key: both ids are unique transaction ids
   const forKey = await s.credit({ user_id: userId, kind: "welcome", transaction_id: `welcome-key:${keyId}`, credits: 0 });
-  if (!forKey) return { added: 0, reason: "key_used" };
+  // O82 F4: the same account with its own key again is "already", not someone else's key
+  if (!forKey) return { added: 0, reason: owner === userId ? "already" : "key_used" };
   const added = await s.credit({ user_id: userId, kind: "welcome", transaction_id: `welcome:${userId}`, credits });
   return added ? { added: credits } : { added: 0, reason: "already" };
 }
@@ -94,15 +102,41 @@ export async function claimInvite(s: RewardStore, invitee: string, code: string)
   const theirs = new Set(await s.keysOf(inviter));
   if (mine.some((k) => theirs.has(k))) throw new RewardRefusal(409, "invite_same_device", "Inbjudan gäller ett konto på en annan telefon.");
   if (await s.claim(invitee)) throw new RewardRefusal(409, "invite_already", "Du har redan använt en inbjudan.");
+  // O82 F3 (D224: "nya användare"): an account that has already played cannot be invited
+  if (s.hasPlayed && (await s.hasPlayed(invitee).catch(() => false))) throw new RewardRefusal(409, "invite_not_new", "Inbjudan gäller nya konton.");
   if (!(await s.addClaim(invitee, inviter))) throw new RewardRefusal(409, "invite_already", "Du har redan använt en inbjudan.");
   return { ok: true };
+}
+
+/** O82 F1: one reward at a time per inviter in this instance (the SQL function makes it hold across instances). */
+const inviterLocks = new Map<string, Promise<unknown>>();
+async function oneAtATime<T>(key: string, f: () => Promise<T>): Promise<T> {
+  const before = inviterLocks.get(key) ?? Promise.resolve();
+  const run = before.catch(() => {}).then(f);
+  inviterLocks.set(key, run);
+  try {
+    return await run;
+  } finally {
+    if (inviterLocks.get(key) === run) inviterLocks.delete(key);
+  }
 }
 
 /** The invitee played its first text or exam: the inviter gets its credits once (within the month's cap). */
 export async function onFirstPlay(s: RewardStore, invitee: string): Promise<{ rewarded: number; reason?: string }> {
   const c = await s.claim(invitee).catch(() => null);
   if (!c || c.rewarded_at) return { rewarded: 0 };
+  return await oneAtATime(c.inviter, () => reward(s, invitee, c.inviter));
+}
+
+async function reward(s: RewardStore, invitee: string, inviter: string): Promise<{ rewarded: number; reason?: string }> {
   const st = await s.settings().catch(() => ({}));
+  if (s.rewardInvite) {
+    const r = await s.rewardInvite(invitee, n(st, "invite_credits"), n(st, "invite_month_max"));
+    if (r === "cap") return { rewarded: 0, reason: "month_cap" };
+    if (typeof r === "number") return { rewarded: r };
+    // null: the SQL function is not there yet, so the steps below (atomic within this instance only)
+  }
+  const c = { inviter };
   if ((await s.invitesThisMonth(c.inviter)) >= n(st, "invite_month_max")) return { rewarded: 0, reason: "month_cap" };
   if (!(await s.markRewarded(invitee))) return { rewarded: 0 }; // someone else just did it
   const credits = n(st, "invite_credits");
