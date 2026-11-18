@@ -95,6 +95,8 @@ export interface DrillRow {
   /** K90 (D213): credits (characters) charged for this drill's audio and given back when it could not be made. */
   charged_chars?: number;
   refunded_chars?: number;
+  /** Angela Fable (T28): a Säg text (not an exam); set at the first save, kept, never copied by share or import. */
+  said?: boolean | null;
   /** K99 (D223): "Blanda röster": each part (or question) gets a catalog voice by lot at its first save. */
   mix_voices?: boolean | null;
   /** K96 (D220): the drill's own voice from the catalog (null = the default voice); locked at the first save (D151). */
@@ -657,7 +659,7 @@ export function createDrillHandler(deps: DrillDeps) {
       drill: {
         id: drill.id, title: drill.title, subject: drill.subject, grade: drill.grade, covers: drill.covers,
         long_words: drill.long_words, shared_from: drill.shared_from ?? null, voice_model: model, kind: drill.kind ?? "questions",
-        style: drill.style ?? null, voice_id: drill.voice_id ?? null, mix_voices: !!drill.mix_voices,
+        style: drill.style ?? null, voice_id: drill.voice_id ?? null, mix_voices: !!drill.mix_voices, said: !!drill.said,
         audio_started: !!drill.audio_started_at, ...(drill.kind === "text" ? { language: drill.language ?? null } : {}),
         created_at: drill.created_at, updated_at: drill.updated_at,
       },
@@ -874,6 +876,7 @@ export function createDrillHandler(deps: DrillDeps) {
       ...(style || existing?.style ? { style: style || null } : {}),
       ...(ownVoice ? { voice_id: ownVoice } : {}),
       ...(mix ? { mix_voices: true } : {}),
+      ...((existing ? !!existing.said : di.said === true) ? { said: true } : {}),
     };
     const oldItems = existing ? await deps.db.items([existing.id]) : [];
     const oldIds = new Set(oldItems.map((i) => i.id));
@@ -1155,7 +1158,7 @@ export function createDrillHandler(deps: DrillDeps) {
             const hs = [...new Set(its.flatMap((i) => [i.question_hash, i.long_hash]))];
             return {
               id: d.id, title: d.title, subject: d.subject, grade: d.grade, items: its.length, updated_at: d.updated_at,
-              shared_from: d.shared_from ?? null, voice_model: d.voice_model ?? deps.model, kind: d.kind ?? "questions", audio_started: !!d.audio_started_at,
+              shared_from: d.shared_from ?? null, voice_model: d.voice_model ?? deps.model, kind: d.kind ?? "questions", audio_started: !!d.audio_started_at, said: !!d.said,
               audio: { done: hs.filter((h) => doneSet.has(h)).length, total: hs.length },
             };
           }),

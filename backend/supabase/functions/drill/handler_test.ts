@@ -332,7 +332,7 @@ Deno.test("K47 R5c: import copies questions, answers and audio with 0 new charac
   const orig = await (await w.h("u1")(post({ action: "get", id: a.drill.id }))).json();
   assertEquals(orig.items[0].question, ITEMS[0].question);
   // the photos and documents are never part of a drill, so nothing else can be shared
-  assertEquals(Object.keys(b.drill).sort(), ["audio_started", "covers", "created_at", "grade", "id", "kind", "long_words", "mix_voices", "shared_from", "style", "subject", "title", "updated_at", "voice_id", "voice_model"]);
+  assertEquals(Object.keys(b.drill).sort(), ["audio_started", "covers", "created_at", "grade", "id", "kind", "long_words", "mix_voices", "said", "shared_from", "style", "subject", "title", "updated_at", "voice_id", "voice_model"]);
   assertEquals((await w.h("u3")(post({ action: "import", code: "nosuchcode1" }))).status, 404);
   assertEquals((await (await w.h("u2")(post({ action: "import", code: `earmind://prov/${code}` }))).json()).new_chars, 0);
 });
@@ -1018,6 +1018,25 @@ Deno.test("O77: cost's day limit has its own words (the minute limit keeps its o
   const m = await w.h("u8")(post({ action: "cost", items: ITEMS }));
   assertEquals(m.status, 429);
   assertEquals(JSON.stringify(await m.json()).includes("Vänta en stund."), true);
+});
+
+Deno.test("T28: drill.said marks a Säg text at its first save, is kept, shown in get and list, and not copied by import", async () => {
+  const w = world({ credits: 1500 });
+  const text = [{ kind: "para", text: "Ring mamma klockan fem." }];
+  const s = await (await w.h("u1")(post({ action: "save", drill: { kind: "text", said: true }, items: text }))).json();
+  assertEquals(s.drill.said, true);
+  // a resave without the field keeps it; a later said:false does not remove it either
+  const r = await (await w.h("u1")(post({ action: "save", drill: { id: s.drill.id, kind: "text", said: false }, items: text }))).json();
+  assertEquals(r.drill.said, true);
+  assertEquals((await (await w.h("u1")(post({ action: "get", id: s.drill.id }))).json()).drill.said, true);
+  assertEquals((await (await w.h("u1")(post({ action: "list" }))).json()).drills.find((d: { id: string }) => d.id === s.drill.id).said, true);
+  // an exam is not said
+  const e = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  assertEquals(e.drill.said, false);
+  // the copy another account imports is not said
+  const code = (await (await w.h("u1")(post({ action: "share", id: s.drill.id }))).json()).code;
+  const imp = await (await w.h("u2")(post({ action: "import", code }))).json();
+  assertEquals((imp.drill ?? imp).said ?? false, false);
 });
 
 Deno.test("K93 (D216): an admin is never charged or refused; quota, list and cost say unlimited; another account is unchanged", async () => {

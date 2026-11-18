@@ -75,3 +75,8 @@ Följden är att AI-valet inte väljer Kines eller Hindi ännu, inte ens för en
 - **`/voices`** har `default_voice:{voice_id, name, in_catalog}`.
 - **Köpen:** jag rekommenderar att appen avslutar transaktionen vid 200 och 409 `purchase_other_account`, men inte vid 422 eller 5xx.
 - **Tester:** 3 nya med fejk. 703/703 i backend/supabase/functions.
+
+## Tillägg 2026-11-18 02:10: `drill.said` (Angela Fables fråga efter T28)
+- **Vad:** en ny kolumn `drills.said` i `20261118010001_drills_said.sql`, som Deangelo kör. Den sätts med `drill.said: true` vid första save, behålls vid omsparning och kopieras inte vid import. `get` och `list` visar den.
+- **Före migreringen:** om upsert misslyckas och raden har `said`, sparar DB-adaptern om raden utan `said` och loggar `drill_said_column_missing`. Säg slutar alltså inte fungera. Den vägen är inte testad, varken med fejk eller live.
+- **Tester:** 1 nytt test med fejk. 704/704.

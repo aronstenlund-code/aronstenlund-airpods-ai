@@ -95,7 +95,16 @@ Deno.serve(withCors(withTestMode("drill",
       drillByClient: async (u, c) =>
         ((await db.select("drills", `select=*&user_id=eq.${encodeURIComponent(u)}&client_id=eq.${encodeURIComponent(c)}&limit=1`)) as DrillRow[])[0] ?? null,
       saveDrill: async (row) => {
-        await db.upsert("drills", { ...row, updated_at: new Date().toISOString() }, "id");
+        const r = { ...row, updated_at: new Date().toISOString() };
+        try {
+          await db.upsert("drills", r, "id");
+        } catch (e) {
+          // until the migration adding drills.said has run, a Säg text is still saved (without the mark)
+          if (!("said" in r)) throw e;
+          console.warn("drill_said_column_missing", String(e).slice(0, 80));
+          const { said: _s, ...rest } = r;
+          await db.upsert("drills", rest, "id");
+        }
       },
       items: (ids) => chunked(ids, 50, async (p) => (await db.select("drill_items", `select=*&drill_id=in.(${list(p)})&order=position.asc`)) as (ItemRow & { id: string })[]),
       replaceItems: async (drillId, keepIds, rows) => {
