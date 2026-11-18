@@ -597,6 +597,21 @@
   .steps p { margin-top: 4px; color: var(--mut); }
   .shot { display: block; width: 100%; max-width: 220px; height: auto; margin: 14px auto 0; border-radius: 18px; border: 1px solid var(--line); }
   .shot-note { margin-top: 10px; font-size: .875rem; color: var(--mut); }
+  /* Ke82: krediter */
+  .price { padding-top: 8px; padding-bottom: 40px; }
+  .price .lead { margin-top: 8px; max-width: 62ch; color: var(--mut); }
+  .price-grid { display: grid; gap: 18px; margin-top: 20px; align-items: start; }
+  .price-card { padding: 20px; }
+  .price-card h3 { font-size: 1.125rem; }
+  .price-h3 { margin-top: 20px; }
+  .price-list { list-style: none; margin: 10px 0 0; padding: 0; }
+  .price-list li { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-top: 1px solid var(--line); }
+  .price-list li:first-child { border-top: 0; }
+  .price-list b { white-space: nowrap; }
+  .price .tag { font-style: normal; font-size: .75rem; font-weight: 700; color: var(--blue); background: color-mix(in srgb, var(--blue) 12%, transparent); border-radius: 6px; padding: 2px 6px; margin-left: 6px; white-space: nowrap; }
+  .price .fine { margin-top: 10px; }
+  .price .shot { margin-top: 0; max-width: 220px; }
+  @media (min-width: 720px) { .price-grid { grid-template-columns: minmax(0, 1fr) 220px; } }
   @media (min-width: 900px) {
     .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .start { padding-bottom: 88px; }
@@ -634,8 +649,9 @@
     <div class="intro">
       <h1 id="hero-h">Kom förberedd till provet.</h1>
       <!-- Ke67: samma ord som appens Hem (A86). Huvudläget är repetitionsläget, de lyssnande lägena är Beta. -->
-      <p class="pitch">Fota ditt material. <span data-app></span> gör frågor och svar och läser upp dem i dina AirPods.</p>
-      <p class="pitch-sub">Eller skriv det du vill höra och tryck Spela. Du styr med tryck på AirPods, utan mikrofon.</p>
+      <!-- Ke82: samma ordning som appen på main (D215): Säg i AirPods först, sedan fota boken. -->
+      <p class="pitch">Skriv det du vill höra. <span data-app></span> läser upp det i dina AirPods, om och om igen.</p>
+      <p class="pitch-sub">Eller fota boken och få provfrågor med svar. Du styr med tryck på AirPods, utan mikrofon.</p>
       <p class="pitch-cta"><a class="pill" href="#kom-igang">Så fungerar det</a></p>
     </div>
 
@@ -727,14 +743,35 @@
   <!-- Ke67: samma flöde och knappnamn som appen i dag (A106–A112). Bilder från appens skärmbildsscener. -->
   <section class="start wrap" id="kom-igang" aria-labelledby="start-h">
     <h2 id="start-h">Så fungerar det</h2>
-    <p class="lead">Skriv det du vill höra, eller fota boken. Sedan ligger telefonen i fickan.</p>
+    <p class="lead">Skriv det du vill höra, eller fota boken. Du lyssnar i dina AirPods.</p>
     <ol class="steps">
-      <li class="paper"><h3>Skriv det du vill höra</h3><p>Skriv eller klistra in en text och tryck <b>Spela i 10 min</b>. Den läses upp om och om igen, upp till en timme.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/rep-sag-dark.webp"><img class="shot" src="img/rep-sag-light.webp" width="300" height="652" loading="lazy" alt="Första skärmen i appen: ett mörkt fält med en text om fotosyntes, kostnaden 120 krediter och knappen Spela i 10 min."></picture></li>
-      <li class="paper"><h3>Eller fota boken</h3><p>Tryck <b>Nytt prov</b> och fota sidorna. Välj <b>Frågor</b>, eller <b>Läs upp texten</b> om du vill lyssna på materialet.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/rep-nytt-dark.webp"><img class="shot" src="img/rep-nytt-light.webp" width="300" height="652" loading="lazy" alt="Skärmen Nytt prov i appen: provets namn, valet Frågor eller Läs upp texten, och Fota sidor, Välj bilder, Skriv text och Lägg till dokument."></picture></li>
-      <li class="paper"><h3>Starta prov</h3><p>Frågorna läses upp i dina AirPods. Tryck en gång för det långa svaret, två gånger för det korta och tre gånger för paus.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/rep-spelar-dark.webp"><img class="shot" src="img/rep-spelar-light.webp" width="300" height="652" loading="lazy" alt="Uppspelningen i appen: frågan och svaret i text medan svaret läses upp, och raden med de tre trycken."></picture></li>
-      <li class="paper"><h3>Eller lyssna på texten</h3><p>Med Läs upp texten läses materialet upp mening för mening. Tryck en gång för att pausa, två för nästa mening och tre för förra.</p><picture><source media="(prefers-color-scheme: dark)" srcset="img/rep-las-dark.webp"><img class="shot" src="img/rep-las-light.webp" width="300" height="652" loading="lazy" alt="Läsläget i appen: texten med meningen som läses markerad, och knapparna förra meningen, paus och nästa mening."></picture></li>
+      <li class="paper"><h3>Skriv det du vill höra</h3><p>Skriv eller klistra in en text och tryck <b>Spela i 10 min</b>. Den läses upp om och om igen, upp till en timme.</p><img class="shot" src="img/app-sag.webp" width="300" height="652" loading="lazy" alt="Första skärmen i appen: ett mörkt fält med en text om fotosyntes, raden Hur ska det låta?, kostnaden 120 krediter och knappen Spela i 10 min."></li>
+      <li class="paper"><h3>Hur ska det låta?</h3><p>Skriv till exempel <b>lugnt, som en lärare</b>, så väljer <span data-app></span> en röst som passar. Eller välj själv bland rösterna och lyssna först. Det kostar inget.</p><img class="shot" src="img/app-stil.webp" width="300" height="652" loading="lazy" alt="Säg-kortet med rösten Gustav vald efter stilen Lugnt, som en lärare, och raden Vald efter stilen: Mörk och tydlig, passar en lärare."></li>
+      <li class="paper"><h3>Eller fota boken</h3><p>Tryck <b>Nytt prov</b> och fota sidorna. Välj <b>Frågor</b>, eller <b>Läs upp texten</b> om du vill lyssna på materialet.</p><img class="shot" src="img/app-fota.webp" width="300" height="652" loading="lazy" alt="Skärmen Nytt prov i appen: provets namn, valet Frågor eller Läs upp texten, och Fota sidor, Välj bilder, Skriv text, Lägg till dokument och Klistra in länk."></li>
+      <li class="paper"><h3>Starta prov</h3><p>Frågorna läses upp i dina AirPods. Tryck en gång för det långa svaret, två gånger för det korta och tre gånger för paus.</p><img class="shot" src="img/app-prov.webp" width="300" height="652" loading="lazy" alt="Provläget i appen: frågan Vad bildas vid fotosyntesen? med svaret, och raden med de tre trycken."></li>
     </ol>
     <p class="shot-note">Skärmbilder från en testversion av appen.</p>
+  </section>
+
+  <!-- Ke82 (D213, D224): krediterna som i appen på main (kop.md). Priserna sätts i App Store och kan ändras. -->
+  <section class="price wrap" id="krediter" aria-labelledby="price-h">
+    <h2 id="price-h">Gratis att börja</h2>
+    <p class="lead">Du får <b>5&nbsp;000 krediter</b> när du börjar, och <b>1&nbsp;500</b> varje månad. 1 kredit är 1 tecken nytt ljud. Upprepningar och ljud som redan finns kostar inget.</p>
+    <div class="price-grid">
+      <div class="paper price-card">
+        <h3>Fyll på när du vill</h3>
+        <ul class="price-list">
+          <li><span>100 krediter</span><b>10 kr</b></li>
+          <li><span>500 krediter</span><b>39 kr</b></li>
+          <li><span>2&nbsp;000 krediter <em class="tag">Bäst värde</em></span><b>110 kr</b></li>
+          <li><span>Veckokort, cirka 3 prov i veckan</span><b>79 kr/vecka</b></li>
+        </ul>
+        <p class="fine">Ett prov är ungefär 6&nbsp;000 krediter. Veckokortet förnyas varje vecka tills du säger upp det. Priser i Sverige; köpen görs i appen.</p>
+        <h3 class="price-h3">Bjud in en kompis</h3>
+        <p>Du får <b>2&nbsp;000 krediter</b> när kompisen har spelat sin första text.</p>
+      </div>
+      <img class="shot" src="img/app-krediter.webp" width="300" height="652" loading="lazy" alt="Kreditbladet i appen: krediter kvar, paketen 100, 500 och 2&nbsp;000 krediter, veckokortet och Bjud in.">
+    </div>
   </section>
 
   <!-- Ke29 (D125), Ke47: samma namn och fraser som Shared/capabilities.json (K44), som appen och servern läser.
@@ -810,6 +847,8 @@
         <dl class="faq">
           <dt>Hur kan jag plugga inför prov utan att titta på telefonen?</dt><dd>Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods. Tryck en gång för det långa svaret, två gånger för det korta och tre gånger för paus. Mikrofonen används inte.</dd>
           <dt>Kan EarMind läsa upp min text?</dt><dd>Ja. Välj Läs upp texten i Nytt prov, så läses materialet upp som en löpande text. Tryck en gång för att pausa, två gånger för nästa mening och tre gånger för förra meningen.</dd>
+          <dt>Vad kostar det?</dt><dd>Det är gratis att börja: 5&nbsp;000 krediter när du börjar och 1&nbsp;500 varje månad. 1 kredit är 1 tecken nytt ljud, och upprepningar kostar inget. Vill du ha mer finns paket från 10 kr och ett veckokort för 79 kr i veckan.</dd>
+          <dt>Kan jag välja röst?</dt><dd>Ja. Skriv hur det ska låta, så väljer <span data-app></span> en röst, eller välj själv och lyssna först. Provlyssning kostar inget. En ny röst blir nytt ljud.</dd>
           <dt>Funkar det för nationella provet och A-nivå?</dt><dd>Frågorna och svaren görs av ditt eget material. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok. Du kan ändra varje svar innan du startar provet.</dd>
           <dt>Kan jag prova utan att ladda ner något?</dt><dd>Ja, du kan prova de lyssnande lägena direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns.</dd>
         </dl>

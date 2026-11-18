@@ -77,4 +77,7 @@ _rows = le.run([{"id": "webb-x", "cat": "webb", "turns": [{"q": "vem vann igår"
 le.Backend = _real_backend
 check("web_cap_test = överhoppad", _rows[0].get("skipped") == "web_cap_test" and _rows[0]["problems"] == [])
 check("rapporten räknar överhoppade", "1 överhoppade" in le.report(_rows, "2026-11-19"))
+# O89 (Deangelo 15:20): ica.se and clasohlson.com count as reliable in the eval
+check("ica.se godkänd", le.web_checks("Blanda färsen. Källa: ICA.", le.reliable_domains(), "ica.se") == [])
+check("clasohlson.com godkänd", le.web_checks("Lossa bultarna. Källa: Clas Ohlson.", le.reliable_domains(), "clasohlson.com") == [])
 sys.exit(0 if all(ok) else 1)

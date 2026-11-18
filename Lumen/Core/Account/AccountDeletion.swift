@@ -186,6 +186,11 @@ final class AccountDeletionModel {
         }
     }
 
+    #if DEBUG
+    /// A148: the screenshots and the accessibility audit, without a server.
+    func stage(_ staged: State) { state = staged }
+    #endif
+
     func dismissFailure() {
         if case .failed = state { state = .idle }
     }

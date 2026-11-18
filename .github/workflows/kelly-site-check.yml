@@ -41,7 +41,8 @@ jobs:
             echo "h1: $(grep -o '<h1[^>]*>[^<]*' page.html | sed 's/<h1[^>]*>//')"
             echo "canonical: $(grep -o '<link rel="canonical" href="[^"]*' page.html | sed 's/.*href="//')"
             echo "og:image: $(grep -o 'property="og:image" content="[^"]*' page.html | sed 's/.*content="//')"
-            echo "Ke74-steget (Skriv det du vill höra): $(grep -c 'Skriv det du vill höra' page.html || true)"
+            echo "Ke74/Ke82-steget (Skriv det du vill höra): $(grep -c 'Skriv det du vill höra' page.html || true)"
+            echo "Ke82 krediter (Gratis att börja): $(grep -c "Gratis att börja" page.html || true)"
             echo "Earmind (litet m) i sidan: $(grep -c 'Earmind' page.html || true)"
             echo "== og image"
             img=$(grep -o 'property="og:image" content="[^"]*' page.html | sed 's/.*content="//')
@@ -56,7 +57,7 @@ jobs:
             done
             echo "all local refs (incl. lazy images): ${total} bytes"
             echo "== cache header on an image"
-            curl -sSI "$ORIGIN/img/rep-nytt-light.webp" | grep -i -E '^(HTTP|cache-control)' || true
+            curl -sSI "$ORIGIN/img/app-sag.webp" | grep -i -E '^(HTTP|cache-control)' || true
             echo "== sitemap and robots"
             curl -sS -o /dev/null -w "sitemap status=%{http_code}\n" "$ORIGIN/sitemap.xml"
             curl -sS -o /dev/null -w "robots status=%{http_code}\n" "$ORIGIN/robots.txt"

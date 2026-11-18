@@ -47,3 +47,19 @@ Serverns egna `needsText` och `needsWeb` på alla 367 frågor i `scripts/live-ev
 ## Kvar (O89 del 2, när K105 är live)
 - En livekörning som visar `web_cap_test` som överhoppat när testtaket är fullt, och att användartaket inte rörs.
 - O88:s webbdel efter 00:00 UTC: de sökta fallen fakta-05, fakta-09, praktiskt-03, praktiskt-04, text-03 och k9-neg-5, en omgång.
+
+
+## Tillägg 18:45: K105 driftsatt, domänerna och webbflaggorna, och testtakets budget i natt
+- **K105 är driftsatt** (4be7dc3b och f71545d4, deploy 44355766934). Testtaket räknar nu all testtrafik (`detectTest`: huvud, testkonto, skript, CI), vilket var min obs 1. **Delningen gäller från 2026-11-19 00:00 UTC.** I dag delar alla på det fulla taket. Del 2 kan därför inte provas live förrän i natt.
+- **Deangelos svar 15:20 är gjort:**
+  - ica.se och clasohlson.com är pålitliga i live-eval (`reliable_domains()` i `scripts/live-eval.py`), men inte i serverns val.
+  - `"web": true` är satt på **praktiskt-03 och praktiskt-04**, som sökte i båda omgångarna i O88 och vars källor nu godkänns.
+  - O88:s svar mot de nya reglerna: `web_checks` ger `[]` för alla fyra (clasohlson.com och ica.se), och 2,1–3,0 s ligger inom 8 s (**verifierat i test**).
+  - Webbflaggade fall är nu fakta-05, praktiskt-03 och praktiskt-04, plus webb-01…05 och k20-07 som förut.
+  - `scripts/test_live_eval.py` har **49/49 gröna**, med 2 nya kontroller för domänerna.
+- **Testtakets budget i natt (till Deangelo och Kevin):** cap 50, och det planerade krockar.
+  - Kevins K104-mätning efter 00:00 UTC tar enligt hans rapport **högst cirka 48**.
+  - Nattens eval kl. 02:17 UTC drar **cirka 21**.
+  - Min planerade körning kl. 00:10 UTC skulle ha tagit cirka 6.
+
+  Tillsammans blir det cirka 75. **Jag har ställt in min körning.** O88:s webbdel och O89 del 2 läser jag i stället ur nattens eval-rapport kl. 03:30 UTC, eftersom den kör samma fall (fakta-05, fakta-09, praktiskt-03 och -04, text-03, k9-neg-5) och inte kostar något extra. Tar K104 48 före natten får nattens eval cirka 2 webbsvar, och resten hoppas över (räknas som överhoppat, inte fel). Förslag: K104 körs **efter** nattens eval (efter cirka 03:00 UTC) och tar högst 29, eller så får natten sina 21 först.

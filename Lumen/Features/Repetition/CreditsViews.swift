@@ -115,7 +115,7 @@ struct CreditsSheet: View {
                             Text(verbatim: quota.isUnlimited ? "Det här kontot har ingen gräns"
                                  : weekly.map(ShopText.weekLine)
                                  ?? (quota.isOnlyWelcome ? ShopText.welcomeLine : CreditsText.leftLine(quota, withShop: model.shop != nil)))
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(LumenColor.secondaryText)
                                 .multilineTextAlignment(.center)
                         }
                         .frame(maxWidth: .infinity)
@@ -136,9 +136,10 @@ struct CreditsSheet: View {
                                 LabeledContent(row.title, value: row.value)
                             }
                         } header: {
-                            Text("Så räknas det")
+                            Text("Så räknas det").foregroundStyle(LumenColor.secondaryText) // A148: AA
                         } footer: {
                             Text(verbatim: CreditText.footnote(limit: quota.limit, resetsDay: quota.resetsDay))
+                                .foregroundStyle(LumenColor.secondaryText)
                         }
                     } else if !rows.isEmpty {
                         Section {
@@ -153,7 +154,7 @@ struct CreditsSheet: View {
                     } else {
                         Section {
                             Text(verbatim: "\(CreditsText.refill(quota.resets)) Prov som andra har delat eller publicerat kostar inget.")
-                                .foregroundStyle(.secondary)
+                                .foregroundStyle(LumenColor.secondaryText)
                         }
                     }
                 }
