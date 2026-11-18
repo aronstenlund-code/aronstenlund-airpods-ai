@@ -17,7 +17,7 @@ import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, type Pu
 const env = Deno.env;
 
 /** T50: what a slow request spent its time on: the outbound calls per kind (count, summed ms; parallel calls overlap). */
-type Spent = Record<string, { n: number; ms: number }>;
+type Spent = Record<string, { n: number; ms: number }> & { _steps?: string[]; _t0?: number };
 const spent = new AsyncLocalStorage<Spent>();
 const realFetch = globalThis.fetch;
 globalThis.fetch = (async (input: Request | URL | string, init?: RequestInit) => {
@@ -33,6 +33,11 @@ globalThis.fetch = (async (input: Request | URL | string, init?: RequestInit) =>
     const e = (st[k] ??= { n: 0, ms: 0 });
     e.n++;
     e.ms += Date.now() - t0;
+    // the step list (test requests only): table, rpc or storage path without the query, start offset and duration
+    if (st._steps && st._steps.length < 80) {
+      const path = new URL(url).pathname.replace(/^\/(rest|storage)\/v1\//, "").replace(/\/[0-9a-f]{2}\/[0-9a-f]{64}\.mp3$/, "/<file>").slice(0, 40);
+      st._steps.push(`${t0 - (st._t0 ?? t0)}+${Date.now() - t0} ${init?.method ?? "GET"} ${path}`);
+    }
   }
 }) as typeof fetch;
 
@@ -94,10 +99,12 @@ function timed(h: (req: Request) => Promise<Response>): (req: Request) => Promis
   return async (req) => {
     const t0 = Date.now();
     const action = req.method === "POST" ? await req.clone().json().then((b) => String(b?.action ?? "").slice(0, 20)).catch(() => "") : req.method;
-    const calls: Spent = {};
+    const test = req.headers.has("x-earmind-test");
+    const calls: Spent = test ? { _steps: [], _t0: t0 } : {};
     const r = await spent.run(calls, () => h(req));
     const ms = Date.now() - t0;
-    if (ms > 3000) console.log("drill_slow", JSON.stringify({ action, ms, status: r.status, calls }));
+    const { _steps, _t0, ...kinds } = calls;
+    if (ms > 3000 || test) console.log("drill_slow", JSON.stringify({ action, ms, status: r.status, calls: kinds, ...(test ? { steps: _steps } : {}) }));
     return r;
   };
 }
