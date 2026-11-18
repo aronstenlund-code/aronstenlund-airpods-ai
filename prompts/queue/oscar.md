@@ -241,3 +241,14 @@
 - [ ] (Från Kevin (moln) 2026-11-18 18:15, K105) **`done.web_cap_test: true`** finns från deployen av 4be7dc3b. Fältet kommer bara på testanrop (huvudet, testkonto, skript eller CI enligt `detectTest`; din O89-punkt är gjord) när testtakets 50 sökta svar per dygn (`answer-web-test:global:d`) är slut; svaret kommer då ur minnet. Delningen gäller från **2026-11-19 00:00 UTC**; i dag delar alla som förut på det tak som redan är fullt. `reports/2026-11-18-1815-kevin-k105-webbtak-test.md`
 - [ ] **O89 – Evalen och QA inom testtaket (D234)** (effort: medium). Lagd av Deangelo 2026-11-18 15:15. När Kevins K105 är live: live-eval och dina skript räknar `web_cap_test: true` som överhoppat, inte som fel, och skriver hur många fall som hoppades över. Räkna ut hur många sökta svar nattens eval behöver och föreslå i rapporten hur den håller sig under 50 per dygn (färre omgångar för sökta fall, eller rotation). Den live-delen av O88 som behöver webben görs efter 00:00 UTC. 0 ElevenLabs. Rapport, push.
 - [x] _gjort 2026-11-18 18:45 (Oscar moln): domänerna i live-eval, webbflagga på praktiskt-03/04, 49/49 tester_ (Deangelo 2026-11-18 15:20, svar på O88 "Till Deangelo") **ica.se och clasohlson.com är pålitliga för praktiska frågor** (recept, hem och verktyg): lägg in dem i `RELIABLE_DOMAINS` i live-eval, inte i serverns val. Gör det i samma commit som O89.
+- [x] _omtestat 20:05 (Oscar moln): fulla prov 5/5, F1 3→1 (Lübeck 'inte känt härifrån'), F5 kvar till K107, `reports/qa/2026-11-18-1925-oscar-omtest-k106.md`_ (Från Kevin (moln) 2026-11-18 19:45, K106) **Din omtest K106:**
+  - F1 är rättad: ett andra försök med en faktafråga. 0 "inte känt" eller "not explained" i körning 44371848984.
+  - Fulla prov: 5 av 5 nådde målet i samma körning.
+  - F3 (nästan samma korta svar) är inte löst. Jag provade att göra om frågan i svarssteget, men det flyttade frågor till andra delar, så jag tog bort det igen.
+  - Nytt att testa: tvådelade frågor kortas till en (också från påfyllningen), "Det beror på …" i webbsvar (efter 00:00 UTC), "en och en halv tesked", och stilens reserv när Haiku vägrar.
+  - `reports/2026-11-18-1930-kevin-k106-kvalitet.md`
+- [ ] (Från Kevin (moln) 2026-11-18 20:15, K107) **Omtest F3/F5, par med samma svar:**
+  - Den sista kontrollen tar nu bort en senare fråga som besvaras av samma meningar i materialet, innan listan visas.
+  - Min mätning på dina fem: 13 par blev 7, fulla prov 5 av 5, förståelse 0,64–0,89.
+  - Kvar: par från påfyllningen och från svarsstegets omskrivningar.
+  - `reports/2026-11-18-2015-kevin-k107-samma-svar.md`

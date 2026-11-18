@@ -470,6 +470,11 @@ import Testing
         #expect(SayText.wait(after: .seconds(7), online: true) == .quiet && SayText.wait(after: .seconds(8), online: true) == .slow)
         #expect(SayText.wait(after: .seconds(24), online: true) == .slow && SayText.wait(after: .seconds(25), online: true) == .gaveUp)
         #expect(SayText.wait(after: .seconds(1), online: false) == .gaveUp, "the phone knows it has no network: at once")
+        // Toby (T36 after K100): on the card, before the first sound, a long first part gets more time.
+        #expect(SayText.giveUpAfter(waitingForChars: 60) == .seconds(25) && SayText.giveUpAfter(waitingForChars: 1500) == .seconds(40))
+        #expect(SayText.giveUpAfter(waitingForChars: 40_000) == .seconds(120), "never more than two minutes")
+        #expect(SayText.wait(after: .seconds(30), online: true, giveUpAfter: .seconds(40)) == .slow)
+        #expect(SayText.wait(after: .seconds(40), online: true, giveUpAfter: .seconds(40)) == .gaveUp)
     }
 
     // MARK: A139 (D222): short numbers for credits

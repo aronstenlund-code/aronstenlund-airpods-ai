@@ -390,6 +390,45 @@ import Testing
         #expect(cloud.warms == 2, "after two minutes, coming back wakes it again")
     }
 
+    /// Toby (T36 after K100): "Gör ljudet …" counted the ten minutes down in silence. The time starts with the sound.
+    @Test func theTimeOfARepetitionStartsWithTheFirstSound() throws {
+        @MainActor final class Flag { var on = false }
+        @MainActor final class Clock { var now = Date(timeIntervalSince1970: 1_800_000_000) }
+        let ready = Flag()
+        let clock = Clock()
+        let source = MockSource()
+        let timer = MockTimer()
+        let session = RepetitionSession(inputs: [], makeSource: { source }, makeTimer: { timer },
+                                        defaults: try #require(UserDefaults(suiteName: "t36-\(UUID())")),
+                                        activatesAudioSession: false)
+        session.now = { clock.now }
+        var drill = Drill.text(title: "T", summary: A79A81RepetitionTests.summary, parts: [DrillItem.textPart("En rad.", part: .para)])
+        drill.items[0].sentences = ["En rad."]
+        session.startReading(drill, saying: .init(repeatMinutes: 10)) { _ in
+            ready.on ? ReadingAudio(url: URL(fileURLWithPath: "/tmp/p.mp3"), times: [0...1]) : nil
+        }
+        let reader = try #require(session.reader)
+        #expect(reader.phase == .waitingForAudio && !reader.hasSounded)
+        clock.now += 43 // the sound is being made
+        #expect(session.repeatSecondsLeft == 600, "nothing has been heard: the whole time is left")
+        ready.on = true
+        timer.fire()
+        #expect(reader.phase == .reading && reader.hasSounded)
+        clock.now += 60
+        #expect(session.repeatSecondsLeft == 540, "counted from the first sound")
+        session.stop()
+        #expect(session.repeatSecondsLeft == 0)
+    }
+
+    /// A150 (D231): nothing here was thrown, so nothing bounces; with Reduce Motion a short cross-fade and no movement.
+    @Test func theCardMovesWithoutBounceAndFadesWithReduceMotion() {
+        #expect(SayMotion.change(false) == .smooth(duration: 0.3), "a spring without overshoot")
+        #expect(SayMotion.change(true) == .easeOut(duration: 0.15))
+        #expect(SayMotion.number(false) == .numericText() && SayMotion.number(true) == .opacity)
+        #expect(SayMotion.reduces(true) && !SayMotion.reduces(false))
+        #expect(PressFeedbackStyle.pressFeedback.scale == 1 && PressFeedbackStyle.pressFeedbackRound.scale < 1)
+    }
+
     @Test func theCatalogIsReadOnceAndAnEmptyOneShowsNoVoices() async throws {
         let (model, _, _, _) = try model("a136-voices")
         await model.loadSayVoices()

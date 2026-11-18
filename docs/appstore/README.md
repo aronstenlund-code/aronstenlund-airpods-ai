@@ -15,13 +15,11 @@ Skärmbilderna är tagna i **full storlek** på iPhone 17 Pro Max med Kellys bil
 | 1 | `69-1.jpg` | Skriv. Lyssna. | Det du skriver läses upp i dina hörlurar. | `repSayCredits` |
 | 2 | `69-2.jpg` | Om och om igen. | Från 10 minuter upp till en timme. | `repSayOnCard` |
 | 3 | `69-3.jpg` | Hur ska det låta? | Skriv det, så väljer EarMind en röst. | `repSayPicked` |
-| 4 | `69-4.jpg` | Spela igen. | Det senaste ligger kvar under fältet. | `repHomeSaidMarks` |
-| 5 | `69-5.jpg` | Fota boken. | Frågor med svar, eller hela texten uppläst. | `repTextNew` |
-| 6 | `69-6.jpg` | Tryck för svaret. | 1 gång för långt svar, 2 för kort, 3 för paus. | `repPlayAnswer` |
-| 7 | `69-7.jpg` | Börja gratis. | 5 000 krediter att börja med, 1 500 varje månad. | `repShop` |
-
-**Bild "Välj en röst." (bladet Röst) är struken tills vidare:** scenen `repSayVoices` visar avsnittet "Att provlyssna"
-med en röst under granskning, som bara admin ser. Angela Fable ombedd om en scen utan det; då läggs den in som bild 4.
+| 4 | `69-4.jpg` | Välj en röst. | Lyssna först. Det kostar inget. | `repSayVoicesUser` (körning 44374827725, utan röster under granskning) |
+| 5 | `69-5.jpg` | Spela igen. | Det senaste ligger kvar under fältet. | `repHomeSaidMarks` |
+| 6 | `69-6.jpg` | Fota boken. | Frågor med svar, eller hela texten uppläst. | `repTextNew` |
+| 7 | `69-7.jpg` | Tryck för svaret. | 1 gång för långt svar, 2 för kort, 3 för paus. | `repPlayAnswer` |
+| 8 | `69-8.jpg` | Börja gratis. | 5 000 krediter att börja med, 1 500 varje månad. | `repShop` |
 
 Bild 1–3 syns i sökresultatet och berättar idén: skriv, lyssna, välj hur det låter. Inget om låst skärm (D209 inte
 provat på telefon) och inget som antyder dold användning: varje bild visar appen öppen och synlig.
@@ -113,7 +111,7 @@ Mot `granskning.md` §1 och dagens main. [V] i koden eller beslut, [S] sett i Si
 
 ## Göra om bilderna
 ```
-gh workflow run kelly-appstore-shots.yml --ref main -f branch=kelly/appstore-shots-ke80 -f screens="repSayCredits repSayOnCard repSayPicked repHomeSaidMarks repTextNew repPlayAnswer repShop"
+gh workflow run kelly-appstore-shots.yml --ref main -f branch=kelly/appstore-shots-ke80 -f screens="repSayCredits repSayOnCard repSayPicked repSayVoicesUser repHomeSaidMarks repTextNew repPlayAnswer repShop"
 python3 -I docs/appstore/_src/appstore.py <mapp med bilderna> [<fet font> <vanlig font>]
 ```
 Utan fontargument används Inter Display (finns i molnet). Äldre underlag (Ke56/Ke62/Ke74) finns i git-historiken.
