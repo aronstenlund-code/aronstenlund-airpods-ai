@@ -525,7 +525,7 @@ final class SayFlowTests: XCTestCase {
         // A test purchase, only when the products came from the StoreKit file.
         guard let buy = buys.first(where: { $0.contains("100 krediter") }) ?? buys.first else {
             note("no prices in Krediter (the StoreKit file did not reach the app): no test purchase")
-            closeSheet()
+            dismissCredits()
             return ok
         }
         // 1. Cancelled.
@@ -551,6 +551,22 @@ final class SayFlowTests: XCTestCase {
         log.append("T48 capsule: \(before.map(String.init) ?? "-") before, \(after.map(String.init) ?? "-") after the test purchase")
         if let before, let after, after > before { note("the capsule went up after a test purchase (\(before) → \(after)); the server took a local transaction") }
         return ok
+    }
+
+    /// Run 44294585063: after Återställ köp the Krediter sheet stayed open through "Klar" and twelve "back to Start"
+    /// taps. Tap Klar in its bar, check, then drag it down; say which one closed it.
+    private func dismissCredits() {
+        let open = { Self.labels(in: self.app.debugDescription, kind: "StaticText").contains("Så räknas det") }
+        guard open() else { return }
+        let klar = app.navigationBars.buttons.matching(NSPredicate(format: "label ==[c] 'Klar'")).firstMatch
+        if klar.exists { tapElement(klar, "Klar (Krediter)", counted: false); pause(1.5) }
+        if !open() { log.append("T48 Krediter closed with Klar"); return }
+        log.append("T48 Krediter still open after Klar (\(klar.exists ? "hittable \(klar.isHittable)" : "no Klar in the bar")); dragging it down")
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.95)))
+        testTaps += 1
+        pause(1.5)
+        log.append("T48 Krediter after the drag: \(open() ? "still open" : "closed")")
+        if open() { note("the Krediter sheet did not close with Klar or a drag") }
     }
 
     /// The StoreKit test sheet (in the app or over it). Confirms or cancels it; false when no sheet came.
@@ -635,6 +651,7 @@ final class SayFlowTests: XCTestCase {
     }
 
     private func openAccount() -> Bool {
+        dismissCredits()
         goToStart()
         guard tap(["Inställningar"], "Inställningar") else { return false }
         pause(1.5)
