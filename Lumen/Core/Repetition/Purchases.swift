@@ -389,24 +389,26 @@ final class CreditShop {
         // Toby T48: without an Apple account the App Store never answered, and the button span for ever. After a
         // while the sheet says that it did not work. What the App Store gives later is still handed to the server.
         let race = Race()
-        let receipts: [StoreReceipt]? = await withCheckedContinuation { continuation in
-            Task { [weak self, front] in
-                let found = try? await front.restore()
-                if race.isOpen {
-                    race.isOpen = false
-                    continuation.resume(returning: found)
-                } else if let found {
-                    for receipt in found { _ = await self?.deliver(receipt) }
-                }
-            }
-            Task {
-                try? await Task.sleep(for: restorePatience)
-                if race.isOpen {
-                    race.isOpen = false
-                    continuation.resume(returning: nil)
-                }
+        let patience = restorePatience
+        let (answers, feed) = AsyncStream<[StoreReceipt]?>.makeStream()
+        Task {
+            let found = try? await front.restore()
+            if race.isOpen {
+                feed.yield(found)
+            } else if let found {
+                for receipt in found { await deliver(receipt) } // too late for the button, not for the purchase
             }
         }
+        Task {
+            try? await Task.sleep(for: patience)
+            feed.yield(nil)
+        }
+        var receipts: [StoreReceipt]?
+        for await first in answers {
+            receipts = first
+            break
+        }
+        race.isOpen = false
         guard let receipts else {
             note = Self.restoreFailedLine
             return
