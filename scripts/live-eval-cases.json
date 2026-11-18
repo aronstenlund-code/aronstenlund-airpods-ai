@@ -53,6 +53,7 @@
   "turns": [
    {
     "q": "vilken är världens längsta flod",
+    "web": true,
     "expect_any": [
      "nilen",
      "amazonas"
