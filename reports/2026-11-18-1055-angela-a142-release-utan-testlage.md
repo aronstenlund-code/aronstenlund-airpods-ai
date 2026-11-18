@@ -59,7 +59,7 @@ Kameratexten följer Kellys förslag, med tillägget "eller texten som läses up
     utanför Debug gjorde en gren i `mock ? … : …` oåtkomlig, och varningar är fel hos oss. Mock-läget är nu en
     egenskap. Det var det enda felet i Release.
   - Bygget efter rättningen (44270363504) var grönt, också Release-steget.
-  - Main efter ihopslagningen: iOS build 44280856886 — resultatet står på tavlan.
+  - Main efter ihopslagningen: iOS build 44280856886 grön, också Release-steget och arkivet. *Verifierat i CI.*
 - **Enhetstester:** `A76Tests.theTestModeIsInTheTestersBuild` och
   `A76Tests.theAppStoreBuildRemovesWhatATestersBuildLeft` (nya), och de befintliga testerna för testläget
   oförändrade.
