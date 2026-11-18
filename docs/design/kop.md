@@ -75,6 +75,9 @@ Raderna staplas: namnet över, prisknappen under, vänsterställd. Fotnoten och 
 | Veckans tak nått | Veckans tak är nått · Fyll på |
 | Köpet misslyckades | Köpet gick inte igenom. Inget har dragits. |
 | Återställ, inget att hämta | Det fanns inga köp att hämta. |
+| Köpt men servern nås inte (A134) | Köpet är gjort. Krediterna kommer när EarMind har kontakt igen. |
+| Köpet väntar (Be om köp) | Köpet väntar på godkännande. Krediterna kommer när det är godkänt. |
+| Återställ misslyckades | Det gick inte att hämta köpen just nu. Försök igen om en stund. |
 
 Priserna i texterna är exempel: appen visar `Product.displayPrice` (D218), så "79 kr" kommer från App Store Connect.
 

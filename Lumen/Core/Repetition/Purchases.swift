@@ -293,8 +293,8 @@ final class CreditShop {
     // Kelly Ke73/Ke77 §5.
     static let failedLine = "Köpet gick inte igenom. Inget har dragits."
     static let nothingToRestoreLine = "Det fanns inga köp att hämta."
-    // Mine (not in Ke77): the App Store took the purchase but the server could not be told yet.
-    static let owedLine = "Köpet är gjort men kunde inte läggas in just nu. Det läggs in när EarMind har kontakt igen."
+    // Kelly (kop.md §5): the App Store took the purchase but the server could not be told yet.
+    static let owedLine = "Köpet är gjort. Krediterna kommer när EarMind har kontakt igen."
     static let pendingLine = "Köpet väntar på godkännande. Krediterna kommer när det är godkänt."
     static let restoreFailedLine = "Det gick inte att hämta köpen just nu. Försök igen om en stund."
     static let inviteText = "Plugga med EarMind. Du får 5 000 krediter att börja med."
