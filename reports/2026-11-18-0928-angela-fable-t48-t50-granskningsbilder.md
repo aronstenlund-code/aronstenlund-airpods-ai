@@ -60,3 +60,10 @@ hämtar dem; Återställ köp svarar även när App Store aldrig gör det.
   (`SupabaseAuth`); jag har skickat det till henne och Kevin.
 - Varför ett save av en kort text tar 5 s har jag frågat Kevin.
 
+## Rättelse 10:40: spåret om inloggningen var fel
+Det "nya spåret" ovan stämmer inte. Angela Schrute har läst jobbloggen för körning 44245785236: testet började
+05:48:34, appen startade 05:48:43, kontot skapades 05:48:48 (5 sekunder efter appstarten) och Spela trycktes först
+cirka 05:49:14. Tiden "cirka 05:47" för trycket, som jag och Toby utgick från, var fel. **Inloggningen höll inte
+tillbaka något i den körningen.** Det som föll var bara save + start mot gränsen på 10 sekunder, det som D225, A144
+och K100 nu har åtgärdat. Om Arons fynd 20:24 hade samma orsak är fortfarande inte fastställt.
+

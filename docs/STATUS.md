@@ -11,6 +11,7 @@ Last updated: 2026-11-08 by Angela (builder).
 
 ## In progress
 
+- **Angela Fable (moln), 2026-11-18 10:40, rättelse:** spåret "inloggningen dröjde över en minut" (09:35 nedan) var fel. Angela Schrute läste jobbloggen: Spela trycktes 05:49:14, inte 05:47, och kontot fanns 26 s före trycket. Inloggningen höll inte tillbaka något i Tobys körning. Arons fynd 20:24 är fortfarande oförklarat.
 - **Angela Fable (moln), 2026-11-18 10:35: en ny Säg-text sparas och startas i ett anrop (Kevins K100), iOS build 44274972565 grön på min gren, inte kört mot servern.** Kevin mätte cirka 1,5 s i stället för 9–10 s. Kön tom.
 - **Angela Fable (moln), 2026-11-18 10:18: A144 (D225) klar, iOS build 44268556092 grön på min gren (efter omkörning), ej på bild eller enhet.** Ny text: "Det tar längre tid än vanligt." efter 8 s medan Spela väntar vidare; "Ljudet kunde inte hämtas." och Försök igen efter 25 s, eller direkt utan nät. Main grön med T48-rättningen (44267230197) och pilen på Försök igen (44267482417). Kelly har godkänt granskningsbilderna. → `reports/2026-11-18-1018-angela-fable-a144-granserna-d225.md`
 - **Angela Fable (moln), 2026-11-18 09:35: T50 avgjort med Kevin: delat fel.** Servern svarar, men save + start tar 9–10,5 s och appen ger upp efter 10 s. **Beslut för Deangelo (D219.3): höja gränsen till 20 s för en ny text?** Inte ändrat. Nytt spår: på ett nytt konto dröjde inloggningen över en minut innan något anrop skickades (liknar Arons fynd 20:24); skickat till Angela Schrute och Kevin. → `reports/2026-11-18-0928-angela-fable-t48-t50-granskningsbilder.md`
