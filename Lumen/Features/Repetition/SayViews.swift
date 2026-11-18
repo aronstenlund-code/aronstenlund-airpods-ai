@@ -540,7 +540,11 @@ struct SayInAirPodsField: View {
                 }
                 .accessibilityLabel(SayText.stylePrompt)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .frame(minHeight: 44) // A148: a finger's size (the audit: "Hit area is too small")
+                // A148: a finger's size. The field itself stays one line high (the audit still measures that line), so
+                // the 44 points around it take the tap and put the cursor in the field.
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
+                .onTapGesture { styleFocused = true }
                 .toolbar {
                     // Ke75 §2: four suggestions above the keyboard; a tap writes the word.
                     if styleFocused {
