@@ -16,9 +16,17 @@ enum SayKeyboard {
     /// keyboard (the widest phones); on the others the last suggestion gives way to Spela.
     static let widthForAllSuggestions: CGFloat = 398
 
-    /// On the narrowest phones (iPhone SE) the row above the keyboard has room for "Spela" and the cost, not for
-    /// "Spela i 10 min" and the cost. The card is narrower than this there.
+    /// A card narrower than this has no room in the row above the keyboard for "Spela i 10 min" and the cost
+    /// beside "Klar", at the ordinary text sizes. (No phone that runs the app is this narrow today.)
     static let narrowCard: CGFloat = 320
+
+    /// The row above the keyboard has room for "Spela" and the cost, not for "Spela i 10 min" and the cost. At the
+    /// accessibility sizes the row's own words grow by about a third (measured in the pictures of 2026-11-19: the
+    /// whole button was 274 points on an iPhone 17 Pro and went out over both edges on an iPhone SE), so there it
+    /// is every phone but the widest.
+    static func isNarrow(cardWidth: CGFloat, largeText: Bool) -> Bool {
+        cardWidth < (largeText ? widthForAllSuggestions : narrowCard)
+    }
 
     /// Kelly (2026-11-19): the cost stands in the row above the keyboard, since the card's own is behind the keys
     /// at the largest text. The card's words; on a narrow screen their first part ("120 krediter" of

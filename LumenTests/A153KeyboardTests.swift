@@ -60,6 +60,10 @@ import UIKit
         #expect(SayKeyboard.playWords("Spela i 10 min", narrow: true, withCost: false) == "Spela i 10 min")
         #expect(SayKeyboard.playWords("Spela i 10 min", narrow: true, withCost: true) == "Spela")
         #expect(SayKeyboard.narrowCard < SayKeyboard.widthForAllSuggestions)
+        // The card is 343 points on an iPhone SE, 370 on an iPhone 17 Pro and 408 on the widest phones.
+        #expect(!SayKeyboard.isNarrow(cardWidth: 343, largeText: false), "the ordinary sizes have room on every phone")
+        #expect(SayKeyboard.isNarrow(cardWidth: 343, largeText: true) && SayKeyboard.isNarrow(cardWidth: 370, largeText: true))
+        #expect(!SayKeyboard.isNarrow(cardWidth: 408, largeText: true), "the widest phones have room at the largest text too")
     }
 
     @Test func theStripUnderTheRowReachesFromTheRowsTopToTheContentsEnd() {

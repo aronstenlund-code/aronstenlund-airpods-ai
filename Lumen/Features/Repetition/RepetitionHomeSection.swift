@@ -68,8 +68,10 @@ struct RepetitionHomeSection: View {
                 // The strip has the card's colour: the card's fields bring up the dark keyboard and its dark row
                 // in light mode too, and on the screen's light ground the row's light words were weak (the
                 // pictures of 2026-11-19). In the card's colour the row reads as the foot of the card.
+                // On a phone with a home button the content already ends where the row begins (iPhone SE: the strip
+                // came out 0 points high and was not there); it is then one point, and its ground reaches down.
                 Color.clear
-                    .frame(height: keyboardStripHeight)
+                    .frame(height: max(keyboardStripHeight, 1))
                     .frame(maxWidth: .infinity)
                     .background { (scheme == .dark ? SayText.fieldDark : SayText.field).ignoresSafeArea(.all, edges: .bottom) }
                     .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { keyboardStripBottom = $0 }

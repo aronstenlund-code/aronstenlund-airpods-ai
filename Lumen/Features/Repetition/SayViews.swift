@@ -459,7 +459,7 @@ struct SayInAirPodsField: View {
     @ViewBuilder
     private func keyboardPlay(compact: Bool) -> some View {
         let title = canRetry ? "Försök igen" : SayText.playTitle(minutes)
-        let narrow = cardWidth < SayKeyboard.narrowCard
+        let narrow = SayKeyboard.isNarrow(cardWidth: cardWidth, largeText: typeSize.isAccessibilitySize)
         let cost = compact ? nil : keyboardCost
         if creditsShort {
             // Kelly (2026-11-19): the credits do not cover the text, so the button is the way to more of them.
