@@ -1,0 +1,4 @@
+run: 44588569945
+commit: 123e9f5af5d3dbd72ba8a876f09d4fa4389cbf3d
+device: iPhone SE (3rd generation)
+text_size: accessibility-extra-extra-extra-large
