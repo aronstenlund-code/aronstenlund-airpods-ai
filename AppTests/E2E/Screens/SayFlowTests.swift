@@ -293,8 +293,14 @@ final class SayFlowTests: XCTestCase {
     }
 
     /// Senaste's capsules (buttons) for the test text: "Klorofyllet i bladen få…".
+    /// Angela Fable 02:10 (run 44430660402): since Ke79 a capsule reads the whole text (", <stil eller röst>" after
+    /// it), not "Klorofyllet i bladen få…". While a text plays the card's own text button has the same label, so one
+    /// is taken away then.
     private func recentCapsules() -> [String] {
-        Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Klorofyllet") && $0.contains("…") && $0.count < 60 }
+        var all = Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Klorofyllet") }
+        if timeLeft() != nil || text(starting: "Gör ljudet") != nil || text(starting: "Spelar i AirPods") != nil,
+           let card = all.firstIndex(of: Self.text) { all.remove(at: card) }
+        return all
     }
 
     /// Run 44163010444: the deletes did nothing (110 characters after "clearing" 78): a tap puts the cursor where it lands.
