@@ -39,7 +39,15 @@ final class KeychainSessionStore: SessionStore {
         query[kSecReturnData as String] = true
         query[kSecMatchLimit as String] = kSecMatchLimitOne
         var item: CFTypeRef?
-        guard SecItemCopyMatching(query as CFDictionary, &item) == errSecSuccess, let data = item as? Data else { return nil }
+        let status = SecItemCopyMatching(query as CFDictionary, &item)
+        guard status == errSecSuccess, let data = item as? Data else {
+            // T55: "no account here" is the ordinary answer on a new install. Anything else means the keychain cannot
+            // be read (an unsigned build in the Simulator, a locked phone), and the app then signs up a new account.
+            if status != errSecItemNotFound {
+                Log.answer.error("Auth: the keychain could not be read (status \(status, privacy: .public)); the app will sign in as a new account")
+            }
+            return nil
+        }
         return try? JSONDecoder().decode(SupabaseSession.self, from: data)
     }
 
@@ -48,9 +56,13 @@ final class KeychainSessionStore: SessionStore {
         var query = baseQuery
         query[kSecValueData as String] = data
         query[kSecAttrAccessible as String] = kSecAttrAccessibleAfterFirstUnlock
-        let status = SecItemAdd(query as CFDictionary, nil)
+        var status = SecItemAdd(query as CFDictionary, nil)
         if status == errSecDuplicateItem {
-            _ = SecItemUpdate(baseQuery as CFDictionary, [kSecValueData as String: data] as CFDictionary)
+            status = SecItemUpdate(baseQuery as CFDictionary, [kSecValueData as String: data] as CFDictionary)
+        }
+        if status != errSecSuccess {
+            // T55: an account that is not kept is a new account (and new credits) at the next start.
+            Log.answer.error("Auth: the keychain did not keep the session (status \(status, privacy: .public)); the next start will be a new account")
         }
     }
 
@@ -102,6 +114,17 @@ final class SupabaseAuth {
         self.http = http
         self.now = now
         self.session = store.load()
+        #if LUMEN_TESTMODE
+        // Toby T55: which account the app starts as, so a test can see whether a restart kept it. Debug and Beta only.
+        Log.answer.notice("Auth: at start the account on this phone is \(Self.accountMark(self.session), privacy: .public)")
+        #endif
+    }
+
+    /// Toby T55 (2026-11-19): the first characters of the account's id, enough to see in a log whether the app is the
+    /// same account before and after a restart. Never the whole id, never the token. "none" without an account.
+    nonisolated static func accountMark(_ session: SupabaseSession?) -> String {
+        guard let session else { return "none" }
+        return userID(fromJWT: session.accessToken).map { String($0.prefix(8)) } ?? "unreadable"
     }
 
     var hasSession: Bool { session != nil }
@@ -310,6 +333,9 @@ final class SupabaseAuth {
             session = newSession
             store.save(newSession)
             Log.answer.info("Auth: \(call.rawValue, privacy: .public) took \(took, privacy: .public) s")
+            #if LUMEN_TESTMODE
+            Log.answer.notice("Auth: \(call.rawValue, privacy: .public) gave the account \(Self.accountMark(newSession), privacy: .public)")
+            #endif
             return newSession
         }
     }
