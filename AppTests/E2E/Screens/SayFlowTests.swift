@@ -52,7 +52,7 @@ final class SayFlowTests: XCTestCase {
             section("Granskare 3: prov från en text", { reviewExam() })
             section("Granskare 4: Krediter (paketen, Villkor, Integritet, Återställ köp)", { reviewCredits() })
             section("Granskare 5: Radera konto", { deleteAccount() })
-            log.append("T55 credits along the way: \(reviewCredits.map { "\($0.0) \($0.1.map(String.init) ?? "-")" }.joined(separator: " → "))")
+            log.append("T55 credits along the way: \(creditTrail.map { "\($0.0) \($0.1.map(String.init) ?? "-")" }.joined(separator: " → "))")
             return
         }
         if env["LUMEN_T36_A11Y"] == "1" {
@@ -777,7 +777,7 @@ final class SayFlowTests: XCTestCase {
 
     // MARK: T55 – the reviewer's way (D238)
 
-    private var reviewCredits: [(String, Int?)] = []
+    private var creditTrail: [(String, Int?)] = []
     static let reviewMaterial = "Fotosyntes\nVäxter tillverkar socker av koldioxid och vatten med hjälp av solljus. Klorofyllet i bladen fångar ljuset. Syre bildas som en restprodukt och släpps ut genom klyvöppningarna. Socker används som energi eller lagras som stärkelse i rötter och frön."
 
     /// The exact number in Krediter ("1 500, krediter kvar"), not the short capsule ("1,5k").
@@ -785,12 +785,12 @@ final class SayFlowTests: XCTestCase {
         goToStart()
         pause(2)
         let capsule = Self.labels(in: app.debugDescription, kind: "Button").first { $0.contains("krediter kvar") || $0.contains("kredit kvar") }
-        guard let capsule, tap([capsule], "the credit capsule (\(when))", counted: false) else { reviewCredits.append((when, nil)); return nil }
+        guard let capsule, tap([capsule], "the credit capsule (\(when))", counted: false) else { creditTrail.append((when, nil)); return nil }
         pause(3)
         let line = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasSuffix("krediter kvar") && $0.first?.isNumber == true }
         let n = line.flatMap { Self.creditNumber($0) }
         log.append("T55 credits \(when): \(line ?? "-") → \(n.map(String.init) ?? "-")")
-        reviewCredits.append((when, n))
+        creditTrail.append((when, n))
         dismissCredits()
         goToStart()
         return n
