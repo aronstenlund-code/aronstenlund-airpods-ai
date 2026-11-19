@@ -104,9 +104,9 @@ anonymt konto per installation (`auth/v1/signup` utan e-post) [V].
 |---|---|---|---|---|
 | **Identifierare › Användar-ID** | Ja | Ja | Appens funktioner | Det anonyma kontots id knyter prov, ljud och krediter till installationen [V] |
 | **Användarinnehåll › Annat** (texter man skriver, frågor och svar) | Ja | Ja | Appens funktioner | Prov, Säg-texter och svar sparas på kontot så att de kan spelas igen [V] |
-| **Användarinnehåll › Foton** | Ja | Nej | Appens funktioner | Foton och dokument skickas en gång för att göra frågorna och sparas inte [V enligt texten i appen; **[O]** att bucketen töms, K53] |
+| **Användarinnehåll › Foton** | Ja | Nej | Appens funktioner | Foton och dokument skickas en gång för att göra frågorna och sparas inte [V i koden: raderas direkt efter analysen i `exam/drill.ts`/`exam/read.ts`, och `drill-purge` (pg_cron var 15:e min) tar bort allt äldre än en timme, K53] |
 | **Ljuddata** | Ja, bara i Fler lägen (beta) | Nej | Appens funktioner | Ljudet strömmas till ElevenLabs för taligenkänning; EarMind sparar det inte, men ElevenLabs kan behålla det enligt sina villkor (D135) [V] |
-| **Köp › Köphistorik** | Ja, när köpen finns | Ja | Appens funktioner | Transaktionen kontrolleras på servern för att ge krediter [O: A134/K94 inte byggda] |
+| **Köp › Köphistorik** | Ja, när köpen finns | Ja | Appens funktioner | Transaktionen kontrolleras på servern (`/purchase`, StoreKit 2, K94) för att ge krediter eller veckokortet [V i koden; A134 byggd; inga riktiga köp gjorda] |
 | **Användningsdata › Produktinteraktion** | Ja | Ja | Appens funktioner (kostnadskontroll) | Servern loggar per anrop vilken funktion, tid och kostnad, ingen text (D48, usage-rader) [V] |
 | **Diagnostik** | Nej | – | – | Ingen kraschrapportering i appen [V]. Apples egna kraschrapporter räknas inte |
 | **Kontakter › Kontakter** | Ja, bara i Fler lägen (beta) | Nej | Appens funktioner | När flera kontakter passar ett namn skickas upp till fyra namn till servern så att EarMind kan fråga vem du menar; numret skickas aldrig [V i koden, `LivePhoneTools.callContact`, A142]. Rättat 2026-11-18 (stod "Nej") |
@@ -156,8 +156,10 @@ anonymt konto per installation (`auth/v1/signup` utan e-post) [V].
 >
 > 6. AirPods are not required; the app also plays through the phone speaker.
 
-**[O]** punkt 1 "Now Playing controls" och låst skärm (D209), punkt 3 att samtycket visas före mikrofonfrågan (D21, [V]
-i koden: `ListeningModel` vägrar utan samtycke), punkt 6 högtalaren (texten i appen säger att det går, inte provat av mig).
+Kontroll (Kelly, Ke84): punkt 1 Now Playing [V i koden: `RepetitionSession` sätter `MPNowPlayingInfoCenter`,
+`RemoteCommandHub`]; låst skärm (D209) står inte i texten. Punkt 3 samtycke före mikrofon [V: `ListeningModel` vägrar
+utan samtycke]. Punkt 6 högtalaren [V i koden: Säg kräver inga hörlurar, ljudet går dit systemet skickar det; inte
+provat på telefon].
 
 ## 4. Övrigt som Apple frågar efter
 | Fält | Förslag | Status |
