@@ -29,6 +29,7 @@ struct RepetitionHomeSection: View {
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
     @AppStorage("repetition.textControlsChecked") private var textControlsChecked = false // A106 (Ke63 §4.1)
     @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.colorScheme) private var scheme
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
     private var reduceMotion: Bool { SayMotion.reduces(systemReduceMotion) }
 
@@ -62,12 +63,15 @@ struct RepetitionHomeSection: View {
             if keyboardIsUp {
                 // Kelly (2026-11-19): what stands in the row above the keyboard (Spela, Klar, the style's
                 // suggestions) is read against a plain ground. The row is glass and floats over the list; this strip
-                // of the screen's own colour lies under it, from where the keyboard's row begins down to the keys.
-                // It also ends the list there, so the line that is being written stays above the row.
+                // lies under it, from where the keyboard's row begins down to the keys. It also ends the list
+                // there, so the line that is being written stays above the row.
+                // The strip has the card's colour: the card's fields bring up the dark keyboard and its dark row
+                // in light mode too, and on the screen's light ground the row's light words were weak (the
+                // pictures of 2026-11-19). In the card's colour the row reads as the foot of the card.
                 Color.clear
                     .frame(height: keyboardStripHeight)
                     .frame(maxWidth: .infinity)
-                    .background(Color(.systemGroupedBackground))
+                    .background { (scheme == .dark ? SayText.fieldDark : SayText.field).ignoresSafeArea(.all, edges: .bottom) }
                     .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { keyboardStripBottom = $0 }
                     .accessibilityHidden(true)
             } else if !model.examDrills.isEmpty || showsMoreModes {

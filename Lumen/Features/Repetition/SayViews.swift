@@ -468,42 +468,50 @@ struct SayInAirPodsField: View {
                 styleFocused = false
                 showsCredits = true
             } label: {
-                Text(verbatim: ShopText.refill).font(.subheadline.weight(.semibold)).foregroundStyle(Color.black)
+                HStack(spacing: 8) {
+                    Text(verbatim: ShopText.refill).font(.subheadline.weight(.semibold))
+                    if let cost { keyboardCostWords(cost, narrow: narrow) }
+                }
+                .fixedSize()
+                .foregroundStyle(Color.black)
             }
             .buttonStyle(.borderedProminent)
             .buttonBorderShape(.capsule)
             .tint(SayText.accent)
+            .accessibilityLabel(cost.map { "\(SayText.spokenCost($0)). \(ShopText.refill)" } ?? ShopText.refill)
         } else {
             Button {
                 play()
             } label: {
                 // Black on the accent, as on the card (the bar's own white is too weak on this light blue).
-                Group {
-                    if compact {
-                        Image(systemName: canRetry ? "arrow.clockwise" : "play.fill")
-                    } else {
-                        Label(SayKeyboard.playWords(title, narrow: narrow, withCost: cost != nil && !canRetry),
-                              systemImage: canRetry ? "arrow.clockwise" : "play.fill")
-                            .labelStyle(.titleAndIcon)
+                HStack(spacing: 8) {
+                    Image(systemName: canRetry ? "arrow.clockwise" : "play.fill")
+                    if !compact {
+                        Text(verbatim: SayKeyboard.playWords(title, narrow: narrow, withCost: cost != nil && !canRetry))
                             .font(.subheadline.weight(.semibold))
+                        // Kelly (2026-11-19): at the largest text the card's cost is behind the keyboard, so it is
+                        // said here, in the button it is the price of.
+                        if let cost, !canRetry { keyboardCostWords(cost, narrow: narrow) }
                     }
                 }
+                .fixedSize()
                 .foregroundStyle(tooMany ? Color.primary : Color.black)
             }
             .buttonStyle(.borderedProminent)
             .buttonBorderShape(.capsule)
             .tint(SayText.accent)
             .disabled(isStarting || tooMany)
-            .accessibilityLabel(title) // the whole of it, also when the row has room for "Spela" or the symbol only
+            // The whole of it, also when the row has room for "Spela" or the symbol only; then the cost.
+            .accessibilityLabel(cost.map { "\(title). \(SayText.spokenCost($0))" } ?? title)
         }
-        // Kelly (2026-11-19): at the largest text the card's cost is behind the keyboard, so it is said here.
-        if let cost {
-            Text(verbatim: SayKeyboard.costWords(cost, narrow: narrow))
-                .font(.footnote)
-                .monospacedDigit()
-                .lineLimit(1)
-                .accessibilityLabel(SayText.spokenCost(cost))
-        }
+    }
+
+    /// The cost inside the button above the keyboard: smaller and lighter than the button's own words.
+    private func keyboardCostWords(_ cost: String, narrow: Bool) -> some View {
+        Text(verbatim: SayKeyboard.costWords(cost, narrow: narrow))
+            .font(.footnote)
+            .monospacedDigit()
+            .opacity(0.75)
     }
 
     /// The credits do not cover this text, and there is a shop to get more from.
