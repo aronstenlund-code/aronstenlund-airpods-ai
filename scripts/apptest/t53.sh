@@ -138,7 +138,7 @@ grep -E "Reading:|offline|Offline|network|Network|drill_audio|download" "$OUT/lo
   echo
   echo "Detaljer:"
   echo '```'
-  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT|GREY|spela-|PRESS|T36|T44|T46|T49|T50|T48|A144|K100|A145|T53|AUDIT|SYSTEM ALERT|SCREEN|  texts:|  buttons:|TAP " "$OUT/t36-log.txt" 2>/dev/null | cut -c1-900
+  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT|GREY|spela-|PRESS|T36|T44|T46|T49|T50|T48|A144|K100|A145|T53|AUDIT|keyboard|scrollIntoView|SYSTEM ALERT|SCREEN|  texts:|  buttons:|TAP " "$OUT/t36-log.txt" 2>/dev/null | cut -c1-900
   echo '```'
   echo
   echo "Tryck (testkroken, appens logg):"
