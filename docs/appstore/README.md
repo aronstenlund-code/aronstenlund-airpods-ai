@@ -19,7 +19,7 @@ Skärmbilderna är tagna i **full storlek** på iPhone 17 Pro Max med Kellys bil
 | 5 | `69-5.jpg` | Spela igen. | Det senaste ligger kvar under fältet. | `repHomeSaidMarks` |
 | 6 | `69-6.jpg` | Fota boken. | Frågor med svar, eller hela texten uppläst. | `repTextNew` |
 | 7 | `69-7.jpg` | Tryck för svaret. | 1 gång för långt svar, 2 för kort, 3 för paus. | `repPlayAnswer` |
-| 8 | `69-8.jpg` | Börja gratis. | 5 000 krediter att börja med, 1 500 varje månad. | `repShop` |
+| 8 | `69-8.jpg` | Börja gratis. | 1 500 krediter ingår varje månad. | `repShop` |
 
 Bild 1–3 syns i sökresultatet och berättar idén: skriv, lyssna, välj hur det låter. Inget om låst skärm (D209 inte
 provat på telefon) och inget som antyder dold användning: varje bild visar appen öppen och synlig.
@@ -63,7 +63,7 @@ provat på telefon) och inget som antyder dold användning: varje bild visar app
 > • Dela ett prov med en länk eller publicera det för din skola. Foton och dokument delas aldrig.
 >
 > KREDITER
-> • Nya konton får 5 000 krediter att börja med, och 1 500 krediter ingår varje månad.
+> • 1 500 krediter ingår varje månad.
 > • 1 kredit är 1 tecken nytt ljud. Ljud som redan finns och upprepningar kostar inget.
 > • Bjud in en kompis och få 2 000 krediter när kompisen har spelat sin första text.
 > • Köp fler krediter eller ett veckokort i appen. Veckokortet förnyas varje vecka tills du säger upp det.
@@ -104,7 +104,7 @@ Mot `granskning.md` §1 och dagens main. [V] i koden eller beslut, [S] sett i Si
 | 1, 2, 3 tryck | [V]; **[O]** alla AirPods-modeller |
 | Starta prov och Säg använder aldrig mikrofonen | [V]; **[O]** orange prick på telefon (R9) |
 | Dela med länk, publicera för skolan | [S] A81/A83; att länken öppnar appen **[O]** |
-| 5 000 att börja med, 1 500 i månaden, inbjudan 2 000 | [V] D213/D224, [L] O82 |
+| 1 500 i månaden, inbjudan 2 000 | [V] D213/D224, [L] O82. **Välkomsten (5 000) nämns inte** förrän den är på (Team ID, TILL-ARON #31, D239); läggs då till i beskrivningen och bild 8 |
 | Köp och veckokort | [S] A134 med låtsasbutik; **[O]** StoreKit-filen (T48) och produkterna i App Store Connect |
 | Fler lägen frågar om lov och visar att de lyssnar | [V] D21, `ListeningModel` |
 | **Står inte i texten:** låst skärm (D209), "andra hörlurar", att ljudet fungerar utan nät | medvetet utelämnat |

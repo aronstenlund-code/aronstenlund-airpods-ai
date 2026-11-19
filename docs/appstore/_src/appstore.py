@@ -33,7 +33,7 @@ SHOTS = [
     ("repHomeSaidMarks", "Spela igen.", "Det senaste ligger kvar under fältet."),
     ("repTextNew", "Fota boken.", "Frågor med svar, eller hela texten uppläst."),
     ("repPlayAnswer", "Tryck för svaret.", "1 gång för långt svar, 2 för kort, 3 för paus."),
-    ("repShop", "Börja gratis.", "5 000 krediter att börja med, 1 500 varje månad."),
+    ("repShop", "Börja gratis.", "1 500 krediter ingår varje månad."),  # D239: inget om 5 000 förrän välkomsten är på (Team ID)
 ]
 
 
