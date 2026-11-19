@@ -711,10 +711,18 @@ final class SayFlowTests: XCTestCase {
     private func askDelete() -> Bool {
         // Run 44424970760 (AX5): found by openAccount but gone a moment later; look again for 5 s and scroll.
         var button: XCUIElement?
-        let end = Date().addingTimeInterval(5)
+        let end = Date().addingTimeInterval(20)
+        var up = true
+        var tries = 0
         repeat {
             button = app.buttons.matching(NSPredicate(format: "label ==[c] 'Radera konto'")).allElementsBoundByIndex.first { $0.exists }
-            if button == nil { app.swipeUp(velocity: .slow); pause(0.7) }
+            if button == nil {
+                // Run 44433667156: the audit scrolls the list while it walks it; look both ways.
+                if up { app.swipeUp(velocity: .slow) } else { app.swipeDown(velocity: .slow) }
+                tries += 1
+                if tries % 6 == 0 { up.toggle() }
+                pause(0.7)
+            }
         } while button == nil && Date() < end
         guard let button else { return miss("no 'Radera konto' button") }
         var swipes = 0
@@ -791,8 +799,22 @@ final class SayFlowTests: XCTestCase {
     }
 
     /// Ke79 point 9: "Spelar i AirPods med <röst>, N minuter kvar" as one element.
+    /// AX5 (run 44433667156): Spela stood below the screen and swipeUp moved the field, not the page. Drag the page
+    /// from its lower part until the element can be tapped.
+    private func scrollIntoView(_ labels: [String]) {
+        for _ in 0..<8 {
+            guard let e = find(labels) else { return }
+            if e.isHittable { return }
+            let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.85))
+            from.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.35)))
+            pause(0.7)
+        }
+        if let e = find(labels) { log.append("scrollIntoView: '\(e.label)' hittable \(e.isHittable), frame \(NSCoder.string(for: e.frame))") }
+    }
+
     private func a11yPlayingCard() -> Bool {
         hideKeyboard()
+        scrollIntoView(Self.playLabels)
         guard playFromCard() else { return false }
         pause(4)
         let all = Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Other") + Self.labels(in: app.debugDescription, kind: "Button")
@@ -844,13 +866,13 @@ final class SayFlowTests: XCTestCase {
     /// A145 with the largest text: the button, the question and its words; nothing is deleted here (Avbryt).
     private func a11yDeleteAccount() -> Bool {
         guard openAccount() else { return false }
-        audit("installningar-konto")
-        guard askDelete() else { return false }
+        guard askDelete() else { audit("installningar-konto"); return false }
         let alert = app.alerts.firstMatch
         let buttons = alert.buttons.allElementsBoundByIndex.map(\.label)
         log.append("T53 Radera kontot?: '\(alert.label)', buttons \(buttons)")
         tapAlert("Avbryt")
         pause(1)
+        audit("installningar-konto")
         let ok = buttons.contains("Radera konto") && buttons.contains("Avbryt")
         return ok || miss("the question lacks Radera konto or Avbryt (\(buttons))")
     }
