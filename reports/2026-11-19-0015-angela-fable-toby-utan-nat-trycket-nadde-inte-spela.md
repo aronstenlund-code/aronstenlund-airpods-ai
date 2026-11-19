@@ -85,3 +85,19 @@ med K100 och A144 men före mina ändringar 19:55 och 00:11) och med samma test 
 kommer fram. Det stöder Tobys förklaring (trycket hamnade fel i körningen 44312213280), men bevisar den inte: den
 körningen gick mot main från 18:23, som hade fem timmar fler ändringar än nattflödets app. En körning på dagens main
 med Tobys ändrade test avgör det. Raden i kön står öppen tills dess.
+
+## Tillägg 02:10: Tobys körning på dagens main (T36 44430660402, toby/t53)
+
+**Verifierat i CI-loggen (Simulator), inte på enhet.**
+
+- **Avsnittet utan nät kördes inte.** Testet hittade ingen kapsel i Senaste och gick aldrig vidare till den nya
+  texten. Kapseln finns, men sedan Ke79 läser VoiceOver upp hela texten på den och inte den kapade ("Klorofyllet i
+  bladen få…"), och testet letar efter den kapade. Det är testet som ska ändras; Toby har fått beskedet. Frågan om en
+  ny text utan nät på dagens main är alltså fortfarande obesvarad.
+- **Tobys fynd 11:30 (väntraderna syns inte när kortet redan spelar) är sett rättat.** Avsnittet "Långsamt ljud" är
+  grönt: "Det tar längre tid än vanligt." vid 8,6 s och "Ljudet kunde inte hämtas." med Försök igen vid 25,5 s, och
+  appen loggade `Say: gave up (on the card true, online true)`. Rättningen från 19:55 var förut bara byggd.
+- Loggraderna från 19:55 fungerar: varje Spela ger `Say: Spela pressed (attempt N, online true)` och
+  `Say: answered (plays true, line -)`. Ingen rad `Say: Spela cannot be pressed` i hela körningen.
+- En tidigare körning (44424911694) föll på att testet letade efter "M:SS kvar" på kortet; sedan Ke79 säger kortet
+  "Spelar i AirPods med Adam, 9 minuter kvar". Det har Toby redan rättat i testet (grönt i 44430660402).
