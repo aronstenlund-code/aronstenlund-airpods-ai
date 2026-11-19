@@ -86,7 +86,7 @@ export const SYSTEM_PROMPT_DRILL_ANSWERS =
 - K97 (O79): never invent a cause, motive or reason the notes do not give ("bönderna var missnöjda med danskarnas styre", "för att göra makten säker för släkten", "kriget mot Danmark" when the notes only say "efter kriget"). A why-question whose cause the notes do not state: with <may_fix>, ask a "Vad ...?" or "Hur ...?" question the notes answer; without it, answer only with what the notes do say about it, and say plainly that the reason is not known from this ("Varför det blev så är inte känt här, men ..."; in English "Why is not explained here, but ...") rather than guess; never name the notes, a material or what you have ("the notes do not say", "det material jag har" are wrong). School knowledge may fill out a mechanism the notes name, never supply a cause they leave out.
 - Never answer a why-question by repeating its claim ("Det beror på att sidorna alltid har just det sambandet", "De ansåg att makten skulle komma från folket"): give the reason, or (with <may_fix>) ask a better question.
 - "short": the short answer (D162): ONE sentence, two only when one cannot hold it, at most 25 words, that on its own is a full, correct A-level answer: it states the answer itself (the cause, the mechanism, the fact, the difference), never an introduction that only names the topic. Wrong: "Fotosyntes är en viktig process i växterna." Right: "Växten använder ljusenergi för att bygga glukos av koldioxid och vatten, och syre blir över."
-- "rest": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: it builds on the short answer with the concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Never repeat or rephrase the short answer. Short + rest together are about <long_words> words or fewer (count them); go over only when the answer would otherwise miss a concept or connection an A-level answer needs, and then by at most a fifth. Never pad an answer to reach the number.
+- "rest": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: it builds on the short answer with the concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Never repeat or rephrase the short answer. Short + rest together are about <long_words> words and never more (count them; K110: longer answers are cut in code after the last whole sentence that fits, so put the most important content first). Never pad an answer to reach the number.
 - The grade never lowers the quality; it only decides which concepts are reasonable (no university concepts in åk 7-9).
 - Base the answers on <notes>. K97 (O79): never add a cause, motive, mechanism, consequence, advice or general claim the notes do not give ("efter blodbadet var han själv i fara", "Latin förstod bara de lärda", "banker utgår från styrräntan", "sänk volymen i hörlurarna" are wrong when the notes do not say them); when the notes give no reason, say so in a few words instead of explaining. School knowledge only to name or define a concept the notes use, only facts you are certain of (textbook-level), and never contradict the notes; leave out a detail rather than guess it (O55: "stäppgräs har korta rötter" was wrong). Every fact must be correct: work every number out before you write it. Never add history, causes or examples the question did not ask for. Never add a general rule about a whole group ("alla", "alltid", "aldrig", "inga", "kan alltså vara") that the notes do not state (O63: "Alla föreningar kan alltså vara molekyler" is wrong: salt is a compound but not molecules).
 - The text is read aloud: plain spoken sentences, no markdown, lists, headings, brackets, abbreviations or symbols. K97 (O79): write numbers, years, dates, decimals and percentages with digits exactly as the notes have them ("1527", "85 decibel", "340 meter per sekund", "2 procent", "den 6 juni 1523"): the voice turns them into words, and digits are never mixed up. Write formulas and symbols in words ("koldioxid", not "CO2"; "pi", not "π"). Never mention the notes, the material, the text, the book, the exam or the grade: the student only hears the answer ("i materialet", "enligt texten" are wrong).
@@ -299,7 +299,7 @@ export async function shortenQuestions(
  */
 export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
   `You check the finished list of questions for a spoken practice exam against the material it was made from. You get <material> and <questions> (JSON: i and q). Return ONLY {"questions": [...], "sources": [...]} with an entry in "questions" for each question you change or remove (none = []):
-- Every fact a question takes for granted (who, what, which war, who owed whom, a cause, a result, a date) must be what the material says. When a question takes for granted something the material does not say, or says differently, rewrite it as little as possible so that it assumes only what the material says: {"i": N, "q": "..."}. Example: the material says "skulder till Lübeck efter kriget" and the war was against Denmark; "Varför behövde kronan pengar efter kriget med Lübeck?" is wrong; write "Varför hade kronan skulder till Lübeck?".
+- Every fact a question takes for granted (who, what, which war, who owed whom, a cause, a result, a date) must be what the material says. When a question takes for granted something the material does not say, or says differently, rewrite it as little as possible so that it assumes only what the material says: {"i": N, "q": "..."}. Example: the material says "skatten höjdes efter kriget mot Ryssland" and nothing about why; "Varför höjdes skatten efter kriget mot Polen?" is wrong twice (the wrong war, and a cause the material does not give); write "Vad hände med skatten efter kriget mot Ryssland?". K110 (Oscar O91 F1): never rewrite into a why-question whose cause the material does not state.
 - A why-question whose cause the material does not give: rewrite it into an understanding question the material does carry, never into a what-, when- or who-question (D230): "Förklara hur X hänger ihop med Y", "Vad blev följden av X?", "Jämför X och Y", "Hur påverkade X Y?" (or the same in the exam's language): {"i": N, "q": "..."}. The new question may only ask about a link the material itself makes.
 - At least half of the questions must be understanding questions (why, how, explain, compare, what followed). When fewer are, rewrite plain recall questions (what is, when, who, which) into understanding questions the material carries, the earliest first, until half are.
 - A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {"i": N, "drop": true, "same_as": M}. Two questions on one topic that ask different things both stay.
@@ -370,6 +370,7 @@ export async function refillQuestions(
   const numbered = used.length ? numberedSentences(material).map((t, k) => `[${k + 1}] ${t}`).join("\n") : "";
   const out: string[] = [];
   const rejected: string[] = [];
+  const skipped = { parse: 0, empty: 0, material: 0 };
   let usage: StepUsage | null = null;
   // K109 (live 17:35, printing 11/14: every refill question was a repeat): when one call leaves the exam short, one more
   // call with what is now kept and what was a repeat (no extra call when the first one fills it)
@@ -396,8 +397,14 @@ export async function refillQuestions(
         ? { ...u0, input_tokens: u0.input_tokens + r.usage.input_tokens, output_tokens: u0.output_tokens + r.usage.output_tokens, est_cost_usd: u0.est_cost_usd + r.usage.est_cost_usd, ms: u0.ms + r.usage.ms }
         : r.usage;
       const j = firstJson(r.text);
-      for (const x of Array.isArray(j?.questions) ? j!.questions as unknown[] : []) {
-        const q = oneAsk(cleanQuestion(x)); // K106 (live 18:24: "Vilka ämnen …, och hur tar växterna upp dem?" came from here)
+      const got0 = Array.isArray(j?.questions) ? j!.questions as unknown[] : [];
+      if (!got0.length) skipped.parse++;
+      for (const x0 of got0) {
+        // K110 (printing 0 of 3 with 0 repeats): {"i", "q"} or {"question"} objects, as in the last check's format
+        const x = x0 && typeof x0 === "object" ? (x0 as Record<string, unknown>).q ?? (x0 as Record<string, unknown>).question : x0;
+        const q = oneAsk(cleanQuestion(x));
+        if (!q || words(q) < 2) skipped.empty++;
+        else if (leansOnMaterial(q)) skipped.material++; // K106 (live 18:24: "Vilka ämnen …, och hur tar växterna upp dem?" came from here)
         if (!q || words(q) < 2 || leansOnMaterial(q) || out.length >= n) continue;
         if ([...kept, ...out].some((k) => k.toLowerCase() === q.toLowerCase() || nearDuplicate(k, q))) {
           rejected.push(q);
@@ -410,7 +417,7 @@ export async function refillQuestions(
       break;
     }
   }
-  if (out.length < n) console.log("drill_refill_short", JSON.stringify({ wanted: n, got: out.length, repeats: rejected.length }));
+  if (out.length < n) console.log("drill_refill_short", JSON.stringify({ wanted: n, got: out.length, repeats: rejected.length, ...skipped }));
   return { questions: out, usage };
 }
 
@@ -562,6 +569,32 @@ export function composeLong(short: string, rest: string): string {
   if (!sh) return r;
   if (!r) return sh;
   return `${/[.!?]$/.test(sh) ? sh : `${sh}.`} ${r}`;
+}
+
+/** K110: sentences, split after . ! or ? followed by a space. */
+function sentencesOf(t: string): string[] {
+  return t.trim() ? t.trim().split(/(?<=[.!?])\s+/) : [];
+}
+
+/**
+ * K110 (D241, Oscar O91): the long answer never goes over long_words, so its cost is known before the exam is made. The
+ * short answer always stays; the rest keeps the whole sentences that fit (the most important ones come first). `kept` is
+ * how many sentences of the rest stayed (-1 = unchanged), so the screen text keeps the same sentences.
+ */
+export function capLong(long: string, short: string, maxWords: number): { long: string; kept: number } {
+  if (words(long) <= maxWords) return { long, kept: -1 };
+  const sh = long.startsWith(short) ? short : sentencesOf(long)[0] ?? "";
+  const rest = sentencesOf(long.slice(sh.length));
+  let n = words(sh), kept = 0;
+  while (kept < rest.length && n + words(rest[kept]) <= maxWords) n += words(rest[kept++]);
+  return { long: [sh, ...rest.slice(0, kept)].join(" ").trim(), kept };
+}
+
+/** K110: the screen's long answer cut to the same sentences as the spoken one (its short part, then `kept` of the rest). */
+export function capScreenLong(screenLong: string, screenShort: string, kept: number): string {
+  if (kept < 0) return screenLong;
+  const head = screenLong.startsWith(screenShort) ? screenShort : sentencesOf(screenLong)[0] ?? "";
+  return [head, ...sentencesOf(screenLong.slice(head.length)).slice(0, kept)].join(" ").trim();
 }
 
 /**
@@ -784,18 +817,19 @@ export async function answerItems(
   // K106 (Oscar's K102 omtest F1, Vasa: "Varför han flydde till Dalarna framgår inte här, men …"): a generated question
   // the notes do not answer is asked once more with the order to replace it by one they answer (one by one, in parallel)
   if (ctx.mayFix) {
-    const unanswered = items.filter((it) => { const a = got.get(it.id); return a && notAnswered(a.short); });
+    // K110 (Oscar O91 F1, Vasa 4: the LONG answer said "… framgår inte"): the long answer is checked too
+    const unanswered = items.filter((it) => { const a = got.get(it.id); return a && notAnswered(a.long || a.short); });
     if (unanswered.length) {
       const before = new Map(unanswered.map((it) => [it.id, got.get(it.id)!]));
       const othersOf = (id: string) => items.filter((x) => x.id !== id).map((x) => got.get(x.id)?.question ?? x.question);
       await Promise.allSettled(unanswered.map((it) => ask([it], true, true, othersOf(it.id))));
       // K106 (Oscar omtest K106 F1: "… är inte känt här" after the first try): once more, a plain fact question
-      const still = unanswered.filter((it) => { const a = got.get(it.id); return !a || notAnswered(a.short); });
+      const still = unanswered.filter((it) => { const a = got.get(it.id); return !a || notAnswered(a.long || a.short); });
       if (still.length) await Promise.allSettled(still.map((it) => ask([it], true, "fact", othersOf(it.id))));
       let fixed = 0;
       for (const it of unanswered) {
         const a = got.get(it.id);
-        if (!a || notAnswered(a.short)) got.set(it.id, before.get(it.id)!); // no better question: the first answer stays
+        if (!a || notAnswered(a.long || a.short)) got.set(it.id, before.get(it.id)!); // no better question: the first answer stays
         else if (a.question) fixed++;
       }
       console.log("drill_unanswered", JSON.stringify({ found: unanswered.length, fixed }));
@@ -834,9 +868,13 @@ export async function answerItems(
     items: items.map((it) => {
       const a = got.get(it.id);
       if (!a) return { ...it, error: "Svaret kunde inte skrivas. Gör om frågan." };
-      const out: DrillItem = { ...it, question: a.question ?? it.question, short: a.short, long: a.long };
+      // K110 (D241): the long answer within long_words, the screen's long answer cut to the same sentences
+      const cap = capLong(a.long, a.short, ctx.longWords);
+      const out: DrillItem = { ...it, question: a.question ?? it.question, short: a.short, long: cap.long };
       // the display question belongs to the question that was answered; dropped when it was fixed without one
       const screen: Screen = { ...(a.screen ?? {}) };
+      if (screen.long) screen.long = capScreenLong(screen.long, screen.short ?? a.short, cap.kept);
+      if (cap.kept >= 0) console.log("drill_long_capped", JSON.stringify({ words: words(a.long), max: ctx.longWords, kept_sentences: cap.kept }));
       // K97 (O79 F4): years in words on screen become digits, also when the model gave no display text
       for (const k of ["short", "long"] as const) {
         const shown = yearsToDigits(screen[k] ?? out[k]!);

@@ -680,7 +680,7 @@ Deno.test("O79 omtest: the final check fixes a question that assumes what the ma
   assertEquals(r.questions, [qs[0], "Varför hade kronan skulder till Lübeck?", qs[2], qs[4]]);
   assertEquals([r.fixed, r.dropped, r.parts], [1, 1, [0, 1, 1, 2]]);
   assertEquals(seen[0].model, DEFAULT_DRILL_CONFIG.answerModel, "the answer model (correctness)");
-  assert(seen[0].user.includes("<material>") && SYSTEM_PROMPT_DRILL_FINAL_CHECK.includes("skulder till Lübeck"));
+  assert(seen[0].user.includes("<material>") && SYSTEM_PROMPT_DRILL_FINAL_CHECK.includes("skatten höjdes efter kriget")); // K110: the example no longer teaches the Lübeck question
   // a broken reply or a failure keeps the list
   const broken = await finalCheck(reply("nonsense"), DEFAULT_DRILL_CONFIG, qs, parts, "m");
   assertEquals([broken.questions, broken.dropped], [qs, 0]);
