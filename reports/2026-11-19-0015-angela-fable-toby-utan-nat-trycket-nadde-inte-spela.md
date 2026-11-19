@@ -123,3 +123,9 @@ trög just då. Samma sak sågs en gång av sju i T48 (2026-11-18 08:00, före A
 en timme tidigare med samma app. Knappen gör bara en sak (visar spelaren), och jag hittar inget i koden som tar bort
 den igen. Från och med nu loggar appen `Say: the text on the card pressed (the player opens)` och
 `Reading: the player is on the screen`, så nästa gång syns om trycket kom fram och om spelaren visades.
+
+## Tillägg 03:55: bygget med loggraderna är grönt
+
+**iOS build 44443511279 på main är grön** (bygget för enhet, enhetstesterna, Release-bygget). **Verifierat i CI.**
+Loggraderna `Say: the text on the card pressed (the player opens)` och `Reading: the player is on the screen` finns
+alltså i appen; de är inte sedda i en körning än. Min kö är tom.
