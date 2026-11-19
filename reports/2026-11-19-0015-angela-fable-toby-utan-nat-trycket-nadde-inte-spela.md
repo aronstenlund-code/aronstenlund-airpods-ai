@@ -101,3 +101,25 @@ med Tobys ändrade test avgör det. Raden i kön står öppen tills dess.
   `Say: answered (plays true, line -)`. Ingen rad `Say: Spela cannot be pressed` i hela körningen.
 - En tidigare körning (44424911694) föll på att testet letade efter "M:SS kvar" på kortet; sedan Ke79 säger kortet
   "Spelar i AirPods med Adam, 9 minuter kvar". Det har Toby redan rättat i testet (grönt i 44430660402).
+
+## Tillägg 03:45: utan nät grönt på dagens main, fyndet stängt som testfel
+
+Tobys T36 44439180293 (toby/t53 med dagens main, testet hittar nu kapseln i Senaste och loggar knappen före trycket).
+**Verifierat i CI-loggen (Simulator), inte på enhet.**
+
+- **Ny text utan nät: "Ingen internetanslutning. Försök igen när du är uppkopplad." efter 4,8 s.** Före trycket:
+  `Spela i 10 min, enabled true, hittable true`. Appens logg: `Say: Spela pressed (attempt 3, online false)` och 0,7 s
+  senare `Say: answered (plays false, line Ingen internetanslutning. …)`.
+- Samma text utan nät spelar efter 3,0 s (`Say: Spela pressed (attempt 2, online false)` → `answered (plays true)`).
+- Ingen rad `Say: Spela cannot be pressed` i körningen. "Långsamt ljud" grön igen (8,3 s och 26,6 s).
+
+**Slutsats: fyndet 18:00 var testet, inte appen.** När trycket kommer fram svarar Spela utan nät som det ska, på
+dagens main och på main från i går 12:55. Raden i kön är stängd. Ändringen 00:11 (ett väntande tryck kan inte lämna
+Spela avstängd) står kvar som skydd; läget den rättar har inte setts.
+
+**Nytt i samma körning, inte förklarat:** ett tryck på kortets text öppnade inte spelaren (avsnittet "Spelaren från
+kortet: varv 2" föll). Nästa tryck 30 s senare öppnade den. Före trycket stod testet stilla i 88 s, så körningen var
+trög just då. Samma sak sågs en gång av sju i T48 (2026-11-18 08:00, före A150), och avsnittet var grönt i 44430660402
+en timme tidigare med samma app. Knappen gör bara en sak (visar spelaren), och jag hittar inget i koden som tar bort
+den igen. Från och med nu loggar appen `Say: the text on the card pressed (the player opens)` och
+`Reading: the player is on the screen`, så nästa gång syns om trycket kom fram och om spelaren visades.
