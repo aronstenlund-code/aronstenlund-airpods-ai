@@ -4,7 +4,7 @@ import Foundation
 /// installable build (ios-build.yml, the unsigned .ipa) sets the build number to the GitHub run and puts the short
 /// commit in Info.plist (`LumenGitSHA`). A build made any other way has neither and says only its version.
 enum BuildInfo {
-    /// "Version 0.1.0 (körning 44019359349 · bb9a74b)", or "Version 0.1.0 (1)" for a build without a run.
+    /// "Version 1.0.0 (körning 44019359349 · bb9a74b)", or "Version 1.0.0 (1)" for a build without a run.
     static func line(version: String?, build: String?, sha: String?) -> String {
         let version = version ?? "–"
         let build = build ?? "–"

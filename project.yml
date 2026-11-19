@@ -79,7 +79,9 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         # Ke53 point 5 (A87): the accent blue for every system control.
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-        MARKETING_VERSION: "0.1.0"
+        # A155 (D243): the first App Store version. The build number is "1" here and the run's id in CI
+        # (CURRENT_PROJECT_VERSION on the xcodebuild command line), so every built archive has a higher one.
+        MARKETING_VERSION: "1.0.0"
         CURRENT_PROJECT_VERSION: "1"
         # A123: the short commit, set by ios-build.yml for the installable build; empty otherwise.
         LUMEN_GIT_SHA: ""
@@ -94,6 +96,10 @@ targets:
         Beta:
           SWIFT_ACTIVE_COMPILATION_CONDITIONS: LUMEN_TESTMODE
         # A142: the App Store. No test mode: the flag is never set here.
+        # A155 (D243): App Attest (the welcome credits, Purchases.swift) against Apple's production servers. Only here:
+        # the build Sideloadly installs is Debug and gets no entitlement it cannot sign for (A141).
+        Release:
+          CODE_SIGN_ENTITLEMENTS: Entitlements/Lumen-Release.entitlements
 
   # Live Activity + Control (D33). Shared/ is compiled into both targets.
   LumenControls:
@@ -110,7 +116,7 @@ targets:
         CODE_SIGN_ENTITLEMENTS: Entitlements/LumenControls.entitlements # A44
         PRODUCT_NAME: LumenControls
         INFOPLIST_FILE: LumenControls/Info.plist
-        MARKETING_VERSION: "0.1.0"
+        MARKETING_VERSION: "1.0.0" # A155: the same as the app's, always
         CURRENT_PROJECT_VERSION: "1"
 
   LumenTests:
