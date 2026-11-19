@@ -34,6 +34,7 @@ on:
           - k102-measure.py
           - k103-probe.py
           - k104-models.py
+          - k108-now.py
           - qa/o86_eval_reproduce.py
           - k93-live.py
           - k94-apple-root.py
