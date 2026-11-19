@@ -17,11 +17,10 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 
 def req(fn, body, tok, timeout=240, header=True):
-    # header=False: the 402 checks go as a user would (from Actions the test header skips the estimate, Oscar O91);
-    # they stop before Claude, and exam never calls ElevenLabs
-    r = urllib.request.Request(T.URL + "/functions/v1/" + fn, data=json.dumps(body).encode(), method="POST", headers=T.headers(tok, header))
-    if header:
-        r.add_header("x-earmind-test", "kevin-k109")
+    # header=False: the 402 checks go the user's way ("user-path"; from Actions the test header alone skips the
+    # estimate, Oscar O91); still a test call (D180)
+    r = urllib.request.Request(T.URL + "/functions/v1/" + fn, data=json.dumps(body).encode(), method="POST", headers=T.headers(tok, True))
+    r.add_header("x-earmind-test", "kevin-k109" if header else "kevin-k109 user-path")
     t0 = time.time()
     try:
         with urllib.request.urlopen(r, timeout=timeout) as x:

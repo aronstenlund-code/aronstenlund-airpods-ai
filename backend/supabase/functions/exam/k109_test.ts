@@ -78,12 +78,12 @@ Deno.test("K109 (Oscar O91): a QA measurement (test header from CI, deps.qaMeasu
     rateLimiter: new MemoryRateLimiter(),
     provider: llm,
     quota: () => Promise.resolve({ used: 0, lim: 1500 }),
-    qaMeasure: (req) => Promise.resolve(req.headers.has("x-earmind-test") && fromCi(req)),
+    qaMeasure: (req) => Promise.resolve(req.headers.has("x-earmind-test") && !/user-path/.test(req.headers.get("x-earmind-test")!) && fromCi(req)),
   });
-  const ask = (ip: string, header: boolean) =>
+  const ask = (ip: string, header: boolean | string) =>
     h(new Request("http://x/exam", {
       method: "POST",
-      headers: { "content-type": "application/json", "x-forwarded-for": ip, ...(header ? { "x-earmind-test": "kevin-k102" } : {}) },
+      headers: { "content-type": "application/json", "x-forwarded-for": ip, ...(header ? { "x-earmind-test": header === true ? "kevin-k102" : header } : {}) },
       body: JSON.stringify({ action: "drill", text: "Fotosyntes är när växter gör socker av ljus.", questions: 12 }),
     }));
   setCiRangesForTest(["20.1.0.0/16"]);
@@ -99,6 +99,9 @@ Deno.test("K109 (Oscar O91): a QA measurement (test header from CI, deps.qaMeasu
     const ciNoHeader = await ask("20.1.2.3", false);
     assertEquals(ciNoHeader.status, 402);
     await ciNoHeader.body?.cancel();
+    const userPath = await ask("20.1.2.3", "kevin-k109 user-path"); // QA checking what a user gets
+    assertEquals(userPath.status, 402);
+    await userPath.body?.cancel();
     assertEquals(calls.length, n);
   } finally {
     resetCiRangesForTest();

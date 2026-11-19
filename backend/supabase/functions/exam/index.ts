@@ -36,7 +36,9 @@ const handler = createExamHandler({
   quota: (u) => examWallet(u, 0),
   // K109 (Oscar O91): the test header alone is not enough (anyone can send it); it must come from GitHub Actions
   qaMeasure: async (req) => {
-    if (!req.headers.has("x-earmind-test")) return false;
+    // "user-path" in the header: a QA check of what a user gets (the estimate and its 402), still a test call (D180)
+    const h = req.headers.get("x-earmind-test");
+    if (h === null || /\buser-path\b/.test(h)) return false;
     await loadCiRanges().catch(() => {});
     return fromCi(req);
   },
