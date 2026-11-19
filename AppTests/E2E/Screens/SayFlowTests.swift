@@ -780,11 +780,13 @@ final class SayFlowTests: XCTestCase {
         // The "›" mark must not be read (Ke79 1): it is hidden, so it must not stand as a text of its own.
         if Self.labels(in: app.debugDescription, kind: "StaticText").contains("›") { note("'›' stands as a text in the tree (Ke79 1; Angela: hidden, the tree shows hidden elements)") }
         audit("start-text")
+        hideKeyboard() // run 44424970760: the keyboard stayed up at AX5 and covered Spela
         return ok
     }
 
     /// Ke79 point 9: "Spelar i AirPods med <röst>, N minuter kvar" as one element.
     private func a11yPlayingCard() -> Bool {
+        hideKeyboard()
         guard playFromCard() else { return false }
         pause(4)
         let all = Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Other") + Self.labels(in: app.debugDescription, kind: "Button")
