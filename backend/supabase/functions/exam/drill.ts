@@ -304,8 +304,8 @@ export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
 - At least half of the questions must be understanding questions (why, how, explain, compare, what followed). When fewer are, rewrite plain recall questions (what is, when, who, which) into understanding questions the material carries, the earliest first, until half are.
 - A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {"i": N, "drop": true, "same_as": M}. Two questions on one topic that ask different things both stay.
 - A question the material does not answer (a how or why whose way or cause it never gives): rewrite it into one about the same part that the material answers (D230 forms first). A question that asks two things, of which the material answers one: keep only that one (K106, Oscar).
-- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return "sources": [{"i": N, "s": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer, the sentence that holds the main answer first. Two questions answered by the same sentence(s) ask the same thing for the student, even when worded differently.
-- Never change anything else: same language, same length or shorter, clear when only heard. Return {"questions": [...], "sources": [...]}. No other text.`;
+- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return "sources": [{"i": N, "s": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer, the sentence that holds the main answer first, and "a": the right answer in one short sentence, in the exam's language, said the way the material says it (K109). Two questions answered by the same sentence(s), or with the same answer, ask the same thing for the student, even when worded differently.
+- Never change anything else: same language, same length or shorter, clear when only heard. Return {"questions": [...], "sources": [{"i": N, "s": [...], "a": "..."}, ...]}. No other text.`;
 
 /**
  * K106 (Oscar's K102 omtest F1, Vasa 14: "Vad var fogdarnas uppgift …, och varför skapade han en egen här?" was answered
@@ -440,7 +440,7 @@ export async function finalCheck(
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_FINAL_CHECK,
       user: `<material>\n${sanitizeTagged(numberedSentences(material).map((t, k) => `[${k + 1}] ${t}`).join("\n"))}\n</material>\n<questions>${sanitizeTagged(JSON.stringify(questions.map((q, i) => ({ i, q }))))}</questions>`,
-      maxTokens: 200 + questions.length * 75,
+      maxTokens: 200 + questions.length * 110, // K109: + a one-sentence answer per question
       cacheSystem: true,
       model: cfg.answerModel,
       timeoutMs: 40_000,
@@ -451,10 +451,13 @@ export async function finalCheck(
     let fixed = 0;
     const reply = firstJson(r.text);
     const src = new Map<number, number[]>();
+    const ans = new Map<number, string>();
     for (const x of Array.isArray(reply?.sources) ? reply!.sources as Record<string, unknown>[] : []) {
       const i = Number(x?.i);
       const ss = Array.isArray(x?.s) ? (x!.s as unknown[]).map(Number).filter((k) => Number.isInteger(k) && k > 0).slice(0, 3) : [];
       if (Number.isInteger(i) && i >= 0 && i < questions.length && ss.length) src.set(i, ss);
+      const a = typeof x?.a === "string" ? x.a.trim().slice(0, 400) : "";
+      if (Number.isInteger(i) && i >= 0 && i < questions.length && a) ans.set(i, a);
     }
     for (const x of Array.isArray(reply?.questions) ? reply!.questions as Record<string, unknown>[] : []) {
       const i = Number(x?.i);
@@ -480,6 +483,20 @@ export async function finalCheck(
         }
       }
     }
+    // K109 (D239): the same one-sentence answer as an earlier question that stays (k102-measure's measure) = the same
+    // question, also when the sentences differ (Oscar's ekosystem 5/6/7)
+    let sameAns = 0;
+    for (let i = 1; i < out.length; i++) {
+      if (drop.has(i) || !ans.has(i)) continue;
+      for (let k = 0; k < i; k++) {
+        if (!drop.has(k) && ans.has(k) && sameAnswer(ans.get(k)!, ans.get(i)!)) {
+          drop.add(i);
+          sameAns++;
+          break;
+        }
+      }
+    }
+    if (sameAns) console.log("drill_same_answer", JSON.stringify({ dropped: sameAns, answers: ans.size, questions: out.length }));
     if (sameSrc) console.log("drill_same_source", JSON.stringify({ dropped: sameSrc, sources: src.size, questions: out.length }));
     // never the first, at most a third, and never the last question of a part (every part keeps one)
     const left = new Map<number, number>();

@@ -9,6 +9,8 @@ _s.path.insert(0, str(HERE / "qa"))
 import qa_testaccount as T  # noqa: E402
 T.install()
 import json, time, urllib.error, urllib.request  # noqa: E402
+_s.path.insert(0, str(HERE / "qa" / "o79"))
+_s.path.insert(0, str(HERE / "qa" / "repetition_bank"))
 from o79_materials import O79  # noqa: E402
 sys = _s
 sys.stdout.reconfigure(encoding="utf-8")
