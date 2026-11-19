@@ -304,8 +304,8 @@ export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
 - At least half of the questions must be understanding questions (why, how, explain, compare, what followed). When fewer are, rewrite plain recall questions (what is, when, who, which) into understanding questions the material carries, the earliest first, until half are.
 - A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {"i": N, "drop": true, "same_as": M}. Two questions on one topic that ask different things both stay.
 - A question the material does not answer (a how or why whose way or cause it never gives): rewrite it into one about the same part that the material answers (D230 forms first). A question that asks two things, of which the material answers one: keep only that one (K106, Oscar).
-- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return "sources": [{"i": N, "s": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer. Two questions answered by the same sentence(s) ask the same thing for the student, even when worded differently.
-- Never change anything else: same language, same length or shorter, clear when only heard. Return {"questions": [...], "sources": [...]}. No other text.`;
+- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return "sources": [{"i": N, "s": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer, the sentence that holds the main answer first, and "a": the right answer in one short sentence, in the exam's language, said the way the material says it (K109). Two questions answered by the same sentence(s), or with the same answer, ask the same thing for the student, even when worded differently.
+- Never change anything else: same language, same length or shorter, clear when only heard. Return {"questions": [...], "sources": [{"i": N, "s": [...], "a": "..."}, ...]}. No other text.`;
 
 /**
  * K106 (Oscar's K102 omtest F1, Vasa 14: "Vad var fogdarnas uppgift …, och varför skapade han en egen här?" was answered
@@ -315,7 +315,10 @@ export function oneAsk(q: string): string {
   // live 18:00 (Vasa): "Vad var Dackefejden och varför var den viktig?" (also without the comma)
   const m = /^(.{12,}?),\s+(?:och|and)\s+(?:varför|hur|vad|vilk\p{L}*|när|var|why|how|what|which|when|where)\s+[^?]{6,}\?$/iu.exec(q.trim()) ??
     /^((?:vad|vem|vilk\p{L}*|när|var|what|who|which|when)\s.{6,}?)\s+(?:och|and)\s+(?:varför|hur|vad|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim());
-  return m && words(m[1]) >= 3 ? m[1].replace(/[\s,]+$/, "") + "?" : q;
+  if (m && words(m[1]) >= 3) return m[1].replace(/[\s,]+$/, "") + "?";
+  // K108 (Oscar omtest K107: "… andrahandskonsument? Ge exempel?"): a second ask after the question mark goes
+  const two = /^(.{12,}?\?)\s+\S[^?]{2,}\?$/u.exec(q.trim());
+  return two && words(two[1]) >= 3 ? two[1] : q;
 }
 
 /**
@@ -359,32 +362,56 @@ export async function refillQuestions(
   n: number,
   material: string,
   signal?: AbortSignal,
+  used: number[] = [],
 ): Promise<{ questions: string[]; usage: StepUsage | null }> {
   if (n <= 0 || !material) return { questions: [], usage: null };
-  try {
-    const r = await runLLM(provider, {
-      system: SYSTEM_PROMPT_DRILL_REFILL,
-      // K106: two more than needed, since some may be the same as a kept question in other words
-      user: `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n<kept>${sanitizeTagged(JSON.stringify(kept))}</kept>\n<count>${n + 2}</count>`,
-      maxTokens: 150 + (n + 2) * 80,
-      cacheSystem: true,
-      model: cfg.answerModel,
-      timeoutMs: 40_000,
-      signal,
-    }, cfg.answerPriceIn, cfg.answerPriceOut);
-    const out: string[] = [];
-    const j = firstJson(r.text);
-    for (const x of Array.isArray(j?.questions) ? j!.questions as unknown[] : []) {
-      const q = oneAsk(cleanQuestion(x)); // K106 (live 18:24: "Vilka ämnen …, och hur tar växterna upp dem?" came from here)
-      if (!q || words(q) < 2 || leansOnMaterial(q) || out.length >= n) continue;
-      if ([...kept, ...out].some((k) => k.toLowerCase() === q.toLowerCase() || nearDuplicate(k, q))) continue;
-      out.push(q);
+  // K108 (live 16:52, ekosystem 5/6: a refill asked about "en tiondel av energin" again): with the sentences the kept
+  // questions use, the material comes numbered and the new questions go to the other sentences
+  const numbered = used.length ? numberedSentences(material).map((t, k) => `[${k + 1}] ${t}`).join("\n") : "";
+  const out: string[] = [];
+  const rejected: string[] = [];
+  let usage: StepUsage | null = null;
+  // K109 (live 17:35, printing 11/14: every refill question was a repeat): when one call leaves the exam short, one more
+  // call with what is now kept and what was a repeat (no extra call when the first one fills it)
+  for (let round = 0; round < 2 && out.length < n; round++) {
+    try {
+      const want = n - out.length;
+      const r = await runLLM(provider, {
+        system: SYSTEM_PROMPT_DRILL_REFILL,
+        // K106: two more than needed, since some may be the same as a kept question in other words
+        user: (numbered
+          ? `<material>\n${sanitizeTagged(numbered)}\n</material>\n<used_sentences>${used.join(", ")}</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n`
+          : `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n`) +
+          `<kept>${sanitizeTagged(JSON.stringify([...kept, ...out]))}</kept>\n` +
+          (rejected.length ? `<rejected>${sanitizeTagged(JSON.stringify(rejected.slice(0, 12)))}</rejected>\nThese ask what a kept question asks: never write them or the like again.\n` : "") +
+          `<count>${want + 2}</count>`,
+        maxTokens: 150 + (want + 2) * 80,
+        cacheSystem: true,
+        model: cfg.answerModel,
+        timeoutMs: 40_000,
+        signal,
+      }, cfg.answerPriceIn, cfg.answerPriceOut);
+      const u0 = usage as StepUsage | null;
+      usage = u0
+        ? { ...u0, input_tokens: u0.input_tokens + r.usage.input_tokens, output_tokens: u0.output_tokens + r.usage.output_tokens, est_cost_usd: u0.est_cost_usd + r.usage.est_cost_usd, ms: u0.ms + r.usage.ms }
+        : r.usage;
+      const j = firstJson(r.text);
+      for (const x of Array.isArray(j?.questions) ? j!.questions as unknown[] : []) {
+        const q = oneAsk(cleanQuestion(x)); // K106 (live 18:24: "Vilka ämnen …, och hur tar växterna upp dem?" came from here)
+        if (!q || words(q) < 2 || leansOnMaterial(q) || out.length >= n) continue;
+        if ([...kept, ...out].some((k) => k.toLowerCase() === q.toLowerCase() || nearDuplicate(k, q))) {
+          rejected.push(q);
+          continue;
+        }
+        out.push(q);
+      }
+    } catch (e) {
+      console.warn("drill_refill_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
+      break;
     }
-    return { questions: out, usage: r.usage };
-  } catch (e) {
-    console.warn("drill_refill_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
-    return { questions: [], usage: null };
   }
+  if (out.length < n) console.log("drill_refill_short", JSON.stringify({ wanted: n, got: out.length, repeats: rejected.length }));
+  return { questions: out, usage };
 }
 
 /** K107: the material as numbered sentences for the last check (paragraph lines, then sentence ends), at most 8 000 characters. */
@@ -409,6 +436,9 @@ export function numberedSentences(material: string, maxChars = 8000): string[] {
  */
 export function sameSource(a: number[] | undefined, b: number[] | undefined): boolean {
   if (!a?.length || !b?.length) return false;
+  // K108 (Oscar omtest K107: ekosystem 5/6/7 all "Bara ungefär en tiondel av energin …"): the same main sentence (listed
+  // first) is the same answer, even when the supporting sentences differ
+  if (a[0] === b[0]) return true;
   const A = new Set(a), B = new Set(b);
   return [...B].every((x) => A.has(x)) || [...A].every((x) => B.has(x));
 }
@@ -421,13 +451,13 @@ export async function finalCheck(
   parts: number[],
   material: string,
   signal?: AbortSignal,
-): Promise<{ questions: string[]; parts: number[]; usage: StepUsage | null; fixed: number; dropped: number }> {
+): Promise<{ questions: string[]; parts: number[]; usage: StepUsage | null; fixed: number; dropped: number; used?: number[] }> {
   if (questions.length < 2 || !material) return { questions, parts, usage: null, fixed: 0, dropped: 0 };
   try {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_FINAL_CHECK,
       user: `<material>\n${sanitizeTagged(numberedSentences(material).map((t, k) => `[${k + 1}] ${t}`).join("\n"))}\n</material>\n<questions>${sanitizeTagged(JSON.stringify(questions.map((q, i) => ({ i, q }))))}</questions>`,
-      maxTokens: 200 + questions.length * 75,
+      maxTokens: 200 + questions.length * 110, // K109: + a one-sentence answer per question
       cacheSystem: true,
       model: cfg.answerModel,
       timeoutMs: 40_000,
@@ -438,10 +468,13 @@ export async function finalCheck(
     let fixed = 0;
     const reply = firstJson(r.text);
     const src = new Map<number, number[]>();
+    const ans = new Map<number, string>();
     for (const x of Array.isArray(reply?.sources) ? reply!.sources as Record<string, unknown>[] : []) {
       const i = Number(x?.i);
       const ss = Array.isArray(x?.s) ? (x!.s as unknown[]).map(Number).filter((k) => Number.isInteger(k) && k > 0).slice(0, 3) : [];
       if (Number.isInteger(i) && i >= 0 && i < questions.length && ss.length) src.set(i, ss);
+      const a = typeof x?.a === "string" ? x.a.trim().slice(0, 400) : "";
+      if (Number.isInteger(i) && i >= 0 && i < questions.length && a) ans.set(i, a);
     }
     for (const x of Array.isArray(reply?.questions) ? reply!.questions as Record<string, unknown>[] : []) {
       const i = Number(x?.i);
@@ -467,6 +500,20 @@ export async function finalCheck(
         }
       }
     }
+    // K109 (D239): the same one-sentence answer as an earlier question that stays (k102-measure's measure) = the same
+    // question, also when the sentences differ (Oscar's ekosystem 5/6/7)
+    let sameAns = 0;
+    for (let i = 1; i < out.length; i++) {
+      if (drop.has(i) || !ans.has(i)) continue;
+      for (let k = 0; k < i; k++) {
+        if (!drop.has(k) && ans.has(k) && sameAnswer(ans.get(k)!, ans.get(i)!)) {
+          drop.add(i);
+          sameAns++;
+          break;
+        }
+      }
+    }
+    if (sameAns) console.log("drill_same_answer", JSON.stringify({ dropped: sameAns, answers: ans.size, questions: out.length }));
     if (sameSrc) console.log("drill_same_source", JSON.stringify({ dropped: sameSrc, sources: src.size, questions: out.length }));
     // never the first, at most a third, and never the last question of a part (every part keeps one)
     const left = new Map<number, number>();
@@ -479,10 +526,12 @@ export async function finalCheck(
       left.set(p, (left.get(p) ?? 0) - 1);
       gone.push(i);
     }
+    // K108: the sentences the kept questions already ask about (the refill goes to other sentences)
+    const used = [...new Set(out.flatMap((_, i) => (gone.includes(i) ? [] : src.get(i) ?? [])))].sort((a, b) => a - b);
     return {
       questions: out.filter((_, i) => !gone.includes(i)),
       parts: parts.filter((_, i) => !gone.includes(i)),
-      usage: r.usage, fixed, dropped: gone.length,
+      usage: r.usage, fixed, dropped: gone.length, used,
     };
   } catch (e) {
     console.warn("drill_final_check_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
@@ -667,7 +716,7 @@ export function contextLine(subject: string, grade: string): string {
 /** Step 2: the answers in batches of 5 in parallel; a batch that fails or misses a question is asked once more. */
 /** K106: a short answer that says the notes do not answer the question ("framgår inte här", "is not explained here"). */
 export function notAnswered(short: string): boolean {
-  return /(?:framgår inte|är inte känt|inte känt här|förklaras inte(?: närmare)? här|beskrivs inte(?: närmare)? här|står inte här|sägs inte här|går inte att säga här|is not (?:explained|stated|known|described|said)(?: further)? here|isn't (?:explained|stated|said) here|not explained here|doesn't say why|does not say why)/i.test(short);
+  return /(?:framgår inte|inte känt|förklaras inte(?: närmare)? här|beskrivs inte(?: närmare)? här|står inte här|sägs inte här|går inte att säga här|is not (?:explained|stated|known|described|said)(?: further)? here|isn't (?:explained|stated|said) here|not explained here|doesn't say why|does not say why)/i.test(short);
 }
 export const MUST_FIX =
   "<must_fix>yes</must_fix> The notes do not answer this question as it is asked (your last answer said so). Put a new question in \"question\" about the same part of the notes that the notes do answer (an understanding question when they carry one: how, what followed, explain how X is linked to Y, compare), and answer that one. Never answer that something is not known.";
@@ -1013,6 +1062,37 @@ export function drillImages(pages: unknown): Img[] {
 }
 
 /** The cost weight of an action in the exam rate limiter (a drill is several model calls). */
+/**
+ * K109 (D239, Oscar O90): what a drill will cost in credits, estimated before any model call, so that no exam is made
+ * that the credits cannot save. Credits are the shown characters of new audio (K90, the same count as action "cost"):
+ * a question's text and its long answer. Measured live (O90): 12 questions at 90 words cost 5 882, about 490 each, so a
+ * question is counted as 60 characters and a long answer as 4.8 characters per word (492 at 90 words).
+ */
+export const COST_QUESTION_CHARS = 60;
+export const COST_CHARS_PER_WORD = 4.8;
+export function estimatedCostPerQuestion(longWords: number): number {
+  return COST_QUESTION_CHARS + Math.round(COST_CHARS_PER_WORD * longWords);
+}
+
+/** K109: the estimate for a drill or drill_answers request: how many questions, the cost and the cost per question. */
+export function estimateDrillCost(action: string, b: Record<string, unknown>): { count: number; cost: number; per: number } | null {
+  const longWords = intIn(b.long_words, DRILL_LIMITS.longWordsMin, DRILL_LIMITS.longWordsMax, DRILL_LIMITS.longWordsDefault);
+  const long = Math.round(COST_CHARS_PER_WORD * longWords);
+  if (action === "drill") {
+    const count = intIn(b.questions, DRILL_LIMITS.questionsMin, DRILL_LIMITS.questionsMax, DRILL_LIMITS.questionsDefault);
+    const per = estimatedCostPerQuestion(longWords);
+    return { count, cost: count * per, per };
+  }
+  if (action === "drill_answers") {
+    const items = (Array.isArray(b.items) ? b.items : []).slice(0, DRILL_LIMITS.questionsMax + DRILL_LIMITS.extraQuestions);
+    if (!items.length) return null;
+    const qs = items.map((i) => typeof (i as { question?: unknown })?.question === "string" ? ((i as { question: string }).question.trim().length) : COST_QUESTION_CHARS);
+    const cost = qs.reduce((a, n) => a + n + long, 0);
+    return { count: items.length, cost, per: Math.ceil(cost / items.length) };
+  }
+  return null;
+}
+
 export const DRILL_WEIGHT: Record<string, number> = { drill: 4, drill_answers: 3, drill_one: 1 };
 
 export async function handleDrill(
@@ -1205,7 +1285,7 @@ export async function handleDrill(
       // K106 (Oscar's K102 omtest F3: printing 13/14, ljud 11/12): also what the coverage calls left short
       const missing = Math.max(fc.dropped, target - qs.length);
       if (missing > 0) {
-        const rf = await refillQuestions(provider, cfg, qs, missing, material, signal);
+        const rf = await refillQuestions(provider, cfg, qs, missing, material, signal, fc.used ?? []);
         if (rf.usage) steps.push(rf.usage);
         if (rf.questions.length) {
           const at = parts.length > 1 ? placeQuestions(rf.questions, parts) : rf.questions.map(() => 0);

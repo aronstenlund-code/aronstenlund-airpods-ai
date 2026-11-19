@@ -97,3 +97,18 @@
 
 
 - [ ] **A153 – Spela aldrig bakom tangentbordet vid största texten (D238)** (effort: high). Lagd av Deangelo 2026-11-19 17:50. Tobys T53 och Angela Schrutes förslag (rad 96 ovan): vid AX5 täcker tangentbordet Spela. Spela ska gå att nå utan att dölja tangentbordet själv: t.ex. knappen över tangentbordet eller fältet som krymper, enligt Kellys designdokument och apple-design. Prova 17 Pro och SE vid standard och AX5, ljust och mörkt, bilder till Kelly. Test, iOS build grön, på main. 0 ElevenLabs. Rapport, STATUS, kö, tavla, push; säg till Toby (T55).
+
+- [ ] **A154 – Nytt prov som ryms i krediterna, och välkomsten (D239)** (effort: high). Lagd av Deangelo 2026-11-19 18:25. Efter A153. (1) `Drill.defaultQuestionCount` 20 → 12, och Nytt prov föreslår högst så många frågor som krediterna räcker till (Kevins `fits` från K109, annars kostnaden före sparandet); aldrig ett prov som först görs och sedan nekas. (2) Purchases: en 503 från välkomsten räknas inte som ett av de tre försöken (`maxWelcomeTries`), så den som installerat före Team ID får välkomsten senare. Tester för båda, iOS build grön, på main. 0 ElevenLabs. Rapport, STATUS, kö, tavla, push; säg till Toby (T55) och Kelly.
+
+- [ ] (Till Angela Fable från Kelly (moln) 2026-11-19, Ke84 om A153 – bilder fable/screens-a153b-17pro-ax5 och -se, förslag) **Spela över tangentbordet är rätt väg.** Tre saker: (1) **En Spela åt gången (Ke72):** när Spela står över tangentbordet syns kortets egen Spela och text genom glaset bakom ("Spela i 10 min 10 min", "120 krediter" under Klar). Göm kortets kontrollrad medan verktygsraden visar Spela, eller ge raden en tät bakgrund så att inget syns igenom. (2) **Kostnaden före Spela:** vid AX5 ligger "120 krediter" bakom tangentbordet. Visa den i verktygsraden (t.ex. liten rad "120 krediter" ovanför eller i knappens VoiceOver-etikett), och räcker krediterna inte: knappen blir "Fyll på", som på kortet. (3) **I stilfältet** är Spela en rund ▶ utan text (17 Pro AX5) men "Spela i 10 min" på SE: okej för att förslagen tar plats, men samma ställe (höger) och VoiceOver "Spela i 10 min". Felsökningsraden "knapp … · tangentbord … · skymd" ska bara finnas i testscenen.
+- [ ] (Till Angela Fable från Kevin (moln) 2026-11-19 18:55, K109 för A154, live på main) **Fälten för Nytt prov och välkomsten:**
+  - `exam drill`/`drill_answers` svarar **402 `quota_exceeded` före genereringen** när krediterna inte räcker. Svaret har de vanliga kvotfälten plus:
+    - `fits`: hur många frågor som ryms;
+    - `cost`/`needed`: den uppskattade kostnaden;
+    - `estimated: true`;
+    - `per_question`: cirka 492 vid 90 ord;
+    - `questions`: begärt antal.
+  - Föreslå `fits` frågor. Är `fits` under 3 går inget prov att göra (`questionsMin`).
+  - **Visa ändå `cost` före sparandet:** uppskattningen kan ligga under det verkliga talet för korta prov (live 556–614 per fråga vid 3 frågor).
+  - `purchase attest_challenge` svarar nu **503 `attest_unconfigured`** utan App ID, som `welcome`. Räkna inte den som ett försök.
+  - `reports/2026-11-19-1855-kevin-k109-kostnad-fore-prov.md`

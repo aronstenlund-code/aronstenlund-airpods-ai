@@ -25,6 +25,7 @@ Deno.test("K107: the same sentences (one set inside the other) are the same answ
   assert(sameSource([3, 4], [3]));
   assertEquals(sameSource([2], [3]), false);
   assertEquals(sameSource([2, 3], [3, 4]), false, "overlap alone is not the same answer");
+  assert(sameSource([3, 5], [3, 4]), "K108: the same main sentence is the same answer");
   assertEquals(sameSource(undefined, [3]), false);
 });
 
@@ -58,4 +59,31 @@ Deno.test("K107: three questions answered by 'en tiondel av energin' keep the fi
 
 Deno.test("K107 (live 19:09): '…, och var ägde den rum?' is a second question too", () => {
   assertEquals(oneAsk("Vad var Dackefejden, och var ägde den rum?"), "Vad var Dackefejden?");
+});
+
+Deno.test("K108 (Oscar omtest K107): 'framgår inte av detta' is unanswered; '…? Ge exempel?' is one question", async () => {
+  const { notAnswered } = await import("./drill.ts");
+  assert(notAnswered("Varför Bibeln översattes framgår inte av detta, men den trycktes 1541."));
+  assert(notAnswered("Det är inte känt varför."));
+  assertEquals(oneAsk("Vad skiljer en förstahandskonsument från en andrahandskonsument? Ge exempel?"), "Vad skiljer en förstahandskonsument från en andrahandskonsument?");
+});
+
+Deno.test("K108 (live 16:52): the refill gets numbered sentences and the ones already asked about", async () => {
+  const { refillQuestions } = await import("./drill.ts");
+  const seen: LLMRequest[] = [];
+  const llm: LLMProvider = {
+    name: "fake", model: "sonnet-fake",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      seen.push(req);
+      yield { type: "text", text: JSON.stringify({ questions: ["Vad gör nedbrytarna med döda djur?"] }) } as LLMChunk;
+    },
+  };
+  const r = await refillQuestions(llm, DEFAULT_DRILL_CONFIG, ["Vad händer med energin?"], 1, MATERIAL, undefined, [3]);
+  assertEquals(r.questions, ["Vad gör nedbrytarna med döda djur?"]);
+  assert(seen[0].user.includes("<used_sentences>3</used_sentences>"));
+  assert(seen[0].user.includes("[5] Nedbrytare bryter ner döda växter och djur."));
+  // without used sentences the material goes as before
+  seen.length = 0;
+  await refillQuestions(llm, DEFAULT_DRILL_CONFIG, ["Vad händer med energin?"], 1, MATERIAL);
+  assert(!seen[0].user.includes("<used_sentences>"));
 });
