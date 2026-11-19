@@ -22,8 +22,13 @@ När du öppnar appen första gången skapas ett anonymt konto hos vår databasl
 - **Hur ska det låta?:** texten du skriver där skickas till Anthropic, som lägger till tecken för hur rösten ska låta. Själva texten ändras inte.
 - **Publicera och dela:** ett prov du delar eller publicerar kan ses av andra. Foton och dokument följer aldrig med. Ditt användarnamn visas bara om du själv slår på det.
 
-## Analys av frågor och svar
-För att göra frågor och svar bättre skickas de frågor och svar som skapas eller ändras i appen till utvecklaren för analys. Foton och dokument skickas inte. Uppgifterna raderas när de har lämnats över [[O: "raderas inom 14 dagar" står i uppdraget, men beslutet D197 säger "efter leverans"; Aron bekräftar tiden]]. De delas inte med någon annan.
+## Analys av frågor och svar, rapporter och delad historik
+- **Frågor och svar i proven:** när du sparar ett prov med frågor skickas nya och ändrade frågor och svar till utvecklaren för att göra frågorna bättre. De är inte kopplade till ditt konto och raderas inom 14 dagar. Texter du spelar med Säg i AirPods, foton och dokument skickas inte [[O: det här sker i dag utan att appen frågar; Deangelo/Aron beslutar om en mening i Välkommen eller att stänga av det]].
+- **Lägena som lyssnar:** har du gett samtycke sparas frågor och svar i högst 14 dagar för att göra svaren bättre, utan koppling till ditt konto. Tal från andra sparas aldrig.
+- **Rapporter:** trycker du "Fel svar?", säger "rapportera" eller skickar något under Feedback och förslag, får vi frågan, svaret och din kommentar, kopplat till ditt konto, tills ärendet är klart och högst 90 dagar.
+- **Delad historik:** om du själv slår på den delar du dina frågor och appens svar, kopplat till ditt konto, i högst 12 månader. Slår du av den tas den bort.
+
+Inget av detta delas med någon annan.
 
 ## Lägena som lyssnar (Fler lägen, beta)
 - Innan ett läge som lyssnar startar första gången visar appen vad som händer och frågar om lov. Först därefter frågar iPhone om mikrofonen.
@@ -74,7 +79,7 @@ Last updated 17 November 2026.
 
 - **Account:** the app creates an anonymous account on your phone, with no name, email or phone number.
 - **What you type, snap or add** is sent to our server and to our AI providers to make audio (ElevenLabs) and questions and answers (Anthropic, Claude). Photos and documents are used once and deleted right after; anything left over is removed within an hour. Texts, questions, answers and audio are stored on your account so you can play them again.
-- **Analysis:** questions and answers created or edited in the app are sent to the developer for analysis and deleted once delivered [[O: retention period]]. Photos and documents are never sent.
+- **Analysis:** new and edited quiz questions and answers are sent to the developer to improve them, not linked to your account, and deleted within 14 days; in listening modes, with your consent, questions and answers are kept up to 14 days. Reports you send are kept up to 90 days, shared history (only if you turn it on) up to 12 months. Photos, documents and Say texts are never sent for analysis.
 - **Start quiz and Say in AirPods never use the microphone.**
 - **Calendar and contacts (listening modes only):** when you ask what is in your calendar, the events you ask about (up to 20) are sent to our server to write the answer; if several contacts match a name, up to four names are sent so the app can ask which one. Phone numbers are never sent.
 - **Listening modes (More modes, beta)** ask for permission first and always show a bar while listening. Audio is streamed to ElevenLabs for speech recognition and is not stored by EarMind; ElevenLabs may keep it under its own terms.
