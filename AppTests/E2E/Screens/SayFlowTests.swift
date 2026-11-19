@@ -222,7 +222,14 @@ final class SayFlowTests: XCTestCase {
             guard playFromCard() else { return false }
         }
         guard tap(Self.cardText, "the text on the card (opens the player)") else { return false }
-        guard waitText(starting: "Varv 1", 20) || lapAtLeast(1) != nil else { screen("utan-varv", "No Varv line"); return miss("the text on the card did not open the player with 'Varv 1'") }
+        if !(waitText(starting: "Varv 1", 20) || lapAtLeast(1) != nil) {
+            // Angela Fable 03:20: seen twice, a tap on the card's text that did not open the player while the next one
+            // did. Say so (with the time, for the app's "Say: the text on the card pressed" line) and tap once more.
+            screen("utan-varv", "No Varv line after the first tap on the card's text")
+            note(String(format: "the first tap on the card's text did not open the player (at %.1f s); tapped again", Date().timeIntervalSince(started)))
+            guard tap(Self.cardText, "the text on the card, again", counted: false) else { return false }
+            guard waitText(starting: "Varv 1", 20) || lapAtLeast(1) != nil else { return miss("two taps on the card's text did not open the player with 'Varv 1'") }
+        }
         log.append("T36 repeat: \(lapAtLeast(1) ?? "-")")
         screen("varv-1", "The player from the card, Varv 1")
         // Run 44009183791: with fake audio the laps go by in about a second, so any lap from 2 on counts.
