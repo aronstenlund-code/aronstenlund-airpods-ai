@@ -1101,13 +1101,15 @@ export function drillImages(pages: unknown): Img[] {
 
 /** The cost weight of an action in the exam rate limiter (a drill is several model calls). */
 /**
- * K109 (D239, Oscar O90): what a drill will cost in credits, estimated before any model call, so that no exam is made
- * that the credits cannot save. Credits are the shown characters of new audio (K90, the same count as action "cost"):
- * a question's text and its long answer. Measured live (O90): 12 questions at 90 words cost 5 882, about 490 each, so a
- * question is counted as 60 characters and a long answer as 4.8 characters per word (492 at 90 words).
+ * K109 (D239, Oscar O90) + K110 (D241, Oscar O91): what a drill will cost in credits, before any model call, so that no
+ * exam is made that the credits cannot save. Credits are the shown characters of new audio (K90, the same count as action
+ * "cost"): a question's text and its long answer. K110: an UPPER bound. The long answer is capped in code at long_words
+ * (capLong), so its characters are at most long_words × the characters per word; measured live on Oscar's five materials
+ * with 3 and 12 questions (k110-cost.py, 2026-11-19): at most 6.23 characters per word and 72 per question on average,
+ * real cost 404–548 per question. Counted as 75 + 6.3 per word (642 at 90 words), at least 17 % over the highest.
  */
-export const COST_QUESTION_CHARS = 60;
-export const COST_CHARS_PER_WORD = 4.8;
+export const COST_QUESTION_CHARS = 75;
+export const COST_CHARS_PER_WORD = 6.3;
 export function estimatedCostPerQuestion(longWords: number): number {
   return COST_QUESTION_CHARS + Math.round(COST_CHARS_PER_WORD * longWords);
 }

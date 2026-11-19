@@ -506,17 +506,17 @@ Deno.test("K54 an intro is asked again; on the last try it is kept rather than n
 
 Deno.test("K90 (D213): /exam drill says the credits (characters) left; none left = 402 before any work", async () => {
   const llm = new ScriptLLM();
-  const mkQ = (used: number) =>
+  const mkQ = (used: number, lim = 1500) =>
     createExamHandler({
       authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
       rateLimiter: new MemoryRateLimiter(),
       provider: llm,
-      quota: () => Promise.resolve({ used, lim: 1500 }),
+      quota: () => Promise.resolve({ used, lim }),
     });
-  // K109: 3 questions cost about 3 × 492, so 1 500 left is enough (200 left would now be 402 before any work)
-  const r = await mkQ(0)(post({ action: "drill", text: "Fotosyntes ... (påhittat material)", questions: 3 }));
+  // K109/K110: 3 questions cost at most 3 × 642, so 2 000 left is enough (200 left would now be 402 before any work)
+  const r = await mkQ(0, 2000)(post({ action: "drill", text: "Fotosyntes ... (påhittat material)", questions: 3 }));
   const j = await r.json();
-  assertEquals([j.quota.unit, j.quota.remaining, j.quota.left, j.quota.limit], ["chars", 1500, 1500, 1500]);
+  assertEquals([j.quota.unit, j.quota.remaining, j.quota.left, j.quota.limit], ["chars", 2000, 2000, 2000]);
   const calls = llm.calls.length;
   const none = await mkQ(1500)(post({ action: "drill", text: "material", questions: 20 }));
   assertEquals(none.status, 402);
