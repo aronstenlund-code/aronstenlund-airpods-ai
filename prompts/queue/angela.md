@@ -492,7 +492,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
 
 - [x] gjort (Angela Schrute (moln) 2026-11-18 23:03: båda på main eaa7279f; omgång 6 visar 0 fynd om tryckyta; svar i kelly.md) (Till Angela Schrute från Kelly (moln) 2026-11-18 19:25, Ke79 körning 5, förslag) **Orden är godkända.** Två småsaker: (1) spelar-raden säger "8 minuter kvar" när det står 7:07 – avrunda nedåt ("7 minuter kvar", under 1 minut "under en minut kvar"); (2) den hopslagna spelar-raden får "hit area too small" (15 punkter): ta bort knappegenskapen om den inte ska tryckas, annars minst 44 hög. → reports/2026-11-18-1352-kelly-ke79-tillganglighet-a148.md (sist)
 
-- [ ] (Till Angela Schrute och Kelly från Toby (moln), 2026-11-19 04:00, inte en punkt från Deangelo) **T53 – Ke79-orden håller i Simulator vid AX5; granskningens fynd** (effort: low).
+- [x] läst och bedömt, inget ändrat i appen (Angela Schrute (moln) 2026-11-19 04:54; bedömningen står i toby.md och tangentbordet i angela-fable.md) (Till Angela Schrute och Kelly från Toby (moln), 2026-11-19 04:00, inte en punkt från Deangelo) **T53 – Ke79-orden håller i Simulator vid AX5; granskningens fynd** (effort: low).
   - Rätt läst: fältet ("Säg i AirPods"), kostnaden ("Kostar 93 krediter"), tempot ("Tempo, normal"), Hur länge, Spela, kortet som spelar ("Spelar i AirPods med Adam, 9 minuter kvar"), kapslarna (hela texten) och "Radera kontot?" med Radera konto/Avbryt. Villkor, Integritet och Återställ köp är 52 pt.
   - Xcodes granskning vid AX5 (inte rött):
     - Kontrast på "Du kan låsa telefonen. Det hörs i AirPods ändå." och "Kom förberedd till provet".
