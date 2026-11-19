@@ -362,13 +362,20 @@ export async function refillQuestions(
   n: number,
   material: string,
   signal?: AbortSignal,
+  used: number[] = [],
 ): Promise<{ questions: string[]; usage: StepUsage | null }> {
   if (n <= 0 || !material) return { questions: [], usage: null };
+  // K108 (live 16:52, ekosystem 5/6: a refill asked about "en tiondel av energin" again): with the sentences the kept
+  // questions use, the material comes numbered and the new questions go to the other sentences
+  const numbered = used.length ? numberedSentences(material).map((t, k) => `[${k + 1}] ${t}`).join("\n") : "";
   try {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_REFILL,
       // K106: two more than needed, since some may be the same as a kept question in other words
-      user: `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n<kept>${sanitizeTagged(JSON.stringify(kept))}</kept>\n<count>${n + 2}</count>`,
+      user: (numbered
+        ? `<material>\n${sanitizeTagged(numbered)}\n</material>\n<used_sentences>${used.join(", ")}</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n`
+        : `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n`) +
+        `<kept>${sanitizeTagged(JSON.stringify(kept))}</kept>\n<count>${n + 2}</count>`,
       maxTokens: 150 + (n + 2) * 80,
       cacheSystem: true,
       model: cfg.answerModel,
@@ -427,7 +434,7 @@ export async function finalCheck(
   parts: number[],
   material: string,
   signal?: AbortSignal,
-): Promise<{ questions: string[]; parts: number[]; usage: StepUsage | null; fixed: number; dropped: number }> {
+): Promise<{ questions: string[]; parts: number[]; usage: StepUsage | null; fixed: number; dropped: number; used?: number[] }> {
   if (questions.length < 2 || !material) return { questions, parts, usage: null, fixed: 0, dropped: 0 };
   try {
     const r = await runLLM(provider, {
@@ -485,10 +492,12 @@ export async function finalCheck(
       left.set(p, (left.get(p) ?? 0) - 1);
       gone.push(i);
     }
+    // K108: the sentences the kept questions already ask about (the refill goes to other sentences)
+    const used = [...new Set(out.flatMap((_, i) => (gone.includes(i) ? [] : src.get(i) ?? [])))].sort((a, b) => a - b);
     return {
       questions: out.filter((_, i) => !gone.includes(i)),
       parts: parts.filter((_, i) => !gone.includes(i)),
-      usage: r.usage, fixed, dropped: gone.length,
+      usage: r.usage, fixed, dropped: gone.length, used,
     };
   } catch (e) {
     console.warn("drill_final_check_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
@@ -1211,7 +1220,7 @@ export async function handleDrill(
       // K106 (Oscar's K102 omtest F3: printing 13/14, ljud 11/12): also what the coverage calls left short
       const missing = Math.max(fc.dropped, target - qs.length);
       if (missing > 0) {
-        const rf = await refillQuestions(provider, cfg, qs, missing, material, signal);
+        const rf = await refillQuestions(provider, cfg, qs, missing, material, signal, fc.used ?? []);
         if (rf.usage) steps.push(rf.usage);
         if (rf.questions.length) {
           const at = parts.length > 1 ? placeQuestions(rf.questions, parts) : rf.questions.map(() => 0);
