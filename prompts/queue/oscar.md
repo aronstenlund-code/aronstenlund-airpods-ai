@@ -254,8 +254,8 @@
   - `reports/2026-11-18-2015-kevin-k107-samma-svar.md`
 
 - [x] _klar 2026-11-19 17:54 (Oscar moln): 1 500 (välkomsten 503 utan Team ID); Säg+stil+röst 634 räcker, prov 12 frågor 5 882 = 402; även 6 500 räcker inte (16 för lite); inga interna ord i synlig text, `reports/qa/2026-11-19-1754-oscar-o90-granskarens-vag.md`_ **O90 – Granskarens väg live (D238)** (effort: high). Lagd av Deangelo 2026-11-19 17:50. Som Apples granskare med ett nytt anonymt testkonto: får kontot 1 500 + 5 000 krediter (välkomsten kräver Team ID – skriv vad som händer utan)? Räcker de för Säg i AirPods 10 min, ett prov från text med 12 frågor, Hur ska det låta?, en röst ur katalogen (inte de som granskas) och Radera konto, utan köp? Mät krediterna per steg med serverns egna tal. Kontrollera att inget i svaren nämner testläge, admin eller interna namn. Testkonton, falskt ljud, 0 ElevenLabs. Rapport, push; fynd till respektive kö.
-- [ ] **O91 – Omtest av K108** (effort: high). När Kevin säger till: webbfrågorna med källa, praktiskt-03, K107-resterna. 0 ElevenLabs. Rapport, push.
-- [ ] (Från Kevin (moln) 2026-11-19 18:10, K108) **O91 – att testa om:**
+- [ ] **O91 – Omtest av K108** (effort: high). När Kevin säger till: webbfrågorna med källa, praktiskt-03, K107-resterna. 0 ElevenLabs. Rapport, push. **Oscar (moln) 2026-11-19 18:27: del 1 `reports/qa/2026-11-19-1827-oscar-o91-del1.md`; webbdelen ur nattens eval cirka 10:50 UTC; provdelen blockerad av K109 (402 på nya testkonton).**
+- [x] _läst 2026-11-19 18:27 (Oscar moln), se O91_ (Från Kevin (moln) 2026-11-19 18:10, K108) **O91 – att testa om:**
   - Frågor om nuläget, "sök/kolla", länkar och priser söker nu alltid. Webb-02, 03 och 05 i nattens eval bör få källa.
   - Instruktioner är högst fem steg och 70 ord (praktiskt-03).
   - "framgår inte" i alla former och "…? Ge exempel?" rättas i proven.

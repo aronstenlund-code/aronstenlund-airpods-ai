@@ -304,8 +304,8 @@ export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
 - At least half of the questions must be understanding questions (why, how, explain, compare, what followed). When fewer are, rewrite plain recall questions (what is, when, who, which) into understanding questions the material carries, the earliest first, until half are.
 - A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {"i": N, "drop": true, "same_as": M}. Two questions on one topic that ask different things both stay.
 - A question the material does not answer (a how or why whose way or cause it never gives): rewrite it into one about the same part that the material answers (D230 forms first). A question that asks two things, of which the material answers one: keep only that one (K106, Oscar).
-- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return "sources": [{"i": N, "s": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer, the sentence that holds the main answer first. Two questions answered by the same sentence(s) ask the same thing for the student, even when worded differently.
-- Never change anything else: same language, same length or shorter, clear when only heard. Return {"questions": [...], "sources": [...]}. No other text.`;
+- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return "sources": [{"i": N, "s": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer, the sentence that holds the main answer first, and "a": the right answer in one short sentence, in the exam's language, said the way the material says it (K109). Two questions answered by the same sentence(s), or with the same answer, ask the same thing for the student, even when worded differently.
+- Never change anything else: same language, same length or shorter, clear when only heard. Return {"questions": [...], "sources": [{"i": N, "s": [...], "a": "..."}, ...]}. No other text.`;
 
 /**
  * K106 (Oscar's K102 omtest F1, Vasa 14: "Vad var fogdarnas uppgift …, och varför skapade han en egen här?" was answered
@@ -440,7 +440,7 @@ export async function finalCheck(
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_FINAL_CHECK,
       user: `<material>\n${sanitizeTagged(numberedSentences(material).map((t, k) => `[${k + 1}] ${t}`).join("\n"))}\n</material>\n<questions>${sanitizeTagged(JSON.stringify(questions.map((q, i) => ({ i, q }))))}</questions>`,
-      maxTokens: 200 + questions.length * 75,
+      maxTokens: 200 + questions.length * 110, // K109: + a one-sentence answer per question
       cacheSystem: true,
       model: cfg.answerModel,
       timeoutMs: 40_000,
@@ -451,10 +451,13 @@ export async function finalCheck(
     let fixed = 0;
     const reply = firstJson(r.text);
     const src = new Map<number, number[]>();
+    const ans = new Map<number, string>();
     for (const x of Array.isArray(reply?.sources) ? reply!.sources as Record<string, unknown>[] : []) {
       const i = Number(x?.i);
       const ss = Array.isArray(x?.s) ? (x!.s as unknown[]).map(Number).filter((k) => Number.isInteger(k) && k > 0).slice(0, 3) : [];
       if (Number.isInteger(i) && i >= 0 && i < questions.length && ss.length) src.set(i, ss);
+      const a = typeof x?.a === "string" ? x.a.trim().slice(0, 400) : "";
+      if (Number.isInteger(i) && i >= 0 && i < questions.length && a) ans.set(i, a);
     }
     for (const x of Array.isArray(reply?.questions) ? reply!.questions as Record<string, unknown>[] : []) {
       const i = Number(x?.i);
@@ -480,6 +483,20 @@ export async function finalCheck(
         }
       }
     }
+    // K109 (D239): the same one-sentence answer as an earlier question that stays (k102-measure's measure) = the same
+    // question, also when the sentences differ (Oscar's ekosystem 5/6/7)
+    let sameAns = 0;
+    for (let i = 1; i < out.length; i++) {
+      if (drop.has(i) || !ans.has(i)) continue;
+      for (let k = 0; k < i; k++) {
+        if (!drop.has(k) && ans.has(k) && sameAnswer(ans.get(k)!, ans.get(i)!)) {
+          drop.add(i);
+          sameAns++;
+          break;
+        }
+      }
+    }
+    if (sameAns) console.log("drill_same_answer", JSON.stringify({ dropped: sameAns, answers: ans.size, questions: out.length }));
     if (sameSrc) console.log("drill_same_source", JSON.stringify({ dropped: sameSrc, sources: src.size, questions: out.length }));
     // never the first, at most a third, and never the last question of a part (every part keeps one)
     const left = new Map<number, number>();
@@ -1028,6 +1045,37 @@ export function drillImages(pages: unknown): Img[] {
 }
 
 /** The cost weight of an action in the exam rate limiter (a drill is several model calls). */
+/**
+ * K109 (D239, Oscar O90): what a drill will cost in credits, estimated before any model call, so that no exam is made
+ * that the credits cannot save. Credits are the shown characters of new audio (K90, the same count as action "cost"):
+ * a question's text and its long answer. Measured live (O90): 12 questions at 90 words cost 5 882, about 490 each, so a
+ * question is counted as 60 characters and a long answer as 4.8 characters per word (492 at 90 words).
+ */
+export const COST_QUESTION_CHARS = 60;
+export const COST_CHARS_PER_WORD = 4.8;
+export function estimatedCostPerQuestion(longWords: number): number {
+  return COST_QUESTION_CHARS + Math.round(COST_CHARS_PER_WORD * longWords);
+}
+
+/** K109: the estimate for a drill or drill_answers request: how many questions, the cost and the cost per question. */
+export function estimateDrillCost(action: string, b: Record<string, unknown>): { count: number; cost: number; per: number } | null {
+  const longWords = intIn(b.long_words, DRILL_LIMITS.longWordsMin, DRILL_LIMITS.longWordsMax, DRILL_LIMITS.longWordsDefault);
+  const long = Math.round(COST_CHARS_PER_WORD * longWords);
+  if (action === "drill") {
+    const count = intIn(b.questions, DRILL_LIMITS.questionsMin, DRILL_LIMITS.questionsMax, DRILL_LIMITS.questionsDefault);
+    const per = estimatedCostPerQuestion(longWords);
+    return { count, cost: count * per, per };
+  }
+  if (action === "drill_answers") {
+    const items = (Array.isArray(b.items) ? b.items : []).slice(0, DRILL_LIMITS.questionsMax + DRILL_LIMITS.extraQuestions);
+    if (!items.length) return null;
+    const qs = items.map((i) => typeof (i as { question?: unknown })?.question === "string" ? ((i as { question: string }).question.trim().length) : COST_QUESTION_CHARS);
+    const cost = qs.reduce((a, n) => a + n + long, 0);
+    return { count: items.length, cost, per: Math.ceil(cost / items.length) };
+  }
+  return null;
+}
+
 export const DRILL_WEIGHT: Record<string, number> = { drill: 4, drill_answers: 3, drill_one: 1 };
 
 export async function handleDrill(
