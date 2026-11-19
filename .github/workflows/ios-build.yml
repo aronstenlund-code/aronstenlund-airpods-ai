@@ -248,8 +248,10 @@ jobs:
             [ -d "$PKG" ] || continue
             echo "-- $(basename "$PKG")"
             find "$PKG" -name PrivacyInfo.xcprivacy | sed 's/^/   manifest: /'
-            (grep -rEl "$APIS" "$PKG" --include='*.swift' --include='*.m' --include='*.mm' --include='*.c' --include='*.cpp' --include='*.h' 2>/dev/null \
-              | grep -v '/Tests/' | head -15 | sed 's/^/   uses: /') || true
+            # The lines themselves, so the log says which API it is. Only what is compiled into the app: not the
+            # package's tests, examples and demo projects.
+            (grep -rEn "$APIS" "$PKG" --include='*.swift' --include='*.m' --include='*.mm' --include='*.c' --include='*.cpp' --include='*.h' 2>/dev/null \
+              | grep -vE '/Tests/|/Examples/|/DemoProjects/|\.xcframework/' | head -25 | cut -c1-260 | sed 's/^/   uses: /') || true
           done
           echo "== Packages (binary): their own manifest, and required reason APIs in the binary"
           find DerivedData-release/SourcePackages/artifacts -name "*.xcframework" 2>/dev/null | while read -r FW; do
