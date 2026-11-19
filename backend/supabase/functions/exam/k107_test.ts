@@ -67,3 +67,23 @@ Deno.test("K108 (Oscar omtest K107): 'framgår inte av detta' is unanswered; '�
   assert(notAnswered("Det är inte känt varför."));
   assertEquals(oneAsk("Vad skiljer en förstahandskonsument från en andrahandskonsument? Ge exempel?"), "Vad skiljer en förstahandskonsument från en andrahandskonsument?");
 });
+
+Deno.test("K108 (live 16:52): the refill gets numbered sentences and the ones already asked about", async () => {
+  const { refillQuestions } = await import("./drill.ts");
+  const seen: LLMRequest[] = [];
+  const llm: LLMProvider = {
+    name: "fake", model: "sonnet-fake",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      seen.push(req);
+      yield { type: "text", text: JSON.stringify({ questions: ["Vad gör nedbrytarna med döda djur?"] }) } as LLMChunk;
+    },
+  };
+  const r = await refillQuestions(llm, DEFAULT_DRILL_CONFIG, ["Vad händer med energin?"], 1, MATERIAL, undefined, [3]);
+  assertEquals(r.questions, ["Vad gör nedbrytarna med döda djur?"]);
+  assert(seen[0].user.includes("<used_sentences>3</used_sentences>"));
+  assert(seen[0].user.includes("[5] Nedbrytare bryter ner döda växter och djur."));
+  // without used sentences the material goes as before
+  seen.length = 0;
+  await refillQuestions(llm, DEFAULT_DRILL_CONFIG, ["Vad händer med energin?"], 1, MATERIAL);
+  assert(!seen[0].user.includes("<used_sentences>"));
+});
