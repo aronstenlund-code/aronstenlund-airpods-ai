@@ -59,3 +59,12 @@ Körning: apptest-t55 44575920772 på toby/t55 (SayFlowTests, LUMEN_T36_REVIEW).
 ## Nästa
 - T55 (2): när A153 är på main, T53 på iPhone 17 Pro och SE vid AX5. Spela ska nås utan att testet döljer tangentbordet.
 - En körning med välkomstkrediterna kräver App Attest, alltså enhet och Kevins APPLE_TEAM_ID. Den kan inte göras i Simulator.
+
+## Tillägg 19:30 (Kevins svar)
+- **1 909 för 5 frågor stämmer** (cirka 380 tecken per fråga och långt svar).
+  - Sedan K109 (main 18:55) svarar servern 402 med `fits` innan provet görs, och ett nytt konto får `fits: 3`.
+  - Att Starta prov inte visade något är appens del (A154, Angela Fable). Granskarens väg är D239.
+- **Servern drar och behåller.** Att kapseln visade 1 500 efter omstarten tyder enligt Kevin på **ett nytt anonymt konto efter omstarten** (untested assumption).
+  - Senaste hade kvar texten, alltså den lokala datan, men kontot kan ha bytts.
+  - Det vore ett riktigt problem: en omstart får inte ge ett nytt konto.
+  - Nästa T55-körning ska logga kontots id före och efter omstarten. Appens Auth:-rader loggas inte på nivån info, så jag ber Angela Schrute om en rad med kontots id på info, eller använder Kevins serverlogg (`test_request … user`).
