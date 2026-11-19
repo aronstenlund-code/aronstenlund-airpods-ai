@@ -29,7 +29,9 @@ import Testing
     }
 
     /// The reasons, as Apple's codes: the app's own settings and the widget's shared ones, the sound cache's file
-    /// dates (inside the app's container), and time between events in the app (the playback latency).
+    /// dates (inside the app's container), time between events in the app (the playback latency), and free disk space
+    /// before a file is written. The last one is FluidAudio's code (it has no manifest of its own and is linked into
+    /// the app): it checks the space before a model download, which EarMind never asks it for.
     @Test func everyRequiredReasonAPITheCodeUsesHasItsReason() throws {
         let entries = try manifest()["NSPrivacyAccessedAPITypes"] as? [[String: Any]] ?? []
         var reasons: [String: Set<String>] = [:]
@@ -41,6 +43,7 @@ import Testing
             "NSPrivacyAccessedAPICategoryUserDefaults": ["CA92.1", "1C8F.1"],
             "NSPrivacyAccessedAPICategoryFileTimestamp": ["C617.1"],
             "NSPrivacyAccessedAPICategorySystemBootTime": ["35F9.1"],
+            "NSPrivacyAccessedAPICategoryDiskSpace": ["E174.1"],
         ])
     }
 

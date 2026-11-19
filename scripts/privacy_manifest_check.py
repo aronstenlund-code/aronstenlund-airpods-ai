@@ -41,6 +41,16 @@ DATA_TYPES = {
 }
 PURPOSES = {"ThirdPartyAdvertising", "DeveloperAdvertising", "Analytics", "ProductPersonalization", "AppFunctionality", "Other"}
 
+# Code from packages fetched at build time that is linked statically into a target, so the target's manifest has to
+# answer for it (the package has no manifest of its own). Found by the build step "Privacy manifests are in the
+# Release app (A152)", which prints the lines; checked again there on every build.
+#   FluidAudio (Sources/FluidAudio/ASR/LFM3Audio/LFM3AudioConfig.swift:81, revision ee78635d): reads
+#   volumeAvailableCapacityKey of the caches folder before a model is downloaded (reason E174.1: enough space to
+#   write files). EarMind uses only the package's voice activity detection and never calls it.
+LINKED_PACKAGE_CODE = {
+    "Lumen": {"DiskSpace": "FluidAudio/Sources/FluidAudio/ASR/LFM3Audio/LFM3AudioConfig.swift:81 (linked package)"},
+}
+
 # Target -> (its manifest, the source folders compiled into its executable). The local packages are linked
 # statically into the app, so their code is the app's.
 TARGETS = {
@@ -88,6 +98,8 @@ def check(target, manifest_path, folders):
         name = entry.get("NSPrivacyAccessedAPIType", "")
         declared[name.removeprefix(PREFIX)] = set(entry.get("NSPrivacyAccessedAPITypeReasons", []))
     in_code = used(folders)
+    for name, place in LINKED_PACKAGE_CODE.get(target, {}).items():
+        in_code.setdefault(name, []).append(place)
 
     for name, places in in_code.items():
         if name not in declared:

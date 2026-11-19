@@ -238,6 +238,9 @@ jobs:
           check "$RELEASE/PrivacyInfo.xcprivacy" Lumen/Resources/PrivacyInfo.xcprivacy
           check "$RELEASE/PlugIns/LumenControls.appex/PrivacyInfo.xcprivacy" LumenControls/PrivacyInfo.xcprivacy
           plutil -p "$RELEASE/PrivacyInfo.xcprivacy"
+          # What the app's own binary really imports of the required reason APIs (the linker drops unused code).
+          echo "== Required reason API symbols the Release binary imports"
+          (nm -u "$RELEASE/Lumen" 2>/dev/null | grep -E "NSUserDefaults|mach_absolute_time|systemUptime|NSURLContentModificationDateKey|NSURLCreationDateKey|NSFileModificationDate|NSFileCreationDate|NSURLVolume|NSFileSystemFreeSize|NSFileSystemSize|statfs|statvfs|_stat\$|_fstat\$|_lstat\$|activeInputModes" | sort -u | sed 's/^/  /') || true
           echo "== Every privacy manifest in the Release app"
           find "$RELEASE" -name PrivacyInfo.xcprivacy | sed 's/^/  /'
           echo "== Frameworks and bundles in the Release app"
