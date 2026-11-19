@@ -246,14 +246,20 @@ final class SayFlowTests: XCTestCase {
     /// Run 44439180352 (AX5): `app.keyboards` was empty while the keyboard's keys (skift, retur) stood in the tree and
     /// covered Spela. Look for the keys too.
     private var keyboardUp: Bool {
-        app.keyboards.count > 0 || app.buttons["retur"].exists || app.buttons["skift"].exists || app.buttons["return"].exists
+        if app.keyboards.count > 0 { return true }
+        // Run 44444292610: neither app.keyboards nor app.buttons["retur"] saw the keys, but the tree did.
+        let keys = Self.labels(in: app.debugDescription, kind: "Button")
+        return keys.contains("retur") || keys.contains("skift") || keys.contains("return")
     }
 
     private func hideKeyboard() {
         guard keyboardUp else { return }
         for attempt in 0..<3 {
             switch attempt {
-            case 0: app.staticTexts["Prov"].firstMatch.exists ? app.staticTexts["Prov"].firstMatch.tap() : app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.07)).tap()
+            case 0:
+                // A text that is not a control: "Kom förberedd till provet" stands under the card.
+                let plain = app.staticTexts["Kom förberedd till provet"].firstMatch
+                if plain.exists, plain.isHittable { plain.tap() } else { app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.07)).tap() }
             case 1: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.07)).tap()
             default: app.swipeDown(velocity: .slow)
             }
