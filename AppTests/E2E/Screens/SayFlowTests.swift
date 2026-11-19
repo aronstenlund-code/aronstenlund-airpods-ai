@@ -27,7 +27,9 @@ final class SayFlowTests: XCTestCase {
     private var unclear: [String] = []
     private var out: URL!
 
-    static let text = "Klorofyllet i bladen fångar ljuset. Växten gör socker av vatten och koldioxid."
+    /// T44 (Kevin 2026-11-17 16:40): sound that already exists is free (D213), so the text gets a part of its own each
+    /// run; otherwise the capsule never goes down with x-earmind-test.
+    static let text = "Klorofyllet i bladen fångar ljuset. Växten gör socker av vatten och koldioxid. Körning \(Int(Date().timeIntervalSince1970) % 1_000_000)."
 
     func testSay() throws {
         continueAfterFailure = true
@@ -40,6 +42,18 @@ final class SayFlowTests: XCTestCase {
         addTeardownBlock { @MainActor [weak self] in
             self?.finish()
         }
+        // T53 (A148, Kelly Ke79): t53.sh runs the same class with the largest text (simctl content_size AX XXXL) and
+        // only the accessibility sections.
+        if env["LUMEN_T36_A11Y"] == "1" {
+            launch(header)
+            guard section("Första starten till Start (AX5)", { firstStart() }) else { return }
+            section("Första skärmen: VoiceOver-orden (Ke79)", { a11yFirstScreen() })
+            section("Kortet som spelar: en mening (Ke79 punkt 9)", { a11yPlayingCard() })
+            section("Senaste: hela texten och stilen (Ke79 punkt 4)", { a11yRecents() })
+            section("Kreditbladet och köpdelen (Ke79)", { a11yCredits() })
+            section("Radera konto: orden (A145, Ke79)", { a11yDeleteAccount() })
+            return
+        }
         launch(header)
         guard section("Första starten till Start", { firstStart() }) else { return }
         guard section("Säg i AirPods: skriv en text", { writeText() }) else { return }
@@ -48,11 +62,13 @@ final class SayFlowTests: XCTestCase {
         section("Pausa och hoppa (1 och 2 tryck)", { pauseAndSkip() })
         section("Senaste lägger tillbaka texten, inget Nästa prov (A132)", { recentsPutBack() })
         section("Utan nät: samma text spelas, en ny säger till efter 10 s (A135)", { offlineSay() })
+        section("Långsamt ljud: 8 s och 25 s (A144, D225)", { slowSound() })
         section("Stil och Skriv i takt (A136, A140)", { styleAndPace() })
         section("Fältet växer högst 5 rader (A132)", { fieldStopsGrowing() })
         section("Krediter, + och Klistra in länk (A116, A117)", { plusLinkAndCredits() })
         section("Nytt prov: Klistra in länk finns (A116)", { newDrillLinkRow() })
         section("Krediter: köpbladet (A134, A141)", { shopSheet() })
+        section("Radera konto (A145, K101)", { deleteAccount() })
         section("Ta bort i Senaste", { cleanUp() })
     }
 
@@ -85,6 +101,8 @@ final class SayFlowTests: XCTestCase {
         log.append("T36 field value: \(value)")
         if !value.contains("Klorofyllet") { return miss("the text did not get into the field (value '\(value)')") }
         // A132 (Ke72): the cost stands by the button as "120 krediter" (or "… · du har 88").
+        creditsAtStart = creditsLeft()
+        pause(1.5) // the cost comes from the server about 0,7 s after the last key (A132 point 8)
         let cost = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.contains("krediter") && !$0.contains("kvar") }
         log.append("T46 cost by the button: \(cost ?? "-")")
         if cost == nil, find(["Räknas som 1 fråga*", "Kostar *"]) == nil { note("no cost by Spela ('N krediter', A132)") }
@@ -103,6 +121,7 @@ final class SayFlowTests: XCTestCase {
     static let cardText = [text, "Klorofyllet i bladen fångar ljuset.*"]
 
     private var lockLineBefore = false
+    private var creditsAtStart: Int?
 
     /// Taps "Spela i 10 min" and waits for the card's "Spelar i AirPods" (or "Gör ljudet …") on Start.
     private func playFromCard() -> Bool {
@@ -115,19 +134,29 @@ final class SayFlowTests: XCTestCase {
         let end = Date().addingTimeInterval(60)
         var up = false
         var retried = false
+        var slowSeen = false
         repeat {
             up = text(starting: "Spelar i AirPods") != nil || text(starting: "Gör ljudet") != nil || timeLeft() != nil
             // Run 44230731193: 20 s after the network came back the first try said "Ljudet kunde inte hämtas. Kolla
             // nätet." with Försök igen. Try again once, and say so. Angela Fable 07:19: with the network up the line is
             // "Det tar längre tid än vanligt. Försök igen om en stund."
-            if !up, !retried, let line = text(starting: "Ljudet kunde inte hämtas") ?? text(starting: "Det tar längre tid än vanligt") {
+            if !up, !slowSeen, let slow = text(starting: "Det tar längre tid än vanligt") {
+                // D225/A144 (Angela Fable 10:36): after 8 s this stands while the spinner goes on; not an end.
+                slowSeen = true
+                log.append(String(format: "T50 '%@' after %.0f s; still waiting", slow, 60 - end.timeIntervalSinceNow))
+            }
+            if !up, !retried, let line = text(starting: "Ljudet kunde inte hämtas") {
                 retried = true
                 note("Spela said '\(line)'; tapped Försök igen once")
                 tap(["Försök igen"], "Försök igen", counted: false, quiet: true)
             }
             if !up { pause(2) }
         } while !up && Date() < end
-        if up { answerReminder(); return true }
+        if up {
+            // K100 (D225): a new text is saved and started in one call, so Spela should answer in a few seconds.
+            log.append(String(format: "K100 Spela → '%@' after %.1f s", text(starting: "Spelar i AirPods") ?? text(starting: "Gör ljudet") ?? timeLeft() ?? "-", 60 - end.timeIntervalSinceNow))
+            answerReminder(); return true
+        }
         screen("ingen-spelning", "Spela did not show 'Spelar i AirPods' on the card")
         return miss("no 'Spelar i AirPods' on the card after Spela")
     }
@@ -142,8 +171,11 @@ final class SayFlowTests: XCTestCase {
     }
 
     /// The card's time line, "7:32 kvar" or "7:32 kvar · pausad".
+    /// A148 (Ke79 point 9, run 44424911694): the card is one element, "Spelar i AirPods med Adam, 9 minuter kvar"
+    /// (", pausad" when paused); before it the clock stood alone, "9:55 kvar".
     private func timeLeft() -> String? {
         Self.labels(in: app.debugDescription, kind: "StaticText").first { label in
+            if label.contains(" minuter kvar") || label.contains(" minut kvar") || label.contains("sekunder kvar") { return true }
             guard let range = label.range(of: " kvar") else { return false }
             let clock = label[..<range.lowerBound]
             return clock.contains(":") && clock.allSatisfy { $0.isNumber || $0 == ":" }
@@ -190,7 +222,14 @@ final class SayFlowTests: XCTestCase {
             guard playFromCard() else { return false }
         }
         guard tap(Self.cardText, "the text on the card (opens the player)") else { return false }
-        guard waitText(starting: "Varv 1", 20) || lapAtLeast(1) != nil else { screen("utan-varv", "No Varv line"); return miss("the text on the card did not open the player with 'Varv 1'") }
+        if !(waitText(starting: "Varv 1", 20) || lapAtLeast(1) != nil) {
+            // Angela Fable 03:20: seen twice, a tap on the card's text that did not open the player while the next one
+            // did. Say so (with the time, for the app's "Say: the text on the card pressed" line) and tap once more.
+            screen("utan-varv", "No Varv line after the first tap on the card's text")
+            note(String(format: "the first tap on the card's text did not open the player (at %.1f s); tapped again", Date().timeIntervalSince(started)))
+            guard tap(Self.cardText, "the text on the card, again", counted: false) else { return false }
+            guard waitText(starting: "Varv 1", 20) || lapAtLeast(1) != nil else { return miss("two taps on the card's text did not open the player with 'Varv 1'") }
+        }
         log.append("T36 repeat: \(lapAtLeast(1) ?? "-")")
         screen("varv-1", "The player from the card, Varv 1")
         // Run 44009183791: with fake audio the laps go by in about a second, so any lap from 2 on counts.
@@ -201,6 +240,28 @@ final class SayFlowTests: XCTestCase {
         log.append("T36 repeat: \(lap2)")
         screen("varv-2", "The player, Varv 2")
         return true
+    }
+
+    /// Hides the keyboard without typing into the field: a tap on the screen's title area.
+    /// Run 44439180352 (AX5): `app.keyboards` was empty while the keyboard's keys (skift, retur) stood in the tree and
+    /// covered Spela. Look for the keys too.
+    private var keyboardUp: Bool {
+        app.keyboards.count > 0 || app.buttons["retur"].exists || app.buttons["skift"].exists || app.buttons["return"].exists
+    }
+
+    private func hideKeyboard() {
+        guard keyboardUp else { return }
+        for attempt in 0..<3 {
+            switch attempt {
+            case 0: app.staticTexts["Prov"].firstMatch.exists ? app.staticTexts["Prov"].firstMatch.tap() : app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.07)).tap()
+            case 1: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.07)).tap()
+            default: app.swipeDown(velocity: .slow)
+            }
+            testTaps += 1
+            pause(1)
+            if !keyboardUp { break }
+        }
+        log.append("keyboard hidden: \(!keyboardUp)")
     }
 
     /// Run 44159967813 (slow Simulator, 112 s to Start): typeText failed with "Neither element nor any descendant has
@@ -252,15 +313,22 @@ final class SayFlowTests: XCTestCase {
     }
 
     /// Senaste's capsules (buttons) for the test text: "Klorofyllet i bladen få…".
+    /// Angela Fable 02:10 (run 44430660402): since Ke79 a capsule reads the whole text (", <stil eller röst>" after
+    /// it), not "Klorofyllet i bladen få…". While a text plays the card's own text button has the same label, so one
+    /// is taken away then.
     private func recentCapsules() -> [String] {
-        Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Klorofyllet") && $0.contains("…") && $0.count < 60 }
+        var all = Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Klorofyllet") }
+        if timeLeft() != nil || text(starting: "Gör ljudet") != nil || text(starting: "Spelar i AirPods") != nil,
+           let card = all.firstIndex(of: Self.text) { all.remove(at: card) }
+        return all
     }
 
     /// Run 44163010444: the deletes did nothing (110 characters after "clearing" 78): a tap puts the cursor where it lands.
     /// Put it at the end first (bottom right of the field), then delete; check, and say so if text is left.
     private func clearField() {
+        guard field.exists else { return }
         let value = (field.value as? String) ?? ""
-        guard value.contains("Klorofyllet") || value.contains("Bladen") || value.localizedCaseInsensitiveContains("example") else { return }
+        guard value.contains("Klorofyllet") || value.contains("Bladen") || value.contains("Långsamt") || value.localizedCaseInsensitiveContains("example") else { return }
         guard focusField("Säg i AirPods (to clear it)", counted: false) else { return }
         for _ in 0..<2 {
             field.coordinate(withNormalizedOffset: CGVector(dx: 0.97, dy: 0.95)).tap(); testTaps += 1
@@ -269,7 +337,7 @@ final class SayFlowTests: XCTestCase {
             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: now.count + 5))
             pause(1)
             let left = (field.value as? String) ?? ""
-            if !(left.contains("Klorofyllet") || left.contains("Bladen") || left.localizedCaseInsensitiveContains("example")) { return }
+            if !(left.contains("Klorofyllet") || left.contains("Bladen") || left.contains("Långsamt") || left.localizedCaseInsensitiveContains("example")) { return }
         }
         log.append("clearField: text left in the field: \(((field.value as? String) ?? "").prefix(40))")
     }
@@ -282,6 +350,10 @@ final class SayFlowTests: XCTestCase {
         var ok = true
         let texts = Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Other")
         let examHeads = texts.filter { ["nästa prov", "andra prov"].contains($0.lowercased()) }
+        pause(3)
+        let afterPlay = creditsLeft()
+        log.append("T44 capsule: \(creditsAtStart.map(String.init) ?? "-") before the first Spela of a new text, \(afterPlay.map(String.init) ?? "-") after Stoppa")
+        if let a = creditsAtStart, let b = afterPlay, b >= a { note("T44: the capsule did not go down after a new text (\(a) → \(b))") }
         log.append("T46 exam headings on Start after a said text: \(examHeads.isEmpty ? "none" : examHeads.joined(separator: ", "))")
         if !examHeads.isEmpty { ok = miss("a said text shows as \(examHeads.joined(separator: "/")) (A132: only in Senaste)") }
         let capsules = recentCapsules()
@@ -329,6 +401,9 @@ final class SayFlowTests: XCTestCase {
         guard focusField("Säg i AirPods (a new text, offline)") else { return miss("the field got no keyboard") }
         field.typeText(fresh)
         pause(1)
+        // Angela Fable 00:15: log the button before the press; the keyboard is hidden first so the tap reaches Spela.
+        hideKeyboard()
+        if let play = find(Self.playLabels) { log.append("T49 Spela before the press offline: '\(play.label)', enabled \(play.isEnabled), hittable \(play.isHittable)") }
         let t1 = Date()
         guard tap(Self.playLabels, "Spela i … (offline, a new text)") else { return false }
         var said: String?
@@ -348,6 +423,50 @@ final class SayFlowTests: XCTestCase {
         let capsules = recentCapsules()
         log.append("T49 Senaste after the offline tries: \(capsules)")
         if capsules.count > 1 { ok = miss("Senaste shows the text \(capsules.count) times (A135: once)") }
+        return ok
+    }
+
+    /// D225/A144 with fake times: `x-earmind-test: slow` keeps the drill files pending (K64), so a new text never gets
+    /// its sound. After 8 s "Det tar längre tid än vanligt." stands while the spinner goes on; only after 25 s comes
+    /// "Ljudet kunde inte hämtas." with Försök igen. The app is relaunched with LUMEN_TEST_HEADER=slow and back after.
+    private func slowSound() -> Bool {
+        launch("slow")
+        defer { launch(header); _ = wait(["Nytt prov"], 15) }
+        guard wait(["Nytt prov"], 20) != nil else { return miss("Start not shown after the relaunch with slow") }
+        var ok = true
+        clearField()
+        let slowText = "Långsamt ljud \(Int(Date().timeIntervalSince1970) % 1_000_000). Rötterna tar upp vatten."
+        guard focusField("Säg i AirPods (slow)") else { return miss("the field got no keyboard") }
+        field.typeText(slowText)
+        pause(1.5)
+        guard tap(Self.playLabels, "Spela i … (slow)") else { return false }
+        let t0 = Date()
+        var slowAt: Double?
+        var failAt: Double?
+        var playedAt: Double?
+        while Date().timeIntervalSince(t0) < 45, failAt == nil {
+            let now = Date().timeIntervalSince(t0)
+            if slowAt == nil, text(starting: "Det tar längre tid än vanligt") != nil { slowAt = now }
+            if text(starting: "Ljudet kunde inte hämtas") != nil { failAt = now }
+            if playedAt == nil, text(starting: "Spelar i AirPods") != nil { playedAt = now }
+            pause(0.5)
+        }
+        let retry = find(["Försök igen"]) != nil
+        log.append(String(format: "A144 slow: 'Det tar längre tid än vanligt.' at %@ s, 'Ljudet kunde inte hämtas.' at %@ s, Försök igen %@, playing %@",
+                          slowAt.map { String(format: "%.1f", $0) } ?? "-", failAt.map { String(format: "%.1f", $0) } ?? "-",
+                          retry ? "yes" : "no", playedAt.map { String(format: "at %.1f s", $0) } ?? "no"))
+        let waitingCard = text(starting: "Gör ljudet") != nil
+        log.append("A144 slow: the card shows 'Gör ljudet …' while waiting: \(waitingCard), \(timeLeft() ?? "-")")
+        screen("langsamt", "Slow sound: after the wait")
+        if let a = slowAt { if a < 6 || a > 12 { ok = miss(String(format: "'Det tar längre tid än vanligt.' came after %.1f s (A144: 8 s)", a)) } }
+        else { ok = miss("no 'Det tar längre tid än vanligt.' in 45 s") }
+        if let b = failAt { if b < 22 || b > 32 { ok = miss(String(format: "'Ljudet kunde inte hämtas.' came after %.1f s (A144: 25 s)", b)) } }
+        else { ok = miss("no 'Ljudet kunde inte hämtas.' in 45 s") }
+        if failAt != nil, !retry { ok = miss("no Försök igen with 'Ljudet kunde inte hämtas.'") }
+        // Run 44283940066: with K100 the card goes to its playing state ("Gör ljudet …", the time counting down) and
+        // the field is gone, so stop first.
+        stopOnCard()
+        if field.exists { clearField() }
         return ok
     }
 
@@ -423,7 +542,14 @@ final class SayFlowTests: XCTestCase {
     }
 
     private func shopSheetOpen(before: Int?) -> Bool {
-        pause(3)
+        // Run 44300125934: after 3 s neither the products nor Fable's line were there; StoreKit may take longer. Wait
+        // up to 15 s for one of them.
+        let shopEnd = Date().addingTimeInterval(15)
+        repeat {
+            let t = app.debugDescription
+            if t.contains("Paketen kunde inte hämtas") || t.contains("label: 'Köp ") { break }
+            pause(1)
+        } while Date() < shopEnd
         var ok = true
         let tree = app.debugDescription
         let all = (Self.labels(in: tree, kind: "StaticText") + Self.labels(in: tree, kind: "Button") + Self.labels(in: tree, kind: "Link"))
@@ -440,18 +566,26 @@ final class SayFlowTests: XCTestCase {
         let hard = missing.filter { !needsProducts.contains($0) }
         if !hard.isEmpty { ok = miss("Krediter lacks \(hard.joined(separator: ", "))") }
         if buys.isEmpty, !missing.isEmpty { note("no products in Krediter, so Fyll på and Varje vecka are not there (\(missing.joined(separator: ", ")))") }
+        // Angela Fable 09:28 (T48): without products Fyll på stays with "Paketen kunde inte hämtas från App Store just nu."
+        // and Försök igen.
+        if buys.isEmpty {
+            let said = all.first { $0.hasPrefix("Paketen kunde inte hämtas") }
+            log.append("T48 without products: \(said ?? "no line")")
+            if said == nil { ok = miss("no products and no 'Paketen kunde inte hämtas från App Store just nu.' in Krediter") }
+        }
         // Återställ köp: no purchases on this Simulator.
         if tap(["Återställ köp"], "Återställ köp") {
             var line: String?
             let end = Date().addingTimeInterval(20)
             repeat { line = text(starting: "Det fanns inga köp") ?? text(starting: "Det gick inte att hämta köpen"); if line == nil { pause(1) } } while line == nil && Date() < end
             log.append("T48 Återställ köp: \(line ?? "no line in 20 s")")
-            if line == nil { note("Återställ köp gave no line in 20 s") }
+            // Angela Fable 09:28: Återställ köp always answers, after at most 15 s.
+            if line == nil { ok = miss("Återställ köp gave no line in 20 s (A134 after T48: at most 15 s)") }
         }
         // A test purchase, only when the products came from the StoreKit file.
         guard let buy = buys.first(where: { $0.contains("100 krediter") }) ?? buys.first else {
             note("no prices in Krediter (the StoreKit file did not reach the app): no test purchase")
-            closeSheet()
+            dismissCredits()
             return ok
         }
         // 1. Cancelled.
@@ -479,6 +613,22 @@ final class SayFlowTests: XCTestCase {
         return ok
     }
 
+    /// Run 44294585063: after Återställ köp the Krediter sheet stayed open through "Klar" and twelve "back to Start"
+    /// taps. Tap Klar in its bar, check, then drag it down; say which one closed it.
+    private func dismissCredits() {
+        let open = { Self.labels(in: self.app.debugDescription, kind: "StaticText").contains("Så räknas det") }
+        guard open() else { return }
+        let klar = app.navigationBars.buttons.matching(NSPredicate(format: "label ==[c] 'Klar'")).firstMatch
+        if klar.exists { tapElement(klar, "Klar (Krediter)", counted: false); pause(1.5) }
+        if !open() { log.append("T48 Krediter closed with Klar"); return }
+        log.append("T48 Krediter still open after Klar (\(klar.exists ? "hittable \(klar.isHittable)" : "no Klar in the bar")); dragging it down")
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.12)).press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.95)))
+        testTaps += 1
+        pause(1.5)
+        log.append("T48 Krediter after the drag: \(open() ? "still open" : "closed")")
+        if open() { note("the Krediter sheet did not close with Klar or a drag") }
+    }
+
     /// The StoreKit test sheet (in the app or over it). Confirms or cancels it; false when no sheet came.
     private func storeSheet(confirm: Bool) -> Bool {
         let yes = ["Köp", "Purchase", "Buy", "Bekräfta", "Confirm", "Prenumerera", "Subscribe"]
@@ -497,6 +647,261 @@ final class SayFlowTests: XCTestCase {
         } while Date() < end
         log.append("T48 store sheet: none seen (\(confirm ? "confirm" : "cancel"))")
         return false
+    }
+
+    /// A145 (K101): Inställningar › Konto › Radera konto deletes the account on the server for real. The test account
+    /// is the one this Simulator made at its first start, made only for this run. Avbryt does nothing; offline the line
+    /// says nothing is deleted; then the deletion: the app starts over with Välkommen and "Kontot är raderat", and no
+    /// exam or said text is left.
+    private func deleteAccount() -> Bool {
+        goToStart()
+        pause(2)
+        var ok = true
+        let before = recentCapsules().count
+        log.append("A145 before: \(before) capsule(s) in Senaste, credits \(creditsLeft().map(String.init) ?? "-")")
+        guard openAccount() else { return false }
+        // 1. Avbryt.
+        guard askDelete() else { return false }
+        tapAlert("Avbryt")
+        pause(2)
+        let stillThere = find(["Radera konto"]) != nil
+        log.append("A145 Avbryt: still in Inställningar \(stillThere)")
+        if !stillThere { ok = miss("after Avbryt the account part is gone") }
+        // 2. Offline: nothing is deleted.
+        guard network(on: false) else { return false }
+        if askDelete() {
+            tapAlert("Radera konto")
+            var line: String?
+            let end = Date().addingTimeInterval(20)
+            repeat { line = text(starting: "Det gick inte att radera kontot"); if line == nil { pause(1) } } while line == nil && Date() < end
+            log.append("A145 offline: \(line ?? "no line in 20 s")")
+            screen("radera-utan-nat", "Radera konto offline")
+            if line?.contains("Inget är raderat") != true { ok = miss("offline the line does not say that nothing is deleted ('\(line ?? "-")')") }
+        } else { ok = false }
+        _ = network(on: true)
+        goToStart()
+        pause(2)
+        let afterOffline = recentCapsules().count
+        log.append("A145 after the offline try: \(afterOffline) capsule(s)")
+        if afterOffline < before { ok = miss("an offline try removed texts (\(before) → \(afterOffline))") }
+        // 3. Delete.
+        guard openAccount(), askDelete() else { return false }
+        tapAlert("Radera konto")
+        var done: String?
+        let end = Date().addingTimeInterval(45)
+        repeat { done = text(starting: "Kontot är raderat") ?? (find(["Välkommen till EarMind"]) != nil ? "Välkommen till EarMind" : nil); if done == nil { pause(1) } } while done == nil && Date() < end
+        pause(2)
+        let box = text(starting: "Kontot är raderat") != nil
+        let welcome = find(["Välkommen till EarMind"]) != nil
+        log.append("A145 after Radera konto: 'Kontot är raderat' \(box), Välkommen \(welcome), \(text(starting: "EarMind börjar om") ?? "-")")
+        screen("raderat", "After Radera konto")
+        if !box { ok = miss("no 'Kontot är raderat' after the deletion") }
+        if !welcome { ok = miss("the app did not start over with Välkommen") }
+        for label in ["OK", "Okej", "Stäng", "Fortsätt"] where text(starting: "Kontot är raderat") != nil {
+            if let b = app.alerts.firstMatch.buttons[label].exists ? app.alerts.firstMatch.buttons[label] : nil { b.tap(); testTaps += 1; pause(1) }
+        }
+        if welcome { _ = firstStart() }
+        pause(3)
+        let left = recentCapsules().count
+        let examHeads = Self.labels(in: app.debugDescription, kind: "StaticText").filter { ["nästa prov", "andra prov", "senaste"].contains($0.lowercased()) }
+        log.append("A145 Start afterwards: \(left) capsule(s), headings \(examHeads), credits \(creditsLeft().map(String.init) ?? "-")")
+        screen("efter-radering", "Start after the deletion")
+        if left > 0 || !examHeads.isEmpty { ok = miss("texts or exams are left after the deletion (\(left) capsules, \(examHeads))") }
+        return ok
+    }
+
+    private func openAccount() -> Bool {
+        dismissCredits()
+        goToStart()
+        guard tap(["Inställningar"], "Inställningar") else { return false }
+        pause(1.5)
+        // Run 44300125934: Konto is the last part of Inställningar, and the list makes it only when it is scrolled to.
+        for n in 0..<10 {
+            if app.buttons.matching(NSPredicate(format: "label ==[c] 'Radera konto'")).firstMatch.exists {
+                if n > 0 { log.append("A145 Radera konto after \(n) swipes in Inställningar") }
+                return true
+            }
+            app.swipeUp(velocity: .fast)
+            pause(0.7)
+        }
+        screen("installningar-utan-konto", "Inställningar without Radera konto")
+        return miss("no 'Radera konto' in Inställningar after 10 swipes")
+    }
+
+    private func askDelete() -> Bool {
+        // Run 44424970760 (AX5): found by openAccount but gone a moment later; look again for 5 s and scroll.
+        var button: XCUIElement?
+        let end = Date().addingTimeInterval(20)
+        var up = true
+        var tries = 0
+        repeat {
+            button = app.buttons.matching(NSPredicate(format: "label ==[c] 'Radera konto'")).allElementsBoundByIndex.first { $0.exists }
+            if button == nil {
+                // Run 44433667156: the audit scrolls the list while it walks it; look both ways.
+                if up { app.swipeUp(velocity: .slow) } else { app.swipeDown(velocity: .slow) }
+                tries += 1
+                if tries % 6 == 0 { up.toggle() }
+                pause(0.7)
+            }
+        } while button == nil && Date() < end
+        guard let button else { return miss("no 'Radera konto' button") }
+        var swipes = 0
+        while !button.isHittable, swipes < 6 { app.swipeUp(); swipes += 1 }
+        tapElement(button, "Radera konto")
+        guard app.alerts.firstMatch.waitForExistence(timeout: 5) else { return miss("no 'Radera kontot?' question") }
+        log.append("A145 question: \(app.alerts.firstMatch.label)")
+        return true
+    }
+
+    private func tapAlert(_ label: String) {
+        let button = app.alerts.firstMatch.buttons[label]
+        if button.exists { tapElement(button, "\(label) (Radera kontot?)") } else { log.append("MISS: no '\(label)' in the question") }
+    }
+
+    // MARK: T53 – accessibility with the largest text (A148, Kelly Ke79)
+
+    /// Xcode's accessibility audit of what is on screen; findings are written, never a failure (as A95's audit).
+    private func audit(_ name: String) {
+        var counts: [String: Int] = [:]
+        var lines: [String] = []
+        do {
+            try app.performAccessibilityAudit(for: .all) { issue in
+                let type = Self.auditName(issue.auditType)
+                counts[type, default: 0] += 1
+                var line = "AUDIT \(name) [\(type)] \(issue.compactDescription)"
+                if let e = issue.element, e.exists { line += " – \(e.elementType.rawValue) '\(e.label)' h=\(Int(e.frame.height))" }
+                lines.append(line)
+                return true
+            }
+        } catch { lines.append("AUDIT \(name): audit failed: \(error)") }
+        log.append("T53 audit \(name): \(counts.isEmpty ? "no findings" : counts.sorted { $0.key < $1.key }.map { "\($0.key) \($0.value)" }.joined(separator: ", "))")
+        log.append(contentsOf: lines.prefix(25))
+        screen("ax5-\(name)", "AX5: \(name)")
+    }
+
+    nonisolated private static func auditName(_ type: XCUIAccessibilityAuditType) -> String {
+        let names: [(XCUIAccessibilityAuditType, String)] = [
+            (.contrast, "contrast"), (.elementDetection, "elementDetection"), (.hitRegion, "hitRegion"),
+            (.sufficientElementDescription, "sufficientElementDescription"), (.dynamicType, "dynamicType"),
+            (.textClipped, "textClipped"), (.trait, "trait"),
+        ]
+        return names.first { type.contains($0.0) }?.1 ?? "type \(type.rawValue)"
+    }
+
+    /// A button's or field's VoiceOver label, read from the tree.
+    private func label(of kind: String, starting prefix: String) -> String? {
+        Self.labels(in: app.debugDescription, kind: kind).first { $0.hasPrefix(prefix) }
+    }
+
+    /// Ke79 points 2, 3 and 8, and the order of the first screen.
+    private func a11yFirstScreen() -> Bool {
+        goToStart()
+        var ok = true
+        guard focusField("Säg i AirPods (AX5)") else { return miss("the field got no keyboard") }
+        field.typeText(Self.text)
+        pause(2) // the cost comes about 0,7 s after the last key
+        if app.keyboards.count > 0 { app.swipeDown(velocity: .slow); pause(1) }
+        let fieldLabel = field.label
+        let cost = (Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Button")).first { $0.hasPrefix("Kostar ") }
+        let tempo = label(of: "Button", starting: "Tempo") ?? "-"
+        let howLong = label(of: "Button", starting: "Hur länge") ?? "-"
+        let play = label(of: "Button", starting: "Spela") ?? "-"
+        log.append("T53 field '\(fieldLabel)', cost '\(cost ?? "-")', tempo '\(tempo)', how long '\(howLong)', play '\(play)'")
+        if fieldLabel != "Säg i AirPods" { ok = miss("the field reads '\(fieldLabel)' (Ke79 2: 'Säg i AirPods'; iOS adds 'textfält')") }
+        if cost == nil { ok = miss("no cost read as 'Kostar N krediter' (Ke79 3)") }
+        if tempo != "Tempo, normal" { ok = miss("tempo reads '\(tempo)' (Ke79 8: 'Tempo, normal')") }
+        if !howLong.hasPrefix("Hur länge, ") { ok = miss("no 'Hur länge, …'") }
+        // The "›" mark must not be read (Ke79 1): it is hidden, so it must not stand as a text of its own.
+        if Self.labels(in: app.debugDescription, kind: "StaticText").contains("›") { note("'›' stands as a text in the tree (Ke79 1; Angela: hidden, the tree shows hidden elements)") }
+        audit("start-text")
+        hideKeyboard() // run 44424970760: the keyboard stayed up at AX5 and covered Spela
+        return ok
+    }
+
+    /// Ke79 point 9: "Spelar i AirPods med <röst>, N minuter kvar" as one element.
+    /// AX5 (run 44433667156): Spela stood below the screen and swipeUp moved the field, not the page. Drag the page
+    /// from its lower part until the element can be tapped.
+    private func scrollIntoView(_ labels: [String]) {
+        for _ in 0..<8 {
+            guard let e = find(labels) else { return }
+            if e.isHittable { return }
+            let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.85))
+            from.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.35)))
+            pause(0.7)
+        }
+        if let e = find(labels) { log.append("scrollIntoView: '\(e.label)' hittable \(e.isHittable), frame \(NSCoder.string(for: e.frame))") }
+    }
+
+    private func a11yPlayingCard() -> Bool {
+        hideKeyboard()
+        scrollIntoView(Self.playLabels)
+        // Run 44436344437: Spela was never hittable at AX5. Write every match with its frame and the window, so it is
+        // seen whether it is off the screen (and cannot be scrolled to) or covered.
+        let window = app.windows.firstMatch.frame
+        for b in app.buttons.matching(NSPredicate(format: "label BEGINSWITH[c] 'Spela'")).allElementsBoundByIndex where b.exists {
+            log.append("T53 Spela match '\(b.label)': frame \(NSCoder.string(for: b.frame)), hittable \(b.isHittable), enabled \(b.isEnabled), window \(NSCoder.string(for: window))")
+        }
+        screen("ax5-spela", "AX5: where Spela is")
+        guard playFromCard() else { return false }
+        pause(4)
+        let all = Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Other") + Self.labels(in: app.debugDescription, kind: "Button")
+        let one = all.first { $0.hasPrefix("Spelar i AirPods") && $0.contains("kvar") }
+        log.append("T53 playing card: '\(one ?? all.filter { $0.hasPrefix("Spelar") || $0.hasSuffix("kvar") }.joined(separator: "' + '"))'")
+        audit("start-spelar")
+        stopOnCard()
+        guard let one else { return miss("the playing card is not one sentence 'Spelar i AirPods med …, N minuter kvar' (Ke79 9)") }
+        return one.contains("minut") || miss("the playing card reads '\(one)' (Ke79 9: '… N minuter kvar')")
+    }
+
+    /// Ke79 point 4: a capsule reads the whole text (at most 80 characters), and its style or voice.
+    private func a11yRecents() -> Bool {
+        goToStart()
+        pause(2)
+        let caps = Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Klorofyllet") }
+        log.append("T53 Senaste capsules: \(caps)")
+        guard let first = caps.first else { return miss("no capsule in Senaste") }
+        if first.contains("…") && first.count < 30 { return miss("the capsule reads the cut text '\(first)' (Ke79 4: the whole text)") }
+        return first.hasPrefix("Klorofyllet i bladen fångar ljuset") || miss("the capsule reads '\(first)'")
+    }
+
+    /// Ke79: Bäst värde in the buy button, 44 points for Villkor, Integritet, Återställ köp; audit of the sheet.
+    private func a11yCredits() -> Bool {
+        goToStart()
+        let capsule = Self.labels(in: app.debugDescription, kind: "Button").first { $0.contains("krediter kvar") || $0.contains("kredit kvar") }
+        guard let capsule, tap([capsule], "the credit capsule (AX5)") else { return miss("no credit capsule") }
+        let end = Date().addingTimeInterval(15)
+        repeat { if app.debugDescription.contains("Paketen kunde inte hämtas") || app.debugDescription.contains("label: 'Köp ") { break }; pause(1) } while Date() < end
+        var ok = true
+        let buys = Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Köp ") }
+        log.append("T53 buy buttons: \(buys.isEmpty ? "none (no products in a UI test)" : buys.joined(separator: " | "))")
+        if let best = buys.first(where: { $0.contains("2 000") || $0.contains("2\u{00A0}000") }), !best.hasSuffix("bäst värde") { ok = miss("'\(best)' lacks ', bäst värde' (Ke79 7)") }
+        for name in ["Villkor", "Integritet", "Återställ köp"] {
+            var element = app.links.matching(NSPredicate(format: "label ==[c] %@", name)).firstMatch
+            if !element.exists { element = app.buttons.matching(NSPredicate(format: "label ==[c] %@", name)).firstMatch }
+            var swipes = 0
+            while !element.exists || !element.isHittable, swipes < 8 { app.swipeUp(); swipes += 1 }
+            let h = element.exists ? Int(element.frame.height) : -1
+            log.append("T53 '\(name)': height \(h)")
+            if h >= 0, h < 44 { note("'\(name)' is \(h) points high; its tap area may still be 44 (the audit's hitRegion says)") }
+            if h < 0 { ok = miss("no '\(name)' in Krediter") }
+        }
+        audit("krediter")
+        dismissCredits()
+        return ok
+    }
+
+    /// A145 with the largest text: the button, the question and its words; nothing is deleted here (Avbryt).
+    private func a11yDeleteAccount() -> Bool {
+        guard openAccount() else { return false }
+        guard askDelete() else { audit("installningar-konto"); return false }
+        let alert = app.alerts.firstMatch
+        let buttons = alert.buttons.allElementsBoundByIndex.map(\.label)
+        log.append("T53 Radera kontot?: '\(alert.label)', buttons \(buttons)")
+        tapAlert("Avbryt")
+        pause(1)
+        audit("installningar-konto")
+        let ok = buttons.contains("Radera konto") && buttons.contains("Avbryt")
+        return ok || miss("the question lacks Radera konto or Avbryt (\(buttons))")
     }
 
     /// Asks t36.sh to turn the runner's network off or on (t36-net-off/on.request), and waits for it.
@@ -914,7 +1319,15 @@ final class SayFlowTests: XCTestCase {
         // Run 44151565954 (A132): the card's Pausa and its text were on screen but not "hittable" to XCTest; swiping
         // only scrolled the page away. An element that is inside the window is tapped at its centre, and said so.
         let frame = element.frame
-        if !element.isHittable, !frame.isEmpty, app.windows.firstMatch.frame.contains(CGPoint(x: frame.midX, y: frame.midY)) {
+        // Angela Fable 00:15 (44312213280): a centre tap on a button under the keyboard lands on the keyboard. Never
+        // tap through it.
+        let keyboard = app.keyboards.firstMatch
+        // Run 44439180352: with the keyboard's keys in the tree but no keyboard element, a button in its lower half
+        // counts as under it.
+        let underKeyboard = (keyboard.exists && keyboard.frame.contains(CGPoint(x: frame.midX, y: frame.midY)))
+            || (!keyboard.exists && keyboardUp && frame.midY > app.windows.firstMatch.frame.height * 0.55)
+        if !element.isHittable, underKeyboard { log.append("\(step): '\(element.label)' is under the keyboard; hiding it"); hideKeyboard(); element = find(labels) ?? element }
+        if !element.isHittable, !underKeyboard, !frame.isEmpty, app.windows.firstMatch.frame.contains(CGPoint(x: frame.midX, y: frame.midY)) {
             log.append("NOT HITTABLE (tapped at its centre): \(step): '\(element.label)' at \(Int(frame.midX)),\(Int(frame.midY))")
             element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
             if counted { taps += 1 } else { testTaps += 1 }

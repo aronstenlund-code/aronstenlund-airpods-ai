@@ -132,12 +132,22 @@ grep -E "Reading:|offline|Offline|network|Network|drill_audio|download" "$OUT/lo
   echo
   echo "Detaljer:"
   echo '```'
-  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT|GREY|spela-|PRESS|T36|T46|T49|T50|T48|SYSTEM ALERT|SCREEN|  texts:|  buttons:|TAP " "$OUT/t36-log.txt" 2>/dev/null | cut -c1-900
+  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT|GREY|spela-|PRESS|T36|T44|T46|T49|T50|T48|A144|K100|A145|SYSTEM ALERT|SCREEN|  texts:|  buttons:|TAP " "$OUT/t36-log.txt" 2>/dev/null | cut -c1-900
   echo '```'
   echo
   echo "Tryck (testkroken, appens logg):"
   echo '```'
   grep -E "Test press|Reading: (paused|go on|next|previous|tap on|start at)" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | head -n 30
+  echo '```'
+  echo
+  echo "Spela (appens logg, Say:, Angela Fable 2026-11-18 19:08):"
+  echo '```'
+  grep -E "Say: |Reading: the player is on the screen" "$OUT/logs/app.log" 2>/dev/null | cut -c1-240 | head -n 30
+  echo '```'
+  echo
+  echo "Inloggningen (appens logg, Auth:, Angela Schrute 2026-11-18):"
+  echo '```'
+  grep -E "Auth:" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | head -n 15
   echo '```'
   echo
   echo "T50 Skriv i takt (appens logg, pauserna):"
