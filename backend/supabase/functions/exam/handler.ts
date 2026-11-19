@@ -104,6 +104,11 @@ export interface ExamDeps {
   material?: MaterialStore | null;
   /** K61 (D175): the month's generated questions (used, limit); "drill" never makes more than are left. */
   quota?: (userId: string) => Promise<{ used: number; lim: number; unlimited?: boolean; wallet?: unknown }>;
+  /**
+   * K109 (Oscar O91): a QA measurement (the test header from GitHub Actions) skips the cost estimate before the exam,
+   * so the quality measurements on new test accounts still run; nothing is saved and the credits are taken at save.
+   */
+  qaMeasure?: (req: Request) => Promise<boolean>;
 }
 
 const MONTHS = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
@@ -386,7 +391,7 @@ export function createExamHandler(deps: ExamDeps) {
           }
           // K109 (D239, Oscar O90): what the exam will cost (the long answers), counted before Claude makes it; when the
           // credits do not reach, 402 with how many questions fit, so no exam is made that cannot be saved
-          const est = q.unlimited ? null : estimateDrillCost(action, req0);
+          const est = q.unlimited || (deps.qaMeasure && await deps.qaMeasure(req).catch(() => false)) ? null : estimateDrillCost(action, req0);
           if (est && est.cost > left) {
             const fits = Math.floor(left / est.per);
             const what = action === "drill" ? `Ett prov med ${est.count} frågor` : `Svaren på ${est.count} frågor`;

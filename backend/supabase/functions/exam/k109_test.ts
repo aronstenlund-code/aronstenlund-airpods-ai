@@ -67,3 +67,40 @@ Deno.test("K109: drill_answers counts its questions and the long answers to come
   assert((r.body.fits as number) < 10);
   assertEquals(w.calls.length, 0);
 });
+
+Deno.test("K109 (Oscar O91): a QA measurement (test header from CI, deps.qaMeasure) skips the estimate; the credits are still taken at save", async () => {
+  const { createExamHandler: mk } = await import("./handler.ts");
+  const { fromCi, setCiRangesForTest, resetCiRangesForTest } = await import("../_shared/testmode.ts");
+  const calls: LLMRequest[] = [];
+  const llm: LLMProvider = { name: "f", model: "x", async *stream(req: LLMRequest): AsyncIterable<LLMChunk> { calls.push(req); yield { type: "text", text: "{}" } as LLMChunk; } };
+  const h = mk({
+    authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
+    rateLimiter: new MemoryRateLimiter(),
+    provider: llm,
+    quota: () => Promise.resolve({ used: 0, lim: 1500 }),
+    qaMeasure: (req) => Promise.resolve(req.headers.has("x-earmind-test") && fromCi(req)),
+  });
+  const ask = (ip: string, header: boolean) =>
+    h(new Request("http://x/exam", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-forwarded-for": ip, ...(header ? { "x-earmind-test": "kevin-k102" } : {}) },
+      body: JSON.stringify({ action: "drill", text: "Fotosyntes är när växter gör socker av ljus.", questions: 12 }),
+    }));
+  setCiRangesForTest(["20.1.0.0/16"]);
+  try {
+    const qa = await ask("20.1.2.3", true);
+    assert(qa.status !== 402, String(qa.status));
+    await qa.body?.cancel();
+    assert(calls.length > 0);
+    const n = calls.length;
+    const anyone = await ask("1.2.3.4", true); // the header alone (anyone can send it) is not enough
+    assertEquals(anyone.status, 402);
+    await anyone.body?.cancel();
+    const ciNoHeader = await ask("20.1.2.3", false);
+    assertEquals(ciNoHeader.status, 402);
+    await ciNoHeader.body?.cancel();
+    assertEquals(calls.length, n);
+  } finally {
+    resetCiRangesForTest();
+  }
+});

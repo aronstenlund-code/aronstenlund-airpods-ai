@@ -7,6 +7,7 @@ import { useQuotaFromDb } from "../_shared/wallet_db.ts";
 import { supabaseUsageSink } from "../_shared/usage.ts";
 import { providerFromEnv } from "../answer/llm/factory.ts";
 import { createExamHandler, DEFAULT_EXAM_CONFIG } from "./handler.ts";
+import { fromCi, loadCiRanges } from "../_shared/testmode.ts";
 
 const env = Deno.env;
 const db = restDbFromEnv();
@@ -33,6 +34,12 @@ const handler = createExamHandler({
   // K61 (D175): read only (n = 0); the questions are counted when the audio is made (/drill save)
   // K94 (D218): the whole wallet (admin, subscription, free and bought credits); read only here (n = 0)
   quota: (u) => examWallet(u, 0),
+  // K109 (Oscar O91): the test header alone is not enough (anyone can send it); it must come from GitHub Actions
+  qaMeasure: async (req) => {
+    if (!req.headers.has("x-earmind-test")) return false;
+    await loadCiRanges().catch(() => {});
+    return fromCi(req);
+  },
   // K53: photos uploaded one by one to the private bucket drill_material, deleted after the analysis
   material: key
     ? {
