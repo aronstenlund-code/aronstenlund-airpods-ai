@@ -1,0 +1,4 @@
+run: 44579212034
+commit: d73f7d95fb70f4e030efac80e49ba31ced03513c
+device: iPhone 17 Pro
+text_size: accessibility-extra-extra-extra-large
