@@ -259,6 +259,8 @@ struct SayInAirPodsField: View {
     /// A153 (D238): the card's own Spela is behind the keyboard, so Spela stands in the row above the keyboard.
     @State private var playHidden = false
     @State private var keyboard = SayKeyboard.Geometry()
+    /// A153: how wide the card is; a narrow screen has room for three of the style's suggestions beside Spela.
+    @State private var cardWidth: CGFloat = 0
     #if DEBUG
     @State private var keyboardNumbers = ""
     #endif
@@ -355,10 +357,10 @@ struct SayInAirPodsField: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            card
             #if DEBUG
             if SayText.stagedKeyboardNumbers { Text(verbatim: keyboardNumbers).font(.caption2.monospaced()) }
             #endif
+            card
             if playing == nil { recents.transition(SayMotion.appear) }
         }
         .animation(SayMotion.change(reduceMotion), value: playing != nil)
@@ -373,6 +375,7 @@ struct SayInAirPodsField: View {
         .task { if SayText.stagedMotion { await runMotionDemo() } }
         #endif
         .onChange(of: sound) { refused = nil; canRetry = false }
+        .onGeometryChange(for: CGFloat.self) { $0.size.width } action: { cardWidth = $0 }
         // A153: where the keyboard begins, as the system says it before it moves.
         .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification)) { note in
             keyboard.keyboardTop = SayKeyboard.top(from: note)
@@ -448,6 +451,19 @@ struct SayInAirPodsField: View {
         .foregroundStyle(tooMany ? Color.primary : Color.black)
         .disabled(isStarting || tooMany)
         .accessibilityLabel(title)
+        .environment(\.colorScheme, scheme)
+    }
+
+    /// A153: what stands in the row above the keyboard is outside the card. It has the screen's own light or dark
+    /// (the card is always dark) and the system's type (the card's is monospaced), so it reads on the row's glass.
+    private func aboveKeyboard(_ button: some View, _ colour: Color = .primary) -> some View {
+        button.font(.body).foregroundStyle(colour).environment(\.colorScheme, scheme)
+    }
+
+    /// A153: the style's suggestions that have room. Beside Spela on a narrow screen the last one gives way.
+    private var styleSuggestions: [String] {
+        let all = SaySound.suggestions
+        return playHidden && !isEmpty && cardWidth < SayKeyboard.widthForAllSuggestions ? Array(all.dropLast()) : all
     }
 
     /// Why Spela cannot be pressed although there is a text; nil when it can (or the field is empty).
@@ -722,7 +738,7 @@ struct SayInAirPodsField: View {
                         ToolbarItemGroup(placement: .keyboard) {
                             if playHidden, !isEmpty { keyboardPlay(compact: false) }
                             Spacer()
-                            Button("Klar") { focused = false }.fontWeight(.semibold)
+                            aboveKeyboard(Button("Klar") { focused = false }.fontWeight(.semibold), .accentColor)
                         }
                     }
                 }
@@ -800,8 +816,8 @@ struct SayInAirPodsField: View {
                     // Ke75 §2: four suggestions above the keyboard; a tap writes the word.
                     if styleFocused {
                         ToolbarItemGroup(placement: .keyboard) {
-                            ForEach(SaySound.suggestions, id: \.self) { word in
-                                Button(word) { style = SaySound.adding(word, to: style) }
+                            ForEach(styleSuggestions, id: \.self) { word in
+                                aboveKeyboard(Button(word) { style = SaySound.adding(word, to: style) })
                             }
                             Spacer()
                             if playHidden, !isEmpty { keyboardPlay(compact: true) } // A153

@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// A80 (D142), rebuilt in A87 (D160, Kelly Ke53 `apple/hem-tom.png`, `hem.png`, `fortsatt.png`): Start as the
 /// system's own parts. Without an exam: the system's empty state with **Nytt prov** as the one filled button. With
@@ -36,6 +37,9 @@ struct RepetitionHomeSection: View {
     /// Before that a new user sees the exam and Starta prov, nothing about BETA or the microphone.
     private var showsMoreModes: Bool { controlsChecked || textControlsChecked }
 
+    /// A153: the keyboard is up (the bottom row then steps aside).
+    @State private var keyboardIsUp = false
+
     var body: some View {
         Group {
             if model.examDrills.isEmpty { emptyState } else { examList }
@@ -47,8 +51,12 @@ struct RepetitionHomeSection: View {
         .toolbar { ToolbarItem(placement: .principal) { Color.clear.frame(width: 1, height: 1).accessibilityHidden(true) } }
         .safeAreaInset(edge: .bottom) { // Kelly S3: a fixed row, nothing floats over the text
             // A100: without an exam the row only held Fler lägen, which a new user does not see yet.
-            if !model.examDrills.isEmpty || showsMoreModes { bottomRow }
+            // A153 (D238): not while the keyboard is up. The row rode up on the keyboard and took the room the
+            // field needs (on an iPhone SE it lay over the field's own Spela).
+            if (!model.examDrills.isEmpty || showsMoreModes), !keyboardIsUp { bottomRow }
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in keyboardIsUp = true }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in keyboardIsUp = false }
         .toolbar { barItems }
         .sheet(isPresented: $isCreating) {
             NewDrillView(model: model) { drill in opened = drill.id }

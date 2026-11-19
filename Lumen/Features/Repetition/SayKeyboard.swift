@@ -12,6 +12,10 @@ enum SayKeyboard {
     /// A button that only just clears the keyboard's row is not one to aim at.
     static let margin: CGFloat = 4
 
+    /// The card must be this wide for the style's four suggestions and Spela to stand side by side above the
+    /// keyboard (the widest phones); on the others the last suggestion gives way to Spela.
+    static let widthForAllSuggestions: CGFloat = 398
+
     /// The card's own Spela cannot be pressed while the keyboard is up: the keyboard (with its row) covers it, wholly
     /// or in part, or it has been scrolled away above the screen.
     /// - `button`: the button's top and bottom on the screen; nil = not measured, and then the answer is the safe
