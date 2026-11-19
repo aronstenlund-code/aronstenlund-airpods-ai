@@ -368,33 +368,50 @@ export async function refillQuestions(
   // K108 (live 16:52, ekosystem 5/6: a refill asked about "en tiondel av energin" again): with the sentences the kept
   // questions use, the material comes numbered and the new questions go to the other sentences
   const numbered = used.length ? numberedSentences(material).map((t, k) => `[${k + 1}] ${t}`).join("\n") : "";
-  try {
-    const r = await runLLM(provider, {
-      system: SYSTEM_PROMPT_DRILL_REFILL,
-      // K106: two more than needed, since some may be the same as a kept question in other words
-      user: (numbered
-        ? `<material>\n${sanitizeTagged(numbered)}\n</material>\n<used_sentences>${used.join(", ")}</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n`
-        : `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n`) +
-        `<kept>${sanitizeTagged(JSON.stringify(kept))}</kept>\n<count>${n + 2}</count>`,
-      maxTokens: 150 + (n + 2) * 80,
-      cacheSystem: true,
-      model: cfg.answerModel,
-      timeoutMs: 40_000,
-      signal,
-    }, cfg.answerPriceIn, cfg.answerPriceOut);
-    const out: string[] = [];
-    const j = firstJson(r.text);
-    for (const x of Array.isArray(j?.questions) ? j!.questions as unknown[] : []) {
-      const q = oneAsk(cleanQuestion(x)); // K106 (live 18:24: "Vilka ämnen …, och hur tar växterna upp dem?" came from here)
-      if (!q || words(q) < 2 || leansOnMaterial(q) || out.length >= n) continue;
-      if ([...kept, ...out].some((k) => k.toLowerCase() === q.toLowerCase() || nearDuplicate(k, q))) continue;
-      out.push(q);
+  const out: string[] = [];
+  const rejected: string[] = [];
+  let usage: StepUsage | null = null;
+  // K109 (live 17:35, printing 11/14: every refill question was a repeat): when one call leaves the exam short, one more
+  // call with what is now kept and what was a repeat (no extra call when the first one fills it)
+  for (let round = 0; round < 2 && out.length < n; round++) {
+    try {
+      const want = n - out.length;
+      const r = await runLLM(provider, {
+        system: SYSTEM_PROMPT_DRILL_REFILL,
+        // K106: two more than needed, since some may be the same as a kept question in other words
+        user: (numbered
+          ? `<material>\n${sanitizeTagged(numbered)}\n</material>\n<used_sentences>${used.join(", ")}</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n`
+          : `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n`) +
+          `<kept>${sanitizeTagged(JSON.stringify([...kept, ...out]))}</kept>\n` +
+          (rejected.length ? `<rejected>${sanitizeTagged(JSON.stringify(rejected.slice(0, 12)))}</rejected>\nThese ask what a kept question asks: never write them or the like again.\n` : "") +
+          `<count>${want + 2}</count>`,
+        maxTokens: 150 + (want + 2) * 80,
+        cacheSystem: true,
+        model: cfg.answerModel,
+        timeoutMs: 40_000,
+        signal,
+      }, cfg.answerPriceIn, cfg.answerPriceOut);
+      const u0 = usage as StepUsage | null;
+      usage = u0
+        ? { ...u0, input_tokens: u0.input_tokens + r.usage.input_tokens, output_tokens: u0.output_tokens + r.usage.output_tokens, est_cost_usd: u0.est_cost_usd + r.usage.est_cost_usd, ms: u0.ms + r.usage.ms }
+        : r.usage;
+      const j = firstJson(r.text);
+      for (const x of Array.isArray(j?.questions) ? j!.questions as unknown[] : []) {
+        const q = oneAsk(cleanQuestion(x)); // K106 (live 18:24: "Vilka ämnen …, och hur tar växterna upp dem?" came from here)
+        if (!q || words(q) < 2 || leansOnMaterial(q) || out.length >= n) continue;
+        if ([...kept, ...out].some((k) => k.toLowerCase() === q.toLowerCase() || nearDuplicate(k, q))) {
+          rejected.push(q);
+          continue;
+        }
+        out.push(q);
+      }
+    } catch (e) {
+      console.warn("drill_refill_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
+      break;
     }
-    return { questions: out, usage: r.usage };
-  } catch (e) {
-    console.warn("drill_refill_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
-    return { questions: [], usage: null };
   }
+  if (out.length < n) console.log("drill_refill_short", JSON.stringify({ wanted: n, got: out.length, repeats: rejected.length }));
+  return { questions: out, usage };
 }
 
 /** K107: the material as numbered sentences for the last check (paragraph lines, then sentence ends), at most 8 000 characters. */
