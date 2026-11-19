@@ -304,7 +304,7 @@ export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
 - At least half of the questions must be understanding questions (why, how, explain, compare, what followed). When fewer are, rewrite plain recall questions (what is, when, who, which) into understanding questions the material carries, the earliest first, until half are.
 - A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {"i": N, "drop": true, "same_as": M}. Two questions on one topic that ask different things both stay.
 - A question the material does not answer (a how or why whose way or cause it never gives): rewrite it into one about the same part that the material answers (D230 forms first). A question that asks two things, of which the material answers one: keep only that one (K106, Oscar).
-- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return "sources": [{"i": N, "s": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer. Two questions answered by the same sentence(s) ask the same thing for the student, even when worded differently.
+- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return "sources": [{"i": N, "s": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer, the sentence that holds the main answer first. Two questions answered by the same sentence(s) ask the same thing for the student, even when worded differently.
 - Never change anything else: same language, same length or shorter, clear when only heard. Return {"questions": [...], "sources": [...]}. No other text.`;
 
 /**
@@ -315,7 +315,10 @@ export function oneAsk(q: string): string {
   // live 18:00 (Vasa): "Vad var Dackefejden och varför var den viktig?" (also without the comma)
   const m = /^(.{12,}?),\s+(?:och|and)\s+(?:varför|hur|vad|vilk\p{L}*|när|var|why|how|what|which|when|where)\s+[^?]{6,}\?$/iu.exec(q.trim()) ??
     /^((?:vad|vem|vilk\p{L}*|när|var|what|who|which|when)\s.{6,}?)\s+(?:och|and)\s+(?:varför|hur|vad|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim());
-  return m && words(m[1]) >= 3 ? m[1].replace(/[\s,]+$/, "") + "?" : q;
+  if (m && words(m[1]) >= 3) return m[1].replace(/[\s,]+$/, "") + "?";
+  // K108 (Oscar omtest K107: "… andrahandskonsument? Ge exempel?"): a second ask after the question mark goes
+  const two = /^(.{12,}?\?)\s+\S[^?]{2,}\?$/u.exec(q.trim());
+  return two && words(two[1]) >= 3 ? two[1] : q;
 }
 
 /**
@@ -409,6 +412,9 @@ export function numberedSentences(material: string, maxChars = 8000): string[] {
  */
 export function sameSource(a: number[] | undefined, b: number[] | undefined): boolean {
   if (!a?.length || !b?.length) return false;
+  // K108 (Oscar omtest K107: ekosystem 5/6/7 all "Bara ungefär en tiondel av energin …"): the same main sentence (listed
+  // first) is the same answer, even when the supporting sentences differ
+  if (a[0] === b[0]) return true;
   const A = new Set(a), B = new Set(b);
   return [...B].every((x) => A.has(x)) || [...A].every((x) => B.has(x));
 }
@@ -667,7 +673,7 @@ export function contextLine(subject: string, grade: string): string {
 /** Step 2: the answers in batches of 5 in parallel; a batch that fails or misses a question is asked once more. */
 /** K106: a short answer that says the notes do not answer the question ("framgår inte här", "is not explained here"). */
 export function notAnswered(short: string): boolean {
-  return /(?:framgår inte|är inte känt|inte känt här|förklaras inte(?: närmare)? här|beskrivs inte(?: närmare)? här|står inte här|sägs inte här|går inte att säga här|is not (?:explained|stated|known|described|said)(?: further)? here|isn't (?:explained|stated|said) here|not explained here|doesn't say why|does not say why)/i.test(short);
+  return /(?:framgår inte|inte känt|förklaras inte(?: närmare)? här|beskrivs inte(?: närmare)? här|står inte här|sägs inte här|går inte att säga här|is not (?:explained|stated|known|described|said)(?: further)? here|isn't (?:explained|stated|said) here|not explained here|doesn't say why|does not say why)/i.test(short);
 }
 export const MUST_FIX =
   "<must_fix>yes</must_fix> The notes do not answer this question as it is asked (your last answer said so). Put a new question in \"question\" about the same part of the notes that the notes do answer (an understanding question when they carry one: how, what followed, explain how X is linked to Y, compare), and answer that one. Never answer that something is not known.";
