@@ -64,3 +64,25 @@ Deno.test("K109: answers that only share a topic stay; no answers = as before", 
   const none = await finalCheck(reply([], [[2], [3], [5], [6], [7], [4]]), DEFAULT_DRILL_CONFIG, QS, [0, 0, 0, 0, 1, 1], MATERIAL);
   assertEquals(none.questions, QS);
 });
+
+Deno.test("K109 (live 17:35, printing 11/14: the refill's questions were all repeats): a short refill asks once more", async () => {
+  const { refillQuestions } = await import("./drill.ts");
+  const seen: LLMRequest[] = [];
+  const replies = [
+    { questions: ["Hur får växterna sin energi?", "Hur får växterna sin energi från solen?"] }, // both repeats of a kept one
+    { questions: ["Hur påverkar nedbrytarna kretsloppet?", "Varför blir toppkonsumenterna få?"] },
+  ];
+  const llm: LLMProvider = {
+    name: "f", model: "x",
+    async *stream(req: LLMRequest): AsyncIterable<LLMChunk> {
+      seen.push(req);
+      yield { type: "text", text: JSON.stringify(replies[seen.length - 1] ?? { questions: [] }) } as LLMChunk;
+      yield { type: "usage", inputTokens: 300, outputTokens: 40 };
+    },
+  };
+  const r = await refillQuestions(llm, DEFAULT_DRILL_CONFIG, ["Hur får växterna sin energi?"], 2, MATERIAL);
+  assertEquals(seen.length, 2);
+  assertEquals(r.questions, ["Hur påverkar nedbrytarna kretsloppet?", "Varför blir toppkonsumenterna få?"]);
+  assertEquals(r.usage?.input_tokens, 600, "both calls are counted");
+  assert(seen[1].user.includes("Hur får växterna sin energi från solen?") || seen[1].user.includes("<rejected>"), "the second call knows what was a repeat");
+});

@@ -18,11 +18,14 @@ from o79_materials import O79  # noqa: E402
 sys = _s
 sys.stdout.reconfigure(encoding="utf-8")
 SEEN = []  # (steg, svar) for the word scan
+# O91/K109 (D240): from Actions the test header skips the exam cost estimate; "user-path" gives the user's way (the 402)
+USER_PATH = "--user-path" in sys.argv[1:]
+EXTRA = {"x-earmind-test": "oscar-qa user-path"} if USER_PATH else None
 
 
 def req(method, fn, body=None, tok=None, step="", timeout=240):
     r = urllib.request.Request(T.URL + "/functions/v1/" + fn, data=json.dumps(body).encode() if body is not None else None, method=method,
-                               headers=T.headers(tok, True))
+                               headers=T.headers(tok, True, EXTRA))
     for attempt in range(3):
         try:
             with urllib.request.urlopen(r, timeout=timeout) as x:
@@ -107,6 +110,24 @@ if se == 200:
     print("     exam:", se, sa, len(qitems), "frågor, kvot i exam-svaret:", json.dumps(plan.get("quota"), ensure_ascii=False), flush=True)
 else:
     print("     exam FEL:", se, err(plan), flush=True)
+k109 = {}
+if se == 402:
+    # K109: 402 before Claude, with how many questions fit; then make that many and compare the estimate with the real cost
+    k109 = {"status": se, "code": (plan.get("error") or {}).get("code"), "message": (plan.get("error") or {}).get("message"),
+            **{k: plan.get(k) for k in ("cost", "needed", "estimated", "fits", "per_question", "questions", "remaining")}}
+    _, qx = quota(A, "4 efter 402")
+    k109["kvot efter 402"] = qx.get("remaining")
+    print("     K109 402:", json.dumps(k109, ensure_ascii=False), flush=True)
+    fits = plan.get("fits") or 0
+    if fits >= 3:
+        se, plan = req("POST", "exam", {"action": "drill", "answers": False, "questions": fits, "subject": m["subject"], "pages": [], "text": full}, A, "4 exam drill fits")
+        if se == 200:
+            sa, ans = req("POST", "exam", {"action": "drill_answers", "items": plan["items"], "notes": plan.get("notes"), "subject": plan["summary"]["subject"],
+                                           "grade": plan["summary"]["grade"]}, A, "4 exam answers fits")
+            qitems = ans.get("items") or plan["items"]
+            print("     exam med fits:", se, sa, len(qitems), "frågor", flush=True)
+        else:
+            print("     exam med fits:", se, err(plan), json.dumps({k: plan.get(k) for k in ("fits", "cost", "per_question")}), flush=True)
 save_items = [{k: it[k] for k in ("question", "short", "long", "display") if it.get(k)} for it in qitems]
 exam_chars = sum(len(i["question"]) + len(i.get("long") or "") for i in save_items)
 s, q2 = quota(A, "4")
@@ -199,6 +220,6 @@ for _, j in SEEN:
     keys(j)
 print("     fältnamn som innehåller test/admin/debug:", sorted(n for n in names if re.search(r"test|admin|debug|intern", n, re.I)), flush=True)
 
-print("\n=== O90 sammanfattning", json.dumps({"kvot nytt konto": q0, "welcome": [s2, err(w)], "kvot efter welcome": q1, "katalog": [sv, len(cat)],
+print("\n=== O90 sammanfattning", json.dumps({"user_path": USER_PATH, "k109": k109, "attest_challenge": [s1, err(ch)], "kvot nytt konto": q0, "welcome": [s2, err(w)], "kvot efter welcome": q1, "katalog": [sv, len(cat)],
       "exam frågor": len(qitems), "exam visade tecken": exam_chars, "förhandsvisat": pre, "steg": [{k: r[k] for k in ("steg", "förhandsvisat", "save", "start", "start igen (spela om)", "drogs", "kvar")} for r in rows],
       "radera": [sd, jd.get("deleted")], "quota efter radering": [sq, err(jq)], "ordträffar": len(hits)}, ensure_ascii=False), flush=True)

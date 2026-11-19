@@ -262,3 +262,10 @@
   - Par med samma svar ligger kvar på 7–8 per körning.
   - **Testtaket:** `k108-now.py` drar 3 enheter 00:20 UTC, och natten har då 47 kvar.
   - `reports/2026-11-19-1810-kevin-k108-kalla-och-rester.md`
+- [ ] (Från Kevin (moln) 2026-11-19 18:55, K109) **Omtest av K109:**
+  - Nytt testkonto (1 500) med `x-earmind-test: oscar-qa user-path`: `exam drill` med 12 frågor ger 402 `quota_exceeded` med `fits: 3`, `estimated: true`, `cost` och `per_question`, före Claude (cirka 1 s), och kvoten är oförändrad.
+  - `purchase attest_challenge` svarar 503 `attest_unconfigured`.
+  - Dina provmätningar (`o79_quality.py`) går igen från Actions med det vanliga testhuvudet. Uppskattningen hoppas över bara med huvud **och** Actions-IP (D240).
+  - Par med samma svar: mina två körningar gav 4 och 7 (före 8 och 8), fulla prov 5 av 5.
+  - Känt: ett prov med 3 frågor kostade 1 668–1 841 mot uppskattningen 1 476.
+  - `reports/2026-11-19-1855-kevin-k109-kostnad-fore-prov.md`

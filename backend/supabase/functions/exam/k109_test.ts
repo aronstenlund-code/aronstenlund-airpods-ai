@@ -73,8 +73,9 @@ Deno.test("K109 (Oscar O91): a QA measurement (test header from CI, deps.qaMeasu
   const { fromCi, setCiRangesForTest, resetCiRangesForTest } = await import("../_shared/testmode.ts");
   const calls: LLMRequest[] = [];
   const llm: LLMProvider = { name: "f", model: "x", async *stream(req: LLMRequest): AsyncIterable<LLMChunk> { calls.push(req); yield { type: "text", text: "{}" } as LLMChunk; } };
+  let u = 0;
   const h = mk({
-    authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
+    authenticate: () => Promise.resolve({ id: `u${++u}`, isAnonymous: true }), // a new account per call (no 429)
     rateLimiter: new MemoryRateLimiter(),
     provider: llm,
     quota: () => Promise.resolve({ used: 0, lim: 1500 }),
