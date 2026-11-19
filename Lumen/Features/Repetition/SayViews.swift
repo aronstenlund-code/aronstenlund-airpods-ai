@@ -461,8 +461,9 @@ struct SayInAirPodsField: View {
         let title = canRetry ? "Försök igen" : SayText.playTitle(minutes)
         let narrow = SayKeyboard.isNarrow(cardWidth: cardWidth, largeText: typeSize.isAccessibilitySize)
         let cost = compact ? nil : keyboardCost
-        if creditsShort {
+        if creditsShort, !compact {
             // Kelly (2026-11-19): the credits do not cover the text, so the button is the way to more of them.
+            // (In the style row there is no room for the words: Spela stands there greyed out, see below.)
             Button {
                 focused = false
                 styleFocused = false
@@ -501,8 +502,10 @@ struct SayInAirPodsField: View {
             .buttonBorderShape(.capsule)
             .tint(SayText.accent)
             .disabled(isStarting || tooMany)
-            // The whole of it, also when the row has room for "Spela" or the symbol only; then the cost.
-            .accessibilityLabel(cost.map { "\(title). \(SayText.spokenCost($0))" } ?? title)
+            // The whole of it, also when the row has room for "Spela" or the symbol only; then the cost. Kelly
+            // (2026-11-19): greyed out for want of credits it says so, so that the press does not end in a no.
+            .accessibilityLabel(tooMany && model.quota?.isCredits == true ? "\(title), krediterna räcker inte"
+                                : cost.map { "\(title). \(SayText.spokenCost($0))" } ?? title)
         }
     }
 
@@ -525,10 +528,7 @@ struct SayInAirPodsField: View {
 
     /// A153: Spela stands in the row above the keyboard: a field of the card has the keyboard, there is a text,
     /// and the card's own Spela is behind the keyboard. The card's own then steps aside (one Spela at a time).
-    private var playStandsAboveKeyboard: Bool {
-        // In the style row there is no room for "Fyll på" beside the suggestions; the card's own row says it.
-        playHidden && !isEmpty && (focused || (styleFocused && !creditsShort))
-    }
+    private var playStandsAboveKeyboard: Bool { playHidden && !isEmpty && (focused || styleFocused) }
 
     /// A153: the style's suggestions that have room. Beside Spela on a narrow screen the last one gives way.
     private var styleSuggestions: [String] {
