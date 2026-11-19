@@ -102,7 +102,7 @@ med Tobys ändrade test avgör det. Raden i kön står öppen tills dess.
 - En tidigare körning (44424911694) föll på att testet letade efter "M:SS kvar" på kortet; sedan Ke79 säger kortet
   "Spelar i AirPods med Adam, 9 minuter kvar". Det har Toby redan rättat i testet (grönt i 44430660402).
 
-## Tillägg 03:45: utan nät grönt på dagens main, fyndet stängt som testfel
+## Tillägg 03:20: utan nät grönt på dagens main, fyndet stängt som testfel
 
 Tobys T36 44439180293 (toby/t53 med dagens main, testet hittar nu kapseln i Senaste och loggar knappen före trycket).
 **Verifierat i CI-loggen (Simulator), inte på enhet.**
