@@ -16,9 +16,12 @@ sys = _s
 sys.stdout.reconfigure(encoding="utf-8")
 
 
-def req(fn, body, tok, timeout=240):
-    r = urllib.request.Request(T.URL + "/functions/v1/" + fn, data=json.dumps(body).encode(), method="POST", headers=T.headers(tok, True))
-    r.add_header("x-earmind-test", "kevin-k109")
+def req(fn, body, tok, timeout=240, header=True):
+    # header=False: the 402 checks go as a user would (from Actions the test header skips the estimate, Oscar O91);
+    # they stop before Claude, and exam never calls ElevenLabs
+    r = urllib.request.Request(T.URL + "/functions/v1/" + fn, data=json.dumps(body).encode(), method="POST", headers=T.headers(tok, header))
+    if header:
+        r.add_header("x-earmind-test", "kevin-k109")
     t0 = time.time()
     try:
         with urllib.request.urlopen(r, timeout=timeout) as x:
@@ -43,11 +46,11 @@ m = O79["o79-bi-ekosystem"]
 full = "\n\n".join(f"{h}\n\n{p}" for h, p in m["parts"])
 keep = ("status", "ms", "code", "message", "cost", "remaining", "fits", "per_question", "questions", "estimated")
 
-st, j, ms = req("exam", {"action": "drill", "answers": False, "questions": 12, "subject": m["subject"], "pages": [], "text": full}, tok)
+st, j, ms = req("exam", {"action": "drill", "answers": False, "questions": 12, "subject": m["subject"], "pages": [], "text": full}, tok, header=False)
 out["drill12"] = {k: v for k, v in {"status": st, "ms": ms, **(j.get("error") or {}), **j}.items() if k in keep}
 ok["drill12_402_fits_fast"] = st == 402 and j.get("fits") == 3 and j.get("estimated") is True and j.get("remaining") == q0 and ms < 8000 and "items" not in j
 items = [{"id": f"q{i + 1}", "question": f"Vad händer med energin i steg {i + 1} i en näringskedja?"} for i in range(12)]
-st, j, ms = req("exam", {"action": "drill_answers", "items": items, "subject": m["subject"], "may_fix": True}, tok)
+st, j, ms = req("exam", {"action": "drill_answers", "items": items, "subject": m["subject"], "may_fix": True}, tok, header=False)
 out["answers12"] = {k: v for k, v in {"status": st, "ms": ms, **(j.get("error") or {}), **j}.items() if k in keep}
 ok["answers12_402_fits"] = st == 402 and isinstance(j.get("fits"), int) and j["fits"] < 12 and ms < 8000 and "items" not in j
 
@@ -66,6 +69,9 @@ if st == 200:
 ok["drill3_works"] = st == 200 and out.get("answers3", {}).get("status") == 200
 ok["estimate_within_25pct"] = bool(real) and abs(real - 3 * 492) <= 0.25 * 3 * 492
 ok["quota_unchanged"] = remaining(tok) == q0
+st, j, ms = req("exam", {"action": "drill", "answers": False, "questions": 12, "subject": m["subject"], "pages": [], "text": "Kort material om fotosyntes. Växter gör socker av ljus."}, tok)
+out["qa_header_from_ci"] = {"status": st, "ms": ms, "items": len(j.get("items") or [])}
+ok["qa_measure_skips_estimate"] = st == 200
 
 st, j, ms = req("purchase", {"action": "attest_challenge"}, tok)
 out["attest_challenge"] = {"status": st, "code": (j.get("error") or {}).get("code"), "has_challenge": bool(j.get("challenge"))}
