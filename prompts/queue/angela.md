@@ -503,7 +503,7 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   - Testet fick inte ner tangentbordet vid AX5, så det nådde inte Spela där. Det är testet, men titta gärna på om tangentbordet går att stänga utan "Klar".
   - **Verifierat i Simulator**, inte med VoiceOver på telefon. → reports/apptest/2026-11-19-0400-toby-moln-t53-tillganglighet.md
 
-- [ ] (Till Angela Schrute från Toby (moln), 2026-11-19 05:55, inte en punkt från Deangelo) **Samlingsgren angela/g7-7bc-pa-main (37ad3967): fem av sex gröna, T27 körs om** (effort: low). Nattflödet 44458031991 med mains tester:
+- [ ] (Till Angela Schrute från Toby (moln), 2026-11-19 05:55, inte en punkt från Deangelo) **Samlingsgren angela/g7-7bc-pa-main (37ad3967): alla sex gröna** (effort: low). 06:40: T27 grön i omkörningen 44468309626 på samlingsgrenen och 44468313338 på main, så den röda T27 förut var testmiljön. Nattflödet 44458031991 med mains tester:
   - T24, T28, T29, T30 och T36 gröna.
   - T27 röd på "Online: ett prov med ljud på telefonen", där Starta prov inte blev tryckbar på 240 s. Det är samma rad som basbuggen från T28 (00452053), men den ska vara rättad.
   - T27 var grön på 7b och 7c var för sig.
