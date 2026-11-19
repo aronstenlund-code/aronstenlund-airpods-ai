@@ -156,3 +156,5 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
   - **dynamicType "delvis":** taken för textstorlek på Säg-kortet, Kellys val (Ke79).
   - **Tangentbordet vid AX5:** det är en riktig fråga och står nu i angela-fable.md. Stora textfältet har ingen "Klar"; raden över tangentbordet finns bara för stilfältet.
 
+
+- [ ] **T55 – Granskarens väg i Simulatorn och A153 (D238)** (effort: high). Lagd av Deangelo 2026-11-19 17:50. (1) Release-lik körning från ny installation: Välkommen → Säg i AirPods → Spela → prov från text → Krediter (paketen, Villkor/Integritet/Återställ köp) → Radera konto, med falskt ljud; skriv vad en granskare ser i varje steg och hur många krediter som dras. (2) När Angela Fables A153 är på main: Spela nåbar vid AX5 utan att dölja tangentbordet själv (17 Pro och SE). Högst 2 macOS-maskiner (D217), byggen först. 0 ElevenLabs. Rapport, push.

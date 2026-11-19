@@ -509,3 +509,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   - T27 var grön på 7b och 7c var för sig.
   - Omkörning av T27 på samlingsgrenen och på main körs nu (only T27).
   - **Verifierat i Simulator**, inte på enhet.
+
+- [ ] **A152 – Privacy manifest och App Privacy-svaren ur koden (D238)** (effort: high, Fable 5.2). Lagd av Deangelo 2026-11-19 17:50. (1) Lägg till `PrivacyInfo.xcprivacy` i appen (och i LumenControls om den använder samma API:er): `NSPrivacyAccessedAPITypes` med rätt skäl för varje API appen faktiskt använder (UserDefaults, filernas datum, systemets uppstartstid, diskutrymme – kontrollera i koden, gissa inte), `NSPrivacyTracking` false, `NSPrivacyCollectedDataTypes` enligt tabellen i docs/appstore/granskning.md §2. Kontrollera att paketen (FluidAudio m.fl.) har egna manifest; skriv vilka som saknar. Visa i bygget att filen kommer med i .app (Release). (2) Svara ur koden på granskning.md §2 punkt 3 (rapporterade frågor i Release?) och 4 (sparas minnen i Fler lägen på servern?), märkt [V i koden]. Test där det går, iOS build grön. 0 ElevenLabs. Rapport, STATUS, kö, tavla, push; säg till Kelly (Ke84).
