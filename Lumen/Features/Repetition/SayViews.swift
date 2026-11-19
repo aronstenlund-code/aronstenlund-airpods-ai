@@ -50,6 +50,10 @@ enum SayText {
     static var stagedMotion = false
     /// A150 (Kelly Ke83): the player pulls itself down, for the recording.
     static var stagedFold = false
+    /// A153: the keyboard is up, with the big field ("text") or the style field ("style") in focus, for the
+    /// screenshots; `stagedKeyboardNumbers` also writes where the button and the keyboard are under the card.
+    static var stagedKeyboard: String?
+    static var stagedKeyboardNumbers = false
     #endif
 
     /// "10 min" … "1 timme" on the button.
@@ -252,6 +256,12 @@ struct SayInAirPodsField: View {
     @State private var isReadingMaterial = false
     @State private var materialNote: String?
     @FocusState private var focused: Bool
+    /// A153 (D238): the card's own Spela is behind the keyboard, so Spela stands in the row above the keyboard.
+    @State private var playHidden = false
+    @State private var keyboard = SayKeyboard.Geometry()
+    #if DEBUG
+    @State private var keyboardNumbers = ""
+    #endif
     @Environment(\.colorScheme) private var scheme
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
@@ -346,6 +356,9 @@ struct SayInAirPodsField: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             card
+            #if DEBUG
+            if SayText.stagedKeyboardNumbers { Text(verbatim: keyboardNumbers).font(.caption2.monospaced()) }
+            #endif
             if playing == nil { recents.transition(SayMotion.appear) }
         }
         .animation(SayMotion.change(reduceMotion), value: playing != nil)
@@ -360,6 +373,22 @@ struct SayInAirPodsField: View {
         .task { if SayText.stagedMotion { await runMotionDemo() } }
         #endif
         .onChange(of: sound) { refused = nil; canRetry = false }
+        // A153: where the keyboard begins, as the system says it before it moves.
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification)) { note in
+            keyboard.keyboardTop = SayKeyboard.top(from: note)
+            lookAtPlay()
+        }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in
+            keyboard.keyboardTop = nil
+            lookAtPlay()
+        }
+        #if DEBUG
+        .task {
+            guard let field = SayText.stagedKeyboard else { return }
+            try? await Task.sleep(for: .seconds(1.5))
+            if field == "style" { styleFocused = true } else { focused = true }
+        }
+        #endif
         .onChange(of: isEmpty) { _, empty in if empty { style = "" } } // the style belongs to the text
         .onAppear { lookAtClipboard(); setStage() }
         .onChange(of: scenePhase) { _, phase in if phase == .active { lookAtClipboard() } }
@@ -383,6 +412,42 @@ struct SayInAirPodsField: View {
             let line = why.map { "cannot be pressed (" + $0 + ")" } ?? "can be pressed"
             Log.repetition.info("Say: Spela \(line, privacy: .public)")
         }
+    }
+
+    /// A153: the answer changes the row above the keyboard; the numbers behind it change all the time.
+    private func lookAtPlay() {
+        let hidden = keyboard.hidesPlay
+        if hidden != playHidden { playHidden = hidden }
+        #if DEBUG
+        if SayText.stagedKeyboardNumbers {
+            let button = keyboard.button.map { "\(Int($0.lowerBound))–\(Int($0.upperBound))" } ?? "-"
+            keyboardNumbers = "knapp \(button) · tangentbord \(keyboard.keyboardTop.map { String(Int($0)) } ?? "-") · \(hidden ? "skymd" : "syns")"
+        }
+        #endif
+    }
+
+    /// A153 (D238): Spela in the row above the keyboard, when the card's own is behind the keyboard. The same
+    /// button: the same words, the same press. In the style row there is room for the symbol only.
+    @ViewBuilder
+    private func keyboardPlay(compact: Bool) -> some View {
+        let title = canRetry ? "Försök igen" : SayText.playTitle(minutes)
+        Button {
+            play()
+        } label: {
+            if compact {
+                Image(systemName: canRetry ? "arrow.clockwise" : "play.fill")
+            } else {
+                Label(title, systemImage: canRetry ? "arrow.clockwise" : "play.fill")
+                    .labelStyle(.titleAndIcon)
+                    .font(.subheadline.weight(.semibold))
+            }
+        }
+        .buttonStyle(.borderedProminent)
+        .buttonBorderShape(.capsule)
+        .tint(SayText.accent)
+        .foregroundStyle(tooMany ? Color.primary : Color.black)
+        .disabled(isStarting || tooMany)
+        .accessibilityLabel(title)
     }
 
     /// Why Spela cannot be pressed although there is a text; nil when it can (or the field is empty).
@@ -649,6 +714,18 @@ struct SayInAirPodsField: View {
                 .focused($focused)
                 .tint(SayText.accent)
                 .accessibilityLabel("Säg i AirPods") // Ke79: VoiceOver says "textfält" itself
+                .toolbar {
+                    // A153 (D238, Toby T53): the field has many rows, so return makes a new row and nothing put the
+                    // keyboard down. "Klar" does, where the system has it; and Spela stands beside it when the
+                    // card's own Spela is behind the keyboard (the largest text, a small screen).
+                    if focused {
+                        ToolbarItemGroup(placement: .keyboard) {
+                            if playHidden, !isEmpty { keyboardPlay(compact: false) }
+                            Spacer()
+                            Button("Klar") { focused = false }.fontWeight(.semibold)
+                        }
+                    }
+                }
         }
         .font(.body.monospaced())
         .dynamicTypeSize(...DynamicTypeSize.accessibility3) // the field stays a field on a small screen
@@ -727,6 +804,7 @@ struct SayInAirPodsField: View {
                                 Button(word) { style = SaySound.adding(word, to: style) }
                             }
                             Spacer()
+                            if playHidden, !isEmpty { keyboardPlay(compact: true) } // A153
                         }
                     }
                 }
@@ -925,6 +1003,14 @@ struct SayInAirPodsField: View {
             .foregroundStyle(isEmpty || isStarting || tooMany ? SayText.ink.opacity(0.85) : Color.black)
             .disabled(isEmpty || isStarting || tooMany)
             .dynamicTypeSize(...DynamicTypeSize.accessibility1) // as the small buttons beside it
+            // A153: where this button is on the screen, to know when the keyboard is in front of it.
+            .onGeometryChange(for: ClosedRange<CGFloat>.self) { proxy in
+                let frame = proxy.frame(in: .global)
+                return min(frame.minY, frame.maxY)...max(frame.minY, frame.maxY)
+            } action: { span in
+                keyboard.button = span
+                lookAtPlay()
+            }
         }
     }
 

@@ -71,6 +71,10 @@ enum RepetitionDemo {
                                       "repMotion", "repMotionReduced",
                                       // A150 (Kelly Ke83): the player of a said text pulled down by a finger, recorded
                                       "repMotionFold",
+                                      // A153 (D238): the keyboard up. A long card with the big field in focus, the
+                                      // same with the style field in focus, a short text, and the long card with
+                                      // the measured numbers under it
+                                      "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -213,6 +217,8 @@ enum RepetitionDemo {
         UserDefaults.standard.removeObject(forKey: SayText.inPaceKey)
         SayText.stagedStyle = nil
         SayText.stagedVoicesSheet = false
+        SayText.stagedKeyboard = nil
+        SayText.stagedKeyboardNumbers = false
         // A83: demo schools and publications instead of the server; my school is set except for the empty list.
         model.publishing = DemoPublishing(empty: name == "repSchoolsEmpty", failure: DemoPublishing.failure(for: name),
                                           noSchools: name == "repSchoolSearchNone")
@@ -402,7 +408,21 @@ enum RepetitionDemo {
         }
         SayText.stagedPicked = nil
         UserDefaults.standard.removeObject(forKey: SayText.mixKey)
-        if ["repSayStyle", "repSayVoices", "repSayVoicesUser", "repSayPicked"].contains(name) { // A136 (D220, Kelly Ke75), A140
+        if name == "repSayKeyboardShort" { // A153: one row of text, nothing else on the card
+            model.store.save(history)
+            model.store.save(drill)
+            var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = 1236
+            model.quota = credits
+            SayText.stagedForScreenshots = "Fotosyntes: koldioxid + vatten + ljus blir socker och syre."
+            SayText.stagedRefusal = nil
+            SayText.stagedCost = 59
+            SayText.stagedKeyboard = "text"
+            return
+        }
+        if ["repSayStyle", "repSayVoices", "repSayVoicesUser", "repSayPicked",
+            "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardNumbers"].contains(name) { // A136 (D220, Kelly Ke75), A140, A153
             model.store.save(history)
             model.store.save(drill)
             var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
@@ -427,6 +447,10 @@ enum RepetitionDemo {
             SayText.stagedForScreenshots = said
             SayText.stagedStyle = "Lugnt, som en lärare"
             SayText.stagedVoicesSheet = name == "repSayVoices" || name == "repSayVoicesUser"
+            if name.hasPrefix("repSayKeyboard") { // A153: the keyboard comes up by itself
+                SayText.stagedKeyboard = name == "repSayKeyboardStyle" ? "style" : "text"
+                SayText.stagedKeyboardNumbers = name == "repSayKeyboardNumbers"
+            }
             SayText.stagedRefusal = nil
             SayText.stagedCost = 120 // K92: a new voice or style is new sound
             return
@@ -620,7 +644,8 @@ enum RepetitionDemo {
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
                  "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices", "repSayVoicesUser",
                  "repShopShort", "repShopWeeklyHome", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
-                 "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced":
+                 "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced",
+                 "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers":
                 NavigationStack { HomeView(model: listening) }
             case "repMotionFold": // the player as the app shows it: a cover over Start
                 NavigationStack { HomeView(model: listening) }.modifier(RepetitionOverlay(model: model))

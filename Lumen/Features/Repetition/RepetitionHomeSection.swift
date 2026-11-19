@@ -290,6 +290,8 @@ struct RepetitionHomeSection: View {
             }
         }
         .listStyle(.insetGrouped)
+        // A153 (D238): a pull on the list takes the keyboard down with the finger, as in the system's own lists.
+        .scrollDismissesKeyboard(.interactively)
         // Kelly P3 (iPhone SE): the last row is not left half under the bottom bar: tighter sections, and room to
         // scroll it clear of the bar.
         .listSectionSpacing(.compact)
