@@ -71,3 +71,74 @@ uppe hamnade trycket då på tangentbordet. **Inte bekräftat** (loggen från k�
 otryckbar). Han har ändrat testet: tangentbordet döljs före Spela utan nät, knappens `isEnabled` och `isHittable`
 loggas före trycket, och alla `Say:`-rader skrivs ut ur appens logg. Omkörningen gör han efter T54 7c. Raden i kön
 står öppen tills den körningen är läst.
+
+## Tillägg 01:30: nattflödets T36 gick grön utan nät, med K100 i appen
+
+Nattflödet 44411718185 körde T36 med appen från `angela/g7-7c-provstarten` (main 2026-11-18 12:55 plus 7c, alltså
+med K100 och A144 men före mina ändringar 19:55 och 00:11) och med samma test som förut (tangentbordet uppe).
+**Verifierat i CI-loggen (Simulator), inte på enhet:**
+
+- Ny text utan nät: "Ingen internetanslutning. Försök igen när du är uppkopplad." efter 3,4 s.
+- Tangentbordet gick ner och Senaste fick kapseln "Ny text utan nät 45427.…". Trycket nådde alltså Spela.
+
+**Det är alltså inte K100 som gör en ny text tyst utan nät.** Samma app-kod för Spela svarar som den ska när trycket
+kommer fram. Det stöder Tobys förklaring (trycket hamnade fel i körningen 44312213280), men bevisar den inte: den
+körningen gick mot main från 18:23, som hade fem timmar fler ändringar än nattflödets app. En körning på dagens main
+med Tobys ändrade test avgör det. Raden i kön står öppen tills dess.
+
+## Tillägg 02:10: Tobys körning på dagens main (T36 44430660402, toby/t53)
+
+**Verifierat i CI-loggen (Simulator), inte på enhet.**
+
+- **Avsnittet utan nät kördes inte.** Testet hittade ingen kapsel i Senaste och gick aldrig vidare till den nya
+  texten. Kapseln finns, men sedan Ke79 läser VoiceOver upp hela texten på den och inte den kapade ("Klorofyllet i
+  bladen få…"), och testet letar efter den kapade. Det är testet som ska ändras; Toby har fått beskedet. Frågan om en
+  ny text utan nät på dagens main är alltså fortfarande obesvarad.
+- **Tobys fynd 11:30 (väntraderna syns inte när kortet redan spelar) är sett rättat.** Avsnittet "Långsamt ljud" är
+  grönt: "Det tar längre tid än vanligt." vid 8,6 s och "Ljudet kunde inte hämtas." med Försök igen vid 25,5 s, och
+  appen loggade `Say: gave up (on the card true, online true)`. Rättningen från 19:55 var förut bara byggd.
+- Loggraderna från 19:55 fungerar: varje Spela ger `Say: Spela pressed (attempt N, online true)` och
+  `Say: answered (plays true, line -)`. Ingen rad `Say: Spela cannot be pressed` i hela körningen.
+- En tidigare körning (44424911694) föll på att testet letade efter "M:SS kvar" på kortet; sedan Ke79 säger kortet
+  "Spelar i AirPods med Adam, 9 minuter kvar". Det har Toby redan rättat i testet (grönt i 44430660402).
+
+## Tillägg 03:20: utan nät grönt på dagens main, fyndet stängt som testfel
+
+Tobys T36 44439180293 (toby/t53 med dagens main, testet hittar nu kapseln i Senaste och loggar knappen före trycket).
+**Verifierat i CI-loggen (Simulator), inte på enhet.**
+
+- **Ny text utan nät: "Ingen internetanslutning. Försök igen när du är uppkopplad." efter 4,8 s.** Före trycket:
+  `Spela i 10 min, enabled true, hittable true`. Appens logg: `Say: Spela pressed (attempt 3, online false)` och 0,7 s
+  senare `Say: answered (plays false, line Ingen internetanslutning. …)`.
+- Samma text utan nät spelar efter 3,0 s (`Say: Spela pressed (attempt 2, online false)` → `answered (plays true)`).
+- Ingen rad `Say: Spela cannot be pressed` i körningen. "Långsamt ljud" grön igen (8,3 s och 26,6 s).
+
+**Slutsats: fyndet 18:00 var testet, inte appen.** När trycket kommer fram svarar Spela utan nät som det ska, på
+dagens main och på main från i går 12:55. Raden i kön är stängd. Ändringen 00:11 (ett väntande tryck kan inte lämna
+Spela avstängd) står kvar som skydd; läget den rättar har inte setts.
+
+**Nytt i samma körning, inte förklarat:** ett tryck på kortets text öppnade inte spelaren (avsnittet "Spelaren från
+kortet: varv 2" föll). Nästa tryck 30 s senare öppnade den. Före trycket stod testet stilla i 88 s, så körningen var
+trög just då. Samma sak sågs en gång av sju i T48 (2026-11-18 08:00, före A150), och avsnittet var grönt i 44430660402
+en timme tidigare med samma app. Knappen gör bara en sak (visar spelaren), och jag hittar inget i koden som tar bort
+den igen. Från och med nu loggar appen `Say: the text on the card pressed (the player opens)` och
+`Reading: the player is on the screen`, så nästa gång syns om trycket kom fram och om spelaren visades.
+
+## Tillägg 03:55: bygget med loggraderna är grönt
+
+**iOS build 44443511279 på main är grön** (bygget för enhet, enhetstesterna, Release-bygget). **Verifierat i CI.**
+Loggraderna `Say: the text on the card pressed (the player opens)` och `Reading: the player is on the screen` finns
+alltså i appen; de är inte sedda i en körning än. Min kö är tom.
+
+## Tillägg 04:15: Tobys T36 grön i alla 15 delar på dagens main
+
+T36 44444292560 (toby/t53 5e4ab058, testen ihopslagna med main). **Verifierat i CI-loggen (Simulator), inte på enhet.**
+
+- Utan nät: ny text ger "Ingen internetanslutning. Försök igen när du är uppkopplad." efter 3,6 s.
+- Långsamt ljud (8 s och 25 s) grön.
+- "Spelaren från kortet: varv 2" grön: kortets text öppnade spelaren på första trycket (8 s för avsnittet).
+- De två nya loggraderna (trycket på kortets text, spelaren visas) står inte i den här körningens logg; jag har inte
+  sett dem i en körning än. Tobys test trycker nu en gång till och skriver ut tiden om första trycket inte öppnar.
+
+Trycket som inte öppnade spelaren i 44439180293 är alltså sett en gång av tre körningar i natt och är fortfarande
+inte förklarat. Inget mer att göra i appen förrän det händer igen med loggraderna.

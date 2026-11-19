@@ -354,6 +354,13 @@ def reliable_domains():
     return re.findall(r'"([^"]+)"', block) + ["ica.se", "clasohlson.com"]
 
 
+def web_meta(done):
+    """O89 del 2: keep whether the answer searched, so a missing source line can be told apart from a
+    skipped search (latest.json had no trace of it on 2026-11-19)."""
+    done = done or {}
+    return dict(web_searches=(done.get("usage") or {}).get("web_searches"), source=done.get("source"))
+
+
 def run(cases, rizz, domains, only, now):
     be = Backend()
     rows = []
@@ -400,7 +407,8 @@ def run(cases, rizz, domains, only, now):
                 rows.append(dict(id=case["id"], cat=case["cat"], turn=ti, q=turn["q"] or "(Rizz)", ttft=r["ttft_ms"], total=r["total_ms"],
                                  answer=text[:300], problems=[], relation=None, expect=turn.get("expect"), silent=False,
                                  relation_ok=None, skipped="web_cap_test",
-                                 cost=((r["done"] or {}).get("usage") or {}).get("est_cost_usd") or 0))
+                                 cost=((r["done"] or {}).get("usage") or {}).get("est_cost_usd") or 0,
+                                 **web_meta(r["done"])))
                 if text and not r["error"]:
                     answers.append(split_source(text)[0])
                     hist.append({"q": turn["q"], "a": text[:380]})
@@ -457,7 +465,8 @@ def run(cases, rizz, domains, only, now):
                 answer=text[:300], problems=problems, relation=rel, expect=turn.get("expect"),
                 silent=not text.strip() and (r["done"] or {}).get("answered") is False and not r["error"],
                 relation_ok=(None if rel is None or rel_exp is None else rel in rel_exp),
-                cost=(r["done"].get("usage") or {}).get("est_cost_usd") or 0))
+                cost=((r["done"] or {}).get("usage") or {}).get("est_cost_usd") or 0,
+                **web_meta(r["done"])))
             if text and not r["error"]:
                 answers.append(split_source(text)[0])
                 hist.append({"q": turn["q"], "a": text[:380]})

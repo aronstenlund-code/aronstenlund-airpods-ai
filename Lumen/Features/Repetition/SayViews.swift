@@ -511,6 +511,7 @@ struct SayInAirPodsField: View {
                 .transition(SayMotion.appear)
         }
         Button {
+            Log.repetition.info("Say: the text on the card pressed (the player opens)")
             model.showsPlayer = true
         } label: {
             Text(verbatim: drill.saidText)

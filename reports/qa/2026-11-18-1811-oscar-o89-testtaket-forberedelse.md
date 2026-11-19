@@ -63,3 +63,12 @@ Serverns egna `needsText` och `needsWeb` på alla 367 frågor i `scripts/live-ev
   - Min planerade körning kl. 00:10 UTC skulle ha tagit cirka 6.
 
   Tillsammans blir det cirka 75. **Jag har ställt in min körning.** O88:s webbdel och O89 del 2 läser jag i stället ur nattens eval-rapport kl. 03:30 UTC, eftersom den kör samma fall (fakta-05, fakta-09, praktiskt-03 och -04, text-03, k9-neg-5) och inte kostar något extra. Tar K104 48 före natten får nattens eval cirka 2 webbsvar, och resten hoppas över (räknas som överhoppat, inte fel). Förslag: K104 körs **efter** nattens eval (efter cirka 03:00 UTC) och tar högst 29, eller så får natten sina 21 först.
+
+
+## Tillägg 2026-11-19 04:35: nattens eval startar först cirka 10 UTC, inte 02:17
+- `nightly-eval.yml` har cron `17 2 * * *`, men de tre senaste schemalagda körningarna **startade 09:50, 10:48 och 10:16 UTC** (Actions 43843462583, 44068269139, 44283796139). GitHub kör alltså schemat cirka 8 timmar sent (**verifierat** i Actions-tiderna). Kl. 03:30 UTC fanns därför ingen rapport för 2026-11-19.
+- **Följd för testtaket (D234):** nattens eval delar testtaket med allt som körs mellan 00:00 och cirka 10:30 UTC, inte bara med det som körs före 02:17.
+  - Kevins K104 tog 28 av 50 kl. 00:24 UTC, så nattens eval har 22 kvar och behöver cirka 21.
+  - **Webbomtester före cirka 10:30 UTC tar alltså av evalens del.** Jag gör inga, enligt D237.
+- **Förslag (Deangelo/Kevin):** räkna med att evalen går cirka 10–10:40 UTC. Lägg dagens webbomtester efter den eller räkna in dem i de 50. Vill ni ha den vid 02:17 kan cron-tiden flyttas bort från hela timmen, men GitHubs fördröjning är inte garanterad.
+- Jag läser nattens rapport cirka 11:15 UTC i stället (O89 del 2 och O88:s webbdel).

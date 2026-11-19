@@ -80,4 +80,16 @@ check("rapporten räknar överhoppade", "1 överhoppade" in le.report(_rows, "20
 # O89 (Deangelo 15:20): ica.se and clasohlson.com count as reliable in the eval
 check("ica.se godkänd", le.web_checks("Blanda färsen. Källa: ICA.", le.reliable_domains(), "ica.se") == [])
 check("clasohlson.com godkänd", le.web_checks("Lossa bultarna. Källa: Clas Ohlson.", le.reliable_domains(), "clasohlson.com") == [])
+# O89 del 2: rows keep whether the answer searched and its source
+class _FakeWeb(_FakeBackend):
+    def ask(self, u, body):
+        return dict(text="Nilen. Källa: Britannica.", ttft_ms=900, total_ms=1000,
+                    done={"usage": {"web_searches": 1}, "source": "britannica.com"}, options=None, error=None)
+
+
+le.Backend = _FakeWeb
+_rows2 = le.run([{"id": "webb-y", "cat": "webb", "turns": [{"q": "längsta floden", "web": True}]}], {}, ["britannica.com"], set(), now)
+le.Backend = _real_backend
+check("raden har web_searches och källa", _rows2[0].get("web_searches") == 1 and _rows2[0].get("source") == "britannica.com")
+check("överhoppad rad har web_searches-fält", "web_searches" in _rows[0])
 sys.exit(0 if all(ok) else 1)

@@ -265,6 +265,9 @@ struct ReadingPlayerView: View {
         .presentationBackground(.clear)
         .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { height = $0 }
         .accessibilityAction(.escape) { if canFold { model.showsPlayer = false } }
+        // Toby (T36 44439180293, and T48 point 3): a tap on the card's text did not open the player, once in a
+        // while. With the card's own line this says whether the tap came and whether the player was shown.
+        .onAppear { Log.repetition.info("Reading: the player is on the screen") }
         #if DEBUG
         .task { if SayText.stagedFold { await runFoldDemo() } }
         #endif

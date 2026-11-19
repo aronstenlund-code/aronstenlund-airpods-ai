@@ -1,0 +1,143 @@
+{
+ "summary": {
+  "n": 10,
+  "answered": 10,
+  "correct": 10,
+  "natural": 9,
+  "slips": 0,
+  "cost_mean_usd": 0.00308,
+  "first_ms_p50": 979
+ },
+ "rows": [
+  {
+   "q": "vad är fotosyntes",
+   "status": 200,
+   "answer": "Fotosyntes är processen där växter, alger och vissa bakterier använder ljusenergi för att göra koldioxid och vatten till druvsocker och syre. Den sker i kloroplasterna med hjälp av klorofyllet, som är det gröna ämnet som fångar ljuset.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.012150000000000001,
+   "ms": 1569
+  },
+  {
+   "q": "varför är himlen blå",
+   "status": 200,
+   "answer": "Solljuset består av alla färger, men luftens molekyler sprider det korta, blå ljuset mycket mer än det långa, röda. Därför kommer blått ljus från alla håll på himlen, och det kallas Rayleigh-spridning.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0019318999999999999,
+   "ms": 979
+  },
+  {
+   "q": "hur fungerar en vaccin",
+   "status": 200,
+   "answer": "Ett vaccin visar immunförsvaret en ofarlig bit av en sjukdomsalstrare, till exempel ett försvagat virus eller ett protein från det. Kroppen bildar då antikroppar och minnesceller, så den känner igen och slår snabbt ut den riktiga smittan om du träffar på den senare.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Minor: 'en vaccin' in the question is neuter ('ett vaccin'), and the answer correctly uses 'ett'. Concise, correct, fits 2-3 sentences.",
+   "cost": 0.0022294000000000003,
+   "ms": 877
+  },
+  {
+   "q": "vem var Gustav Vasa",
+   "status": 200,
+   "answer": "Gustav Vasa var Sveriges kung från femtonhundratjugotre till femtonhundrasextio och räknas som den moderna svenska statens grundare. Han ledde befrielsekriget mot den danske kungen Kristian den andre, införde reformationen och gjorde kronan ärftlig.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0020094,
+   "ms": 839
+  },
+  {
+   "q": "vad är skillnaden mellan väder och klimat",
+   "status": 200,
+   "answer": "Väder är hur atmosfären ser ut just nu eller under några dagar, till exempel regn i dag. Klimat är det genomsnittliga vädret på en plats under lång tid, vanligtvis trettio år.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0018544000000000002,
+   "ms": 1238
+  },
+  {
+   "q": "hur räknar man ut procent",
+   "status": 200,
+   "answer": "För att räkna ut hur många procent en del är av helheten delar du delen med helheten och multiplicerar med hundra. Till exempel är femton av sextio lika med femton delat med sextio gånger hundra, alltså tjugofem procent.\n\nFör att ta procent av ett tal gör du tvärtom: tjugo procent av åttio är åttio gånger noll komma två noll, alltså sexton.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Korrekt och tydligt. Fyra meningar, men fungerar som svar för en demobesökare.",
+   "cost": 0.0023569000000000003,
+   "ms": 1234
+  },
+  {
+   "q": "varför har vi skottår",
+   "status": 200,
+   "answer": "Jorden tar ungefär trehundrasextiofem komma två fem dygn på sig att gå ett varv runt solen, alltså ett kvarts dygn mer än de trehundrasextiofem dagarna i ett vanligt år. Genom att lägga till en extra dag, den tjugonionde februari, vart fjärde år håller vi kalendern i takt med årstiderna.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Minor: 'komma två fem' is a natural spoken form; the omitted century-year rule is not required for a short answer.",
+   "cost": 0.0022119,
+   "ms": 1919
+  },
+  {
+   "q": "vad är en atom",
+   "status": 200,
+   "answer": "En atom är den minsta delen av ett grundämne som behåller dess egenskaper. Den har en kärna av protoner och neutroner, och elektroner som rör sig runt kärnan.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0017269,
+   "ms": 906
+  },
+  {
+   "q": "hur uppstår regnbågar",
+   "status": 200,
+   "answer": "Solljus bryts när det går in i regndroppar, reflekteras mot droppens baksida och bryts igen när det går ut. Olika våglängder bryts olika mycket, så ljuset delas upp i färger, med rött ytterst och violett innerst, ungefär fyrtiotvå grader från motljuset.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 0,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Slightly off: 42 degrees is measured from the antisolar point, which 'motljuset' phrases clumsily; also 'ungefär fyrtiotvå grader från motljuset' is awkward. Otherwise accurate and compact.",
+   "cost": 0.0021194000000000005,
+   "ms": 859
+  },
+  {
+   "q": "vad betyder demokrati",
+   "status": 200,
+   "answer": "Demokrati betyder folkstyre, av grekiskans demos, folket, och kratos, styre. Det är ett styrelseskick där makten kommer från folket, som väljer sina företrädare i fria och rättvisa val, och där alla har lika rösträtt och skyddas av grundläggande fri- och rättigheter.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0021944,
+   "ms": 916
+  }
+ ]
+}
