@@ -113,6 +113,8 @@ anonymt konto per installation (`auth/v1/signup` utan e-post) [V].
 | **Användarinnehåll › Annat** (kalenderhändelser) | Ja, bara i Fler lägen (beta) | Nej | Appens funktioner | När man frågar vad som finns i kalendern skickas upp till 20 händelser (titel, tid, plats) till servern för svaret [V i koden, A142]. Apple har ingen egen kalender-kategori; "Annat användarinnehåll" är närmast. Rättat 2026-11-18 |
 | Påminnelser, larm | Nej | – | – | Appen lägger bara till och läser inget [V i koden, A142] |
 | Kontaktuppgifter (e-post) | Nej i appen | – | – | E-post samlas bara på webbsidans väntelista, inte i appen [V] |
+| **Användarinnehåll › Kundsupport** (A152) | Ja | Ja | Appens funktioner | "Fel svar?", talat "rapportera" och Feedback och förslag skickar den egna frågan, svaret och kommentaren till utvecklarna, med konto-id; högst 90 dagar [V i koden, punkt 3 c] |
+| **Användarinnehåll › Annat**, syftet **Analys** (A152) | Ja | Delad historik ja; frågeloggen nej | Analys (produktförbättring) | Frågeloggen (högst 14 dagar, utan konto-id) och frivillig delad historik (högst 12 månader) [V i koden, punkt 3 a, b, d] |
 | Plats, hälsa, finans, sökhistorik | Nej | – | – | [V] |
 
 **Måste rättas eller beslutas före inskickning (till Deangelo/Aron):**
@@ -123,13 +125,27 @@ anonymt konto per installation (`auth/v1/signup` utan e-post) [V].
    servern för att göra frågorna, så första halvan stämmer inte. Förslag: "Take a photo of the page you are studying.
    The photo is sent once to make your questions and is not saved." (Angela Schrute) **[V] att texten är fel**
 3. **Rapporterade frågor (D135):** "med samtycke läser utvecklaren dem, raderas inom 14 dagar". Om det finns i appen ska
-   det in som Användarinnehåll, syfte produktförbättring. **[O]**
-4. **Minnen (D37 m.fl.) i Fler lägen** sparas på servern? Om ja: Användarinnehåll, kopplat. **[O]**
+   det in som Användarinnehåll, syfte produktförbättring. ~~**[O]**~~ **Svar ur koden (Angela Schrute, A152, 2026-11-19):
+   ja, det finns i Release, på fyra sätt. Inget av dem är bortkompilerat (bara testläget är det, D227).** [V i koden]
+   | Flöde | När | Vad som skickas | Kopplat till kontot | Sparas | Kod |
+   |---|---|---|---|---|---|
+   | a. Frågeloggen i lyssnarlägena (D116, K30) | efter lyssnarsamtycket (version 5 eller senare), bara i Fler lägen | varje fråga och svar, siffror maskade; aldrig krissvar, demon eller obesvarade | nej (tabellen har varken konto-id eller installations-id) | högst 14 dagar | `ListeningModel.context(for:)` sätter `qa_log`, `CloudAnswerProvider`; `backend/supabase/functions/answer/qalog.ts`; `20261110210000_qa_log.sql` |
+   | b. Frågeloggen i repetitionsläget (D197, K77) | **varje gång ett frågeprov sparas, utan samtyckesflagga från appen** | nya frågor med svar och ändrade frågor (före och efter); aldrig en Säg-texts eller ett textprovs text, foton, testkonton eller importerade kopior | nej | högst 14 dagar | `backend/supabase/functions/drill/handler.ts` (`analyse`), `drill/analysis.ts` |
+   | c. Rapporter och feedback (D57) | "Fel svar?" på ett svar i Fler lägen, talat "rapportera", Inställningar › Feedback och förslag | den egna frågan, svaret, kommentaren; andras tal skickas aldrig | **ja** (konto-id ur inloggningen och installations-id) | tills ärendet är hanterat, högst 90 dagar | `FeedbackClient.send`, `ListeningModel.report`; `20261107233000_feedback_status_retention.sql` |
+   | d. Delad historik (D57) | frivilligt: frågan visas en gång efter lyssnarsamtycket, reglaget står i Feedback och förslag, av från början | egna frågor och appens svar | **ja** (konto-id och installations-id) | högst 12 månader, tas bort när man slår av | `FeedbackClient.sync`, `RootView` (`ShareHistoryPromptView`); `20261106120000_feedback_and_shared_history.sql` |
+   - **Följd för App Privacy:** "Användarinnehåll › Annat" får också syftet **Analys** (a, b, d: produktförbättring), och en ny rad **"Användarinnehåll › Kundsupport"**, kopplad, syfte Appens funktioner (c). Så står det i `PrivacyInfo.xcprivacy`.
+   - **Texten "14 dagar" i D135 gäller frågeloggen (a, b).** Rapporter (c) ligger kvar upp till 90 dagar och delad historik (d) upp till 12 månader; policyn bör säga alla tre.
+   - **Beslut som behövs (Deangelo/Aron): b har inget samtycke och nämns inte i Välkommen.** "Läs mer" säger att proven sparas hos EarMind, inte att utvecklaren läser nya frågor och svar i upp till 14 dagar. Antingen en mening till i Välkommen › Läs mer och i policyn, eller så stänger Kevin av loggen för App Store-versionen. **[O] hög**
+4. **Minnen (D37 m.fl.) i Fler lägen** sparas på servern? Om ja: Användarinnehåll, kopplat. ~~**[O]**~~ **Svar ur koden (Angela Schrute, A152, 2026-11-19): nej.** [V i koden]
+   - Minnena ligger i filen `memories.json` på telefonen (`MemoryStore`, `Lumen/Core/History/MemoryStore.swift`) och visas och raderas under Inställningar.
+   - De **skickas** med varje fråga i Fler lägen (högst 30 × 200 tecken, `AnswerContext.memories`) och till `/memory` när appen letar efter något nytt att minnas. Servern använder dem för svaret och sparar ingen text: `/memory` har ingen skrivning till databasen, bara samma rad utan text i `answer_usage` (`backend/README.md`, D80) [V i backend-koden].
+   - Enligt Apples definition är det inte "insamlat" (det behålls inte längre än anropet), så ingen egen rad behövs. Undantag: slår användaren på frågeloggen eller delad historik (punkt 3 a och d) kan en fråga som nämner ett minne hamna där.
 5. ~~**Mikrofontexten (D138)**~~ **Klart (D229, A146).** Två avvikelser från D229 som Kelly stöder (sanna och ger mer): meningen om Sömnläget står kvar, och taligenkänningens text säger att iPhonens egen igenkänning håller ljudet på telefonen. Deangelo bekräftar. Gällde: texten sa inte att ljudet skickas till en taligenkänningstjänst. Apple (5.1.1) vill att
    texten säger vad datan används till. Kelly stöder Angela Schrutes förslag: "Ljudet skickas till en
    taligenkänningstjänst, blir text och sparas inte av EarMind." Deangelo beslutar (ändrar D138). **[V] att texten saknar det**
 6. **Integritetspolicy** krävs (URL i App Store Connect) och saknas. Förslag: en sida på earmind.vercel.app/integritet
    med samma uppgifter som tabellen. **Utkast klart (Ke78, grenen `kelly/ke78-integritet`), väntar på Arons ja (TILL-ARON #30)**
+7. **Privacy manifest (A152, D238): finns.** `Lumen/Resources/PrivacyInfo.xcprivacy` och `LumenControls/PrivacyInfo.xcprivacy`, båda i Release-appen (iOS build 44584413378). Ingen spårning. Skäl: UserDefaults `CA92.1` och `1C8F.1` (delat med widgeten), filers datum `C617.1` (ljudcachen i appens egen mapp), systemets uppstartstid `35F9.1` (tid mellan händelser i appen), diskutrymme `E174.1` (FluidAudios kod). Paketen: SpotifyiOS har eget manifest; FluidAudio har inget och läser ledigt diskutrymme på en rad (`LFM3AudioConfig.swift:81`), som därför står i appens manifest med `E174.1`. Release-binären importerar just de fyra: `NSUserDefaults`, `mach_absolute_time`, `NSURLContentModificationDateKey`, `NSURLVolumeAvailableCapacityKey`. [V i bygget]
 
 ## 2b. App Store Connect › App Privacy: svaren att klicka in (Ke84, engelska som i formuläret)
 Apples definition: data är "collected" när den lämnar telefonen och vi eller en partner (Anthropic, ElevenLabs,
