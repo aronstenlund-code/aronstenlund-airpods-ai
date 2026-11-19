@@ -89,12 +89,12 @@ bekräftas före inskickning). Inget här är provat på telefon av mig.
 | Upprepar i 10 min till 1 timme (D210) | [S] A124/A132 |
 | "Du ser att det spelas och hur länge det är kvar" | [S] A132 |
 | Spelar vidare med låst skärm, styrs från AirPods (D209) | **[O]** därför står det inte i texten; Aron provar på telefon |
-| Röster, tempo, Skriv i takt (D220) | **[O]** A136 inte byggd än. Stryk raden om den inte är byggd vid inskickning |
+| Röster, tempo, Skriv i takt (D220) | [S] A136/A140, live O81; pausernas längd **[O]** på telefon |
 | Länk som material (D204) | [S] A116; hämtningen på servern K81 **[O]** live |
 | 1, 2, 3 tryck | [V] koden; **[O]** alla AirPods-modeller på telefon |
 | Starta prov och Säg använder aldrig mikrofonen | [V] koden (repetitionsläget startar ingen mikrofon); **[O]** orange pricken på telefon (R9) |
 | 1 500 krediter i månaden, 1 kredit = 1 tecken (D213) | [V] D213/K90 |
-| Köp och veckokort | **[O]** A134 inte byggd, produkterna finns inte i App Store Connect |
+| Köp och veckokort | [S] A134 (låtsasbutik), [V] `/purchase`; produkterna finns inte i App Store Connect än (Aron) |
 
 ## 2. Integritetsuppgifter (App Privacy)
 **Spårning: Nej.** Ingen reklam-SDK, ingen analys-SDK, ingen IDFA [V: ingen sådan kod i `Lumen/`]. Inloggningen är ett
@@ -156,53 +156,69 @@ Supabase) kan nå den längre än själva anropet. "Linked" = knuten till kontot
 | Data type (Apple) | Collected | Linked to user | Used for tracking | Purposes |
 |---|---|---|---|---|
 | Identifiers › **User ID** | Yes | Yes | No | App Functionality |
-| User Content › **Other User Content** (texts, questions and answers, calendar events asked about in More modes) | Yes | Yes | No | App Functionality |
+| User Content › **Other User Content** (texts, questions and answers, calendar events asked about in More modes) | Yes | Yes | No | App Functionality, **Analytics** |
 | User Content › **Photos or Videos** | Yes | No | No | App Functionality |
 | User Content › **Audio Data** (More modes only) | Yes | No | No | App Functionality |
 | Contacts › **Contacts** (names only, More modes) | Yes | No | No | App Functionality |
 | Purchases › **Purchase History** | Yes | Yes | No | App Functionality |
 | Usage Data › **Product Interaction** (function, time, cost per call; no text) | Yes | Yes | No | App Functionality |
 | Contact Info, Health & Fitness, Financial Info, Location, Sensitive Info, Browsing History, Search History, Diagnostics, Other Data | No | – | – | – |
-| *Rapporterade frågor (punkt 3) och minnen (punkt 4)* | *väntar på A152* | | | |
+| User Content › **Customer Support** ("Wrong answer?", spoken "report", Feedback and suggestions) | Yes | Yes | No | App Functionality |
 
-Grund: tabellen i §2 (varje rad kontrollerad i koden). "Linked" för foton, ljud och kontakter är **No** eftersom de
+Grund: tabellen i §2 och Angela Schrutes svar på punkt 3–4 (A152, `PrivacyInfo.xcprivacy` säger detsamma); varje rad
+kontrollerad i koden. **Analytics** på Other User Content: frågeloggarna (punkt 3 a, b; ej kopplade, högst 14 dagar) och
+delad historik (3 d; frivillig, kopplad, högst 12 månader). **Customer Support**: rapporter (3 c, kopplade, högst 90
+dagar). **Minnen** (punkt 4) behålls inte på servern och är därför inte "collected".
+**Beslut kvar (Deangelo/Aron, hög):** frågeloggen i repetitionsläget (3 b) har inget samtycke och nämns inte i
+Välkommen. Antingen en mening i Välkommen › Läs mer och i policyn, eller av i App Store-versionen. Svaren ovan gäller som
+koden är i dag (loggen på). "Linked" för foton, ljud och kontakter är **No** eftersom de
 inte sparas på kontot (foton raderas inom en timme, ljud sparas inte av EarMind, kontaktnamn bara i svaret);
 partnern kan behålla dem enligt sina villkor, därför "Collected: Yes".
 
-## 3. Granskningsanteckningar (App Review Information › Notes), på engelska
-> EarMind reads text aloud in the user's earbuds to help them study.
+## 3. Granskningsanteckningar (App Review Information › Notes), på engelska – klar att klistra in (Ke84)
+> EarMind reads text aloud in the user's earbuds to help them study. No sign-in is needed.
 >
-> 1. Say in AirPods (first screen): the user types or pastes a text and taps "Play for 10 min". The text is spoken with
+> 1. Say in AirPods (first screen): type or paste a text and tap "Play for 10 min". The text is spoken with
 > text-to-speech and repeats for the chosen time (10–60 minutes). Playback is always visible: the card shows "Playing in
 > AirPods", the time left, Pause and Stop, and the system Now Playing controls are used. There is no delayed or scheduled
-> playback and no hidden mode. The microphone is never used here.
+> playback and no hidden mode. The microphone is never used here. "How should it sound?" lets the user describe a style;
+> the app suggests a voice, or the user picks one from the voice sheet (previews are free).
 >
-> 2. Start quiz: photos or text become quiz questions with answers (Claude by Anthropic). Answers are spoken
-> (ElevenLabs) when the user presses the earbuds. The microphone is never used.
+> 2. Start quiz: photos, documents, a link or text become quiz questions with answers (Claude by Anthropic). Answers are
+> spoken (ElevenLabs) when the user presses the earbuds. The microphone is never used. Photos are deleted after the
+> questions are made.
 >
 > 3. More modes (beta) use the microphone. Before the first start the app shows a consent screen; the microphone is only
 > requested after that. While listening, a bar at the top of every screen shows that the app is listening, with one-tap
 > Stop. Audio is streamed for speech recognition and not stored by EarMind.
 >
-> 4. Credits and purchases: 1,500 credits per month are free. Credit packs are consumables. The weekly pass is an
-> auto-renewable subscription; price, renewal and how to cancel are shown next to the purchase button, with links to
-> Terms and Privacy.
+> 4. Credits: 1 credit is 1 character of new audio; repeats and existing audio are free. Every account gets 1,500 free
+> credits per month, enough to try Say in AirPods; the quiz screen suggests a number of questions that fits the credits.
+> Inviting a friend gives 2,000 credits after the friend plays a first text. Credit packs are consumables. The weekly
+> pass is an auto-renewable subscription; price, renewal and how to cancel are shown next to the purchase button, with
+> links to Terms and Privacy. Purchases are verified on our server.
 >
-> 5. Account: no sign-in is needed (anonymous account per install). The account and everything on the server can be
-> deleted in the app: Settings › Account › Delete account (A145). [Aron: add here how the reviewer gets credits, e.g.
-> that the review build/account has unlimited credits. Do not put any password in this repository.]
+> 5. Account: an anonymous account is created on first launch. The account and everything on the server can be deleted
+> in the app: Settings › Account › Delete account. Feedback and reports are sent only when the user taps them.
 >
 > 6. AirPods are not required; the app also plays through the phone speaker.
 
+**Före inskickning (Aron/Deangelo), inte i texten ovan:**
+- **Krediter för granskaren:** 1 500 räcker för Säg men inte för ett fullt prov (ett prov ≈ 6 000). Välkomsten (5 000)
+  kräver Team ID och App Attest (TILL-ARON #31, D239); är den på, lägg till i punkt 4: "New accounts also get 5,000
+  welcome credits." Annars: ge granskaren krediter på serversidan och skriv det här. **Inget lösenord i repot.**
+- Låst skärm (D209) står inte i texten (inte provad på telefon).
+
 Kontroll (Kelly, Ke84): punkt 1 Now Playing [V i koden: `RepetitionSession` sätter `MPNowPlayingInfoCenter`,
-`RemoteCommandHub`]; låst skärm (D209) står inte i texten. Punkt 3 samtycke före mikrofon [V: `ListeningModel` vägrar
-utan samtycke]. Punkt 6 högtalaren [V i koden: Säg kräver inga hörlurar, ljudet går dit systemet skickar det; inte
-provat på telefon].
+`RemoteCommandHub`]; röster och stil [V: A136/A140, live O81]. Punkt 2 foton raderas [V: `exam/drill.ts`,
+`drill-purge`]. Punkt 3 samtycke före mikrofon [V: `ListeningModel` vägrar utan samtycke]. Punkt 4 1 500/månad, inbjudan
+[V: D213/D224, live O82], köp verifieras [V: `/purchase`]. Punkt 5 Radera konto [V: A145/K101]. Punkt 6 högtalaren
+[V i koden: Säg kräver inga hörlurar; inte provat på telefon].
 
 ## 4. Övrigt som Apple frågar efter
 | Fält | Förslag | Status |
 |---|---|---|
-| Åldersgräns | **12+**; Rizz-läget (flirtförslag, beta) och AI-svar kan ge "Infrequent/Mild Mature/Suggestive Themes". Är Rizz kvar: svara ärligt i frågeformuläret | **[O]** Aron |
+| Åldersgräns | **13+** (Apples skala 2025), se `README.md` §4: Rizz-läget (milda flirtförslag, beta) och AI-innehåll; svara ärligt i formuläret | förslag, Aron |
 | Kategori | Utbildning (primär), Produktivitet (sekundär) | förslag |
 | Support-URL | earmind.vercel.app (har kontaktadress) | [V] sidan finns (Ke70) |
 | Marknadsförings-URL | earmind.vercel.app | [V] |
