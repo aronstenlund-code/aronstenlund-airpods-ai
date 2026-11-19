@@ -397,14 +397,19 @@ struct RepetitionHomeSection: View {
     /// inte göras just nu"); the exam's own page has the whole of it ("… Försök igen om en stund.").
     private func shortProblem(_ drill: Drill) -> String? {
         guard let problem = model.audio.problem(for: drill) else { return nil }
-        let first = problem.components(separatedBy: ". ").first ?? problem
-        return first.hasSuffix(".") ? String(first.dropLast()) : first
+        return DrillText.cardProblem(problem, creditsShort: model.quotaExceeded(drill)) // T55
     }
 
     /// Through "Styr med dina AirPods" the first time; after that one tap, from the question the last run stopped at.
     private func start(_ drill: Drill) {
         // Kelly Ke64b N5: when the month does not cover an exam that is not started, the card opens the exam's
         // screen, which says why, instead of starting.
+        // T55: the server has already said the credits do not cover it (a new exam is refused at the save, so it
+        // has no cost of its own to compare). Trying again only looked like nothing happened.
+        if model.quotaExceeded(drill) {
+            opened = drill.id
+            return
+        }
         if model.awaitsAudioStart(drill), let quota = model.quota,
            quota.isCredits ? (drill.startCost ?? 0) > quota.left : startCount(drill) > quota.left {
             opened = drill.id
