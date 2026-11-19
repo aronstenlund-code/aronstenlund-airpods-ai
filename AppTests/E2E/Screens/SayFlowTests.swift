@@ -236,12 +236,25 @@ final class SayFlowTests: XCTestCase {
     }
 
     /// Hides the keyboard without typing into the field: a tap on the screen's title area.
+    /// Run 44439180352 (AX5): `app.keyboards` was empty while the keyboard's keys (skift, retur) stood in the tree and
+    /// covered Spela. Look for the keys too.
+    private var keyboardUp: Bool {
+        app.keyboards.count > 0 || app.buttons["retur"].exists || app.buttons["skift"].exists || app.buttons["return"].exists
+    }
+
     private func hideKeyboard() {
-        guard app.keyboards.count > 0 else { return }
-        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.07)).tap(); testTaps += 1
-        pause(1)
-        if app.keyboards.count > 0 { app.swipeDown(velocity: .slow); pause(1) }
-        log.append("keyboard hidden: \(app.keyboards.count == 0)")
+        guard keyboardUp else { return }
+        for attempt in 0..<3 {
+            switch attempt {
+            case 0: app.staticTexts["Prov"].firstMatch.exists ? app.staticTexts["Prov"].firstMatch.tap() : app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.07)).tap()
+            case 1: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.07)).tap()
+            default: app.swipeDown(velocity: .slow)
+            }
+            testTaps += 1
+            pause(1)
+            if !keyboardUp { break }
+        }
+        log.append("keyboard hidden: \(!keyboardUp)")
     }
 
     /// Run 44159967813 (slow Simulator, 112 s to Start): typeText failed with "Neither element nor any descendant has
@@ -1302,7 +1315,10 @@ final class SayFlowTests: XCTestCase {
         // Angela Fable 00:15 (44312213280): a centre tap on a button under the keyboard lands on the keyboard. Never
         // tap through it.
         let keyboard = app.keyboards.firstMatch
-        let underKeyboard = keyboard.exists && keyboard.frame.contains(CGPoint(x: frame.midX, y: frame.midY))
+        // Run 44439180352: with the keyboard's keys in the tree but no keyboard element, a button in its lower half
+        // counts as under it.
+        let underKeyboard = (keyboard.exists && keyboard.frame.contains(CGPoint(x: frame.midX, y: frame.midY)))
+            || (!keyboard.exists && keyboardUp && frame.midY > app.windows.firstMatch.frame.height * 0.55)
         if !element.isHittable, underKeyboard { log.append("\(step): '\(element.label)' is under the keyboard; hiding it"); hideKeyboard(); element = find(labels) ?? element }
         if !element.isHittable, !underKeyboard, !frame.isEmpty, app.windows.firstMatch.frame.contains(CGPoint(x: frame.midX, y: frame.midY)) {
             log.append("NOT HITTABLE (tapped at its centre): \(step): '\(element.label)' at \(Int(frame.midX)),\(Int(frame.midY))")
