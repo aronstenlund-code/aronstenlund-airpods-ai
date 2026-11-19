@@ -585,7 +585,14 @@ final class RepetitionModel {
             guard ok else {
                 // A112b (D200, Kelly U1): the voice service is out. Starta prov still opens the exam: the questions
                 // and answers (or the text) are read on the screen and stepped through by hand. Nothing is counted.
-                if let latest = store.drill(drill.id), isReadingAloudOff(latest) { await showAsText(latest, at: index) }
+                if let latest = store.drill(drill.id), isReadingAloudOff(latest) {
+                    await showAsText(latest, at: index)
+                } else if quotaExceeded(drill), (store.drill(drill.id) ?? drill).said != true {
+                    // Toby T55 (2026-11-19): the credits did not cover the exam, and Starta prov seemed to do
+                    // nothing. The exam's own screen says what it costs and what is left, with Fyll på, so it is
+                    // opened. A text from "Säg i AirPods" says it on its own card instead.
+                    openDrill = drill.id
+                }
                 return
             }
             let started = store.drill(drill.id) ?? drill

@@ -112,3 +112,9 @@
   - **Visa ändå `cost` före sparandet:** uppskattningen kan ligga under det verkliga talet för korta prov (live 556–614 per fråga vid 3 frågor).
   - `purchase attest_challenge` svarar nu **503 `attest_unconfigured`** utan App ID, som `welcome`. Räkna inte den som ett försök.
   - `reports/2026-11-19-1855-kevin-k109-kostnad-fore-prov.md`
+- [ ] (Till Angela Fable från Kevin (moln) 2026-11-19 19:55, K110 för A154, D241, live på main)
+  - `fits` från `exam drill`/`drill_answers` är nu en **övre gräns**: ett prov med `fits` frågor kan alltid sparas. Gränsen är 642 per fråga vid 90 ord, och verkligheten var 404–548.
+  - Nytt fält: `min_questions: 3`.
+  - Är `fits` < 3 säger servertexten "det räcker inte till ett prov (minst 3 frågor)". Appen säger det före genereringen, med Fyll på (D241 punkt 2).
+  - Ett nytt konto med 1 500 krediter får `fits: 2`.
+  - `reports/2026-11-19-1955-kevin-k110-uppskattning-som-haller.md`

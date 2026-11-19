@@ -90,7 +90,7 @@ for eid, m in O79.items():
         print(f"FEL  {eid}: exam drill {st} {plan.get('error')}", flush=True)
         summary.append({"eid": eid, "error": st})
         continue
-    st2, ans = call({"action": "drill_answers", "items": plan["items"], "notes": plan.get("notes"),
+    st2, ans = call({"action": "drill_answers", "items": plan["items"], "notes": plan.get("notes"), "may_fix": True,  # K110/K111: as the app
                      "subject": plan["summary"]["subject"], "grade": plan["summary"]["grade"]}, tok)
     total_usd += usd(ans)
     items = ans.get("items") or plan["items"]
@@ -108,8 +108,11 @@ for eid, m in O79.items():
     summary.append(row)
     print(f"\n=== {eid} ({m['format']}, {m['lang']}, {len(full)} tecken, {len(m['parts'])} delar): {len(items)} frågor, per del {per}, "
           f"nästan lika {near}, förståelse {why}/{len(items)}, {row['usd']} USD | {json.dumps(row['summary'], ensure_ascii=False)} | servern {row['coverage_server']}", flush=True)
+    asked = [i.get("question") for i in plan["items"]]
     for n, it in enumerate(items, 1):
-        print(f"  {n:2d}. [del {pl[n - 1] + 1}] F: {it['question']}\n      K: {it.get('short')}\n      L: {it.get('long')}", flush=True)
+        was = asked[n - 1] if n - 1 < len(asked) else None
+        mark = f"→ (förut: {was}) " if was and was != it["question"] else ""  # K111: rewritten by the answer step
+        print(f"  {n:2d}. [del {pl[n - 1] + 1}] F: {mark}{it['question']}\n      K: {it.get('short')}\n      L: {it.get('long')}", flush=True)
     if m["format"] == "photo":
         print("  OCR-text (början):", json.dumps((plan.get("text") or plan.get("ocr_text") or "")[:300], ensure_ascii=False), flush=True)
 

@@ -184,6 +184,45 @@ import Testing
         #expect(!model.awaitsAudioStart(saved))
     }
 
+    /// Toby (moln) T55, 2026-11-19: a new account with 1 500 credits, an exam that costs 1 909. Starta prov gave no
+    /// player and no word. The start the server refuses opens the exam's own screen, which says why; when the credits
+    /// cover it the same press plays, and the refusal is forgotten.
+    @Test func aStartTheCreditsDoNotCoverOpensTheExamsScreen() async throws {
+        let (cloud, store, audio, drill) = try setup()
+        await audio.prepare(drill)
+        let session = RepetitionSession(inputs: [], makeSource: { A78RepetitionTests.MockSource() },
+                                        makeTimer: { A78RepetitionTests.MockTimer() },
+                                        defaults: try #require(UserDefaults(suiteName: "a107-\(UUID())")),
+                                        activatesAudioSession: false)
+        let model = RepetitionModel(store: store, session: session, maker: MockDrillMaker(), audio: audio,
+                                    sharing: DrillShareClient(cloud: cloud), remote: RemoteCommandHub(), cloud: cloud)
+        let saved = try #require(store.drill(drill.id))
+        cloud.quotaLeft = false
+        #expect(model.openDrill == nil)
+        await model.start(saved)
+        #expect(!model.showsPlayer && session.player == nil, "nothing plays")
+        #expect(model.quotaExceeded(saved))
+        #expect(model.openDrill == drill.id, "the exam's screen is opened: it says what is missing")
+        #expect(model.audio.problem(for: saved) != nil)
+
+        // A top-up, or a new month: the same press starts it, and nothing is said to be missing any more.
+        model.openDrill = nil
+        cloud.quotaLeft = true
+        await model.start(saved)
+        #expect(model.showsPlayer && session.player != nil)
+        #expect(!model.quotaExceeded(saved) && model.openDrill == nil)
+    }
+
+    /// T55: on the card the price alone ("Det här kostar 1 909 krediter") read like a price, not like a no.
+    @Test func theCardSaysWhatIsLeftWhenTheCreditsAreShort() {
+        let server = "Det här kostar 1 909 krediter. Du har 1 500 kvar. Nya krediter den 1 december."
+        #expect(DrillText.cardProblem(server, creditsShort: true) == "Det här kostar 1 909 krediter. Du har 1 500 kvar")
+        #expect(DrillText.cardProblem(server, creditsShort: false) == "Det här kostar 1 909 krediter")
+        // Other problems as before (Kelly A100): the first sentence, without its full stop.
+        #expect(DrillText.cardProblem("Ljudet kan inte göras just nu. Försök igen om en stund.", creditsShort: false) == "Ljudet kan inte göras just nu")
+        #expect(DrillText.cardProblem("Du har inga frågor kvar den här månaden.", creditsShort: true) == "Du har inga frågor kvar den här månaden")
+    }
+
     /// Toby (moln) T24, 2026-11-15 (small): the card of a new exam said "Ljud: 0 av 6 klara" for a moment, until the
     /// server's first answer made it "Ljudet görs när du startar". A new exam has asked for no sound from the start.
     @Test func aNewExamAwaitsStartaProvBeforeTheServerAnswers() async throws {

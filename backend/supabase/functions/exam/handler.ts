@@ -7,7 +7,7 @@ import { sanitizeTagged } from "../answer/prompt.ts";
 import { finalNumber, isBareNumber } from "./spoken.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 import { practiceNav, spokenTask } from "./practice.ts";
-import { DEFAULT_DRILL_CONFIG, docxText, DRILL_WEIGHT, type DrillConfig, estimateDrillCost, handleDrill, type MaterialStore, uploadUrls } from "./drill.ts";
+import { DEFAULT_DRILL_CONFIG, docxText, DRILL_LIMITS, DRILL_WEIGHT, type DrillConfig, estimateDrillCost, handleDrill, type MaterialStore, uploadUrls } from "./drill.ts";
 import { handleRead } from "./read.ts";
 
 /**
@@ -395,11 +395,12 @@ export function createExamHandler(deps: ExamDeps) {
           if (est && est.cost > left) {
             const fits = Math.floor(left / est.per);
             const what = action === "drill" ? `Ett prov med ${est.count} frågor` : `Svaren på ${est.count} frågor`;
-            const room = fits >= 1 ? `det räcker till ${fits} ${fits === 1 ? "fråga" : "frågor"}` : "det räcker inte till någon fråga";
+            // K110 (D241 punkt 2): an exam has at least questionsMin questions; fewer = no exam fits (the app offers Fyll på)
+            const room = fits >= DRILL_LIMITS.questionsMin ? `det räcker till ${fits} frågor` : `det räcker inte till ett prov (minst ${DRILL_LIMITS.questionsMin} frågor)`;
             return json({
               error: { code: "quota_exceeded", message: `${what} kostar cirka ${thousands(est.cost)} krediter. Du har ${thousands(left)} kvar, ${room}. Nya krediter den ${resetsDay(Date.now())}.`, fallback: false },
               ...quota,
-              cost: est.cost, needed: est.cost, estimated: true, fits, per_question: est.per, questions: est.count,
+              cost: est.cost, needed: est.cost, estimated: true, fits, per_question: est.per, questions: est.count, min_questions: DRILL_LIMITS.questionsMin,
             }, 402);
           }
         }

@@ -65,3 +65,20 @@ Deno.test("K110 (printing 11/14, refill 0 of 3 and 0 repeats): questions given a
   const r = await refillQuestions(p, DEFAULT_DRILL_CONFIG, ["Why were books rare before printing?"], 2, "Printing changed Europe.");
   assertEquals(r.questions, ["How did printing change the way scientists worked?", "Why did the Church lose control over ideas?"]);
 });
+
+Deno.test("K110 (D241 punkt 2): fewer than 3 questions fit = the text says no exam fits (an exam has at least 3)", async () => {
+  const { createExamHandler } = await import("./handler.ts");
+  const { MemoryRateLimiter } = await import("../_shared/ratelimit.ts");
+  const h = createExamHandler({
+    authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
+    rateLimiter: new MemoryRateLimiter(),
+    provider: llm([{}]),
+    quota: () => Promise.resolve({ used: 0, lim: 1500 }),
+  });
+  const r = await h(new Request("http://x/exam", { method: "POST", headers: { "content-type": "application/json", "x-forwarded-for": "1.2.3.4" }, body: JSON.stringify({ action: "drill", text: "Fotosyntes är när växter gör socker av ljus.", questions: 3 }) }));
+  assertEquals(r.status, 402);
+  const j = await r.json();
+  assertEquals(j.fits, 2);
+  assertEquals(j.min_questions, 3);
+  assert(String(j.error.message).includes("räcker inte till ett prov"), j.error.message);
+});

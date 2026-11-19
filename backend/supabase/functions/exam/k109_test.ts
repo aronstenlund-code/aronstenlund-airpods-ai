@@ -27,29 +27,29 @@ function world(o: { used: number; lim: number; unlimited?: boolean }) {
   return { ask, calls };
 }
 
-Deno.test("K109: the estimate per question follows the long answer's length (Oscar O90: 12 questions at 90 words cost 5 882)", () => {
+Deno.test("K110: the estimate per question is an upper bound (live 404–548 per question at 90 words)", () => {
   const per = estimatedCostPerQuestion(90);
-  assert(per >= 470 && per <= 520, String(per));
+  assertEquals(per, 642);
   assert(estimatedCostPerQuestion(40) < per);
 });
 
 Deno.test("K109: drill with too few credits is 402 before any model call, with how many questions fit", async () => {
-  const w = world({ used: 0, lim: 1500 });
+  const w = world({ used: 0, lim: 2000 }); // K110: 3 fit at 642 each
   const r = await w.ask({ action: "drill", text: "Fotosyntes är när växter gör socker av ljus.", questions: 12 });
   assertEquals(r.status, 402);
   const e = r.body.error as Record<string, unknown>;
   assertEquals(e.code, "quota_exceeded");
   const per = estimatedCostPerQuestion(90);
-  assertEquals(r.body.fits, Math.floor(1500 / per));
+  assertEquals(r.body.fits, Math.floor(2000 / per));
   assertEquals(r.body.cost, 12 * per);
-  assertEquals(r.body.remaining, 1500);
+  assertEquals(r.body.remaining, 2000);
   assertEquals(r.body.estimated, true);
-  assert(String(e.message).includes("räcker till"), String(e.message));
+  assert(String(e.message).includes("det räcker till 3 frågor"), String(e.message));
   assertEquals(w.calls.length, 0, "no exam is made that cannot be saved");
 });
 
 Deno.test("K109: enough credits, or unlimited, makes the exam as before", async () => {
-  const ok = world({ used: 0, lim: 6500 });
+  const ok = world({ used: 0, lim: 8000 }); // K110: 12 × 642 = 7 704
   const r = await ok.ask({ action: "drill", text: "Fotosyntes är när växter gör socker av ljus.", questions: 12 });
   assert(r.status !== 402, JSON.stringify(r.body).slice(0, 200));
   assert(ok.calls.length > 0);

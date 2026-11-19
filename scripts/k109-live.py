@@ -47,28 +47,29 @@ keep = ("status", "ms", "code", "message", "cost", "remaining", "fits", "per_que
 
 st, j, ms = req("exam", {"action": "drill", "answers": False, "questions": 12, "subject": m["subject"], "pages": [], "text": full}, tok, header=False)
 out["drill12"] = {k: v for k, v in {"status": st, "ms": ms, **(j.get("error") or {}), **j}.items() if k in keep}
-ok["drill12_402_fits_fast"] = st == 402 and j.get("fits") == 3 and j.get("estimated") is True and j.get("remaining") == q0 and ms < 8000 and "items" not in j
+ok["drill12_402_fits_fast"] = st == 402 and j.get("fits") == 1500 // 642 and j.get("min_questions") == 3 and j.get("estimated") is True and j.get("remaining") == q0 and ms < 8000 and "items" not in j
 items = [{"id": f"q{i + 1}", "question": f"Vad händer med energin i steg {i + 1} i en näringskedja?"} for i in range(12)]
 st, j, ms = req("exam", {"action": "drill_answers", "items": items, "subject": m["subject"], "may_fix": True}, tok, header=False)
 out["answers12"] = {k: v for k, v in {"status": st, "ms": ms, **(j.get("error") or {}), **j}.items() if k in keep}
 ok["answers12_402_fits"] = st == 402 and isinstance(j.get("fits"), int) and j["fits"] < 12 and ms < 8000 and "items" not in j
 
-st, plan, ms = req("exam", {"action": "drill", "answers": False, "questions": 3, "subject": m["subject"], "pages": [], "text": full}, tok)
+tok3 = T.signup()[0]  # its own account: the exam calls per minute above would give 429 (K110 live 18:45)
+st, plan, ms = req("exam", {"action": "drill", "answers": False, "questions": 3, "subject": m["subject"], "pages": [], "text": full}, tok3)
 out["drill3"] = {"status": st, "ms": ms, "items": len(plan.get("items") or []), "error": plan.get("error")}
 real = None
 if st == 200:
     sa, ans, ms2 = req("exam", {"action": "drill_answers", "items": plan["items"], "notes": plan.get("notes"), "subject": plan["summary"]["subject"],
-                                "grade": plan["summary"]["grade"], "may_fix": True}, tok)
+                                "grade": plan["summary"]["grade"], "may_fix": True}, tok3)
     qi = ans.get("items") or []
     out["answers3"] = {"status": sa, "ms": ms2, "items": len(qi)}
     save_items = [{k: it[k] for k in ("question", "short", "long", "display") if it.get(k)} for it in qi]
-    sc, c, _ = req("drill", {"action": "cost", "drill": {"title": "K109 (QA)", "subject": "Biologi"}, "items": save_items}, tok)
+    sc, c, _ = req("drill", {"action": "cost", "drill": {"title": "K109 (QA)", "subject": "Biologi"}, "items": save_items}, tok3)
     real = c.get("cost")
-    out["cost3"] = {"status": sc, "real_cost": real, "estimate": 3 * 492, "per_question_real": real and round(real / max(1, len(save_items)))}
+    out["cost3"] = {"status": sc, "real_cost": real, "estimate": 3 * 642, "per_question_real": real and round(real / max(1, len(save_items)))}
 ok["drill3_works"] = st == 200 and out.get("answers3", {}).get("status") == 200
-ok["estimate_within_25pct"] = bool(real) and abs(real - 3 * 492) <= 0.25 * 3 * 492
+ok["real_within_estimate"] = bool(real) and real <= 3 * 642  # K110: an upper bound
 ok["quota_unchanged"] = remaining(tok) == q0
-st, j, ms = req("exam", {"action": "drill", "answers": False, "questions": 12, "subject": m["subject"], "pages": [], "text": "Kort material om fotosyntes. Växter gör socker av ljus."}, tok)
+st, j, ms = req("exam", {"action": "drill", "answers": False, "questions": 12, "subject": m["subject"], "pages": [], "text": "Kort material om fotosyntes. Växter gör socker av ljus."}, T.signup()[0])
 out["qa_header_from_ci"] = {"status": st, "ms": ms, "items": len(j.get("items") or [])}
 ok["qa_measure_skips_estimate"] = st == 200
 

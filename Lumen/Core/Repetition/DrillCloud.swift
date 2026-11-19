@@ -1165,6 +1165,7 @@ final class CloudDrillAudio: DrillAudioProviding {
             latest = Drill.from(view, merging: latest)
             latest.audioStarted = nil // started, whatever an older server says
             store.save(latest)
+            quotaExceeded.remove(drill.id) // T55: the credits cover it now (a top-up, a new month)
             Log.repetition.info("Drill audio started: \(view.audio.done, privacy: .public)/\(view.audio.total, privacy: .public)")
         } catch {
             if case .refused(_, let code, _) = error, code == "quota_exceeded" { quotaExceeded.insert(drill.id) }
