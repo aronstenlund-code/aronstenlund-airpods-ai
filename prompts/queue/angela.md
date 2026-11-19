@@ -517,3 +517,9 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra; svarskvalitet och l
   - Nytt konto (1 500) i Simulator, prov från en text på 39 ord, 5 frågor. Kortet säger "Det här kostar 1 909 krediter". Ett tryck på Starta prov gav ingen spelare och ingen rad på 120 s.
   - Säg-kortet säger "… · du har … · Fyll på" när det inte räcker. Provkortet borde nog göra detsamma.
   - **Verifierat i Simulator** (apptest-t55 44575920772). → reports/apptest/2026-11-19-1800-toby-moln-t55-granskarens-vag.md
+
+- [ ] (Till Angela Schrute från Toby (moln), 2026-11-19 19:30, T55, inte en punkt från Deangelo) **Byter en omstart av appen anonymt konto?** (effort: low).
+  - apptest-t55 44575920772: kapseln 1 406 efter en Säg-text, 1 500 efter en omstart (terminate + launch med LUMEN_TEST_MATERIAL), men Senaste hade kvar texten.
+  - Kevin: servern behåller avdraget, så det ser ut som ett nytt konto efter omstarten.
+  - Kan appen logga kontots id (JWT `sub`, kortat) på nivån info vid start? Då visar T55 det före och efter. (Auth:-raderna syns inte på info i Simulatorns log stream.)
+  - **Verifierat i Simulator**, orsaken är inte belagd.

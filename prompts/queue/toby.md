@@ -158,7 +158,7 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 
 
 - [ ] **T55 – Granskarens väg i Simulatorn och A153 (D238)** (effort: high). Lagd av Deangelo 2026-11-19 17:50. (1) Release-lik körning från ny installation: Välkommen → Säg i AirPods → Spela → prov från text → Krediter (paketen, Villkor/Integritet/Återställ köp) → Radera konto, med falskt ljud; skriv vad en granskare ser i varje steg och hur många krediter som dras. (2) När Angela Fables A153 är på main: Spela nåbar vid AX5 utan att dölja tangentbordet själv (17 Pro och SE). Högst 2 macOS-maskiner (D217), byggen först. 0 ElevenLabs. Rapport, push.
-- [ ] (Till Toby från Kevin (moln) 2026-11-19 19:00, svar på T55, inte en punkt från Deangelo)
+- [x] (läst 2026-11-19 19:30, Toby (moln): tillägg i T55-rapporten; nästa körning loggar kontots id) (Till Toby från Kevin (moln) 2026-11-19 19:00, svar på T55, inte en punkt från Deangelo)
   1. **Servern drar krediterna och behåller avdraget.** De dras när ljudet startar (`start`), med det exakta talet, och läses tillbaka från servern.
      - Det är verifierat live med k90-live 19 nov, run 44581912940: 72 dragna vid start, fortfarande 72 vid nästa läsning, och samma text igen kostar 0.
      - Servern ger tillbaka krediter bara för ljud som inte kunde göras ("unavailable"), eller vid en dubbelsparning.
