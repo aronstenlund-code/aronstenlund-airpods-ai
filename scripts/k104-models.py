@@ -15,32 +15,29 @@ sys.stdout.reconfigure(encoding="utf-8")
 URL, KEY = T.URL, T.KEY
 
 # (id, question, any of these in the spoken answer = right); Oscar's searched cases first, then my own with a fixed key
-CASES = [
-    ("fakta-05", "vilken är världens längsta flod", ["nilen"]),
-    ("fakta-09", "hur många ledamöter har riksdagen", ["trehundrafyrtionio"]),
-    ("k9-neg-5", "vad händer med klimatet i framtiden", ["grader"]),
-    ("praktiskt-03", "hur byter man däck", ["domkraft"]),
-    ("text-01", "sjung en snapsvisa", ["den som inte helan tar han heller inte halvan får", "hej tomtegubbar slå i glasen"]),
+# K104 omgång 2 (2026-11-19, D234, testtaket): frågor som alltid har webbverktyg (texter, "vem vann … 2024/2025", "just nu",
+# instruktioner), lokalt kontrollerat; 14 i natt (28 sökta anrop, nattens eval behöver cirka 21 av 50), fler i morgon
+NIGHT1 = [
     ("text-02", "sjung helan går", ["den som inte helan tar han heller inte halvan får"]),
     ("text-03", "citera Strindberg om kärlek", ["strindberg"]),
-    ("k104-01", "vem var Sveriges andra statsminister", ["posse"]),
-    ("k104-02", "vem var Sveriges första statsminister", ["de geer"]),
-    ("k104-03", "vilket är Sveriges högsta berg", ["kebnekaise"]),
-    ("k104-04", "vilken är Sveriges största sjö", ["vänern"]),
-    ("k104-05", "vilken är världens högsta byggnad", ["burj khalifa"]),
-    ("k104-06", "vilket är världens folkrikaste land", ["indien"]),
-    ("k104-07", "vilken är Europas längsta flod", ["volga"]),
-    ("k104-08", "vilken är världens största ö", ["grönland"]),
-    ("k104-09", "vilket är världens minsta land", ["vatikan"]),
-    ("k104-10", "vilken är Sveriges näst största stad", ["göteborg"]),
-    ("k104-11", "vilket är Sveriges äldsta universitet", ["uppsala"]),
-    ("k104-12", "vem vann melodifestivalen 2024", ["marcus"]),
-    ("k104-13", "sjung hej tomtegubbar", ["hej tomtegubbar slå i glasen"]),
-    ("k104-14", "vilken är Sveriges längsta flod", ["klarälven", "göta älv"]),
-    ("k104-15", "vilket är världens djupaste hav", ["stilla havet"]),
-    ("k104-16", "vem var USA:s första president", ["washington"]),
-    ("k104-17", "vilken är Sveriges största ö", ["gotland"]),
+    ("t-tomte", "sjung hej tomtegubbar", ["hej tomtegubbar slå i glasen"]),
+    ("t-dugamla", "sjung du gamla du fria", ["du gamla du fria du fjällhöga nord"]),
+    ("w-mello24", "vem vann melodifestivalen 2024", ["marcus"]),
+    ("w-kung", "vem är Sveriges kung just nu", ["gustaf"]),
+    ("w-fn", "vem är FN:s generalsekreterare just nu", ["guterres"]),
+    ("praktiskt-03", "hur byter man däck", ["domkraft"]),
+    ("w-nobel-lit23", "vem vann nobelpriset i litteratur 2023", ["fosse"]),
+    ("w-superbowl25", "vem vann Super Bowl 2025", ["eagles"]),
+    ("w-esc25", "vem vann Eurovision 2025", ["österrike", "jj"]),
+    ("w-nobel-fys24", "vem vann nobelpriset i fysik 2024", ["hopfield", "hinton"]),
+    ("w-mello25", "vem vann melodifestivalen 2025", ["kaj"]),
+    ("w-esc24", "vem vann Eurovision 2024", ["nemo", "schweiz"]),
 ]
+NIGHT2 = [
+    ("w-nobel-kem23", "vem vann nobelpriset i kemi 2023", ["bawendi", "brus", "jekimov", "yekimov"]),
+]
+_SET = next((a.split("=", 1)[1] for a in sys.argv[1:] if a.startswith("--set=")), "1")
+CASES = NIGHT1 if _SET == "1" else NIGHT2
 BAD = ["jag kan inte", "det står inte i källorna", "kan inte hitta"]
 USERS = 6
 
@@ -101,6 +98,7 @@ for cid, q, key in CASES:
         right = any(norm(x) in spoken for x in key) and not any(b in spoken for b in BAD)
         u = r["done"].get("usage") or {}
         row = {"id": cid, "model": model, "served": u.get("model"), "web": u.get("web_searches"), "right": right,
+               "web_cap_test": r["done"].get("web_cap_test", False),
                "ttft": r["ttft"], "searching": r["searching"], "cost": u.get("est_cost_usd"),
                "error": r["error"], "svar": r["text"][:200]}
         rows.append(row)
@@ -120,6 +118,9 @@ def summary(label, sel):
 
 
 summary("alla", rows)
+srch = [(r["searching"], r["ttft"]) for r in rows if r["searching"] and r["ttft"]]
+print("=== searching före första ordet:", sum(1 for a, b in srch if a < b), "av", len(srch), "| median ms före:",
+      statistics.median([b - a for a, b in srch]) if srch else None, "| web_cap_test:", sum(1 for r in rows if r["web_cap_test"]))
 both = {cid for cid in {r["id"] for r in rows} if all((r["web"] or 0) > 0 for r in rows if r["id"] == cid)}
 summary(f"sökta med båda modellerna ({len(both)} frågor)", [r for r in rows if r["id"] in both])
 print("=== olika rätt/fel:", [(cid, {r["model"]: r["right"] for r in rows if r["id"] == cid}) for cid in sorted({r["id"] for r in rows})
