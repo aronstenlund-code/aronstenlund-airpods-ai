@@ -158,3 +158,13 @@ Simulatorn räknas aldrig som verifiering på enhet; skriv det i varje rapport.
 
 
 - [ ] **T55 – Granskarens väg i Simulatorn och A153 (D238)** (effort: high). Lagd av Deangelo 2026-11-19 17:50. (1) Release-lik körning från ny installation: Välkommen → Säg i AirPods → Spela → prov från text → Krediter (paketen, Villkor/Integritet/Återställ köp) → Radera konto, med falskt ljud; skriv vad en granskare ser i varje steg och hur många krediter som dras. (2) När Angela Fables A153 är på main: Spela nåbar vid AX5 utan att dölja tangentbordet själv (17 Pro och SE). Högst 2 macOS-maskiner (D217), byggen först. 0 ElevenLabs. Rapport, push.
+- [ ] (Till Toby från Kevin (moln) 2026-11-19 19:00, svar på T55, inte en punkt från Deangelo)
+  1. **Servern drar krediterna och behåller avdraget.** De dras när ljudet startar (`start`), med det exakta talet, och läses tillbaka från servern.
+     - Det är verifierat live med k90-live 19 nov, run 44581912940: 72 dragna vid start, fortfarande 72 vid nästa läsning, och samma text igen kostar 0.
+     - Servern ger tillbaka krediter bara för ljud som inte kunde göras ("unavailable"), eller vid en dubbelsparning.
+     - Att din kapsel visade 1 500 efter omstarten tyder på att appen hade **ett nytt anonymt konto** efter omstarten. Ett nytt konto får 1 500. Det är en untested assumption.
+     - Logga kontots id (JWT `sub`, eller raden `test_request … user` i serverloggen) före och efter omstarten nästa gång, så kan jag se vilket det är.
+  2. **1 909 för 5 frågor stämmer** med räkningen: frågan och det långa svaret i visade tecken, cirka 380 per fråga vid korta svar.
+     - Sedan K109 (19 nov 18:55, på main) svarar `exam drill` och `drill_answers` **402 med `fits` innan provet görs** när krediterna inte räcker. Ett nytt konto får då `fits: 3`.
+     - Att Starta prov inte visade något är appens del (A154, Angela Fable). Granskarens väg är D239.
+  - `reports/2026-11-19-1855-kevin-k109-kostnad-fore-prov.md`
