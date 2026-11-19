@@ -392,11 +392,12 @@ struct SayInAirPodsField: View {
             } else if styleFocused {
                 // Ke75 §2: four suggestions above the keyboard; a tap writes the word.
                 ToolbarItemGroup(placement: .keyboard) {
+                    // A153 (Kelly): Spela stands where it stands for the big field, first in the row.
+                    if playStandsAboveKeyboard { keyboardPlay(compact: true) }
                     ForEach(styleSuggestions, id: \.self) { word in
                         Button(word) { style = SaySound.adding(word, to: style) }
                     }
                     Spacer()
-                    if playStandsAboveKeyboard { keyboardPlay(compact: true) } // A153
                 }
             }
         }
@@ -458,31 +459,68 @@ struct SayInAirPodsField: View {
     @ViewBuilder
     private func keyboardPlay(compact: Bool) -> some View {
         let title = canRetry ? "Försök igen" : SayText.playTitle(minutes)
-        Button {
-            play()
-        } label: {
-            // Black on the accent, as on the card (the bar's own white is too weak on this light blue).
-            Group {
-                if compact {
-                    Image(systemName: canRetry ? "arrow.clockwise" : "play.fill")
-                } else {
-                    Label(title, systemImage: canRetry ? "arrow.clockwise" : "play.fill")
-                        .labelStyle(.titleAndIcon)
-                        .font(.subheadline.weight(.semibold))
-                }
+        let narrow = cardWidth < SayKeyboard.narrowCard
+        let cost = compact ? nil : keyboardCost
+        if creditsShort {
+            // Kelly (2026-11-19): the credits do not cover the text, so the button is the way to more of them.
+            Button {
+                focused = false
+                styleFocused = false
+                showsCredits = true
+            } label: {
+                Text(verbatim: ShopText.refill).font(.subheadline.weight(.semibold)).foregroundStyle(Color.black)
             }
-            .foregroundStyle(tooMany ? Color.primary : Color.black)
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.capsule)
+            .tint(SayText.accent)
+        } else {
+            Button {
+                play()
+            } label: {
+                // Black on the accent, as on the card (the bar's own white is too weak on this light blue).
+                Group {
+                    if compact {
+                        Image(systemName: canRetry ? "arrow.clockwise" : "play.fill")
+                    } else {
+                        Label(SayKeyboard.playWords(title, narrow: narrow, withCost: cost != nil && !canRetry),
+                              systemImage: canRetry ? "arrow.clockwise" : "play.fill")
+                            .labelStyle(.titleAndIcon)
+                            .font(.subheadline.weight(.semibold))
+                    }
+                }
+                .foregroundStyle(tooMany ? Color.primary : Color.black)
+            }
+            .buttonStyle(.borderedProminent)
+            .buttonBorderShape(.capsule)
+            .tint(SayText.accent)
+            .disabled(isStarting || tooMany)
+            .accessibilityLabel(title) // the whole of it, also when the row has room for "Spela" or the symbol only
         }
-        .buttonStyle(.borderedProminent)
-        .buttonBorderShape(.capsule)
-        .tint(SayText.accent)
-        .disabled(isStarting || tooMany)
-        .accessibilityLabel(title)
+        // Kelly (2026-11-19): at the largest text the card's cost is behind the keyboard, so it is said here.
+        if let cost {
+            Text(verbatim: SayKeyboard.costWords(cost, narrow: narrow))
+                .font(.footnote)
+                .monospacedDigit()
+                .lineLimit(1)
+                .accessibilityLabel(SayText.spokenCost(cost))
+        }
+    }
+
+    /// The credits do not cover this text, and there is a shop to get more from.
+    private var creditsShort: Bool { model.shop != nil && (credits.map { $0.cost > $0.left } ?? false) }
+
+    /// A153: the cost as the card says it ("120 krediter", "120 krediter · du har 88", "Ingår"), for the row above
+    /// the keyboard. Nil while the server has not said it, and for an account without a limit.
+    private var keyboardCost: String? {
+        credits.map { SayText.costLine(cost: $0.cost, left: $0.left, subscription: model.quota?.subscription) }
     }
 
     /// A153: Spela stands in the row above the keyboard: a field of the card has the keyboard, there is a text,
     /// and the card's own Spela is behind the keyboard. The card's own then steps aside (one Spela at a time).
-    private var playStandsAboveKeyboard: Bool { playHidden && !isEmpty && (focused || styleFocused) }
+    private var playStandsAboveKeyboard: Bool {
+        // In the style row there is no room for "Fyll på" beside the suggestions; the card's own row says it.
+        playHidden && !isEmpty && (focused || (styleFocused && !creditsShort))
+    }
 
     /// A153: the style's suggestions that have room. Beside Spela on a narrow screen the last one gives way.
     private var styleSuggestions: [String] {
@@ -850,7 +888,6 @@ struct SayInAirPodsField: View {
     private var costRow: some View {
         // Kelly (kop.md §2): after the server's no (402) the row is the same as before it, "120 krediter · du har 88 ·
         // Fyll på", when the credits are known; the sheet that Fyll på opens says when new credits come.
-        let creditsShort = model.shop != nil && (credits.map { $0.cost > $0.left } ?? false)
         if let refused, !isEmpty, !creditsShort {
             Text(verbatim: refused)
                 .font(.footnote.weight(.semibold))
@@ -916,6 +953,11 @@ struct SayInAirPodsField: View {
                 Spacer(minLength: 8)
                 mainButton(wide: false)
             }
+            // A153 (Kelly): in one row they are all behind the keyboard's row when Spela is; the whole row steps
+            // aside, so nothing of it shows through the row's glass.
+            .opacity(playStandsAboveKeyboard ? 0 : 1)
+            .accessibilityHidden(playStandsAboveKeyboard)
+            .animation(SayMotion.change(reduceMotion), value: playStandsAboveKeyboard)
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 8) {
                     addMenu

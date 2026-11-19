@@ -50,6 +50,27 @@ import UIKit
         #expect(SayKeyboard.top(from: Notification(name: UIResponder.keyboardWillChangeFrameNotification)) == nil)
     }
 
+    @Test func theRowSaysTheCostAndIsShorterOnANarrowScreen() {
+        // Kelly (2026-11-19): the cost stands in the row above the keyboard.
+        #expect(SayKeyboard.costWords("120 krediter", narrow: false) == "120 krediter")
+        #expect(SayKeyboard.costWords("120 krediter · du har 88", narrow: false) == "120 krediter · du har 88")
+        #expect(SayKeyboard.costWords("120 krediter · du har 88", narrow: true) == "120 krediter")
+        #expect(SayKeyboard.costWords("Ingår", narrow: true) == "Ingår")
+        #expect(SayKeyboard.playWords("Spela i 10 min", narrow: false, withCost: true) == "Spela i 10 min")
+        #expect(SayKeyboard.playWords("Spela i 10 min", narrow: true, withCost: false) == "Spela i 10 min")
+        #expect(SayKeyboard.playWords("Spela i 10 min", narrow: true, withCost: true) == "Spela")
+        #expect(SayKeyboard.narrowCard < SayKeyboard.widthForAllSuggestions)
+    }
+
+    @Test func theStripUnderTheRowReachesFromTheRowsTopToTheContentsEnd() {
+        // iPhone 17 Pro, iOS 26 (the pictures of 2026-11-19): the row begins at 491, the content ends at 525.
+        #expect(SayKeyboard.stripHeight(bottom: 525, keyboardTop: 491) == 34)
+        #expect(SayKeyboard.stripHeight(bottom: nil, keyboardTop: 491) == 34, "a guess until it is measured")
+        #expect(SayKeyboard.stripHeight(bottom: 525, keyboardTop: nil) == 34)
+        #expect(SayKeyboard.stripHeight(bottom: 525, keyboardTop: 874) == 0, "the keyboard has gone: no strip")
+        #expect(SayKeyboard.stripHeight(bottom: 525, keyboardTop: 200) == 72, "never more than a row and a half")
+    }
+
     @Test func theViewsGeometryAnswersFromBoth() {
         let geometry = SayKeyboard.Geometry()
         #expect(!geometry.hidesPlay, "no keyboard yet")

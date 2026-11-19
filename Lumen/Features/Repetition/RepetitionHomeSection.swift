@@ -39,6 +39,12 @@ struct RepetitionHomeSection: View {
 
     /// A153: the keyboard is up (the bottom row then steps aside).
     @State private var keyboardIsUp = false
+    /// A153: where the keyboard with its row begins, and where the strip under that row ends (both on the screen).
+    @State private var keyboardTop: CGFloat?
+    @State private var keyboardStripBottom: CGFloat?
+    private var keyboardStripHeight: CGFloat {
+        SayKeyboard.stripHeight(bottom: keyboardStripBottom, keyboardTop: keyboardTop)
+    }
 
     var body: some View {
         Group {
@@ -53,10 +59,26 @@ struct RepetitionHomeSection: View {
             // A100: without an exam the row only held Fler lägen, which a new user does not see yet.
             // A153 (D238): not while the keyboard is up. The row rode up on the keyboard and took the room the
             // field needs (on an iPhone SE it lay over the field's own Spela).
-            if (!model.examDrills.isEmpty || showsMoreModes), !keyboardIsUp { bottomRow }
+            if keyboardIsUp {
+                // Kelly (2026-11-19): what stands in the row above the keyboard (Spela, Klar, the style's
+                // suggestions) is read against a plain ground. The row is glass and floats over the list; this strip
+                // of the screen's own colour lies under it, from where the keyboard's row begins down to the keys.
+                // It also ends the list there, so the line that is being written stays above the row.
+                Color.clear
+                    .frame(height: keyboardStripHeight)
+                    .frame(maxWidth: .infinity)
+                    .background(Color(.systemGroupedBackground))
+                    .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { keyboardStripBottom = $0 }
+                    .accessibilityHidden(true)
+            } else if !model.examDrills.isEmpty || showsMoreModes {
+                bottomRow
+            }
         }
         .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillShowNotification)) { _ in keyboardIsUp = true }
         .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillHideNotification)) { _ in keyboardIsUp = false }
+        .onReceive(NotificationCenter.default.publisher(for: UIResponder.keyboardWillChangeFrameNotification)) { note in
+            keyboardTop = SayKeyboard.top(from: note)
+        }
         .toolbar { barItems }
         .sheet(isPresented: $isCreating) {
             NewDrillView(model: model) { drill in opened = drill.id }

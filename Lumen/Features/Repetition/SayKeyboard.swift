@@ -16,6 +16,31 @@ enum SayKeyboard {
     /// keyboard (the widest phones); on the others the last suggestion gives way to Spela.
     static let widthForAllSuggestions: CGFloat = 398
 
+    /// On the narrowest phones (iPhone SE) the row above the keyboard has room for "Spela" and the cost, not for
+    /// "Spela i 10 min" and the cost. The card is narrower than this there.
+    static let narrowCard: CGFloat = 320
+
+    /// Kelly (2026-11-19): the cost stands in the row above the keyboard, since the card's own is behind the keys
+    /// at the largest text. The card's words; on a narrow screen their first part ("120 krediter" of
+    /// "120 krediter · du har 88").
+    static func costWords(_ line: String, narrow: Bool) -> String {
+        narrow ? (line.components(separatedBy: " · ").first ?? line) : line
+    }
+
+    /// The button's words in that row: the card's ("Spela i 10 min"); on a narrow screen beside a cost, "Spela".
+    static func playWords(_ title: String, narrow: Bool, withCost: Bool) -> String {
+        narrow && withCost ? (title.components(separatedBy: " ").first ?? title) : title
+    }
+
+    /// The strip of plain ground under the keyboard's row: from where the keyboard with its row begins
+    /// (`keyboardTop`) down to where the screen's own content ends above the keys (`bottom`, the strip's own lower
+    /// edge). Measured on an iPhone 17 Pro with iOS 26: the row begins at 491 and the content ends at 525, so 34
+    /// points; that is also the guess before both are known. Never more than a row and a half.
+    static func stripHeight(bottom: CGFloat?, keyboardTop: CGFloat?) -> CGFloat {
+        guard let bottom, let keyboardTop, bottom > 0 else { return 34 }
+        return min(max(bottom - keyboardTop, 0), 72)
+    }
+
     /// The card's own Spela cannot be pressed while the keyboard is up: the keyboard (with its row) covers it, wholly
     /// or in part, or it has been scrolled away above the screen.
     /// - `button`: the button's top and bottom on the screen; nil = not measured, and then the answer is the safe

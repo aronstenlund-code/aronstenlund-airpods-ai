@@ -75,6 +75,8 @@ enum RepetitionDemo {
                                       // same with the style field in focus, a short text, and the long card with
                                       // the measured numbers under it
                                       "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers",
+                                      // A153 (Kelly): the credits do not cover the text; "Fyll på" above the keyboard
+                                      "repShopShortKeyboard",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -377,7 +379,7 @@ enum RepetitionDemo {
         if name.hasPrefix("repShop") { // A134 (D218), A141 (D224): packs, the weekly card and the invitation
             model.store.save(history)
             model.store.save(drill)
-            let short = name == "repShopShort" || name == "repShopRefused"
+            let short = name == "repShopShort" || name == "repShopRefused" || name == "repShopShortKeyboard"
             var credits = DrillQuota(used: short ? 1412 : 264, limit: 1500, per: "month", resets: "2026-12-01")
             credits.unit = "chars"
             credits.remaining = short ? 88 : 1236
@@ -399,7 +401,8 @@ enum RepetitionDemo {
             let shop = CreditShop(front: front, server: server, defaults: shopDefaults)
             model.shop = shop
             Task { await shop.load() }
-            SayText.stagedForScreenshots = ["repShopShort", "repShopWeeklyHome", "repShopRefused"].contains(name) ? said : nil
+            SayText.stagedForScreenshots = ["repShopShort", "repShopWeeklyHome", "repShopRefused", "repShopShortKeyboard"].contains(name) ? said : nil
+            if name == "repShopShortKeyboard" { SayText.stagedKeyboard = "text" } // A153 (Kelly): "Fyll på" above the keyboard
             // Kelly (kop.md §2): after the server's 402 the row is the same as before it.
             SayText.stagedRefusal = name == "repShopRefused"
                 ? "Det här kostar 120 krediter. Du har 88 kvar. Nya krediter den 1 december." : nil
@@ -645,7 +648,7 @@ enum RepetitionDemo {
                  "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices", "repSayVoicesUser",
                  "repShopShort", "repShopWeeklyHome", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
                  "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced",
-                 "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers":
+                 "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers", "repShopShortKeyboard":
                 NavigationStack { HomeView(model: listening) }
             case "repMotionFold": // the player as the app shows it: a cover over Start
                 NavigationStack { HomeView(model: listening) }.modifier(RepetitionOverlay(model: model))
