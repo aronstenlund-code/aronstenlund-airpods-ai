@@ -131,6 +131,28 @@ anonymt konto per installation (`auth/v1/signup` utan e-post) [V].
 6. **Integritetspolicy** krävs (URL i App Store Connect) och saknas. Förslag: en sida på earmind.vercel.app/integritet
    med samma uppgifter som tabellen. **Utkast klart (Ke78, grenen `kelly/ke78-integritet`), väntar på Arons ja (TILL-ARON #30)**
 
+## 2b. App Store Connect › App Privacy: svaren att klicka in (Ke84, engelska som i formuläret)
+Apples definition: data är "collected" när den lämnar telefonen och vi eller en partner (Anthropic, ElevenLabs,
+Supabase) kan nå den längre än själva anropet. "Linked" = knuten till kontots id. Tracking: **No** för allt.
+
+**Do you or your third-party partners collect data from this app? → Yes**
+
+| Data type (Apple) | Collected | Linked to user | Used for tracking | Purposes |
+|---|---|---|---|---|
+| Identifiers › **User ID** | Yes | Yes | No | App Functionality |
+| User Content › **Other User Content** (texts, questions and answers, calendar events asked about in More modes) | Yes | Yes | No | App Functionality |
+| User Content › **Photos or Videos** | Yes | No | No | App Functionality |
+| User Content › **Audio Data** (More modes only) | Yes | No | No | App Functionality |
+| Contacts › **Contacts** (names only, More modes) | Yes | No | No | App Functionality |
+| Purchases › **Purchase History** | Yes | Yes | No | App Functionality |
+| Usage Data › **Product Interaction** (function, time, cost per call; no text) | Yes | Yes | No | App Functionality |
+| Contact Info, Health & Fitness, Financial Info, Location, Sensitive Info, Browsing History, Search History, Diagnostics, Other Data | No | – | – | – |
+| *Rapporterade frågor (punkt 3) och minnen (punkt 4)* | *väntar på A152* | | | |
+
+Grund: tabellen i §2 (varje rad kontrollerad i koden). "Linked" för foton, ljud och kontakter är **No** eftersom de
+inte sparas på kontot (foton raderas inom en timme, ljud sparas inte av EarMind, kontaktnamn bara i svaret);
+partnern kan behålla dem enligt sina villkor, därför "Collected: Yes".
+
 ## 3. Granskningsanteckningar (App Review Information › Notes), på engelska
 > EarMind reads text aloud in the user's earbuds to help them study.
 >
