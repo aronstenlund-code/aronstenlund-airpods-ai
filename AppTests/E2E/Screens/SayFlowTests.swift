@@ -815,6 +815,13 @@ final class SayFlowTests: XCTestCase {
     private func a11yPlayingCard() -> Bool {
         hideKeyboard()
         scrollIntoView(Self.playLabels)
+        // Run 44436344437: Spela was never hittable at AX5. Write every match with its frame and the window, so it is
+        // seen whether it is off the screen (and cannot be scrolled to) or covered.
+        let window = app.windows.firstMatch.frame
+        for b in app.buttons.matching(NSPredicate(format: "label BEGINSWITH[c] 'Spela'")).allElementsBoundByIndex where b.exists {
+            log.append("T53 Spela match '\(b.label)': frame \(NSCoder.string(for: b.frame)), hittable \(b.isHittable), enabled \(b.isEnabled), window \(NSCoder.string(for: window))")
+        }
+        screen("ax5-spela", "AX5: where Spela is")
         guard playFromCard() else { return false }
         pause(4)
         let all = Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Other") + Self.labels(in: app.debugDescription, kind: "Button")
