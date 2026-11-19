@@ -129,3 +129,16 @@ den igen. Från och med nu loggar appen `Say: the text on the card pressed (the 
 **iOS build 44443511279 på main är grön** (bygget för enhet, enhetstesterna, Release-bygget). **Verifierat i CI.**
 Loggraderna `Say: the text on the card pressed (the player opens)` och `Reading: the player is on the screen` finns
 alltså i appen; de är inte sedda i en körning än. Min kö är tom.
+
+## Tillägg 04:15: Tobys T36 grön i alla 15 delar på dagens main
+
+T36 44444292560 (toby/t53 5e4ab058, testen ihopslagna med main). **Verifierat i CI-loggen (Simulator), inte på enhet.**
+
+- Utan nät: ny text ger "Ingen internetanslutning. Försök igen när du är uppkopplad." efter 3,6 s.
+- Långsamt ljud (8 s och 25 s) grön.
+- "Spelaren från kortet: varv 2" grön: kortets text öppnade spelaren på första trycket (8 s för avsnittet).
+- De två nya loggraderna (trycket på kortets text, spelaren visas) står inte i den här körningens logg; jag har inte
+  sett dem i en körning än. Tobys test trycker nu en gång till och skriver ut tiden om första trycket inte öppnar.
+
+Trycket som inte öppnade spelaren i 44439180293 är alltså sett en gång av tre körningar i natt och är fortfarande
+inte förklarat. Inget mer att göra i appen förrän det händer igen med loggraderna.
