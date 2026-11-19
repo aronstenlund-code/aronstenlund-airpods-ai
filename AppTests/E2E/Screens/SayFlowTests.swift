@@ -171,8 +171,11 @@ final class SayFlowTests: XCTestCase {
     }
 
     /// The card's time line, "7:32 kvar" or "7:32 kvar · pausad".
+    /// A148 (Ke79 point 9, run 44424911694): the card is one element, "Spelar i AirPods med Adam, 9 minuter kvar"
+    /// (", pausad" when paused); before it the clock stood alone, "9:55 kvar".
     private func timeLeft() -> String? {
         Self.labels(in: app.debugDescription, kind: "StaticText").first { label in
+            if label.contains(" minuter kvar") || label.contains(" minut kvar") || label.contains("sekunder kvar") { return true }
             guard let range = label.range(of: " kvar") else { return false }
             let clock = label[..<range.lowerBound]
             return clock.contains(":") && clock.allSatisfy { $0.isNumber || $0 == ":" }
@@ -700,7 +703,13 @@ final class SayFlowTests: XCTestCase {
     }
 
     private func askDelete() -> Bool {
-        let button = app.buttons.matching(NSPredicate(format: "label ==[c] 'Radera konto'")).allElementsBoundByIndex.first { $0.exists }
+        // Run 44424970760 (AX5): found by openAccount but gone a moment later; look again for 5 s and scroll.
+        var button: XCUIElement?
+        let end = Date().addingTimeInterval(5)
+        repeat {
+            button = app.buttons.matching(NSPredicate(format: "label ==[c] 'Radera konto'")).allElementsBoundByIndex.first { $0.exists }
+            if button == nil { app.swipeUp(velocity: .slow); pause(0.7) }
+        } while button == nil && Date() < end
         guard let button else { return miss("no 'Radera konto' button") }
         var swipes = 0
         while !button.isHittable, swipes < 6 { app.swipeUp(); swipes += 1 }
