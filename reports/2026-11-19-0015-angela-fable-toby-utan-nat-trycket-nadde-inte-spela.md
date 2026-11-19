@@ -71,3 +71,17 @@ uppe hamnade trycket då på tangentbordet. **Inte bekräftat** (loggen från k�
 otryckbar). Han har ändrat testet: tangentbordet döljs före Spela utan nät, knappens `isEnabled` och `isHittable`
 loggas före trycket, och alla `Say:`-rader skrivs ut ur appens logg. Omkörningen gör han efter T54 7c. Raden i kön
 står öppen tills den körningen är läst.
+
+## Tillägg 01:30: nattflödets T36 gick grön utan nät, med K100 i appen
+
+Nattflödet 44411718185 körde T36 med appen från `angela/g7-7c-provstarten` (main 2026-11-18 12:55 plus 7c, alltså
+med K100 och A144 men före mina ändringar 19:55 och 00:11) och med samma test som förut (tangentbordet uppe).
+**Verifierat i CI-loggen (Simulator), inte på enhet:**
+
+- Ny text utan nät: "Ingen internetanslutning. Försök igen när du är uppkopplad." efter 3,4 s.
+- Tangentbordet gick ner och Senaste fick kapseln "Ny text utan nät 45427.…". Trycket nådde alltså Spela.
+
+**Det är alltså inte K100 som gör en ny text tyst utan nät.** Samma app-kod för Spela svarar som den ska när trycket
+kommer fram. Det stöder Tobys förklaring (trycket hamnade fel i körningen 44312213280), men bevisar den inte: den
+körningen gick mot main från 18:23, som hade fem timmar fler ändringar än nattflödets app. En körning på dagens main
+med Tobys ändrade test avgör det. Raden i kön står öppen tills dess.
