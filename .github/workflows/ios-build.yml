@@ -111,6 +111,11 @@ jobs:
           xcodegen generate
           ls -la Lumen.xcodeproj
 
+      # A152 (D238): every "required reason API" the code uses has its reason in the target's PrivacyInfo.xcprivacy,
+      # and nothing is declared that the code does not use.
+      - name: Privacy manifests match the code (A152)
+        run: python3 scripts/privacy_manifest_check.py
+
       - name: Scoring package tests (macOS host, swift test)
         run: |
           set -euo pipefail
@@ -211,6 +216,55 @@ jobs:
             exit 1
           fi
           echo "Release check: no test mode in the Release build"
+
+      # A152 (D238): the manifests are in the app that would go to the App Store, unchanged, and the log says which
+      # packages bring their own (information: a package without one is not our file to write).
+      - name: Privacy manifests are in the Release app (A152)
+        run: |
+          set -euo pipefail
+          RELEASE="DerivedData-release/Build/Products/Release-iphoneos/Lumen.app"
+          check() { # built file, source file
+            if [ ! -f "$1" ]; then
+              echo "::error::$1 is missing: the privacy manifest is not in the Release app (A152)"
+              exit 1
+            fi
+            plutil -lint "$1"
+            if ! python3 -c 'import plistlib, sys; a, b = (plistlib.load(open(p, "rb")) for p in sys.argv[1:3]); sys.exit(0 if a == b else 1)' "$1" "$2"; then
+              echo "::error::$1 is not the same as $2"
+              exit 1
+            fi
+            echo "In the Release app, same as the source: $1"
+          }
+          check "$RELEASE/PrivacyInfo.xcprivacy" Lumen/Resources/PrivacyInfo.xcprivacy
+          check "$RELEASE/PlugIns/LumenControls.appex/PrivacyInfo.xcprivacy" LumenControls/PrivacyInfo.xcprivacy
+          plutil -p "$RELEASE/PrivacyInfo.xcprivacy"
+          # What the app's own binary really imports of the required reason APIs (the linker drops unused code).
+          echo "== Required reason API symbols the Release binary imports"
+          (nm -u "$RELEASE/Lumen" 2>/dev/null | grep -E "NSUserDefaults|mach_absolute_time|systemUptime|NSURLContentModificationDateKey|NSURLCreationDateKey|NSFileModificationDate|NSFileCreationDate|NSURLVolume|NSFileSystemFreeSize|NSFileSystemSize|statfs|statvfs|_stat\$|_fstat\$|_lstat\$|activeInputModes" | sort -u | sed 's/^/  /') || true
+          echo "== Every privacy manifest in the Release app"
+          find "$RELEASE" -name PrivacyInfo.xcprivacy | sed 's/^/  /'
+          echo "== Frameworks and bundles in the Release app"
+          find "$RELEASE" -maxdepth 3 \( -name "*.framework" -o -name "*.bundle" -o -name "*.appex" \) | sed 's/^/  /'
+          APIS='NSUserDefaults|UserDefaults|mach_absolute_time|systemUptime|contentModificationDate|ModificationDateKey|creationDateKey|fileModificationDate|volumeAvailableCapacity|systemFreeSize|systemSize|statfs|statvfs|activeInputModes'
+          echo "== Packages (source): their own manifest, and required reason APIs in their code"
+          for PKG in DerivedData-release/SourcePackages/checkouts/*; do
+            [ -d "$PKG" ] || continue
+            echo "-- $(basename "$PKG")"
+            find "$PKG" -name PrivacyInfo.xcprivacy | sed 's/^/   manifest: /'
+            # The lines themselves, so the log says which API it is. Only what is compiled into the app: not the
+            # package's tests, examples and demo projects.
+            (grep -rEn "$APIS" "$PKG" --include='*.swift' --include='*.m' --include='*.mm' --include='*.c' --include='*.cpp' --include='*.h' 2>/dev/null \
+              | grep -vE '/Tests/|/Examples/|/DemoProjects/|\.xcframework/' | head -25 | cut -c1-260 | sed 's/^/   uses: /') || true
+          done
+          echo "== Packages (binary): their own manifest, and required reason APIs in the binary"
+          find DerivedData-release/SourcePackages/artifacts -name "*.xcframework" 2>/dev/null | while read -r FW; do
+            echo "-- $FW"
+            find "$FW" -name PrivacyInfo.xcprivacy | sed 's/^/   manifest: /'
+            find "$FW" -path "*ios-arm64*" -type f -perm +111 ! -name "*.plist" 2>/dev/null | head -3 | while read -r BIN; do
+              echo "   binary: $BIN"
+              (strings -a "$BIN" | grep -E "$APIS" | sort -u | head -20 | sed 's/^/     /') || true
+            done || true
+          done || true
 
       # A142: the build for TestFlight and our testers (Beta) on request: it must compile and must have the test mode.
       - name: Beta build has the test mode (A142, manual runs)
