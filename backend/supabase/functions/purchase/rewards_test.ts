@@ -171,3 +171,18 @@ Deno.test("O82: an account that has played cannot be invited; the same key again
   m.s.rewardInvite = () => Promise.resolve(null);
   assertEquals((await onFirstPlay(m.s, "new1")).rewarded, 2000);
 });
+
+Deno.test("K109 (Oscar O90): attest_challenge is 503 attest_unconfigured while the App ID is missing (the app keeps its three tries)", async () => {
+  const { createPurchaseHandler } = await import("./handler.ts");
+  const h = createPurchaseHandler({
+    authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
+    rateLimiter: new MemoryRateLimiter(),
+    roots: [],
+    bundleId: "com.rsolutions.lumen",
+    store: { product: () => Promise.resolve(null), ledger: () => Promise.resolve(null), addLedger: () => Promise.resolve(true), subByOriginal: () => Promise.resolve(null), upsertSub: () => Promise.resolve() },
+    attest: { appId: "", allowDevelopment: false, rootDer: new Uint8Array(), roots: [], newChallenge: () => Promise.resolve("c"), useChallenge: () => Promise.resolve(false) },
+  });
+  const r = await h(new Request("http://x/purchase", { method: "POST", body: JSON.stringify({ action: "attest_challenge" }) }));
+  assertEquals(r.status, 503);
+  assertEquals((await r.json()).error.code, "attest_unconfigured");
+});

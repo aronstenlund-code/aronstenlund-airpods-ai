@@ -513,9 +513,10 @@ Deno.test("K90 (D213): /exam drill says the credits (characters) left; none left
       provider: llm,
       quota: () => Promise.resolve({ used, lim: 1500 }),
     });
-  const r = await mkQ(1300)(post({ action: "drill", text: "Fotosyntes ... (påhittat material)", questions: 3 }));
+  // K109: 3 questions cost about 3 × 492, so 1 500 left is enough (200 left would now be 402 before any work)
+  const r = await mkQ(0)(post({ action: "drill", text: "Fotosyntes ... (påhittat material)", questions: 3 }));
   const j = await r.json();
-  assertEquals([j.quota.unit, j.quota.remaining, j.quota.left, j.quota.limit], ["chars", 200, 200, 1500]);
+  assertEquals([j.quota.unit, j.quota.remaining, j.quota.left, j.quota.limit], ["chars", 1500, 1500, 1500]);
   const calls = llm.calls.length;
   const none = await mkQ(1500)(post({ action: "drill", text: "material", questions: 20 }));
   assertEquals(none.status, 402);
