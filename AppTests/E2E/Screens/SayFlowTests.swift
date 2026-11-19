@@ -44,6 +44,17 @@ final class SayFlowTests: XCTestCase {
         }
         // T53 (A148, Kelly Ke79): t53.sh runs the same class with the largest text (simctl content_size AX XXXL) and
         // only the accessibility sections.
+        // T55 (D238): the reviewer's way from a new installation, one step at a time, with the credits after each.
+        if env["LUMEN_T36_REVIEW"] == "1" {
+            launch(header)
+            guard section("Granskare 1: Välkommen (ny installation)", { reviewWelcome() }) else { return }
+            section("Granskare 2: Säg i AirPods → Spela", { reviewSay() })
+            section("Granskare 3: prov från en text", { reviewExam() })
+            section("Granskare 4: Krediter (paketen, Villkor, Integritet, Återställ köp)", { reviewCredits() })
+            section("Granskare 5: Radera konto", { deleteAccount() })
+            log.append("T55 credits along the way: \(reviewCredits.map { "\($0.0) \($0.1.map(String.init) ?? "-")" }.joined(separator: " → "))")
+            return
+        }
         if env["LUMEN_T36_A11Y"] == "1" {
             launch(header)
             guard section("Första starten till Start (AX5)", { firstStart() }) else { return }
@@ -764,6 +775,130 @@ final class SayFlowTests: XCTestCase {
         if button.exists { tapElement(button, "\(label) (Radera kontot?)") } else { log.append("MISS: no '\(label)' in the question") }
     }
 
+    // MARK: T55 – the reviewer's way (D238)
+
+    private var reviewCredits: [(String, Int?)] = []
+    static let reviewMaterial = "Fotosyntes\nVäxter tillverkar socker av koldioxid och vatten med hjälp av solljus. Klorofyllet i bladen fångar ljuset. Syre bildas som en restprodukt och släpps ut genom klyvöppningarna. Socker används som energi eller lagras som stärkelse i rötter och frön."
+
+    /// The exact number in Krediter ("1 500, krediter kvar"), not the short capsule ("1,5k").
+    private func exactCredits(_ when: String) -> Int? {
+        goToStart()
+        pause(2)
+        let capsule = Self.labels(in: app.debugDescription, kind: "Button").first { $0.contains("krediter kvar") || $0.contains("kredit kvar") }
+        guard let capsule, tap([capsule], "the credit capsule (\(when))", counted: false) else { reviewCredits.append((when, nil)); return nil }
+        pause(3)
+        let line = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasSuffix("krediter kvar") && $0.first?.isNumber == true }
+        let n = line.flatMap { Self.creditNumber($0) }
+        log.append("T55 credits \(when): \(line ?? "-") → \(n.map(String.init) ?? "-")")
+        reviewCredits.append((when, n))
+        dismissCredits()
+        goToStart()
+        return n
+    }
+
+    private func reviewWelcome() -> Bool {
+        guard wait(["Välkommen till EarMind"], 25) != nil else { return miss("Välkommen not shown") }
+        pause(1)
+        screen("granskare-valkommen", "Välkommen on a new installation")
+        guard tap(["Fortsätt"], "Fortsätt") else { return false }
+        pause(1.5)
+        screen("granskare-efter-fortsatt", "After Fortsätt (notification question?)")
+        if wait(["Senare"], 8) != nil { tap(["Senare"], "Senare") }
+        pause(2)
+        systemAlerts()
+        goToStart()
+        screen("granskare-start", "Start, first time")
+        _ = exactCredits("at the first Start")
+        return atStart() || miss("Start not shown")
+    }
+
+    private func reviewSay() -> Bool {
+        goToStart()
+        guard focusField("Säg i AirPods (reviewer)") else { return miss("the field got no keyboard") }
+        field.typeText(Self.text)
+        pause(2)
+        let cost = (Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Button")).first { $0.hasPrefix("Kostar ") || ($0.contains("krediter") && !$0.contains("kvar")) }
+        log.append("T55 Säg: the cost before Spela: \(cost ?? "-")")
+        hideKeyboard()
+        screen("granskare-sag-text", "Säg i AirPods with a text")
+        guard playFromCard() else { return false }
+        pause(6)
+        screen("granskare-spelar", "The text plays on the card")
+        stopOnCard()
+        goToStart()
+        _ = exactCredits("after the first Säg text")
+        return true
+    }
+
+    private func reviewExam() -> Bool {
+        // The reviewer would type or photograph the material; LUMEN_TEST_MATERIAL (Debug) puts the same kind of text in
+        // Nytt prov, since XCUITest cannot type into Skriv text (T21, T28).
+        launch(header, material: Self.reviewMaterial)
+        _ = wait(["Inställningar"], 20)
+        goToStart()
+        guard tap(["Nytt prov"], "Nytt prov") else { return false }
+        guard wait(["Skapa frågor", "Frågor"], 20) != nil else { screen("granskare-inget-prov", "No Nytt prov with the text"); return miss("Nytt prov did not open with the text") }
+        if find(["Frågor"]) != nil { tap(["Frågor"], "Gör: Frågor", counted: false, quiet: true) }
+        pause(1)
+        screen("granskare-nytt-prov", "Nytt prov with the text")
+        guard waitEnabled(["Skapa frågor"], 15), tap(["Skapa frågor"], "Skapa frågor") else { return miss("Skapa frågor not tappable") }
+        let made = Date()
+        guard wait(["Ser rätt ut", "Spara frågorna", "Hittade*"], 180) != nil else { screen("granskare-inga-fragor", "No questions"); return miss("no questions in 180 s") }
+        log.append(String(format: "T55 exam: questions after %.0f s", Date().timeIntervalSince(made)))
+        screen("granskare-fragor", "The questions made from the text")
+        if find(["Ser rätt ut"]) != nil { tap(["Ser rätt ut"], "Ser rätt ut") } else { tap(["Spara frågorna"], "Spara frågorna") }
+        pause(3)
+        goToStart()
+        screen("granskare-prov-pa-start", "The exam on Start")
+        guard waitEnabled(["Starta prov"], 240) else { screen("granskare-ingen-start", "No Starta prov"); return miss("Starta prov not enabled in 240 s") }
+        guard tap(["Starta prov"], "Starta prov") else { return false }
+        if wait(["Styr med dina AirPods"], 5) != nil {
+            for _ in 1...3 { if let skip = wait(["Hoppa över"], 10) { tapElement(skip, "Hoppa över (no AirPods)", counted: false) } }
+            tap(["Starta ändå", "Starta prov"], "Start on the control check", quiet: true)
+        }
+        let end = Date().addingTimeInterval(120)
+        var seen = false
+        repeat { seen = text(starting: "Fråga 1") != nil || find(["Avsluta"]) != nil; if !seen { pause(2) } } while !seen && Date() < end
+        pause(5)
+        screen("granskare-provet-spelar", "The exam plays")
+        if !seen { note("the exam's player did not show 'Fråga 1' or Avsluta in 120 s") }
+        tap(["Avsluta"], "Avsluta", quiet: true)
+        pause(2)
+        goToStart()
+        _ = exactCredits("after the exam from a text")
+        return seen || miss("the exam did not start")
+    }
+
+    private func reviewCredits() -> Bool {
+        goToStart()
+        let capsule = Self.labels(in: app.debugDescription, kind: "Button").first { $0.contains("krediter kvar") || $0.contains("kredit kvar") }
+        guard let capsule, tap([capsule], "the credit capsule (reviewer)") else { return miss("no credit capsule") }
+        let end = Date().addingTimeInterval(15)
+        repeat { if app.debugDescription.contains("Paketen kunde inte hämtas") || app.debugDescription.contains("label: 'Köp ") { break }; pause(1) } while Date() < end
+        screen("granskare-krediter", "Krediter as a reviewer sees it")
+        var ok = true
+        for name in ["Villkor", "Integritet", "Återställ köp"] {
+            var e = app.links.matching(NSPredicate(format: "label ==[c] %@", name)).firstMatch
+            if !e.exists { e = app.buttons.matching(NSPredicate(format: "label ==[c] %@", name)).firstMatch }
+            var swipes = 0
+            while !(e.exists && e.isHittable), swipes < 6 { app.swipeUp(); swipes += 1 }
+            log.append("T55 Krediter '\(name)': \(e.exists ? "there" : "missing")")
+            if !e.exists { ok = miss("no '\(name)' in Krediter") }
+        }
+        let buys = Self.labels(in: app.debugDescription, kind: "Button").filter { $0.hasPrefix("Köp ") }
+        log.append("T55 Krediter packages: \(buys.isEmpty ? (text(starting: "Paketen kunde inte hämtas") ?? "none") : buys.joined(separator: " | "))")
+        if tap(["Återställ köp"], "Återställ köp") {
+            var line: String?
+            let stop = Date().addingTimeInterval(20)
+            repeat { line = text(starting: "Det fanns inga köp") ?? text(starting: "Det gick inte att hämta köpen"); if line == nil { pause(1) } } while line == nil && Date() < stop
+            log.append("T55 Återställ köp: \(line ?? "no line in 20 s")")
+            if line == nil { ok = miss("Återställ köp gave no line in 20 s") }
+        }
+        screen("granskare-krediter-efter", "Krediter after Återställ köp")
+        dismissCredits()
+        return ok
+    }
+
     // MARK: T53 – accessibility with the largest text (A148, Kelly Ke79)
 
     /// Xcode's accessibility audit of what is on screen; findings are written, never a failure (as A95's audit).
@@ -1227,11 +1362,12 @@ final class SayFlowTests: XCTestCase {
 
     // MARK: Helpers
 
-    private func launch(_ value: String) {
+    private func launch(_ value: String, material: String? = nil) {
         app?.terminate()
         app = XCUIApplication()
         app.launchArguments += ["-AppleLanguages", "(sv)", "-AppleLocale", "sv_SE"]
         app.launchEnvironment["LUMEN_TEST_HEADER"] = value
+        if let material { app.launchEnvironment["LUMEN_TEST_MATERIAL"] = material }
         // Angela Schrute's hook (60d83ce, Debug only): 1, 2 and 3 presses as Darwin notifications.
         app.launchEnvironment["LUMEN_TEST_PRESSES"] = "1"
         app.launch()
