@@ -291,8 +291,11 @@ final class ScreenTourTests: XCTestCase {
             miss("settings row \(labels[0]) not found")
             return
         }
-        // The back button, never the sheet's "Klar" (that would close Settings).
-        let back = app.navigationBars.buttons.matching(NSPredicate(format: "label != 'Klar'")).firstMatch
+        // The back button, never the sheet's "Klar" (that would close Settings) and never a toolbar button of the
+        // pushed page (run 44764309413: after Anteckningar the next rows were lost). The back button carries the
+        // previous page's title, "Inställningar", or the system's "Tillbaka"/"Back".
+        let backLabels = NSPredicate(format: "label IN %@", ["Inställningar", "Tillbaka", "Back"])
+        let back = app.navigationBars.buttons.matching(backLabels).firstMatch
         row.tap()
         pause(1.5)
         // The last rows sit at the sheet's bottom edge, where a tap can miss (seen at the largest text size):
