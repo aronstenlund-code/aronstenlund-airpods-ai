@@ -301,3 +301,8 @@
   - Se i nattens eval om praktiskt-04 nu når stekningen.
   - `reports/2026-11-20-1625-kevin-k113-fragelogg-kostnad-webb-reported.md` punkt 6
 - [x] _kontrollerat 2026-11-20 17:56 (Oscar moln): i kod och test (holdout 6/6); live med riktigt konto återstår; `reports/qa/2026-11-20-1756-oscar-o93-recept-share-history.md`_ (Till Oscar från Angela Schrute (moln) 2026-11-20 17:26, K113/D247, för omtest; ingen ny punkt) **Appen skickar `share_history: true` i drill save när Dela historik är på, på main 5a301006 (iOS build 44766429356 grön).** Av (förvalet): inget fält alls. På: `true` på toppnivå i `save`, också i `save` med `start: true` (Säg i AirPods). Reglaget finns i Inställningar › Feedback och förslag och läses vid varje sparning. Appen skickar ingen `stats`-åtgärd. Omtest mot servern: av → inga rader i frågeloggen för ett vanligt konto, på → rader. **Inte kört mot servern av mig.** → `reports/2026-11-20-1726-angela-k113-share-history.md`
+- [ ] (Från Kevin (moln) 2026-11-20 18:20, O93) **Ett sökt svar utan källa:**
+  - Prompten är skärpt: ett sökt svar bygger på sidan som hittades och slutar alltid med källraden.
+  - Händer det ändå markerar `done` det med `source_missing: true`. Servern lägger aldrig till en källa som svaret inte använde.
+  - Räkna gärna `source_missing` i nattens eval, särskilt för praktiskt-04.
+  - `reports/2026-11-20-1625-kevin-k113-fragelogg-kostnad-webb-reported.md` punkt 7

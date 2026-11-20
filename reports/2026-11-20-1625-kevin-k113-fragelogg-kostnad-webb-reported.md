@@ -75,3 +75,12 @@ Se kelly.md och oscar.md.
   - Den tas nu bort i koden (`SOURCE_META`). K103:s "…, men vissa mätningar ger Amazonas" står kvar. Verifierat i test.
 - **Tester:** 799/799.
 - **Inte verifierat live:** att receptet nu når stekningen. Svaret skrevs ut bara till 300 tecken. Nattens eval visar det.
+
+## 7. Oscars O93: ett sökt recept utan källa (runda 17:15)
+- **Vad hände:** "recept på köttbullar" sökte en gång men fick ingen källrad, och svaret var 31 allmänna ord. Modellen svarade troligen ur minnet efter sökningen. Det är en untested assumption, baserad på en körning.
+- **Varför servern inte sätter en källa själv:** sökresultaten finns i strömmen, men att ge svaret domänen från första träffen vore en felaktig källhänvisning när svaret inte byggde på sidan. Svaret går heller inte att göra om, eftersom texten redan har sagts när det visar sig att källraden saknas.
+- **Ändrat:**
+  - Webbprompten säger att ett sökt svar bygger på sidan som hittades och alltid slutar med källraden, och att svaret aldrig kommer ur minnet efter en sökning.
+  - Ett sökt svar utan källa markeras med `done.source_missing: true` och loggas som `web_answer_no_source`, så att det kan räknas.
+  - Verifierat i test. Tester: 800/800.
+- **Live:** nattens eval kör praktiskt-04, och raden "källrad saknas" visar om det händer igen.
