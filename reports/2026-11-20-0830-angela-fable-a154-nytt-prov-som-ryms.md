@@ -98,3 +98,4 @@ som ryms direkt när det öppnas (koden finns i `refreshQuota`).
 - **Kellys ord:** bygget 44699128469 på main har byggt för enhet och kört alla enhetstester gröna; Release-steget
   kör när detta skrivs och är inte avläst.
 - **Kelly har godkänt orden** (09:01) och vill inte ha nya bilder (D217). De nya orden är alltså inte fotade.
+- **10:25: bygget 44699128469 (Kellys ord) är helt grönt på main**, också Release-steget. **Verifierat i CI.**
