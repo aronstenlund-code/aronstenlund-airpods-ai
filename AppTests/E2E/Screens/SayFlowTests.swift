@@ -843,11 +843,12 @@ final class SayFlowTests: XCTestCase {
         screen("granskare-nytt-prov", "Nytt prov with the text")
         guard waitEnabled(["Skapa frågor"], 15), tap(["Skapa frågor"], "Skapa frågor") else { return miss("Skapa frågor not tappable") }
         let made = Date()
-        // A154 (Angela Fable 2026-11-20, K109): with too few credits the server answers 402 before the questions are
-        // made, and Nytt prov comes back with "Du har … Det räcker inte till ett prov (minst 3 frågor)." and Fyll på, or
-        // "Krediterna räcker till N frågor." with "Skapa N frågor".
+        // A154 (Angela Fable 2026-11-20 09:05, K109): with too few credits the server answers 402 before the questions
+        // are made. Nytt prov comes back with "Ett prov med 3 frågor kostar cirka … Du har …", Fyll på, and "Krediterna
+        // räcker inte till ett prov." under the switched-off Skapa frågor; or "Krediterna räcker till N frågor." and the
+        // bottom button "Skapa N frågor".
         guard wait(["Ser rätt ut", "Spara frågorna", "Hittade*", "Krediterna räcker*"], 180) != nil else { screen("granskare-inga-fragor", "No questions"); return miss("no questions in 180 s") }
-        let short = Self.labels(in: app.debugDescription, kind: "StaticText").filter { $0.contains("räcker") }
+        let short = Self.labels(in: app.debugDescription, kind: "StaticText").filter { $0.contains("räcker") || $0.hasPrefix("Ett prov med") }
         if !short.isEmpty, find(["Ser rätt ut", "Spara frågorna"]) == nil {
             log.append(String(format: "T55 exam (A154): after %.0f s the form says %@", Date().timeIntervalSince(made), short.joined(separator: " | ")))
             screen("granskare-racker-inte", "Nytt prov: the credits are not enough (A154)")
