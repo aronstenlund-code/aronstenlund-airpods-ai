@@ -888,7 +888,22 @@ final class SayFlowTests: XCTestCase {
             costLine = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix("Det här kostar") || $0.contains("räcker inte") || $0.hasPrefix("Ett prov med") }
             if costLine == nil { pause(1) }
         } while costLine == nil && Date() < costEnd
+        // NewDrillView puts the line in a section under the questions and does not scroll to it (run 44708423048: not
+        // in the tree after 15 s). Is it below the fold? Screen first, then scroll down and count.
+        var costSwipes = 0
+        if costLine == nil {
+            screen("granskare-ser-ratt-ut-15s", "15 s after Ser rätt ut, before any scroll")
+            while costLine == nil, costSwipes < 6, find(["Ser rätt ut"]) != nil {
+                let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.94, dy: 0.7))
+                from.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.94, dy: 0.3)))
+                costSwipes += 1
+                pause(0.7)
+                costLine = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix("Det här kostar") || $0.contains("räcker inte") }
+            }
+            log.append("T55 exam (A154): the cost line \(costLine == nil ? "not found" : "found") after \(costSwipes) drags down the questions")
+        }
         if let costLine {
+            if costSwipes > 0 { note("T55: after Ser rätt ut the line '\(costLine)' was below the fold (\(costSwipes) drags); nothing visible changed at the button") }
             log.append("T55 exam (A154) at Ser rätt ut: '\(costLine)', Fyll på \(find(["Fyll på"]) != nil)")
             screen("granskare-ser-ratt-ut-kostar", "Ser rätt ut: the credits do not cover the exam (A154)")
             note("T55: \(questions) questions were made and could not be saved: '\(costLine)'")
