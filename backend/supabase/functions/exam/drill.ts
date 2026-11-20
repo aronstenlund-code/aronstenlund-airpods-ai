@@ -82,7 +82,7 @@ No markdown, no other text.`;
 export const SYSTEM_PROMPT_DRILL_ANSWERS =
   `You write the answers a Swedish student will listen to in their AirPods while revising for an exam. You get <context> (subject and grade), <notes> (the study material), <long_words>, <questions> (JSON: id and question) and maybe <language> and <may_fix>. Return ONLY a JSON object {"answers": [{"id": "q1", "short": "...", "rest": "..."}]} with one entry per question, in the same order.
 - Language (D182): write in <language> when it is given (a language exam: the questions are in that language too); else in Swedish.
-- When <may_fix> is given and a question cannot be answered well from the notes, put a better question in "question" and answer that one: a question with a claim the notes contradict gets the notes' fact ("fjärde statsmakten" -> "tredje statsmakten" when the notes say so); a "Varför ...?" whose cause the notes do not give becomes a "Vad ...?" or "Hur ...?" question the notes answer. Otherwise leave "question" out.
+- When <may_fix> is given and a question cannot be answered well from the notes, put a better question in "question" and answer that one: a question with a claim the notes contradict gets the notes' fact ("fjärde statsmakten" -> "tredje statsmakten" when the notes say so); a "Varför ...?" whose cause the notes do not give becomes a "Vad ...?" or "Hur ...?" question the notes answer. K111: when you put a new question in "question", also return "original": {"short": "...", "rest": "..."}, your answer to the question exactly as it was asked, from the notes and by the same rules (it is used if the new question turns out to ask what another question asks). Otherwise leave "question" and "original" out.
 - K97 (O79): never invent a cause, motive or reason the notes do not give ("bönderna var missnöjda med danskarnas styre", "för att göra makten säker för släkten", "kriget mot Danmark" when the notes only say "efter kriget"). A why-question whose cause the notes do not state: with <may_fix>, ask a "Vad ...?" or "Hur ...?" question the notes answer; without it, answer only with what the notes do say about it, and say plainly that the reason is not known from this ("Varför det blev så är inte känt här, men ..."; in English "Why is not explained here, but ...") rather than guess; never name the notes, a material or what you have ("the notes do not say", "det material jag har" are wrong). School knowledge may fill out a mechanism the notes name, never supply a cause they leave out.
 - Never answer a why-question by repeating its claim ("Det beror på att sidorna alltid har just det sambandet", "De ansåg att makten skulle komma från folket"): give the reason, or (with <may_fix>) ask a better question.
 - "short": the short answer (D162): ONE sentence, two only when one cannot hold it, at most 25 words, that on its own is a full, correct A-level answer: it states the answer itself (the cause, the mechanism, the fact, the difference), never an introduction that only names the topic. Wrong: "Fotosyntes är en viktig process i växterna." Right: "Växten använder ljusenergi för att bygga glukos av koldioxid och vatten, och syre blir över."
@@ -663,8 +663,10 @@ export function yearsToDigits(text: string): string {
   });
 }
 
-export function parseAnswers(text: string, strict = false): Map<string, { short: string; long: string; question?: string; screen?: Screen }> {
-  const out = new Map<string, { short: string; long: string; question?: string; screen?: Screen }>();
+/** K111: the answer to the original question that the model gives with a rewrite (no screen text: kept simple). */
+export interface OriginalAnswer { short: string; long: string }
+export function parseAnswers(text: string, strict = false): Map<string, { short: string; long: string; question?: string; screen?: Screen; original?: OriginalAnswer }> {
+  const out = new Map<string, { short: string; long: string; question?: string; screen?: Screen; original?: OriginalAnswer }>();
   const j = firstJson(text);
   for (const a of Array.isArray(j?.answers) ? j!.answers as Record<string, unknown>[] : []) {
     const id = oneLine(a?.id, 40);
@@ -692,7 +694,18 @@ export function parseAnswers(text: string, strict = false): Map<string, { short:
       };
       if (!Object.keys(screen).length) screen = undefined;
     }
-    out.set(id, { short, long, ...(question ? { question } : {}), ...(screen ? { screen } : {}) });
+    // K111: the answer to the question as it was asked, when the model rewrote it
+    let original: OriginalAnswer | undefined;
+    const o = (a?.original ?? null) as Record<string, unknown> | null;
+    if (question && o && typeof o === "object") {
+      let os = spokenText(o.short, 600);
+      const or = spokenText(o.rest, 3000);
+      if (words(os) >= 2 && (!or || /[.!?]["”')]?$/.test(or))) {
+        if (!/[.!?]$/.test(os)) os += ".";
+        original = { short: os, long: composeLong(os, or) };
+      }
+    }
+    out.set(id, { short, long, ...(question ? { question } : {}), ...(screen ? { screen } : {}), ...(original ? { original } : {}) });
   }
   return out;
 }
@@ -774,7 +787,9 @@ export async function answerItems(
   signal?: AbortSignal,
 ): Promise<{ items: DrillItem[]; usage: StepUsage }> {
   const steps: StepUsage[] = [];
-  const got = new Map<string, { short: string; long: string; question?: string; screen?: Screen }>();
+  const got = new Map<string, { short: string; long: string; question?: string; screen?: Screen; original?: OriginalAnswer }>();
+  // K111: the latest answer to each question as it was asked (an unchanged answer, or "original" given with a rewrite)
+  const asAsked = new Map<string, { short: string; long: string; screen?: Screen }>();
   const lang = examLanguage(ctx.subject);
   const ask = async (batch: { id: string; question: string }[], strict = true, mustFix: boolean | "fact" = false, others: string[] = []) => {
     const r = await runLLM(provider, {
@@ -801,6 +816,8 @@ export async function answerItems(
       const q = ctx.mayFix && a.question && a.question.toLowerCase() !== b.question.toLowerCase() ? a.question : b.question;
       if (strict && isCircular(q, a.short)) continue; // K66 (O63 punkt 1): asked again; accepted on the last try
       got.set(id, { ...a, question: q !== b.question ? q : undefined });
+      if (q === b.question) asAsked.set(id, { short: a.short, long: a.long, ...(a.screen ? { screen: a.screen } : {}) });
+      else if (a.original) asAsked.set(id, a.original);
     }
   };
   const batches: { id: string; question: string }[][] = [];
@@ -857,6 +874,24 @@ export async function answerItems(
       }
       console.log("drill_fix_same", JSON.stringify({ found: bad.length }));
     }
+  }
+  // K111 (Deangelo 20:05, K109 proposal; live Vasa 6/8): a rewritten question whose short answer says what another
+  // question's says gets back its question as it was asked and that answer (no new call), when that answer answers it and
+  // is not a duplicate itself; else the rewrite stays (logged). The answer step changes nothing else.
+  if (ctx.mayFix) {
+    let back = 0, kept = 0;
+    for (const it of items) {
+      const a = got.get(it.id);
+      if (!a?.question) continue;
+      const others = items.filter((x) => x.id !== it.id).map((x) => got.get(x.id)).filter((x): x is NonNullable<typeof x> => !!x);
+      if (!others.some((x) => sameAnswer(x.short, a.short))) continue;
+      const o = asAsked.get(it.id);
+      if (o && !notAnswered(o.long || o.short) && !others.some((x) => sameAnswer(x.short, o.short))) {
+        got.set(it.id, { short: o.short, long: o.long, ...(o.screen ? { screen: o.screen } : {}) });
+        back++;
+      } else kept++;
+    }
+    if (back || kept) console.log("drill_rewrite_same", JSON.stringify({ back, kept }));
   }
   if (!got.size) {
     const err = first.find((r) => r.status === "rejected") as PromiseRejectedResult | undefined;

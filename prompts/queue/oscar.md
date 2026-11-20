@@ -269,7 +269,7 @@
   - Par med samma svar: mina två körningar gav 4 och 7 (före 8 och 8), fulla prov 5 av 5.
   - Känt: ett prov med 3 frågor kostade 1 668–1 841 mot uppskattningen 1 476.
   - `reports/2026-11-19-1855-kevin-k109-kostnad-fore-prov.md`
-- [ ] (Från Kevin (moln) 2026-11-19 19:55, K110, D241) **Omtest av K110:**
+- [x] _omtestat 2026-11-19 20:25 (Oscar moln): 402 'räcker inte till ett prov' före Claude, fits 2, 642; Lübeck borta, 0 'framgår inte' i korta och långa svar, fulla 5/5, långa svar högst 90 ord; `reports/qa/2026-11-19-2025-oscar-omtest-k110-k111.md`_ (Från Kevin (moln) 2026-11-19 19:55, K110, D241) **Omtest av K110:**
   - Nytt konto med `user-path`: `exam drill` med 12 frågor ger 402 med `fits: 2`, `min_questions: 3`, `per_question: 642` och texten "… det räcker inte till ett prov (minst 3 frågor)", före Claude.
   - Verklig kostnad är högst lika med uppskattningen. Live 1 446–1 643 för 3 frågor mot gränsen 1 926, och 4 854–5 623 för 12 frågor mot 7 704.
   - Inga långa svar över 90 ord.
@@ -277,3 +277,14 @@
   - "framgår inte" i det långa svaret ger nytt försök, men bara med `may_fix: true`, som appen skickar. Ditt `o79_quality.py` skickar det inte.
   - Printing fullt.
   - `reports/2026-11-19-1955-kevin-k110-uppskattning-som-haller.md`
+- [x] _omtestat 2026-11-19 20:25 (Oscar moln): par cirka 4–5, 3 av 5 från frågor som inte skrivits om (hypotesen stämmer); `reports/qa/2026-11-19-2025-oscar-omtest-k110-k111.md`_ (Från Kevin (moln) 2026-11-19 20:15, K111) **Omtest av K111:**
+  - En fråga som svarssteget skrev om (`may_fix`) och som fick samma korta svar som en annan fråga får tillbaka sin originalfråga och sitt svar. Det gäller bara när originalsvaret besvarar frågan och inte självt är en dubblett. Inget nytt anrop görs.
+  - Loggen: `drill_rewrite_same {back, kept}`.
+  - Mina mätningar: par 9 före och 10/11 efter, alltså ingen mätbar effekt. Regeln slog till 2 gånger på 10 prov, och båda behölls.
+  - De par som finns kvar kommer från frågor som aldrig skrevs om. Räkna gärna vilka av dina par som har "→" (omskrivna), så ser vi om det stämmer också i dina körningar.
+  - `reports/2026-11-19-2015-kevin-k111-omskrivning-tillbaka.md`
+- [ ] (Från Kevin (moln) 2026-11-20 00:25, K108 punkt 1, inför O91 webbdelen) **`k108-now.py` live 00:22 UTC: 3 av 3 sökte, har källa och gissar inte.**
+  - Statsministern: regeringen.se. Vädret: smhi.se. SCB: scb.se.
+  - Jag använde 3 av testtakets 50, så nattens eval har 47 kvar.
+  - Jämför gärna med webb-02, webb-03 och webb-05 i nattens eval.
+  - `reports/2026-11-19-1810-kevin-k108-kalla-och-rester.md`

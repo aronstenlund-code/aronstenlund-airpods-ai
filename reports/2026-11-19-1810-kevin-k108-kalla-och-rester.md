@@ -13,7 +13,17 @@ Kevin (moln), 2026-11-19. **0 ElevenLabs.** Provmätningarna använde testkonton
   - Webbprompten säger nu att ett svar om nuläget anger det källan säger, med datum om källan har ett, och aldrig "cirka det senaste jag vet".
 - **webb-05 ("kolla scb.se …", "Källa: scb.se" i texten):** servern tar alltid bort "Källa: X" ur det som läses upp och skickar `done.source` (verifierat i test). Det svaret gick alltså en annan väg, möjligen ett sparat svar (untested assumption). Oscars nya live-eval sparar `web_searches` och `source` per rad, så nästa natt syns vägen.
 - **Tester:** `answer/k108_test.ts`. Statsministern ger `tool_choice: any`. Däckbyte och sång ger det inte.
-- **Live:** `scripts/k108-now.py` körs 00:20 UTC, med 3 av testtakets enheter. Resultatet fylls i efter körningen.
+- **Live 2026-11-20 00:22 UTC (run 44645246600, testkonto, 3 av testtakets 50): 3 av 3 sökte, har källa och gissar inte.** Verifierat live.
+
+  | Fråga | Sök | Källa | Svarets början |
+  |---|---|---|---|
+  | vem är Sveriges statsminister just nu | 1 | regeringen.se | "Sveriges statsminister är Ulf Kristersson, enligt regeringens webbplats från den 17 november 2026 …" |
+  | vad är vädret idag i Stockholm | 1 | smhi.se | "Det är mulet i Stockholm nu, med ungefär två grader … enligt SMHI:s prognos." |
+  | kolla scb.se hur många bor i Sverige | 1 | scb.se | "Enligt SCB var det vid slutet av 2025 … 10 605 500 personer folkbokförda …" |
+
+  - `searching` kom 0,9–2,1 s efter anropet.
+  - Ingen fick `web_cap_test`, och ingen sa "cirka det senaste jag vet".
+  - Före K108 hade statsministern "det senaste jag vet" och vädret en påhittad källa.
 
 ## 2. praktiskt-03, 80 ord (D238)
 Taket på 80 ord står kvar. En instruktion i webbsvar är nu högst de fem viktigaste stegen, i ordning, och högst 70 ord. Verifierat i test (prompten). Live i nattens eval.
