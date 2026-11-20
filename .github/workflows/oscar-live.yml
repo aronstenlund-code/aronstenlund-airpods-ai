@@ -34,6 +34,7 @@ on:
           - o86_eval_reproduce.py
           - o87_live.py
           - o90_reviewer.py
+          - o92_k113_n5_live.py
       args:
         description: "Arguments (optional, e.g. --fast)"
         required: false
