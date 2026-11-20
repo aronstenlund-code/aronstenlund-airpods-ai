@@ -48,3 +48,10 @@ där finns inget att märka. Börjar appen skicka den ska samma fält med.
 iOS build 44773231144 på main (5a301006) är grön, alla 21 steg, med `K113ShareHistoryTests`. **Verifierat i CI.**
 Kelly har skrivit orden för reglaget (`docs/design/texter-integritet.md`); de är inlagda på grenen och byggs.
 
+## Tillägg 18:57: orden för reglaget är på main
+Kellys ord (Ke85, `docs/design/texter-integritet.md`) är inlagda ordagrant, sammanslagning c41248e9: texten under reglaget
+Dela historik och frågan efter lyssnarsamtycket säger nu båda sakerna med var sin tid (egna frågor och svar högst
+12 månader; nya och ändrade provfrågor högst 14 dagar, utan koppling), på svenska och engelska. Ett test läser
+svenskan ur den byggda appen (`theWordsSayBothWhatIsSharedAndForHowLong`). iOS build 44782584808 grön på grenen.
+**Verifierat i CI, inte sett på bild.**
+
