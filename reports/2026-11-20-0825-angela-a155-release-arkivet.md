@@ -94,3 +94,7 @@ Main, sammanslagning 9e8fd220 (grenen `claude/fervent-fermi-34hrer`, e6b19b3a). 
 Beslutet heter D245 sedan Deangelo numrerade om det (förut D243). Kommentarerna i koden och i `ios-build.yml` säger
 fortfarande D243; de rättas nästa gång filerna ändras.
 
+## Tillägg 08:56: main är grönt
+iOS build 44694689538 på main (9e8fd220) är grön: Release-arkivet, steget "Release archive is ready to submit (A155)",
+båda A152-stegen och alla enhetstester. **Verifierat i CI.**
+
