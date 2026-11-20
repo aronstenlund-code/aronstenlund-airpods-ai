@@ -358,7 +358,9 @@ def web_meta(done):
     """O89 del 2: keep whether the answer searched, so a missing source line can be told apart from a
     skipped search (latest.json had no trace of it on 2026-11-19)."""
     done = done or {}
-    return dict(web_searches=(done.get("usage") or {}).get("web_searches"), source=done.get("source"))
+    # O93 (Kevin): a searched answer that came without a source is marked done.source_missing
+    return dict(web_searches=(done.get("usage") or {}).get("web_searches"), source=done.get("source"),
+                source_missing=bool(done.get("source_missing")))
 
 
 def run(cases, rizz, domains, only, now):
@@ -484,10 +486,13 @@ def report(rows, date):
     cats = sorted({r["cat"] for r in rows})
     bad = [r for r in rows if r["problems"]]
     skipped = [r for r in rows if r.get("skipped")]
+    nosrc = [r for r in rows if r.get("source_missing")]
     out = [f"# Live-eval {date}", "",
            f"Backend: {URL} (anonym inloggning, publik nyckel). **{len(rows)} turer, {len(rows) - len(bad)} utan anmärkning, "
            f"{len(bad)} med anmärkning.**" + (f" {len(skipped)} överhoppade (testtrafikens webbtak fullt, D234): "
-           + ", ".join(sorted({r['id'] for r in skipped})) + "." if skipped else ""), "",
+           + ", ".join(sorted({r['id'] for r in skipped})) + "." if skipped else "")
+           + (f" {len(nosrc)} sökta svar utan källa (source_missing, O93): " + ", ".join(sorted({r['id'] for r in nosrc})) + "."
+              if nosrc else ""), "",
            "| Kategori | Turer | Anmärkningar | p50 första ord (ms) | p95 (ms) |", "|---|---:|---:|---:|---:|"]
     for c in cats:
         rs = [r for r in rows if r["cat"] == c]

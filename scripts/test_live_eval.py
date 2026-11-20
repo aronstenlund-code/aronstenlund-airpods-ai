@@ -92,4 +92,15 @@ _rows2 = le.run([{"id": "webb-y", "cat": "webb", "turns": [{"q": "längsta flode
 le.Backend = _real_backend
 check("raden har web_searches och källa", _rows2[0].get("web_searches") == 1 and _rows2[0].get("source") == "britannica.com")
 check("överhoppad rad har web_searches-fält", "web_searches" in _rows[0])
+# O93: source_missing is kept per row and counted in the report
+class _FakeNoSrc(_FakeBackend):
+    def ask(self, u, body):
+        return dict(text="Blanda och stek.", ttft_ms=900, total_ms=1000, done={"usage": {"web_searches": 1}, "source_missing": True}, options=None, error=None)
+
+
+le.Backend = _FakeNoSrc
+_rows3 = le.run([{"id": "praktiskt-x", "cat": "praktiskt", "turns": [{"q": "recept på köttbullar"}]}], {}, [], set(), now)
+le.Backend = _real_backend
+check("raden har source_missing", _rows3[0].get("source_missing") is True)
+check("rapporten räknar sökta svar utan källa", "1 sökta svar utan källa" in le.report(_rows3, "2026-11-21"))
 sys.exit(0 if all(ok) else 1)
