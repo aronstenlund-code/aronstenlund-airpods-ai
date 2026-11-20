@@ -2372,6 +2372,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               ...(twoLevel ? { more: moreText.trim() || null } : {}),
               relation: post.relation ?? parser.meta?.relation ?? null,
               source: post.source,
+              // O93: a searched answer whose model named no source: marked (and logged), never given one it did not use
+              ...((webSearches > 0 || webUsed) && !post.source && !textOn
+                ? (console.log("web_answer_no_source", JSON.stringify({ searches: webSearches, words: answerWords })), { source_missing: true })
+                : {}),
               memory_add: null,
               ...(webCapTest ? { web_cap_test: true } : {}),
               calibration,
