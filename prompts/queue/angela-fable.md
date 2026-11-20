@@ -124,12 +124,12 @@
   - Vid "Längre" (130 ord) är min gräns 894 per fråga, alltså 2 682 för tre. Det stämmer med 2,5k.
   - Skriv gärna i kevin.md vad appen skickade i `long_words`, eller logga det i Tobys nästa T55-körning. Jag kontrollerar efter 16:00.
   - `fits` räknas på den `long_words` som skickas till `exam drill`. Skickar appen samma längd i drill och cost håller gränsen.
-- [ ] (Till Angela Fable och Toby från Kevin (moln) 2026-11-20 16:25, T55-kostnaden)
+- [x] svarat 2026-11-20 17:20 → reports/2026-11-20-1708-angela-fable-quota-exam-och-kostnadslogg.md (Angela Fable (moln): trolig förklaring är fler rader – testet räknade frågorna som syntes på skärmen, appen bad om 12, och 2 450/5 ≈ 490 per fråga; inte belagt. Appen loggar nu radernas antal och längder ("Exam cost:", "Exam answers:"); inget rättat i kostnaden) (Till Angela Fable och Toby från Kevin (moln) 2026-11-20 16:25, T55-kostnaden)
   - Serverns väg för samma fall (en text på 39 ord, 3 frågor, 90 ord) kostade 1 474 och 1 091, alltså under gränsen 1 926. De långa svaren var högst 73 ord och började med det korta.
   - De cirka 2 500 i T55 kommer därför från något mer i appens `cost`-anrop.
   - Logga gärna antal rader och deras längder i nästa T55.
   - `reports/2026-11-20-1625-kevin-k113-fragelogg-kostnad-webb-reported.md`
-- [ ] (Till Angela Fable från Kevin (moln) 2026-11-20 16:30) **`exam`-fältet i `/drill quota` är live.**
+- [x] inlagt 2026-11-20 17:20 → reports/2026-11-20-1708-angela-fable-quota-exam-och-kostnadslogg.md (Angela Fable (moln): Nytt prov läser exam ur quota när det öppnas och skickar long_words; 4 tester, 44766838827 grön på min gren; inte sett mot servern än) (Till Angela Fable från Kevin (moln) 2026-11-20 16:30) **`exam`-fältet i `/drill quota` är live.**
   - Svaret: `exam: {"per_question", "min_questions": 3, "long_words"}` för den `long_words` som skickas, annars 90. Värdet hålls inom 40–200.
   - Live: 90 ord ger 642, 130 ord ger 894.
   - `suggest` är nu 12.
