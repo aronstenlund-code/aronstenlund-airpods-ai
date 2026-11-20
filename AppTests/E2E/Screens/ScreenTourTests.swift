@@ -22,6 +22,7 @@ final class ScreenTourTests: XCTestCase {
     private var shotNumber = 0
     private var log: [String] = []
     private var unreachable: [String] = []
+    private var started = Date()
 
 
     func testScreenTour() throws {
@@ -36,6 +37,7 @@ final class ScreenTourTests: XCTestCase {
         app.launchArguments += ["-AppleLanguages", "(sv)", "-AppleLocale", "sv_SE", "-stt.useCloud", "NO"]
         // D180: every request is test traffic with fake audio (x-earmind-test); the tour never plays anything.
         app.launchEnvironment["LUMEN_TEST_HEADER"] = "1"
+        started = Date()
         app.launch()
 
         // Deangelo 2026-11-20 (T3 red on main since A94, 2026-11-14): the tour follows today's app. Välkommen →
@@ -51,7 +53,7 @@ final class ScreenTourTests: XCTestCase {
         settingsTour()
         deleteAccountQuestion()
         moreModes()
-        if micDenied { log.append("note: microphone denied; nothing in the tour listens, so no error screen is expected") }
+        if micDenied { record("note: microphone denied; nothing in the tour listens, so no error screen is expected") }
 
         finish()
     }
@@ -103,7 +105,7 @@ final class ScreenTourTests: XCTestCase {
             tap(["Klar"], step: "Säg i AirPods → Klar above the keyboard (A153)")
             pause(1)
         } else {
-            log.append("note: no Klar above the keyboard; swiping down")
+            record("note: no Klar above the keyboard; swiping down")
             app.swipeDown()
             pause(1)
         }
@@ -123,7 +125,7 @@ final class ScreenTourTests: XCTestCase {
         let capsule = app.buttons.matching(NSPredicate(format: "label CONTAINS[c] 'krediter kvar' OR label CONTAINS[c] 'kredit kvar'")).firstMatch
         guard capsule.waitForExistence(timeout: 10) else { miss("Start: no credit capsule"); return }
         capsule.tap()
-        log.append("tap: Start → the credit capsule")
+        record("tap: Start → the credit capsule")
         guard waitFor(["Så räknas det", "Bjud in"], timeout: 15) != nil else { miss("Krediter did not open"); return }
         pause(2)
         shoot("krediter", note: "Krediter (A134)")
@@ -161,7 +163,7 @@ final class ScreenTourTests: XCTestCase {
             if find(["Inställningar"], buttonsOnly: true)?.isHittable == true { return }
             let back = app.navigationBars.buttons.element(boundBy: 0)
             if back.exists, back.isHittable, !["Klar", "Inställningar"].contains(back.label) {
-                log.append("back: '\(back.label)'")
+                record("back: '\(back.label)'")
                 back.tap()
             } else {
                 closeSheet()
@@ -176,14 +178,21 @@ final class ScreenTourTests: XCTestCase {
     private func deleteAccountQuestion() {
         guard tap(["Inställningar"], step: "start → Inställningar (Konto)") else { return }
         guard waitFor(["Klar"], timeout: 5) != nil else { miss("settings sheet not shown (Konto)"); return }
-        guard let row = scrollTo(["Radera konto"], buttonsOnly: true) else {
+        guard let found = scrollTo(["Radera konto"], buttonsOnly: true) else {
             miss("settings row Radera konto not found")
             closeSheet()
             return
         }
+        let row = centered(found, labels: ["Radera konto"])
         shoot("installningar-konto", note: "Settings › Konto (A145)")
         row.tap()
         let alert = app.alerts.firstMatch
+        // Run 44809087832 (pro-dark): one tap asked nothing. Tap the row once more before calling it a miss.
+        if !alert.waitForExistence(timeout: 5), waitFor(["Avbryt"], timeout: 1) == nil,
+           let again = find(["Radera konto"], buttonsOnly: true), again.isHittable {
+            record("note: Radera konto tap asked nothing, retry")
+            again.tap()
+        }
         if alert.waitForExistence(timeout: 5) {
             shoot("radera-kontot-fragan", note: "Radera kontot? (A145)")
             let cancel = alert.buttons["Avbryt"]
@@ -204,7 +213,7 @@ final class ScreenTourTests: XCTestCase {
     private func moreModes() {
         // RepetitionHomeSection: "Fler lägen · Beta" (label "Fler lägen") at the bottom of Start in some states only.
         guard let row = find(["Fler lägen"], buttonsOnly: true) ?? scrollTo(["Fler lägen"], buttonsOnly: true) else {
-            log.append("note: no Fler lägen on Start in this state (A115 Start); the listening modes are not in the tour")
+            record("note: no Fler lägen on Start in this state (A115 Start); the listening modes are not in the tour")
             return
         }
         row.tap()
@@ -284,17 +293,17 @@ final class ScreenTourTests: XCTestCase {
         // old check reopened Settings before every row and every other row was lost. Look for Klar anywhere, or the
         // page's title.
         if !app.buttons["Klar"].waitForExistence(timeout: 2) {
-            log.append("note: Settings sheet closed before \(labels[0]), opening it again")
+            record("note: Settings sheet closed before \(labels[0]), opening it again")
             tap(["Inställningar"], step: "start → Inställningar (again)")
             pause(1)
             if advanced { expandAdvanced() }
         }
         // Buttons only: a section header with the same words ("Diagnostik") is not the row.
-        guard let row = scrollTo(labels, buttonsOnly: true) else {
+        guard let found = scrollTo(labels, buttonsOnly: true) else {
             miss("settings row \(labels[0]) not found")
             return
         }
-        row.tap()
+        centered(found, labels: labels).tap()
         pause(1.5)
         // The last rows sit at the sheet's bottom edge, where a tap can miss (seen at the largest text size):
         // look the row up again each time and tap it only when it is hittable, never a stale element.
@@ -302,9 +311,9 @@ final class ScreenTourTests: XCTestCase {
         // The page is open when the sheet's Klar is gone (it belongs to the settings root only).
         while app.buttons["Klar"].exists, attempt < 3 {
             attempt += 1
-            log.append("note: \(labels[0]) tap missed, retry \(attempt)")
+            record("note: \(labels[0]) tap missed, retry \(attempt)")
             if let again = scrollTo(labels, buttonsOnly: true), again.isHittable {
-                again.tap()
+                centered(again, labels: labels).tap()
             } else {
                 app.swipeDown()
             }
@@ -326,10 +335,10 @@ final class ScreenTourTests: XCTestCase {
             $0.exists && $0.isHittable && $0.frame.minX < width * 0.3 && $0.label != "Klar"
         }
         if let back = candidates.first {
-            log.append("back: '\(back.label)'")
+            record("back: '\(back.label)'")
             back.tap()
         } else {
-            log.append("back: edge swipe")
+            record("back: edge swipe")
             app.coordinate(withNormalizedOffset: CGVector(dx: 0.01, dy: 0.5))
                 .press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.5)))
         }
@@ -379,27 +388,54 @@ final class ScreenTourTests: XCTestCase {
         } else {
             element.tap()
         }
-        log.append("tap: \(step)")
+        record("tap: \(step)")
         return true
     }
 
     /// Swipes up (then back down) until an element with one of the labels is hittable.
     private func scrollTo(_ labels: [String], buttonsOnly: Bool = false) -> XCUIElement? {
+        // Run 44809087832 (iPhone SE): swipeDown at the top of a sheet closes the sheet, and the search went on
+        // over Start. Downwards it drags slowly over a third of the screen (the sheet springs back), and it stops
+        // when the sheet's Klar is gone.
+        let inSheet = app.buttons["Klar"].exists
         for direction in [true, false] {
             // 25 swipes: Settings at the largest text size is about 30 screens long.
             for _ in 0..<25 {
                 if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
-                if direction { app.swipeUp() } else { app.swipeDown() }
+                if direction {
+                    app.swipeUp()
+                } else {
+                    app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.35))
+                        .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7)),
+                               withVelocity: .slow, thenHoldForDuration: 0.2)
+                }
+                if inSheet, !app.buttons["Klar"].exists {
+                    record("note: the sheet closed while looking for \(labels[0])")
+                    return nil
+                }
             }
         }
         return nil
+    }
+
+    /// Run 44809087832 (iPhone SE): a row at the sheet's lower edge is "hittable" but the tap opens nothing. Drag it
+    /// up to the middle of the screen first and look it up again.
+    private func centered(_ element: XCUIElement, labels: [String], buttonsOnly: Bool = true) -> XCUIElement {
+        let height = app.windows.firstMatch.frame.height
+        guard height > 0, element.frame.midY > height * 0.7 else { return element }
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.45)),
+                   withVelocity: .slow, thenHoldForDuration: 0.2)
+        pause(0.5)
+        if let again = find(labels, buttonsOnly: buttonsOnly), again.isHittable { return again }
+        return element
     }
 
     private func dismissSystemAlerts() {
         for _ in 0..<3 {
             let alert = springboard.alerts.firstMatch
             guard alert.waitForExistence(timeout: 1) else { return }
-            log.append("system alert: \(alert.label)")
+            record("system alert: \(alert.label)")
             let allow = ["Tillåt", "Allow", "Tillåt när appen används", "Allow While Using App", "OK"]
             guard let button = allow.lazy.map({ alert.buttons[$0] }).first(where: { $0.exists }) else {
                 alert.buttons.element(boundBy: alert.buttons.count - 1).tap()
@@ -416,12 +452,17 @@ final class ScreenTourTests: XCTestCase {
         attachment.name = fileName
         attachment.lifetime = .keepAlways
         add(attachment)
-        log.append("shot: \(fileName) — \(note)")
+        record("shot: \(fileName) — \(note)")
+    }
+
+    /// A tour-log line with the seconds since launch, so a slow step shows in the job log (run 44809087832).
+    private func record(_ line: String) {
+        log.append("\(line) [+\(Int(Date().timeIntervalSince(started)))s]")
     }
 
     private func miss(_ what: String) {
         unreachable.append(what)
-        log.append("MISS: \(what)")
+        record("MISS: \(what)")
         XCTFail("[\(prefix)] \(what)")
     }
 
