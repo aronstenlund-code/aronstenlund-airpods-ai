@@ -90,3 +90,27 @@ som ryms direkt när det öppnas (koden finns i `refreshQuota`).
 - Raden före sparandet och "3,3k krediter kvar" är godkända som de är.
 - Väljer man Läs upp texten spärrar rutan om prov inte; så var det redan (rutan och spärren gäller bara Frågor).
 - Bilderna i `reports/2026-11-20-a154-bilder/` är från före de här ändringarna. **De nya orden är inte sedda på bild.**
+
+## Tillägg 09:50: byggena på main, och Kellys godkännande
+
+- **A154 är grön på main:** iOS build 44698909566 (bygget för enhet, alla enhetstester, Release-bygget).
+  **Verifierat i CI.**
+- **Kellys ord:** bygget 44699128469 på main har byggt för enhet och kört alla enhetstester gröna; Release-steget
+  kör när detta skrivs och är inte avläst.
+- **Kelly har godkänt orden** (09:01) och vill inte ha nya bilder (D217). De nya orden är alltså inte fotade.
+- **10:25: bygget 44699128469 (Kellys ord) är helt grönt på main**, också Release-steget. **Verifierat i CI.**
+
+## Tillägg 11:10: första körningen mot riktiga servern visade ett fel i A154, rättat
+
+Tobys T55 44708423048 (granskarens väg, nytt konto, riktig server, appen från main 10:10). **Läst i CI-loggen.**
+
+- **Serverns nej före genereringen prövades inte.** Körningar från GitHub Actions med testhuvudet hoppar över
+  uppskattningen (Kevins undantag för mätningar, K109), så servern gjorde 5 frågor av texten trots 1 406 krediter.
+  Vägen med `fits` är alltså fortfarande bara prövad i enhetstester. Den går att pröva med `user-path` i testhuvudet.
+- **Kostnadskontrollen före sparandet stoppade provet, som den ska:** efter "Ser rätt ut" stod formuläret kvar och
+  inget prov sparades. Förut hade provet sparats och nekats.
+- **Men raden syntes inte.** Den stod sist i formuläret, nedanför skärmen, så "Ser rätt ut" såg ut att inte göra
+  någonting. Det är mitt fel i A154.
+- **Rättat:** raden ("Det här kostar … Du har … kvar.") och "Fyll på" står nu först i formuläret, formuläret rullar
+  dit, och under knappen står "Krediterna räcker inte till provet." **Inte sett på bild eller i en körning än**;
+  Tobys nästa T55 visar det.
