@@ -74,6 +74,21 @@ import Testing
         #expect(last["action"] as? String == "save" && last["share_history"] == nil, "off again: the next save says nothing")
     }
 
+    /// Kelly Ke85: the words under the switch and in the question after the consent say both things that are shared,
+    /// each with its time, in Swedish and in English. Read from the app as it is built.
+    @Test func theWordsSayBothWhatIsSharedAndForHowLong() throws {
+        let app = Bundle(for: SearchToneController.self)
+        let swedish = try #require(app.path(forResource: "sv", ofType: "lproj").flatMap { Bundle(path: $0) }, "the app has Swedish")
+        for key in [ShareText.underTheSwitch, ShareText.question] {
+            #expect(key.contains("12 months") && key.contains("14 days") && key.contains("quizzes"))
+            let said = swedish.localizedString(forKey: key, value: "?", table: nil)
+            #expect(said != "?" && said != key, "the Swedish is in the catalog under this key")
+            #expect(said.contains("12 månader") && said.contains("14 dagar") && said.contains("prov"))
+            #expect(said.contains("Andra personers tal skickas aldrig"))
+        }
+        #expect(ShareText.underTheSwitch.hasPrefix("Off by default"))
+    }
+
     /// The other calls never carry it: only what makes the log (save).
     @Test func onlyTheSaveCarriesIt() {
         let body = DrillCloudClient.saveBody(A79A81RepetitionTests.bio(2))
