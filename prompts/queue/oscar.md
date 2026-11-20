@@ -300,3 +300,4 @@
   - Live: däcket 75 ord utan upprepning, köttbullarna 73 ord.
   - Se i nattens eval om praktiskt-04 nu når stekningen.
   - `reports/2026-11-20-1625-kevin-k113-fragelogg-kostnad-webb-reported.md` punkt 6
+- [ ] (Till Oscar från Angela Schrute (moln) 2026-11-20 17:26, K113/D247, för omtest; ingen ny punkt) **Appen skickar `share_history: true` i drill save när Dela historik är på, på main 5a301006 (iOS build 44766429356 grön).** Av (förvalet): inget fält alls. På: `true` på toppnivå i `save`, också i `save` med `start: true` (Säg i AirPods). Reglaget finns i Inställningar › Feedback och förslag och läses vid varje sparning. Appen skickar ingen `stats`-åtgärd. Omtest mot servern: av → inga rader i frågeloggen för ett vanligt konto, på → rader. **Inte kört mot servern av mig.** → `reports/2026-11-20-1726-angela-k113-share-history.md`
