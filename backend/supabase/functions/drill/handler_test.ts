@@ -803,7 +803,8 @@ Deno.test("K74 eleven_v4 cannot be chosen while drill_settings.allow_eleven_v4 i
 // ---------- K77 (D197, D116): Repetitionsläget in Aron's analysis ----------
 Deno.test("K77 a save logs new questions and answers; an edit logs before and after; an unchanged save logs nothing", async () => {
   const w = world();
-  const j = await (await w.h("u1")(post({ action: "save", defer_audio: true, drill: { subject: "Biologi" }, items: ITEMS }))).json();
+  // K113 (D247): logged only for test accounts and for the one who shares (D57, share_history)
+  const j = await (await w.h("u1")(post({ action: "save", defer_audio: true, share_history: true, drill: { subject: "Biologi" }, items: ITEMS }))).json();
   assertEquals(w.logged.map((r) => [r.mode, r.persona, r.question]), [["repetition", "sparad", ITEMS[0].question], ["repetition", "sparad", ITEMS[1].question]]);
   assertEquals(w.logged[0].answer, ITEMS[0].long);
   const n = w.logged.length;
@@ -812,7 +813,7 @@ Deno.test("K77 a save logs new questions and answers; an edit logs before and af
   await w.h("u1")(post({ action: "start", id: j.drill.id }));
   assertEquals(w.logged.length, n, "Starta prov logs nothing new");
   const edited = [{ ...ITEMS[0], id: j.items[0].id, long: ITEMS[0].long + " Ny mening." }, { ...ITEMS[1], id: j.items[1].id }];
-  await w.h("u1")(post({ action: "save", drill: { id: j.drill.id }, items: edited }));
+  await w.h("u1")(post({ action: "save", share_history: true, drill: { id: j.drill.id }, items: edited }));
   const e = w.logged.slice(n);
   assertEquals(e.length, 1);
   assertEquals(e[0].persona, "ändrad");
@@ -823,7 +824,7 @@ Deno.test("K77 a text drill's text is never logged (B4); press statistics are; t
   const w = world();
   const t = await (await w.h("u1")(post({ action: "save", drill: { kind: "text", subject: "Historia" }, items: TEXT }))).json();
   assertEquals(w.logged.length, 0, "the text is the material");
-  const st = await (await w.h("u1")(post({ action: "stats", id: t.drill.id, presses: { "1": 4, "2": 7, "3": 1 }, minutes: 12 }))).json();
+  const st = await (await w.h("u1")(post({ action: "stats", share_history: true, id: t.drill.id, presses: { "1": 4, "2": 7, "3": 1 }, minutes: 12 }))).json();
   assertEquals(st.logged, true);
   assertEquals(w.logged[0].mode, "read");
   assertEquals(w.logged[0].persona, "tryck");
@@ -832,20 +833,32 @@ Deno.test("K77 a text drill's text is never logged (B4); press statistics are; t
   assert(!w.logged[0].answer.includes("Fotosyntes") && !w.logged[0].answer.includes("glukos"), "no text from the drill");
   // per question for a question drill
   const q = await (await w.h("u1")(post({ action: "save", drill: { subject: "Bio" }, items: ITEMS }))).json();
-  await w.h("u1")(post({ action: "stats", id: q.drill.id, presses: { "1": 2, "2": 1, "3": 0 }, per_question: [{ position: 1, presses: { "1": 2, "2": 1, "3": 0 } }] }));
+  await w.h("u1")(post({ action: "stats", share_history: true, id: q.drill.id, presses: { "1": 2, "2": 1, "3": 0 }, per_question: [{ position: 1, presses: { "1": 2, "2": 1, "3": 0 } }] }));
   assert(w.logged.at(-1)!.answer.includes(`${ITEMS[1].question}: 1 tryck: 2`));
   assertEquals((await w.h("u1")(post({ action: "stats", id: q.drill.id, presses: { "1": -1 } }))).status, 400);
-  // a test account: nothing
-  const n = w.logged.length;
-  await runWithTest({ test: true, reason: "script", userId: "t9" }, async () => {
+  // K113 (D247): a test account is logged (the analysis of our own tests), without asking
+  const n0 = w.logged.length;
+  await runWithTest({ test: true, reason: "header", userId: "t9" }, async () => {
     const x = await (await w.h("t9")(post({ action: "save", items: ITEMS }))).json();
     await w.h("t9")(post({ action: "stats", id: x.drill.id, presses: { "1": 1, "2": 1, "3": 1 } }));
   });
-  assertEquals(w.logged.length, n, "test accounts are never in the analysis");
+  assertEquals(w.logged.length, n0 + ITEMS.length + 1, "test accounts are logged (D247)");
+  const n = w.logged.length;
   // an imported copy: the original's questions are not the recipient's, nothing logged
   const sh = await (await w.h("u1")(post({ action: "share", id: q.drill.id }))).json();
   await w.h("u2")(post({ action: "import", code: sh.code }));
   assertEquals(w.logged.length, n);
+});
+
+Deno.test("K113 (D247): an ordinary user who has not shared is never in the question log (save, edit, stats)", async () => {
+  const w = world();
+  const j = await (await w.h("u1")(post({ action: "save", defer_audio: true, drill: { subject: "Biologi" }, items: ITEMS }))).json();
+  await w.h("u1")(post({ action: "save", drill: { id: j.drill.id }, items: [{ ...ITEMS[0], id: j.items[0].id, long: ITEMS[0].long + " Ny." }, { ...ITEMS[1], id: j.items[1].id }] }));
+  const st = await (await w.h("u1")(post({ action: "stats", id: j.drill.id, presses: { "1": 1, "2": 0, "3": 0 } }))).json();
+  assertEquals(st.logged, false);
+  // share_history must be exactly true (no "yes", no 1)
+  await w.h("u1")(post({ action: "stats", share_history: "yes", id: j.drill.id, presses: { "1": 1, "2": 0, "3": 0 } }));
+  assertEquals(w.logged.length, 0);
 });
 
 Deno.test("K77 numbers are masked as in qa-log", async () => {

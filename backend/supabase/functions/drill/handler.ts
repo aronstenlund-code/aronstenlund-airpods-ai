@@ -994,7 +994,7 @@ export function createDrillHandler(deps: DrillDeps) {
       if (lost) return lost;
       withIds(rows);
       await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
-      later(analyse(saveRows(kind, oldItems, rows)));
+      later(analyse(saveRows(kind, oldItems, rows), b));
       const at = new Date(now()).toISOString();
       const saved: DrillRow = { ...drill, created_at: existing?.created_at ?? at, updated_at: at };
       return json({
@@ -1049,7 +1049,7 @@ export function createDrillHandler(deps: DrillDeps) {
     if (lost) return lost;
     withIds(rows);
     await deps.db.replaceItems(drill.id, rows.map((r) => r.id).filter((x): x is string => !!x), rows);
-    later(analyse(saveRows(kind, oldItems, rows)));
+    later(analyse(saveRows(kind, oldItems, rows), b));
     if (fresh.length || failed.length) await kick([...files.keys()]);
     if (startsNow && deps.onStarted) later(deps.onStarted(user.id).catch((e) => console.warn("invite_reward_failed", String(e).slice(0, 120))));
     const saved: DrillRow = { ...drill, created_at: existing?.created_at ?? at, updated_at: at };
@@ -1123,9 +1123,16 @@ export function createDrillHandler(deps: DrillDeps) {
     return back;
   }
 
-  /** K77: to Aron's analysis (D197); a test account never, and a failure never stops the save. */
-  async function analyse(rows: AnalysisRow[]) {
-    if (!rows.length || !deps.analysis || currentTest()?.test) return;
+  /**
+   * K113 (D247, was K77/D197): the question log is written only for test accounts and for the one who shares (D57's
+   * "Dela historik", sent by the app as share_history: true); an ordinary user is never logged. A failure never stops
+   * the save.
+   */
+  function mayLog(b: Record<string, unknown> | null | undefined): boolean {
+    return !!currentTest()?.test || b?.share_history === true;
+  }
+  async function analyse(rows: AnalysisRow[], b: Record<string, unknown> | null | undefined) {
+    if (!rows.length || !deps.analysis || !mayLog(b)) return;
     await deps.analysis(rows).catch((e) => console.error("analysis_log_failed", e instanceof Error ? e.message.slice(0, 120) : String(e)));
   }
 
@@ -1401,8 +1408,8 @@ export function createDrillHandler(deps: DrillDeps) {
         });
         const m = Number(b?.minutes);
         const row = statsRow(d.kind ?? "questions", d.subject, total, per, Number.isFinite(m) && m >= 0 && m < 10_000 ? Math.round(m) : null);
-        const logged = !currentTest()?.test && !!deps.analysis;
-        await analyse([row]);
+        const logged = mayLog(b) && !!deps.analysis;
+        await analyse([row], b);
         return json({ logged });
       }
       if (action === "played") {
