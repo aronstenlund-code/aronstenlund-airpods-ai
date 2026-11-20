@@ -126,8 +126,13 @@ export function haikuStyler(provider: LLMProvider, model = "claude-haiku-5-5"): 
         timeoutMs: 30_000,
       })) if (c.type === "text") text += c.text;
     } catch (e) {
-      console.warn("style_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
-      return codeStyle(spoken, style); // K106: the wish is still followed, by code
+      const fallback = codeStyle(spoken, style); // K106: the wish is still followed, by code
+      // K108: enough to find the case again (lengths, the share of real-looking words), never the text itself
+      const ws = spoken.split(/\s+/).filter(Boolean);
+      const vowelish = ws.filter((w) => /^[\p{L}-]+$/u.test(w) && /[aeiouyåäö]{2}|[^aeiouyåäö\s]{3}/iu.test(w)).length;
+      console.warn("style_failed", e instanceof Error ? e.message.slice(0, 120) : String(e),
+        JSON.stringify({ chars: spoken.length, words: ws.length, natural_share: ws.length ? Math.round((vowelish / ws.length) * 100) / 100 : 0, style_chars: style.length, code_style: !!fallback }));
+      return fallback;
     }
     const out = checkTagged(spoken, text.replace(/^<text>\s*|\s*<\/text>$/g, "").trim());
     if (!out) console.warn("style_words_changed");

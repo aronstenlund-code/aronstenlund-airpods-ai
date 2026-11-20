@@ -86,6 +86,7 @@ import {
   SAME_SOURCE_NOTE,
   SEARCH_MARK_RULE,
   needsText,
+  mustSearch,
   needsWeb,
   TEXT_PROMPT,
   textTools,
@@ -1635,6 +1636,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           });
       // D72 live test: "the Nth king" was answered wrong without listing first; ask for the list in code.
       const ordinal = !plan && isOrdinalFact(body.fragment);
+      // K108 (Oscar O89 del 2): a question about the present, "sök/kolla", a link or a price always searches (tool_choice
+      // any, as for ordinals). Not with thinking (the API takes only auto then), not with phone tools ("any" could pick
+      // one of them), not for songs and quotes.
+      const forceSearch = !!need && webOn && !textOn && !careful && !wordProblem && !phoneTools && mustSearch(body.fragment);
       const baseExtras: PromptExtras = {
         ...(prefLines.length ? { preferences: prefLines } : {}),
         ...(situation ? { situation } : {}),
@@ -1670,7 +1675,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           // K103: a song, poem or quote is held whole (a self-correction is cut); other web answers start early (A1)
           ...(textReq ? { holdUntilEnd: true } : {}),
           // D72 live test: "den andra statsministern" was answered wrong from memory: ordinal facts search.
-          ...(tools && ordinal ? { toolChoice: { type: "any" } } : {}),
+          ...(tools && (ordinal || forceSearch) ? { toolChoice: { type: "any" } } : {}),
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
           ...(tutorModel ? { model: tutorModel, noThinking: !wordProblem, think: wordProblem } : {}),
           ...(careful ? { think: true } : {}),

@@ -7,7 +7,7 @@ import { sanitizeTagged } from "../answer/prompt.ts";
 import { finalNumber, isBareNumber } from "./spoken.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 import { practiceNav, spokenTask } from "./practice.ts";
-import { DEFAULT_DRILL_CONFIG, docxText, DRILL_WEIGHT, type DrillConfig, handleDrill, type MaterialStore, uploadUrls } from "./drill.ts";
+import { DEFAULT_DRILL_CONFIG, docxText, DRILL_LIMITS, DRILL_WEIGHT, type DrillConfig, estimateDrillCost, handleDrill, type MaterialStore, uploadUrls } from "./drill.ts";
 import { handleRead } from "./read.ts";
 
 /**
@@ -104,10 +104,20 @@ export interface ExamDeps {
   material?: MaterialStore | null;
   /** K61 (D175): the month's generated questions (used, limit); "drill" never makes more than are left. */
   quota?: (userId: string) => Promise<{ used: number; lim: number; unlimited?: boolean; wallet?: unknown }>;
+  /**
+   * K109 (Oscar O91): a QA measurement (the test header from GitHub Actions) skips the cost estimate before the exam,
+   * so the quality measurements on new test accounts still run; nothing is saved and the credits are taken at save.
+   */
+  qaMeasure?: (req: Request) => Promise<boolean>;
 }
 
 const MONTHS = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "augusti", "september", "oktober", "november", "december"];
 /** K90 (D213): "1 december", when the month's credits start again. */
+/** K109: "5 882" with a no-break space between the thousands (as drill/handler.ts). */
+function thousands(n: number): string {
+  return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
+}
+
 function resetsDay(nowMs: number): string {
   return `1 ${MONTHS[Number(monthResets(nowMs).slice(5, 7)) - 1]}`;
 }
@@ -369,7 +379,7 @@ export function createExamHandler(deps: ExamDeps) {
         // K90 (D213): the quota is credits (characters of new audio); none left = say so before any work. The number
         // of questions is not capped by it (what the audio costs is told at save: cost)
         let quota: { unit: "chars"; used: number; limit: number; left: number; remaining: number; per: "month"; resets: string; unlimited?: boolean } | null = null;
-        if ((action === "drill" || action === "read") && deps.quota) {
+        if ((action === "drill" || action === "drill_answers" || action === "read") && deps.quota) {
           const q = await deps.quota(user.id);
           const left = Math.max(0, q.lim - q.used);
           quota = { unit: "chars", used: q.used, limit: q.lim, left, remaining: left, per: "month", resets: monthResets(Date.now()), ...(q.unlimited ? { unlimited: true } : {}), ...(q.wallet ? (q.wallet as Record<string, unknown>) : {}) };
@@ -377,6 +387,20 @@ export function createExamHandler(deps: ExamDeps) {
             return json({
               error: { code: "quota_exceeded", message: `Du har inga krediter kvar den här månaden. Nya krediter den ${resetsDay(Date.now())}. Andras prov är gratis.`, fallback: false },
               ...quota,
+            }, 402);
+          }
+          // K109 (D239, Oscar O90): what the exam will cost (the long answers), counted before Claude makes it; when the
+          // credits do not reach, 402 with how many questions fit, so no exam is made that cannot be saved
+          const est = q.unlimited || (deps.qaMeasure && await deps.qaMeasure(req).catch(() => false)) ? null : estimateDrillCost(action, req0);
+          if (est && est.cost > left) {
+            const fits = Math.floor(left / est.per);
+            const what = action === "drill" ? `Ett prov med ${est.count} frågor` : `Svaren på ${est.count} frågor`;
+            // K110 (D241 punkt 2): an exam has at least questionsMin questions; fewer = no exam fits (the app offers Fyll på)
+            const room = fits >= DRILL_LIMITS.questionsMin ? `det räcker till ${fits} frågor` : `det räcker inte till ett prov (minst ${DRILL_LIMITS.questionsMin} frågor)`;
+            return json({
+              error: { code: "quota_exceeded", message: `${what} kostar cirka ${thousands(est.cost)} krediter. Du har ${thousands(left)} kvar, ${room}. Nya krediter den ${resetsDay(Date.now())}.`, fallback: false },
+              ...quota,
+              cost: est.cost, needed: est.cost, estimated: true, fits, per_question: est.per, questions: est.count, min_questions: DRILL_LIMITS.questionsMin,
             }, 402);
           }
         }

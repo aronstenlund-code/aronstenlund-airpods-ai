@@ -400,6 +400,15 @@ struct RepetitionProgress: Codable, Equatable, Sendable {
 
 /// Kelly Ke50: the repetition mode's counted words ("1 fråga" / "20 frågor", never "1 frågor").
 enum DrillText {
+    /// The sound's problem as the card on Start says it: the first sentence without its full stop ("Ljudet kan inte
+    /// göras just nu", Kelly A100). T55: when the credits do not cover it the first sentence alone ("Det här kostar
+    /// 1 909 krediter") reads like a price, so what is left comes with it ("… Du har 1 500 kvar").
+    static func cardProblem(_ problem: String, creditsShort: Bool) -> String {
+        let sentences = problem.components(separatedBy: ". ")
+        let kept = creditsShort && sentences.count >= 2 ? sentences.prefix(2).joined(separator: ". ") : (sentences.first ?? problem)
+        return kept.hasSuffix(".") ? String(kept.dropLast()) : kept
+    }
+
     static func questions(_ n: Int) -> String { n == 1 ? "1 fråga" : "\(n) frågor" }
     static func things(_ n: Int) -> String { n == 1 ? "1 sak" : "\(n) saker" }
 

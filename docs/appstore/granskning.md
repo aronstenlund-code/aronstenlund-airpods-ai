@@ -89,12 +89,12 @@ bekräftas före inskickning). Inget här är provat på telefon av mig.
 | Upprepar i 10 min till 1 timme (D210) | [S] A124/A132 |
 | "Du ser att det spelas och hur länge det är kvar" | [S] A132 |
 | Spelar vidare med låst skärm, styrs från AirPods (D209) | **[O]** därför står det inte i texten; Aron provar på telefon |
-| Röster, tempo, Skriv i takt (D220) | **[O]** A136 inte byggd än. Stryk raden om den inte är byggd vid inskickning |
+| Röster, tempo, Skriv i takt (D220) | [S] A136/A140, live O81; pausernas längd **[O]** på telefon |
 | Länk som material (D204) | [S] A116; hämtningen på servern K81 **[O]** live |
 | 1, 2, 3 tryck | [V] koden; **[O]** alla AirPods-modeller på telefon |
 | Starta prov och Säg använder aldrig mikrofonen | [V] koden (repetitionsläget startar ingen mikrofon); **[O]** orange pricken på telefon (R9) |
 | 1 500 krediter i månaden, 1 kredit = 1 tecken (D213) | [V] D213/K90 |
-| Köp och veckokort | **[O]** A134 inte byggd, produkterna finns inte i App Store Connect |
+| Köp och veckokort | [S] A134 (låtsasbutik), [V] `/purchase`; produkterna finns inte i App Store Connect än (Aron) |
 
 ## 2. Integritetsuppgifter (App Privacy)
 **Spårning: Nej.** Ingen reklam-SDK, ingen analys-SDK, ingen IDFA [V: ingen sådan kod i `Lumen/`]. Inloggningen är ett
@@ -104,15 +104,17 @@ anonymt konto per installation (`auth/v1/signup` utan e-post) [V].
 |---|---|---|---|---|
 | **Identifierare › Användar-ID** | Ja | Ja | Appens funktioner | Det anonyma kontots id knyter prov, ljud och krediter till installationen [V] |
 | **Användarinnehåll › Annat** (texter man skriver, frågor och svar) | Ja | Ja | Appens funktioner | Prov, Säg-texter och svar sparas på kontot så att de kan spelas igen [V] |
-| **Användarinnehåll › Foton** | Ja | Nej | Appens funktioner | Foton och dokument skickas en gång för att göra frågorna och sparas inte [V enligt texten i appen; **[O]** att bucketen töms, K53] |
+| **Användarinnehåll › Foton** | Ja | Nej | Appens funktioner | Foton och dokument skickas en gång för att göra frågorna och sparas inte [V i koden: raderas direkt efter analysen i `exam/drill.ts`/`exam/read.ts`, och `drill-purge` (pg_cron var 15:e min) tar bort allt äldre än en timme, K53] |
 | **Ljuddata** | Ja, bara i Fler lägen (beta) | Nej | Appens funktioner | Ljudet strömmas till ElevenLabs för taligenkänning; EarMind sparar det inte, men ElevenLabs kan behålla det enligt sina villkor (D135) [V] |
-| **Köp › Köphistorik** | Ja, när köpen finns | Ja | Appens funktioner | Transaktionen kontrolleras på servern för att ge krediter [O: A134/K94 inte byggda] |
+| **Köp › Köphistorik** | Ja, när köpen finns | Ja | Appens funktioner | Transaktionen kontrolleras på servern (`/purchase`, StoreKit 2, K94) för att ge krediter eller veckokortet [V i koden; A134 byggd; inga riktiga köp gjorda] |
 | **Användningsdata › Produktinteraktion** | Ja | Ja | Appens funktioner (kostnadskontroll) | Servern loggar per anrop vilken funktion, tid och kostnad, ingen text (D48, usage-rader) [V] |
 | **Diagnostik** | Nej | – | – | Ingen kraschrapportering i appen [V]. Apples egna kraschrapporter räknas inte |
 | **Kontakter › Kontakter** | Ja, bara i Fler lägen (beta) | Nej | Appens funktioner | När flera kontakter passar ett namn skickas upp till fyra namn till servern så att EarMind kan fråga vem du menar; numret skickas aldrig [V i koden, `LivePhoneTools.callContact`, A142]. Rättat 2026-11-18 (stod "Nej") |
 | **Användarinnehåll › Annat** (kalenderhändelser) | Ja, bara i Fler lägen (beta) | Nej | Appens funktioner | När man frågar vad som finns i kalendern skickas upp till 20 händelser (titel, tid, plats) till servern för svaret [V i koden, A142]. Apple har ingen egen kalender-kategori; "Annat användarinnehåll" är närmast. Rättat 2026-11-18 |
 | Påminnelser, larm | Nej | – | – | Appen lägger bara till och läser inget [V i koden, A142] |
 | Kontaktuppgifter (e-post) | Nej i appen | – | – | E-post samlas bara på webbsidans väntelista, inte i appen [V] |
+| **Användarinnehåll › Kundsupport** (A152) | Ja | Ja | Appens funktioner | "Fel svar?", talat "rapportera" och Feedback och förslag skickar den egna frågan, svaret och kommentaren till utvecklarna, med konto-id; högst 90 dagar [V i koden, punkt 3 c] |
+| **Användarinnehåll › Annat**, syftet **Analys** (A152) | Ja | Delad historik ja; frågeloggen nej | Analys (produktförbättring) | Frågeloggen (högst 14 dagar, utan konto-id) och frivillig delad historik (högst 12 månader) [V i koden, punkt 3 a, b, d] |
 | Plats, hälsa, finans, sökhistorik | Nej | – | – | [V] |
 
 **Måste rättas eller beslutas före inskickning (till Deangelo/Aron):**
@@ -123,46 +125,100 @@ anonymt konto per installation (`auth/v1/signup` utan e-post) [V].
    servern för att göra frågorna, så första halvan stämmer inte. Förslag: "Take a photo of the page you are studying.
    The photo is sent once to make your questions and is not saved." (Angela Schrute) **[V] att texten är fel**
 3. **Rapporterade frågor (D135):** "med samtycke läser utvecklaren dem, raderas inom 14 dagar". Om det finns i appen ska
-   det in som Användarinnehåll, syfte produktförbättring. **[O]**
-4. **Minnen (D37 m.fl.) i Fler lägen** sparas på servern? Om ja: Användarinnehåll, kopplat. **[O]**
+   det in som Användarinnehåll, syfte produktförbättring. ~~**[O]**~~ **Svar ur koden (Angela Schrute, A152, 2026-11-19):
+   ja, det finns i Release, på fyra sätt. Inget av dem är bortkompilerat (bara testläget är det, D227).** [V i koden]
+   | Flöde | När | Vad som skickas | Kopplat till kontot | Sparas | Kod |
+   |---|---|---|---|---|---|
+   | a. Frågeloggen i lyssnarlägena (D116, K30) | efter lyssnarsamtycket (version 5 eller senare), bara i Fler lägen | varje fråga och svar, siffror maskade; aldrig krissvar, demon eller obesvarade | nej (tabellen har varken konto-id eller installations-id) | högst 14 dagar | `ListeningModel.context(for:)` sätter `qa_log`, `CloudAnswerProvider`; `backend/supabase/functions/answer/qalog.ts`; `20261110210000_qa_log.sql` |
+   | b. Frågeloggen i repetitionsläget (D197, K77) | **varje gång ett frågeprov sparas, utan samtyckesflagga från appen** | nya frågor med svar och ändrade frågor (före och efter); aldrig en Säg-texts eller ett textprovs text, foton, testkonton eller importerade kopior | nej | högst 14 dagar | `backend/supabase/functions/drill/handler.ts` (`analyse`), `drill/analysis.ts` |
+   | c. Rapporter och feedback (D57) | "Fel svar?" på ett svar i Fler lägen, talat "rapportera", Inställningar › Feedback och förslag | den egna frågan, svaret, kommentaren; andras tal skickas aldrig | **ja** (konto-id ur inloggningen och installations-id) | tills ärendet är hanterat, högst 90 dagar | `FeedbackClient.send`, `ListeningModel.report`; `20261107233000_feedback_status_retention.sql` |
+   | d. Delad historik (D57) | frivilligt: frågan visas en gång efter lyssnarsamtycket, reglaget står i Feedback och förslag, av från början | egna frågor och appens svar | **ja** (konto-id och installations-id) | högst 12 månader, tas bort när man slår av | `FeedbackClient.sync`, `RootView` (`ShareHistoryPromptView`); `20261106120000_feedback_and_shared_history.sql` |
+   - **Följd för App Privacy:** "Användarinnehåll › Annat" får också syftet **Analys** (a, b, d: produktförbättring), och en ny rad **"Användarinnehåll › Kundsupport"**, kopplad, syfte Appens funktioner (c). Så står det i `PrivacyInfo.xcprivacy`.
+   - **Texten "14 dagar" i D135 gäller frågeloggen (a, b).** Rapporter (c) ligger kvar upp till 90 dagar och delad historik (d) upp till 12 månader; policyn bör säga alla tre.
+   - **Beslut som behövs (Deangelo/Aron): b har inget samtycke och nämns inte i Välkommen.** "Läs mer" säger att proven sparas hos EarMind, inte att utvecklaren läser nya frågor och svar i upp till 14 dagar. Antingen en mening till i Välkommen › Läs mer och i policyn, eller så stänger Kevin av loggen för App Store-versionen. **[O] hög**
+4. **Minnen (D37 m.fl.) i Fler lägen** sparas på servern? Om ja: Användarinnehåll, kopplat. ~~**[O]**~~ **Svar ur koden (Angela Schrute, A152, 2026-11-19): nej.** [V i koden]
+   - Minnena ligger i filen `memories.json` på telefonen (`MemoryStore`, `Lumen/Core/History/MemoryStore.swift`) och visas och raderas under Inställningar.
+   - De **skickas** med varje fråga i Fler lägen (högst 30 × 200 tecken, `AnswerContext.memories`) och till `/memory` när appen letar efter något nytt att minnas. Servern använder dem för svaret och sparar ingen text: `/memory` har ingen skrivning till databasen, bara samma rad utan text i `answer_usage` (`backend/README.md`, D80) [V i backend-koden].
+   - Enligt Apples definition är det inte "insamlat" (det behålls inte längre än anropet), så ingen egen rad behövs. Undantag: slår användaren på frågeloggen eller delad historik (punkt 3 a och d) kan en fråga som nämner ett minne hamna där.
 5. ~~**Mikrofontexten (D138)**~~ **Klart (D229, A146).** Två avvikelser från D229 som Kelly stöder (sanna och ger mer): meningen om Sömnläget står kvar, och taligenkänningens text säger att iPhonens egen igenkänning håller ljudet på telefonen. Deangelo bekräftar. Gällde: texten sa inte att ljudet skickas till en taligenkänningstjänst. Apple (5.1.1) vill att
    texten säger vad datan används till. Kelly stöder Angela Schrutes förslag: "Ljudet skickas till en
    taligenkänningstjänst, blir text och sparas inte av EarMind." Deangelo beslutar (ändrar D138). **[V] att texten saknar det**
 6. **Integritetspolicy** krävs (URL i App Store Connect) och saknas. Förslag: en sida på earmind.vercel.app/integritet
    med samma uppgifter som tabellen. **Utkast klart (Ke78, grenen `kelly/ke78-integritet`), väntar på Arons ja (TILL-ARON #30)**
+7. **Privacy manifest (A152, D238): finns.** `Lumen/Resources/PrivacyInfo.xcprivacy` och `LumenControls/PrivacyInfo.xcprivacy`, båda i Release-appen (iOS build 44584413378). Ingen spårning. Skäl: UserDefaults `CA92.1` och `1C8F.1` (delat med widgeten), filers datum `C617.1` (ljudcachen i appens egen mapp), systemets uppstartstid `35F9.1` (tid mellan händelser i appen), diskutrymme `E174.1` (FluidAudios kod). Paketen: SpotifyiOS har eget manifest; FluidAudio har inget och läser ledigt diskutrymme på en rad (`LFM3AudioConfig.swift:81`), som därför står i appens manifest med `E174.1`. Release-binären importerar just de fyra: `NSUserDefaults`, `mach_absolute_time`, `NSURLContentModificationDateKey`, `NSURLVolumeAvailableCapacityKey`. [V i bygget]
 
-## 3. Granskningsanteckningar (App Review Information › Notes), på engelska
-> EarMind reads text aloud in the user's earbuds to help them study.
+## 2b. App Store Connect › App Privacy: svaren att klicka in (Ke84, engelska som i formuläret)
+Apples definition: data är "collected" när den lämnar telefonen och vi eller en partner (Anthropic, ElevenLabs,
+Supabase) kan nå den längre än själva anropet. "Linked" = knuten till kontots id. Tracking: **No** för allt.
+
+**Do you or your third-party partners collect data from this app? → Yes**
+
+| Data type (Apple) | Collected | Linked to user | Used for tracking | Purposes |
+|---|---|---|---|---|
+| Identifiers › **User ID** | Yes | Yes | No | App Functionality |
+| User Content › **Other User Content** (texts, questions and answers, calendar events asked about in More modes) | Yes | Yes | No | App Functionality, **Analytics** |
+| User Content › **Photos or Videos** | Yes | No | No | App Functionality |
+| User Content › **Audio Data** (More modes only) | Yes | No | No | App Functionality |
+| Contacts › **Contacts** (names only, More modes) | Yes | No | No | App Functionality |
+| Purchases › **Purchase History** | Yes | Yes | No | App Functionality |
+| Usage Data › **Product Interaction** (function, time, cost per call; no text) | Yes | Yes | No | App Functionality |
+| Contact Info, Health & Fitness, Financial Info, Location, Sensitive Info, Browsing History, Search History, Diagnostics, Other Data | No | – | – | – |
+| User Content › **Customer Support** ("Wrong answer?", spoken "report", Feedback and suggestions) | Yes | Yes | No | App Functionality |
+
+Grund: tabellen i §2 och Angela Schrutes svar på punkt 3–4 (A152, `PrivacyInfo.xcprivacy` säger detsamma); varje rad
+kontrollerad i koden. **Analytics** på Other User Content: frågeloggarna (punkt 3 a, b; ej kopplade, högst 14 dagar) och
+delad historik (3 d; frivillig, kopplad, högst 12 månader). **Customer Support**: rapporter (3 c, kopplade, högst 90
+dagar). **Minnen** (punkt 4) behålls inte på servern och är därför inte "collected".
+**Beslut kvar (Deangelo/Aron, hög):** frågeloggen i repetitionsläget (3 b) har inget samtycke och nämns inte i
+Välkommen. Antingen en mening i Välkommen › Läs mer och i policyn, eller av i App Store-versionen. Svaren ovan gäller som
+koden är i dag (loggen på). "Linked" för foton, ljud och kontakter är **No** eftersom de
+inte sparas på kontot (foton raderas inom en timme, ljud sparas inte av EarMind, kontaktnamn bara i svaret);
+partnern kan behålla dem enligt sina villkor, därför "Collected: Yes".
+
+## 3. Granskningsanteckningar (App Review Information › Notes), på engelska – klar att klistra in (Ke84)
+> EarMind reads text aloud in the user's earbuds to help them study. No sign-in is needed.
 >
-> 1. Say in AirPods (first screen): the user types or pastes a text and taps "Play for 10 min". The text is spoken with
+> 1. Say in AirPods (first screen): type or paste a text and tap "Play for 10 min". The text is spoken with
 > text-to-speech and repeats for the chosen time (10–60 minutes). Playback is always visible: the card shows "Playing in
 > AirPods", the time left, Pause and Stop, and the system Now Playing controls are used. There is no delayed or scheduled
-> playback and no hidden mode. The microphone is never used here.
+> playback and no hidden mode. The microphone is never used here. "How should it sound?" lets the user describe a style;
+> the app suggests a voice, or the user picks one from the voice sheet (previews are free).
 >
-> 2. Start quiz: photos or text become quiz questions with answers (Claude by Anthropic). Answers are spoken
-> (ElevenLabs) when the user presses the earbuds. The microphone is never used.
+> 2. Start quiz: photos, documents, a link or text become quiz questions with answers (Claude by Anthropic). Answers are
+> spoken (ElevenLabs) when the user presses the earbuds. The microphone is never used. Photos are deleted after the
+> questions are made.
 >
 > 3. More modes (beta) use the microphone. Before the first start the app shows a consent screen; the microphone is only
 > requested after that. While listening, a bar at the top of every screen shows that the app is listening, with one-tap
 > Stop. Audio is streamed for speech recognition and not stored by EarMind.
 >
-> 4. Credits and purchases: 1,500 credits per month are free. Credit packs are consumables. The weekly pass is an
-> auto-renewable subscription; price, renewal and how to cancel are shown next to the purchase button, with links to
-> Terms and Privacy.
+> 4. Credits: 1 credit is 1 character of new audio; repeats and existing audio are free. Every account gets 1,500 free
+> credits per month, enough to try Say in AirPods; the quiz screen suggests a number of questions that fits the credits.
+> Inviting a friend gives 2,000 credits after the friend plays a first text. Credit packs are consumables. The weekly
+> pass is an auto-renewable subscription; price, renewal and how to cancel are shown next to the purchase button, with
+> links to Terms and Privacy. Purchases are verified on our server.
 >
-> 5. Account: no sign-in is needed (anonymous account per install). The account and everything on the server can be
-> deleted in the app: Settings › Account › Delete account (A145). [Aron: add here how the reviewer gets credits, e.g.
-> that the review build/account has unlimited credits. Do not put any password in this repository.]
+> 5. Account: an anonymous account is created on first launch. The account and everything on the server can be deleted
+> in the app: Settings › Account › Delete account. Feedback and reports are sent only when the user taps them.
 >
 > 6. AirPods are not required; the app also plays through the phone speaker.
 
-**[O]** punkt 1 "Now Playing controls" och låst skärm (D209), punkt 3 att samtycket visas före mikrofonfrågan (D21, [V]
-i koden: `ListeningModel` vägrar utan samtycke), punkt 6 högtalaren (texten i appen säger att det går, inte provat av mig).
+**Före inskickning (Aron/Deangelo), inte i texten ovan:**
+- **Krediter för granskaren:** 1 500 räcker för Säg men inte för ett fullt prov (ett prov ≈ 6 000). Välkomsten (5 000)
+  kräver Team ID och App Attest (TILL-ARON #31, D239); är den på, lägg till i punkt 4: "New accounts also get 5,000
+  welcome credits." Annars: ge granskaren krediter på serversidan och skriv det här. **Inget lösenord i repot.**
+- Låst skärm (D209) står inte i texten (inte provad på telefon).
+
+Kontroll (Kelly, Ke84): punkt 1 Now Playing [V i koden: `RepetitionSession` sätter `MPNowPlayingInfoCenter`,
+`RemoteCommandHub`]; röster och stil [V: A136/A140, live O81]. Punkt 2 foton raderas [V: `exam/drill.ts`,
+`drill-purge`]. Punkt 3 samtycke före mikrofon [V: `ListeningModel` vägrar utan samtycke]. Punkt 4 1 500/månad, inbjudan
+[V: D213/D224, live O82], köp verifieras [V: `/purchase`]. Punkt 5 Radera konto [V: A145/K101]. Punkt 6 högtalaren
+[V i koden: Säg kräver inga hörlurar; inte provat på telefon].
 
 ## 4. Övrigt som Apple frågar efter
 | Fält | Förslag | Status |
 |---|---|---|
-| Åldersgräns | **12+**; Rizz-läget (flirtförslag, beta) och AI-svar kan ge "Infrequent/Mild Mature/Suggestive Themes". Är Rizz kvar: svara ärligt i frågeformuläret | **[O]** Aron |
+| Åldersgräns | **13+** (Apples skala 2025), se `README.md` §4: Rizz-läget (milda flirtförslag, beta) och AI-innehåll; svara ärligt i formuläret | förslag, Aron |
 | Kategori | Utbildning (primär), Produktivitet (sekundär) | förslag |
 | Support-URL | earmind.vercel.app (har kontaktadress) | [V] sidan finns (Ke70) |
 | Marknadsförings-URL | earmind.vercel.app | [V] |
