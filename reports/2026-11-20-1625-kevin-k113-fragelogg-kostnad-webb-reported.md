@@ -61,3 +61,17 @@ Se kelly.md och oscar.md.
 - **`suggest` är 12** i stället för 20 (D239). Serverns standard för `exam drill` är oförändrad.
 - Tester: 797/797.
 - **Live** (`k115-quota.py`, 44763284733): 90 ord ger 642, 130 ord ger 894, utan längd 642, och `suggest` är 12. 0 Claude och 0 ElevenLabs.
+
+## 6. Oscars O92: receptet och däcket (runda 17:00)
+- **Roten:** webbpromptens form "en mening med svaret, sedan detaljer".
+  - För en instruktion blev första meningen en sammanfattning av stegen, och sedan kom stegen en gång till.
+  - För ett recept stod det "ingredienserna först med exakta mått", och listan åt upp orden.
+- **Ändrat i webbprompten:**
+  - Ett recept tar bara med huvudingredienserna i en mening och sedan alla steg tills rätten är klar, med högst 70 ord. Hela listan finns hos källan.
+  - En instruktion och ett recept börjar direkt med första steget.
+  - Verifierat i test.
+- **Live** (44769763007): däcket 75 ord och köttbullarna 73 ord, båda med källa. Däckets upprepning är borta.
+  - En ny metamening kom i stället: "Källorna är inte helt samstämmiga om ordningen, så jag håller mig till de steg som Clas Ohlson beskriver."
+  - Den tas nu bort i koden (`SOURCE_META`). K103:s "…, men vissa mätningar ger Amazonas" står kvar. Verifierat i test.
+- **Tester:** 799/799.
+- **Inte verifierat live:** att receptet nu når stekningen. Svaret skrevs ut bara till 300 tecken. Nattens eval visar det.
