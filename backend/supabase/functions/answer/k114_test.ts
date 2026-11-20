@@ -57,3 +57,10 @@ Deno.test("O91 N5: a song (textOn) is never cut by the web cap, also when it sea
   const r = await spoken("sjung helan går", true);
   assert(wordsOf(r.text.replace(/\s*Källa:[^.]*\.?\s*$/u, "")) > 80);
 });
+
+Deno.test("O92/N5: an instruction starts with its first step (no summary of the steps first); a recipe names only the main ingredients so the steps fit", async () => {
+  const { WEB_PROMPT } = await import("./web.ts");
+  assert(WEB_PROMPT.includes("the first sentence is already the first step, never a sentence that sums the steps up"), "däckbyte said the steps twice");
+  assert(WEB_PROMPT.includes("only the main ingredients in one sentence, then the steps in order to the end"), "köttbullar ended before the frying");
+  assert(WEB_PROMPT.includes("at most five, and the whole answer at most 70 words (D238)"), "K108's rule kept");
+});
