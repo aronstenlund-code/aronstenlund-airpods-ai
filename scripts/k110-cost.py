@@ -51,9 +51,13 @@ def words(t):
     return len(re.findall(r"\S+", t or ""))
 
 
+# K110/T55 (Angela Fable 2026-11-20): Toby's case, a 39-word text with 3 questions; every item printed (lengths only)
+SHORT = "--short39" in sys.argv
+if SHORT:
+    O79 = {"t55-39ord": {"subject": "Biologi", "format": "text", "parts": [("Fotosyntes", "Fotosyntesen sker i växternas blad. Med hjälp av ljus, vatten och koldioxid bildar växten glukos och syre. Klorofyllet fångar ljuset. Glukosen används som energi och byggmaterial, och syret släpps ut genom klyvöppningarna i bladen.")]}}
 rows = []
 for eid, m in O79.items():
-    for n in (3, 12):
+    for n in ((3, 3) if SHORT else (3, 12)):
         tok = T.signup(True)[0]
         body = {"action": "drill", "answers": False, "questions": n, "subject": m["subject"]}
         body |= {"pages": photo_pages(m, eid), "text": ""} if m["format"] == "photo" else {"pages": [], "text": "\n\n".join(f"{h}\n\n{p}" for h, p in m["parts"])}
@@ -76,6 +80,11 @@ for eid, m in O79.items():
                "not_answered": [i["question"] for i in its if NA.search(i.get("long", ""))]}
         rows.append(row)
         print(json.dumps(row, ensure_ascii=False), flush=True)
+        if SHORT:
+            for i in its:
+                print("   item", json.dumps({"q_chars": len(i["question"]), "short_words": words(i.get("short", "")), "long_words": words(i["long"]),
+                                          "long_chars": len(i["long"]), "long_starts_with_short": i["long"].startswith(i.get("short", "")),
+                                          "screen_long_chars": len((i.get("screen") or {}).get("long") or "")}), flush=True)
 ok = [r for r in rows if "per_q" in r]
 print("=== K110", json.dumps({"per_q_max": max(r["per_q"] for r in ok), "q_chars_max": max(r["q_chars"] for r in ok),
                              "cpw_max": max(r["cpw"] for r in ok), "long_words_max": max(r["long_words_max"] for r in ok),
