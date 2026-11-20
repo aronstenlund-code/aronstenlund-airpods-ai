@@ -843,7 +843,37 @@ final class SayFlowTests: XCTestCase {
         screen("granskare-nytt-prov", "Nytt prov with the text")
         guard waitEnabled(["Skapa frågor"], 15), tap(["Skapa frågor"], "Skapa frågor") else { return miss("Skapa frågor not tappable") }
         let made = Date()
-        guard wait(["Ser rätt ut", "Spara frågorna", "Hittade*"], 180) != nil else { screen("granskare-inga-fragor", "No questions"); return miss("no questions in 180 s") }
+        // A154 (Angela Fable 2026-11-20, K109): with too few credits the server answers 402 before the questions are
+        // made, and Nytt prov comes back with "Du har … Det räcker inte till ett prov (minst 3 frågor)." and Fyll på, or
+        // "Krediterna räcker till N frågor." with "Skapa N frågor".
+        guard wait(["Ser rätt ut", "Spara frågorna", "Hittade*", "Krediterna räcker*"], 180) != nil else { screen("granskare-inga-fragor", "No questions"); return miss("no questions in 180 s") }
+        let short = Self.labels(in: app.debugDescription, kind: "StaticText").filter { $0.contains("räcker") }
+        if !short.isEmpty, find(["Ser rätt ut", "Spara frågorna"]) == nil {
+            log.append(String(format: "T55 exam (A154): after %.0f s the form says %@", Date().timeIntervalSince(made), short.joined(separator: " | ")))
+            screen("granskare-racker-inte", "Nytt prov: the credits are not enough (A154)")
+            let skapa = find(["Skapa frågor"])
+            log.append("T55 exam (A154): Skapa frågor enabled \(skapa?.isEnabled.description ?? "-"), Fyll på \(find(["Fyll på"]) != nil), Skapa N \(Self.labels(in: app.debugDescription, kind: "Button").first { $0.hasPrefix("Skapa ") && $0.hasSuffix(" frågor") && $0 != "Skapa frågor" } ?? "-")")
+            if let fewer = Self.labels(in: app.debugDescription, kind: "Button").first(where: { $0.hasPrefix("Skapa ") && $0.hasSuffix(" frågor") && $0 != "Skapa frågor" }) {
+                guard tap([fewer], fewer) else { return miss("'\(fewer)' not tappable") }
+                guard wait(["Ser rätt ut", "Spara frågorna", "Hittade*"], 180) != nil else { screen("granskare-inga-fragor", "No questions"); return miss("no questions in 180 s after '\(fewer)'") }
+            } else {
+                var ok = true
+                if skapa?.isEnabled == true { ok = miss("Skapa frågor is still enabled with too few credits (A154: off)") }
+                guard tap(["Fyll på"], "Fyll på (A154)") else { return miss("no Fyll på with too few credits (A154)") }
+                let end = Date().addingTimeInterval(15)
+                repeat { if app.debugDescription.contains("Paketen kunde inte hämtas") || app.debugDescription.contains("label: 'Köp ") || app.debugDescription.contains("Så räknas det") { break }; pause(1) } while Date() < end
+                let sheet = app.debugDescription.contains("Så räknas det") || app.debugDescription.contains("Paketen kunde inte hämtas")
+                log.append("T55 exam (A154): Fyll på opened Krediter: \(sheet)")
+                screen("granskare-fyll-pa", "Fyll på from Nytt prov (A154)")
+                if !sheet { ok = miss("Fyll på did not open Krediter (A154)") }
+                dismissCredits()
+                pause(1)
+                if find(["Avbryt", "Stäng"]) != nil { tap(["Avbryt", "Stäng"], "close Nytt prov", counted: false, quiet: true) }
+                goToStart()
+                _ = exactCredits("after the exam that did not fit (A154)")
+                return ok
+            }
+        }
         log.append(String(format: "T55 exam: questions after %.0f s", Date().timeIntervalSince(made)))
         screen("granskare-fragor", "The questions made from the text")
         if find(["Ser rätt ut"]) != nil { tap(["Ser rätt ut"], "Ser rätt ut") } else { tap(["Spara frågorna"], "Spara frågorna") }
