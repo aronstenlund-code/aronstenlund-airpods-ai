@@ -121,6 +121,10 @@ final class SayFlowTests: XCTestCase {
     static let cardText = [text, "Klorofyllet i bladen fångar ljuset.*"]
 
     private var lockLineBefore = false
+    /// T55 (2), D238, A153: at AX5 the test must reach Spela without hiding the keyboard itself (no tap beside the
+    /// field, no swipe, no drag). While this is on, tap() never hides it and never swipes; the bar's
+    /// "Spela i 10 min. Kostar … krediter" above the keyboard is the button to find.
+    private var keepKeyboard = false
     private var creditsAtStart: Int?
 
     /// Taps "Spela i 10 min" and waits for the card's "Spelar i AirPods" (or "Gör ljudet …") on Start.
@@ -806,7 +810,8 @@ final class SayFlowTests: XCTestCase {
         guard focusField("Säg i AirPods (AX5)") else { return miss("the field got no keyboard") }
         field.typeText(Self.text)
         pause(2) // the cost comes about 0,7 s after the last key
-        if app.keyboards.count > 0 { app.swipeDown(velocity: .slow); pause(1) }
+        // T55 (2): the keyboard stays up (A153 gives Spela above it); a swipe here would hide it.
+        log.append("T55 AX5 keyboard up after typing: \(keyboardUp)")
         let fieldLabel = field.label
         let cost = (Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Button")).first { $0.hasPrefix("Kostar ") }
         let tempo = label(of: "Button", starting: "Tempo") ?? "-"
@@ -820,7 +825,6 @@ final class SayFlowTests: XCTestCase {
         // The "›" mark must not be read (Ke79 1): it is hidden, so it must not stand as a text of its own.
         if Self.labels(in: app.debugDescription, kind: "StaticText").contains("›") { note("'›' stands as a text in the tree (Ke79 1; Angela: hidden, the tree shows hidden elements)") }
         audit("start-text")
-        hideKeyboard() // run 44424970760: the keyboard stayed up at AX5 and covered Spela
         return ok
     }
 
@@ -839,8 +843,10 @@ final class SayFlowTests: XCTestCase {
     }
 
     private func a11yPlayingCard() -> Bool {
-        hideKeyboard()
-        scrollIntoView(Self.playLabels)
+        // T55 (2), D238: no hideKeyboard() and no scrollIntoView (a drag on Start hides the keyboard, A153).
+        let upBefore = keyboardUp
+        log.append("T55 AX5 before Spela: keyboard up \(upBefore)")
+        if !upBefore { note("T55: the keyboard was not up before Spela (it should still be up after typing)") }
         // Run 44436344437: Spela was never hittable at AX5. Write every match with its frame and the window, so it is
         // seen whether it is off the screen (and cannot be scrolled to) or covered.
         let window = app.windows.firstMatch.frame
@@ -848,7 +854,11 @@ final class SayFlowTests: XCTestCase {
             log.append("T53 Spela match '\(b.label)': frame \(NSCoder.string(for: b.frame)), hittable \(b.isHittable), enabled \(b.isEnabled), window \(NSCoder.string(for: window))")
         }
         screen("ax5-spela", "AX5: where Spela is")
-        guard playFromCard() else { return false }
+        keepKeyboard = true
+        let played = playFromCard()
+        keepKeyboard = false
+        log.append("T55 AX5 Spela reached with the keyboard up: \(played && upBefore), the test hid the keyboard: no")
+        guard played else { return miss("T55: Spela could not be reached at AX5 without hiding the keyboard") }
         pause(4)
         let all = Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Other") + Self.labels(in: app.debugDescription, kind: "Button")
         let one = all.first { $0.hasPrefix("Spelar i AirPods") && $0.contains("kvar") }
@@ -1332,7 +1342,9 @@ final class SayFlowTests: XCTestCase {
         // counts as under it.
         let underKeyboard = (keyboard.exists && keyboard.frame.contains(CGPoint(x: frame.midX, y: frame.midY)))
             || (!keyboard.exists && keyboardUp && frame.midY > app.windows.firstMatch.frame.height * 0.55)
-        if !element.isHittable, underKeyboard { log.append("\(step): '\(element.label)' is under the keyboard; hiding it"); hideKeyboard(); element = find(labels) ?? element }
+        if !element.isHittable, underKeyboard {
+            if keepKeyboard { log.append("\(step): '\(element.label)' is under the keyboard; not hiding it (T55), looking for a hittable twin") } else { log.append("\(step): '\(element.label)' is under the keyboard; hiding it"); hideKeyboard(); element = find(labels) ?? element }
+        }
         if !element.isHittable, !underKeyboard, !frame.isEmpty, app.windows.firstMatch.frame.contains(CGPoint(x: frame.midX, y: frame.midY)) {
             log.append("NOT HITTABLE (tapped at its centre): \(step): '\(element.label)' at \(Int(frame.midX)),\(Int(frame.midY))")
             element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
@@ -1344,13 +1356,14 @@ final class SayFlowTests: XCTestCase {
         // with the same label, and the first match was that one. Take a hittable button with the same label first.
         if !element.isHittable, let twin = hittableTwin(labels) { element = twin }
         var swipes = 0
-        while !element.isHittable, swipes < 6 {
+        while !element.isHittable, !keepKeyboard, swipes < 6 {
             app.swipeUp()
             swipes += 1
             if let again = find(labels) { element = again }
         }
         if swipes > 0 { note("\(step): '\(labels[0])' was below the screen (\(swipes) swipes)") }
         guard element.isHittable else { log.append("MISS: \(step): '\(labels[0])' not hittable"); return false }
+        if keepKeyboard { log.append("T55 AX5 tapped '\(element.label)' at \(NSCoder.string(for: element.frame)), keyboard up \(keyboardUp)") }
         tapElement(element, step, counted: counted)
         return true
     }
