@@ -76,3 +76,6 @@ Release-bygget är klart (A155, main grön 44694689538). Hela listan står i `re
 4. Signering: säg om du vill signera i Xcode på en Mac eller i bygget med en App Store Connect API-nyckel.
 5. Ny app i App Store Connect, köpen (id:na står i rapporten), formulären (Kellys texter är klara att klistra in).
 6. Ladda upp och skicka till granskning.
+
+## #35 Anthropic-nyckeln går ut 3 december (2026-11-20 16:15)
+Nyckeln som servern använder för AI-svaren skapades 3 november med 30 dagars giltighet (STATUS › Reminders). Går den ut slutar appen svara. Senast 2 december: skapa en ny nyckel i console.anthropic.com (API Keys › Create Key, utan utgångsdatum eller med ett långt) och klistra in den i Supabase › Project Settings › Edge Functions › Secrets som `ANTHROPIC_API_KEY`. Säg till, så öppnar jag sidorna åt dig och Kevin kontrollerar efteråt att svaren fungerar.
