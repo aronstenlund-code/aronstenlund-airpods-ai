@@ -64,3 +64,11 @@ Deno.test("O92/N5: an instruction starts with its first step (no summary of the 
   assert(WEB_PROMPT.includes("only the main ingredients in one sentence, then the steps in order to the end"), "köttbullar ended before the frying");
   assert(WEB_PROMPT.includes("at most five, and the whole answer at most 70 words (D238)"), "K108's rule kept");
 });
+
+Deno.test("O92 (live 16:05): a sentence about which source the steps follow is meta and goes; a real disagreement stays (K103)", async () => {
+  const { isSearchMeta } = await import("./speech.ts");
+  assert(isSearchMeta("Källorna är inte helt samstämmiga om ordningen, så jag håller mig till de steg som Clas Ohlson beskriver."));
+  assert(isSearchMeta("Jag följer det recept som Ica skriver."));
+  assert(!isSearchMeta("Nilen räknas oftast som världens längsta flod, men vissa mätningar ger Amazonas."));
+  assert(!isSearchMeta("Lossa sedan bultarna ett kvarts varv med hjulmuttern medan hjulet står på marken."));
+});
