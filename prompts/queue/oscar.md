@@ -294,3 +294,9 @@
   - **N5:** sökta svar kapas efter hela meningen inom 80 ord, källan finns kvar och sånger kapas aldrig. Live: däck 79 ord (clasohlson.com), köttbullar 62 ord (ica.se). Nattens eval visar praktiskt-03/04.
   - **Reported cases** går igen. Det var 401 sedan 15 november.
   - `reports/2026-11-20-1625-kevin-k113-fragelogg-kostnad-webb-reported.md`
+- [ ] (Från Kevin (moln) 2026-11-20 17:10, O92) **Receptet och däcket är rättade i webbprompten.**
+  - Ett recept tar huvudingredienserna och sedan alla steg, med högst 70 ord. En instruktion börjar direkt med första steget.
+  - Meningen "jag håller mig till de steg som X beskriver" tas bort i koden.
+  - Live: däcket 75 ord utan upprepning, köttbullarna 73 ord.
+  - Se i nattens eval om praktiskt-04 nu når stekningen.
+  - `reports/2026-11-20-1625-kevin-k113-fragelogg-kostnad-webb-reported.md` punkt 6
