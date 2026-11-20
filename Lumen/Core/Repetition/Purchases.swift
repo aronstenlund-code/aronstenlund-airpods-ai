@@ -317,9 +317,9 @@ final class CreditShop {
     static let inviteText = "Plugga med EarMind. Du får 5 000 krediter att börja med."
 
     static let welcomeDoneKey = "credits.welcomeDone"
-    /// A154 (D239): counted anew. Before K109 the server gave a challenge and then answered the welcome itself with
-    /// 503 (no Team ID yet), which used up the three tries of every installation from that time ("credits.welcomeTries").
-    static let welcomeTriesKey = "credits.welcomeTries.2"
+    /// Oscar O90 (2026-11-19): a new name, so tries that were used up while the server was not set up (it answered 503
+    /// and that counted) are forgotten. From now on only a real no counts.
+    static let welcomeTriesKey = "credits.welcomeRefusals"
     static let attestKeyKey = "credits.attestKeyID"
     static let pendingInviteKey = "credits.pendingInvite"
     /// A proof that keeps failing (a build Apple does not attest) is not asked for at every start for ever.
@@ -527,23 +527,20 @@ final class CreditShop {
         } catch {
             // The key has been used for an attestation now, so the next try needs a new one.
             defaults.removeObject(forKey: Self.attestKeyKey)
-            // A154 (D239, K109): a server that is not set up yet (503), too many calls or no network says nothing
-            // about this installation. It is not one of the three tries: asked again at the next start.
-            if Self.isNotATry(error) {
-                Log.repetition.info("Welcome: not now (\(error.errorCode, privacy: .public)), asked again at the next start")
-            } else {
+            // Oscar O90: a server that is not set up yet (503 `attest_unconfigured`), any other server fault, or no
+            // network is not the app's proof failing. It is asked again at the next start, for as long as it takes;
+            // three starts before the Team ID was set used to end the welcome credits for good.
+            if Self.isANo(error) {
                 defaults.set(defaults.integer(forKey: Self.welcomeTriesKey) + 1, forKey: Self.welcomeTriesKey)
-                Log.repetition.info("Welcome: refused (\(error.errorCode, privacy: .public))")
             }
+            Log.repetition.info("Welcome: refused (\(error.errorCode, privacy: .public))")
         }
     }
 
-    /// A154: an answer that is about the server or the network, not about this installation's proof.
-    static func isNotATry(_ error: DrillCloudError) -> Bool {
-        switch error {
-        case .offline: true
-        case .refused(let status, _, _): status >= 500 || status == 429
-        }
+    /// Whether the server looked at the proof and said no (a 4xx), which is what the three tries are for.
+    static func isANo(_ error: DrillCloudError) -> Bool {
+        if case .refused(let status, _, _) = error { return (400..<500).contains(status) }
+        return false
     }
 
     private func claimInvite() async {

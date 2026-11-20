@@ -188,17 +188,22 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p build-logs
-          xcodebuild build \
+          # A155 (D243): an archive, as the App Store gets it, not only a build. Unsigned: no team, no certificate
+          # and no upload here. The build number is the run's id (higher for every run), as in the Sideloadly build.
+          xcodebuild archive \
             -project Lumen.xcodeproj \
             -scheme Lumen \
             -configuration Release \
             -destination 'generic/platform=iOS' \
+            -archivePath build/Lumen-release.xcarchive \
             -derivedDataPath DerivedData-release \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
+            CURRENT_PROJECT_VERSION="${GITHUB_RUN_ID}" \
+            LUMEN_GIT_SHA="${GITHUB_SHA::7}" \
             2>&1 | tee build-logs/xcodebuild-release.log | xcbeautify --renderer github-actions
-          RELEASE="DerivedData-release/Build/Products/Release-iphoneos/Lumen.app"
+          RELEASE="build/Lumen-release.xcarchive/Products/Applications/Lumen.app"
           DEBUG="DerivedData/Build/Products/Debug-iphoneos/Lumen.app"
           test -d "$RELEASE" && test -d "$DEBUG"
           # The server address of the test mode and the types that keep and send the audio.
@@ -222,7 +227,7 @@ jobs:
       - name: Privacy manifests are in the Release app (A152)
         run: |
           set -euo pipefail
-          RELEASE="DerivedData-release/Build/Products/Release-iphoneos/Lumen.app"
+          RELEASE="build/Lumen-release.xcarchive/Products/Applications/Lumen.app"
           check() { # built file, source file
             if [ ! -f "$1" ]; then
               echo "::error::$1 is missing: the privacy manifest is not in the Release app (A152)"
@@ -265,6 +270,109 @@ jobs:
               (strings -a "$BIN" | grep -E "$APIS" | sort -u | head -20 | sed 's/^/     /') || true
             done || true
           done || true
+
+      # A155 (D243): what is left before the App Store is only what needs Aron's Apple account. This step shows, on the
+      # unsigned Release archive, that the rest is in place: version and build number, the export compliance answer,
+      # the entitlements the Release configuration will be signed with, the icon in every size, both privacy manifests
+      # and no test hook.
+      - name: Release archive is ready to submit (A155)
+        run: |
+          set -euo pipefail
+          ARCHIVE="build/Lumen-release.xcarchive"
+          APP="$ARCHIVE/Products/Applications/Lumen.app"
+          APPEX="$APP/PlugIns/LumenControls.appex"
+          DEBUG="DerivedData/Build/Products/Debug-iphoneos/Lumen.app"
+          test -d "$APP" && test -d "$APPEX" && test -d "$DEBUG"
+          plist() { /usr/libexec/PlistBuddy -c "Print :$2" "$1" 2>/dev/null || true; }
+          fail() { echo "::error::$1"; exit 1; }
+
+          echo "== Version and build number"
+          for BUNDLE in "$APP" "$APPEX"; do
+            V="$(plist "$BUNDLE/Info.plist" CFBundleShortVersionString)"; B="$(plist "$BUNDLE/Info.plist" CFBundleVersion)"
+            echo "  $(basename "$BUNDLE"): version $V, build $B"
+            [ "$V" = "1.0.0" ] || fail "$(basename "$BUNDLE") has version '$V', not 1.0.0"
+            [ "$B" = "${GITHUB_RUN_ID}" ] || fail "$(basename "$BUNDLE") has build '$B', not this run's id ${GITHUB_RUN_ID}"
+          done
+          [ "$(plist "$APP/Info.plist" LumenGitSHA)" = "${GITHUB_SHA::7}" ] || fail "The archive does not say which commit it is"
+          [ "$(plist "$APP/Info.plist" CFBundleIdentifier)" = "com.rsolutions.lumen" ] || fail "Unexpected bundle identifier"
+
+          echo "== Export compliance"
+          E="$(plist "$APP/Info.plist" ITSAppUsesNonExemptEncryption)"
+          echo "  ITSAppUsesNonExemptEncryption = $E"
+          [ "$E" = "false" ] || fail "ITSAppUsesNonExemptEncryption must be false in the app's Info.plist"
+
+          echo "== Nothing that is only for Debug"
+          [ -z "$(plist "$APP/Info.plist" UIFileSharingEnabled)" ] || fail "UIFileSharingEnabled is in the Release app (Debug only)"
+
+          echo "== Entitlements each configuration is signed with (nothing is signed here)"
+          for CONFIG in Debug Beta Release; do
+            # -target, without a scheme and without -derivedDataPath (xcodebuild refuses that pair, run 44594095250).
+            FILE="$(xcodebuild -project Lumen.xcodeproj -target Lumen -configuration "$CONFIG" -showBuildSettings 2>"build-logs/settings-$CONFIG.log" \
+              | awk '$1 == "CODE_SIGN_ENTITLEMENTS" { print $3 }')" || { cat "build-logs/settings-$CONFIG.log"; fail "The build settings of $CONFIG could not be read"; }
+            ENV="$(plist "$FILE" com.apple.developer.devicecheck.appattest-environment)"
+            GROUP="$(plist "$FILE" com.apple.security.application-groups:0)"
+            echo "  $CONFIG: $FILE · app group ${GROUP:-none} · App Attest ${ENV:-not set, so the sandbox while developing}"
+            [ -n "$FILE" ] && plutil -lint "$FILE" >/dev/null || fail "$CONFIG has no readable entitlements file"
+            [ "$GROUP" = "group.com.rsolutions.lumen" ] || fail "$CONFIG lacks the app group the widget reads"
+            if [ "$CONFIG" = "Release" ]; then
+              [ "$ENV" = "production" ] || fail "Release must have App Attest set to production (D243)"
+            else
+              [ -z "$ENV" ] || fail "$CONFIG must not carry the App Attest entitlement: Sideloadly could not sign for it (A141)"
+            fi
+          done
+          plutil -p Entitlements/Lumen-Release.entitlements
+          WIDGET="$(xcodebuild -project Lumen.xcodeproj -target LumenControls -configuration Release -showBuildSettings 2>build-logs/settings-widget.log \
+            | awk '$1 == "CODE_SIGN_ENTITLEMENTS" { print $3 }')" || { cat build-logs/settings-widget.log; fail "The widget's build settings could not be read"; }
+          echo "  LumenControls (Release): $WIDGET"; plutil -p "$WIDGET"
+          if codesign -d --entitlements - "$APP" 2>/dev/null | grep -q "<key>"; then
+            echo "::warning::The unsigned archive carries entitlements, which was not expected"
+          else
+            echo "  The archive itself is unsigned and carries none: they are applied when it is signed."
+          fi
+
+          echo "== App icon"
+          ICON="Lumen/Resources/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png"
+          sips -g pixelWidth -g pixelHeight -g hasAlpha "$ICON" | sed 's/^/  /'
+          [ "$(sips -g pixelWidth "$ICON" | awk '/pixelWidth/ { print $2 }')" = "1024" ] || fail "The icon is not 1024 wide"
+          [ "$(sips -g pixelHeight "$ICON" | awk '/pixelHeight/ { print $2 }')" = "1024" ] || fail "The icon is not 1024 high"
+          [ "$(sips -g hasAlpha "$ICON" | awk '/hasAlpha/ { print $2 }')" = "no" ] || fail "The icon has transparency; App Store Connect refuses that"
+          echo "  In the app's Info.plist:"; /usr/libexec/PlistBuddy -c "Print :CFBundleIcons" "$APP/Info.plist" | sed 's/^/    /'
+          [ -n "$(plist "$APP/Info.plist" CFBundleIcons:CFBundlePrimaryIcon:CFBundleIconName)" ] || fail "The app names no icon (CFBundleIconName)"
+          echo "  Icon files in the app:"; ls "$APP" | grep -i "^AppIcon" | sed 's/^/    /' || fail "No icon files in the app"
+          echo "  Sizes in the compiled catalog (Assets.car):"
+          xcrun --sdk iphoneos assetutil --info "$APP/Assets.car" > build-logs/assets.json
+          python3 - build-logs/assets.json <<'PY'
+          import json, sys
+          rows = [r for r in json.load(open(sys.argv[1])) if r.get("Name") == "AppIcon"]
+          sizes = sorted({(r.get("PixelWidth"), r.get("PixelHeight"), r.get("Idiom", "")) for r in rows if r.get("PixelWidth")})
+          for width, height, idiom in sizes:
+              print(f"    {width} × {height} {idiom}")
+          if not sizes:
+              sys.exit("::error::The compiled catalog has no app icon at all")
+          if not any(width == 1024 for width, _, _ in sizes):
+              print("::warning::No 1024 icon is listed in the compiled catalog; App Store Connect asks for one at upload")
+          PY
+
+          echo "== Privacy manifests (A152)"
+          for FILE in "$APP/PrivacyInfo.xcprivacy" "$APPEX/PrivacyInfo.xcprivacy"; do
+            test -f "$FILE" || fail "$FILE is missing"
+            echo "  $FILE"
+          done
+
+          echo "== No test mode and no test hook (D227)"
+          for MARK in 'functions/v1/debug-audio' DebugAudioWriter DebugAudioClient DebugPieceStore LUMEN_TEST_HEADER \
+                      LUMEN_TEST_PRESSES LUMEN_TEST_MATERIAL 'earmind.test.press' LumenScreenshot; do
+            IN_DEBUG="$({ LC_ALL=C grep -rlaF -e "$MARK" "$DEBUG" || true; } | wc -l | tr -d ' ')"
+            IN_RELEASE="$({ LC_ALL=C grep -rlaF -e "$MARK" "$APP" || true; } | wc -l | tr -d ' ')"
+            echo "  $MARK: Debug $IN_DEBUG file(s), Release archive $IN_RELEASE"
+            [ "$IN_DEBUG" != 0 ] || fail "The control failed: '$MARK' is not in the Debug build, so the search proves nothing"
+            [ "$IN_RELEASE" = 0 ] || fail "'$MARK' is in the Release archive"
+          done
+
+          {
+            echo "### Release archive (A155)"
+            echo "Version 1.0.0, build ${GITHUB_RUN_ID}, commit \`${GITHUB_SHA::7}\`. Unsigned: version, export compliance, entitlements, icon, privacy manifests and test hooks checked. Signing, Team ID and the upload are Aron's."
+          } >> "$GITHUB_STEP_SUMMARY"
 
       # A142: the build for TestFlight and our testers (Beta) on request: it must compile and must have the test mode.
       - name: Beta build has the test mode (A142, manual runs)
