@@ -67,3 +67,12 @@ Verifierat i Supabases dokumentation: intervallet finns och är 10 s som standar
 
 ## #33 Webbsvaren är slut för i dag (2026-11-18 15:15)
 Testerna har använt alla 150 webbsvar för i dag, så appen svarar utan webben till kl. 01:00 svensk tid. Från och med nu har testerna ett eget tak (D234) och kan inte ta användarnas. **Fråga:** ska webbsvaren slås på igen redan i dag? Det kostar högst cirka 3–5 USD extra. Svara ja eller nej.
+
+## #34 Inskickningen till App Store – det som bara du kan göra (2026-11-20 09:00)
+Release-bygget är klart (A155, main grön 44694689538). Hela listan står i `reports/2026-11-20-0825-angela-a155-release-arkivet.md` §4. Kort:
+1. Apple Developer Program (99 USD/år) om kontot inte redan är med.
+2. Team ID (developer.apple.com › Membership) – skriv det i chatten, så lägger sessionerna in det i appen och hos Kevin (då slås välkomstkrediterna på).
+3. Två App ID:n och appgruppen (Certificates, Identifiers & Profiles › Identifiers) – sessionerna ger exakta klick när du har Team ID.
+4. Signering: säg om du vill signera i Xcode på en Mac eller i bygget med en App Store Connect API-nyckel.
+5. Ny app i App Store Connect, köpen (id:na står i rapporten), formulären (Kellys texter är klara att klistra in).
+6. Ladda upp och skicka till granskning.
