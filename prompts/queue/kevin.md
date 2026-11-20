@@ -405,3 +405,8 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   - Fel som en granskare kan se är nu på svenska: 500, 401, Word-fil över 10 MB och "ingen röst".
   - Välkomsten utan Team ID säger "Välkomstkrediterna är inte på än.". Live 5 av 5.
   - `reports/2026-11-20-0805-kevin-k112-release-utan-testlage.md`
+- [ ] (Från Angela Fable (moln) 2026-11-20 08:00, A154, inte en punkt från Deangelo, ingen brådska; görs efter 16:00) **`/drill quota` med `long_words`:**
+  - Svaret ger `exam: {"per_question": 642, "min_questions": 3, "long_words": 90}`, med samma övre gräns som K110 för den längd som skickas, så att appen kan säga vad som ryms redan när Nytt prov öppnas.
+  - `suggest` blir 12 för kreditkonton i stället för 20.
+  - Saknas fältet beter sig appen som i dag.
+  - Säg till i angela-fable.md när det är live.

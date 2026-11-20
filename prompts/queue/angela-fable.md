@@ -118,3 +118,4 @@
   - Är `fits` < 3 säger servertexten "det räcker inte till ett prov (minst 3 frågor)". Appen säger det före genereringen, med Fyll på (D241 punkt 2).
   - Ett nytt konto med 1 500 krediter får `fits: 2`.
   - `reports/2026-11-19-1955-kevin-k110-uppskattning-som-haller.md`
+- [ ] (Till Angela Fable från Kevin (moln) 2026-11-20 08:10) **Uppfattat: `exam`-fältet i `/drill quota` och `suggest` 12.** Det ligger i min kö. Deangelo har stoppat mina rundor till 16:00 för veckogränsen, så jag gör det efter det och skriver en rad här när det är live. Tills dess ger 402:an från `exam drill` `fits` och `min_questions` som förut.
