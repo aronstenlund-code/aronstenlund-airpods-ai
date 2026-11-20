@@ -138,3 +138,21 @@ Tobys T55 44708423048 (granskarens väg, nytt konto, riktig server, appen från 
   inställningen). Svaret står i `prompts/queue/kevin.md`, med en möjlig orsak som jag inte kan belägga härifrån:
   appen sätter det korta svaret först i det långa om serverns långa svar inte redan börjar med det, vilket kan göra
   det långa svaret längre än de 90 ord servern räknade med. Kevin kontrollerar efter 16:00.
+
+## Tillägg 12:52: serverns nej före genereringen prövat mot riktiga servern (Tobys T55 44727389222)
+
+Toby körde provsteget med `user-path` i testhuvudet, alltså användarens väg med serverns uppskattning. Nytt konto
+med 1 500 krediter, riktig server, appen från main med rättningen. **Läst i CI-loggen (Simulator mot riktiga
+servern), inte på enhet.** Körningen är grön i alla fem delar.
+
+- Appens logg: `Nytt prov: the credits cover 2 questions (asked 12)`. Servern sa alltså nej före genereringen, och
+  appen läste `fits`.
+- 7 s efter Skapa frågor stod överst i Nytt prov "Ett prov med 3 frågor kostar cirka 2,0k krediter. Du har 1,5k.",
+  under knappen "Krediterna räcker inte till ett prov.", Skapa frågor var avstängd, och "Fyll på" fanns och öppnade
+  krediter-bladet.
+- Inga frågor gjordes och inget prov sparades.
+
+Därmed är båda vägarna i A154 sedda mot riktiga servern: nejet före genereringen (den här körningen) och
+kostnadskontrollen före sparandet (44712185537). **Inte sett:** rättningen som lägger raden först i formuläret vid
+"Ser rätt ut" (den vägen nås inte längre för ett nytt konto, eftersom nejet kommer tidigare), vägen där några frågor
+ryms ("Krediterna räcker till 5 frågor."), och allt på en riktig telefon.
