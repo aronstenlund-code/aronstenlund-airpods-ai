@@ -265,7 +265,10 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     var isUsedUp: Bool { left == 0 }
     /// "x av 15 frågor kvar den här månaden".
     var line: String {
-        isCredits ? "\(CreditText.short(left, .down)) av \(CreditText.short(limit, .down)) krediter kvar den här månaden" // A139
+        // A154: with bought or given credits there is more left than the month's own (seen in the picture of Nytt
+        // prov: "3,3k av 1,5k krediter kvar"); then only what is left is said.
+        isCredits ? (left > limit ? "\(CreditText.have(left)) kvar"
+                     : "\(CreditText.short(left, .down)) av \(CreditText.short(limit, .down)) krediter kvar den här månaden") // A139
             : "\(left) av \(limit) frågor kvar den här månaden"
     }
 }

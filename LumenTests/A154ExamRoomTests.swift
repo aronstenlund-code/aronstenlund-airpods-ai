@@ -74,6 +74,13 @@ import Testing
         #expect(ExamRoom(ExamRefusal(message: "", fits: 2, minQuestions: 3, perQuestion: nil, cost: nil, left: nil), longWords: 90) == nil)
     }
 
+    @Test func moreLeftThanTheMonthsOwnIsSaidAsWhatIsLeft() {
+        // Under Skapa frågor: with the welcome's or bought credits "6,5k av 1,5k krediter kvar" would be wrong.
+        #expect(Self.credits(6500).line == "6,5k krediter kvar")
+        #expect(Self.credits(1200).line == "1,2k av 1,5k krediter kvar den här månaden", "as before (A139)")
+        #expect(Self.credits(1500).line == "1,5k av 1,5k krediter kvar den här månaden")
+    }
+
     @Test func theQuotaCanSayWhatAQuestionCosts() throws {
         // Asked of Kevin (not live yet): `/drill quota` with `long_words` answers with `exam`.
         let json = #"{"unit":"chars","used":0,"limit":1500,"remaining":1500,"exam":{"per_question":642,"min_questions":3,"long_words":90}}"#
@@ -208,6 +215,8 @@ import Testing
     }
 
     // MARK: The welcome (K109: 503 `attest_unconfigured`)
+    // The rule itself came to main with Angela Schrute's O90 fix (`CreditShop.isANo`, tested in A134ShopTests). These
+    // are A154's own words for it: a 503 is not a try, a real no is, and tries from before are forgotten.
 
     @Test func aWelcomeTheServerIsNotSetUpForIsNotATry() async throws {
         let defaults = try #require(UserDefaults(suiteName: "a154-welcome-\(UUID())"))
@@ -236,10 +245,8 @@ import Testing
         server.welcomeError = .refused(status: 403, code: "attest_invalid", message: "Det gick inte.")
         for _ in 0..<5 { await CreditShop(front: A134ShopTests.FakeFront(), server: server, attest: attest, defaults: defaults).claimWelcome() }
         #expect(defaults.integer(forKey: CreditShop.welcomeTriesKey) == CreditShop.maxWelcomeTries && server.challenges == 3)
-        #expect(CreditShop.isNotATry(.refused(status: 503, code: "attest_unconfigured", message: "")))
-        #expect(CreditShop.isNotATry(.refused(status: 429, code: "rate_limited", message: "")) && CreditShop.isNotATry(.offline("")))
-        #expect(!CreditShop.isNotATry(.refused(status: 403, code: "attest_invalid", message: "")))
-        #expect(!CreditShop.isNotATry(.refused(status: 409, code: "welcome_given", message: "")))
+        #expect(!CreditShop.isANo(.refused(status: 503, code: "attest_unconfigured", message: "")) && !CreditShop.isANo(.offline("")))
+        #expect(CreditShop.isANo(.refused(status: 403, code: "attest_invalid", message: "")))
     }
 
     @Test func triesUsedBeforeTheServerWasSetUpAreForgotten() async throws {
