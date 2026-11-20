@@ -55,3 +55,6 @@ Dela historik och frågan efter lyssnarsamtycket säger nu båda sakerna med var
 svenskan ur den byggda appen (`theWordsSayBothWhatIsSharedAndForHowLong`). iOS build 44782584808 grön på grenen.
 **Verifierat i CI, inte sett på bild.**
 
+## Tillägg 19:36: main är grönt med orden
+iOS build 44788144570 på main (c41248e9) är grön, alla 21 steg. **Verifierat i CI.**
+
