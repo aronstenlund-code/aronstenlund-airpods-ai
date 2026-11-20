@@ -280,7 +280,10 @@ final class ScreenTourTests: XCTestCase {
     /// Scrolls the settings list up or down until the row is there, opens it, shoots it and goes back.
     private func openFromSettings(_ labels: [String], name: String, advanced: Bool = false) {
         // If going back from the previous page closed the whole sheet (seen after Förberedelser), open Settings again.
-        if !app.navigationBars.buttons["Klar"].exists {
+        // Run 44787390248: in iOS 26 the sheet's Klar (a toolbar item) is not a child of the navigation bar, so the
+        // old check reopened Settings before every row and every other row was lost. Look for Klar anywhere, or the
+        // page's title.
+        if !app.buttons["Klar"].exists, !app.navigationBars["Inställningar"].exists {
             log.append("note: Settings sheet closed before \(labels[0]), opening it again")
             tap(["Inställningar"], step: "start → Inställningar (again)")
             pause(1)
