@@ -538,7 +538,8 @@ struct SayInAirPodsField: View {
 
     /// Why Spela cannot be pressed although there is a text; nil when it can (or the field is empty).
     private var blocked: String? {
-        isEmpty ? nil : isStarting ? "an earlier press is still waiting" : tooMany ? "the text costs more than is left" : nil
+        // (Not a second press that is refused: this is said after every press, while its answer is waited for. Toby.)
+        isEmpty ? nil : isStarting ? "a press is waiting for its answer" : tooMany ? "the text costs more than is left" : nil
     }
 
     private func lookAtClipboard() { clipboardHasText = UIPasteboard.general.hasStrings }

@@ -190,9 +190,10 @@ struct DrillQuota: Decodable, Sendable, Equatable {
         var invite: Int? = nil
     }
     var gift: Gift? = nil
-    /// A154 (D241; asked of Kevin, not live when this was written): what a question of a new exam costs at the
-    /// length of the long answers the app asked about (`quota` with `long_words`). With it Nytt prov says how many
-    /// questions fit when it opens; without it, the server says it at Skapa frågor (402 with `fits`).
+    /// A154 (D241; Kevin's K113, live 2026-11-20): what a question of a new exam costs at the length of the long
+    /// answers the app asked about (`quota` with `long_words`: 642 at 90 words, 894 at 130). With it Nytt prov says
+    /// how many questions fit when it opens; from a server without it, the server says it at Skapa frågor (402 with
+    /// `fits`).
     struct Exam: Decodable, Sendable, Equatable {
         var per_question: Int? = nil
         var min_questions: Int? = nil

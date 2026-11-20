@@ -87,6 +87,38 @@ struct ExamRefusal: Equatable, Sendable {
     var canMakeAnExam: Bool { fits >= minQuestions }
 }
 
+/// Toby's T55 44712185537 (2026-11-20): the app's `cost` call said about 2 500 credits for three questions of a text
+/// of 39 words, and the server's own path for the same case cost 1 091–1 474. What the app sends is written to the
+/// log, in lengths only (never the texts), so the next run shows what is longer.
+enum ExamLog {
+    static func words(_ text: String) -> Int { text.split(whereSeparator: \.isWhitespace).count }
+
+    /// The rows of a `cost` (or `save`) call: how many, and how long each question and answer is. The server counts
+    /// the question's and the long answer's characters.
+    static func costLines(_ drill: Drill, limit: Int = 12) -> [String] {
+        let rows = drill.items
+        let questions = rows.reduce(0) { $0 + $1.question.count }
+        let longs = rows.reduce(0) { $0 + $1.long.count }
+        let longWords = rows.reduce(0) { $0 + words($1.long) }
+        var lines = ["Exam cost: asks about \(rows.count) rows, long_words \(drill.longWords): questions \(questions) chars, "
+                     + "long answers \(longs) chars (\(longWords) words), \(questions + longs) in all"]
+        for (i, item) in rows.prefix(limit).enumerated() {
+            lines.append("Exam cost: row \(i + 1): question \(item.question.count) chars, short \(item.short.count) chars "
+                         + "(\(words(item.short)) words), long \(item.long.count) chars (\(words(item.long)) words), "
+                         + "long starts with short \(item.long.hasPrefix(item.short) ? "yes" : "no")")
+        }
+        if rows.count > limit { lines.append("Exam cost: and \(rows.count - limit) more rows") }
+        return lines
+    }
+
+    /// One answer as the server gave it (`drill_answers`), and how long the app's kept long answer became (the short
+    /// answer is put first when the server's long answer does not start with it, D145).
+    static func answerLine(row: Int, short: String, long: String, kept: String) -> String {
+        "Exam answers: row \(row): the server's short \(short.count) chars (\(words(short)) words), long \(long.count) chars "
+            + "(\(words(long)) words), starts with short \(long.hasPrefix(short) ? "yes" : "no"); kept \(kept.count) chars"
+    }
+}
+
 /// A154 (D239, D241): what a question of a new exam costs, as the server counts it, so that Nytt prov can say how
 /// many questions the credits cover before anything is made.
 struct ExamRoom: Equatable, Sendable {
@@ -324,6 +356,7 @@ final class DrillClient: DrillMaking {
         let reply = try await call(body, timeout: 150)
         var byID: [String: Reply.Item] = [:]
         for item in reply.items ?? [] { if let id = item.id { byID[id] = item } }
+        var answerLines: [String] = [] // lengths only, for the log (Toby's T55: what makes the cost)
         let filled = items.map { item -> DrillItem in
             guard item.short.isEmpty, let made = byID[item.id.uuidString], let short = made.short, !short.isEmpty else { return item }
             var item = item
@@ -334,6 +367,7 @@ final class DrillClient: DrillMaking {
             }
             item.short = short
             item.long = DrillItem.long(made.long ?? "", startingWith: short)
+            answerLines.append(ExamLog.answerLine(row: answerLines.count + 1, short: short, long: made.long ?? "", kept: item.long))
             // A102: the question's shown text from step 1 stays; the answers' come now.
             let answers = made.screenText(spokenShort: short, spokenLong: made.long ?? "")
             var screen = item.screen ?? DrillScreenText()
@@ -343,6 +377,8 @@ final class DrillClient: DrillMaking {
             item.screen = screen.isEmpty ? nil : screen
             return item
         }
+        Log.repetition.info("Exam answers: asked for \(missing.count, privacy: .public) with long_words \(longWords, privacy: .public), got \(answerLines.count, privacy: .public)")
+        for line in answerLines.prefix(12) { Log.repetition.info("\(line, privacy: .public)") }
         guard filled.contains(where: { !$0.short.isEmpty }) else { throw .server("no answers") }
         return filled
     }

@@ -314,7 +314,22 @@ final class RepetitionModel {
     /// saved. Nil when it cannot be asked or the account has no limit.
     func examCost(_ drill: Drill) async -> DrillCost? {
         guard let cloud, let quota, quota.isCredits, !quota.isUnlimited else { return nil }
-        return try? await cloud.cost(drill)
+        // Toby's T55 (2,5k for three questions): what is sent, in lengths only, and what the server answers.
+        for line in ExamLog.costLines(drill) { Log.repetition.info("\(line, privacy: .public)") }
+        let cost = try? await cloud.cost(drill)
+        Log.repetition.info("Exam cost: the server says \(cost.map { String($0.cost) } ?? "nothing", privacy: .public) (left \(cost?.remaining ?? quota.left, privacy: .public))")
+        return cost
+    }
+
+    /// The quota as the server just gave it. K113 (live 2026-11-20): with `long_words` in the question, the answer
+    /// has `exam`, what a question of a new exam costs at that length. Nytt prov then knows what fits when it opens;
+    /// the app never counts the price itself. A server without the field leaves what was known (from its last no).
+    func take(_ fresh: DrillQuota, askedLongWords: Int) {
+        quota = fresh
+        if let per = fresh.exam?.per_question, per > 0 {
+            examRoom = ExamRoom(perQuestion: per, minQuestions: fresh.exam?.min_questions ?? 3,
+                                longWords: fresh.exam?.long_words ?? askedLongWords)
+        }
     }
 
     /// A105 (D185, K70): Läs upp texten: the material cleaned for reading aloud. Nothing is stored or counted until
@@ -991,13 +1006,7 @@ final class RepetitionModel {
         guard let client = cloud as? DrillCloudClient else { return }
         do throws(DrillCloudError) {
             let words = longAnswerLength.words
-            let fresh = try await client.quota(longWords: words)
-            quota = fresh
-            // A154: the server may say what a question of a new exam costs (asked of Kevin; today it does not).
-            if let per = fresh.exam?.per_question, per > 0 {
-                examRoom = ExamRoom(perQuestion: per, minQuestions: fresh.exam?.min_questions ?? 3,
-                                    longWords: fresh.exam?.long_words ?? words)
-            }
+            take(try await client.quota(longWords: words), askedLongWords: words)
         } catch {
             Log.repetition.info("Drill quota: \(error.userMessage, privacy: .public)")
         }
