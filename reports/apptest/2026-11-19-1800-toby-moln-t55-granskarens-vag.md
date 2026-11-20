@@ -68,3 +68,17 @@ Körning: apptest-t55 44575920772 på toby/t55 (SayFlowTests, LUMEN_T36_REVIEW).
   - Senaste hade kvar texten, alltså den lokala datan, men kontot kan ha bytts.
   - Det vore ett riktigt problem: en omstart får inte ge ett nytt konto.
   - Nästa T55-körning ska logga kontots id före och efter omstarten. Appens Auth:-rader loggas inte på nivån info, så jag ber Angela Schrute om en rad med kontots id på info, eller använder Kevins serverlogg (`test_request … user`).
+
+## Tillägg 2026-11-20 (körning 44593368507, toby/t55 + Angela Schrutes 2bdedec5)
+Alla fem granskardelarna gröna i Simulatorn (iPhone 17 Pro, iOS 26, falskt ljud, 0 ElevenLabs). **Simulatorn, inte enhet.**
+- **Starta prov utan krediter är löst** (verified in Simulator, inte på enhet):
+  - Kortet säger "6 frågor · Det här kostar 2 620 krediter. Du har 1 500 kvar".
+  - Starta prov öppnar provets skärm med serverns ord och knappen **Fyll på**. Ingen tyst knapp längre.
+  - Den här körningen gav 6 frågor och 2 620 krediter av samma 39 ord (förra gången 5 frågor och 1 909).
+- **Fynd 2 (1 406 → 1 500) är förklarat: ett nytt konto vid varje start i Simulatorn.**
+  - Appens rad: "Auth: the keychain could not be read (status -34018) … new account".
+  - Kontot var 730c9a1b före omstarten och d4f42c2b efter.
+  - -34018 betyder att bygget saknar rättigheten för nyckelringen. Det händer i ett osignerat Simulator-bygge (verified in docs, Apples felkod errSecMissingEntitlement).
+  - Ett signerat bygge på telefon ska behålla kontot (untested assumption). Det kan kollas i Arons nästa TestFlight/Sideloadly-bygge: raden "Auth: at start the account on this phone is …" ska visa samma id efter en omstart.
+  - Följd för mina tester: i Simulatorn är varje omstart ett nytt konto med 1 500. Krediter mäts därför bara inom en start.
+- Nästa: T55 (2), T53 vid AX5 på 17 Pro och SE med A153.
