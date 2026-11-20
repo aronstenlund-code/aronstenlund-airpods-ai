@@ -88,3 +88,7 @@ Filer och rader står i granskning.md.
 - Deangelo/Aron: beslutet om frågeloggen i repetitionsläget.
 - Kelly (Ke84): tabellen och policyn.
 - Vid första uppladdningen till App Store Connect: läs Apples svar om manifestet.
+
+## Tillägg 2026-11-20 07:52: main är grönt
+iOS build 44588379984 på main (669a7041) är grön, med båda A152-stegen och `A152PrivacyManifestTests`. Nästa bygge
+på main (44598313619, a5f4a2c8, med A153) är också grönt: skriptet godtar Angela Fables tangentbordsrad. **Verifierat i CI.**

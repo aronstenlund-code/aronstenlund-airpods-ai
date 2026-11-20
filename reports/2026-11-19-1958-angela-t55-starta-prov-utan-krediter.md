@@ -60,3 +60,8 @@ Kapseln visade 1 406 efter en Säg-text och 1 500 efter en omstart, som om appen
 - Tobys T55 på main: kortets rad, provets skärm, och Auth-raderna före och efter en omstart.
 - Om nyckelringen visar sig vara orsaken: inget att rätta i appen för telefoner, men Tobys bygge behöver signeras
   för att kontot ska stå kvar mellan starter.
+
+## Tillägg 2026-11-20 07:52: main är grönt
+Sammanslagningens eget bygge (44593311942) fick ingen byggmaskin och avbröts av GitHub. Nästa bygge på main,
+44598313619 (a5f4a2c8), innehåller rättningen och är grönt. **Verifierat i CI.** Tobys T55 på main har jag inte sett
+resultatet av än.
