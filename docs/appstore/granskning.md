@@ -130,12 +130,12 @@ anonymt konto per installation (`auth/v1/signup` utan e-post) [V].
    | Flöde | När | Vad som skickas | Kopplat till kontot | Sparas | Kod |
    |---|---|---|---|---|---|
    | a. Frågeloggen i lyssnarlägena (D116, K30) | efter lyssnarsamtycket (version 5 eller senare), bara i Fler lägen | varje fråga och svar, siffror maskade; aldrig krissvar, demon eller obesvarade | nej (tabellen har varken konto-id eller installations-id) | högst 14 dagar | `ListeningModel.context(for:)` sätter `qa_log`, `CloudAnswerProvider`; `backend/supabase/functions/answer/qalog.ts`; `20261110210000_qa_log.sql` |
-   | b. Frågeloggen i repetitionsläget (D197, K77) | **varje gång ett frågeprov sparas, utan samtyckesflagga från appen** | nya frågor med svar och ändrade frågor (före och efter); aldrig en Säg-texts eller ett textprovs text, foton, testkonton eller importerade kopior | nej | högst 14 dagar | `backend/supabase/functions/drill/handler.ts` (`analyse`), `drill/analysis.ts` |
+   | b. Frågeloggen i repetitionsläget (D197, K77; **ändrad av D247/K113, live 2026-11-20**) | **bara för testkonton och när appen skickar `share_history: true` (Dela historik, D57); vanliga användares prov loggas inte.** Appen skickar inte flaggan än (ingen `share_history` i `Lumen/`), så i dag loggas bara testkonton | nya och ändrade frågor med svar | nej | högst 14 dagar | `backend/supabase/functions/drill/handler.ts:1132` |
    | c. Rapporter och feedback (D57) | "Fel svar?" på ett svar i Fler lägen, talat "rapportera", Inställningar › Feedback och förslag | den egna frågan, svaret, kommentaren; andras tal skickas aldrig | **ja** (konto-id ur inloggningen och installations-id) | tills ärendet är hanterat, högst 90 dagar | `FeedbackClient.send`, `ListeningModel.report`; `20261107233000_feedback_status_retention.sql` |
    | d. Delad historik (D57) | frivilligt: frågan visas en gång efter lyssnarsamtycket, reglaget står i Feedback och förslag, av från början | egna frågor och appens svar | **ja** (konto-id och installations-id) | högst 12 månader, tas bort när man slår av | `FeedbackClient.sync`, `RootView` (`ShareHistoryPromptView`); `20261106120000_feedback_and_shared_history.sql` |
    - **Följd för App Privacy:** "Användarinnehåll › Annat" får också syftet **Analys** (a, b, d: produktförbättring), och en ny rad **"Användarinnehåll › Kundsupport"**, kopplad, syfte Appens funktioner (c). Så står det i `PrivacyInfo.xcprivacy`.
    - **Texten "14 dagar" i D135 gäller frågeloggen (a, b).** Rapporter (c) ligger kvar upp till 90 dagar och delad historik (d) upp till 12 månader; policyn bör säga alla tre.
-   - **Beslut som behövs (Deangelo/Aron): b har inget samtycke och nämns inte i Välkommen.** "Läs mer" säger att proven sparas hos EarMind, inte att utvecklaren läser nya frågor och svar i upp till 14 dagar. Antingen en mening till i Välkommen › Läs mer och i policyn, eller så stänger Kevin av loggen för App Store-versionen. **[O] hög**
+   - ~~Beslut som behövs: b har inget samtycke~~ **Avgjort (D247, K113 live):** repetitionsloggen skrivs bara för testkonton och den som delar historik. [V i backend-koden]
 4. **Minnen (D37 m.fl.) i Fler lägen** sparas på servern? Om ja: Användarinnehåll, kopplat. ~~**[O]**~~ **Svar ur koden (Angela Schrute, A152, 2026-11-19): nej.** [V i koden]
    - Minnena ligger i filen `memories.json` på telefonen (`MemoryStore`, `Lumen/Core/History/MemoryStore.swift`) och visas och raderas under Inställningar.
    - De **skickas** med varje fråga i Fler lägen (högst 30 × 200 tecken, `AnswerContext.memories`) och till `/memory` när appen letar efter något nytt att minnas. Servern använder dem för svaret och sparar ingen text: `/memory` har ingen skrivning till databasen, bara samma rad utan text i `answer_usage` (`backend/README.md`, D80) [V i backend-koden].
@@ -169,9 +169,9 @@ Grund: tabellen i §2 och Angela Schrutes svar på punkt 3–4 (A152, `PrivacyIn
 kontrollerad i koden. **Analytics** på Other User Content: frågeloggarna (punkt 3 a, b; ej kopplade, högst 14 dagar) och
 delad historik (3 d; frivillig, kopplad, högst 12 månader). **Customer Support**: rapporter (3 c, kopplade, högst 90
 dagar). **Minnen** (punkt 4) behålls inte på servern och är därför inte "collected".
-**Beslut kvar (Deangelo/Aron, hög):** frågeloggen i repetitionsläget (3 b) har inget samtycke och nämns inte i
-Välkommen. Antingen en mening i Välkommen › Läs mer och i policyn, eller av i App Store-versionen. Svaren ovan gäller som
-koden är i dag (loggen på). "Linked" för foton, ljud och kontakter är **No** eftersom de
+**Efter D247 (K113, live 2026-11-20):** repetitionsloggen (3 b) skrivs bara för testkonton och för den som delar
+historik, så Analytics på Other User Content kommer från lyssnarlägenas logg efter samtycke (3 a) och delad historik
+(3 d). Svaren i tabellen är oförändrade och stämmer med koden. "Linked" för foton, ljud och kontakter är **No** eftersom de
 inte sparas på kontot (foton raderas inom en timme, ljud sparas inte av EarMind, kontaktnamn bara i svaret);
 partnern kan behålla dem enligt sina villkor, därför "Collected: Yes".
 
