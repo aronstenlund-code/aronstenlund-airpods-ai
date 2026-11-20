@@ -550,8 +550,9 @@ enum CreditText {
     /// A154 (D241): Nytt prov, when the credits cover fewer questions than the standard: "Krediterna räcker till 5 frågor."
     static func examFits(_ questions: Int) -> String { "Krediterna räcker till \(DrillText.questions(questions))." }
     /// A154 (D241): Nytt prov, when they cover no exam at all (said with "Fyll på", before anything is made).
-    static func examHasNoRoom(left: Int, minQuestions: Int) -> String {
-        "Du har \(have(left)). Det räcker inte till ett prov (minst \(DrillText.questions(minQuestions)))."
+    /// Kelly (kop.md §7): what the smallest exam costs, and what one has.
+    static func examHasNoRoom(cost: Int, left: Int, minQuestions: Int) -> String {
+        "Ett prov med \(DrillText.questions(minQuestions)) kostar cirka \(credits(cost)). Du har \(short(left, .down))."
     }
 
     /// The credits do not cover it (said before anything is saved or started).

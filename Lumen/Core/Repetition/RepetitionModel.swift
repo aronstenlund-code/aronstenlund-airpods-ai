@@ -304,7 +304,9 @@ final class RepetitionModel {
     /// What Nytt prov says about it: nothing while the standard fits.
     var newDrillRoomLine: String? {
         guard let quota, let fits = newDrillFits, let room = knownExamRoom else { return nil }
-        if fits < room.minQuestions { return CreditText.examHasNoRoom(left: quota.left, minQuestions: room.minQuestions) }
+        if fits < room.minQuestions {
+            return CreditText.examHasNoRoom(cost: room.perQuestion * room.minQuestions, left: quota.left, minQuestions: room.minQuestions)
+        }
         return fits < Drill.defaultQuestionCount ? CreditText.examFits(fits) : nil
     }
 

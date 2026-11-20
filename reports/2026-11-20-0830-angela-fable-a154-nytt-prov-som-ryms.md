@@ -79,3 +79,14 @@ Beslutet står i DECISIONS (D248).
 
 Läs Kellys och Tobys svar. När Kevin säger att `exam` finns i `/drill quota`: kontrollera att Nytt prov säger vad
 som ryms direkt när det öppnas (koden finns i `refreshQuota`).
+
+## Tillägg 09:10: Kellys granskning av orden (kop.md §7), inlagd
+
+- **Inget prov ryms:** raden säger nu vad det minsta provet kostar: "Ett prov med 3 frågor kostar cirka 2,0k
+  krediter. Du har 1,5k." med "Fyll på" under. (Talet är serverns pris per fråga gånger tre.) Raden under den
+  avstängda knappen står kvar.
+- **Fem ryms:** "Skapa 5 frågor" är borta ur rutan. Knappen längst ner heter i stället "Skapa 5 frågor", så det finns
+  en knapp som skapar. Rutan är "Krediterna räcker till 5 frågor." och "Fyll på".
+- Raden före sparandet och "3,3k krediter kvar" är godkända som de är.
+- Väljer man Läs upp texten spärrar rutan om prov inte; så var det redan (rutan och spärren gäller bara Frågor).
+- Bilderna i `reports/2026-11-20-a154-bilder/` är från före de här ändringarna. **De nya orden är inte sedda på bild.**

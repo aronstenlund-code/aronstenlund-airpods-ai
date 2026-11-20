@@ -182,7 +182,9 @@ import Testing
             _ = try await model.make(DrillMaterial(text: "Fotosyntes."), settings: model.newDrillSettings)
         }
         #expect(model.newDrillHasNoRoom, "said in Nytt prov, with Fyll på, instead of proposing an exam")
-        #expect(model.newDrillRoomLine == "Du har 1,5k krediter. Det räcker inte till ett prov (minst 3 frågor).")
+        // Kelly (kop.md §7): what the smallest exam costs (3 × 642), and what one has.
+        #expect(model.newDrillRoomLine == "Ett prov med 3 frågor kostar cirka 2,0k krediter. Du har 1,5k.")
+        #expect(CreditText.examHasNoRoom(cost: 1594, left: 1500, minQuestions: 3) == "Ett prov med 3 frågor kostar cirka 1,6k krediter. Du har 1,5k.")
         #expect(model.newDrillQuestionRange == DrillSettings.questionRange, "nothing to choose between")
         // The welcome's 5 000 come: ten fit, and the standard is not above that.
         model.quota = Self.credits(6500)
