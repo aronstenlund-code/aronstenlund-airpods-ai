@@ -283,7 +283,7 @@ final class ScreenTourTests: XCTestCase {
         // Run 44787390248: in iOS 26 the sheet's Klar (a toolbar item) is not a child of the navigation bar, so the
         // old check reopened Settings before every row and every other row was lost. Look for Klar anywhere, or the
         // page's title.
-        if !app.buttons["Klar"].exists, !app.navigationBars["Inställningar"].exists {
+        if !app.buttons["Klar"].waitForExistence(timeout: 2) {
             log.append("note: Settings sheet closed before \(labels[0]), opening it again")
             tap(["Inställningar"], step: "start → Inställningar (again)")
             pause(1)
@@ -294,17 +294,13 @@ final class ScreenTourTests: XCTestCase {
             miss("settings row \(labels[0]) not found")
             return
         }
-        // The back button, never the sheet's "Klar" (that would close Settings) and never a toolbar button of the
-        // pushed page (run 44764309413: after Anteckningar the next rows were lost). The back button carries the
-        // previous page's title, "Inställningar", or the system's "Tillbaka"/"Back".
-        let backLabels = NSPredicate(format: "label IN %@", ["Inställningar", "Tillbaka", "Back"])
-        let back = app.navigationBars.buttons.matching(backLabels).firstMatch
         row.tap()
         pause(1.5)
         // The last rows sit at the sheet's bottom edge, where a tap can miss (seen at the largest text size):
         // look the row up again each time and tap it only when it is hittable, never a stale element.
         var attempt = 0
-        while !back.exists, attempt < 3 {
+        // The page is open when the sheet's Klar is gone (it belongs to the settings root only).
+        while app.buttons["Klar"].exists, attempt < 3 {
             attempt += 1
             log.append("note: \(labels[0]) tap missed, retry \(attempt)")
             if let again = scrollTo(labels, buttonsOnly: true), again.isHittable {
@@ -317,12 +313,28 @@ final class ScreenTourTests: XCTestCase {
         shoot("installningar-\(name)", note: "Settings › \(labels[0])")
         app.swipeUp()
         shoot("installningar-\(name)-slut", note: "Settings › \(labels[0]), scrolled")
-        if back.waitForExistence(timeout: 3) {
-            back.tap()
-            pause(1)
-        } else {
-            miss("no back button on \(labels[0])")
+        if !popSettingsPage() { miss("could not go back from \(labels[0])") }
+    }
+
+    /// Back from a page pushed inside Settings. Run 44795539606: a back button by its label could be Start's own
+    /// "Inställningar" (gear, top right, behind the sheet). Take a navigation-bar button at the left edge, else swipe
+    /// from the left edge; back when the sheet's Klar is there again.
+    @discardableResult
+    private func popSettingsPage() -> Bool {
+        let width = app.windows.firstMatch.frame.width
+        let candidates = app.navigationBars.buttons.allElementsBoundByIndex.filter {
+            $0.exists && $0.isHittable && $0.frame.minX < width * 0.3 && $0.label != "Klar"
         }
+        if let back = candidates.first {
+            log.append("back: '\(back.label)'")
+            back.tap()
+        } else {
+            log.append("back: edge swipe")
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.01, dy: 0.5))
+                .press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.5)))
+        }
+        pause(1.5)
+        return app.buttons["Klar"].waitForExistence(timeout: 3)
     }
 
 
