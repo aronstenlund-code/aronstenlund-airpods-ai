@@ -190,6 +190,15 @@ struct DrillQuota: Decodable, Sendable, Equatable {
         var invite: Int? = nil
     }
     var gift: Gift? = nil
+    /// A154 (D241; asked of Kevin, not live when this was written): what a question of a new exam costs at the
+    /// length of the long answers the app asked about (`quota` with `long_words`). With it Nytt prov says how many
+    /// questions fit when it opens; without it, the server says it at Skapa frågor (402 with `fits`).
+    struct Exam: Decodable, Sendable, Equatable {
+        var per_question: Int? = nil
+        var min_questions: Int? = nil
+        var long_words: Int? = nil
+    }
+    var exam: Exam? = nil
     /// Ke77 §1b: everything that is left is welcome credits (the sheet then says "välkomstkrediter").
     var isOnlyWelcome: Bool {
         guard let gift, let giftLeft = gift.left, giftLeft > 0, (gift.welcome ?? 0) > 0, (gift.invite ?? 0) == 0 else { return false }
@@ -199,7 +208,7 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     var hasWeeklyCard: Bool { subscription?.active == true }
 
     enum CodingKeys: String, CodingKey {
-        case used, limit, per, resets, suggest, prices, unit, remaining, resets_day, unlimited, subscription, gift
+        case used, limit, per, resets, suggest, prices, unit, remaining, resets_day, unlimited, subscription, gift, exam
         case serverLeft = "left"
     }
 
@@ -233,6 +242,7 @@ struct DrillQuota: Decodable, Sendable, Equatable {
         unlimited = try? c.decodeIfPresent(Bool.self, forKey: .unlimited)
         subscription = try? c.decodeIfPresent(Subscription.self, forKey: .subscription)
         gift = try? c.decodeIfPresent(Gift.self, forKey: .gift)
+        exam = try? c.decodeIfPresent(Exam.self, forKey: .exam)
     }
 
     init(used: Int, limit: Int, per: String? = nil, resets: String? = nil, serverLeft: Int? = nil, suggest: Int? = nil) {
@@ -579,8 +589,11 @@ final class DrillCloudClient: DrillCloudSyncing {
 
     /// K61 (D175): `/drill quota` → used, limit, left, suggest.
     @discardableResult
-    func quota() async throws(DrillCloudError) -> DrillQuota {
-        let quota: DrillQuota = try await call(["action": "quota"], timeout: 15)
+    func quota(longWords: Int? = nil) async throws(DrillCloudError) -> DrillQuota {
+        // A154: with the length of the long answers, so the server can say what a question of a new exam costs.
+        var body: [String: Any] = ["action": "quota"]
+        if let longWords { body["long_words"] = longWords }
+        let quota: DrillQuota = try await call(body, timeout: 15)
         lastQuota = quota
         return quota
     }

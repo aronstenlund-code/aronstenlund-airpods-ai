@@ -317,7 +317,9 @@ final class CreditShop {
     static let inviteText = "Plugga med EarMind. Du får 5 000 krediter att börja med."
 
     static let welcomeDoneKey = "credits.welcomeDone"
-    static let welcomeTriesKey = "credits.welcomeTries"
+    /// A154 (D239): counted anew. Before K109 the server gave a challenge and then answered the welcome itself with
+    /// 503 (no Team ID yet), which used up the three tries of every installation from that time ("credits.welcomeTries").
+    static let welcomeTriesKey = "credits.welcomeTries.2"
     static let attestKeyKey = "credits.attestKeyID"
     static let pendingInviteKey = "credits.pendingInvite"
     /// A proof that keeps failing (a build Apple does not attest) is not asked for at every start for ever.
@@ -525,8 +527,22 @@ final class CreditShop {
         } catch {
             // The key has been used for an attestation now, so the next try needs a new one.
             defaults.removeObject(forKey: Self.attestKeyKey)
-            defaults.set(defaults.integer(forKey: Self.welcomeTriesKey) + 1, forKey: Self.welcomeTriesKey)
-            Log.repetition.info("Welcome: refused (\(error.errorCode, privacy: .public))")
+            // A154 (D239, K109): a server that is not set up yet (503), too many calls or no network says nothing
+            // about this installation. It is not one of the three tries: asked again at the next start.
+            if Self.isNotATry(error) {
+                Log.repetition.info("Welcome: not now (\(error.errorCode, privacy: .public)), asked again at the next start")
+            } else {
+                defaults.set(defaults.integer(forKey: Self.welcomeTriesKey) + 1, forKey: Self.welcomeTriesKey)
+                Log.repetition.info("Welcome: refused (\(error.errorCode, privacy: .public))")
+            }
+        }
+    }
+
+    /// A154: an answer that is about the server or the network, not about this installation's proof.
+    static func isNotATry(_ error: DrillCloudError) -> Bool {
+        switch error {
+        case .offline: true
+        case .refused(let status, _, _): status >= 500 || status == 429
         }
     }
 

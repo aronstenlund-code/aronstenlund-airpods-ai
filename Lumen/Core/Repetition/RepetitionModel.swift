@@ -251,8 +251,68 @@ final class RepetitionModel {
 
     func make(_ material: DrillMaterial, settings: DrillSettings, correction: String? = nil,
               subject: String? = nil, grade: String? = nil) async throws(DrillMakingError) -> DrillDraft {
-        try await maker.make(material, subject: subject, grade: grade, correction: correction,
-                             questions: settings.questions, longWords: settings.length.words)
+        do throws(DrillMakingError) {
+            return try await maker.make(material, subject: subject, grade: grade, correction: correction,
+                                        questions: settings.questions, longWords: settings.length.words)
+        } catch {
+            // A154 (K109/K110): the credits do not cover it. What the server said a question costs is kept, so
+            // Nytt prov proposes what fits from now on.
+            if case .tooFewCredits(let no) = error {
+                examRoom = ExamRoom(no, longWords: settings.length.words) ?? examRoom
+                if let left = no.left, var known = quota, known.isCredits, known.remaining != left {
+                    known.remaining = left
+                    quota = known
+                }
+                Log.repetition.info("Nytt prov: the credits cover \(no.fits, privacy: .public) questions (asked \(settings.questions, privacy: .public))")
+            }
+            throw error
+        }
+    }
+
+    // MARK: A154 (D239, D241): what the credits cover for a new exam
+
+    /// What a question of a new exam costs, as the server said it last: in its no to an exam (402 with `fits`) or in
+    /// the quota (`exam`). Nil until it has said it.
+    private(set) var examRoom: ExamRoom?
+
+    #if DEBUG
+    /// The screenshots: what the server would have said a question costs.
+    func stageExamRoom(_ room: ExamRoom?) { examRoom = room }
+    #endif
+
+    /// The price that is known for the length of the long answers that is set now, on an account that counts
+    /// credits and has a limit.
+    private var knownExamRoom: ExamRoom? {
+        guard let quota, quota.isCredits, !quota.isUnlimited, let room = examRoom,
+              room.longWords == longAnswerLength.words else { return nil }
+        return room
+    }
+
+    /// How many questions the credits cover; nil while the server has not said what a question costs.
+    var newDrillFits: Int? {
+        guard let quota, let room = knownExamRoom else { return nil }
+        return min(DrillSettings.questionRange.upperBound, room.fits(left: quota.left))
+    }
+
+    /// D241: the credits cover fewer questions than an exam has. Nytt prov says so with "Fyll på" and proposes
+    /// nothing.
+    var newDrillHasNoRoom: Bool {
+        guard let fits = newDrillFits, let room = knownExamRoom else { return false }
+        return fits < room.minQuestions
+    }
+
+    /// What Nytt prov says about it: nothing while the standard fits.
+    var newDrillRoomLine: String? {
+        guard let quota, let fits = newDrillFits, let room = knownExamRoom else { return nil }
+        if fits < room.minQuestions { return CreditText.examHasNoRoom(left: quota.left, minQuestions: room.minQuestions) }
+        return fits < Drill.defaultQuestionCount ? CreditText.examFits(fits) : nil
+    }
+
+    /// "Annars kostnaden före sparandet": the server's exact cost of the finished exam, asked just before it is
+    /// saved. Nil when it cannot be asked or the account has no limit.
+    func examCost(_ drill: Drill) async -> DrillCost? {
+        guard let cloud, let quota, quota.isCredits, !quota.isUnlimited else { return nil }
+        return try? await cloud.cost(drill)
     }
 
     /// A105 (D185, K70): Läs upp texten: the material cleaned for reading aloud. Nothing is stored or counted until
@@ -899,7 +959,12 @@ final class RepetitionModel {
     var newDrillSettings: DrillSettings {
         var settings = DrillSettings()
         settings.length = longAnswerLength
-        // D175: at most what is left of the month's questions (never more than 20).
+        // A154 (D239, D241): in credits, at most what they cover (the server's `fits`), never more than the standard.
+        if let fits = newDrillFits, let room = knownExamRoom {
+            if fits >= room.minQuestions { settings.questions = min(Drill.defaultQuestionCount, fits) }
+            return settings
+        }
+        // D175: at most what is left of the month's questions (never more than the standard).
         if let quota, !quota.isUsedUp { settings.questions = max(1, quota.suggestedQuestions) }
         return settings
     }
@@ -907,6 +972,11 @@ final class RepetitionModel {
     /// D175: Antal frågor goes up to what is left this month (the server never makes more).
     var newDrillQuestionRange: ClosedRange<Int> {
         guard let quota, !quota.isUsedUp else { return DrillSettings.questionRange }
+        if quota.isCredits {
+            // A154: the credits are not questions. The stepper stops at what they cover, when the server has said it.
+            guard let fits = newDrillFits, let room = knownExamRoom, fits >= room.minQuestions else { return DrillSettings.questionRange }
+            return DrillSettings.questionRange.lowerBound...max(DrillSettings.questionRange.lowerBound, fits)
+        }
         return 1...max(1, min(DrillSettings.questionRange.upperBound, quota.left))
     }
 
@@ -918,7 +988,14 @@ final class RepetitionModel {
     func refreshQuota() async {
         guard let client = cloud as? DrillCloudClient else { return }
         do throws(DrillCloudError) {
-            quota = try await client.quota()
+            let words = longAnswerLength.words
+            let fresh = try await client.quota(longWords: words)
+            quota = fresh
+            // A154: the server may say what a question of a new exam costs (asked of Kevin; today it does not).
+            if let per = fresh.exam?.per_question, per > 0 {
+                examRoom = ExamRoom(perQuestion: per, minQuestions: fresh.exam?.min_questions ?? 3,
+                                    longWords: fresh.exam?.long_words ?? words)
+            }
         } catch {
             Log.repetition.info("Drill quota: \(error.userMessage, privacy: .public)")
         }

@@ -44,7 +44,7 @@ import Testing
 
     @Test func settingsFollowD146() {
         let settings = DrillSettings()
-        #expect(settings.questions == 20)
+        #expect(settings.questions == 12) // A154 (D239): 20 → 12
         #expect(settings.length.words == 90)
         #expect(DrillSettings.Length.shorter.words < 90 && DrillSettings.Length.longer.words > 90)
     }
