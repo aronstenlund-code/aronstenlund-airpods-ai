@@ -6,6 +6,11 @@ name: Apptest T53 (tillgänglighet AX5)
 # changes. Simulator only: never a device test.
 on:
   workflow_dispatch:
+    inputs:
+      device:
+        description: "Simulator (T55 (2): iPhone 17 Pro or iPhone SE (3rd generation))"
+        required: false
+        default: "iPhone 17 Pro"
   push:
     branches: ["toby/**"]
     paths:
@@ -14,7 +19,7 @@ on:
       - ".github/workflows/apptest-t53.yml"
 
 concurrency:
-  group: apptest-t53-${{ github.ref }}
+  group: apptest-t53-${{ github.ref }}-${{ inputs.device || 'iPhone 17 Pro' }}
   cancel-in-progress: true
 
 jobs:
@@ -37,6 +42,8 @@ jobs:
         run: brew install xcodegen
 
       - name: T53
+        env:
+          A11Y_DEVICE: ${{ inputs.device || 'iPhone 17 Pro' }}
         run: |
           bash scripts/apptest/t53.sh
           STATUS=$?
@@ -47,7 +54,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v5
         with:
-          name: apptest-t53
+          name: apptest-t53-${{ inputs.device || 'iPhone 17 Pro' }}
           path: |
             apptest-out/t53
             !apptest-out/t53/logs/*.xcresult

@@ -64,8 +64,23 @@ echo "::group::Material picture and Simulator"
 xcrun swift "$ROOT/scripts/apptest/material_png.swift" "$OUT/material.png" "Fotosyntes. Växter tillverkar socker av koldioxid och vatten med hjälp av solljus. Klorofyllet i bladen fångar ljuset. Syre bildas och släpps ut. Sockret ger växten energi och byggmaterial." || { echo "::error::no material picture"; exit 1; }
 JSON="$(xcrun simctl list devices available -j)"
 RUNTIME="$(echo "$JSON" | jq -r '.devices | keys[] | select(test("iOS-26"))' | sort -V | tail -n 1)"
-UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" '.devices[$rt][] | select(.name == "iPhone 17 Pro") | .udid' | head -n 1)"
-test -n "$UDID" || { echo "::error::no Simulator"; exit 1; }
+# T55 (2), D238: the device is chosen (A11Y_DEVICE), iPhone 17 Pro by default; the SE is the small screen.
+DEVICE="${A11Y_DEVICE:-iPhone 17 Pro}"
+UDID="$(echo "$JSON" | jq -r --arg rt "$RUNTIME" --arg d "$DEVICE" '.devices[$rt][] | select(.name == $d) | .udid' | head -n 1)"
+if [ -z "$UDID" ]; then
+  # The runner may not have this device made; make it from its device type if the runtime supports it.
+  TYPE="$(xcrun simctl list devicetypes -j | jq -r --arg d "$DEVICE" '.devicetypes[] | select(.name == $d) | .identifier' | head -n 1)"
+  RTID="$(xcrun simctl list runtimes -j | jq -r '.runtimes[] | select(.identifier | test("iOS-26")) | .identifier' | sort -V | tail -n 1)"
+  if [ -n "$TYPE" ] && [ -n "$RTID" ]; then UDID="$(xcrun simctl create "$DEVICE" "$TYPE" "$RTID" 2>&1 | tail -n 1)"; echo "created $DEVICE: $UDID"; fi
+  case "$UDID" in *-*-*-*-*) ;; *) UDID="" ;; esac
+fi
+if [ -z "$UDID" ]; then
+  echo "device types: $(xcrun simctl list devicetypes -j | jq -r '[.devicetypes[].name | select(test("iPhone"))] | join(", ")')"
+  echo "available: $(echo "$JSON" | jq -r --arg rt "$RUNTIME" '[.devices[$rt][].name] | join(", ")')"
+  echo "::error::no Simulator '$DEVICE'"; exit 1
+fi
+echo "T53 device: $DEVICE ($UDID)"
+echo "Device: $DEVICE" > "$OUT/device.txt"
 defaults write com.apple.iphonesimulator ConnectHardwareKeyboard -bool false || true
 xcrun simctl shutdown "$UDID" >/dev/null 2>&1 || true
 xcrun simctl erase "$UDID"
@@ -130,7 +145,7 @@ echo "::endgroup::"
 # The app's own lines while the network was off: what the player played and any request that was tried.
 grep -E "Reading:|offline|Offline|network|Network|drill_audio|download" "$OUT/logs/app.log" | cut -c1-300 > "$OUT/logs/app-repetition.log" || true
 {
-  echo "## T53 Tillgänglighet med största texten (AX5) (simulator, inte enhet): $([ "$STATUS" = 0 ] && echo grön || echo röd)"
+  echo "## T53 Tillgänglighet med största texten (AX5) på $DEVICE (simulator, inte enhet): $([ "$STATUS" = 0 ] && echo grön || echo röd)"
   echo
   echo '```'
   sed -n '1,/^Log:/p' "$OUT/t36-log.txt" 2>/dev/null || echo "no log"
@@ -138,7 +153,7 @@ grep -E "Reading:|offline|Offline|network|Network|drill_audio|download" "$OUT/lo
   echo
   echo "Detaljer:"
   echo '```'
-  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT|GREY|spela-|PRESS|T36|T44|T46|T49|T50|T48|A144|K100|A145|T53|AUDIT|keyboard|scrollIntoView|SYSTEM ALERT|SCREEN|  texts:|  buttons:|TAP " "$OUT/t36-log.txt" 2>/dev/null | cut -c1-900
+  grep -E "MISS|UNCLEAR|questions seen|offline texts|sound lines|launched|MARK|ALERT|GREY|spela-|PRESS|T36|T44|T46|T49|T50|T48|A144|K100|A145|T53|T55|AUDIT|keyboard|scrollIntoView|SYSTEM ALERT|SCREEN|  texts:|  buttons:|TAP " "$OUT/t36-log.txt" 2>/dev/null | cut -c1-900
   echo '```'
   echo
   echo "Tryck (testkroken, appens logg):"

@@ -132,6 +132,10 @@ final class SayFlowTests: XCTestCase {
     static let cardText = [text, "Klorofyllet i bladen fångar ljuset.*"]
 
     private var lockLineBefore = false
+    /// T55 (2), D238, A153: at AX5 the test must reach Spela without hiding the keyboard itself (no tap beside the
+    /// field, no swipe, no drag). While this is on, tap() never hides it and never swipes; the bar's
+    /// "Spela i 10 min. Kostar … krediter" above the keyboard is the button to find.
+    private var keepKeyboard = false
     private var creditsAtStart: Int?
 
     /// Taps "Spela i 10 min" and waits for the card's "Spelar i AirPods" (or "Gör ljudet …") on Start.
@@ -733,16 +737,19 @@ final class SayFlowTests: XCTestCase {
         guard tap(["Inställningar"], "Inställningar") else { return false }
         pause(1.5)
         // Run 44300125934: Konto is the last part of Inställningar, and the list makes it only when it is scrolled to.
-        for n in 0..<10 {
+        // Run 44698563479 (SE, AX5): the 10th swipe brought Radera konto up and the loop did not look again. Look after
+        // every swipe, at most 16.
+        for n in 0...16 {
             if app.buttons.matching(NSPredicate(format: "label ==[c] 'Radera konto'")).firstMatch.exists {
                 if n > 0 { log.append("A145 Radera konto after \(n) swipes in Inställningar") }
                 return true
             }
+            if n == 16 { break }
             app.swipeUp(velocity: .fast)
             pause(0.7)
         }
         screen("installningar-utan-konto", "Inställningar without Radera konto")
-        return miss("no 'Radera konto' in Inställningar after 10 swipes")
+        return miss("no 'Radera konto' in Inställningar after 16 swipes")
     }
 
     private func askDelete() -> Bool {
@@ -1018,7 +1025,8 @@ final class SayFlowTests: XCTestCase {
         guard focusField("Säg i AirPods (AX5)") else { return miss("the field got no keyboard") }
         field.typeText(Self.text)
         pause(2) // the cost comes about 0,7 s after the last key
-        if app.keyboards.count > 0 { app.swipeDown(velocity: .slow); pause(1) }
+        // T55 (2): the keyboard stays up (A153 gives Spela above it); a swipe here would hide it.
+        log.append("T55 AX5 keyboard up after typing: \(keyboardUp)")
         let fieldLabel = field.label
         let cost = (Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Button")).first { $0.hasPrefix("Kostar ") }
         let tempo = label(of: "Button", starting: "Tempo") ?? "-"
@@ -1032,7 +1040,6 @@ final class SayFlowTests: XCTestCase {
         // The "›" mark must not be read (Ke79 1): it is hidden, so it must not stand as a text of its own.
         if Self.labels(in: app.debugDescription, kind: "StaticText").contains("›") { note("'›' stands as a text in the tree (Ke79 1; Angela: hidden, the tree shows hidden elements)") }
         audit("start-text")
-        hideKeyboard() // run 44424970760: the keyboard stayed up at AX5 and covered Spela
         return ok
     }
 
@@ -1051,8 +1058,10 @@ final class SayFlowTests: XCTestCase {
     }
 
     private func a11yPlayingCard() -> Bool {
-        hideKeyboard()
-        scrollIntoView(Self.playLabels)
+        // T55 (2), D238: no hideKeyboard() and no scrollIntoView (a drag on Start hides the keyboard, A153).
+        let upBefore = keyboardUp
+        log.append("T55 AX5 before Spela: keyboard up \(upBefore)")
+        if !upBefore { note("T55: the keyboard was not up before Spela (it should still be up after typing)") }
         // Run 44436344437: Spela was never hittable at AX5. Write every match with its frame and the window, so it is
         // seen whether it is off the screen (and cannot be scrolled to) or covered.
         let window = app.windows.firstMatch.frame
@@ -1060,7 +1069,11 @@ final class SayFlowTests: XCTestCase {
             log.append("T53 Spela match '\(b.label)': frame \(NSCoder.string(for: b.frame)), hittable \(b.isHittable), enabled \(b.isEnabled), window \(NSCoder.string(for: window))")
         }
         screen("ax5-spela", "AX5: where Spela is")
-        guard playFromCard() else { return false }
+        keepKeyboard = true
+        let played = playFromCard()
+        keepKeyboard = false
+        log.append("T55 AX5 Spela reached with the keyboard up: \(played && upBefore), the test hid the keyboard: no")
+        guard played else { return miss("T55: Spela could not be reached at AX5 without hiding the keyboard") }
         pause(4)
         let all = Self.labels(in: app.debugDescription, kind: "StaticText") + Self.labels(in: app.debugDescription, kind: "Other") + Self.labels(in: app.debugDescription, kind: "Button")
         let one = all.first { $0.hasPrefix("Spelar i AirPods") && $0.contains("kvar") }
@@ -1097,9 +1110,18 @@ final class SayFlowTests: XCTestCase {
             var element = app.links.matching(NSPredicate(format: "label ==[c] %@", name)).firstMatch
             if !element.exists { element = app.buttons.matching(NSPredicate(format: "label ==[c] %@", name)).firstMatch }
             var swipes = 0
-            while !element.exists || !element.isHittable, swipes < 8 { app.swipeUp(); swipes += 1 }
+            // Run 44698563479 (SE, AX5): after Villkor the sheet's rows were gone from the tree. Drag at the right edge
+            // (away from the links) and write what the sheet holds after each drag.
+            while !element.exists || !element.isHittable, swipes < 10 {
+                let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.94, dy: 0.8))
+                from.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.94, dy: 0.4)))
+                swipes += 1
+                pause(0.6)
+                let sheet = (Self.labels(in: app.debugDescription, kind: "Button") + Self.labels(in: app.debugDescription, kind: "Link")).filter { ["Villkor", "Integritet", "Återställ köp", "Bjud in", "Försök igen", "Klar"].contains($0) }
+                log.append("T53 Krediter drag \(swipes) for '\(name)': \(sheet), web views \(app.webViews.count), Safari \(XCUIApplication(bundleIdentifier: "com.apple.mobilesafari").state.rawValue), app \(app.state.rawValue)")
+            }
             let h = element.exists ? Int(element.frame.height) : -1
-            log.append("T53 '\(name)': height \(h)")
+            log.append("T53 '\(name)': height \(h) after \(swipes) drags")
             if h >= 0, h < 44 { note("'\(name)' is \(h) points high; its tap area may still be 44 (the audit's hitRegion says)") }
             if h < 0 { ok = miss("no '\(name)' in Krediter") }
         }
@@ -1545,7 +1567,9 @@ final class SayFlowTests: XCTestCase {
         // counts as under it.
         let underKeyboard = (keyboard.exists && keyboard.frame.contains(CGPoint(x: frame.midX, y: frame.midY)))
             || (!keyboard.exists && keyboardUp && frame.midY > app.windows.firstMatch.frame.height * 0.55)
-        if !element.isHittable, underKeyboard { log.append("\(step): '\(element.label)' is under the keyboard; hiding it"); hideKeyboard(); element = find(labels) ?? element }
+        if !element.isHittable, underKeyboard {
+            if keepKeyboard { log.append("\(step): '\(element.label)' is under the keyboard; not hiding it (T55), looking for a hittable twin") } else { log.append("\(step): '\(element.label)' is under the keyboard; hiding it"); hideKeyboard(); element = find(labels) ?? element }
+        }
         if !element.isHittable, !underKeyboard, !frame.isEmpty, app.windows.firstMatch.frame.contains(CGPoint(x: frame.midX, y: frame.midY)) {
             log.append("NOT HITTABLE (tapped at its centre): \(step): '\(element.label)' at \(Int(frame.midX)),\(Int(frame.midY))")
             element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
@@ -1557,13 +1581,14 @@ final class SayFlowTests: XCTestCase {
         // with the same label, and the first match was that one. Take a hittable button with the same label first.
         if !element.isHittable, let twin = hittableTwin(labels) { element = twin }
         var swipes = 0
-        while !element.isHittable, swipes < 6 {
+        while !element.isHittable, !keepKeyboard, swipes < 6 {
             app.swipeUp()
             swipes += 1
             if let again = find(labels) { element = again }
         }
         if swipes > 0 { note("\(step): '\(labels[0])' was below the screen (\(swipes) swipes)") }
         guard element.isHittable else { log.append("MISS: \(step): '\(labels[0])' not hittable"); return false }
+        if keepKeyboard { log.append("T55 AX5 tapped '\(element.label)' at \(NSCoder.string(for: element.frame)), keyboard up \(keyboardUp)") }
         tapElement(element, step, counted: counted)
         return true
     }
