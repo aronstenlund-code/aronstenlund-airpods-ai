@@ -224,15 +224,9 @@ struct NewDrillView: View {
                     }
                 } else if let fitsAfterNo {
                     // A154 (K109/K110): the server said no to the asked number before making anything; this many fit.
+                    // Kelly (kop.md §7): one button that makes the exam, the one at the bottom; it then says how many.
                     Section {
                         Text(verbatim: CreditText.examFits(fitsAfterNo))
-                        if !material.isEmpty {
-                            Button {
-                                create(correction: nil)
-                            } label: {
-                                Text(verbatim: "Skapa \(DrillText.questions(fitsAfterNo))")
-                            }
-                        }
                         if model.shop != nil { Button(ShopText.refill) { showsCredits = true } }
                     }
                 }
@@ -390,7 +384,8 @@ struct NewDrillView: View {
         }
         .safeAreaInset(edge: .bottom) {
             // Kelly N3: the reason while the button is grey. A84 (D155): else what is left of the month's questions.
-            MainActionBar(title: make == .text ? "Skapa uppläsning" : "Skapa frågor",
+            MainActionBar(title: make == .text ? "Skapa uppläsning"
+                              : fitsAfterNo != nil ? "Skapa \(DrillText.questions(settings.questions))" : "Skapa frågor",
                           note: model.quotaUsedUp ? "Inga frågor kvar den här månaden." // Kelly: the long line is at the top
                               : hasNoRoom ? "Krediterna räcker inte till ett prov." // A154 (D241): the long line is at the top
                               : model.isOffline ? (make == .text ? "Skapa uppläsning kräver internet." : "Skapa frågor kräver internet.")
