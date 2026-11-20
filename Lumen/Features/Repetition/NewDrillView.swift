@@ -898,8 +898,20 @@ struct NewDrillView: View {
     }
 
     private var confirmView: some View {
+        ScrollViewReader { scroll in
         Form {
             if let draft {
+                // A154 (Toby's T55 run 44708423048, the real server): the credits did not cover the finished exam,
+                // the save was stopped, and the words stood at the end of the form, below the screen: "Ser rätt
+                // ut" looked as if it did nothing. They stand first now, and the form goes there.
+                if costStopsSave, let problem {
+                    Section {
+                        Text(verbatim: problem)
+                        if model.shop != nil { Button(ShopText.refill) { showsCredits = true } }
+                    }
+                    .id(Self.costStopID)
+                }
+
                 Section {
                     LabeledContent("Ämne", value: draft.summary.subject)
                     if !draft.summary.grade.isEmpty { LabeledContent("Årskurs", value: draft.summary.grade) }
@@ -940,12 +952,10 @@ struct NewDrillView: View {
                     }
                 }
 
-                if let problem {
+                if let problem, !costStopsSave { // (the credits' no stands first in the form)
                     Section {
                         Text(verbatim: problem)
                         if answersMissing && !isAnswering { Button("Försök igen") { self.problem = nil; writeAnswers() } }
-                        // A154: the credits do not cover it; the packs are one tap away.
-                        if costStopsSave, model.shop != nil { Button(ShopText.refill) { showsCredits = true } }
                     }
                 }
 
@@ -953,13 +963,21 @@ struct NewDrillView: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
+            // A154: by the button too, where the eye is when it has just been pressed.
             MainActionBar(title: isAnswering ? "Skriver svar …" : "Ser rätt ut",
+                          note: costStopsSave ? "Krediterna räcker inte till provet." : nil,
                           isBusy: isAnswering || isSaving,
                           isDisabled: answersMissing || isSaving) {
                 if let draft { save(draft) }
             }
         }
+        .onChange(of: costStopsSave) { _, stopped in
+            if stopped { withAnimation { scroll.scrollTo(Self.costStopID, anchor: .top) } }
+        }
+        }
     }
+
+    private static let costStopID = "cost-stop"
 
     private func save(_ draft: DrillDraft) {
         let name = title.trimmingCharacters(in: .whitespaces)
