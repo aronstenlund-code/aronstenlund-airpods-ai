@@ -278,6 +278,9 @@ export function isRankQuestion(t: string): boolean {
  * measurement of Haiku against Sonnet on searched answers. Only calls that search: Sonnet is then what Provläge and
  * texts already use (same web caps), so the header gives nobody a model they cannot already reach.
  */
+/** O91 N5: a searched answer is said up to this many words (the eval's "webbsvar för långt" is over 80). */
+export const WEB_MAX_WORDS = 80;
+
 export function testModelPick(h: string | null): "haiku" | "sonnet" | null {
   const m = /(?:^|\s)model-(haiku|sonnet)(?:\s|$)/i.exec(h ?? "");
   return m ? (m[1].toLowerCase() as "haiku" | "sonnet") : null;
@@ -1767,6 +1770,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           // K13 (Oscar O10 #7: Frågor cut answers mid-word at the cap, "… kontakta vården direkt. ["): close to the cap
           // only whole sentences are said; what does not fit is dropped, and nothing is said after the cut
           let nearBuf = "";
+          // Oscar O91 N5 (praktiskt-03/04 over 80 words although the web prompt says 70): a searched answer is cut after
+          // the last whole sentence within WEB_MAX_WORDS; songs and quotes never. The stream goes on unsaid, so the source
+          // line at the end is still read (done.source)
+          let webUsed = false;
+          let webCapped = false;
           const emitText = (raw: string) => {
             // K16: a late search marker ("… femtusen invånare. [[SÖK]]", live 3/10) is never read aloud
             if (/\[\[S[ÖO]K\]\]/iu.test(raw)) console.warn("search_marker_late", JSON.stringify({ mode: body.mode }));
@@ -1790,20 +1798,26 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             send("delta", { text: t });
           };
           const deliver = (t: string) => {
-            if (!t || closed || status === "truncated") return;
+            if (!t || closed || status === "truncated" || webCapped) return;
             // K42.3 (O51): an asked word count is a cap in words; only whole sentences are passed on
-            if (wordCap) {
+            const cap = wordCap ?? (webUsed && !textOn ? WEB_MAX_WORDS : undefined);
+            if (cap) {
               nearBuf += t;
               let end = -1;
               for (const m of nearBuf.matchAll(/[.!?](?=\s|$)/gu)) {
-                if (answerWords + countWords(nearBuf.slice(0, m.index! + 1)) <= wordCap) end = m.index! + 1;
+                if (answerWords + countWords(nearBuf.slice(0, m.index! + 1)) <= cap) end = m.index! + 1;
               }
-              if (answerWords + countWords(nearBuf) > wordCap) {
-                const out = end > 0 ? nearBuf.slice(0, end) : answerWords === 0 ? firstWords(nearBuf, wordCap) : "";
+              if (answerWords + countWords(nearBuf) > cap) {
+                const out = end > 0 ? nearBuf.slice(0, end) : answerWords === 0 ? firstWords(nearBuf, cap) : "";
                 nearBuf = "";
                 emitText(out);
-                status = "truncated";
-                stop = true;
+                if (wordCap) {
+                  status = "truncated";
+                  stop = true;
+                } else {
+                  webCapped = true; // O91 N5: the rest is not said, but the stream goes on for the source line
+                  console.log("web_answer_capped", JSON.stringify({ words: answerWords, cap }));
+                }
                 return;
               }
               if (end > 0) {
@@ -1988,6 +2002,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             }
             if (chunk.type === "source") return; // only the K19 link search asks for sources
             if (chunk.type === "searching") {
+              webUsed = true; // O91 N5: the 80-word cap of a searched answer
               // K104 (D233): the app plays a quiet tone after 1.5 s instead of spoken filler (D46); once per answer
               if (!searchingSent && ttftMs === null) {
                 searchingSent = true;
