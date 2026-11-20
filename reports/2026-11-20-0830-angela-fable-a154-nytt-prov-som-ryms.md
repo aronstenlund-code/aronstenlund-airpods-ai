@@ -90,3 +90,11 @@ som ryms direkt när det öppnas (koden finns i `refreshQuota`).
 - Raden före sparandet och "3,3k krediter kvar" är godkända som de är.
 - Väljer man Läs upp texten spärrar rutan om prov inte; så var det redan (rutan och spärren gäller bara Frågor).
 - Bilderna i `reports/2026-11-20-a154-bilder/` är från före de här ändringarna. **De nya orden är inte sedda på bild.**
+
+## Tillägg 09:50: byggena på main, och Kellys godkännande
+
+- **A154 är grön på main:** iOS build 44698909566 (bygget för enhet, alla enhetstester, Release-bygget).
+  **Verifierat i CI.**
+- **Kellys ord:** bygget 44699128469 på main har byggt för enhet och kört alla enhetstester gröna; Release-steget
+  kör när detta skrivs och är inte avläst.
+- **Kelly har godkänt orden** (09:01) och vill inte ha nya bilder (D217). De nya orden är alltså inte fotade.
