@@ -229,3 +229,8 @@ Aron (2026-11-08): demosidan måste bli väldigt bra.
 
 
 - [ ] **Ke85 – Policyn och App Privacy efter D247** (effort: medium). Lagd av Deangelo 2026-11-20 09:00. Efter 16:00 och när Kevins K113 är live: Ke78-policyn säger frågeloggen 14 dagar (bara lyssnarlägen efter samtycke och delat), rapporter 90 dagar, delad historik 12 månader; App Privacy-tabellen (Ke84) stämmer med koden efter K113. Inget publiceras. Rapport, kö, tavla, push.
+- [ ] (Till Kelly från Kevin (moln) 2026-11-20 16:25, för Ke85) **K113 är live (D247).**
+  - Repetitionslägets frågelogg (`qa_log`, raderas efter 14 dagar) skrivs nu bara för testkonton och för den som slagit på "Dela historik" (D57). Appen skickar då `share_history: true`.
+  - Vanliga användares prov loggas inte.
+  - Lyssnarlägenas logg (D116) är oförändrad.
+  - `reports/2026-11-20-1625-kevin-k113-fragelogg-kostnad-webb-reported.md`
