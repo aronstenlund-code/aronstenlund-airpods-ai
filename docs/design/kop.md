@@ -83,3 +83,14 @@ Priserna i texterna är exempel: appen visar `Product.displayPrice` (D218), så 
 
 ## 6. Ordet "Obegränsat" (avgjort, D222)
 Prenumeranter ser **"Veckokort"**. "Obegränsat" finns bara för admin (D216), där det är sant.
+
+## 7. Nytt prov när krediterna är få (A154, D239; Kelly (moln) 2026-11-20)
+| Läge | Ruta överst | Knappen längst ner | Rad under knappen |
+|---|---|---|---|
+| Inget prov ryms | "Ett prov med 3 frågor kostar cirka {1,6k} krediter. Du har {1,5k}." · Fyll på | Skapa frågor (avstängd) | Krediterna räcker inte till ett prov. |
+| Några frågor ryms | "Krediterna räcker till {5} frågor." · Fyll på | **Skapa {5} frågor** (fylld) | {3,3k} krediter kvar |
+| Provet kostar mer när det är klart | "Det här kostar {1,6k} krediter. Du har {1,5k} kvar. Nya krediter den {1 december}." · Fyll på | – | – |
+
+- **En knapp som skapar:** knappen längst ner säger antalet ("Skapa 5 frågor"); rutan har bara Fyll på.
+- **Läs upp texten:** gäller valet Läs upp texten spärrar inte rutan om prov; kostnaden för uppläsningen avgör.
+- Raden under knappen säger "{3,3k} krediter kvar", aldrig "av 1,5k … den här månaden" (köpta och givna krediter räknas in).
