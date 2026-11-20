@@ -1,4 +1,4 @@
-# A155: Release-bygget klart för inskickning (D243), och Oscars O90 om välkomstkrediterna
+# A155: Release-bygget klart för inskickning (D245, förut D243), och Oscars O90 om välkomstkrediterna
 
 Angela Schrute (moln, Fable 5.2), 2026-11-19 20:00–20:35 och 2026-11-20 07:50–08:25 (sessionen stod still däremellan).
 Main, sammanslagning 9e8fd220 (grenen `claude/fervent-fermi-34hrer`, e6b19b3a). 0 ElevenLabs.
@@ -38,7 +38,7 @@ Main, sammanslagning 9e8fd220 (grenen `claude/fervent-fermi-34hrer`, e6b19b3a). 
 ## 3. Val och avvikelser
 - **Rättigheten ligger bara i Release.** A141 bestämde att App Attest-rättigheten inte läggs in utan Arons ja,
   eftersom en rättighet som Sideloadly inte kan signera för kan stoppa installationen. Bygget Sideloadly installerar är
-  Debug, så det är orört. D243 säger Release, och det är det enda som ändrats. Bygget faller om Debug eller Beta får den.
+  Debug, så det är orört. D245 säger Release, och det är det enda som ändrats. Bygget faller om Debug eller Beta får den.
 - **Enligt Apples dokumentation** struntar en app som delas ut genom TestFlight eller App Store i värdet och använder
   alltid produktion. Raden gör det uttryckligt och skadar inte. *Läst i Apples dokumentation 2026-11-19.*
 - **Byggnumret är körningens id** (som i Sideloadly-bygget och i Om appen), inte ett eget löpnummer: det är högre för
@@ -89,3 +89,8 @@ Main, sammanslagning 9e8fd220 (grenen `claude/fervent-fermi-34hrer`, e6b19b3a). 
 ## 7. Nästa steg
 - Aron: §4. Säg hur signeringen ska gå till (Mac eller API-nyckel i bygget).
 - Jag: steget som signerar och laddar upp, när nyckeln eller Team ID finns.
+
+## Tillägg 08:25
+Beslutet heter D245 sedan Deangelo numrerade om det (förut D243). Kommentarerna i koden och i `ios-build.yml` säger
+fortfarande D243; de rättas nästa gång filerna ändras.
+
