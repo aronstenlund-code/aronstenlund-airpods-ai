@@ -62,10 +62,20 @@ Deno.test("O92 5: en Säg-text med share_history true loggar aldrig texten (B4),
   await w.h("u1")(STATS(t.drill.id, { share_history: true }));
   assert(w.logged.every((r) => !r.answer.includes("mormor") && !r.question.includes("mormor")), JSON.stringify(w.logged));
 });
+
+Deno.test("O93 6: cost (förhandsvisningen) med share_history true loggar inget; save med start:true (Säg i AirPods) loggar bara med true", async () => {
+  const w = world();
+  await w.h("u1")(post({ action: "cost", share_history: true, drill: { subject: "Bio" }, items: ITEMS }));
+  assertEquals(w.logged.length, 0, "cost sparar och loggar inget");
+  await w.h("u1")(post({ action: "save", start: true, drill: { subject: "Bio" }, items: ITEMS.map((i) => ({ ...i, question: i.question + " a" })) }));
+  assertEquals(w.logged.length, 0, "start:true utan fältet");
+  await w.h("u1")(post({ action: "save", start: true, share_history: true, drill: { subject: "Bio" }, items: ITEMS.map((i) => ({ ...i, question: i.question + " b" })) }));
+  assertEquals(w.logged.length, ITEMS.length, "start:true med true");
+});
 '''
 deno = sys.argv[1] if len(sys.argv) > 1 else "deno"
 with tempfile.TemporaryDirectory() as tmp:
     f = pathlib.Path(tmp) / "o92_k113_test.ts"
     f.write_text(src, encoding="utf-8")
-    r = subprocess.run([deno, "test", "--no-lock", "--no-check", "-A", "--filter", "O92", str(f)], cwd=str(D), env={**os.environ, "NO_COLOR": "1"})
+    r = subprocess.run([deno, "test", "--no-lock", "--no-check", "-A", "--filter", "/O92|O93/", str(f)], cwd=str(D), env={**os.environ, "NO_COLOR": "1"})
     sys.exit(r.returncode)
