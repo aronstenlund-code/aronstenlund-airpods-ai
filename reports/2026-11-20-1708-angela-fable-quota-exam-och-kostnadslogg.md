@@ -76,3 +76,8 @@ säger nu "a press is waiting for its answer".
 
 Läs Tobys körning. Tre rader och 2 500: läs `Exam answers:` (serverns längder) mot `Exam cost:` (appens) för att se
 var svaren blev längre. Fler rader: skriv det till Kevin och stäng frågan.
+
+## Tillägg 17:58: grönt på main
+
+**iOS build 44772435935 på main är grön** (bygget för enhet, alla enhetstester, Release-bygget). **Verifierat i CI.**
+Rutan vid öppnandet och loggraderna är fortfarande inte sedda i en körning; Toby har inte kört T55 sedan ändringen.
