@@ -44,7 +44,7 @@ import Testing
 
     @Test func settingsFollowD146() {
         let settings = DrillSettings()
-        #expect(settings.questions == 20)
+        #expect(settings.questions == 12) // A154 (D239): 20 → 12
         #expect(settings.length.words == 90)
         #expect(DrillSettings.Length.shorter.words < 90 && DrillSettings.Length.longer.words > 90)
     }
@@ -377,6 +377,11 @@ import Testing
             .replacingOccurrences(of: "=", with: "").replacingOccurrences(of: "+", with: "-").replacingOccurrences(of: "/", with: "_")
         #expect(SupabaseAuth.userID(fromJWT: "eyJhbGciOiJIUzI1NiJ9.\(payload).sig") == "abc-123")
         #expect(SupabaseAuth.userID(fromJWT: "not-a-token") == nil)
+        // Toby T55: the log's mark of the account is the first eight characters of the id, never the token.
+        let session = SupabaseSession(accessToken: "eyJhbGciOiJIUzI1NiJ9.\(payload).sig", refreshToken: "r", expiresAt: Date())
+        #expect(SupabaseAuth.accountMark(session) == "abc-123")
+        #expect(SupabaseAuth.accountMark(nil) == "none")
+        #expect(SupabaseAuth.accountMark(SupabaseSession(accessToken: "not-a-token", refreshToken: "r", expiresAt: Date())) == "unreadable")
     }
 
     // MARK: The AirPods check (R11)

@@ -13,6 +13,7 @@ struct DrillView: View {
     var showsShare = false
     @State private var editing: EditTarget?
     @State private var checkingControls = false
+    @State private var showsCredits = false // T55
     @State private var pendingIndex = 0
     @State private var share: DrillShareResult?
     @State private var showsShareSheet = false
@@ -66,6 +67,7 @@ struct DrillView: View {
             }
         }
         .sheet(isPresented: $publishing) { if let drill { PublishSheet(model: model, drill: drill) } } // A83
+        .sheet(isPresented: $showsCredits) { CreditsSheet(model: model) } // T55
         .sheet(isPresented: $showsChatGPT) { // A93 (D169): the exam's questions go into the prompt, new ones are added
             if let drill {
                 ChatGPTImportView(model: model, title: drill.title,
@@ -171,7 +173,8 @@ struct DrillView: View {
 
             if model.quotaExceeded(drill) { // A84 (D155): the month's questions are used up
                 Section { // A104: say what happened, then the way on
-                    Text(verbatim: Self.usedUpLine)
+                    Text(verbatim: usedUp(drill))
+                    refillButton
                     if model.canPublish {
                         NavigationLink("Hämta andras prov") { SchoolExamsView(model: model) }
                     }
@@ -299,7 +302,8 @@ struct DrillView: View {
 
             if model.quotaExceeded(drill) {
                 Section {
-                    Text(verbatim: Self.usedUpLine)
+                    Text(verbatim: usedUp(drill))
+                    refillButton
                     if model.canPublish {
                         NavigationLink("Hämta andras prov") { SchoolExamsView(model: model) }
                     }
@@ -372,6 +376,23 @@ struct DrillView: View {
     /// Kelly (A99): "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 december."
     private static var usedUpLine: String {
         "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(ChatGPTImportView.nextMonth())."
+    }
+
+    /// T55: counted in credits (D213) the server's own words say it: what the exam costs, what is left and when new
+    /// credits come. The older line about the month's questions is for a server that still counts questions.
+    private func usedUp(_ drill: Drill) -> String {
+        if model.quota?.isCredits == true {
+            return model.audio.problem(for: drill) ?? "Krediterna räcker inte till det här provet."
+        }
+        return Self.usedUpLine
+    }
+
+    /// T55: the packs are one tap away, as on the "Säg i AirPods" card (A134).
+    @ViewBuilder
+    private var refillButton: some View {
+        if model.shop != nil, model.quota?.isCredits == true {
+            Button(ShopText.refill) { showsCredits = true }
+        }
     }
 
     /// "5 frågor · åk 9 · ljud klart" under the title, or the sound's progress while it is made.

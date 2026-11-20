@@ -317,7 +317,9 @@ final class CreditShop {
     static let inviteText = "Plugga med EarMind. Du får 5 000 krediter att börja med."
 
     static let welcomeDoneKey = "credits.welcomeDone"
-    static let welcomeTriesKey = "credits.welcomeTries"
+    /// Oscar O90 (2026-11-19): a new name, so tries that were used up while the server was not set up (it answered 503
+    /// and that counted) are forgotten. From now on only a real no counts.
+    static let welcomeTriesKey = "credits.welcomeRefusals"
     static let attestKeyKey = "credits.attestKeyID"
     static let pendingInviteKey = "credits.pendingInvite"
     /// A proof that keeps failing (a build Apple does not attest) is not asked for at every start for ever.
@@ -525,9 +527,20 @@ final class CreditShop {
         } catch {
             // The key has been used for an attestation now, so the next try needs a new one.
             defaults.removeObject(forKey: Self.attestKeyKey)
-            defaults.set(defaults.integer(forKey: Self.welcomeTriesKey) + 1, forKey: Self.welcomeTriesKey)
+            // Oscar O90: a server that is not set up yet (503 `attest_unconfigured`), any other server fault, or no
+            // network is not the app's proof failing. It is asked again at the next start, for as long as it takes;
+            // three starts before the Team ID was set used to end the welcome credits for good.
+            if Self.isANo(error) {
+                defaults.set(defaults.integer(forKey: Self.welcomeTriesKey) + 1, forKey: Self.welcomeTriesKey)
+            }
             Log.repetition.info("Welcome: refused (\(error.errorCode, privacy: .public))")
         }
+    }
+
+    /// Whether the server looked at the proof and said no (a 4xx), which is what the three tries are for.
+    static func isANo(_ error: DrillCloudError) -> Bool {
+        if case .refused(let status, _, _) = error { return (400..<500).contains(status) }
+        return false
     }
 
     private func claimInvite() async {

@@ -90,7 +90,8 @@ struct Drill: Codable, Identifiable, Equatable, Sendable {
     /// A105: the items are the text's parts (headings and paragraphs), read in order.
     var isText: Bool { kind == .text }
 
-    static let defaultQuestionCount = 20
+    /// A154 (D239, Oscar O90): 12, not 20. Twenty questions cost about 9 800 credits, and a new account has 1 500.
+    static let defaultQuestionCount = 12
     static let defaultLongWords = 90
 
     /// "Ljud: 36 av 40 klara" (Kelly Ke49 §4.7): with D145 two files per question, the question and the long answer.
@@ -400,6 +401,15 @@ struct RepetitionProgress: Codable, Equatable, Sendable {
 
 /// Kelly Ke50: the repetition mode's counted words ("1 fråga" / "20 frågor", never "1 frågor").
 enum DrillText {
+    /// The sound's problem as the card on Start says it: the first sentence without its full stop ("Ljudet kan inte
+    /// göras just nu", Kelly A100). T55: when the credits do not cover it the first sentence alone ("Det här kostar
+    /// 1 909 krediter") reads like a price, so what is left comes with it ("… Du har 1 500 kvar").
+    static func cardProblem(_ problem: String, creditsShort: Bool) -> String {
+        let sentences = problem.components(separatedBy: ". ")
+        let kept = creditsShort && sentences.count >= 2 ? sentences.prefix(2).joined(separator: ". ") : (sentences.first ?? problem)
+        return kept.hasSuffix(".") ? String(kept.dropLast()) : kept
+    }
+
     static func questions(_ n: Int) -> String { n == 1 ? "1 fråga" : "\(n) frågor" }
     static func things(_ n: Int) -> String { n == 1 ? "1 sak" : "\(n) saker" }
 
@@ -536,6 +546,13 @@ enum CreditText {
 
     /// On the exam's card and screen: "Kostar 2 340 krediter".
     static func cardLine(cost: Int) -> String { cost == 0 ? "Kostar inget" : "Kostar \(credits(cost))" }
+
+    /// A154 (D241): Nytt prov, when the credits cover fewer questions than the standard: "Krediterna räcker till 5 frågor."
+    static func examFits(_ questions: Int) -> String { "Krediterna räcker till \(DrillText.questions(questions))." }
+    /// A154 (D241): Nytt prov, when they cover no exam at all (said with "Fyll på", before anything is made).
+    static func examHasNoRoom(left: Int, minQuestions: Int) -> String {
+        "Du har \(have(left)). Det räcker inte till ett prov (minst \(DrillText.questions(minQuestions)))."
+    }
 
     /// The credits do not cover it (said before anything is saved or started).
     static func notEnough(cost: Int, left: Int, resetsDay: String?) -> String {

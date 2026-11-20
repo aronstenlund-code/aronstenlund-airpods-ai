@@ -213,6 +213,41 @@ import Testing
         #expect(defaults.integer(forKey: CreditShop.welcomeTriesKey) == CreditShop.maxWelcomeTries)
     }
 
+    /// Oscar O90 (2026-11-19): live, the challenge was given and the welcome call answered 503 `attest_unconfigured`
+    /// (no Team ID on the server yet). That counted as a try, so three starts ended the welcome credits for good, also
+    /// after the Team ID was set. A server that is not ready, or no network, is asked again at every start.
+    @Test func aServerThatIsNotSetUpYetNeverUsesUpTheTries() async throws {
+        let (_, _, server, attest, defaults) = try make("o90-unconfigured")
+        attest.supported = true
+        server.welcomeError = .refused(status: 503, code: "attest_unconfigured", message: "Välkomstkrediterna är inte på än.")
+        for _ in 0..<5 { await CreditShop(front: FakeFront(), server: server, attest: attest, defaults: defaults).claimWelcome() }
+        #expect(server.challenges == 5 && attest.keys == 5, "asked at every start, each time with a new key")
+        #expect(defaults.integer(forKey: CreditShop.welcomeTriesKey) == 0 && !defaults.bool(forKey: CreditShop.welcomeDoneKey))
+
+        server.welcomeError = .offline("no network")
+        await CreditShop(front: FakeFront(), server: server, attest: attest, defaults: defaults).claimWelcome()
+        #expect(defaults.integer(forKey: CreditShop.welcomeTriesKey) == 0, "no network is not a no either")
+
+        // The Team ID is set: the next start gets the credits.
+        server.welcomeError = nil
+        await CreditShop(front: FakeFront(), server: server, attest: attest, defaults: defaults).claimWelcome()
+        #expect(server.welcomes.count == 1 && defaults.bool(forKey: CreditShop.welcomeDoneKey))
+    }
+
+    /// A real no (the server looked at the proof and refused it) still ends after three tries.
+    @Test func aRealNoStillEndsAfterThreeTries() async throws {
+        let (_, _, server, attest, defaults) = try make("o90-refused")
+        attest.supported = true
+        server.welcomeError = .refused(status: 422, code: "attestation_invalid", message: "Beviset gick inte att läsa.")
+        for _ in 0..<5 { await CreditShop(front: FakeFront(), server: server, attest: attest, defaults: defaults).claimWelcome() }
+        #expect(server.challenges == CreditShop.maxWelcomeTries)
+        #expect(defaults.integer(forKey: CreditShop.welcomeTriesKey) == CreditShop.maxWelcomeTries)
+        #expect(CreditShop.isANo(.refused(status: 409, code: "x", message: "")) && !CreditShop.isANo(.refused(status: 503, code: "x", message: "")))
+        #expect(!CreditShop.isANo(.offline("no network")))
+        // The old counter (it also counted 503) is not read any more.
+        #expect(CreditShop.welcomeTriesKey != "credits.welcomeTries")
+    }
+
     // MARK: Bjud in
 
     @Test func anOpenedInvitationIsClaimedAfterTheWelcomeCheck() async throws {

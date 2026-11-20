@@ -12,13 +12,13 @@ import Testing
         #expect(quota.left == 2 && quota.suggestedQuestions == 2 && !quota.isUsedUp)
         let old = try JSONDecoder().decode(DrillQuota.self, from: Data(#"{"used":3,"limit":15}"#.utf8))
         #expect(old.left == 12 && old.suggestedQuestions == 12, "list's quota without left/suggest")
-        #expect(DrillQuota(used: 0, limit: 40).suggestedQuestions == 20, "never more than 20 (D146)")
+        #expect(DrillQuota(used: 0, limit: 40).suggestedQuestions == 12, "never more than the standard (A154: 12)")
         #expect(DrillQuota(used: 15, limit: 15, serverLeft: 0, suggest: 0).isUsedUp)
     }
 
     @Test func nyttProvProposesWhatIsLeft() throws {
         let (model, _) = try A84VoiceTempoTests().model()
-        #expect(model.newDrillSettings.questions == 20, "no quota known: the standard")
+        #expect(model.newDrillSettings.questions == 12, "no quota known: the standard (A154)")
         #expect(!model.quotaUsedUp)
         model.quota = DrillQuota(used: 12, limit: 15, serverLeft: 3, suggest: 3)
         #expect(model.newDrillSettings.questions == 3)

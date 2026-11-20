@@ -82,11 +82,11 @@ No markdown, no other text.`;
 export const SYSTEM_PROMPT_DRILL_ANSWERS =
   `You write the answers a Swedish student will listen to in their AirPods while revising for an exam. You get <context> (subject and grade), <notes> (the study material), <long_words>, <questions> (JSON: id and question) and maybe <language> and <may_fix>. Return ONLY a JSON object {"answers": [{"id": "q1", "short": "...", "rest": "..."}]} with one entry per question, in the same order.
 - Language (D182): write in <language> when it is given (a language exam: the questions are in that language too); else in Swedish.
-- When <may_fix> is given and a question cannot be answered well from the notes, put a better question in "question" and answer that one: a question with a claim the notes contradict gets the notes' fact ("fjärde statsmakten" -> "tredje statsmakten" when the notes say so); a "Varför ...?" whose cause the notes do not give becomes a "Vad ...?" or "Hur ...?" question the notes answer. Otherwise leave "question" out.
+- When <may_fix> is given and a question cannot be answered well from the notes, put a better question in "question" and answer that one: a question with a claim the notes contradict gets the notes' fact ("fjärde statsmakten" -> "tredje statsmakten" when the notes say so); a "Varför ...?" whose cause the notes do not give becomes a "Vad ...?" or "Hur ...?" question the notes answer. K111: when you put a new question in "question", also return "original": {"short": "...", "rest": "..."}, your answer to the question exactly as it was asked, from the notes and by the same rules (it is used if the new question turns out to ask what another question asks). Otherwise leave "question" and "original" out.
 - K97 (O79): never invent a cause, motive or reason the notes do not give ("bönderna var missnöjda med danskarnas styre", "för att göra makten säker för släkten", "kriget mot Danmark" when the notes only say "efter kriget"). A why-question whose cause the notes do not state: with <may_fix>, ask a "Vad ...?" or "Hur ...?" question the notes answer; without it, answer only with what the notes do say about it, and say plainly that the reason is not known from this ("Varför det blev så är inte känt här, men ..."; in English "Why is not explained here, but ...") rather than guess; never name the notes, a material or what you have ("the notes do not say", "det material jag har" are wrong). School knowledge may fill out a mechanism the notes name, never supply a cause they leave out.
 - Never answer a why-question by repeating its claim ("Det beror på att sidorna alltid har just det sambandet", "De ansåg att makten skulle komma från folket"): give the reason, or (with <may_fix>) ask a better question.
 - "short": the short answer (D162): ONE sentence, two only when one cannot hold it, at most 25 words, that on its own is a full, correct A-level answer: it states the answer itself (the cause, the mechanism, the fact, the difference), never an introduction that only names the topic. Wrong: "Fotosyntes är en viktig process i växterna." Right: "Växten använder ljusenergi för att bygga glukos av koldioxid och vatten, och syre blir över."
-- "rest": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: it builds on the short answer with the concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Never repeat or rephrase the short answer. Short + rest together are about <long_words> words or fewer (count them); go over only when the answer would otherwise miss a concept or connection an A-level answer needs, and then by at most a fifth. Never pad an answer to reach the number.
+- "rest": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: it builds on the short answer with the concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Never repeat or rephrase the short answer. Short + rest together are about <long_words> words and never more (count them; K110: longer answers are cut in code after the last whole sentence that fits, so put the most important content first). Never pad an answer to reach the number.
 - The grade never lowers the quality; it only decides which concepts are reasonable (no university concepts in åk 7-9).
 - Base the answers on <notes>. K97 (O79): never add a cause, motive, mechanism, consequence, advice or general claim the notes do not give ("efter blodbadet var han själv i fara", "Latin förstod bara de lärda", "banker utgår från styrräntan", "sänk volymen i hörlurarna" are wrong when the notes do not say them); when the notes give no reason, say so in a few words instead of explaining. School knowledge only to name or define a concept the notes use, only facts you are certain of (textbook-level), and never contradict the notes; leave out a detail rather than guess it (O55: "stäppgräs har korta rötter" was wrong). Every fact must be correct: work every number out before you write it. Never add history, causes or examples the question did not ask for. Never add a general rule about a whole group ("alla", "alltid", "aldrig", "inga", "kan alltså vara") that the notes do not state (O63: "Alla föreningar kan alltså vara molekyler" is wrong: salt is a compound but not molecules).
 - The text is read aloud: plain spoken sentences, no markdown, lists, headings, brackets, abbreviations or symbols. K97 (O79): write numbers, years, dates, decimals and percentages with digits exactly as the notes have them ("1527", "85 decibel", "340 meter per sekund", "2 procent", "den 6 juni 1523"): the voice turns them into words, and digits are never mixed up. Write formulas and symbols in words ("koldioxid", not "CO2"; "pi", not "π"). Never mention the notes, the material, the text, the book, the exam or the grade: the student only hears the answer ("i materialet", "enligt texten" are wrong).
@@ -299,13 +299,13 @@ export async function shortenQuestions(
  */
 export const SYSTEM_PROMPT_DRILL_FINAL_CHECK =
   `You check the finished list of questions for a spoken practice exam against the material it was made from. You get <material> and <questions> (JSON: i and q). Return ONLY {"questions": [...], "sources": [...]} with an entry in "questions" for each question you change or remove (none = []):
-- Every fact a question takes for granted (who, what, which war, who owed whom, a cause, a result, a date) must be what the material says. When a question takes for granted something the material does not say, or says differently, rewrite it as little as possible so that it assumes only what the material says: {"i": N, "q": "..."}. Example: the material says "skulder till Lübeck efter kriget" and the war was against Denmark; "Varför behövde kronan pengar efter kriget med Lübeck?" is wrong; write "Varför hade kronan skulder till Lübeck?".
+- Every fact a question takes for granted (who, what, which war, who owed whom, a cause, a result, a date) must be what the material says. When a question takes for granted something the material does not say, or says differently, rewrite it as little as possible so that it assumes only what the material says: {"i": N, "q": "..."}. Example: the material says "skatten höjdes efter kriget mot Ryssland" and nothing about why; "Varför höjdes skatten efter kriget mot Polen?" is wrong twice (the wrong war, and a cause the material does not give); write "Vad hände med skatten efter kriget mot Ryssland?". K110 (Oscar O91 F1): never rewrite into a why-question whose cause the material does not state.
 - A why-question whose cause the material does not give: rewrite it into an understanding question the material does carry, never into a what-, when- or who-question (D230): "Förklara hur X hänger ihop med Y", "Vad blev följden av X?", "Jämför X och Y", "Hur påverkade X Y?" (or the same in the exam's language): {"i": N, "q": "..."}. The new question may only ask about a link the material itself makes.
 - At least half of the questions must be understanding questions (why, how, explain, compare, what followed). When fewer are, rewrite plain recall questions (what is, when, who, which) into understanding questions the material carries, the earliest first, until half are.
 - A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {"i": N, "drop": true, "same_as": M}. Two questions on one topic that ask different things both stay.
 - A question the material does not answer (a how or why whose way or cause it never gives): rewrite it into one about the same part that the material answers (D230 forms first). A question that asks two things, of which the material answers one: keep only that one (K106, Oscar).
-- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return "sources": [{"i": N, "s": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer. Two questions answered by the same sentence(s) ask the same thing for the student, even when worded differently.
-- Never change anything else: same language, same length or shorter, clear when only heard. Return {"questions": [...], "sources": [...]}. No other text.`;
+- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return "sources": [{"i": N, "s": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer, the sentence that holds the main answer first, and "a": the right answer in one short sentence, in the exam's language, said the way the material says it (K109). Two questions answered by the same sentence(s), or with the same answer, ask the same thing for the student, even when worded differently.
+- Never change anything else: same language, same length or shorter, clear when only heard. Return {"questions": [...], "sources": [{"i": N, "s": [...], "a": "..."}, ...]}. No other text.`;
 
 /**
  * K106 (Oscar's K102 omtest F1, Vasa 14: "Vad var fogdarnas uppgift …, och varför skapade han en egen här?" was answered
@@ -315,7 +315,10 @@ export function oneAsk(q: string): string {
   // live 18:00 (Vasa): "Vad var Dackefejden och varför var den viktig?" (also without the comma)
   const m = /^(.{12,}?),\s+(?:och|and)\s+(?:varför|hur|vad|vilk\p{L}*|när|var|why|how|what|which|when|where)\s+[^?]{6,}\?$/iu.exec(q.trim()) ??
     /^((?:vad|vem|vilk\p{L}*|när|var|what|who|which|when)\s.{6,}?)\s+(?:och|and)\s+(?:varför|hur|vad|why|how|what)\s+[^?]{6,}\?$/iu.exec(q.trim());
-  return m && words(m[1]) >= 3 ? m[1].replace(/[\s,]+$/, "") + "?" : q;
+  if (m && words(m[1]) >= 3) return m[1].replace(/[\s,]+$/, "") + "?";
+  // K108 (Oscar omtest K107: "… andrahandskonsument? Ge exempel?"): a second ask after the question mark goes
+  const two = /^(.{12,}?\?)\s+\S[^?]{2,}\?$/u.exec(q.trim());
+  return two && words(two[1]) >= 3 ? two[1] : q;
 }
 
 /**
@@ -359,32 +362,63 @@ export async function refillQuestions(
   n: number,
   material: string,
   signal?: AbortSignal,
+  used: number[] = [],
 ): Promise<{ questions: string[]; usage: StepUsage | null }> {
   if (n <= 0 || !material) return { questions: [], usage: null };
-  try {
-    const r = await runLLM(provider, {
-      system: SYSTEM_PROMPT_DRILL_REFILL,
-      // K106: two more than needed, since some may be the same as a kept question in other words
-      user: `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n<kept>${sanitizeTagged(JSON.stringify(kept))}</kept>\n<count>${n + 2}</count>`,
-      maxTokens: 150 + (n + 2) * 80,
-      cacheSystem: true,
-      model: cfg.answerModel,
-      timeoutMs: 40_000,
-      signal,
-    }, cfg.answerPriceIn, cfg.answerPriceOut);
-    const out: string[] = [];
-    const j = firstJson(r.text);
-    for (const x of Array.isArray(j?.questions) ? j!.questions as unknown[] : []) {
-      const q = oneAsk(cleanQuestion(x)); // K106 (live 18:24: "Vilka ämnen …, och hur tar växterna upp dem?" came from here)
-      if (!q || words(q) < 2 || leansOnMaterial(q) || out.length >= n) continue;
-      if ([...kept, ...out].some((k) => k.toLowerCase() === q.toLowerCase() || nearDuplicate(k, q))) continue;
-      out.push(q);
+  // K108 (live 16:52, ekosystem 5/6: a refill asked about "en tiondel av energin" again): with the sentences the kept
+  // questions use, the material comes numbered and the new questions go to the other sentences
+  const numbered = used.length ? numberedSentences(material).map((t, k) => `[${k + 1}] ${t}`).join("\n") : "";
+  const out: string[] = [];
+  const rejected: string[] = [];
+  const skipped = { parse: 0, empty: 0, material: 0 };
+  let usage: StepUsage | null = null;
+  // K109 (live 17:35, printing 11/14: every refill question was a repeat): when one call leaves the exam short, one more
+  // call with what is now kept and what was a repeat (no extra call when the first one fills it)
+  for (let round = 0; round < 2 && out.length < n; round++) {
+    try {
+      const want = n - out.length;
+      const r = await runLLM(provider, {
+        system: SYSTEM_PROMPT_DRILL_REFILL,
+        // K106: two more than needed, since some may be the same as a kept question in other words
+        user: (numbered
+          ? `<material>\n${sanitizeTagged(numbered)}\n</material>\n<used_sentences>${used.join(", ")}</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n`
+          : `<material>${sanitizeTagged(material.slice(0, 8000))}</material>\n`) +
+          `<kept>${sanitizeTagged(JSON.stringify([...kept, ...out]))}</kept>\n` +
+          (rejected.length ? `<rejected>${sanitizeTagged(JSON.stringify(rejected.slice(0, 12)))}</rejected>\nThese ask what a kept question asks: never write them or the like again.\n` : "") +
+          `<count>${want + 2}</count>`,
+        maxTokens: 150 + (want + 2) * 80,
+        cacheSystem: true,
+        model: cfg.answerModel,
+        timeoutMs: 40_000,
+        signal,
+      }, cfg.answerPriceIn, cfg.answerPriceOut);
+      const u0 = usage as StepUsage | null;
+      usage = u0
+        ? { ...u0, input_tokens: u0.input_tokens + r.usage.input_tokens, output_tokens: u0.output_tokens + r.usage.output_tokens, est_cost_usd: u0.est_cost_usd + r.usage.est_cost_usd, ms: u0.ms + r.usage.ms }
+        : r.usage;
+      const j = firstJson(r.text);
+      const got0 = Array.isArray(j?.questions) ? j!.questions as unknown[] : [];
+      if (!got0.length) skipped.parse++;
+      for (const x0 of got0) {
+        // K110 (printing 0 of 3 with 0 repeats): {"i", "q"} or {"question"} objects, as in the last check's format
+        const x = x0 && typeof x0 === "object" ? (x0 as Record<string, unknown>).q ?? (x0 as Record<string, unknown>).question : x0;
+        const q = oneAsk(cleanQuestion(x));
+        if (!q || words(q) < 2) skipped.empty++;
+        else if (leansOnMaterial(q)) skipped.material++; // K106 (live 18:24: "Vilka ämnen …, och hur tar växterna upp dem?" came from here)
+        if (!q || words(q) < 2 || leansOnMaterial(q) || out.length >= n) continue;
+        if ([...kept, ...out].some((k) => k.toLowerCase() === q.toLowerCase() || nearDuplicate(k, q))) {
+          rejected.push(q);
+          continue;
+        }
+        out.push(q);
+      }
+    } catch (e) {
+      console.warn("drill_refill_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
+      break;
     }
-    return { questions: out, usage: r.usage };
-  } catch (e) {
-    console.warn("drill_refill_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
-    return { questions: [], usage: null };
   }
+  if (out.length < n) console.log("drill_refill_short", JSON.stringify({ wanted: n, got: out.length, repeats: rejected.length, ...skipped }));
+  return { questions: out, usage };
 }
 
 /** K107: the material as numbered sentences for the last check (paragraph lines, then sentence ends), at most 8 000 characters. */
@@ -409,6 +443,9 @@ export function numberedSentences(material: string, maxChars = 8000): string[] {
  */
 export function sameSource(a: number[] | undefined, b: number[] | undefined): boolean {
   if (!a?.length || !b?.length) return false;
+  // K108 (Oscar omtest K107: ekosystem 5/6/7 all "Bara ungefär en tiondel av energin …"): the same main sentence (listed
+  // first) is the same answer, even when the supporting sentences differ
+  if (a[0] === b[0]) return true;
   const A = new Set(a), B = new Set(b);
   return [...B].every((x) => A.has(x)) || [...A].every((x) => B.has(x));
 }
@@ -421,13 +458,13 @@ export async function finalCheck(
   parts: number[],
   material: string,
   signal?: AbortSignal,
-): Promise<{ questions: string[]; parts: number[]; usage: StepUsage | null; fixed: number; dropped: number }> {
+): Promise<{ questions: string[]; parts: number[]; usage: StepUsage | null; fixed: number; dropped: number; used?: number[] }> {
   if (questions.length < 2 || !material) return { questions, parts, usage: null, fixed: 0, dropped: 0 };
   try {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_FINAL_CHECK,
       user: `<material>\n${sanitizeTagged(numberedSentences(material).map((t, k) => `[${k + 1}] ${t}`).join("\n"))}\n</material>\n<questions>${sanitizeTagged(JSON.stringify(questions.map((q, i) => ({ i, q }))))}</questions>`,
-      maxTokens: 200 + questions.length * 75,
+      maxTokens: 200 + questions.length * 110, // K109: + a one-sentence answer per question
       cacheSystem: true,
       model: cfg.answerModel,
       timeoutMs: 40_000,
@@ -438,10 +475,13 @@ export async function finalCheck(
     let fixed = 0;
     const reply = firstJson(r.text);
     const src = new Map<number, number[]>();
+    const ans = new Map<number, string>();
     for (const x of Array.isArray(reply?.sources) ? reply!.sources as Record<string, unknown>[] : []) {
       const i = Number(x?.i);
       const ss = Array.isArray(x?.s) ? (x!.s as unknown[]).map(Number).filter((k) => Number.isInteger(k) && k > 0).slice(0, 3) : [];
       if (Number.isInteger(i) && i >= 0 && i < questions.length && ss.length) src.set(i, ss);
+      const a = typeof x?.a === "string" ? x.a.trim().slice(0, 400) : "";
+      if (Number.isInteger(i) && i >= 0 && i < questions.length && a) ans.set(i, a);
     }
     for (const x of Array.isArray(reply?.questions) ? reply!.questions as Record<string, unknown>[] : []) {
       const i = Number(x?.i);
@@ -467,6 +507,20 @@ export async function finalCheck(
         }
       }
     }
+    // K109 (D239): the same one-sentence answer as an earlier question that stays (k102-measure's measure) = the same
+    // question, also when the sentences differ (Oscar's ekosystem 5/6/7)
+    let sameAns = 0;
+    for (let i = 1; i < out.length; i++) {
+      if (drop.has(i) || !ans.has(i)) continue;
+      for (let k = 0; k < i; k++) {
+        if (!drop.has(k) && ans.has(k) && sameAnswer(ans.get(k)!, ans.get(i)!)) {
+          drop.add(i);
+          sameAns++;
+          break;
+        }
+      }
+    }
+    if (sameAns) console.log("drill_same_answer", JSON.stringify({ dropped: sameAns, answers: ans.size, questions: out.length }));
     if (sameSrc) console.log("drill_same_source", JSON.stringify({ dropped: sameSrc, sources: src.size, questions: out.length }));
     // never the first, at most a third, and never the last question of a part (every part keeps one)
     const left = new Map<number, number>();
@@ -479,10 +533,12 @@ export async function finalCheck(
       left.set(p, (left.get(p) ?? 0) - 1);
       gone.push(i);
     }
+    // K108: the sentences the kept questions already ask about (the refill goes to other sentences)
+    const used = [...new Set(out.flatMap((_, i) => (gone.includes(i) ? [] : src.get(i) ?? [])))].sort((a, b) => a - b);
     return {
       questions: out.filter((_, i) => !gone.includes(i)),
       parts: parts.filter((_, i) => !gone.includes(i)),
-      usage: r.usage, fixed, dropped: gone.length,
+      usage: r.usage, fixed, dropped: gone.length, used,
     };
   } catch (e) {
     console.warn("drill_final_check_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
@@ -513,6 +569,32 @@ export function composeLong(short: string, rest: string): string {
   if (!sh) return r;
   if (!r) return sh;
   return `${/[.!?]$/.test(sh) ? sh : `${sh}.`} ${r}`;
+}
+
+/** K110: sentences, split after . ! or ? followed by a space. */
+function sentencesOf(t: string): string[] {
+  return t.trim() ? t.trim().split(/(?<=[.!?])\s+/) : [];
+}
+
+/**
+ * K110 (D241, Oscar O91): the long answer never goes over long_words, so its cost is known before the exam is made. The
+ * short answer always stays; the rest keeps the whole sentences that fit (the most important ones come first). `kept` is
+ * how many sentences of the rest stayed (-1 = unchanged), so the screen text keeps the same sentences.
+ */
+export function capLong(long: string, short: string, maxWords: number): { long: string; kept: number } {
+  if (words(long) <= maxWords) return { long, kept: -1 };
+  const sh = long.startsWith(short) ? short : sentencesOf(long)[0] ?? "";
+  const rest = sentencesOf(long.slice(sh.length));
+  let n = words(sh), kept = 0;
+  while (kept < rest.length && n + words(rest[kept]) <= maxWords) n += words(rest[kept++]);
+  return { long: [sh, ...rest.slice(0, kept)].join(" ").trim(), kept };
+}
+
+/** K110: the screen's long answer cut to the same sentences as the spoken one (its short part, then `kept` of the rest). */
+export function capScreenLong(screenLong: string, screenShort: string, kept: number): string {
+  if (kept < 0) return screenLong;
+  const head = screenLong.startsWith(screenShort) ? screenShort : sentencesOf(screenLong)[0] ?? "";
+  return [head, ...sentencesOf(screenLong.slice(head.length)).slice(0, kept)].join(" ").trim();
 }
 
 /**
@@ -581,8 +663,10 @@ export function yearsToDigits(text: string): string {
   });
 }
 
-export function parseAnswers(text: string, strict = false): Map<string, { short: string; long: string; question?: string; screen?: Screen }> {
-  const out = new Map<string, { short: string; long: string; question?: string; screen?: Screen }>();
+/** K111: the answer to the original question that the model gives with a rewrite (no screen text: kept simple). */
+export interface OriginalAnswer { short: string; long: string }
+export function parseAnswers(text: string, strict = false): Map<string, { short: string; long: string; question?: string; screen?: Screen; original?: OriginalAnswer }> {
+  const out = new Map<string, { short: string; long: string; question?: string; screen?: Screen; original?: OriginalAnswer }>();
   const j = firstJson(text);
   for (const a of Array.isArray(j?.answers) ? j!.answers as Record<string, unknown>[] : []) {
     const id = oneLine(a?.id, 40);
@@ -610,7 +694,18 @@ export function parseAnswers(text: string, strict = false): Map<string, { short:
       };
       if (!Object.keys(screen).length) screen = undefined;
     }
-    out.set(id, { short, long, ...(question ? { question } : {}), ...(screen ? { screen } : {}) });
+    // K111: the answer to the question as it was asked, when the model rewrote it
+    let original: OriginalAnswer | undefined;
+    const o = (a?.original ?? null) as Record<string, unknown> | null;
+    if (question && o && typeof o === "object") {
+      let os = spokenText(o.short, 600);
+      const or = spokenText(o.rest, 3000);
+      if (words(os) >= 2 && (!or || /[.!?]["”')]?$/.test(or))) {
+        if (!/[.!?]$/.test(os)) os += ".";
+        original = { short: os, long: composeLong(os, or) };
+      }
+    }
+    out.set(id, { short, long, ...(question ? { question } : {}), ...(screen ? { screen } : {}), ...(original ? { original } : {}) });
   }
   return out;
 }
@@ -667,7 +762,7 @@ export function contextLine(subject: string, grade: string): string {
 /** Step 2: the answers in batches of 5 in parallel; a batch that fails or misses a question is asked once more. */
 /** K106: a short answer that says the notes do not answer the question ("framgår inte här", "is not explained here"). */
 export function notAnswered(short: string): boolean {
-  return /(?:framgår inte|är inte känt|inte känt här|förklaras inte(?: närmare)? här|beskrivs inte(?: närmare)? här|står inte här|sägs inte här|går inte att säga här|is not (?:explained|stated|known|described|said)(?: further)? here|isn't (?:explained|stated|said) here|not explained here|doesn't say why|does not say why)/i.test(short);
+  return /(?:framgår inte|inte känt|förklaras inte(?: närmare)? här|beskrivs inte(?: närmare)? här|står inte här|sägs inte här|går inte att säga här|is not (?:explained|stated|known|described|said)(?: further)? here|isn't (?:explained|stated|said) here|not explained here|doesn't say why|does not say why)/i.test(short);
 }
 export const MUST_FIX =
   "<must_fix>yes</must_fix> The notes do not answer this question as it is asked (your last answer said so). Put a new question in \"question\" about the same part of the notes that the notes do answer (an understanding question when they carry one: how, what followed, explain how X is linked to Y, compare), and answer that one. Never answer that something is not known.";
@@ -692,7 +787,9 @@ export async function answerItems(
   signal?: AbortSignal,
 ): Promise<{ items: DrillItem[]; usage: StepUsage }> {
   const steps: StepUsage[] = [];
-  const got = new Map<string, { short: string; long: string; question?: string; screen?: Screen }>();
+  const got = new Map<string, { short: string; long: string; question?: string; screen?: Screen; original?: OriginalAnswer }>();
+  // K111: the latest answer to each question as it was asked (an unchanged answer, or "original" given with a rewrite)
+  const asAsked = new Map<string, { short: string; long: string; screen?: Screen }>();
   const lang = examLanguage(ctx.subject);
   const ask = async (batch: { id: string; question: string }[], strict = true, mustFix: boolean | "fact" = false, others: string[] = []) => {
     const r = await runLLM(provider, {
@@ -719,6 +816,8 @@ export async function answerItems(
       const q = ctx.mayFix && a.question && a.question.toLowerCase() !== b.question.toLowerCase() ? a.question : b.question;
       if (strict && isCircular(q, a.short)) continue; // K66 (O63 punkt 1): asked again; accepted on the last try
       got.set(id, { ...a, question: q !== b.question ? q : undefined });
+      if (q === b.question) asAsked.set(id, { short: a.short, long: a.long, ...(a.screen ? { screen: a.screen } : {}) });
+      else if (a.original) asAsked.set(id, a.original);
     }
   };
   const batches: { id: string; question: string }[][] = [];
@@ -735,18 +834,19 @@ export async function answerItems(
   // K106 (Oscar's K102 omtest F1, Vasa: "Varför han flydde till Dalarna framgår inte här, men …"): a generated question
   // the notes do not answer is asked once more with the order to replace it by one they answer (one by one, in parallel)
   if (ctx.mayFix) {
-    const unanswered = items.filter((it) => { const a = got.get(it.id); return a && notAnswered(a.short); });
+    // K110 (Oscar O91 F1, Vasa 4: the LONG answer said "… framgår inte"): the long answer is checked too
+    const unanswered = items.filter((it) => { const a = got.get(it.id); return a && notAnswered(a.long || a.short); });
     if (unanswered.length) {
       const before = new Map(unanswered.map((it) => [it.id, got.get(it.id)!]));
       const othersOf = (id: string) => items.filter((x) => x.id !== id).map((x) => got.get(x.id)?.question ?? x.question);
       await Promise.allSettled(unanswered.map((it) => ask([it], true, true, othersOf(it.id))));
       // K106 (Oscar omtest K106 F1: "… är inte känt här" after the first try): once more, a plain fact question
-      const still = unanswered.filter((it) => { const a = got.get(it.id); return !a || notAnswered(a.short); });
+      const still = unanswered.filter((it) => { const a = got.get(it.id); return !a || notAnswered(a.long || a.short); });
       if (still.length) await Promise.allSettled(still.map((it) => ask([it], true, "fact", othersOf(it.id))));
       let fixed = 0;
       for (const it of unanswered) {
         const a = got.get(it.id);
-        if (!a || notAnswered(a.short)) got.set(it.id, before.get(it.id)!); // no better question: the first answer stays
+        if (!a || notAnswered(a.long || a.short)) got.set(it.id, before.get(it.id)!); // no better question: the first answer stays
         else if (a.question) fixed++;
       }
       console.log("drill_unanswered", JSON.stringify({ found: unanswered.length, fixed }));
@@ -775,6 +875,24 @@ export async function answerItems(
       console.log("drill_fix_same", JSON.stringify({ found: bad.length }));
     }
   }
+  // K111 (Deangelo 20:05, K109 proposal; live Vasa 6/8): a rewritten question whose short answer says what another
+  // question's says gets back its question as it was asked and that answer (no new call), when that answer answers it and
+  // is not a duplicate itself; else the rewrite stays (logged). The answer step changes nothing else.
+  if (ctx.mayFix) {
+    let back = 0, kept = 0;
+    for (const it of items) {
+      const a = got.get(it.id);
+      if (!a?.question) continue;
+      const others = items.filter((x) => x.id !== it.id).map((x) => got.get(x.id)).filter((x): x is NonNullable<typeof x> => !!x);
+      if (!others.some((x) => sameAnswer(x.short, a.short))) continue;
+      const o = asAsked.get(it.id);
+      if (o && !notAnswered(o.long || o.short) && !others.some((x) => sameAnswer(x.short, o.short))) {
+        got.set(it.id, { short: o.short, long: o.long, ...(o.screen ? { screen: o.screen } : {}) });
+        back++;
+      } else kept++;
+    }
+    if (back || kept) console.log("drill_rewrite_same", JSON.stringify({ back, kept }));
+  }
   if (!got.size) {
     const err = first.find((r) => r.status === "rejected") as PromiseRejectedResult | undefined;
     if (err) throw err.reason;
@@ -785,9 +903,13 @@ export async function answerItems(
     items: items.map((it) => {
       const a = got.get(it.id);
       if (!a) return { ...it, error: "Svaret kunde inte skrivas. Gör om frågan." };
-      const out: DrillItem = { ...it, question: a.question ?? it.question, short: a.short, long: a.long };
+      // K110 (D241): the long answer within long_words, the screen's long answer cut to the same sentences
+      const cap = capLong(a.long, a.short, ctx.longWords);
+      const out: DrillItem = { ...it, question: a.question ?? it.question, short: a.short, long: cap.long };
       // the display question belongs to the question that was answered; dropped when it was fixed without one
       const screen: Screen = { ...(a.screen ?? {}) };
+      if (screen.long) screen.long = capScreenLong(screen.long, screen.short ?? a.short, cap.kept);
+      if (cap.kept >= 0) console.log("drill_long_capped", JSON.stringify({ words: words(a.long), max: ctx.longWords, kept_sentences: cap.kept }));
       // K97 (O79 F4): years in words on screen become digits, also when the model gave no display text
       for (const k of ["short", "long"] as const) {
         const shown = yearsToDigits(screen[k] ?? out[k]!);
@@ -883,7 +1005,7 @@ export function docxXmlToText(xml: string): string {
 export async function docxText(base64: string): Promise<string> {
   const data = base64.replace(/^data:[^,]+,/, "").replace(/\s+/g, "");
   if (!data) throw new HttpError(400, "invalid_request", "data (base64 .docx) is required");
-  if (data.length > DRILL_LIMITS.docxBase64) throw new HttpError(413, "payload_too_large", "The document is larger than 10 MB");
+  if (data.length > DRILL_LIMITS.docxBase64) throw new HttpError(413, "payload_too_large", "Word-filen är större än 10 MB. Spara den som PDF eller dela upp den.");
   let bytes: Uint8Array;
   try {
     bytes = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));
@@ -1013,6 +1135,39 @@ export function drillImages(pages: unknown): Img[] {
 }
 
 /** The cost weight of an action in the exam rate limiter (a drill is several model calls). */
+/**
+ * K109 (D239, Oscar O90) + K110 (D241, Oscar O91): what a drill will cost in credits, before any model call, so that no
+ * exam is made that the credits cannot save. Credits are the shown characters of new audio (K90, the same count as action
+ * "cost"): a question's text and its long answer. K110: an UPPER bound. The long answer is capped in code at long_words
+ * (capLong), so its characters are at most long_words × the characters per word; measured live on Oscar's five materials
+ * with 3 and 12 questions (k110-cost.py, 2026-11-19): at most 6.23 characters per word and 72 per question on average,
+ * real cost 404–548 per question. Counted as 75 + 6.3 per word (642 at 90 words), at least 17 % over the highest.
+ */
+export const COST_QUESTION_CHARS = 75;
+export const COST_CHARS_PER_WORD = 6.3;
+export function estimatedCostPerQuestion(longWords: number): number {
+  return COST_QUESTION_CHARS + Math.round(COST_CHARS_PER_WORD * longWords);
+}
+
+/** K109: the estimate for a drill or drill_answers request: how many questions, the cost and the cost per question. */
+export function estimateDrillCost(action: string, b: Record<string, unknown>): { count: number; cost: number; per: number } | null {
+  const longWords = intIn(b.long_words, DRILL_LIMITS.longWordsMin, DRILL_LIMITS.longWordsMax, DRILL_LIMITS.longWordsDefault);
+  const long = Math.round(COST_CHARS_PER_WORD * longWords);
+  if (action === "drill") {
+    const count = intIn(b.questions, DRILL_LIMITS.questionsMin, DRILL_LIMITS.questionsMax, DRILL_LIMITS.questionsDefault);
+    const per = estimatedCostPerQuestion(longWords);
+    return { count, cost: count * per, per };
+  }
+  if (action === "drill_answers") {
+    const items = (Array.isArray(b.items) ? b.items : []).slice(0, DRILL_LIMITS.questionsMax + DRILL_LIMITS.extraQuestions);
+    if (!items.length) return null;
+    const qs = items.map((i) => typeof (i as { question?: unknown })?.question === "string" ? ((i as { question: string }).question.trim().length) : COST_QUESTION_CHARS);
+    const cost = qs.reduce((a, n) => a + n + long, 0);
+    return { count: items.length, cost, per: Math.ceil(cost / items.length) };
+  }
+  return null;
+}
+
 export const DRILL_WEIGHT: Record<string, number> = { drill: 4, drill_answers: 3, drill_one: 1 };
 
 export async function handleDrill(
@@ -1205,7 +1360,7 @@ export async function handleDrill(
       // K106 (Oscar's K102 omtest F3: printing 13/14, ljud 11/12): also what the coverage calls left short
       const missing = Math.max(fc.dropped, target - qs.length);
       if (missing > 0) {
-        const rf = await refillQuestions(provider, cfg, qs, missing, material, signal);
+        const rf = await refillQuestions(provider, cfg, qs, missing, material, signal, fc.used ?? []);
         if (rf.usage) steps.push(rf.usage);
         if (rf.questions.length) {
           const at = parts.length > 1 ? placeQuestions(rf.questions, parts) : rf.questions.map(() => 0);

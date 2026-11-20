@@ -192,6 +192,12 @@ export function isOwnerClaims(c: Record<string, unknown> | null, ownerEmails: st
     ownerEmails.map((e) => e.trim().toLowerCase()).filter(Boolean).includes(email);
 }
 
+/** K109 (Oscar O91): does the request come from GitHub Actions (sync after loadCiRanges)? */
+export function fromCi(req: Request): boolean {
+  const ip = clientIp(req);
+  return !!ip && inRanges(ip, ranges);
+}
+
 /** Is this request test traffic? (sync after loadCiRanges) */
 export function detectTest(req: Request, ownerEmails: string[] = []): TestInfo {
   const c = jwtClaims(req);

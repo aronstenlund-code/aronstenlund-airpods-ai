@@ -63,6 +63,68 @@ enum DrillMakingError: Error, Equatable {
     case refused(String)
     /// The server did not answer as K45 says (not deployed yet, offline, an error).
     case server(String)
+    /// A154 (K109/K110, D239, D241): the credits do not cover the exam that was asked for. Said by the server before
+    /// it makes anything, with how many questions fit.
+    case tooFewCredits(ExamRefusal)
+}
+
+/// K109/K110: the server's no to an exam the credits do not cover (402 `quota_exceeded` with `fits`). Nothing was
+/// made and nothing was counted.
+struct ExamRefusal: Equatable, Sendable {
+    /// The server's words ("Ett prov med 12 frågor kostar cirka 7 704 krediter. Du har 1 500 kvar, …").
+    var message: String
+    /// How many questions the credits cover. An upper bound (K110): an exam with this many can always be saved.
+    var fits: Int
+    /// The fewest questions an exam has (`min_questions`, 3).
+    var minQuestions: Int
+    /// Credits per question at the asked length of the long answers.
+    var perQuestion: Int?
+    /// What the asked exam would cost, about.
+    var cost: Int?
+    /// The credits that are left.
+    var left: Int?
+
+    var canMakeAnExam: Bool { fits >= minQuestions }
+}
+
+/// A154 (D239, D241): what a question of a new exam costs, as the server counts it, so that Nytt prov can say how
+/// many questions the credits cover before anything is made.
+struct ExamRoom: Equatable, Sendable {
+    /// Credits per question (an upper bound, K110: 75 + 6,3 per word of the long answer; 642 at 90 words).
+    var perQuestion: Int
+    /// The fewest questions an exam has.
+    var minQuestions: Int = 3
+    /// The length of the long answers the price is for (another length is another price).
+    var longWords: Int
+
+    init(perQuestion: Int, minQuestions: Int = 3, longWords: Int) {
+        self.perQuestion = perQuestion
+        self.minQuestions = minQuestions
+        self.longWords = longWords
+    }
+
+    /// From the server's no: its own price per question, or counted from how many it said fit.
+    init?(_ no: ExamRefusal, longWords: Int) {
+        if let per = no.perQuestion, per > 0 {
+            self.init(perQuestion: per, minQuestions: no.minQuestions, longWords: longWords)
+        } else if let left = no.left {
+            // `fits` questions fit and one more does not: a price between the two (none fit: more than is left).
+            self.init(perQuestion: no.fits > 0 ? max(1, left / no.fits) : left + 1, minQuestions: no.minQuestions, longWords: longWords)
+        } else {
+            return nil
+        }
+    }
+
+    func fits(left: Int) -> Int { perQuestion > 0 ? max(0, left) / perQuestion : DrillSettings.questionRange.upperBound }
+    func canMakeAnExam(left: Int) -> Bool { fits(left: left) >= minQuestions }
+
+    /// "Annars kostnaden före sparandet": the server's exact cost of the finished exam against what is left. No
+    /// answer (no network, an older server) is not a no: the server then decides at the save, as before.
+    static func covers(cost: DrillCost?, left: Int) -> Bool {
+        guard let cost else { return true }
+        if let enough = cost.enough { return enough }
+        return cost.cost <= (cost.remaining ?? left)
+    }
 }
 
 /// K45 (`POST /exam` `drill`, `drill_answers`, `drill_one`, `doc_text`). `MockDrillMaker` stands in until it is live
@@ -449,9 +511,22 @@ final class DrillClient: DrillMaking {
         struct Body: Decodable {
             struct Inner: Decodable { var code: String?; var message: String? }
             var error: Inner?
+            // K109/K110: with a 402 before the exam is made
+            var fits: Int?
+            var min_questions: Int?
+            var per_question: Int?
+            var cost: Int?
+            var remaining: Int?
+            var left: Int?
         }
-        if (400..<500).contains(status), status != 401,
-           let message = (try? JSONDecoder().decode(Body.self, from: data))?.error?.message, !message.isEmpty {
+        let body = try? JSONDecoder().decode(Body.self, from: data)
+        if (400..<500).contains(status), status != 401, let message = body?.error?.message, !message.isEmpty {
+            // A154 (D239, D241): the credits do not cover the exam; how many questions fit comes with the no.
+            if status == 402, let fits = body?.fits {
+                return .tooFewCredits(ExamRefusal(message: message, fits: max(0, fits), minQuestions: body?.min_questions ?? 3,
+                                                  perQuestion: body?.per_question, cost: body?.cost,
+                                                  left: body?.remaining ?? body?.left))
+            }
             return .refused(message)
         }
         return .server("HTTP \(status)")
@@ -469,6 +544,7 @@ extension DrillMakingError {
         case .server(let why) where why == "no text":
             "EarMind hittade ingen text att läsa upp. Lägg till fler sidor eller mer text." // A105
         case .refused(let message): message
+        case .tooFewCredits(let no): no.message // A154: the server's own words
         case .server: "Det gick inte att skapa frågorna. Försök igen." // A85
         }
     }

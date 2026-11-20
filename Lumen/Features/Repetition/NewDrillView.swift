@@ -22,14 +22,17 @@ struct NewDrillView: View {
     var onLater: (() -> Void)? = nil
     /// The screenshots (A106): Läs upp texten chosen, or its "Stämmer det här?" with this text.
     var stagedReading: StagedReading? = nil
+    /// A154: the server's no to the asked number, with this many that fit, for the screenshots.
+    var stagedFits: Int? = nil
     enum StagedReading { case choice, confirm(DrillTextDraft) }
     @Environment(\.dismiss) private var dismiss
     @Environment(\.dynamicTypeSize) private var typeSize
 
-    init(model: RepetitionModel, onSaved: @escaping (Drill) -> Void, stagedProblem: String? = nil) {
+    init(model: RepetitionModel, onSaved: @escaping (Drill) -> Void, stagedProblem: String? = nil, stagedFits: Int? = nil) {
         self.model = model
         self.onSaved = onSaved
         self.stagedProblem = stagedProblem
+        self.stagedFits = stagedFits
     }
 
     /// The first start (A94): `NewDrillView(model: model, onLater: { … }) { drill in … }`.
@@ -70,6 +73,12 @@ struct NewDrillView: View {
     @State private var isAnswering = false
     @State private var stepsDone = 0
     @State private var readingDocument = false
+    /// A154 (D241): "Fyll på" opens the credits sheet; the server's no to the asked number of questions, when some
+    /// fit (the number is then lowered to what fits); and the credits not covering the finished exam.
+    @State private var showsCredits = false
+    @State private var fitsAfterNo: Int?
+    @State private var costStopsSave = false
+    @State private var isSaving = false
     /// A116 (D204): "Klistra in länk".
     @State private var askingLink = false
     @State private var link = ""
@@ -125,6 +134,9 @@ struct NewDrillView: View {
             }
         }
         .sheet(isPresented: $showsHelp) { HelpChatView(model: model, suggestion: "Vad kan jag fota?") }
+        // A154 (D241): the packs, from "Fyll på". When the sheet closes the credits are read again, and Nytt prov
+        // proposes what they cover now.
+        .sheet(isPresented: $showsCredits, onDismiss: creditsClosed) { CreditsSheet(model: model) }
         .sheet(isPresented: $isTakingPhotos) { camera.ignoresSafeArea() }
         .sheet(isPresented: $isAddingText, onDismiss: offerImport) { textSheet }
         .sheet(item: $chatGPT) { start in
@@ -199,6 +211,30 @@ struct NewDrillView: View {
                 Section {
                     Text(verbatim: problem)
                     if !material.isEmpty { Button("Försök igen") { create(correction: nil) } } // A85
+                }
+            }
+
+            if make == .questions, !model.quotaUsedUp {
+                if model.newDrillHasNoRoom, let line = model.newDrillRoomLine {
+                    // A154 (D241): the credits cover fewer than three questions. Said here, with Fyll på, instead of
+                    // proposing an exam that cannot be saved.
+                    Section {
+                        Text(verbatim: line)
+                        if model.shop != nil { Button(ShopText.refill) { showsCredits = true } }
+                    }
+                } else if let fitsAfterNo {
+                    // A154 (K109/K110): the server said no to the asked number before making anything; this many fit.
+                    Section {
+                        Text(verbatim: CreditText.examFits(fitsAfterNo))
+                        if !material.isEmpty {
+                            Button {
+                                create(correction: nil)
+                            } label: {
+                                Text(verbatim: "Skapa \(DrillText.questions(fitsAfterNo))")
+                            }
+                        }
+                        if model.shop != nil { Button(ShopText.refill) { showsCredits = true } }
+                    }
                 }
             }
 
@@ -340,13 +376,13 @@ struct NewDrillView: View {
                 } header: {
                     Text("Prov")
                 } footer: {
-                    Text("Varje fråga får ett kort och ett långt svar.")
+                    questionsFooter
                 }
             } else if make == .questions {
                 Section {
                     questionStepper
                 } footer: {
-                    Text("Varje fråga får ett kort och ett långt svar.") // D162: both answers are always made
+                    questionsFooter // D162: both answers are always made
                 }
 
                 GradeChoice(grade: $grade) // A88
@@ -356,9 +392,10 @@ struct NewDrillView: View {
             // Kelly N3: the reason while the button is grey. A84 (D155): else what is left of the month's questions.
             MainActionBar(title: make == .text ? "Skapa uppläsning" : "Skapa frågor",
                           note: model.quotaUsedUp ? "Inga frågor kvar den här månaden." // Kelly: the long line is at the top
+                              : hasNoRoom ? "Krediterna räcker inte till ett prov." // A154 (D241): the long line is at the top
                               : model.isOffline ? (make == .text ? "Skapa uppläsning kräver internet." : "Skapa frågor kräver internet.")
                               : material.isEmpty ? "Lägg till minst en sida, bild eller text." : model.quota.map { $0.line + "." },
-                          isDisabled: material.isEmpty || readingDocument || model.quotaUsedUp || model.isOffline) {
+                          isDisabled: material.isEmpty || readingDocument || model.quotaUsedUp || model.isOffline || hasNoRoom) {
                 if make == .text { createText() } else { create(correction: nil) }
             }
         }
@@ -377,6 +414,11 @@ struct NewDrillView: View {
                     stage = .confirm
                 }
             }
+            if let stagedFits, fitsAfterNo == nil {
+                fitsAfterNo = stagedFits
+                settings.questions = stagedFits
+                if pasted.isEmpty { pasted = "Fotosyntes. Växter gör socker av koldioxid och vatten med ljusets energi." }
+            }
             if let stagedProblem, problem == nil {
                 problem = stagedProblem
                 if pasted.isEmpty { pasted = "Fotosyntes. Växter gör socker av koldioxid och vatten med ljusets energi." }
@@ -387,6 +429,31 @@ struct NewDrillView: View {
     /// Kelly (A99): "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 december."
     private static var usedUpLine: String {
         "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(ChatGPTImportView.nextMonth())."
+    }
+
+    /// A154 (D241): the credits cover no exam (questions only; a text read aloud is counted on its own length).
+    private var hasNoRoom: Bool { make == .questions && model.newDrillHasNoRoom }
+
+    /// Under Antal frågor: when the credits cover fewer questions than the standard, that is said too.
+    @ViewBuilder
+    private var questionsFooter: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            // (Not twice: after the server's no the same words stand at the top, with the button.)
+            if !model.newDrillHasNoRoom, fitsAfterNo == nil, let line = model.newDrillRoomLine { Text(verbatim: line) }
+            Text("Varje fråga får ett kort och ett långt svar.")
+        }
+    }
+
+    /// A154: after "Fyll på" the credits are read again, and the number of questions is what they cover now (never
+    /// more than the standard).
+    private func creditsClosed() {
+        Task {
+            await model.refreshQuota()
+            fitsAfterNo = nil
+            if costStopsSave { problem = nil; costStopsSave = false }
+            settings.questions = model.newDrillSettings.questions
+            capQuestions()
+        }
     }
 
     /// The stepper never stands above what is left (the quota may arrive after the form is shown).
@@ -549,6 +616,7 @@ struct NewDrillView: View {
             switch error {
             case .refused(let message): problem = message
             case .offline: problem = NetworkStatus.noNetworkLine
+            case .tooFewCredits(let no): problem = no.message
             case .noMaterial, .server: problem = FetchedPage.unreadableLine
             }
         }
@@ -632,6 +700,8 @@ struct NewDrillView: View {
 
     private func create(correction: String?) {
         problem = nil
+        fitsAfterNo = nil
+        costStopsSave = false
         stage = .making
         stepsDone = 0
         answering?.cancel()
@@ -664,7 +734,18 @@ struct NewDrillView: View {
                 writeAnswers()
             } catch {
                 guard !Task.isCancelled else { return }
+                if case .tooFewCredits(let no) = error, draft == nil {
+                    // A154 (D239, D241): nothing was made. The model has kept what the server said fits: the number
+                    // is lowered to that, or, when no exam fits, the form says so with Fyll på.
+                    stage = .material
+                    capQuestions()
+                    fitsAfterNo = no.canMakeAnExam ? settings.questions : nil
+                    let line = no.canMakeAnExam ? CreditText.examFits(settings.questions) : (model.newDrillRoomLine ?? no.message)
+                    AccessibilityNotification.Announcement(line).post()
+                    return
+                }
                 problem = error.userMessage
+                if case .tooFewCredits = error { costStopsSave = true } // the answers' no: Fyll på under the words
                 stage = draft == nil ? .material : .confirm
             }
         }
@@ -800,7 +881,13 @@ struct NewDrillView: View {
                 self.draft?.items = items
             } catch {
                 guard !Task.isCancelled else { return }
-                problem = "EarMind kunde inte skriva svaren just nu. Försök igen om en stund."
+                if case .tooFewCredits(let no) = error {
+                    // A154: the answers are counted on the questions as they came out, and the credits fell short.
+                    problem = no.message
+                    costStopsSave = true
+                } else {
+                    problem = "EarMind kunde inte skriva svaren just nu. Försök igen om en stund."
+                }
             }
             isAnswering = false
         }
@@ -862,6 +949,8 @@ struct NewDrillView: View {
                     Section {
                         Text(verbatim: problem)
                         if answersMissing && !isAnswering { Button("Försök igen") { self.problem = nil; writeAnswers() } }
+                        // A154: the credits do not cover it; the packs are one tap away.
+                        if costStopsSave, model.shop != nil { Button(ShopText.refill) { showsCredits = true } }
                     }
                 }
 
@@ -870,8 +959,8 @@ struct NewDrillView: View {
         }
         .safeAreaInset(edge: .bottom) {
             MainActionBar(title: isAnswering ? "Skriver svar …" : "Ser rätt ut",
-                          isBusy: isAnswering,
-                          isDisabled: answersMissing) {
+                          isBusy: isAnswering || isSaving,
+                          isDisabled: answersMissing || isSaving) {
                 if let draft { save(draft) }
             }
         }
@@ -884,8 +973,22 @@ struct NewDrillView: View {
                          summary: draft.summary, items: draft.items.filter { !$0.short.isEmpty },
                          questionCount: settings.questions, longWords: settings.length.words)
         made.voiceModel = voice // A84: sent with the first save
-        let drill = model.save(made)
-        onSaved(drill)
-        dismiss()
+        isSaving = true
+        let exam = made
+        Task {
+            defer { isSaving = false }
+            // A154 (D239, "annars kostnaden före sparandet"): the server's exact cost of the finished exam, asked
+            // before it is saved. An exam the credits do not cover is not saved and then refused: it stays here,
+            // with what it costs and Fyll på. No answer (no network) is not a no; the save goes on as before.
+            if let quota = model.quota, let cost = await model.examCost(exam), !ExamRoom.covers(cost: cost, left: quota.left) {
+                problem = CreditText.notEnough(cost: cost.cost, left: cost.remaining ?? quota.left, resetsDay: quota.resetsDay)
+                costStopsSave = true
+                return
+            }
+            costStopsSave = false
+            let drill = model.save(exam)
+            onSaved(drill)
+            dismiss()
+        }
     }
 }

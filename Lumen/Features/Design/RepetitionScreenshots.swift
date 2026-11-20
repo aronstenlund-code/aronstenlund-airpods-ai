@@ -31,6 +31,9 @@ enum RepetitionDemo {
                                       "repHomeNew", "repHomeStarted", "repSoundProblem", "repHomeSoundProblem",
                                       // A99 (D175, D176): no questions left this month; longer questions
                                       "repQuotaUsedUp", "repLength", "repLengthEdit", "repSoundProblemNone",
+                                      // A154 (D239, D241): Nytt prov when the credits cover no exam (Fyll på), and
+                                      // when they cover five questions of the asked twelve
+                                      "repNewNoRoom", "repNewFits",
                                       "repWaitingProblem",
                                       // A102 (K66 point 4): numbers and formulas shown as in a textbook
                                       "repNumbers", "repNumbersEdit",
@@ -71,6 +74,12 @@ enum RepetitionDemo {
                                       "repMotion", "repMotionReduced",
                                       // A150 (Kelly Ke83): the player of a said text pulled down by a finger, recorded
                                       "repMotionFold",
+                                      // A153 (D238): the keyboard up. A long card with the big field in focus, the
+                                      // same with the style field in focus, a short text, and the long card with
+                                      // the measured numbers under it
+                                      "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers",
+                                      // A153 (Kelly): the credits do not cover the text; "Fyll på" above the keyboard
+                                      "repShopShortKeyboard", "repShopShortKeyboardStyle",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -213,6 +222,8 @@ enum RepetitionDemo {
         UserDefaults.standard.removeObject(forKey: SayText.inPaceKey)
         SayText.stagedStyle = nil
         SayText.stagedVoicesSheet = false
+        SayText.stagedKeyboard = nil
+        SayText.stagedKeyboardNumbers = false
         // A83: demo schools and publications instead of the server; my school is set except for the empty list.
         model.publishing = DemoPublishing(empty: name == "repSchoolsEmpty", failure: DemoPublishing.failure(for: name),
                                           noSchools: name == "repSchoolSearchNone")
@@ -228,6 +239,15 @@ enum RepetitionDemo {
         model.store.save(drill)
         // A99: the month's questions are used up (D175); the server's length classes (D176).
         if name == "repQuotaUsedUp" { model.quota = DrillQuota(used: 15, limit: 15, resets: "2026-12-01", serverLeft: 0, suggest: 0) }
+        model.stageExamRoom(nil)
+        if name == "repNewNoRoom" || name == "repNewFits" { // A154: a new account's 1 500 credits, or 3 300
+            var credits = DrillQuota(used: 0, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = name == "repNewFits" ? 3300 : 1500
+            credits.resets_day = "1 december"
+            model.quota = credits
+            model.stageExamRoom(ExamRoom(perQuestion: 642, minQuestions: 3, longWords: model.longAnswerLength.words)) // K110
+        }
         if name == "repLength" || name == "repLengthEdit" { model.store.save(drillWithLengths) }
         // A104: the sound is being made (no file yet, nothing wrong); the month's questions ran out for an exam.
         if name == "repSoundMaking" { model.store.save(chemistry) }
@@ -281,6 +301,12 @@ enum RepetitionDemo {
             return
         }
         model.shop = nil
+        if name == "repNewNoRoom" || name == "repNewFits" { // A154: "Fyll på" is offered only when there is a shop
+            let shop = CreditShop(front: StagedStoreFront(), server: StagedPurchaseServer(),
+                                  defaults: UserDefaults(suiteName: "screenshot-shop") ?? .standard)
+            model.shop = shop
+            Task { await shop.load() }
+        }
         SayText.stagedRetry = false
         SayText.stagedStarting = false
         SayText.stagedMotion = false
@@ -371,7 +397,7 @@ enum RepetitionDemo {
         if name.hasPrefix("repShop") { // A134 (D218), A141 (D224): packs, the weekly card and the invitation
             model.store.save(history)
             model.store.save(drill)
-            let short = name == "repShopShort" || name == "repShopRefused"
+            let short = name == "repShopShort" || name == "repShopRefused" || name.hasPrefix("repShopShortKeyboard")
             var credits = DrillQuota(used: short ? 1412 : 264, limit: 1500, per: "month", resets: "2026-12-01")
             credits.unit = "chars"
             credits.remaining = short ? 88 : 1236
@@ -393,7 +419,11 @@ enum RepetitionDemo {
             let shop = CreditShop(front: front, server: server, defaults: shopDefaults)
             model.shop = shop
             Task { await shop.load() }
-            SayText.stagedForScreenshots = ["repShopShort", "repShopWeeklyHome", "repShopRefused"].contains(name) ? said : nil
+            SayText.stagedForScreenshots = ["repShopShort", "repShopWeeklyHome", "repShopRefused"].contains(name)
+                || name.hasPrefix("repShopShortKeyboard") ? said : nil
+            // A153 (Kelly): "Fyll på" above the keyboard; in the style row Spela is greyed out instead
+            if name == "repShopShortKeyboard" { SayText.stagedKeyboard = "text" }
+            if name == "repShopShortKeyboardStyle" { SayText.stagedKeyboard = "style" }
             // Kelly (kop.md §2): after the server's 402 the row is the same as before it.
             SayText.stagedRefusal = name == "repShopRefused"
                 ? "Det här kostar 120 krediter. Du har 88 kvar. Nya krediter den 1 december." : nil
@@ -402,7 +432,21 @@ enum RepetitionDemo {
         }
         SayText.stagedPicked = nil
         UserDefaults.standard.removeObject(forKey: SayText.mixKey)
-        if ["repSayStyle", "repSayVoices", "repSayVoicesUser", "repSayPicked"].contains(name) { // A136 (D220, Kelly Ke75), A140
+        if name == "repSayKeyboardShort" { // A153: one row of text, nothing else on the card
+            model.store.save(history)
+            model.store.save(drill)
+            var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = 1236
+            model.quota = credits
+            SayText.stagedForScreenshots = "Fotosyntes: koldioxid + vatten + ljus blir socker och syre."
+            SayText.stagedRefusal = nil
+            SayText.stagedCost = 59
+            SayText.stagedKeyboard = "text"
+            return
+        }
+        if ["repSayStyle", "repSayVoices", "repSayVoicesUser", "repSayPicked",
+            "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardNumbers"].contains(name) { // A136 (D220, Kelly Ke75), A140, A153
             model.store.save(history)
             model.store.save(drill)
             var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
@@ -427,6 +471,10 @@ enum RepetitionDemo {
             SayText.stagedForScreenshots = said
             SayText.stagedStyle = "Lugnt, som en lärare"
             SayText.stagedVoicesSheet = name == "repSayVoices" || name == "repSayVoicesUser"
+            if name.hasPrefix("repSayKeyboard") { // A153: the keyboard comes up by itself
+                SayText.stagedKeyboard = name == "repSayKeyboardStyle" ? "style" : "text"
+                SayText.stagedKeyboardNumbers = name == "repSayKeyboardNumbers"
+            }
             SayText.stagedRefusal = nil
             SayText.stagedCost = 120 // K92: a new voice or style is new sound
             return
@@ -620,7 +668,9 @@ enum RepetitionDemo {
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
                  "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices", "repSayVoicesUser",
                  "repShopShort", "repShopWeeklyHome", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
-                 "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced":
+                 "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced",
+                 "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers", "repShopShortKeyboard",
+                 "repShopShortKeyboardStyle":
                 NavigationStack { HomeView(model: listening) }
             case "repMotionFold": // the player as the app shows it: a cover over Start
                 NavigationStack { HomeView(model: listening) }.modifier(RepetitionOverlay(model: model))
@@ -635,7 +685,8 @@ enum RepetitionDemo {
                 ControlCheckView(hub: RemoteCommandHub(), sound: nil, waitSeconds: 3600, forText: true, onStart: {}, onLater: {})
             case "repSoundProblem": NavigationStack { DrillView(model: model, drillID: history.id) }
             case "repSoundProblemNone": NavigationStack { DrillView(model: model, drillID: chemistry.id) }
-            case "repQuotaUsedUp", "repNewOffline": NewDrillView(model: model) { _ in }
+            case "repQuotaUsedUp", "repNewOffline", "repNewNoRoom": NewDrillView(model: model) { _ in }
+            case "repNewFits": NewDrillView(model: model, onSaved: { _ in }, stagedFits: 5)
             case "repSchoolsOffline", "repSchoolsFailed": NavigationStack { SchoolExamsView(model: model) }
             case "repSchoolSearchNone", "repSchoolSearchFailed":
                 SchoolPicker(model: model, title: "Välj skola", selected: nil, onSkip: nil, stagedQuery: "Kungsh", onPick: { _ in })

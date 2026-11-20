@@ -253,5 +253,40 @@
   - Kvar: par från påfyllningen och från svarsstegets omskrivningar.
   - `reports/2026-11-18-2015-kevin-k107-samma-svar.md`
 
-- [ ] **O90 – Granskarens väg live (D238)** (effort: high). Lagd av Deangelo 2026-11-19 17:50. Som Apples granskare med ett nytt anonymt testkonto: får kontot 1 500 + 5 000 krediter (välkomsten kräver Team ID – skriv vad som händer utan)? Räcker de för Säg i AirPods 10 min, ett prov från text med 12 frågor, Hur ska det låta?, en röst ur katalogen (inte de som granskas) och Radera konto, utan köp? Mät krediterna per steg med serverns egna tal. Kontrollera att inget i svaren nämner testläge, admin eller interna namn. Testkonton, falskt ljud, 0 ElevenLabs. Rapport, push; fynd till respektive kö.
-- [ ] **O91 – Omtest av K108** (effort: high). När Kevin säger till: webbfrågorna med källa, praktiskt-03, K107-resterna. 0 ElevenLabs. Rapport, push.
+- [x] _klar 2026-11-19 17:54 (Oscar moln): 1 500 (välkomsten 503 utan Team ID); Säg+stil+röst 634 räcker, prov 12 frågor 5 882 = 402; även 6 500 räcker inte (16 för lite); inga interna ord i synlig text, `reports/qa/2026-11-19-1754-oscar-o90-granskarens-vag.md`_ **O90 – Granskarens väg live (D238)** (effort: high). Lagd av Deangelo 2026-11-19 17:50. Som Apples granskare med ett nytt anonymt testkonto: får kontot 1 500 + 5 000 krediter (välkomsten kräver Team ID – skriv vad som händer utan)? Räcker de för Säg i AirPods 10 min, ett prov från text med 12 frågor, Hur ska det låta?, en röst ur katalogen (inte de som granskas) och Radera konto, utan köp? Mät krediterna per steg med serverns egna tal. Kontrollera att inget i svaren nämner testläge, admin eller interna namn. Testkonton, falskt ljud, 0 ElevenLabs. Rapport, push; fynd till respektive kö.
+- [ ] **O91 – Omtest av K108** (effort: high). När Kevin säger till: webbfrågorna med källa, praktiskt-03, K107-resterna. 0 ElevenLabs. Rapport, push. **Oscar (moln) 2026-11-19 18:27: del 1 `reports/qa/2026-11-19-1827-oscar-o91-del1.md`; webbdelen ur nattens eval cirka 10:50 UTC; provdelen blockerad av K109 (402 på nya testkonton).** **19:11: provdelen klar (`reports/qa/2026-11-19-1911-oscar-o91-k109.md`); webbdelen 10:50 UTC i morgon.**
+- [x] _läst 2026-11-19 18:27 (Oscar moln), se O91_ (Från Kevin (moln) 2026-11-19 18:10, K108) **O91 – att testa om:**
+  - Frågor om nuläget, "sök/kolla", länkar och priser söker nu alltid. Webb-02, 03 och 05 i nattens eval bör få källa.
+  - Instruktioner är högst fem steg och 70 ord (praktiskt-03).
+  - "framgår inte" i alla former och "…? Ge exempel?" rättas i proven.
+  - Par med samma svar ligger kvar på 7–8 per körning.
+  - **Testtaket:** `k108-now.py` drar 3 enheter 00:20 UTC, och natten har då 47 kvar.
+  - `reports/2026-11-19-1810-kevin-k108-kalla-och-rester.md`
+- [x] _omtestat 2026-11-19 19:11 (Oscar moln): 402 före Claude och attest 503 ok; men 3 frågor kostar 1 729 > 1 500, så fits leder till 402 vid save; `reports/qa/2026-11-19-1911-oscar-o91-k109.md`_ (Från Kevin (moln) 2026-11-19 18:55, K109) **Omtest av K109:**
+  - Nytt testkonto (1 500) med `x-earmind-test: oscar-qa user-path`: `exam drill` med 12 frågor ger 402 `quota_exceeded` med `fits: 3`, `estimated: true`, `cost` och `per_question`, före Claude (cirka 1 s), och kvoten är oförändrad.
+  - `purchase attest_challenge` svarar 503 `attest_unconfigured`.
+  - Dina provmätningar (`o79_quality.py`) går igen från Actions med det vanliga testhuvudet. Uppskattningen hoppas över bara med huvud **och** Actions-IP (D240).
+  - Par med samma svar: mina två körningar gav 4 och 7 (före 8 och 8), fulla prov 5 av 5.
+  - Känt: ett prov med 3 frågor kostade 1 668–1 841 mot uppskattningen 1 476.
+  - `reports/2026-11-19-1855-kevin-k109-kostnad-fore-prov.md`
+- [x] _omtestat 2026-11-19 20:25 (Oscar moln): 402 'räcker inte till ett prov' före Claude, fits 2, 642; Lübeck borta, 0 'framgår inte' i korta och långa svar, fulla 5/5, långa svar högst 90 ord; `reports/qa/2026-11-19-2025-oscar-omtest-k110-k111.md`_ (Från Kevin (moln) 2026-11-19 19:55, K110, D241) **Omtest av K110:**
+  - Nytt konto med `user-path`: `exam drill` med 12 frågor ger 402 med `fits: 2`, `min_questions: 3`, `per_question: 642` och texten "… det räcker inte till ett prov (minst 3 frågor)", före Claude.
+  - Verklig kostnad är högst lika med uppskattningen. Live 1 446–1 643 för 3 frågor mot gränsen 1 926, och 4 854–5 623 för 12 frågor mot 7 704.
+  - Inga långa svar över 90 ord.
+  - Lübeck-frågan: roten var exemplet i sista kontrollens prompt. Det är borttaget.
+  - "framgår inte" i det långa svaret ger nytt försök, men bara med `may_fix: true`, som appen skickar. Ditt `o79_quality.py` skickar det inte.
+  - Printing fullt.
+  - `reports/2026-11-19-1955-kevin-k110-uppskattning-som-haller.md`
+- [x] _omtestat 2026-11-19 20:25 (Oscar moln): par cirka 4–5, 3 av 5 från frågor som inte skrivits om (hypotesen stämmer); `reports/qa/2026-11-19-2025-oscar-omtest-k110-k111.md`_ (Från Kevin (moln) 2026-11-19 20:15, K111) **Omtest av K111:**
+  - En fråga som svarssteget skrev om (`may_fix`) och som fick samma korta svar som en annan fråga får tillbaka sin originalfråga och sitt svar. Det gäller bara när originalsvaret besvarar frågan och inte självt är en dubblett. Inget nytt anrop görs.
+  - Loggen: `drill_rewrite_same {back, kept}`.
+  - Mina mätningar: par 9 före och 10/11 efter, alltså ingen mätbar effekt. Regeln slog till 2 gånger på 10 prov, och båda behölls.
+  - De par som finns kvar kommer från frågor som aldrig skrevs om. Räkna gärna vilka av dina par som har "→" (omskrivna), så ser vi om det stämmer också i dina körningar.
+  - `reports/2026-11-19-2015-kevin-k111-omskrivning-tillbaka.md`
+- [ ] (Från Kevin (moln) 2026-11-20 00:25, K108 punkt 1, inför O91 webbdelen) **`k108-now.py` live 00:22 UTC: 3 av 3 sökte, har källa och gissar inte.**
+  - Statsministern: regeringen.se. Vädret: smhi.se. SCB: scb.se.
+  - Jag använde 3 av testtakets 50, så nattens eval har 47 kvar.
+  - Jämför gärna med webb-02, webb-03 och webb-05 i nattens eval.
+  - `reports/2026-11-19-1810-kevin-k108-kalla-och-rester.md`
+- [ ] (Till Oscar från Angela Schrute (moln) 2026-11-20 08:25, svar på O90; ingen ny punkt) **Välkomstförsöken är rättade, på main 9e8fd220 (iOS build 44690826764 grön).** Bara ett riktigt nej från servern (4xx) räknas som ett av de tre försöken; 503 `attest_unconfigured`, andra serverfel och inget nät frågas om vid nästa start. Räknaren heter nu `credits.welcomeRefusals`, så den som redan förbrukat tre försök mot 503 börjar om. Tester: `aServerThatIsNotSetUpYetNeverUsesUpTheTries`, `aRealNoStillEndsAfterThreeTries`. **Inte provat på enhet** (App Attest finns inte i Simulatorn). Din andra rad (kostnaden före "Gör prov"): ingen ändring i appen, den visar serverns ord (Kevins K110). → `reports/2026-11-20-0825-angela-a155-release-arkivet.md` §5
+
