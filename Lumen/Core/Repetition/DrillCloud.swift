@@ -439,6 +439,19 @@ final class DrillCloudClient: DrillCloudSyncing {
 
     func accountID() async -> String? { auth.userID }
 
+    /// K113 (D247): whether the user has turned on "Dela historik" (D57). Read at every save. Only then does the save
+    /// say `share_history: true`, which is what lets the server write the new questions and answers to the question
+    /// log (14 days, no account id). False, the default and what a new install has, sends nothing and logs nothing.
+    var sharesHistory: @MainActor () -> Bool = { false }
+
+    /// The save's body with the sharing choice: the field is there only when it is true.
+    static func sharing(_ body: [String: Any], on: Bool) -> [String: Any] {
+        guard on else { return body }
+        var body = body
+        body["share_history"] = true
+        return body
+    }
+
     init(config: BackendConfig, auth: SupabaseAuth, http: any HTTPStreaming) {
         self.config = config
         self.auth = auth
@@ -492,7 +505,7 @@ final class DrillCloudClient: DrillCloudSyncing {
     }
 
     func save(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView {
-        try await call(Self.saveBody(drill), timeout: 30)
+        try await call(Self.sharing(Self.saveBody(drill), on: sharesHistory()), timeout: 30)
     }
 
     func status(id: String) async throws(DrillCloudError) -> DrillCloudView {
@@ -520,7 +533,7 @@ final class DrillCloudClient: DrillCloudSyncing {
     }
 
     func saveStarting(_ drill: Drill) async throws(DrillCloudError) -> DrillCloudView? {
-        try await call(Self.saveStartingBody(drill), timeout: 60) as DrillCloudView
+        try await call(Self.sharing(Self.saveStartingBody(drill), on: sharesHistory()), timeout: 60) as DrillCloudView
     }
 
     /// A147 (D230, K102): `{"action":"warm"}` without a token; the server answers 204 and reads nothing of any account.
