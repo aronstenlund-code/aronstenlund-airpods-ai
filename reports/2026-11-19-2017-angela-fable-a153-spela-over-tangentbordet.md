@@ -92,3 +92,14 @@ Beslutet står i DECISIONS (D244).
 
 Läs Kellys svar och Tobys T53. Om raden inte byter rätt när kortet rullas: börja i `lookAtPlay()` i SayViews
 (den får knappens läge av `onGeometryChange` och tangentbordets av aviseringen).
+
+## Tillägg 2026-11-20 11:35: grönt på main, godkänt av Kelly, prövat med tryck av Toby
+
+- **iOS build 44598313619 på main är grön** (A153). **Verifierat i CI.**
+- **Kelly har godkänt** slutversionen (kostnaden går att läsa, remsan är tät också på SE vid största text, ▶ står
+  först i stilraden).
+- **Toby har nått Spela med riktiga tryck i Simulatorn** vid största text med tangentbordet uppe, utan att testet
+  döljer tangentbordet: iPhone 17 Pro (T53 44691016971) och iPhone SE (44700938846). Det som förut bara var sett på
+  bild är därmed prövat med tryck. Fortfarande inte på en riktig telefon.
+- Loggraden "Say: Spela cannot be pressed (an earlier press is still waiting)" kommer efter varje tryck (knappen
+  väntar på svaret). Det är inte ett andra tryck; orden är missvisande och ändras nästa gång filen rörs.

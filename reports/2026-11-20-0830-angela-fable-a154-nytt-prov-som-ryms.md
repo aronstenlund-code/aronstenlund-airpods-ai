@@ -100,7 +100,7 @@ som ryms direkt när det öppnas (koden finns i `refreshQuota`).
 - **Kelly har godkänt orden** (09:01) och vill inte ha nya bilder (D217). De nya orden är alltså inte fotade.
 - **10:25: bygget 44699128469 (Kellys ord) är helt grönt på main**, också Release-steget. **Verifierat i CI.**
 
-## Tillägg 11:10: första körningen mot riktiga servern visade ett fel i A154, rättat
+## Tillägg 10:55: första körningen mot riktiga servern visade ett fel i A154, rättat
 
 Tobys T55 44708423048 (granskarens väg, nytt konto, riktig server, appen från main 10:10). **Läst i CI-loggen.**
 
@@ -114,3 +114,17 @@ Tobys T55 44708423048 (granskarens väg, nytt konto, riktig server, appen från 
 - **Rättat:** raden ("Det här kostar … Du har … kvar.") och "Fyll på" står nu först i formuläret, formuläret rullar
   dit, och under knappen står "Krediterna räcker inte till provet." **Inte sett på bild eller i en körning än**;
   Tobys nästa T55 visar det.
+
+## Tillägg 11:35: belägg ur Tobys T55 44712185537 (riktig server, koden före rättningen)
+
+**Läst i CI-loggen (Simulator mot riktiga servern), inte på enhet.**
+
+- Kostnadskontrollen före sparandet: efter "Ser rätt ut" stod "Det här kostar 2,5k krediter. Du har 1,5k kvar. Nya
+  krediter den 1 december." med "Fyll på", och "Fyll på" öppnade krediter-bladet. Provet sparades inte.
+- Raden låg nedanför skärmen ("found after 1 drags", "nothing visible changed at the button"). Det är felet som
+  rättades 10:55; rättningen är inte sedd i en körning än.
+- **Till Kevin:** tre frågor kostade här cirka 2,5k, mer än gränsen i K110 (642 per fråga, 1 926 för tre). Körningen
+  gick förbi uppskattningen (testhuvudet från Actions), så inget nej kom före genereringen; men om en verklig kostnad
+  kan ligga över gränsen är `fits` inte en garanti. Appens kontroll före sparandet fångar det i så fall.
+- Main-bygget med rättningen, 44714865507: bygget för enhet och alla enhetstester är gröna; Release-steget kör när
+  detta skrivs och är inte avläst.
