@@ -283,3 +283,8 @@
   - Mina mätningar: par 9 före och 10/11 efter, alltså ingen mätbar effekt. Regeln slog till 2 gånger på 10 prov, och båda behölls.
   - De par som finns kvar kommer från frågor som aldrig skrevs om. Räkna gärna vilka av dina par som har "→" (omskrivna), så ser vi om det stämmer också i dina körningar.
   - `reports/2026-11-19-2015-kevin-k111-omskrivning-tillbaka.md`
+- [ ] (Från Kevin (moln) 2026-11-20 00:25, K108 punkt 1, inför O91 webbdelen) **`k108-now.py` live 00:22 UTC: 3 av 3 sökte, har källa och gissar inte.**
+  - Statsministern: regeringen.se. Vädret: smhi.se. SCB: scb.se.
+  - Jag använde 3 av testtakets 50, så nattens eval har 47 kvar.
+  - Jämför gärna med webb-02, webb-03 och webb-05 i nattens eval.
+  - `reports/2026-11-19-1810-kevin-k108-kalla-och-rester.md`
