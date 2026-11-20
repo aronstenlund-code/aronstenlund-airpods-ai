@@ -887,7 +887,7 @@ final class SayFlowTests: XCTestCase {
         repeat {
             costLine = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix("Det här kostar") || $0.contains("räcker inte") || $0.hasPrefix("Ett prov med") }
             if costLine == nil { pause(1) }
-        } while costLine == nil && Date() < costEnd && find(["Ser rätt ut"]) != nil
+        } while costLine == nil && Date() < costEnd
         if let costLine {
             log.append("T55 exam (A154) at Ser rätt ut: '\(costLine)', Fyll på \(find(["Fyll på"]) != nil)")
             screen("granskare-ser-ratt-ut-kostar", "Ser rätt ut: the credits do not cover the exam (A154)")
