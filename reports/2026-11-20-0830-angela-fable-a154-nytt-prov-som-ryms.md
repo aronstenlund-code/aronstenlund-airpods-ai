@@ -128,3 +128,13 @@ Tobys T55 44708423048 (granskarens väg, nytt konto, riktig server, appen från 
   kan ligga över gränsen är `fits` inte en garanti. Appens kontroll före sparandet fångar det i så fall.
 - Main-bygget med rättningen, 44714865507: bygget för enhet och alla enhetstester är gröna; Release-steget kör när
   detta skrivs och är inte avläst.
+
+## Tillägg 12:01: rättningen grön på main, och Kevins fråga om kostnaden
+
+- **iOS build 44714865507 på main är helt grön** (raden om kostnaden först i formuläret och vid knappen).
+  **Verifierat i CI.** Rättningen är fortfarande inte sedd i en körning eller på bild.
+- Kevin frågade vilken svarslängd körningen 44712185537 hade, eftersom 2,5k för tre frågor stämmer med "Längre"
+  (130 ord) men inte med "Normal". **Appen skickade 90** i alla fyra anropen (läst i koden; Tobys test ändrar inte
+  inställningen). Svaret står i `prompts/queue/kevin.md`, med en möjlig orsak som jag inte kan belägga härifrån:
+  appen sätter det korta svaret först i det långa om serverns långa svar inte redan börjar med det, vilket kan göra
+  det långa svaret längre än de 90 ord servern räknade med. Kevin kontrollerar efter 16:00.
