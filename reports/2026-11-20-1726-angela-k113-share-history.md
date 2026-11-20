@@ -43,3 +43,8 @@ där finns inget att märka. Börjar appen skicka den ska samma fält med.
 ## 6. Nästa steg
 - Oscar: omtest mot servern (av → inga rader, på → rader).
 - Kelly: orden under reglaget.
+
+## Tillägg 18:50: main är grönt
+iOS build 44773231144 på main (5a301006) är grön, alla 21 steg, med `K113ShareHistoryTests`. **Verifierat i CI.**
+Kelly har skrivit orden för reglaget (`docs/design/texter-integritet.md`); de är inlagda på grenen och byggs.
+
