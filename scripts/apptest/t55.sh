@@ -162,7 +162,7 @@ grep -E "Reading:|offline|Offline|network|Network|drill_audio|download" "$OUT/lo
   echo
   echo "Spelaren (appens logg, Reading:):"
   echo '```'
-  grep -E "Nytt prov:|Drill quota|Drill list|Drill saved|Drill audio|Repetition: (start|waiting|question [0-9]+$)" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | tail -n 60
+  grep -E "Exam cost:|Exam answers:|Nytt prov:|Drill quota|Drill list|Drill saved|Drill audio|Repetition: (start|waiting|question [0-9]+$)" "$OUT/logs/app.log" 2>/dev/null | cut -c1-220 | tail -n 60
   echo '```'
   echo
   echo "Appen i det andra fönstret utan nät (omstarten) (alla kategorier):"

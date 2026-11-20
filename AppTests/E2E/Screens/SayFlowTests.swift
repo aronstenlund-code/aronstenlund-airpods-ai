@@ -852,8 +852,22 @@ final class SayFlowTests: XCTestCase {
         if find(["Frågor"]) != nil { tap(["Frågor"], "Gör: Frågor", counted: false, quiet: true) }
         pause(1)
         screen("granskare-nytt-prov", "Nytt prov with the text")
-        guard waitEnabled(["Skapa frågor"], 15), tap(["Skapa frågor"], "Skapa frågor") else { return miss("Skapa frågor not tappable") }
+        // Angela Fable 17:22: Nytt prov reads the price per question from /drill quota, so with too few credits the
+        // box ("Ett prov med 3 frågor kostar cirka …" + Fyll på, or "Krediterna räcker till N frågor.") stands as soon
+        // as the quota is read, before Skapa frågor. Wait for it a few seconds before tapping anything.
+        var atOpen: String?
+        let openEnd = Date().addingTimeInterval(8)
+        repeat {
+            atOpen = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix("Ett prov med") || $0.hasPrefix("Krediterna räcker") }
+            if atOpen == nil { pause(1) }
+        } while atOpen == nil && Date() < openEnd
         let made = Date()
+        if let atOpen {
+            log.append("T55 exam (A154, at open): '\(atOpen)' before Skapa frågor")
+        } else {
+            log.append("T55 exam: no credit box when Nytt prov opened (8 s)")
+            guard waitEnabled(["Skapa frågor"], 15), tap(["Skapa frågor"], "Skapa frågor") else { return miss("Skapa frågor not tappable") }
+        }
         // A154 (Angela Fable 2026-11-20 09:05, K109): with too few credits the server answers 402 before the questions
         // are made. Nytt prov comes back with "Ett prov med 3 frågor kostar cirka … Du har …", Fyll på, and "Krediterna
         // räcker inte till ett prov." under the switched-off Skapa frågor; or "Krediterna räcker till N frågor." and the
