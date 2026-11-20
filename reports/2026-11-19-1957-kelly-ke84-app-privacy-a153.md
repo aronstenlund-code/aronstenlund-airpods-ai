@@ -33,3 +33,8 @@ krediter"), ▶ först i stilraden. **Godkänt.** Granskat på Fables gren; A153
 ## Beslut kvar (Deangelo/Aron, hög)
 **Frågeloggen i repetitionsläget (A152 punkt 3 b) har inget samtycke** och nämns inte i Välkommen. Antingen en mening i
 Välkommen › Läs mer och i policyn, eller av i App Store-versionen. App Privacy-svaren gäller som koden är i dag.
+
+## Tillägg: A153 på main (2026-11-19 20:30, `reports/2026-11-19-a153-bilder/`)
+Arken (17 Pro och SE, standard och största text, ljust och mörkt) stämmer med det godkända: kostnaden inne i Spela
+("Spela 120 krediter"), remsan tät ända ner till tangenterna, "Fyll på 120 krediter" vid 88 kvar, ▶ i stilraden grå när
+krediterna inte räcker. **Godkänt på main** (sett i Simulatorn, inte på telefon).
