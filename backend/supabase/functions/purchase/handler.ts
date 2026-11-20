@@ -179,7 +179,7 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
       // ---------- K98 (D224): welcome credits and invitations ----------
       if (b?.action === "attest_challenge") {
         // K109 (Oscar O90): no App ID (Team ID) yet = 503 here too, so the app keeps its three welcome tries
-        if (!deps.attest || !deps.attest.appId) throw new HttpError(503, "attest_unconfigured", "Inte tillgängligt än.");
+        if (!deps.attest || !deps.attest.appId) throw new HttpError(503, "attest_unconfigured", "Välkomstkrediterna är inte på än.");
         return json({ challenge: await deps.attest.newChallenge(user.id) });
       }
       if (b?.action === "welcome") {

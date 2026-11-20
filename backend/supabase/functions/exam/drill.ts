@@ -1005,7 +1005,7 @@ export function docxXmlToText(xml: string): string {
 export async function docxText(base64: string): Promise<string> {
   const data = base64.replace(/^data:[^,]+,/, "").replace(/\s+/g, "");
   if (!data) throw new HttpError(400, "invalid_request", "data (base64 .docx) is required");
-  if (data.length > DRILL_LIMITS.docxBase64) throw new HttpError(413, "payload_too_large", "The document is larger than 10 MB");
+  if (data.length > DRILL_LIMITS.docxBase64) throw new HttpError(413, "payload_too_large", "Word-filen är större än 10 MB. Spara den som PDF eller dela upp den.");
   let bytes: Uint8Array;
   try {
     bytes = Uint8Array.from(atob(data), (c) => c.charCodeAt(0));

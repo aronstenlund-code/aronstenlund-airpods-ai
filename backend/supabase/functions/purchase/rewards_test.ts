@@ -186,3 +186,17 @@ Deno.test("K109 (Oscar O90): attest_challenge is 503 attest_unconfigured while t
   assertEquals(r.status, 503);
   assertEquals((await r.json()).error.code, "attest_unconfigured");
 });
+
+Deno.test("K112: attest_challenge without Team ID says what welcome says (Swedish, no internal words)", async () => {
+  const { createPurchaseHandler } = await import("./handler.ts");
+  const h = createPurchaseHandler({
+    authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
+    rateLimiter: new MemoryRateLimiter(),
+    roots: [],
+    bundleId: "com.rsolutions.lumen",
+    store: { product: () => Promise.resolve(null), ledger: () => Promise.resolve(null), addLedger: () => Promise.resolve(true), subByOriginal: () => Promise.resolve(null), upsertSub: () => Promise.resolve() },
+    attest: { appId: "", allowDevelopment: false, rootDer: new Uint8Array(), roots: [], newChallenge: () => Promise.resolve("c"), useChallenge: () => Promise.resolve(false) },
+  });
+  const j = await (await h(new Request("http://x/purchase", { method: "POST", body: JSON.stringify({ action: "attest_challenge" }) }))).json();
+  assertEquals(j.error.message, "Välkomstkrediterna är inte på än.");
+});

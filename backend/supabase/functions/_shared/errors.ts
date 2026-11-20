@@ -36,5 +36,6 @@ export function errorResponse(e: HttpError): Response {
 export function toHttpError(e: unknown): HttpError {
   if (e instanceof HttpError) return e;
   console.error("unexpected_error", e instanceof Error ? e.message : String(e));
-  return new HttpError(500, "internal", "Internal error", { fallback: true });
+  // K112 (D227): the app shows /drill's message, so a reviewer could see it: Swedish
+  return new HttpError(500, "internal", "Något gick fel hos EarMind. Försök igen om en stund.", { fallback: true });
 }

@@ -793,7 +793,7 @@ export function createDrillHandler(deps: DrillDeps) {
     const rawItems = Array.isArray(b?.items) ? b!.items as Record<string, unknown>[] : [];
     if (!rawItems.length) throw new HttpError(400, "invalid_request", "items: at least one question");
     if (rawItems.length > DRILL_STORE_LIMITS.items) throw new HttpError(400, "invalid_request", `items: at most ${DRILL_STORE_LIMITS.items}`);
-    if (!voiceFor(deps.voiceId)) throw new HttpError(503, "provider_unconfigured", "No voice configured");
+    if (!voiceFor(deps.voiceId)) throw new HttpError(503, "provider_unconfigured", "Ljudet går inte att göra just nu. Försök igen om en stund.");
     let existing: DrillRow | null = null;
     // K88 (D211): an optional client_id (the app's UUID for the exam). The same id from the same account again
     // (a save sent twice, e.g. two tasks at once) answers with the exam already saved and creates nothing new.

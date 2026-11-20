@@ -47,7 +47,7 @@ export function createJwtAuthenticator(opts: {
 
   const fn: Authenticator & { warm?: () => Promise<void> } = async (req) => {
     const token = bearerToken(req);
-    if (!token) throw new HttpError(401, "unauthorized", "Missing bearer token");
+    if (!token) throw new HttpError(401, "unauthorized", "Du behöver logga in igen.");
     try {
       const alg = JSON.parse(atob(token.split(".")[0].replace(/-/g, "+").replace(/_/g, "/"))).alg;
       const { payload } = alg === "HS256" && secret
@@ -65,7 +65,7 @@ export function createJwtAuthenticator(opts: {
           .map((x) => String((x as { method?: unknown } | null)?.method ?? "")).filter(Boolean),
       };
     } catch (_e) {
-      throw new HttpError(401, "unauthorized", "Invalid or expired token");
+      throw new HttpError(401, "unauthorized", "Inloggningen har gått ut. Försök igen.");
     }
   };
   // K100 (Oscar O84): the signing keys fetched ahead of the first user (a warm-up call), not during their request
