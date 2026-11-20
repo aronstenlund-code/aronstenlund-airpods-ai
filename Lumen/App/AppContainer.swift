@@ -165,7 +165,10 @@ final class AppContainer {
             auth.prepare()
             auth.watchForeground()
         }
-        let drillCloud: (any DrillCloudSyncing)? = mock ? nil : DrillCloudClient(config: .lumen, auth: auth, http: http) as any DrillCloudSyncing
+        let drillClient: DrillCloudClient? = mock ? nil : DrillCloudClient(config: .lumen, auth: auth, http: http)
+        // K113 (D247): the repetition mode's question log is written only for the one who has turned on "Dela historik".
+        drillClient?.sharesHistory = { share.isSharing }
+        let drillCloud: (any DrillCloudSyncing)? = drillClient
         let maker: any DrillMaking = mock ? MockDrillMaker() as any DrillMaking
             : DrillClient(config: .lumen, auth: auth, http: http) as any DrillMaking
         let drillAudio: any DrillAudioProviding
