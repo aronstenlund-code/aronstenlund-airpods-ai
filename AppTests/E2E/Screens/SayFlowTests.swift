@@ -877,7 +877,34 @@ final class SayFlowTests: XCTestCase {
         }
         log.append(String(format: "T55 exam: questions after %.0f s", Date().timeIntervalSince(made)))
         screen("granskare-fragor", "The questions made from the text")
+        let questions = Self.labels(in: app.debugDescription, kind: "StaticText").filter { $0.hasSuffix("?") }.count
+        log.append("T55 exam: \(questions) questions on Stämmer det här?")
         if find(["Ser rätt ut"]) != nil { tap(["Ser rätt ut"], "Ser rätt ut") } else { tap(["Spara frågorna"], "Spara frågorna") }
+        // A154: at Ser rätt ut the app asks the server's cost first; when the credits do not cover it the exam is not
+        // saved and "Det här kostar … Du har … kvar." stands with Fyll på (run 44704162235 went to Start past it).
+        var costLine: String?
+        let costEnd = Date().addingTimeInterval(15)
+        repeat {
+            costLine = Self.labels(in: app.debugDescription, kind: "StaticText").first { $0.hasPrefix("Det här kostar") || $0.contains("räcker inte") || $0.hasPrefix("Ett prov med") }
+            if costLine == nil { pause(1) }
+        } while costLine == nil && Date() < costEnd && find(["Ser rätt ut"]) != nil
+        if let costLine {
+            log.append("T55 exam (A154) at Ser rätt ut: '\(costLine)', Fyll på \(find(["Fyll på"]) != nil)")
+            screen("granskare-ser-ratt-ut-kostar", "Ser rätt ut: the credits do not cover the exam (A154)")
+            note("T55: \(questions) questions were made and could not be saved: '\(costLine)'")
+            guard tap(["Fyll på"], "Fyll på (A154, at Ser rätt ut)") else { return miss("no Fyll på with '\(costLine)'") }
+            let end = Date().addingTimeInterval(15)
+            repeat { if app.debugDescription.contains("Så räknas det") || app.debugDescription.contains("Paketen kunde inte hämtas") { break }; pause(1) } while Date() < end
+            let sheet = app.debugDescription.contains("Så räknas det") || app.debugDescription.contains("Paketen kunde inte hämtas")
+            log.append("T55 exam (A154): Fyll på at Ser rätt ut opened Krediter: \(sheet)")
+            dismissCredits()
+            pause(1)
+            if find(["Avbryt"]) != nil { tap(["Avbryt"], "close Nytt prov", counted: false, quiet: true) }
+            goToStart()
+            _ = exactCredits("after the exam that could not be saved (A154)")
+            return sheet || miss("Fyll på at Ser rätt ut did not open Krediter")
+        }
+        log.append("T55 exam: no cost line after Ser rätt ut (still on the questions: \(find(["Ser rätt ut"]) != nil))")
         pause(3)
         goToStart()
         screen("granskare-prov-pa-start", "The exam on Start")
