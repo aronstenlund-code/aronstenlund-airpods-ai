@@ -726,16 +726,19 @@ final class SayFlowTests: XCTestCase {
         guard tap(["Inställningar"], "Inställningar") else { return false }
         pause(1.5)
         // Run 44300125934: Konto is the last part of Inställningar, and the list makes it only when it is scrolled to.
-        for n in 0..<10 {
+        // Run 44698563479 (SE, AX5): the 10th swipe brought Radera konto up and the loop did not look again. Look after
+        // every swipe, at most 16.
+        for n in 0...16 {
             if app.buttons.matching(NSPredicate(format: "label ==[c] 'Radera konto'")).firstMatch.exists {
                 if n > 0 { log.append("A145 Radera konto after \(n) swipes in Inställningar") }
                 return true
             }
+            if n == 16 { break }
             app.swipeUp(velocity: .fast)
             pause(0.7)
         }
         screen("installningar-utan-konto", "Inställningar without Radera konto")
-        return miss("no 'Radera konto' in Inställningar after 10 swipes")
+        return miss("no 'Radera konto' in Inställningar after 16 swipes")
     }
 
     private func askDelete() -> Bool {
@@ -895,9 +898,18 @@ final class SayFlowTests: XCTestCase {
             var element = app.links.matching(NSPredicate(format: "label ==[c] %@", name)).firstMatch
             if !element.exists { element = app.buttons.matching(NSPredicate(format: "label ==[c] %@", name)).firstMatch }
             var swipes = 0
-            while !element.exists || !element.isHittable, swipes < 8 { app.swipeUp(); swipes += 1 }
+            // Run 44698563479 (SE, AX5): after Villkor the sheet's rows were gone from the tree. Drag at the right edge
+            // (away from the links) and write what the sheet holds after each drag.
+            while !element.exists || !element.isHittable, swipes < 10 {
+                let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.94, dy: 0.8))
+                from.press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.94, dy: 0.4)))
+                swipes += 1
+                pause(0.6)
+                let sheet = (Self.labels(in: app.debugDescription, kind: "Button") + Self.labels(in: app.debugDescription, kind: "Link")).filter { ["Villkor", "Integritet", "Återställ köp", "Bjud in", "Försök igen", "Klar"].contains($0) }
+                log.append("T53 Krediter drag \(swipes) for '\(name)': \(sheet), web views \(app.webViews.count), Safari \(XCUIApplication(bundleIdentifier: "com.apple.mobilesafari").state.rawValue), app \(app.state.rawValue)")
+            }
             let h = element.exists ? Int(element.frame.height) : -1
-            log.append("T53 '\(name)': height \(h)")
+            log.append("T53 '\(name)': height \(h) after \(swipes) drags")
             if h >= 0, h < 44 { note("'\(name)' is \(h) points high; its tap area may still be 44 (the audit's hitRegion says)") }
             if h < 0 { ok = miss("no '\(name)' in Krediter") }
         }
