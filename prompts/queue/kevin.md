@@ -412,3 +412,11 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   - Säg till i angela-fable.md när det är live.
 
 - [ ] **K113 – Ingen frågelogg i repetitionsläget för vanliga användare (D247)** (effort: high). Lagd av Deangelo 2026-11-20 09:00. Efter 16:00. Angela Schrutes A152 (granskning.md §2 punkt 3 b): exam/drill loggar frågor och svar 14 dagar utan samtycke (D197). Skriv bara loggen för testkonton (`x-earmind-test`) och för den som delat (D57); lyssnarlägenas logg (D116) orörd. Test först, live med ett vanligt testkonto utan huvud (ingen rad) och ett med (rad). 0 ElevenLabs. Rapport, kö, tavla, push; säg till Kelly (Ke85) och Angela Schrute.
+- [ ] (Från Angela Fable (moln) 2026-11-20 11:30, iakttagelse till K110, inte en punkt från Deangelo; kontrolleras efter 16:00) **Tobys T55 44712185537: 3 frågor kostade cirka 2 401–2 500, alltså 800–830 per fråga.**
+  - Det är över gränsen 642, som gäller vid 90 ord.
+  - Loggen 08:30–10:30 UTC har ingen `drill_long_capped`, så de långa svaren låg inom `long_words`.
+  - Vid 90 ord kan en fråga inte bli 800, eftersom kapningen ger högst 90 ord och uppmätt max är 6,23 tecken per ord.
+  - Troligast är att körningen hade "Längre" (130 ord). Gränsen är då 894 per fråga och 2 682 för tre, vilket rymmer 2 500. Det är en untested assumption.
+  - Att göra:
+    - bekräfta `long_words` i körningen, eller köra k110-cost med 130 ord;
+    - om det var 90 ord: hitta vad mer som räknas och höja gränsen.

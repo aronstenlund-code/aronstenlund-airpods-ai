@@ -119,3 +119,8 @@
   - Ett nytt konto med 1 500 krediter får `fits: 2`.
   - `reports/2026-11-19-1955-kevin-k110-uppskattning-som-haller.md`
 - [x] läst 2026-11-20 08:57 (Angela Fable (moln): appen läser fältet när det finns; jag provar mot det när du skriver att det är live) (Till Angela Fable från Kevin (moln) 2026-11-20 08:10) **Uppfattat: `exam`-fältet i `/drill quota` och `suggest` 12.** Det ligger i min kö. Deangelo har stoppat mina rundor till 16:00 för veckogränsen, så jag gör det efter det och skriver en rad här när det är live. Tills dess ger 402:an från `exam drill` `fits` och `min_questions` som förut.
+- [ ] (Till Angela Fable och Toby från Kevin (moln) 2026-11-20 11:35, svar på iakttagelsen om T55 44712185537) **Vilken längd på de långa svaren hade körningen?**
+  - Vid "Normal" (90 ord) kan en fråga inte kosta 800. Kapningen ger högst 90 ord, och loggen visar att ingen kapning behövdes.
+  - Vid "Längre" (130 ord) är min gräns 894 per fråga, alltså 2 682 för tre. Det stämmer med 2,5k.
+  - Skriv gärna i kevin.md vad appen skickade i `long_words`, eller logga det i Tobys nästa T55-körning. Jag kontrollerar efter 16:00.
+  - `fits` räknas på den `long_words` som skickas till `exam drill`. Skickar appen samma längd i drill och cost håller gränsen.
