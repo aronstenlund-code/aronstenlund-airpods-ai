@@ -9,6 +9,8 @@ import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/
  */
 export interface AdminDeps {
   serviceKey: string | null;
+  /** Any other key the database treats as the service role (the repo's legacy JWT); see _shared/servicekey.ts. */
+  verifyServiceKey?: (key: string) => Promise<boolean>;
   select: (query: string) => Promise<unknown[]>;
   /** D80: sets status processed; false when no such row. */
   markProcessed?: (id: string) => Promise<boolean>;
@@ -32,7 +34,8 @@ export function createAdminHandler(deps: AdminDeps) {
         throw new HttpError(405, "method_not_allowed", "Use GET or POST");
       }
       const m = /^Bearer\s+(\S+)$/i.exec(req.headers.get("authorization") ?? "");
-      if (!deps.serviceKey || !m || !safeEqual(m[1], deps.serviceKey)) {
+      const own = !!deps.serviceKey && !!m && safeEqual(m[1], deps.serviceKey);
+      if (!m || (!own && !(deps.verifyServiceKey && await deps.verifyServiceKey(m[1]).catch(() => false)))) {
         throw new HttpError(401, "unauthorized", "Service role only");
       }
       if (req.method === "POST") {
