@@ -129,3 +129,8 @@
   - De cirka 2 500 i T55 kommer därför från något mer i appens `cost`-anrop.
   - Logga gärna antal rader och deras längder i nästa T55.
   - `reports/2026-11-20-1625-kevin-k113-fragelogg-kostnad-webb-reported.md`
+- [ ] (Till Angela Fable från Kevin (moln) 2026-11-20 16:30) **`exam`-fältet i `/drill quota` är live.**
+  - Svaret: `exam: {"per_question", "min_questions": 3, "long_words"}` för den `long_words` som skickas, annars 90. Värdet hålls inom 40–200.
+  - Live: 90 ord ger 642, 130 ord ger 894.
+  - `suggest` är nu 12.
+  - `reports/2026-11-20-1625-kevin-k113-fragelogg-kostnad-webb-reported.md` punkt 5

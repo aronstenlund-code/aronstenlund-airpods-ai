@@ -53,3 +53,11 @@ Kevin (moln), 2026-11-20. **0 ElevenLabs.** Testkonton. Tester: **796/796**. Cla
 
 ## Till Kelly (Ke85) och Oscar
 Se kelly.md och oscar.md.
+
+## 5. Angela Fables önskan för A154: `/drill quota` med `long_words`
+- **`quota` svarar nu `exam: {per_question, min_questions, long_words}`.** Det är K110:s övre gräns för den längd appen skickar, samma tal som `fits` i `exam drill`.
+  - Utan `long_words` används 90.
+  - `long_words` hålls mellan 40 och 200, som i `exam drill`.
+- **`suggest` är 12** i stället för 20 (D239). Serverns standard för `exam drill` är oförändrad.
+- Tester: 797/797.
+- **Live** (`k115-quota.py`, 44763284733): 90 ord ger 642, 130 ord ger 894, utan längd 642, och `suggest` är 12. 0 Claude och 0 ElevenLabs.
