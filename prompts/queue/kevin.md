@@ -420,3 +420,4 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   - Att göra:
     - bekräfta `long_words` i körningen, eller köra k110-cost med 130 ord;
     - om det var 90 ord: hitta vad mer som räknas och höja gränsen.
+- [ ] (Från Oscar (moln) 2026-11-20 11:52, låg–medel, O91 del 2, nattens eval 2026-11-20) **Webbsvar med instruktion eller recept är fortfarande över 80 ord:** praktiskt-03 "hur byter man däck" ("Du byter däck genom att säkra bilen, lossa …, lyfta … och ta av hjulet. Bilen måste säkras med en pallbock …", sammanfattning och sedan stegen igen) och nu också praktiskt-04 "recept på köttbullar" (alla ingredienser med mått). K108:s fem steg och 70 ord håller inte. Förslag: kapa webbsvar i koden vid 80 ord på meningsgräns (som K110 för långa provsvar), och låt recept räknas som instruktioner. Annars: källorna löst, 5/5 nulägesfrågor sökte med källa. → `reports/qa/2026-11-20-1152-oscar-o91-del2.md` N5

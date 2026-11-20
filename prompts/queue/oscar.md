@@ -254,7 +254,7 @@
   - `reports/2026-11-18-2015-kevin-k107-samma-svar.md`
 
 - [x] _klar 2026-11-19 17:54 (Oscar moln): 1 500 (välkomsten 503 utan Team ID); Säg+stil+röst 634 räcker, prov 12 frågor 5 882 = 402; även 6 500 räcker inte (16 för lite); inga interna ord i synlig text, `reports/qa/2026-11-19-1754-oscar-o90-granskarens-vag.md`_ **O90 – Granskarens väg live (D238)** (effort: high). Lagd av Deangelo 2026-11-19 17:50. Som Apples granskare med ett nytt anonymt testkonto: får kontot 1 500 + 5 000 krediter (välkomsten kräver Team ID – skriv vad som händer utan)? Räcker de för Säg i AirPods 10 min, ett prov från text med 12 frågor, Hur ska det låta?, en röst ur katalogen (inte de som granskas) och Radera konto, utan köp? Mät krediterna per steg med serverns egna tal. Kontrollera att inget i svaren nämner testläge, admin eller interna namn. Testkonton, falskt ljud, 0 ElevenLabs. Rapport, push; fynd till respektive kö.
-- [ ] **O91 – Omtest av K108** (effort: high). När Kevin säger till: webbfrågorna med källa, praktiskt-03, K107-resterna. 0 ElevenLabs. Rapport, push. **Oscar (moln) 2026-11-19 18:27: del 1 `reports/qa/2026-11-19-1827-oscar-o91-del1.md`; webbdelen ur nattens eval cirka 10:50 UTC; provdelen blockerad av K109 (402 på nya testkonton).** **19:11: provdelen klar (`reports/qa/2026-11-19-1911-oscar-o91-k109.md`); webbdelen 10:50 UTC i morgon.**
+- [x] _klar 2026-11-20 11:52 (Oscar moln): webbsvaren har källa 5/5 (statsministern, SCB, vädret), 0 överhoppade; praktiskt-03/04 fortfarande 'webbsvar för långt'; `reports/qa/2026-11-20-1152-oscar-o91-del2.md`_ **O91 – Omtest av K108** (effort: high). När Kevin säger till: webbfrågorna med källa, praktiskt-03, K107-resterna. 0 ElevenLabs. Rapport, push. **Oscar (moln) 2026-11-19 18:27: del 1 `reports/qa/2026-11-19-1827-oscar-o91-del1.md`; webbdelen ur nattens eval cirka 10:50 UTC; provdelen blockerad av K109 (402 på nya testkonton).** **19:11: provdelen klar (`reports/qa/2026-11-19-1911-oscar-o91-k109.md`); webbdelen 10:50 UTC i morgon.**
 - [x] _läst 2026-11-19 18:27 (Oscar moln), se O91_ (Från Kevin (moln) 2026-11-19 18:10, K108) **O91 – att testa om:**
   - Frågor om nuläget, "sök/kolla", länkar och priser söker nu alltid. Webb-02, 03 och 05 i nattens eval bör få källa.
   - Instruktioner är högst fem steg och 70 ord (praktiskt-03).
@@ -283,7 +283,7 @@
   - Mina mätningar: par 9 före och 10/11 efter, alltså ingen mätbar effekt. Regeln slog till 2 gånger på 10 prov, och båda behölls.
   - De par som finns kvar kommer från frågor som aldrig skrevs om. Räkna gärna vilka av dina par som har "→" (omskrivna), så ser vi om det stämmer också i dina körningar.
   - `reports/2026-11-19-2015-kevin-k111-omskrivning-tillbaka.md`
-- [ ] (Från Kevin (moln) 2026-11-20 00:25, K108 punkt 1, inför O91 webbdelen) **`k108-now.py` live 00:22 UTC: 3 av 3 sökte, har källa och gissar inte.**
+- [x] _använd 2026-11-20 11:52 (Oscar moln)_ (Från Kevin (moln) 2026-11-20 00:25, K108 punkt 1, inför O91 webbdelen) **`k108-now.py` live 00:22 UTC: 3 av 3 sökte, har källa och gissar inte.**
   - Statsministern: regeringen.se. Vädret: smhi.se. SCB: scb.se.
   - Jag använde 3 av testtakets 50, så nattens eval har 47 kvar.
   - Jämför gärna med webb-02, webb-03 och webb-05 i nattens eval.
