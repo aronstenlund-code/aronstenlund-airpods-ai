@@ -1,5 +1,13 @@
 import SwiftUI
 
+/// Kelly Ke85 (D247, `docs/design/texter-integritet.md`): what sharing means, said in both places it is offered. Since
+/// K113 the switch also covers the exams (new and edited questions, 14 days, not linked), so the words say both, each
+/// with its own time. The English is the key in `Localizable.xcstrings`; the Swedish stands there.
+enum ShareText {
+    static let underTheSwitch = "Off by default. When on, your own questions and EarMind's answers are uploaded without your name and kept for at most 12 months. New and edited questions in your quizzes are also sent, not linked to you, and deleted within 14 days. Other people's speech is never sent. Turning it off deletes what was shared."
+    static let question = "You can share your own questions and EarMind's answers with the developers, without your name, for at most 12 months, and new and edited questions in your quizzes for at most 14 days. Other people's speech is never sent. You can change your mind at any time in Settings, and what was shared is then deleted."
+}
+
 /// Settings → Feedback & suggestions (D57): free text to the developers, and the opt-in for sharing history.
 struct FeedbackView: View {
     let model: ListeningModel
@@ -38,7 +46,7 @@ struct FeedbackView: View {
                 Section {
                     Toggle("Share history to improve the app", isOn: Binding(get: { share.isSharing }, set: { model.setSharing($0) }))
                 } footer: {
-                    Text("Off by default. When on, your own questions and EarMind's answers are uploaded without your name and kept for at most 12 months. Other people's speech is never sent. Turning it off deletes what was shared.")
+                    Text(LocalizedStringKey(ShareText.underTheSwitch))
                 }
             }
         }
@@ -56,7 +64,7 @@ struct ShareHistoryPromptView: View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Help improve EarMind?")
                 .font(.title.bold())
-            Text("You can share your own questions and EarMind's answers with the developers, without your name, for at most 12 months. Other people's speech is never sent. You can change your mind at any time in Settings, and what was shared is then deleted.")
+            Text(LocalizedStringKey(ShareText.question))
             Spacer()
             Button {
                 onAnswer(false)
