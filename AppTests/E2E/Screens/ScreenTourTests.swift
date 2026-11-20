@@ -150,9 +150,25 @@ final class ScreenTourTests: XCTestCase {
             guard tap(labels, step: "Start → \(labels[0])") else { continue }
             pause(2)
             shoot(name, note: labels[0])
-            closeSheet()
-            if waitFor(["Inställningar"], timeout: 5) == nil { closeSheet() }
+            backToStart()
         }
+    }
+
+    /// Back to Start from a pushed page (Hitta prov från din skola is a navigationDestination, run 44761053846) or a
+    /// sheet: the navigation bar's back button first, then the sheet's own close button.
+    private func backToStart() {
+        for _ in 0..<3 {
+            if find(["Inställningar"], buttonsOnly: true)?.isHittable == true { return }
+            let back = app.navigationBars.buttons.element(boundBy: 0)
+            if back.exists, back.isHittable, !["Klar", "Inställningar"].contains(back.label) {
+                log.append("back: '\(back.label)'")
+                back.tap()
+            } else {
+                closeSheet()
+            }
+            pause(1)
+        }
+        if find(["Inställningar"], buttonsOnly: true) == nil { miss("could not get back to Start") }
     }
 
     // MARK: Radera konto (A145): the question only; Avbryt, nothing is deleted
