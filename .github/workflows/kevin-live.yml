@@ -40,6 +40,7 @@ on:
           - k112-release.py
           - k113-live.py
           - k114-web.py
+          - k115-quota.py
           - qa/o86_eval_reproduce.py
           - k93-live.py
           - k94-apple-root.py

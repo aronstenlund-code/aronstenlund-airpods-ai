@@ -10,7 +10,7 @@ import { polishVoice, preVoice, V4_MODEL, VOICE_RULES_VERSION, withPauseTag } fr
 import { type QuotaAnswer, walletFields } from "../_shared/wallet.ts";
 import { cleanStyle, mapOffset, STYLE_MODEL, styledKey, type Styler } from "./style.ts";
 import { textLanguage } from "../exam/read.ts";
-import { composeLong, examLanguage, spokenText } from "../exam/drill.ts";
+import { composeLong, DRILL_LIMITS, estimatedCostPerQuestion, examLanguage, intIn, spokenText } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
 import { lengthClass, lengthLimits } from "./length.ts";
 import { currentTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
@@ -1184,7 +1184,14 @@ export function createDrillHandler(deps: DrillDeps) {
           ...(q.unlimited ? { unlimited: true } : {}), // K93 (D216): the capsule says "Obegränsat"
           ...walletFields(q), // K94 (D218): monthly_free, purchased, subscription
           // kept for older apps (K61/K82): left is now credits; suggest is how many questions Nytt prov may offer
-          left, suggest: left > 0 ? 20 : 0, per: "month",
+          // Angela Fable A154: the app's default is 12 questions (D239 punkt 1)
+          left, suggest: left > 0 ? 12 : 0, per: "month",
+          // A154: what one question of a new exam costs at the app's length (K110's upper bound, the same as exam drill's
+          // `fits`), so Nytt prov can say what fits before anything is made
+          exam: (() => {
+            const lw = intIn(b?.long_words, DRILL_LIMITS.longWordsMin, DRILL_LIMITS.longWordsMax, DRILL_LIMITS.longWordsDefault);
+            return { per_question: estimatedCostPerQuestion(lw), min_questions: DRILL_LIMITS.questionsMin, long_words: lw };
+          })(),
           prices: {
             unit: "chars", per_char: 1,
             classes: [

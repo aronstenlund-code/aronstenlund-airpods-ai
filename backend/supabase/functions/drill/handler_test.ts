@@ -538,7 +538,7 @@ Deno.test("K90 (D213): quota says credits in characters: limit, used, remaining,
   const w = world({ credits: 1500 });
   const q = await (await w.h("u1")(post({ action: "quota" }))).json();
   assertEquals([q.unit, q.limit, q.used, q.remaining, q.resets, q.resets_day], ["chars", 1500, 0, 1500, "2026-12-01", "1 december"]);
-  assertEquals([q.left, q.suggest, q.per], [1500, 20, "month"], "old fields kept");
+  assertEquals([q.left, q.suggest, q.per], [1500, 12, "month"], "old fields kept (suggest 12, D239)");
 });
 
 Deno.test("K62b D180: a test account's drill uses the silent test voice, never the real files or voice", async () => {
@@ -1226,4 +1226,19 @@ Deno.test("K99 the AI picks a catalog voice for a style when none is chosen; a v
   const w2 = world({ catalog: CAT, picker: () => Promise.resolve({ voice_id: "MadeUpVoice0001", reason: "x" }) });
   const b = await (await w2.h("u1")(post({ action: "save", drill: { kind: "text", style: "Glatt" }, items: text }))).json();
   assertEquals(b.drill.voice_id, null, "a voice not in the catalog is never used");
+});
+
+Deno.test("Angela Fable A154: quota with long_words says what one question costs (the K110 upper bound) and suggests 12", async () => {
+  const w = world();
+  const { estimatedCostPerQuestion } = await import("../exam/drill.ts");
+  const q = await (await w.h("u1")(post({ action: "quota", long_words: 90 }))).json();
+  assertEquals(q.exam, { per_question: estimatedCostPerQuestion(90), min_questions: 3, long_words: 90 });
+  assertEquals(q.exam.per_question, 642);
+  assertEquals(q.suggest, 12);
+  const longer = await (await w.h("u1")(post({ action: "quota", long_words: 130 }))).json();
+  assertEquals(longer.exam.per_question, estimatedCostPerQuestion(130));
+  const none = await (await w.h("u1")(post({ action: "quota" }))).json();
+  assertEquals(none.exam.long_words, 90, "without long_words: the default length");
+  const odd = await (await w.h("u1")(post({ action: "quota", long_words: 9999 }))).json();
+  assertEquals(odd.exam.long_words, 200, "clamped as exam drill clamps it");
 });
