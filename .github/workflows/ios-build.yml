@@ -306,8 +306,9 @@ jobs:
 
           echo "== Entitlements each configuration is signed with (nothing is signed here)"
           for CONFIG in Debug Beta Release; do
-            FILE="$(xcodebuild -project Lumen.xcodeproj -target Lumen -configuration "$CONFIG" -derivedDataPath DerivedData-release -showBuildSettings 2>/dev/null \
-              | awk '$1 == "CODE_SIGN_ENTITLEMENTS" { print $3 }')"
+            # -target, without a scheme and without -derivedDataPath (xcodebuild refuses that pair, run 44594095250).
+            FILE="$(xcodebuild -project Lumen.xcodeproj -target Lumen -configuration "$CONFIG" -showBuildSettings 2>"build-logs/settings-$CONFIG.log" \
+              | awk '$1 == "CODE_SIGN_ENTITLEMENTS" { print $3 }')" || { cat "build-logs/settings-$CONFIG.log"; fail "The build settings of $CONFIG could not be read"; }
             ENV="$(plist "$FILE" com.apple.developer.devicecheck.appattest-environment)"
             GROUP="$(plist "$FILE" com.apple.security.application-groups:0)"
             echo "  $CONFIG: $FILE · app group ${GROUP:-none} · App Attest ${ENV:-not set, so the sandbox while developing}"
@@ -320,8 +321,8 @@ jobs:
             fi
           done
           plutil -p Entitlements/Lumen-Release.entitlements
-          WIDGET="$(xcodebuild -project Lumen.xcodeproj -target LumenControls -configuration Release -derivedDataPath DerivedData-release -showBuildSettings 2>/dev/null \
-            | awk '$1 == "CODE_SIGN_ENTITLEMENTS" { print $3 }')"
+          WIDGET="$(xcodebuild -project Lumen.xcodeproj -target LumenControls -configuration Release -showBuildSettings 2>build-logs/settings-widget.log \
+            | awk '$1 == "CODE_SIGN_ENTITLEMENTS" { print $3 }')" || { cat build-logs/settings-widget.log; fail "The widget's build settings could not be read"; }
           echo "  LumenControls (Release): $WIDGET"; plutil -p "$WIDGET"
           if codesign -d --entitlements - "$APP" 2>/dev/null | grep -q "<key>"; then
             echo "::warning::The unsigned archive carries entitlements, which was not expected"
