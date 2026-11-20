@@ -833,7 +833,11 @@ final class SayFlowTests: XCTestCase {
     private func reviewExam() -> Bool {
         // The reviewer would type or photograph the material; LUMEN_TEST_MATERIAL (Debug) puts the same kind of text in
         // Nytt prov, since XCUITest cannot type into Skriv text (T21, T28).
-        launch(header, material: Self.reviewMaterial)
+        // Angela Fable 10:57 (K109): Actions runs with the plain test header skip the server's estimate, so the exam
+        // was made although the credits did not cover it. "user-path" asks for what a user gets (the estimate and its
+        // 402); it is still a test call with fake audio (D180).
+        launch("user-path", material: Self.reviewMaterial)
+        log.append("T55 exam: relaunched with x-earmind-test user-path (the user's path, K109)")
         _ = wait(["Inställningar"], 20)
         goToStart()
         guard tap(["Nytt prov"], "Nytt prov") else { return false }
