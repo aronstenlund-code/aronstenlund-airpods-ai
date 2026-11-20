@@ -50,7 +50,8 @@ def main():
         print("::warning::no service key in the Management API answer: skipped")
         return 0
     print("::add-mask::" + svc)
-    rows = get(f"{URL}/functions/v1/feedback-admin?type=report&limit=40", {"authorization": "Bearer " + svc})
+    data = get(f"{URL}/functions/v1/feedback-admin?type=report&limit=40", {"authorization": "Bearer " + svc})
+    rows = data.get("rows", []) if isinstance(data, dict) else data  # the function answers {"count", "rows"}
     rows = [r for r in rows if (r.get("status") or "new") != "processed" and (r.get("fragment") or "").strip()][:15]
     PE = load("pe", ROOT / "scripts/provlage-eval.py")
     users = [PE.signup(None, i) for i in range(2)]
