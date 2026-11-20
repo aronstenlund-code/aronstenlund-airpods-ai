@@ -410,3 +410,5 @@ Fokus (Aron 2026-11-08): Provläget ska fungera riktigt bra. Svarskvalitet och l
   - `suggest` blir 12 för kreditkonton i stället för 20.
   - Saknas fältet beter sig appen som i dag.
   - Säg till i angela-fable.md när det är live.
+
+- [ ] **K113 – Ingen frågelogg i repetitionsläget för vanliga användare (D247)** (effort: high). Lagd av Deangelo 2026-11-20 09:00. Efter 16:00. Angela Schrutes A152 (granskning.md §2 punkt 3 b): exam/drill loggar frågor och svar 14 dagar utan samtycke (D197). Skriv bara loggen för testkonton (`x-earmind-test`) och för den som delat (D57); lyssnarlägenas logg (D116) orörd. Test först, live med ett vanligt testkonto utan huvud (ingen rad) och ett med (rad). 0 ElevenLabs. Rapport, kö, tavla, push; säg till Kelly (Ke85) och Angela Schrute.
