@@ -46,14 +46,14 @@ def english(t):
 
 
 # (1) CORS
-for fn in ("answer", "drill", "exam", "tts"):
+for fn in ("answer", "drill", "exam", "tts", "stt-token", "voices"):
     for origin, want in ((WEB, True), (PREVIEW, True), ("https://evil.example", False)):
         st, h, _ = req("OPTIONS", fn, extra={"origin": origin, "access-control-request-method": "POST",
-                                             "access-control-request-headers": "authorization,content-type,x-earmind-lang"})
+                                             "access-control-request-headers": "authorization,content-type,x-earmind-lang,x-earmind-test"})
         acao = h.get("access-control-allow-origin")
         allowed = acao == origin
         hdrs = (h.get("access-control-allow-headers") or "").lower()
-        good = allowed == want and (not want or "x-earmind-lang" in hdrs)
+        good = allowed == want and (not want or ("x-earmind-lang" in hdrs and "x-earmind-test" in hdrs))
         ok(f"cors {fn} {origin.split('//')[1][:24]}", good, {"status": st, "acao": acao, "lang_header": "x-earmind-lang" in hdrs})
 
 # (2) web guard: 5 accounts per network and day from the web

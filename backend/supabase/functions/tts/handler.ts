@@ -5,6 +5,7 @@ import { appChecks, enforceLimits, type Limits, type RateLimiter } from "../_sha
 import { readLimitedJson } from "../answer/validate.ts";
 import { DEFAULT_DEMO_CAPS, type DemoCaps, enforceDemo, networkKey } from "../_shared/demo.ts";
 import { activeVoiceId, isRetired, type Voice, VOICE_ID_RE } from "./voices.ts";
+import { webCredits } from "../_shared/webguard.ts";
 
 /**
  * D46 item 9 / K14: models the app, the demo and the evals may ask for, with their metering weight relative to Flash
@@ -235,6 +236,16 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
         throw new HttpError(503, "provider_unconfigured", "TTS not configured", { fallback: true });
       }
 
+      // A156 (D249): a spoken answer from the web beta counts against the web's daily credits (the demo has its own)
+      if (!demo) {
+        const wc = await webCredits(deps.rateLimiter, cost);
+        if (!wc.allowed) {
+          throw new HttpError(429, "web_daily_cap", "Webbetan har gjort sitt ljud för i dag. Försök igen i morgon, eller använd appen.", {
+            fallback: true,
+            retryAfterSec: wc.retryAfterSec,
+          });
+        }
+      }
       // Local guard first (0 ms), then the shared character budget IN PARALLEL with the ElevenLabs
       // request: the audio response is only released once the budget check has passed, so a denied
       // request never returns audio (it costs at most the aborted upstream start).
