@@ -1,6 +1,7 @@
 // GET /functions/v1/stt-token  - single-use ElevenLabs Scribe realtime token (D44). POST {seconds} logs usage.
 import { demoCapsFromEnv } from "../_shared/demo.ts";
 import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
+import { withWebGuard } from "../_shared/webguard.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
@@ -45,4 +46,5 @@ const fake = (req: Request) =>
       reason: "D180: test accounts never use ElevenLabs",
     }), { status: 200, headers: { "content-type": "application/json", "cache-control": "no-store", ...CORS_HEADERS } })
     : null;
-Deno.serve(withCors(withTestMode("stt-token", handler, { fake }), extraOriginsFromEnv()));
+// A156 (D249): web accounts per network; the demo page (?source=demo) has its own caps
+Deno.serve(withCors(withWebGuard(withTestMode("stt-token", handler, { fake }), { limiter: new SupabaseRateLimiter(db), extraOrigins: extraOriginsFromEnv(), demo: true }), extraOriginsFromEnv()));

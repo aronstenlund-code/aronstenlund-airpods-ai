@@ -23,6 +23,10 @@ export const WEB_LIMITS = {
   creditsPerIpPerDay: num("WEB_CREDITS_PER_IP_PER_DAY", 3_000),
   /** Credits all web accounts together may spend per UTC day. */
   creditsGlobalPerDay: num("WEB_CREDITS_GLOBAL_PER_DAY", 10_000),
+  /** A156: listening (Scribe realtime tokens, each at most 15 min) a network may start from the web per UTC day. */
+  sttTokensPerIpPerDay: num("WEB_STT_TOKENS_PER_IP_PER_DAY", 20),
+  /** A156: listening tokens all web accounts together may start per UTC day (the app's own cap is 600, D44). */
+  sttTokensGlobalPerDay: num("WEB_STT_TOKENS_GLOBAL_PER_DAY", 150),
 };
 const DAY = 86400;
 
@@ -43,10 +47,12 @@ const msg = (req: Request, sv: string, en: string) => (/^\s*sv\b/i.test(req.head
 /** Wraps a function: web requests count their account against the network's daily allowance and run in the web context. */
 export function withWebGuard(
   handler: (req: Request) => Promise<Response>,
-  o: { limiter: RateLimiter; extraOrigins?: string[] },
+  o: { limiter: RateLimiter; extraOrigins?: string[]; demo?: boolean },
 ): (req: Request) => Promise<Response> {
   return async (req) => {
     if (req.method === "OPTIONS" || !isWebRequest(req, o.extraOrigins)) return handler(req);
+    // A156: the public demo page is on the same domain and has its own caps per network (D62); it is not the beta
+    if (o.demo && await isDemo(req)) return handler(req);
     const net = await networkKey(req);
     const sub = typeof jwtClaims(req)?.sub === "string" ? String(jwtClaims(req)!.sub).slice(0, 64) : null;
     if (sub) {
@@ -62,6 +68,18 @@ export function withWebGuard(
     }
     return await ctx.run({ net }, () => handler(req));
   };
+}
+
+/** The demo page's calls: `?source=demo` (stt-token) or `"source": "demo"` in a small JSON body (answer, tts). */
+async function isDemo(req: Request): Promise<boolean> {
+  if (new URL(req.url).searchParams.get("source") === "demo") return true;
+  if (req.method !== "POST" || Number(req.headers.get("content-length") ?? 0) > 64_000) return false;
+  try {
+    const j = await req.clone().json();
+    return !!j && typeof j === "object" && (j as { source?: unknown }).source === "demo";
+  } catch {
+    return false;
+  }
 }
 
 /** An account already admitted today goes on; a new one takes one of the network's places (a denied place is given back). */
@@ -85,6 +103,22 @@ export async function webCredits(rl: RateLimiter, credits: number): Promise<Rate
   if (rl.checkMany) return await rl.checkMany(checks, credits);
   for (const c of checks) {
     const r = await rl.check(c.key, c.limit, c.windowSec, credits);
+    if (!r.allowed) return { ...r, deniedKey: c.key };
+  }
+  return { allowed: true, retryAfterSec: 0 };
+}
+
+/** A156: one unit of something the web may do only so often (listening tokens), per network and in all per UTC day. */
+export async function webCount(rl: RateLimiter, scope: string, perIp: number, global: number): Promise<RateResult> {
+  const w = currentWeb();
+  if (!w) return { allowed: true, retryAfterSec: 0 };
+  const checks = [
+    { key: `web-${scope}:ip:${w.net}:d`, limit: perIp, windowSec: DAY },
+    { key: `web-${scope}:global:d`, limit: global, windowSec: DAY },
+  ];
+  if (rl.checkMany) return await rl.checkMany(checks, 1);
+  for (const c of checks) {
+    const r = await rl.check(c.key, c.limit, c.windowSec, 1);
     if (!r.allowed) return { ...r, deniedKey: c.key };
   }
   return { allowed: true, retryAfterSec: 0 };

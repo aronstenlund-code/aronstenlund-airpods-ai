@@ -121,4 +121,4 @@ const waitUntil = (p: Promise<unknown>) => {
 const logged = env.get("QA_LOG") === "0" ? handler : withQaLog(handler, (row) => db.insert("qa_log", row), waitUntil);
 
 // K114 (D249): web beta accounts per network
-Deno.serve(withCors(withWebGuard(logged, { limiter: new SupabaseRateLimiter(db), extraOrigins: extraOriginsFromEnv() }), extraOriginsFromEnv()));
+Deno.serve(withCors(withWebGuard(logged, { limiter: new SupabaseRateLimiter(db), extraOrigins: extraOriginsFromEnv(), demo: true }), extraOriginsFromEnv()));

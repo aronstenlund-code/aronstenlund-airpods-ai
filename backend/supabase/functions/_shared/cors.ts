@@ -28,7 +28,9 @@ export function extraOriginsFromEnv(
   );
 }
 
-const ALLOW_HEADERS = "authorization, apikey, content-type, x-client-info, x-warm, x-earmind-lang";
+// A156: x-earmind-test lets Oscar and Toby test the web beta in a real browser (D180: fake audio, never ElevenLabs).
+// Anyone can send it outside a browser already; it only ever turns real provider calls off, never on.
+const ALLOW_HEADERS = "authorization, apikey, content-type, x-client-info, x-warm, x-earmind-lang, x-earmind-test";
 const ALLOW_METHODS = "GET, POST, DELETE, OPTIONS";
 
 export function withCors(
