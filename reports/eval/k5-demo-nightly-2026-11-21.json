@@ -1,0 +1,143 @@
+{
+ "summary": {
+  "n": 10,
+  "answered": 10,
+  "correct": 10,
+  "natural": 8,
+  "slips": 0,
+  "cost_mean_usd": 0.00304,
+  "first_ms_p50": 1536
+ },
+ "rows": [
+  {
+   "q": "vad är fotosyntes",
+   "status": 200,
+   "answer": "Fotosyntesen är växternas sätt att göra socker av koldioxid och vatten med hjälp av solljus, och den sker i kloroplasterna där klorofyllet fångar ljuset. Som biprodukt bildas syre, och det är det vi andas.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Short, correct answer. Fotosyntes also occurs in alger and cyanobakterier, but 'växternas sätt' is acceptable for a demo.",
+   "cost": 0.0120475,
+   "ms": 2511
+  },
+  {
+   "q": "varför är himlen blå",
+   "status": 200,
+   "answer": "Solljuset innehåller alla färger, och luftens molekyler sprider det korta, blå ljuset mycket mer än det långa, röda. Därför kommer blått ljus från alla håll på himlen, medan solen själv ser gul ut och blir röd vid solnedgången.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0020394000000000002,
+   "ms": 1413
+  },
+  {
+   "q": "hur fungerar en vaccin",
+   "status": 200,
+   "answer": "Ett vaccin visar immunförsvaret en ofarlig bit av en smittämne, till exempel en avdödad bakterie eller ett protein, så att kroppen bildar antikroppar och minnesceller. Möter du sedan det riktiga smittämnet, känner immunförsvaret igen det och slår ner det snabbt innan du blir sjuk.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 0,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Grammatikfel: \"en smittämne\" ska vara \"ett smittämne\" (smittämne är ett ting-ord). Innehållet är i övrigt korrekt.",
+   "cost": 0.0023269,
+   "ms": 1536
+  },
+  {
+   "q": "vem var Gustav Vasa",
+   "status": 200,
+   "answer": "Gustav Vasa var Sveriges kung från femtonhundratjugotre till femtonhundrasextio och räknas som den moderna svenska statens grundare. Han ledde upproret mot den danske kungen Kristian den andre, införde reformationen och gjorde kronan ärftlig.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0019669,
+   "ms": 1385
+  },
+  {
+   "q": "vad är skillnaden mellan väder och klimat",
+   "status": 200,
+   "answer": "Väder är hur atmosfären är just nu eller de närmaste dagarna, som regn, vind och temperatur. Klimat är medelvädret på en plats under lång tid, vanligen trettio år.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0018019,
+   "ms": 1365
+  },
+  {
+   "q": "hur räknar man ut procent",
+   "status": 200,
+   "answer": "Dela delen med helheten och multiplicera med hundra. Till exempel är femton av sextio lika med femton delat med sextio, alltså noll komma två fem, gånger hundra, vilket blir tjugofem procent.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0017844000000000002,
+   "ms": 1681
+  },
+  {
+   "q": "varför har vi skottår",
+   "status": 200,
+   "answer": "Jorden tar ungefär trehundrasextiofem dagar och sex timmar på sig att gå runt solen, så kalendern halkar efter med ungefär en dag vart fjärde år. Den extra dagen, den tjugonionde februari, håller kalendern i takt med årstiderna.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0020094,
+   "ms": 1269
+  },
+  {
+   "q": "vad är en atom",
+   "status": 200,
+   "answer": "En atom är den minsta byggstenen i ett grundämne: en liten kärna av protoner och neutroner, omgiven av elektroner. Den är cirka noll komma noll noll noll noll noll noll noll noll noll ett meter stor och nästan helt tom, eftersom nästan all massa sitter i kärnan.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 0,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "Atomens storlek sägs som en lång rad nollor, vilket är otympligt att höra; bättre 'ungefär en tiondels nanometer'. Kolon och 'cirka' är också lite skriftspråk.",
+   "cost": 0.0020244,
+   "ms": 1387
+  },
+  {
+   "q": "hur uppstår regnbågar",
+   "status": 200,
+   "answer": "Regnbågen uppstår när solljus bryts in i regndroppar, reflekteras mot droppens baksida och bryts igen när det går ut. Eftersom olika våglängder bryts olika mycket delas ljuset upp i färger, med rött ytterst och violett innerst. Du ser den när solen är bakom dig och regnet framför, i en vinkel på ungefär fyrtiotvå grader från motsolspunkten.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0025169,
+   "ms": 1695
+  },
+  {
+   "q": "vad betyder demokrati",
+   "status": 200,
+   "answer": "Demokrati kommer från grekiskans demos, folk, och kratos, styre, alltså folkstyre. Det är ett styrelseskick där makten utgår från folket, som väljer sina företrädare i fria val och har lika rösträtt.",
+   "model": "claude-sonnet-5-5",
+   "correct": 1,
+   "natural": 1,
+   "lang_ok": 1,
+   "slip": false,
+   "note": "",
+   "cost": 0.0019219,
+   "ms": 5687
+  }
+ ]
+}
