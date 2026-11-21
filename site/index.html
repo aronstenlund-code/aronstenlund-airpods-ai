@@ -1,34 +1,31 @@
 <!doctype html>
-<html lang="sv">
+<html lang="en">
 <head>
-<script>
-  // Byt namn här, och bara här. Sidan hämtar namnet från den här variabeln.
-  const APP_NAME = "EarMind"; // D128. Väckningsordet ”Lumen” står i citaten och byts bara om Aron säger det.
-</script>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
-<title>EarMind: plugga med AirPods utan att röra mobilen</title>
-<meta name="description" content="Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods. Du styr med tryck, utan mikrofon. Eller låt EarMind läsa upp texten.">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EarMind: study by listening in your AirPods</title>
+<meta name="description" content="Type what you want to learn, tap Play and hear it in your AirPods, again and again. Or snap your textbook and get quiz questions with answers. Try the beta in your browser.">
 <link rel="canonical" href="https://earmind.vercel.app/">
+<link rel="alternate" hreflang="en" href="https://earmind.vercel.app/">
+<link rel="alternate" hreflang="sv" href="https://earmind.vercel.app/sv">
+<link rel="alternate" hreflang="x-default" href="https://earmind.vercel.app/">
 <meta property="og:type" content="website">
-<meta property="og:locale" content="sv_SE">
+<meta property="og:locale" content="en_US">
+<meta property="og:locale:alternate" content="sv_SE">
 <meta property="og:site_name" content="EarMind">
 <meta property="og:url" content="https://earmind.vercel.app/">
-<meta property="og:title" content="Kom förberedd till provet.">
-<meta property="og:description" content="Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods.">
+<meta property="og:title" content="Study by listening in your AirPods.">
+<meta property="og:description" content="Type what you want to learn and hear it in your AirPods, again and again. Try the beta in your browser.">
 <meta property="og:image" content="https://earmind.vercel.app/og-earmind-v2.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="EarMind. Fråga högt. Få svaret i örat. Elias, en påhittad elev, med en hörlur i örat.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
 <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F1218">
 <meta name="color-scheme" content="light dark">
-<link rel="preconnect" href="https://xjczbzfkmbjdebwlccki.supabase.co" crossorigin>
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="icon" href="favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Hur kan jag plugga inför prov utan att titta på telefonen?", "acceptedAnswer": {"@type": "Answer", "text": "Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods. Tryck en gång för det långa svaret, två gånger för det korta och tre gånger för paus. Mikrofonen används inte."}}, {"@type": "Question", "name": "Kan EarMind läsa upp min text?", "acceptedAnswer": {"@type": "Answer", "text": "Ja. Välj Läs upp texten i Nytt prov, så läses materialet upp som en löpande text. Tryck en gång för att pausa, två gånger för nästa mening och tre gånger för förra meningen."}}, {"@type": "Question", "name": "Funkar det för nationella provet och A-nivå?", "acceptedAnswer": {"@type": "Answer", "text": "Frågorna och svaren görs av ditt eget material. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok. Du kan ändra varje svar innan du startar provet."}}, {"@type": "Question", "name": "Kan jag prova utan att ladda ner något?", "acceptedAnswer": {"@type": "Answer", "text": "Ja, du kan prova de lyssnande lägena direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns."}}]}</script>
 <style>
   /* Ke67 (D160): samma typsnitt som appen, systemets (SF Pro på iPhone och Mac). Inget webbtypsnitt laddas. */
 
@@ -634,964 +631,153 @@
   @media (min-width: 1180px) { .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   .pitch-cta { margin: 18px 0 0; }
   .pitch-cta .pill { text-decoration: none; display: inline-flex; }
+
+  /* Ke86 (D249, D251): English page – beta card instead of the live demo, language link */
+  .top { display: flex; align-items: center; justify-content: space-between; }
+  .lang { color: var(--blue); font-size: .9375rem; text-decoration: none; }
+  .betacard { padding: 22px; display: grid; gap: 12px; align-content: start; }
+  .betacard .pill { justify-self: start; }
+  .betacard .note { color: var(--mut); font-size: .9375rem; }
+  .elias-still { width: 100%; height: auto; border-radius: 28px; display: block; }
+  @media (min-width: 960px) { .betacard { grid-column: 2; grid-row: 1 / span 2; align-self: start; padding: 28px; } }
 </style>
 </head>
-<body data-view="idle">
+<body>
 <header class="top wrap">
-  <a class="name" href="#">
-    <!-- Ke42 (D129/D139): appens ikon, glasklotet, exakt ChatGPT-bilden (docs/design/logo/rostning/exakt/) -->
-    <img src="img/ikon-64.webp" width="32" height="32" alt="">
-    <span data-app></span>
-  </a>
+  <a class="name" href="/"><img src="img/ikon-64.webp" width="32" height="32" alt=""> <span>EarMind</span></a>
+  <a class="lang" href="/sv" hreflang="sv" lang="sv">Svenska</a>
 </header>
 <main>
   <section class="hero wrap" aria-labelledby="hero-h">
     <div class="intro">
-      <h1 id="hero-h">Kom förberedd till provet.</h1>
-      <!-- Ke67: samma ord som appens Hem (A86). Huvudläget är repetitionsläget, de lyssnande lägena är Beta. -->
-      <!-- Ke82: samma ordning som appen på main (D215): Säg i AirPods först, sedan fota boken. -->
-      <p class="pitch">Skriv det du vill höra. <span data-app></span> läser upp det i dina AirPods, om och om igen.</p>
-      <p class="pitch-sub">Eller fota boken och få provfrågor med svar. Du styr med tryck på AirPods, utan mikrofon.</p>
-      <p class="pitch-cta"><a class="pill" href="#kom-igang">Så fungerar det</a></p>
+      <h1 id="hero-h">Learn it by listening.</h1>
+      <p class="pitch">Type what you want to learn. EarMind reads it in your AirPods, again and again.</p>
+      <p class="pitch-sub">Or snap your textbook and get quiz questions with answers. You control it with taps on your AirPods, no microphone.</p>
+      <p class="pitch-cta"><a class="pill" href="/beta">Try the beta</a></p>
     </div>
-
-    <div class="demo paper" id="demo" role="region" aria-label="Prova demon">
-      <p class="demo-label">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 14v-2a9 9 0 0 1 18 0v2"/><path d="M21 15a2 2 0 0 1-2 2h-1v-6h1a2 2 0 0 1 2 2zM3 15a2 2 0 0 0 2 2h1v-6H5a2 2 0 0 0-2 2z"/></svg>
-        <span>Prova Fler lägen här <span class="beta">Beta</span></span>
-      </p>
-      <!-- Ke29 (D124, D126): samma ord som appens Start. Standardläge är livedemon, Förhör mig är Provläget. -->
-      <div class="seg" role="group" aria-label="Två lyssnande lägen i EarMind">
-        <button class="seg-b" id="m-ask" type="button" aria-pressed="true">Standardläge</button>
-        <button class="seg-b" id="m-quiz" type="button" aria-pressed="false">Förhör med rösten</button>
-      </div>
-      <p class="seg-line" id="segline"><span data-app></span> svarar när någon frågar.</p>
-      <div class="quiz" id="quiz" hidden>
-        <p class="ex-meta" id="qz-meta"></p>
-        <p class="quiz-q" id="qz-q" tabindex="-1"></p>
-        <p class="quiz-hint" id="qz-hint">Svara högt för dig själv. Sedan hör du hur <span data-app></span> svarar.</p>
-        <p class="ex-a clamp" id="qz-a" aria-live="polite" hidden></p>
-        <div class="ex-row">
-          <button class="pill" id="qz-play" type="button"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"/></svg><span>Hör svaret</span></button>
-          <button class="pill quiet" id="qz-next" type="button" hidden>Nästa fråga</button>
-          <button class="ex-more" id="qz-more" type="button" aria-expanded="false" aria-controls="qz-a" hidden>Visa hela svaret</button>
-        </div>
-        <p class="mini-fine" id="qz-end" hidden>I appen förhör <span data-app></span> dig på ditt eget prov. <a href="#vantelista">Mejla mig när appen finns</a></p>
-        <p class="mini-fine">Svaren är ordagranna från vårt test av Provläget den 8 november, med samma röst som i appen.</p>
-      </div>
-      <div class="convo" id="convo" hidden>
-        <p class="q hand" id="q"></p>
-        <div class="a" id="a" aria-live="polite" tabindex="-1"></div>
-        <p class="note" id="note" role="status" hidden></p>
-        <form class="nudge" id="nudge" novalidate hidden>
-          <p class="nudge-h" id="mini-h">Vill du ha appen? Den är inte ute än, så vi mejlar när den finns.</p>
-          <div class="mini-row">
-            <label class="sr" for="miniemail">E-post</label>
-            <input id="miniemail" type="email" name="email" placeholder="Din e-post" autocomplete="email" autocapitalize="none" spellcheck="false" enterkeyhint="send" aria-describedby="mini-h minimsg">
-            <button class="pill" id="minibtn" type="submit">Mejla mig</button>
-          </div>
-          <p class="mini-fine">Vi använder adressen bara till det mejlet. <a href="#integritet">Om dina uppgifter</a></p>
-          <p class="formmsg" id="minimsg" role="status"></p>
-        </form>
-        <div class="dock" id="dock" hidden>
-          <button class="pill stop" id="stop" type="button"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Stoppa</button>
-          <button class="pill quiet again-only" id="again" type="button" hidden>Ställ en ny fråga</button>
-          <span class="left" id="left"></span>
-        </div>
-      </div>
-
-      <div class="controls">
-        <div class="try" role="group" aria-label="Exempelfrågor">
-          <button class="chip" type="button">Orsaker till första världskriget</button>
-          <button class="chip" type="button">Hungrig, ägg, pasta</button>
-          <button class="chip" type="button">Vad betyder low-key?</button>
-        </div>
-        <div class="pad">
-          <div class="disc-wrap">
-            <span class="ring"></span><span class="ring"></span><span class="halo" id="halo"></span>
-            <button class="disc" id="disc" type="button" aria-describedby="hint">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2.5" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3.5"/></svg>
-              <span id="disclabel">Håll in och fråga</span>
-            </button>
-          </div>
-          <p class="hint" id="hint" role="status">Bäst med hörlurarna i.</p>
-        </div>
-        <form class="ask" id="ask">
-          <label class="sr" for="txt">Skriv din fråga</label>
-          <input id="txt" type="text" placeholder="Eller skriv din fråga" autocomplete="off" enterkeyhint="send" maxlength="1000">
-          <button class="send" type="submit" aria-label="Skicka frågan">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20V5M5.5 11.5 12 5l6.5 6.5"/></svg>
-          </button>
-        </form>
-      </div>
+    <div class="betacard paper" role="region" aria-labelledby="beta-h">
+      <h2 id="beta-h" style="font-size:1.375rem">Try it in your browser</h2>
+      <p>The beta works on your phone and computer: Say in AirPods, voices, quizzes from text and the listening modes. No download.</p>
+      <p class="note"><b>Keep the screen on in the beta.</b> Your phone can be up to about 10&nbsp;m (33&nbsp;ft) from your AirPods, so you can put it down.</p>
+      <a class="pill" href="/beta">Open the beta</a>
+      <p class="note">1,500 free credits every month. Purchases come with the iPhone app.</p>
     </div>
-
-
-    <!-- Ke8: Elias i ett kort (vit bakgrund i bildrutorna), scrollstyrd sekvens. Bild 1 direkt, resten efter load. -->
-    <figure class="elias-wrap">
-      <div class="elias" id="elias" style="--ex:35%;--ey:38%">
-        <div class="stage" id="elias-stage">
-          <img id="elias-still" src="img/elias-seq/001.webp" width="480" height="700" alt="Elias, 17 år, med en vit trådlös hörlur i örat. AI-genererad figur, ingen verklig person.">
-          <canvas id="elias-cv" width="480" height="700" aria-hidden="true"></canvas>
-          <span class="rings" aria-hidden="true"><i></i><i></i><i></i></span>
-        </div>
-      </div>
-    </figure>
+    <figure class="elias-wrap"><img class="elias-still" src="img/elias-seq/001.webp" width="480" height="700" alt="Elias, 17, with a white wireless earbud. AI-generated figure, not a real person."></figure>
   </section>
 
-
-  <!-- Ke67: samma flöde och knappnamn som appen i dag (A106–A112). Bilder från appens skärmbildsscener. -->
-  <section class="start wrap" id="kom-igang" aria-labelledby="start-h">
-    <h2 id="start-h">Så fungerar det</h2>
-    <p class="lead">Skriv det du vill höra, eller fota boken. Du lyssnar i dina AirPods.</p>
+  <section class="start wrap" id="how" aria-labelledby="start-h">
+    <h2 id="start-h">How it works</h2>
+    <p class="lead">Type what you want to hear, or snap your textbook. You listen in your AirPods.</p>
     <ol class="steps">
-      <li class="paper"><h3>Skriv det du vill höra</h3><p>Skriv eller klistra in en text och tryck <b>Spela i 10 min</b>. Den läses upp om och om igen, upp till en timme.</p><img class="shot" src="img/app-sag.webp" width="300" height="652" loading="lazy" alt="Första skärmen i appen: ett mörkt fält med en text om fotosyntes, raden Hur ska det låta?, kostnaden 120 krediter och knappen Spela i 10 min."></li>
-      <li class="paper"><h3>Hur ska det låta?</h3><p>Skriv till exempel <b>lugnt, som en lärare</b>, så väljer <span data-app></span> en röst som passar. Eller välj själv bland rösterna och lyssna först. Det kostar inget.</p><img class="shot" src="img/app-stil.webp" width="300" height="652" loading="lazy" alt="Säg-kortet med rösten Gustav vald efter stilen Lugnt, som en lärare, och raden Vald efter stilen: Mörk och tydlig, passar en lärare."></li>
-      <li class="paper"><h3>Eller fota boken</h3><p>Tryck <b>Nytt prov</b> och fota sidorna. Välj <b>Frågor</b>, eller <b>Läs upp texten</b> om du vill lyssna på materialet.</p><img class="shot" src="img/app-fota.webp" width="300" height="652" loading="lazy" alt="Skärmen Nytt prov i appen: provets namn, valet Frågor eller Läs upp texten, och Fota sidor, Välj bilder, Skriv text, Lägg till dokument och Klistra in länk."></li>
-      <li class="paper"><h3>Starta prov</h3><p>Frågorna läses upp i dina AirPods. Tryck en gång för det långa svaret, två gånger för det korta och tre gånger för paus.</p><img class="shot" src="img/app-prov.webp" width="300" height="652" loading="lazy" alt="Provläget i appen: frågan Vad bildas vid fotosyntesen? med svaret, och raden med de tre trycken."></li>
+      <li class="paper"><h3>Type what you want to hear</h3><p>Type or paste a text and tap <b>Play for 10 min</b>. It repeats for up to an hour.</p><img class="shot" src="img/app-sag.webp" width="300" height="652" loading="lazy" alt="The first screen: a dark card with a text about photosynthesis, the cost and the Play button."></li>
+      <li class="paper"><h3>How should it sound?</h3><p>Type something like <b>calm, like a teacher</b> and EarMind picks a voice. Or choose one yourself and preview it for free.</p><img class="shot" src="img/app-stil.webp" width="300" height="652" loading="lazy" alt="The Say card with a voice chosen for the style."></li>
+      <li class="paper"><h3>Or snap your textbook</h3><p>Tap <b>New quiz</b> and add photos, a document, a link or text. Choose <b>Questions</b> or <b>Read aloud</b>.</p><img class="shot" src="img/app-fota.webp" width="300" height="652" loading="lazy" alt="The New quiz screen with Questions or Read aloud and the ways to add material."></li>
+      <li class="paper"><h3>Start quiz</h3><p>Questions are read in your AirPods. Tap once for the long answer, twice for the short one, three times to pause.</p><img class="shot" src="img/app-prov.webp" width="300" height="652" loading="lazy" alt="The quiz screen: the question, the answer and the three taps."></li>
     </ol>
-    <p class="shot-note">Skärmbilder från en testversion av appen.</p>
+    <p class="shot-note">Screens from a test version of the app (in Swedish; English is on the way).</p>
   </section>
 
-  <!-- Ke82 (D213, D224): krediterna som i appen på main (kop.md). Priserna sätts i App Store och kan ändras. -->
-  <section class="price wrap" id="krediter" aria-labelledby="price-h">
-    <h2 id="price-h">Gratis att börja</h2>
-    <p class="lead"><b>1&nbsp;500 krediter</b> ingår varje månad. 1 kredit är 1 tecken nytt ljud. Upprepningar och ljud som redan finns kostar inget.</p>
+  <section class="price wrap" id="credits" aria-labelledby="price-h">
+    <h2 id="price-h">Free to start</h2>
+    <p class="lead"><b>1,500 credits</b> are included every month. 1 credit is 1 character of new sound. Repeats and sound that already exists are free. One quiz is about 6,000 credits.</p>
     <div class="price-grid">
       <div class="paper price-card">
-        <h3>Fyll på när du vill</h3>
-        <ul class="price-list">
-          <li><span>100 krediter</span><b>10 kr</b></li>
-          <li><span>500 krediter</span><b>39 kr</b></li>
-          <li><span>2&nbsp;000 krediter <em class="tag">Bäst värde</em></span><b>110 kr</b></li>
-          <li><span>Veckokort, cirka 3 prov i veckan</span><b>79 kr/vecka</b></li>
-        </ul>
-        <p class="fine">Ett prov är ungefär 6&nbsp;000 krediter. Veckokortet förnyas varje vecka tills du säger upp det. Priser i Sverige; köpen görs i appen.</p>
-        <h3 class="price-h3">Bjud in en kompis</h3>
-        <p>Du får <b>2&nbsp;000 krediter</b> när kompisen har spelat sin första text.</p>
+        <h3>More when you need it</h3>
+        <p>Credit packs and a weekly pass come with the iPhone app. The weekly pass renews every week until you cancel.</p>
+        <h3 class="price-h3">Invite a friend</h3>
+        <p>You get <b>2,000 credits</b> when your friend plays their first text.</p>
       </div>
-      <img class="shot" src="img/app-krediter.webp" width="300" height="652" loading="lazy" alt="Kreditbladet i appen: krediter kvar, paketen 100, 500 och 2&nbsp;000 krediter, veckokortet och Bjud in.">
+      <img class="shot" src="img/app-krediter.webp" width="300" height="652" loading="lazy" alt="The credits sheet in the app.">
     </div>
   </section>
 
-  <!-- Ke29 (D125), Ke47: samma namn och fraser som Shared/capabilities.json (K44), som appen och servern läser.
-       "Kommer snart" tas bort per rad när funktionen är provad på telefon (sajtens regel sedan Ke1). -->
-  <section class="can wrap" id="kan" aria-labelledby="kan-h">
-    <h2 id="kan-h">Fler lägen <span class="beta">Beta</span></h2>
-    <p class="lead">De här lägena lyssnar på vad du säger. De är i beta och blir bättre hela tiden. Starta prov använder aldrig mikrofonen.</p>
-    <ul class="can-list">
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg><div><h3>Förhör</h3><p>”Lumen, förhör mig på fotosyntes”</p></div></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/></svg><div><h3>Svar på frågor</h3><p>”Lumen, vad betyder ambivalent?”</p></div></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2M3 13h18"/></svg><div><h3>Intervju</h3><p>Färdiga svar på intervjufrågor</p></div></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="14" cy="4" r="2"/><path d="M6 21l3-6 3 2v4M9 15l2-5 4 3 3-1M11 10l-3 1-2 3"/></svg><div><h3>Träning</h3><p>”Lumen, ge mig ett styrkepass på 20 minuter”</p></div></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h9M8.5 3v2M6 5c1 4 4 7 7 8M11 5c-1 4-4 7-7 8"/><path d="M13 21l4-9 4 9M14.5 18h5"/></svg><div><h3>Översätta</h3><p>”Lumen, vad heter fjäril på engelska?”</p></div></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg><div><h3>Söka på webben</h3><p>”Lumen, vad blir vädret i morgon?”</p></div></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><div><h3>Kalender <span class="soon">Kommer snart</span></h3><p>”Lumen, vad har jag i dag?”</p></div></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2 2M10 2h4"/></svg><div><h3>Timer och påminnelser <span class="soon">Kommer snart</span></h3><p>”Lumen, sätt en timer på 10 minuter”</p></div></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><div><h3>Spotify <span class="soon">Kommer snart</span></h3><p>”Lumen, kör spellistan Plugg”</p></div></li>
-      <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg><div><h3>Sömn <span class="soon">Kommer snart</span></h3><p>Vad du sa i sömnen, på morgonen</p></div></li>
-    </ul>
-  </section>
-
-  <section class="join" id="vantelista" aria-labelledby="join-h">
+  <section class="join" id="waitlist" aria-labelledby="join-h">
     <div class="wrap">
       <div>
-        <h2 id="join-h">Vill du ha appen?</h2>
-        <p class="lead">Den är inte ute än. Skriv din e-post, så mejlar vi när den finns.</p>
+        <h2 id="join-h">Want the iPhone app?</h2>
+        <p class="lead">It isn't out yet. Leave your email and we'll let you know when it is.</p>
       </div>
       <div class="side">
         <form class="wait paper" id="wait" novalidate>
-          <label class="field">E-post
+          <label class="field">Email
             <input id="email" type="email" name="email" autocomplete="email" autocapitalize="none" spellcheck="false" enterkeyhint="done" required aria-describedby="emailmsg">
           </label>
           <p class="fieldmsg" id="emailmsg"></p>
           <label class="consent">
             <input id="consent" type="checkbox" required aria-describedby="consentmsg">
-            <span>Ja, mejla mig när appen finns. Jag har läst integritetstexten här under.</span>
+            <span>Yes, email me when the app is out. I've read the privacy note below.</span>
           </label>
           <p class="fieldmsg" id="consentmsg"></p>
-          <div class="hp" aria-hidden="true"><label>Webbplats <input id="website" type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
-          <button class="pill" id="waitbtn" type="submit">Mejla mig när appen finns</button>
+          <div class="hp" aria-hidden="true"><label>Website <input id="website" type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
+          <button class="pill" id="waitbtn" type="submit">Email me when it's out</button>
           <p class="formmsg" id="waitmsg" role="status"></p>
         </form>
       </div>
-      <div class="first-note" id="integritet">
-        <p class="fine first">Väntelistan: vi använder din e-post bara för att berätta när appen finns. Vi sparar adressen, när du gav ditt samtycke och vilken länk du kom från (till exempel en kanal som tiktok). Vill du bli borttagen, eller har du frågor om dina uppgifter, mejla <a href="mailto:stenlundaron@gmail.com">stenlundaron@gmail.com</a>.</p>
-        <p class="fine">Demon: din fråga och din röst skickas till våra AI-leverantörer Anthropic och ElevenLabs för att skapa svaret, och de kan behålla data enligt sina villkor. Själva sparar vi inte dina frågor, svar eller ditt ljud, bara anonym statistik som ämneskategori och svarstid. För att begränsa demon räknar vi frågor per anonym inloggning och per nätverk, med en hashad version av din IP-adress. Din webbläsare minns den anonyma inloggningen och hur många frågor du ställt. Svar från AI kan vara fel.</p>
+      <div class="first-note" id="privacy">
+        <p class="fine first">Waitlist: we use your email only to tell you when the app is out. We store the address, when you gave consent and which link you came from (for example a channel like tiktok). To be removed, or with questions about your data, email <a href="mailto:stenlundaron@gmail.com">stenlundaron@gmail.com</a>.</p>
+        <p class="fine">AI answers can be wrong, so check them against your textbook.</p>
       </div>
     </div>
   </section>
 
-  <!-- Ke9: allt som inte behövs för att komma igång, hopfällt. Inga blå knappar förrän man öppnar. -->
   <section class="more wrap" aria-labelledby="more-h">
-    <h2 id="more-h">Mer när du vill</h2>
+    <h2 id="more-h">More</h2>
     <div class="acc">
       <details>
-        <summary>Röstkommandon i Fler lägen</summary>
-        <p>Säg det du vill. Under Inställningar › Röstkommandon väljer du själv fraserna för att byta läge och pausa. Under Egna kommandon sparar du egna nyckelord med en instruktion till <span data-app></span>.</p>
-      </details>
-      <details>
-        <summary>Dela och publicera prov</summary>
-        <p>När du har startat ett prov kan du dela det med klassen. Kompisarna får samma frågor, svar och ljud. Med Publicera prov kan alla som söker på din skola plugga på det.</p>
-      </details>
-      <details>
-        <summary>Fler lägen</summary>
-        <ul class="modes-list">
-          <li><b>Intervju.</b> Träna inför intervjun med frågor till jobbet du söker, och få kort återkoppling på dina svar.</li>
-          <li><b>Socialt.</b> Förslag på skämt, svar och följdfrågor när samtalet går trögt.</li>
-          <li><b>Rizz.</b> Charmiga förslag när du flirtar.</li>
-        </ul>
-      </details>
-      <details>
-        <summary>Vanliga frågor</summary>
+        <summary>Frequently asked questions</summary>
         <dl class="faq">
-          <dt>Hur kan jag plugga inför prov utan att titta på telefonen?</dt><dd>Fota ditt material. EarMind gör frågor och svar och läser upp dem i dina AirPods. Tryck en gång för det långa svaret, två gånger för det korta och tre gånger för paus. Mikrofonen används inte.</dd>
-          <dt>Kan EarMind läsa upp min text?</dt><dd>Ja. Välj Läs upp texten i Nytt prov, så läses materialet upp som en löpande text. Tryck en gång för att pausa, två gånger för nästa mening och tre gånger för förra meningen.</dd>
-          <dt>Vad kostar det?</dt><dd>Det är gratis att börja: 1&nbsp;500 krediter ingår varje månad. 1 kredit är 1 tecken nytt ljud, och upprepningar kostar inget. Vill du ha mer finns paket från 10 kr och ett veckokort för 79 kr i veckan.</dd>
-          <dt>Kan jag välja röst?</dt><dd>Ja. Skriv hur det ska låta, så väljer <span data-app></span> en röst, eller välj själv och lyssna först. Provlyssning kostar inget. En ny röst blir nytt ljud.</dd>
-          <dt>Funkar det för nationella provet och A-nivå?</dt><dd>Frågorna och svaren görs av ditt eget material. Svar från AI kan vara fel, så kontrollera alltid mot din kursbok. Du kan ändra varje svar innan du startar provet.</dd>
-          <dt>Kan jag prova utan att ladda ner något?</dt><dd>Ja, du kan prova de lyssnande lägena direkt på sidan. Appen är inte ute än. Skriv upp dig, så mejlar vi när den finns.</dd>
+          <dt>Can I try it without downloading anything?</dt><dd>Yes. Open the beta at <a href="/beta">earmind.vercel.app/beta</a> on your phone. Keep the screen on while it plays.</dd>
+          <dt>Does it use the microphone?</dt><dd>Say in AirPods and quizzes never use the microphone. The listening modes (beta) ask first and always show that they're listening.</dd>
+          <dt>What does it cost?</dt><dd>It's free to start: 1,500 credits every month. Repeats are free. Packs and a weekly pass come with the iPhone app.</dd>
+          <dt>Can I choose the voice?</dt><dd>Yes. Describe how it should sound and EarMind picks a voice, or choose one yourself. Previews are free; a new voice means new sound.</dd>
         </dl>
       </details>
     </div>
   </section>
 </main>
-<noscript><p style="padding:20px">Demon behöver JavaScript. Väntelistan också.</p></noscript>
-
 <script>
 "use strict";
-// Offentlig med flit: nyckeln ger ingenting utan en användar-JWT (anonym inloggning nedan).
+// Ke86: the waitlist only (same endpoint as /sv). Public on purpose: the key gives nothing without a user JWT.
 const SB = "https://xjczbzfkmbjdebwlccki.supabase.co";
-const KEY = "sb_publishable_UNDoMfEur7nwt4qH8RRanQ_pVJCrGy8";
-const DEMO_LIMIT = 5;   // D62: 5 frågor per dag. Servern avgör (backend/README.md); här räknas bara det som visas.
-const CONSENT_VERSION = "2026-11-06";   // Höj när samtyckes- eller integritetstexten ändras.
-
+const CONSENT_VERSION = "2026-11-21-en";
 const $ = (id) => document.getElementById(id);
-const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-// Ke5: var kom besökaren ifrån? ?utm_source= eller ?ref=, sparas i sessionStorage, annars "direkt". Inga cookies.
-  function waitSource() {
-    const ok = v => (typeof v === "string" && /^[a-z0-9_-]{1,32}$/.test(v)) ? v : null;
-    let v = null;
-    try {
-      const q = new URLSearchParams(location.search);
-      v = ok((q.get("utm_source") || q.get("ref") || "").toLowerCase().trim());
-      if (v) sessionStorage.setItem("lumen_src", v); else v = ok(sessionStorage.getItem("lumen_src"));
-    } catch (e) {}
-    return v || "direkt";
-  }
-const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const store = {
-  get(k) { try { return localStorage.getItem(k); } catch { return null; } },
-  set(k, v) { try { localStorage.setItem(k, v); } catch {} },
-};
-
-document.title = APP_NAME + ": fråga högt, få svaret i örat. AI i dina AirPods";
-document.querySelectorAll("[data-app]").forEach((el) => { el.textContent = APP_NAME; });
-
-// ---------- vyer ----------
-function setView(view, animate) {
-  const apply = () => {
-    document.body.dataset.view = view;
-    $("convo").hidden = view === "idle";
-  };
-  if (animate && !reduced && document.startViewTransition) document.startViewTransition(apply);
-  else apply();
-}
-function hint(text, isErr) { $("hint").textContent = text; $("hint").classList.toggle("err", !!isErr); }
-function discLabel(text) { $("disclabel").textContent = text; }
-const HOLD = "Håll in och fråga";
-
-// ---------- D62: frågor per dag (bara i webbläsaren) ----------
-const dayKey = () => "demo_used_" + new Date().toISOString().slice(0, 10);
-const used = () => parseInt(store.get(dayKey()) || "0", 10) || 0;
-function markUsed() { store.set(dayKey(), String(used() + 1)); showLeft(); }
-function showLeft() {
-  const n = Math.max(0, DEMO_LIMIT - used());
-  $("left").textContent = used() === 0 ? "" : n === 1 ? "1 fråga kvar idag" : n + " frågor kvar idag";
-}
-function showLimit(message) {
-  setView("answer");
-  answerError(message);
-  $("nudge").hidden = false; $("dock").hidden = false; $("stop").hidden = true; $("again").hidden = false; $("left").textContent = "";
-  keepFocus();
-}
-function limitReached() {
-  if (used() < DEMO_LIMIT) return false;
-  $("q").textContent = "";
-  showLimit("Du har ställt dagens " + DEMO_LIMIT + " frågor i demon. Välkommen tillbaka i morgon.");
-  return true;
-}
-
-// ---------- inloggning (anonym Supabase-användare, återanvänds mellan besök) ----------
-let token = null;
-function jwtExp(t) { try { return JSON.parse(atob(t.split(".")[1].replace(/-/g, "+").replace(/_/g, "/"))).exp * 1000; } catch { return 0; } }
-async function getToken(force) {
-  if (!force) {
-    if (token && jwtExp(token) > Date.now() + 60000) return token;
-    const t = store.get("demo_tok");
-    if (t && jwtExp(t) > Date.now() + 60000) return (token = t);
-  }
-  const r = await fetch(SB + "/auth/v1/signup", { method: "POST", headers: { apikey: KEY, "content-type": "application/json" }, body: "{}" });
-  if (!r.ok) { const e = new Error("signup"); e.status = r.status; throw e; }
-  token = (await r.json()).access_token;
-  store.set("demo_tok", token);
-  return token;
-}
-async function api(path, init, retry = true) {
-  const t = await getToken();
-  const r = await fetch(SB + "/functions/v1/" + path, { ...init, headers: { ...(init.headers || {}), authorization: "Bearer " + t, apikey: KEY, "content-type": "application/json" } });
-  if (r.status === 401 && retry) { await getToken(true); return api(path, init, false); }
-  return r;
-}
-async function errorBody(res) {
-  try { return (await res.json()).error || {}; } catch { return {}; }
-}
-// D62/D77: varje demo_limit_* har en egen svensk text från servern som visas som den är.
-function demoLimitText(err) { return String(err.code || "").startsWith("demo_limit") && err.message ? String(err.message) : null; }
-function limitError(message) { const e = new Error(message); e.demoLimit = message; return e; }
-function friendlyError(e, status, code) {
-  if (status === 429 || code === "rate_limited") return "Det är många som frågar just nu. Vänta en stund och försök igen.";
-  if (status) return "Svaret kunde inte hämtas just nu. Försök igen om en stund.";
-  if (e && e.status) return "Demon kan inte starta just nu. Försök igen om en stund.";
-  return "Ingen kontakt med servern. Kolla uppkopplingen och försök igen.";
-}
-
-// ---------- ljud ----------
-// iOS: Web Audio tystas av ringknappen och fastnar ofta efter mikrofonen, så allt spelas via ett <audio>-element.
-const SILENT = "data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA=";
-let player = null;
-function setSession(type) { try { if (navigator.audioSession) navigator.audioSession.type = type; } catch {} }
-function unlockAudio() {
-  if (!player) { player = new Audio(); player.playsInline = true; player.preload = "auto"; }
-  try { player.src = SILENT; const p = player.play(); if (p) p.catch(() => {}); } catch {}
-  try { speechSynthesis.speak(new SpeechSynthesisUtterance("")); } catch {}
-}
-function playBlob(blob) {
-  return new Promise((resolve, reject) => {
-    setSession("playback");
-    const url = URL.createObjectURL(blob);
-    const end = (fn) => (arg) => { URL.revokeObjectURL(url); fn(arg); };
-    player.onended = end(resolve);
-    player.onerror = end(() => reject(new Error("uppspelning")));
-    player.src = url;
-    const p = player.play();
-    if (p) p.catch(end(reject));
-  });
-}
-let ttsLimit = null;   // serverns text när uppläsningstaket är nått; då läses inget mer upp i dag
-function showNote() { $("note").textContent = ttsLimit || ""; $("note").hidden = !ttsLimit; }
-async function fetchAudio(text) {
-  const res = await api("tts", { method: "POST", body: JSON.stringify({ text: text.slice(0, 400), source: "demo" }) });
-  if (!res.ok) {
-    const limit = demoLimitText(await errorBody(res));
-    throw limit ? limitError(limit) : new Error("tts " + res.status);
-  }
-  return res.blob();
-}
-function speakFallback(text) {
-  return new Promise((resolve) => {
-    try {
-      const u = new SpeechSynthesisUtterance(text);
-      u.lang = "sv-SE"; u.onend = resolve; u.onerror = resolve;
-      speechSynthesis.speak(u);
-    } catch { resolve(); }
-  });
-}
-function speak(sentence, r) {
-  if (ttsLimit) return;
-  const audio = fetchAudio(sentence);
-  audio.catch(() => {});
-  r.chain = r.chain.then(async () => {
-    if (r.cancelled || ttsLimit) return;
-    try {
-      const blob = await audio;
-      if (!r.cancelled) await playBlob(blob);
-    } catch (e) {
-      if (e && e.demoLimit) { ttsLimit = e.demoLimit; if (run === r) showNote(); return; }
-      if (!r.cancelled) await speakFallback(sentence);
-    }
-  });
-}
-// Starta rösten så fort en mening är klar.
-function feedSentences(r, final) {
-  for (;;) {
-    const m = /^(.{6,}?[.!?])(\s|$)/s.exec(r.buf);
-    if (!m) break;
-    speak(m[1].trim(), r);
-    r.buf = r.buf.slice(m[0].length);
-  }
-  if (final && r.buf.trim()) { speak(r.buf.trim(), r); r.buf = ""; }
-}
-
-// ---------- fråga ----------
-let run = null;
-const recent = [];
-
-function answerError(text) { const a = $("a"); a.className = "a err"; a.textContent = text; }
-function showThinking() {
-  const a = $("a");
-  a.className = "a";
-  a.replaceChildren();
-  const t = document.createElement("span");
-  t.className = "thinking"; t.setAttribute("aria-label", "Tänker");
-  t.style.animation = "none";
-  t.append(document.createElement("i"), document.createElement("i"), document.createElement("i"));
-  a.append(t);
-}
-function resetDock(busy) {
-  $("dock").hidden = false;
-  $("stop").hidden = !busy;
-  $("again").hidden = busy;
-  $("nudge").hidden = true;
-}
-function keepFocus() {
-  const el = document.activeElement;
-  const lost = !el || el === document.body || !el.getClientRects().length;
-  if (lost && !$("convo").hidden) $("a").focus({ preventScroll: true });
-}
-function finish(r) {
-  r.busy = false;
-  if (run !== r) return;
-  $("stop").hidden = true;
-  $("again").hidden = false;
-  $("nudge").hidden = !r.answer;
-  keepFocus();
-}
-function cancelRun() {
-  stopExample();
-  const r = run;
-  if (r && r.busy) { r.cancelled = true; r.busy = false; try { r.ac.abort(); } catch {} }
-  try { if (player) player.pause(); } catch {}
-  try { speechSynthesis.cancel(); } catch {}
-}
-
-async function ask(text, mode) {
-  cancelRun();
-  if (limitReached()) return;
-  const r = run = { busy: true, text, answer: "", buf: "", chain: Promise.resolve(), cancelled: false, ac: new AbortController() };
-  setView("answer", document.body.dataset.view === "idle");
-  requestAnimationFrame(keepFocus);
-  $("q").textContent = text;
-  showThinking();
-  resetDock(true);
-  showNote();
-  showLeft();
+function waitSource() {
+  const ok = v => (typeof v === "string" && /^[a-z0-9_-]{1,32}$/.test(v)) ? v : null;
+  let v = null;
   try {
-    const body = { fragment: text, mode, language: "sv", source: "demo", context: { recent_qa: recent.slice(-3) } };
-    const res = await api("answer", { signal: r.ac.signal, method: "POST", body: JSON.stringify(body) });
-    if (!res.ok) {
-      const err = await errorBody(res);
-      const code = String(err.code || "");
-      const limit = demoLimitText(err);
-      if (limit) {
-        if (code === "demo_limit_visitor") store.set(dayKey(), String(DEMO_LIMIT));
-        showLimit(limit);
-        r.busy = false;
-        return;
-      }
-      answerError(code === "demo_unavailable" && err.message ? err.message : friendlyError(null, res.status, code));
-      return finish(r);
-    }
-    markUsed();
-    const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
-    let buf = "", first = true;
-    for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      buf += value;
-      let i;
-      while ((i = buf.indexOf("\n\n")) !== -1) {
-        const frame = buf.slice(0, i); buf = buf.slice(i + 2);
-        const ev = /^event: (.*)$/m.exec(frame)?.[1];
-        const data = JSON.parse(/^data: (.*)$/m.exec(frame)?.[1] ?? "null");
-        if (ev === "delta") {
-          if (first) { $("a").replaceChildren(); first = false; }
-          const s = document.createElement("span");
-          s.textContent = data.text;
-          $("a").append(s);
-          r.answer += data.text; r.buf += data.text;
-          feedSentences(r, false);
-        } else if (ev === "error") {
-          r.failed = true;
-        }
-      }
-    }
-    // Demon kapar svaret vid 400 tecken. Då slutar vi på senaste hela meningen, i både text och röst.
-    if (r.buf.trim() && r.answer.length >= 340) {
-      const end = r.answer.length - r.buf.length;
-      if (end > 0) { r.answer = r.answer.slice(0, end).trimEnd(); r.buf = ""; $("a").textContent = r.answer; }
-    }
-    if (!r.answer) answerError(r.failed ? "Svaret kunde inte hämtas just nu. Försök igen om en stund." : "Det där går inte att göra i demon. Prova en annan fråga.");
-    feedSentences(r, true);
-    if (r.answer) $("nudge").hidden = false;
-    await r.chain;
-    if (r.answer) recent.push({ q: text, a: r.answer.slice(0, 380) });
-  } catch (e) {
-    if (!r.cancelled) answerError(friendlyError(e));
-  }
-  finish(r);
+    const q = new URLSearchParams(location.search);
+    v = ok((q.get("utm_source") || q.get("ref") || "").toLowerCase().trim());
+    if (v) sessionStorage.setItem("lumen_src", v); else v = ok(sessionStorage.getItem("lumen_src"));
+  } catch (e) {}
+  return v || "direct";
 }
-
-function backToIdle() {
-  cancelRun();
-  setView("idle", true);
-  hint("Bäst med hörlurarna i.");
-  discLabel(HOLD);
-  $("disc").classList.remove("held");
-  scrollTo({ top: 0 });
-}
-$("stop").addEventListener("click", () => {
-  const r = run;
-  cancelRun();
-  if (r) { r.cancelled = true; if (!r.answer) $("a").replaceChildren(); finish(r); }
-  if (!r || !r.answer) { backToIdle(); }
-});
-$("again").addEventListener("click", backToIdle);
-
-document.querySelectorAll(".chip").forEach((chip) => chip.addEventListener("click", () => {
-  unlockAudio();
-  ask(chip.textContent, "text");
-}));
-$("ask").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const v = $("txt").value.trim();
-  if (!v) { $("txt").focus(); return; }
-  unlockAudio();
-  $("txt").value = "";
-  $("txt").blur();
-  ask(v, "text");
-});
-
-// ---------- håll in och prata ----------
-let current = null, scribeOff = false, voiceLimit = null;
-const MIN_HOLD = 350;
-
-async function fetchStt() {
-  const r = await api("stt-token?source=demo", { method: "GET" });
-  if (!r.ok) {
-    const limit = demoLimitText(await errorBody(r));
-    throw limit ? limitError(limit) : new Error("stt " + r.status);
-  }
-  return r.json();
-}
-function heard(text) { $("q").textContent = text; }
-function level(v) { if (!reduced) $("halo").style.transform = "scale(" + (1.04 + Math.min(1, v * 7) * .2).toFixed(3) + ")"; }
-
-function beginListening() {
-  $("disc").classList.add("held");
-  setView("listening");
-  discLabel("Lyssnar. Släpp när du är klar");
-  hint("Mikrofonen är på medan du håller in.");
-  heard("");
-  $("a").replaceChildren();
-  $("a").className = "a";
-  $("dock").hidden = true; $("nudge").hidden = true;
-}
-function endListening(message, isErr) {
-  $("disc").classList.remove("held");
-  $("halo").style.transform = "";
-  discLabel(HOLD);
-  setView("idle");
-  if (message) hint(message, isErr);
-}
-function micError(e) {
-  const denied = e && (e.name === "NotAllowedError" || e === "not-allowed" || e === "service-not-allowed");
-  return denied ? "Mikrofonen är blockerad. Tillåt den i webbläsaren, eller skriv din fråga." : "Mikrofonen gick inte att starta. Skriv din fråga i stället.";
-}
-function submitHeard(text, st) {
-  if (!text) { endListening(st.failed ? "Hörde inte frågan. Försök igen." : "Hörde ingenting. Försök igen."); return; }
-  $("disc").classList.remove("held");
-  $("halo").style.transform = "";
-  discLabel(HOLD);
-  hint("Bäst med hörlurarna i.");
-  setView("answer");
-  ask(text, "push_to_talk");
-}
-
-// Safari-igenkänning: reserv när Scribe saknas.
-function startSafari() {
-  if (!SR) { endListening("Röst fungerar inte i den här webbläsaren. Skriv din fråga i stället.", true); return; }
-  setSession("play-and-record");
-  const st = current = { kind: "safari", startedAt: performance.now(), released: false, final: "", interim: "", done: false };
-  const rec = st.rec = new SR();
-  rec.lang = "sv-SE"; rec.continuous = true; rec.interimResults = true; rec.maxAlternatives = 1;
-  const done = () => {
-    if (st.done || !st.released) return;
-    st.done = true;
-    submitHeard((st.final + " " + st.interim).trim(), st);
-  };
-  rec.onresult = (e) => {
-    st.final = ""; st.interim = "";
-    for (let i = 0; i < e.results.length; i++) {
-      if (e.results[i].isFinal) st.final += " " + e.results[i][0].transcript; else st.interim += " " + e.results[i][0].transcript;
-    }
-    if (!st.done) heard((st.final + " " + st.interim).trim());
-    if (st.released && e.results[e.results.length - 1].isFinal) done();
-  };
-  rec.onerror = (e) => {
-    if (e.error === "no-speech" || e.error === "aborted") return;
-    st.done = true; st.released = true;
-    if (current === st) current = null;
-    endListening(e.error === "not-allowed" || e.error === "service-not-allowed" ? "Röst är blockerad. Tillåt mikrofon och diktering, eller skriv din fråga." : "Taligenkänningen stannade. Försök igen eller skriv din fråga.", true);
-  };
-  rec.onend = () => { if (st.released) done(); };
-  st.stop = () => { st.released = true; try { rec.stop(); } catch {} setTimeout(done, 1500); };
-  st.abort = () => { st.released = true; st.done = true; try { rec.abort(); } catch {} };
-  try { rec.start(); } catch { endListening("Taligenkänningen gick inte att starta. Skriv din fråga i stället.", true); }
-}
-
-// Scribe v2 Realtime: PCM16 mono 16 kHz som base64 över WebSocket.
-function pcm16b64(f32, inRate) {
-  const ratio = inRate / 16000, n = Math.floor(f32.length / ratio), out = new Int16Array(n);
-  for (let i = 0; i < n; i++) {
-    const a = Math.floor(i * ratio), b = Math.min(f32.length, Math.floor((i + 1) * ratio));
-    let sum = 0;
-    for (let k = a; k < b; k++) sum += f32[k];
-    const v = Math.max(-1, Math.min(1, sum / Math.max(1, b - a)));
-    out[i] = v < 0 ? v * 32768 : v * 32767;
-  }
-  const bytes = new Uint8Array(out.buffer);
-  let bin = "";
-  for (let i = 0; i < bytes.length; i += 8192) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192));
-  return { b64: btoa(bin), samples: n };
-}
-function chunk(b64, commit) { return JSON.stringify({ message_type: "input_audio_chunk", audio_base_64: b64, commit, sample_rate: 16000 }); }
-function closeMic(st) {
-  try {
-    if (st.proc) st.proc.disconnect();
-    if (st.stream) st.stream.getTracks().forEach((t) => t.stop());
-    // Kan anropas två gånger (släpp + tak), så kontexten stängs bara en gång.
-    if (st.ctx && st.ctx.state !== "closed") st.ctx.close().catch(() => {});
-  } catch {}
-}
-function openSocket(st, tok) {
-  const q = new URLSearchParams({ model_id: tok.model_id, token: tok.token, language_code: tok.language_code || "swe", audio_format: "pcm_16000", commit_strategy: "manual" });
-  for (const [k, v] of new URLSearchParams(tok.extra_query || "")) q.set(k, v);
-  try {
-    const ws = st.ws = new WebSocket(tok.ws_url + "?" + q.toString());
-    ws.onopen = () => { st.open = true; for (const m of st.queue) ws.send(m); st.queue = []; };
-    ws.onmessage = (ev) => {
-      let m;
-      try { m = JSON.parse(ev.data); } catch { return; }
-      const t = m.message_type || m.type || "";
-      if (t === "partial_transcript") { st.partial = m.text || ""; if (!st.released) heard((st.final + " " + st.partial).trim()); }
-      else if (t === "committed_transcript" || t === "committed_transcript_with_timestamps") { st.final = (st.final + " " + (m.text || "")).trim(); st.partial = ""; heard(st.final); if (st.waiter) st.waiter(); }
-      else if (/error|quota|limit/i.test(t)) { st.failed = t; if (st.waiter) st.waiter(); }
-    };
-    ws.onerror = () => { st.failed = st.failed || "ws"; if (st.waiter) st.waiter(); };
-    ws.onclose = () => { if (!st.done && !st.final && !st.failed) st.failed = "ws"; if (st.waiter) st.waiter(); };
-  } catch { st.failed = "ws"; }
-}
-async function startScribe() {
-  const st = current = { kind: "scribe", startedAt: performance.now(), released: false, queue: [], open: false, final: "", partial: "", samples: 0, failed: null, waiter: null, done: false };
-  setSession("play-and-record");
-  const mic = navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: true, noiseSuppression: true } });
-  mic.catch(() => {});
-  // Token är begränsade per dag, så en hämtas först när någon håller in. Ljudet köas tills uttaget är öppet.
-  (async () => {
-    let tok;
-    try { tok = await fetchStt(); }
-    catch (e) {
-      if (e && e.demoLimit) {
-        voiceLimit = st.limitMsg = e.demoLimit;
-        closeMic(st); st.done = true;
-        if (!st.released) { st.released = true; if (current === st) current = null; endListening(voiceLimit, true); }
-        else if (st.waiter) st.waiter();
-        else hint(voiceLimit, true);   // släppte innan svaret kom
-        return;
-      }
-      scribeOff = true; st.failed = "token";
-      if (!st.released && SR) { closeMic(st); st.done = true; st.released = true; startSafari(); }
-      return;
-    }
-    if (!st.done) openSocket(st, tok);
-  })();
-  try {
-    const stream = await mic;
-    // Första gången frågar telefonen om lov. Släpper man under tiden är det inget att lyssna på.
-    if (st.released) {
-      stream.getTracks().forEach((t) => t.stop());
-      if (st.permissionRace) hint("Mikrofonen är på. Håll in och prata nu.");
-      return;
-    }
-    st.stream = stream;
-    const ctx = st.ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const src = ctx.createMediaStreamSource(stream), proc = st.proc = ctx.createScriptProcessor(4096, 1, 1);
-    proc.onaudioprocess = (e) => {
-      if (st.released) return;
-      const input = e.inputBuffer.getChannelData(0);
-      let sum = 0;
-      for (let i = 0; i < input.length; i += 16) sum += input[i] * input[i];
-      level(Math.sqrt(sum / (input.length / 16)));
-      const { b64, samples } = pcm16b64(input, ctx.sampleRate);
-      st.samples += samples;
-      const msg = chunk(b64, false);
-      if (st.open) st.ws.send(msg); else st.queue.push(msg);
-    };
-    src.connect(proc); proc.connect(ctx.destination);
-  } catch (e) {
-    st.done = true; st.released = true;
-    try { if (st.ws) st.ws.close(); } catch {}
-    if (current === st) current = null;
-    endListening(micError(e), true);
-  }
-}
-async function stopScribe(st) {
-  if (st.limitMsg) return;   // taket nåddes redan medan knappen hölls; texten visas
-  st.released = true;
-  const held = performance.now() - st.startedAt;
-  closeMic(st);
-  if (!st.stream) {           // släppte innan mikrofonen hann starta, ofta tillståndsrutan
-    st.permissionRace = true; st.done = true;
-    try { if (st.ws) st.ws.close(); } catch {}
-    endListening(held < MIN_HOLD ? "Håll in medan du pratar." : "Tillåt mikrofonen och håll in igen.");
-    return;
-  }
-  if (held < MIN_HOLD) {
-    st.done = true;
-    try { if (st.ws) st.ws.close(); } catch {}
-    endListening("Håll in medan du pratar.");
-    return;
-  }
-  // Direkt svar på släppet: frågan står kvar och prickarna visar att något händer.
-  setView("answer"); showThinking(); $("disc").classList.remove("held");
-  const tail = chunk(pcm16b64(new Float32Array(3200), 16000).b64, true);
-  try { if (st.open) st.ws.send(tail); else st.queue.push(tail); } catch {}
-  await new Promise((res) => { st.waiter = res; setTimeout(res, 2800); });
-  if (st.limitMsg) { endListening(st.limitMsg, true); return; }
-  st.done = true;
-  const text = (st.final + " " + st.partial).trim();
-  try { if (st.ws) st.ws.close(); } catch {}
-  const secs = Math.max(1, Math.round(st.samples / 16000));
-  api("stt-token", { method: "POST", body: JSON.stringify({ seconds: secs }) }).catch(() => {});
-  if (!text) scribeOff = true;
-  submitHeard(text, st);
-}
-
-const disc = $("disc");
-function press() {
-  if (current && !current.released) return;
-  cancelRun();
-  unlockAudio();
-  if (navigator.vibrate) navigator.vibrate(8);
-  if (limitReached()) return;
-  if (voiceLimit) { hint(voiceLimit, true); return; }
-  beginListening();
-  if (!scribeOff && navigator.mediaDevices && window.WebSocket) startScribe();
-  else startSafari();
-}
-function release() {
-  const st = current;
-  if (!st || st.released) return;
-  current = null;
-  if (st.kind === "scribe") { stopScribe(st); return; }
-  if (performance.now() - st.startedAt < MIN_HOLD) { st.abort(); endListening("Håll in medan du pratar."); return; }
-  st.stop();
-}
-disc.addEventListener("pointerdown", (e) => {
-  if (e.button !== 0) return;
-  e.preventDefault();
-  try { disc.setPointerCapture(e.pointerId); } catch {}
-  press();
-});
-disc.addEventListener("pointerup", release);
-disc.addEventListener("pointercancel", release);
-disc.addEventListener("contextmenu", (e) => e.preventDefault());
-disc.addEventListener("keydown", (e) => {
-  if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); press(); }
-});
-disc.addEventListener("keyup", (e) => { if (e.key === " " || e.key === "Enter") { e.preventDefault(); release(); } });
-disc.addEventListener("blur", release);
-
-// ---------- väntelista ----------
-function waitMsg(text, isErr, id = "waitmsg") { $(id).textContent = text; $(id).classList.toggle("err", !!isErr); }
-const NOT_OPEN = "Väntelistan har inte öppnat än, så din adress är inte sparad. Försök igen om några dagar.";
+const okEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
+function waitMsg(text, isErr) { $("waitmsg").textContent = text; $("waitmsg").classList.toggle("err", !!isErr); }
 $("email").addEventListener("input", () => { $("emailmsg").textContent = ""; });
 $("consent").addEventListener("change", () => { $("consentmsg").textContent = ""; });
 $("wait").addEventListener("submit", async (e) => {
   e.preventDefault();
   const email = $("email").value.trim();
   const valid = okEmail(email);
-  $("emailmsg").textContent = valid ? "" : "Skriv en hel e-postadress, till exempel namn@exempel.se.";
-  $("consentmsg").textContent = $("consent").checked ? "" : "Kryssa i rutan så att vi får mejla dig.";
+  $("emailmsg").textContent = valid ? "" : "Enter a full email address, like name@example.com.";
+  $("consentmsg").textContent = $("consent").checked ? "" : "Tick the box so we may email you.";
   waitMsg("");
   if (!valid) { $("email").focus(); return; }
   if (!$("consent").checked) { $("consent").focus(); return; }
-  joinList(email, CONSENT_VERSION, $("waitbtn"), "waitmsg", () => $("wait").reset());
-});
-
-// Sparar adressen. Samtycket är att man själv trycker på knappen; versionen säger vilken text man såg.
-async function joinList(email, version, btn, msgId, onOk) {
-  const label = btn.textContent;
-  btn.disabled = true; btn.textContent = "Skickar";
+  const btn = $("waitbtn"), label = btn.textContent;
+  btn.disabled = true; btn.textContent = "Sending";
   try {
-    const payload = { email, consent: true, consent_version: version, source: waitSource(), website: $("website").value };
-    const r = await fetch(SB + "/functions/v1/waitlist", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(payload) });
-    if (r.ok) {
-      onOk();
-      waitMsg("Klart. Vi mejlar när appen finns.", false, msgId);
-    } else if (r.status === 404) waitMsg(NOT_OPEN, true, msgId);
-    else if (r.status === 429) waitMsg("För många försök just nu. Vänta en stund och försök igen.", true, msgId);
-    else if (r.status === 400) waitMsg("Adressen gick inte att spara. Kontrollera den och försök igen.", true, msgId);
-    else waitMsg("Det gick inte att spara adressen just nu. Försök igen om en stund.", true, msgId);
+    const r = await fetch(SB + "/functions/v1/waitlist", { method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email, consent: true, consent_version: CONSENT_VERSION, source: waitSource(), website: $("website").value }) });
+    if (r.ok) { $("wait").reset(); waitMsg("Done. We'll email you when the app is out."); }
+    else if (r.status === 429) waitMsg("Too many tries right now. Wait a moment and try again.", true);
+    else if (r.status === 400) waitMsg("The address couldn't be saved. Check it and try again.", true);
+    else waitMsg("The address couldn't be saved right now. Try again in a moment.", true);
   } catch (err) {
-    // Tills /waitlist är driftsatt svarar gatewayn 404 på preflight, och då ser webbläsaren bara ett nätverksfel.
-    waitMsg(navigator.onLine === false ? "Ingen uppkoppling. Din adress är inte sparad." : NOT_OPEN, true, msgId);
+    waitMsg(navigator.onLine === false ? "No connection. Your address isn't saved." : "The address couldn't be saved right now. Try again in a moment.", true);
   }
   btn.disabled = false; btn.textContent = label;
-}
-const okEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v);
-
-// Raden i demon efter svaret. Egen version, eftersom texten skiljer sig från stora formuläret.
-const CONSENT_VERSION_ROW = "2026-11-10-rad";   // Ke11: radens text ändrad
-$("miniemail").addEventListener("input", () => waitMsg("", false, "minimsg"));
-$("nudge").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const email = $("miniemail").value.trim();
-  if (!okEmail(email)) { waitMsg("Skriv en hel e-postadress, till exempel namn@exempel.se.", true, "minimsg"); $("miniemail").focus(); return; }
-  joinList(email, CONSENT_VERSION_ROW, $("minibtn"), "minimsg", () => { $("miniemail").value = ""; $("miniemail").blur(); });
 });
-
-// ---------- exempel från Provläget (förinspelat ljud, kostar inget anrop) ----------
-// ---------- Ke19 (D97): Förhör mig ----------
-// Demon får inte förhöra på servern (D62), så förhöret är tre frågor ur Provlägestestet den 8 november
-// med de inspelade svaren, ordagrant. Inga anrop, ingen demokvot.
-const QUIZ = [
-  {"meta": "Åk 9 · Biologi", "q": "Förklara varför antibiotika inte hjälper mot virus.", "a": "Antibiotika verkar genom att slå ut eller hindra delar som bakterier har och som vi människor inte har, till exempel bakteriernas egna cellvägg eller deras sätt att tillverka proteiner. Virus är inte celler. De saknar egen ämnesomsättning och en egen cellvägg, och de tar över våra celler för att föröka sig. Eftersom det antibiotikan angriper saknas i virus, har medlet ingen verkan på dem. Ett exempel är förkylning och influensa, som orsakas av virus, där antibiotika alltså inte gör någon nytta. På provet räcker det att skriva att virus saknar cellstruktur och ämnesomsättning, och att antibiotika riktar sig mot bakteriers egna strukturer.", "src": "audio/pl-019.mp3"},
-  {"meta": "Åk 9 · Biologi", "q": "Vad händer i en näringskedja om rovdjuren försvinner?", "a": "Om rovdjuren försvinner från en näringskedja rubbas balansen i hela kedjan. Rovdjuren håller nere antalet växtätare, så när de är borta ökar växtätarna snabbt. Fler växtätare äter upp mer av växterna, och antalet växter kan då minska kraftigt. Det leder till att växtätarna så småningom också får brist på mat och deras antal sjunker igen. Ett klassiskt exempel är när vargen försvann från Yellowstone i USA: hjortarna blev fler, de åt upp unga träd och buskar, och det drabbade även bävrar och fåglar som levde i området. På provet bör du skriva att rovdjur reglerar populationen av växtätare och att borttagandet ger en kedjereaktion genom näringsväven.", "src": "audio/pl-022.mp3"},
-  {"meta": "Åk 9 · Samhällskunskap", "q": "Förklara vad globalisering är.", "a": "Globalisering är att länder, företag och människor blir allt mer kopplade till varandra över gränserna. Det sker genom handel, investeringar, resor och internet, och att varor, pengar och idéer rör sig allt lättare mellan länder. Ett vanligt exempel är att en tröja kan designas i Sverige, sys i Bangladesh och säljas i flera länder samtidigt. Fördelarna är billigare varor och fler jobb i vissa länder, men det finns också nackdelar, som att jobb kan försvinna i andra länder när produktionen flyttas. På provet kan du visa att du förstår det genom att ge både fördelar och nackdelar och ett konkret exempel.", "src": "audio/pl-079.mp3"}
-];
-const LINES = { quiz: APP_NAME + " frågar ut dig och svarar på dina frågor.", ask: APP_NAME + " svarar när någon frågar." };
-let qi = 0, exPlayer = null, qzPlaying = false;
-const PLAY = '<path d="M7 4.5v15l12.5-7.5z"/>', STOP = '<rect x="6" y="6" width="12" height="12" rx="2"/>';
-function qzButton(text, icon, primary) {
-  const b = $("qz-play");
-  b.querySelector("span").textContent = text;
-  b.querySelector("svg").innerHTML = icon;
-  b.classList.toggle("quiet", !primary);
-}
-function stopExample() {
-  if (!qzPlaying) return;
-  qzPlaying = false;
-  try { exPlayer.pause(); } catch {}
-  qzButton("Hör igen", PLAY, false);
-  $("qz-next").hidden = false;
-  $("qz-next").classList.remove("quiet");
-  $("qz-end").hidden = qi < QUIZ.length - 1;
-}
-function showQuestion(i, focus) {
-  stopExample();
-  qi = i;
-  const q = QUIZ[i];
-  $("qz-meta").textContent = "Fråga " + (i + 1) + " av " + QUIZ.length + " · " + q.meta;
-  $("qz-q").textContent = q.q;
-  $("qz-hint").hidden = false;
-  $("qz-a").textContent = q.a;
-  $("qz-a").hidden = true;
-  $("qz-a").classList.add("clamp");
-  $("qz-more").hidden = true;
-  $("qz-more").setAttribute("aria-expanded", "false");
-  $("qz-more").textContent = "Visa hela svaret";
-  qzButton("Hör svaret", PLAY, true);
-  $("qz-next").hidden = true;
-  $("qz-next").textContent = i === QUIZ.length - 1 ? "Börja om" : "Nästa fråga";
-  $("qz-end").hidden = true;
-  if (focus) $("qz-q").focus({ preventScroll: true });
-}
-function setMode(mode) {
-  if (document.body.dataset.mode === mode) return;
-  cancelRun();
-  if (document.body.dataset.view !== "idle") setView("idle");
-  document.body.dataset.mode = mode;
-  $("m-quiz").setAttribute("aria-pressed", String(mode === "quiz"));
-  $("m-ask").setAttribute("aria-pressed", String(mode === "ask"));
-  $("segline").textContent = LINES[mode];
-  $("quiz").hidden = mode !== "quiz";
-  if (mode === "quiz") showQuestion(0, false);
-}
-document.body.dataset.mode = "ask";
-$("m-quiz").addEventListener("click", () => setMode("quiz"));
-$("m-ask").addEventListener("click", () => setMode("ask"));
-$("qz-play").addEventListener("click", () => {
-  if (qzPlaying) { stopExample(); return; }
-  cancelRun();
-  if (!exPlayer) { exPlayer = new Audio(); exPlayer.playsInline = true; exPlayer.preload = "none"; }
-  setSession("playback");
-  qzPlaying = true;
-  $("qz-hint").hidden = true;
-  $("qz-a").hidden = false;
-  $("qz-more").hidden = false;
-  $("qz-next").hidden = true;
-  qzButton("Stoppa", STOP, false);
-  exPlayer.onended = stopExample;
-  exPlayer.onerror = stopExample;
-  exPlayer.src = QUIZ[qi].src;
-  const p = exPlayer.play();
-  if (p) p.catch(stopExample);
-});
-$("qz-next").addEventListener("click", () => showQuestion((qi + 1) % QUIZ.length, true));
-$("qz-more").addEventListener("click", () => {
-  const open = $("qz-a").classList.toggle("clamp") === false;
-  $("qz-more").setAttribute("aria-expanded", String(open));
-  $("qz-more").textContent = open ? "Visa mindre" : "Visa hela svaret";
-});
-
-// ---------- uppstart ----------
-showLeft();
-// Väcker funktionerna så att första frågan slipper kallstart. OPTIONS går igenom gatewayn och kostar ingenting.
-for (const fn of ["answer", "tts"]) fetch(SB + "/functions/v1/" + fn, { method: "OPTIONS" }).catch(() => {});
-getToken().catch(() => {});   // Felet visas när någon faktiskt frågar.
-
-// Ke7: scrollstyrd Elias. Visad bildruta glider mot målet (lerp), och vilar aldrig på en dålig vilobild.
-(() => {
-  const fig = document.getElementById("elias"); if (!fig) return;
-  const stage = document.getElementById("elias-stage"), cv = document.getElementById("elias-cv"), still = document.getElementById("elias-still"), ctx = cv.getContext("2d");
-  const N = 120, BAD = [[22, 30], [48, 66], [85, 93]], RING = 39, SKIP = [49, 65]; // udda bildrutor finns; 49–65 (handen) hoppas över och tonas över 47→67
-  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const step = 2; // Deangelo: bara udda bildrutor finns (site/ max 2 MB)
-  const src = n => "img/elias-seq/" + String(n).padStart(3, "0") + ".webp";
-  if (reduced) { still.src = src(100); fig.classList.add("pulse"); return; }
-  const frames = new Array(N + 1);
-  let cur = 1, target = 1, shown = 1, tmo = 0, last = 0;
-  function load() {
-    const list = []; for (let n = 1; n <= N; n += step) if (n < SKIP[0] || n > SKIP[1]) list.push(n);
-    let i = 0;
-    const next = () => { if (i >= list.length) return; const n = list[i++]; const im = new Image(); im.decoding = "async"; im.onload = () => { frames[n] = im; if (n === 1) { fig.classList.add("live"); draw(1); } next(); }; im.onerror = next; im.src = src(n); };
-    next(); next();
-  }
-  function nearest(f) { for (let d = 0; d < N; d++) { if (frames[f - d]) return frames[f - d]; if (frames[f + d]) return frames[f + d]; } return null; }
-  function draw(f) {
-    ctx.clearRect(0, 0, 480, 700);
-    if (f > 47 && f < 67 && frames[47] && frames[67]) { // kort toning 47→67 över ca 3 bildrutor
-      const t = Math.min(1, Math.max(0, (f - 56) / 3));
-      ctx.globalAlpha = 1; ctx.drawImage(frames[47], 0, 0);
-      ctx.globalAlpha = t; ctx.drawImage(frames[67], 0, 0); ctx.globalAlpha = 1; return;
-    }
-    const im = nearest(f); if (im) ctx.drawImage(im, 0, 0);
-  }
-  function progress() {
-    const r = fig.getBoundingClientRect(), vh = innerHeight;
-    return Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (vh * 0.85)));
-  }
-  function settle() { // scrollen har stannat: glid till närmaste bra vilobild
-    for (const [a, b] of BAD) if (target >= a && target <= b) { target = (target - a < b - target) ? a - 1 : b + 1; }
-  }
-  function onScroll() { target = 1 + progress() * (N - 1); clearTimeout(tmo); tmo = setTimeout(settle, 140); kick(); }
-  let raf = 0; function kick() { if (!raf) raf = requestAnimationFrame(tick); }
-  function tick() {
-    raf = 0; shown += (target - shown) * 0.12;
-    if (Math.abs(target - shown) < 0.02) shown = target;
-    const f = Math.round(shown);
-    if (f !== cur) { cur = f; draw(f); }
-    if (cur >= RING) fig.classList.add("pulse"); else if (cur < RING - 8) fig.classList.remove("pulse");
-    const p = (shown - 1) / (N - 1); const z = 1 + 0.1 * p;
-    stage.style.transform = `scale(${z.toFixed(3)}) translateY(${(-p * 2).toFixed(2)}%)`;
-    if (shown !== target) kick();
-  }
-  addEventListener("scroll", onScroll, { passive: true }); addEventListener("resize", onScroll);
-  const go = () => { load(); onScroll(); };
-  if (document.readyState === "complete") setTimeout(go, 0); else addEventListener("load", () => setTimeout(go, 0));
-})();
 </script>
 </body>
 </html>
