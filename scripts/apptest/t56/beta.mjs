@@ -6,7 +6,7 @@
 // server treats every request from GitHub's Actions IP ranges as test traffic (fake audio, and a guard that stops a
 // test request before the ElevenLabs client: backend/supabase/functions/_shared/testmode.ts), and the user agent
 // carries "Playwright", which the server also reads as a script. The page is opened
-// without ?test, because a browser cannot send x-earmind-test until the server allows it in CORS (A156 §4.1). Any
+// with ?test=toby+question (x-earmind-test, allowed in CORS since Kevin's deploy 369), and every server call is checked for it. Any
 // request to an ElevenLabs host is stopped here and fails the run. The script refuses --live outside Actions.
 import { createServer } from 'node:http';
 import { readFile } from 'node:fs/promises';
@@ -190,8 +190,10 @@ const until = async (name, fn, page, timeout = 15000) => {
 // A pretend microphone in Chromium (A156 part 2), so listening is tried without one and without asking anyone.
 const browser = await pw[engine].launch(engine === 'chromium' ? { args: ['--autoplay-policy=user-gesture-required', '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'] } : {});
 note(`browser ${engine} ${browser.version()}, as ${engine === 'webkit' ? 'iPhone 15' : 'Pixel 7'}, ${live ? `live: ${liveURL}` : 'local site/ with the pretend server'}`);
-// Where the page is opened. Local: ?test=toby (x-earmind-test, checked below). Live: no ?test (see the top).
-const page0 = live ? liveURL : `${base}/beta?test=toby`;
+// Where the page is opened. Local: ?test=toby. Live: ?test=toby+question, so every request carries
+// x-earmind-test "toby question" (allowed in CORS since Kevin's deploy 369): test traffic by header (D180), and
+// stt-token's test sentence is a question (K117 follow-up), so the listening answer path can be tried live.
+const page0 = live ? `${liveURL}${liveURL.includes('?') ? '&' : '?'}test=toby+question` : `${base}/beta?test=toby`;
 // Live: a word unique to this run in every text, because the server says 0 credits (and shows no cost) for a text
 // it has already made (run 44916619787); a new text makes Spela and the quiz really go through the server.
 const stamp = live ? ` ${process.env.GITHUB_RUN_ID ?? Date.now()}-${engine}` : '';
@@ -200,6 +202,8 @@ const serverLog = [];
 const sttTokens = [];
 const rateLimited = new Set();
 const answers = [];
+let liveMarked = 0;
+const liveUnmarked = [];
 const elevenLabs = [];
 
 async function run(name, { locale, colorScheme, viewport }, steps) {
@@ -270,6 +274,14 @@ async function run(name, { locale, colorScheme, viewport }, steps) {
       sttTokens.push({ fake: false, token: '?', ws: '?' });
     }
   });
+  if (live) {
+    page.on('request', (r) => {
+      const u = new URL(r.url());
+      if (!u.hostname.endsWith('.supabase.co') || !u.pathname.startsWith('/functions/') || r.method() === 'OPTIONS') return;
+      if (r.headers()['x-earmind-test'] === 'toby question') liveMarked += 1;
+      else liveUnmarked.push(u.pathname.replace('/functions/v1/', ''));
+    });
+  }
   const outside = [];
   page.on('request', (r) => {
     if (r.url().startsWith('data:') || r.url().startsWith('blob:')) return;
@@ -412,6 +424,7 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   check('the text is under Recent', (await page.locator('.capsule.recent').count()) === 1);
   const save = calls.find((c) => c.fn === 'drill' && c.action === 'save');
   if (!live) check('marked as test traffic (x-earmind-test: toby), web language en', save?.headers['x-earmind-test'] === 'toby' && save?.headers['x-earmind-lang'] === 'en', JSON.stringify({ t: save?.headers['x-earmind-test'], l: save?.headers['x-earmind-lang'] }));
+  if (live) check('live: every server call is marked as test traffic (x-earmind-test: toby question)', liveUnmarked.length === 0 && liveMarked > 0, `${liveMarked} marked, unmarked: ${liveUnmarked.slice(0, 3).join(' ')}`);
 
   // Prov från text, with credits for five questions only
   state.fits = 5;
