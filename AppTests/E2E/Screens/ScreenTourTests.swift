@@ -22,6 +22,8 @@ final class ScreenTourTests: XCTestCase {
     private var shotNumber = 0
     private var log: [String] = []
     private var unreachable: [String] = []
+    private var started = Date()
+
 
     func testScreenTour() throws {
         continueAfterFailure = true
@@ -33,199 +35,201 @@ final class ScreenTourTests: XCTestCase {
         springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         // Swedish UI, as the users see it. Apple's recogniser instead of Scribe: no paid realtime session from CI.
         app.launchArguments += ["-AppleLanguages", "(sv)", "-AppleLocale", "sv_SE", "-stt.useCloud", "NO"]
+        // D180: every request is test traffic with fake audio (x-earmind-test); the tour never plays anything.
+        app.launchEnvironment["LUMEN_TEST_HEADER"] = "1"
+        started = Date()
         app.launch()
 
-        firstStart(micDenied: micDenied)
-        sharePrompt()
-        // With the microphone on, the first start's Frågor session goes on and Lyssnar is shown.
-        if waitFor(["Tillbaka till start"], timeout: 2) != nil {
-            shoot("lyssnar-efter-forsta-start", note: "Lyssnar right after the first start")
-            endSession()
-        }
-        shoot("start-utan-prov", note: "Start without an exam (sketch 7)")
-        a50Start()
-        addExamFromHome()
+        // Deangelo 2026-11-20 (T3 red on main since A94, 2026-11-14): the tour follows today's app. Välkommen →
+        // Nytt prov (A94) → Start with Säg i AirPods (A115, A153) → Krediter (A117, A134) → Nytt prov's form (A154) →
+        // Inställningar with Radera konto (A145) → Fler lägen · Beta when Start shows it. Nothing listens and nothing
+        // is played or bought; the listening modes are only opened as pages.
+        welcome()
+        shoot("start", note: "Start, a new account (A115)")
+        sayText()
+        credits()
+        newExamForm()
+        startRows()
         settingsTour()
-        modesTour()
-        provTour()
+        deleteAccountQuestion()
+        moreModes()
+        if micDenied { record("note: microphone denied; nothing in the tour listens, so no error screen is expected") }
 
         finish()
     }
 
-    // MARK: First start (sketches 1-3)
+    // MARK: First start (A94, Kelly Ke55)
 
-    private func firstStart(micDenied: Bool) {
-        if waitFor(["Testa nu"], timeout: 20) != nil {
-            shoot("intro", note: "Intro (sketch 1)")
-            app.swipeUp()
-            shoot("intro-slut", note: "Intro, scrolled (the consent card)")
-            // A2: the short consent card in the intro has "Läs mer" with the full text.
-            if waitFor(["Läs mer"], timeout: 2) != nil {
-                tap(["Läs mer"], step: "intro → Läs mer")
-                if waitFor(["Klar"], timeout: 3) == nil {
-                    log.append("note: Läs mer did not open within 3 s, tapping again")
-                    tap(["Läs mer"], step: "intro → Läs mer (again)")
-                }
-                pause(1)
-                shoot("las-mer", note: "Läs mer (full consent)")
-                app.swipeUp()
-                shoot("las-mer-slut", note: "Läs mer, scrolled")
-                tap(["Klar"], step: "Läs mer → Klar")
-                pause(1)
-            } else {
-                log.append("note: no 'Läs mer' in the intro")
-            }
-            tap(["Testa nu"], step: "intro → Testa nu")
-        } else {
-            miss("intro: 'Testa nu' not found (first start not shown?)")
+    private func welcome() {
+        guard waitFor(["Välkommen till EarMind"], timeout: 25) != nil else {
+            miss("Välkommen not shown on a new installation")
+            return
         }
-
-        // Before A2 a separate consent screen came after the intro; since A2, "Testa nu" is the consent.
-        if waitFor(["Jag förstår*", "I understand*"], timeout: 4) != nil {
-            shoot("samtycke", note: "Consent, top")
-            app.swipeUp()
-            shoot("samtycke-slut", note: "Consent, scrolled")
-            tap(["Jag förstår*", "I understand*"], step: "consent → accept")
-        } else {
-            log.append("note: no separate consent screen (A2: Testa nu is the consent)")
-        }
-
+        shoot("valkommen", note: "Välkommen (A94)")
+        app.swipeUp()
+        shoot("valkommen-slut", note: "Välkommen, scrolled")
+        guard tap(["Fortsätt"], step: "Välkommen → Fortsätt") else { return }
         dismissSystemAlerts()
-        // A18: with the microphone denied the whole screen is "Lumen hör dig inte" (Ke10), and before the first
-        // answer the button is "Hoppa över" (Fortsätt only after an answer, Ke9).
-        if waitFor(["Fråga vad som helst", "Lumen hör dig inte"], timeout: 10) != nil {
-            pause(3) // let "Startar …" become "Lyssnar" (or the microphone error card)
-            dismissSystemAlerts()
-            shoot(micDenied ? "forsta-fragan-mikrofon-nekad" : "forsta-fragan", note: "First question (sketch 2)")
-            if micDenied, waitFor(["Lumen hör dig inte"], timeout: 1) == nil {
-                miss("APP: microphone denied, the first question does not show 'Lumen hör dig inte'")
-            }
-            tap(["Fortsätt", "Hoppa över"], step: "first question → Fortsätt/Hoppa över")
-            pause(1.5)
-        } else {
-            miss("'Fråga vad som helst' not shown")
-        }
-
-        // A22: the first start's exam step is "Har du prov snart?" with "Inte nu" (was "Hoppa över").
-        if waitFor(["Inte nu", "Hoppa över"], timeout: 8) != nil {
-            shoot("lagg-till-prov-forsta", note: "Add exam at first start (sketch 3)")
+        if waitFor(["Senare"], timeout: 10) != nil {
+            shoot("forsta-nytt-prov", note: "Nytt prov right after Välkommen (A94)")
             app.swipeUp()
-            shoot("lagg-till-prov-forsta-slut", note: "Add exam at first start, scrolled")
-            // A33: the form is behind "Skriv i stället" (Lumen asks aloud first).
-            if let write = find(["Skriv i stället"]) {
-                write.tap()
-                pause(1)
-                shoot("lagg-till-prov-forsta-formular", note: "Add exam at first start, the form (A33)")
-                app.swipeUp()
-                shoot("lagg-till-prov-forsta-formular-slut", note: "Add exam at first start, the form, scrolled")
-            }
-            tap(["Inte nu", "Hoppa över"], step: "add exam → Inte nu")
-        } else {
-            miss("add-exam step of the first start not shown")
-        }
-    }
-
-    private func sharePrompt() {
-        let dontShare = ["Dela inte", "Don't share"]
-        if waitFor(dontShare, timeout: 5) != nil {
-            shoot("dela-historik", note: "Share history prompt")
-            tap(dontShare, step: "share prompt → Dela inte")
-        } else {
-            log.append("note: no share-history prompt")
-        }
-    }
-
-    // MARK: Start with an exam (sketch 4)
-
-    private func addExamFromHome() {
-        guard tap(["Lägg till prov"], step: "start → Lägg till prov") else { return }
-        if waitFor(["Spara prov"], timeout: 5) != nil {
-            shoot("lagg-till-prov", note: "Add exam sheet")
-            tap(["NO"], step: "add exam → NO")
-            pause(0.5)
-            shoot("lagg-till-prov-no", note: "Add exam, NO chosen")
-            tap(["Spara prov"], step: "add exam → Spara prov")
+            shoot("forsta-nytt-prov-slut", note: "Nytt prov after Välkommen, scrolled")
+            tap(["Senare"], step: "first Nytt prov → Senare")
             pause(1)
-            // A50: the exam card has "Förhör mig"; "Få A-svar till provet" left Start.
-            if waitFor(["Förhör mig", "Förhör med rösten (BETA)", "Få A-svar till provet"], timeout: 5) != nil {
-                shoot("start-med-prov", note: "Start with an exam (sketch 4)")
-                app.swipeUp()
-                shoot("start-med-prov-slut", note: "Start with an exam, scrolled")
-                app.swipeDown()
-                myAnswers()
+        } else {
+            miss("Nytt prov did not open after Fortsätt (A94)")
+        }
+        dismissSystemAlerts()
+        if waitFor(["Inställningar"], timeout: 15) == nil { miss("Start not shown after the first start") }
+    }
+
+    // MARK: Start (A115, A153)
+
+    /// Säg i AirPods with a text: the cost and, with the keyboard up, Spela above it (A153). Nothing is played.
+    private func sayText() {
+        // SayFlowTests' field: "Säg i AirPods" as a text field, or a text view when it has grown.
+        let predicate = NSPredicate(format: "label BEGINSWITH[c] 'Säg i AirPods'")
+        let asField = app.textFields.matching(predicate).firstMatch
+        let field = asField.waitForExistence(timeout: 5) ? asField : app.textViews.matching(predicate).firstMatch
+        guard field.exists else { miss("Säg i AirPods: no field on Start"); return }
+        field.tap()
+        pause(1)
+        guard app.keyboards.count > 0 || app.buttons["retur"].exists || app.buttons["return"].exists else {
+            miss("Säg i AirPods: the field got no keyboard")
+            return
+        }
+        field.typeText("Klorofyllet i bladen fångar ljuset.")
+        pause(2) // the cost comes about 0,7 s after the last key
+        shoot("sag-text-tangentbord", note: "Säg i AirPods with a text, keyboard up (A153)")
+        if find(["Klar"], buttonsOnly: true) != nil {
+            tap(["Klar"], step: "Säg i AirPods → Klar above the keyboard (A153)")
+            pause(1)
+        } else {
+            record("note: no Klar above the keyboard; swiping down")
+            app.swipeDown()
+            pause(1)
+        }
+        shoot("sag-text", note: "Säg i AirPods with a text, the cost and Spela (A115)")
+        // Leave Start as it was: the field emptied again, so later screens show Start without a text.
+        field.tap()
+        pause(0.5)
+        if let value = field.value as? String, !value.isEmpty {
+            field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: value.count + 2))
+        }
+        if find(["Klar"], buttonsOnly: true) != nil { tap(["Klar"], step: "emptied field → Klar") } else { app.swipeDown() }
+        pause(1)
+    }
+
+    /// The credit capsule opens Krediter (A117, A134): the packs (none in the Simulator), Bjud in, Så räknas det.
+    private func credits() {
+        let capsule = app.buttons.matching(NSPredicate(format: "label CONTAINS[c] 'krediter kvar' OR label CONTAINS[c] 'kredit kvar'")).firstMatch
+        guard capsule.waitForExistence(timeout: 10) else { miss("Start: no credit capsule"); return }
+        capsule.tap()
+        record("tap: Start → the credit capsule")
+        guard waitFor(["Så räknas det", "Bjud in"], timeout: 15) != nil else { miss("Krediter did not open"); return }
+        pause(2)
+        shoot("krediter", note: "Krediter (A134)")
+        app.swipeUp()
+        shoot("krediter-slut", note: "Krediter, scrolled: Villkor, Integritet, Återställ köp")
+        closeSheet()
+    }
+
+    /// Nytt prov's form (A79, A154): Gör, Material, the count, Skapa frågor. Nothing is made.
+    private func newExamForm() {
+        guard tap(["Nytt prov"], step: "Start → Nytt prov") else { return }
+        guard waitFor(["Skapa frågor", "Fota sidor"], timeout: 10) != nil else { miss("Nytt prov's form not shown"); return }
+        pause(1)
+        shoot("nytt-prov", note: "Nytt prov (A154)")
+        app.swipeUp()
+        shoot("nytt-prov-slut", note: "Nytt prov, scrolled")
+        closeSheet()
+        if waitFor(["Inställningar"], timeout: 5) == nil { closeSheet() }
+    }
+
+    /// The other rows of Start: Hitta prov från din skola and Klistra in en länk (A116), each opened and closed.
+    private func startRows() {
+        for (labels, name) in [(["Hitta prov från din skola"], "hitta-prov"), (["Klistra in en länk", "Öppna länk"], "klistra-in-lank")] {
+            guard tap(labels, step: "Start → \(labels[0])") else { continue }
+            pause(2)
+            shoot(name, note: labels[0])
+            backToStart()
+        }
+    }
+
+    /// Back to Start from a pushed page (Hitta prov från din skola is a navigationDestination, run 44761053846) or a
+    /// sheet: the navigation bar's back button first, then the sheet's own close button.
+    private func backToStart() {
+        for _ in 0..<3 {
+            if find(["Inställningar"], buttonsOnly: true)?.isHittable == true { return }
+            let back = app.navigationBars.buttons.element(boundBy: 0)
+            if back.exists, back.isHittable, !["Klar", "Inställningar"].contains(back.label) {
+                record("back: '\(back.label)'")
+                back.tap()
             } else {
-                miss("exam card not shown after Spara prov")
+                closeSheet()
             }
-        } else {
-            miss("add-exam sheet not shown")
-        }
-    }
-
-    // MARK: A50 Start (D124, D126)
-
-    /// A50: "Starta Lumen" at the top, the mode under it ("Läge: Standardläge. Byt läge"), "Lumen kan allt" with
-    /// examples, and the Byt sheet (Sov under the modes). "APP:" marks a finding about the app, not the tour.
-    private var a50: Bool { find(["Starta Lumen", "Starta Earmind", "Tillbaka till Lumen", "Tillbaka till Earmind"], buttonsOnly: true) != nil }
-
-    private func a50Start() {
-        guard waitFor(["Starta Lumen", "Starta Earmind", "Tillbaka till Lumen", "Tillbaka till Earmind"], timeout: 3) != nil else {
-            log.append("note: no 'Starta Lumen' on Start (a build before A50)")
-            return
-        }
-        if find(["Starta Lumen", "Starta Earmind"], buttonsOnly: true)?.isHittable != true {
-            miss("APP: A50 'Starta Lumen' is not on the first screen without scrolling")
-        }
-        if find(["Läge:*"]) == nil { miss("APP: A50 no mode line ('Läge: … Byt läge') under Starta Lumen") }
-        if find(["Lumen kan allt*", "Earmind kan allt*"]) == nil { miss("APP: A50 no 'Lumen kan allt' on Start") }
-        for gone in ["Få A-svar till provet", "Bara fråga", "Fler lägen"] where find([gone]) != nil {
-            miss("APP: A50 '\(gone)' is still on Start")
-        }
-        pause(3) // the examples change every few seconds: a second shot shows the next one
-        shoot("start-lumen-kan-allt", note: "A50: Start a few seconds later (the next example)")
-        guard tap(["Läge:*"], step: "start → Byt (mode line)") else { return }
-        pause(1)
-        shoot("byt-fran-start", note: "A50: Byt from Start (the modes and Sov)")
-        if find(["Provläge*"]) == nil { miss("APP: A50 no Provläge in the Byt sheet") }
-        closeSheet()
-        capabilities()
-    }
-
-    /// A52 (D125): "Allt Lumen kan ›" (Earmind after A55) at the end of the box pushes "Vad kan Lumen?".
-    private func capabilities() {
-        let link = ["Allt Lumen kan*", "Allt Earmind kan*"]
-        guard waitFor(link, timeout: 2) != nil else {
-            log.append("note: no 'Allt Lumen kan' on Start (a build before A52)")
-            return
-        }
-        guard tap(link, step: "start → Allt Lumen kan") else { return }
-        pause(1.5)
-        shoot("vad-kan", note: "A52: Vad kan Lumen?")
-        for page in 2...3 {
-            app.swipeUp()
-            shoot("vad-kan-\(page)", note: "A52: Vad kan Lumen?, scrolled \(page - 1)")
-        }
-        let back = app.navigationBars.buttons.element(boundBy: 0)
-        if back.exists {
-            back.tap()
-        } else {
-            app.swipeRight()
-        }
-        pause(1)
-    }
-
-    /// A53 (D126): "Mina svar" under the exam card. The list, and the writing page without writing (no `suggest` call).
-    private func myAnswers() {
-        guard tap(["Mina svar*"], step: "start → Mina svar") else { return }
-        pause(1.5)
-        shoot("mina-svar", note: "A53: Mina svar, first time")
-        if waitFor(["Skriv en fråga*"], timeout: 2) != nil {
-            tap(["Skriv en fråga*"], step: "Mina svar → Skriv en fråga")
-            pause(1.5)
-            shoot("mina-svar-skriv", note: "A53: Skriv en fråga (empty)")
-            if waitFor(["Avbryt"], timeout: 2) != nil { tap(["Avbryt"], step: "Skriv en fråga → Avbryt") } else { closeSheet() }
             pause(1)
         }
-        closeSheet()
+        if find(["Inställningar"], buttonsOnly: true) == nil { miss("could not get back to Start") }
+    }
+
+    // MARK: Radera konto (A145): the question only; Avbryt, nothing is deleted
+
+    private func deleteAccountQuestion() {
+        guard tap(["Inställningar"], step: "start → Inställningar (Konto)") else { return }
+        guard waitFor(["Klar"], timeout: 5) != nil else { miss("settings sheet not shown (Konto)"); return }
+        guard let found = scrollTo(["Radera konto"], buttonsOnly: true) else {
+            miss("settings row Radera konto not found")
+            closeSheet()
+            return
+        }
+        let row = centered(found, labels: ["Radera konto"])
+        shoot("installningar-konto", note: "Settings › Konto (A145)")
+        row.tap()
+        let alert = app.alerts.firstMatch
+        // Run 44809087832 (pro-dark): one tap asked nothing. Tap the row once more before calling it a miss.
+        if !alert.waitForExistence(timeout: 5), waitFor(["Avbryt"], timeout: 1) == nil,
+           let again = find(["Radera konto"], buttonsOnly: true), again.isHittable {
+            record("note: Radera konto tap asked nothing, retry")
+            again.tap()
+        }
+        if alert.waitForExistence(timeout: 5) {
+            shoot("radera-kontot-fragan", note: "Radera kontot? (A145)")
+            let cancel = alert.buttons["Avbryt"]
+            if cancel.exists { cancel.tap() } else { miss("Radera kontot? has no Avbryt") }
+        } else if waitFor(["Avbryt"], timeout: 3) != nil {
+            shoot("radera-kontot-fragan", note: "Radera kontot? (A145, as a sheet)")
+            tap(["Avbryt"], step: "Radera kontot? → Avbryt")
+        } else {
+            // Run 44835830516 (pro-dark, twice in a row): no question. Write what is on screen into the log.
+            record("note: Radera konto row \(row.frame), hittable \(row.isHittable), alerts \(app.alerts.count), sheets \(app.sheets.count)")
+            for line in app.debugDescription.split(separator: "\n")
+                where line.contains("Radera") || line.contains("Alert") || line.contains("Sheet") || line.contains("Avbryt") {
+                record("note: tree: \(line.trimmingCharacters(in: .whitespaces).prefix(160))")
+            }
+            miss("Radera konto asked nothing")
+        }
+        pause(1)
+        tap(["Klar"], step: "settings → Klar (Konto)")
+        pause(1)
+    }
+
+    // MARK: Fler lägen · Beta (the listening modes, only opened as pages)
+
+    private func moreModes() {
+        // RepetitionHomeSection: "Fler lägen · Beta" (label "Fler lägen") at the bottom of Start in some states only.
+        guard let row = find(["Fler lägen"], buttonsOnly: true) ?? scrollTo(["Fler lägen"], buttonsOnly: true) else {
+            record("note: no Fler lägen on Start in this state (A115 Start); the listening modes are not in the tour")
+            return
+        }
+        row.tap()
+        pause(2)
+        shoot("fler-lagen", note: "Fler lägen · Beta")
+        app.swipeUp()
+        shoot("fler-lagen-slut", note: "Fler lägen, scrolled")
+        let back = app.navigationBars.buttons.firstMatch
+        if back.exists { back.tap() } else { closeSheet() }
+        pause(1)
     }
 
     private func closeSheet() {
@@ -237,6 +241,7 @@ final class ScreenTourTests: XCTestCase {
         app.swipeDown(velocity: .fast)
         pause(1)
     }
+
 
     // MARK: Settings and everything under it
 
@@ -290,29 +295,31 @@ final class ScreenTourTests: XCTestCase {
     /// Scrolls the settings list up or down until the row is there, opens it, shoots it and goes back.
     private func openFromSettings(_ labels: [String], name: String, advanced: Bool = false) {
         // If going back from the previous page closed the whole sheet (seen after Förberedelser), open Settings again.
-        if !app.navigationBars.buttons["Klar"].exists {
-            log.append("note: Settings sheet closed before \(labels[0]), opening it again")
+        // Run 44787390248: in iOS 26 the sheet's Klar (a toolbar item) is not a child of the navigation bar, so the
+        // old check reopened Settings before every row and every other row was lost. Look for Klar anywhere, or the
+        // page's title.
+        if !app.buttons["Klar"].waitForExistence(timeout: 2) {
+            record("note: Settings sheet closed before \(labels[0]), opening it again")
             tap(["Inställningar"], step: "start → Inställningar (again)")
             pause(1)
             if advanced { expandAdvanced() }
         }
         // Buttons only: a section header with the same words ("Diagnostik") is not the row.
-        guard let row = scrollTo(labels, buttonsOnly: true) else {
+        guard let found = scrollTo(labels, buttonsOnly: true) else {
             miss("settings row \(labels[0]) not found")
             return
         }
-        // The back button, never the sheet's "Klar" (that would close Settings).
-        let back = app.navigationBars.buttons.matching(NSPredicate(format: "label != 'Klar'")).firstMatch
-        row.tap()
+        found.tap()
         pause(1.5)
         // The last rows sit at the sheet's bottom edge, where a tap can miss (seen at the largest text size):
         // look the row up again each time and tap it only when it is hittable, never a stale element.
         var attempt = 0
-        while !back.exists, attempt < 3 {
+        // The page is open when the sheet's Klar is gone (it belongs to the settings root only).
+        while app.buttons["Klar"].exists, attempt < 3 {
             attempt += 1
-            log.append("note: \(labels[0]) tap missed, retry \(attempt)")
+            record("note: \(labels[0]) tap missed, retry \(attempt)")
             if let again = scrollTo(labels, buttonsOnly: true), again.isHittable {
-                again.tap()
+                centered(again, labels: labels).tap()
             } else {
                 app.swipeDown()
             }
@@ -321,164 +328,30 @@ final class ScreenTourTests: XCTestCase {
         shoot("installningar-\(name)", note: "Settings › \(labels[0])")
         app.swipeUp()
         shoot("installningar-\(name)-slut", note: "Settings › \(labels[0]), scrolled")
-        if back.waitForExistence(timeout: 3) {
+        if !popSettingsPage() { miss("could not go back from \(labels[0])") }
+    }
+
+    /// Back from a page pushed inside Settings. Run 44795539606: a back button by its label could be Start's own
+    /// "Inställningar" (gear, top right, behind the sheet). Take a navigation-bar button at the left edge, else swipe
+    /// from the left edge; back when the sheet's Klar is there again.
+    @discardableResult
+    private func popSettingsPage() -> Bool {
+        let width = app.windows.firstMatch.frame.width
+        let candidates = app.navigationBars.buttons.allElementsBoundByIndex.filter {
+            $0.exists && $0.isHittable && $0.frame.minX < width * 0.3 && $0.label != "Klar"
+        }
+        if let back = candidates.first {
+            record("back: '\(back.label)'")
             back.tap()
-            pause(1)
         } else {
-            miss("no back button on \(labels[0])")
+            record("back: edge swipe")
+            app.coordinate(withNormalizedOffset: CGVector(dx: 0.01, dy: 0.5))
+                .press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.85, dy: 0.5)))
         }
+        pause(1.5)
+        return app.buttons["Klar"].waitForExistence(timeout: 3)
     }
 
-    // MARK: Modes (sketches 5 and 8)
-
-    private func modesTour() {
-        // A22: Start has "Bara fråga" (Frågor) and "Fler lägen" (Provläge, Intervju, Socialt, Rizz 18+).
-        // A33: the first start's Frågor session can still be on behind Start ("Lyssnar … Avsluta" on top, seen in T8 on
-        // the A33 build); a new mode does not open while it runs, so end it first.
-        if let running = find(["Avsluta"]), running.isHittable {
-            log.append("note: a session was still on at Start, ending it before Bara fråga")
-            running.tap()
-            pause(2)
-            dismissSystemAlerts()
-            for label in ["Klar", "Stäng"] where app.buttons[label].exists { app.buttons[label].tap(); pause(1); break }
-        }
-        // A50: one "Starta Lumen" starts the chosen mode (Standardläge after the first start).
-        if tap(["Starta Lumen", "Starta Earmind", "Bara fråga", "Frågor"], step: "start → Starta Lumen / Bara fråga") {
-            dismissSystemAlerts()
-            if waitFor(["Tillbaka till start"], timeout: 10) != nil {
-                pause(2)
-                dismissSystemAlerts()
-                shoot("lyssnar-fragor", note: "Lyssnar in Frågor (sketch 5)")
-                // A18: "Byt läge" sits in the ⋯ menu ("Mer").
-                tap(["Mer"], step: "lyssnar → ⋯")
-                pause(0.5)
-                tap(["Byt läge"], step: "lyssnar → Byt läge")
-                if waitFor(["Klar"], timeout: 5) != nil {
-                    pause(1)
-                    shoot("byt-lage", note: "Byt läge (sketch 8)")
-                    tap(["Klar"], step: "byt läge → Klar")
-                }
-                tap(["Tillbaka till start"], step: "lyssnar → Tillbaka till start")
-                pause(1)
-                shoot("start-medan-lyssnar", note: "Start with the indicator line while listening")
-                if let bar = waitFor(["Lyssnar", "Pausad"], timeout: 3) { bar.tap(); pause(1) }
-                endSession()
-            } else {
-                shoot("fragor-startade-inte", note: "Frågor did not open Lyssnar")
-                noLyssnar(mode: "Frågor")
-            }
-        }
-
-        sheetFromMode(["Intervju"], name: "intervju-setup", close: ["Avbryt", "Cancel"])
-        sheetFromMode(["Socialt"], name: "socialt-start", close: ["Avbryt", "Cancel"])
-        sheetFromMode(["Rizz 18+", "Rizz"], name: "rizz-aldersgrans", close: ["Avbryt", "Cancel"])
-    }
-
-    /// A22: the other modes sit in the "Fler lägen" sheet. Opens it (and shoots it once) when the mode is not on Start.
-    private func openMoreModes(for labels: [String]) {
-        if let onStart = find(labels), onStart.isHittable { return }
-        // A50: "Fler lägen" is gone; the mode line under Starta Lumen opens the same list.
-        let opener = a50 ? ["Läge:*"] : ["Fler lägen"]
-        guard tap(opener, step: "start → \(opener[0])") else { return }
-        pause(1)
-        if !shotMoreModes {
-            shoot("fler-lagen", note: "Fler lägen (A22)")
-            shotMoreModes = true
-        }
-    }
-
-    private var shotMoreModes = false
-
-    private func sheetFromMode(_ labels: [String], name: String, close: [String]) {
-        let newStart = a50
-        openMoreModes(for: labels)
-        // A50's sheet shows "Intervju, <tagline>": match the start of the label.
-        guard tap(newStart ? labels.map { $0.hasSuffix("*") ? $0 : $0 + "*" } : labels, step: "start → \(labels[0])") else { return }
-        pause(1)
-        // A50: a tap in the sheet only chooses the mode; Starta Lumen starts it (unless the mode asked first).
-        if newStart, waitFor(close, timeout: 1) == nil, find(["Starta Lumen", "Starta Earmind"], buttonsOnly: true) != nil {
-            tap(["Starta Lumen", "Starta Earmind"], step: "start → Starta Lumen (\(labels[0]))")
-        }
-        pause(2)
-        dismissSystemAlerts()
-        shoot(name, note: "\(labels[0]) first screen")
-        if waitFor(close, timeout: 2) != nil {
-            tap(close, step: "\(name) → close")
-        } else if waitFor(["Tillbaka till start"], timeout: 1) != nil {
-            // It went straight to Lyssnar.
-            endSession()
-        } else {
-            app.swipeDown(velocity: .fast) // pull the sheet down
-        }
-        pause(1)
-        if waitFor(["Tillbaka till start"], timeout: 1) != nil { endSession() }
-    }
-
-    // MARK: Provläge
-
-    private func provTour() {
-        // A22 (D97): with an exam, "Få A-svar till provet" on Start; Provläge also sits in "Fler lägen".
-        if a50 {
-            // A50: Byt → Provläge ("För dina prov"), then Starta Lumen.
-            openMoreModes(for: ["Provläge, För dina prov"])
-            guard tap(["Provläge*"], step: "Byt → Provläge") else { return }
-            pause(1)
-            if find(["Läge: Provläge*"]) == nil { miss("APP: A50 the mode line does not say Provläge after choosing it") }
-            shoot("start-provlage-valt", note: "A50: Start with Provläge chosen")
-            guard tap(["Starta Lumen", "Starta Earmind"], step: "start → Starta Lumen (Provläge)") else { return }
-        } else {
-            if find(["Få A-svar till provet"]) == nil { openMoreModes(for: ["Provläge"]) }
-            guard tap(["Få A-svar till provet", "Provläge"], step: "start → Få A-svar till provet") else { return }
-        }
-        pause(2)
-        dismissSystemAlerts()
-        if waitFor(["Hoppa över allt"], timeout: 5) != nil {
-            shoot("provlage-fragor-1", note: "Provläge first start, question 1")
-            tap(["Hoppa över"], step: "prov onboarding → Hoppa över")
-            pause(1)
-            shoot("provlage-fragor-2", note: "Provläge first start, question 2")
-            tap(["Hoppa över allt"], step: "prov onboarding → Hoppa över allt")
-            pause(2)
-        }
-        dismissSystemAlerts()
-        if waitFor(["Tillbaka till start"], timeout: 8) != nil {
-            pause(1)
-            shoot("lyssnar-provlage", note: "Lyssnar in Provläge (sketch 5)")
-            endSession()
-        } else {
-            shoot("provlage-startade-inte", note: "Provläge did not open Lyssnar")
-            noLyssnar(mode: "Provläge")
-        }
-    }
-
-    /// Lyssnar did not open. With the microphone denied that is right, but the user must then see sketch 9's card
-    /// "Lumen hör dig inte" with "Öppna Inställningar". "APP:" marks a finding about the app, not the tour.
-    private func noLyssnar(mode: String) {
-        if micDenied {
-            if waitFor(["Lumen hör dig inte*", "Öppna Inställningar"], timeout: 2) != nil {
-                log.append("ok: \(mode) with the microphone denied shows 'Lumen hör dig inte'")
-            } else {
-                miss("APP: microphone denied, \(mode) tapped: nothing opens and no 'Lumen hör dig inte' card (sketch 9)")
-            }
-        } else {
-            miss("Lyssnar did not open for \(mode)")
-        }
-    }
-
-    private func endSession() {
-        tap(["Avsluta"], step: "lyssnar → Avsluta")
-        pause(2)
-        dismissSystemAlerts()
-        // Whatever follows the session (a summary, study cards) is a screen too.
-        if waitFor(["Starta Lumen", "Starta Earmind", "Lägg till prov", "Få A-svar till provet"], timeout: 3) == nil {
-            shoot("efter-avsluta-\(shotNumber)", note: "After Avsluta")
-            for label in ["Klar", "Stäng", "Done", "Close"] where app.buttons[label].exists {
-                app.buttons[label].tap()
-                pause(1)
-                break
-            }
-        }
-    }
 
     // MARK: Helpers
 
@@ -521,27 +394,66 @@ final class ScreenTourTests: XCTestCase {
         } else {
             element.tap()
         }
-        log.append("tap: \(step)")
+        record("tap: \(step)")
         return true
     }
 
     /// Swipes up (then back down) until an element with one of the labels is hittable.
     private func scrollTo(_ labels: [String], buttonsOnly: Bool = false) -> XCUIElement? {
+        // Run 44809087832 (iPhone SE): swipeDown at the top of a sheet closed Inställningar, and the search went on
+        // over Start. When that happens Settings is opened again and searched from the top (swipes up only).
+        // Run 44862440315: an end-of-list check on the first loaded cell stopped the search after 2–3 swipes (that
+        // cell does not move), so the plain 25 + 25 swipes of the green run 44804596958 are back.
+        let inSheet = app.buttons["Klar"].exists
         for direction in [true, false] {
             // 25 swipes: Settings at the largest text size is about 30 screens long.
             for _ in 0..<25 {
                 if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
                 if direction { app.swipeUp() } else { app.swipeDown() }
+                if inSheet, !app.buttons["Klar"].exists {
+                    record("note: the sheet closed while looking for \(labels[0]); Settings opened again")
+                    pause(1)
+                    tap(["Inställningar"], step: "start → Inställningar (sheet closed)")
+                    guard app.buttons["Klar"].waitForExistence(timeout: 5) else { return nil }
+                    pause(1)
+                    for _ in 0..<25 {
+                        if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
+                        app.swipeUp()
+                    }
+                    break
+                }
             }
         }
+        record("note: scroll \(labels[0]) gave up")
+        dumpButtons()
         return nil
+    }
+
+    /// The buttons in the tree right now, into the tour log (T3 diagnostics, run 44846862625).
+    private func dumpButtons() {
+        let lines = app.debugDescription.split(separator: "\n").filter { $0.contains("Button,") || $0.contains("CollectionView,") }
+        for line in lines.prefix(45) { record("note: tree: \(line.trimmingCharacters(in: .whitespaces).prefix(150))") }
+    }
+
+    /// Run 44809087832 (iPhone SE): a row at the sheet's lower edge is "hittable" but the tap opens nothing. Drag it
+    /// up to the middle of the screen first and look it up again.
+    private func centered(_ element: XCUIElement, labels: [String], buttonsOnly: Bool = true) -> XCUIElement {
+        let height = app.windows.firstMatch.frame.height
+        guard height > 0, element.frame.midY > height * 0.7 else { return element }
+        record("note: centring \(labels[0]) from y \(Int(element.frame.midY)) of \(Int(height))")
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75))
+            .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.45)),
+                   withVelocity: .slow, thenHoldForDuration: 0.2)
+        pause(0.5)
+        if let again = find(labels, buttonsOnly: buttonsOnly), again.isHittable { return again }
+        return element
     }
 
     private func dismissSystemAlerts() {
         for _ in 0..<3 {
             let alert = springboard.alerts.firstMatch
             guard alert.waitForExistence(timeout: 1) else { return }
-            log.append("system alert: \(alert.label)")
+            record("system alert: \(alert.label)")
             let allow = ["Tillåt", "Allow", "Tillåt när appen används", "Allow While Using App", "OK"]
             guard let button = allow.lazy.map({ alert.buttons[$0] }).first(where: { $0.exists }) else {
                 alert.buttons.element(boundBy: alert.buttons.count - 1).tap()
@@ -558,12 +470,17 @@ final class ScreenTourTests: XCTestCase {
         attachment.name = fileName
         attachment.lifetime = .keepAlways
         add(attachment)
-        log.append("shot: \(fileName) — \(note)")
+        record("shot: \(fileName) — \(note)")
+    }
+
+    /// A tour-log line with the seconds since launch, so a slow step shows in the job log (run 44809087832).
+    private func record(_ line: String) {
+        log.append("\(line) [+\(Int(Date().timeIntervalSince(started)))s]")
     }
 
     private func miss(_ what: String) {
         unreachable.append(what)
-        log.append("MISS: \(what)")
+        record("MISS: \(what)")
         XCTFail("[\(prefix)] \(what)")
     }
 
