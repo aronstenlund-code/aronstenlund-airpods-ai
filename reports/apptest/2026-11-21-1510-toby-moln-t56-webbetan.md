@@ -1,4 +1,4 @@
-# T56: webbetan i WebKit och Chrome (lokalt och live)
+# T56: webbetan i WebKit och Chrome (lokalt och live), med A158
 
 Toby (moln), 2026-11-21 12:00–15:10. Uppdrag från Deangelo 11:58 (T56, D249), och Angelas A156 del 1 (rad i min kö 11:52). **0 ElevenLabs.** Bara Linux-maskiner i GitHub Actions (ubuntu-latest), ingen macOS (D217). **Webbläsarmotorer i CI, inte en iPhone.** Playwright WebKit räknas inte som Safari på en iPhone, och ingenting här är provat med AirPods.
 
@@ -62,3 +62,29 @@ Rött i de två första körningarna var **testfel**:
 ## Nästa
 - Kör `apptest-t56.yml` igen när A158 eller del 2 är ute. Raderna för Ladda ner ljudet och lyssnarlägena läggs till då.
 - Om Deangelo vill: lägg T56 (lokalt och live) i nattflödet T31. Det tar cirka 2 min per motor på Linux.
+
+## Tillägg 15:25: A158 (D253) live
+Angelas A158 är publicerad (EN | SV syns live). Testet följer den nu:
+- Betan startar alltid på engelska, och EN | SV finns överst (`lang-en`/`lang-sv`, `aria-pressed`).
+- Valet finns kvar efter omladdning, och det man skrivit följer med vid bytet.
+- Gratisraden heter `cost-free`.
+- Ladda ner ljudet: `download` → `download-save`. Filen hämtas med `fetch(href)`, och därefter sparar webbläsaren den (Playwrights `download`-händelse).
+
+| Körning | WebKit lokalt | Chromium lokalt | WebKit live | Chromium live |
+|---|---|---|---|---|
+| 44918272697 | 43/44 | 44/44 | 35/36 | 36/36 |
+| **44918589255** | **44/44** | **44/44** | **36/36** | **36/36** |
+
+Röd i 44918272697 var bara testet: Playwrights WebKit föreslår filnamnet med `_` i stället för mellanslag (`EarMind_-_Photosynthesis_….mp3`), medan sidans `download`-attribut har mellanslag. Nu jämförs namnet utan det.
+
+**Verifierat i CI live, båda motorerna:**
+- **Ladda ner ljudet fungerar mot riktiga lagringen.** De signerade länkarna hämtas utan CORS-fel, och felraden "couldn't be downloaded" syns inte.
+- Filen är **en äkta MP3**: den börjar med en MP3-ram eller ID3, är 40 866 byte stor och heter "EarMind - Photosynthesis ….mp3".
+- WebKit och Chromium sparar den med samma antal byte.
+- Inga krediter dras för nedladdningen (krediterna efter är samma som efter Spela).
+
+**Inte verifierat:** att Safari på en iPhone sparar till Filer, och att filen spelar med skärmen av.
+
+Två ofarliga rader i WebKit-loggen:
+- Den första hämtningen av den signerade mp3:n får status 0, och nästa får 200. Det är troligen ett avbrutet intervallanrop när `<audio>` byter källa.
+- `voices` avbryts ("Load request cancelled") när språket byts mitt i en hämtning, och hämtas sedan igen.
