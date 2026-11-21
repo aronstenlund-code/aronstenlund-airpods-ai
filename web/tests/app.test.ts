@@ -50,6 +50,26 @@ class FakeAwake {
   }
 }
 
+/// The sound files as bytes, and the saved file as a pretend link.
+class FakeFiles {
+  asked: string[] = [];
+  links: { name: string; bytes: number[] }[] = [];
+  forgotten: string[] = [];
+  failing = false;
+  async bytes(url: string): Promise<Uint8Array> {
+    this.asked.push(url);
+    if (this.failing) throw new Error('offline');
+    return new TextEncoder().encode(`[${url.split('/').pop()}]`);
+  }
+  link(bytes: Uint8Array, name: string): string {
+    this.links.push({ name, bytes: [...bytes] });
+    return `blob:${this.links.length}`;
+  }
+  forget(url: string): void {
+    this.forgotten.push(url);
+  }
+}
+
 function make(answer: ConstructorParameters<typeof RoutedServer>[0], storage = new MemoryStorage()) {
   const server = new RoutedServer(answer);
   const clock = new FakeClock();
@@ -57,8 +77,9 @@ function make(answer: ConstructorParameters<typeof RoutedServer>[0], storage = n
   const sound = new FakeSound();
   const awake = new FakeAwake();
   const store = new Store(storage);
-  const app = new App({ drill: new DrillApi(client), exam: new ExamApi(client), sound, clock, store, awake, t: translator('en') });
-  return { app, server, clock, sound, awake, store, storage };
+  const files = new FakeFiles();
+  const app = new App({ drill: new DrillApi(client), exam: new ExamApi(client), sound, clock, store, awake, files, t: translator('en') });
+  return { app, server, clock, sound, awake, store, storage, files };
 }
 
 /// Lets what is waiting on the server run.
@@ -343,6 +364,67 @@ describe('Open link: a quiz someone shared', () => {
     await app.addShared();
     expect(store.exams).toEqual([]);
     expect(app.link).toMatchObject({ stage: 'found', error: 'This link is a text to read aloud. The beta can only open quizzes with questions for now.' });
+  });
+});
+
+describe('Download the sound (D253)', () => {
+  const said = (text: string): string => new TextDecoder().decode(new Uint8Array(JSON.parse(text) as number[]));
+
+  it('a text: asks the server for fresh links, fetches every part once and offers one MP3', async () => {
+    const { app, server, files } = make((_fn, action) => (action === 'save' || action === 'status' ? ok(textView('d1', true)) : ok({})));
+    await app.say('One. Two.', '');
+    expect(app.download).toEqual({ stage: 'idle' });
+    await app.prepareDownload();
+    expect(server.names()).toContain('drill:status'); // the links are good for an hour: fresh ones for the download
+    expect(files.asked).toEqual(['https://files/p1.mp3']);
+    expect(app.download).toEqual({ stage: 'ready', url: 'blob:1', name: 'EarMind - One. Two.mp3' });
+    expect(said(JSON.stringify(files.links[0].bytes))).toBe('[p1.mp3]');
+    await app.prepareDownload(); // already there: nothing is fetched twice
+    expect(files.asked.length).toBe(1);
+  });
+
+  it('a quiz: every question followed by its long answer, in order', async () => {
+    const { app, store, files } = make((fn, action) => {
+      if (fn === 'exam' && action === 'drill') return ok({ summary: { subject: 'Biology', grade: '8', covers: 'Cells' }, notes: 'n', items: [0, 1, 2].map((i) => ({ id: `q${i}`, question: `Q${i}?` })) });
+      if (fn === 'exam') return ok({ items: [0, 1, 2].map((i) => ({ id: `q${i}`, question: `Q${i}?`, short: 's', long: 'l' })) });
+      if (action === 'save') return ok(examView('e1', false));
+      return ok(examView('e1', true));
+    });
+    await app.makeQuestions('Cells.', 3);
+    await app.acceptExam();
+    await app.startExam(store.exams[0].id);
+    await app.prepareDownload();
+    expect(files.asked.map((u) => u.split('/').pop())).toEqual(['q0.mp3', 'a0.mp3', 'q1.mp3', 'a1.mp3', 'q2.mp3', 'a2.mp3']);
+    expect(said(JSON.stringify(files.links[0].bytes))).toBe('[q0.mp3][a0.mp3][q1.mp3][a1.mp3][q2.mp3][a2.mp3]');
+    expect(app.download).toMatchObject({ stage: 'ready', name: 'EarMind - Biology.mp3' });
+  });
+
+  it('not while the sound is still being made', async () => {
+    const { app, files } = make((_fn, action) => (action === 'save' || action === 'status' ? ok(textView('d1', false)) : ok({})));
+    await app.say('One. Two.', '');
+    await app.prepareDownload();
+    expect(files.asked).toEqual([]);
+    expect(app.download).toEqual({ stage: 'idle' });
+  });
+
+  it('a file that cannot be fetched: says so, and a new try starts over', async () => {
+    const { app, files } = make((_fn, action) => (action === 'save' || action === 'status' ? ok(textView('d1', true)) : ok({})));
+    await app.say('One. Two.', '');
+    files.failing = true;
+    await app.prepareDownload();
+    expect(app.download).toEqual({ stage: 'failed' });
+    files.failing = false;
+    await app.prepareDownload();
+    expect(app.download.stage).toBe('ready');
+  });
+
+  it('Stop takes the file away again', async () => {
+    const { app, files } = make((_fn, action) => (action === 'save' || action === 'status' ? ok(textView('d1', true)) : ok({})));
+    await app.say('One. Two.', '');
+    await app.prepareDownload();
+    app.stopAll();
+    expect(app.download).toEqual({ stage: 'idle' });
+    expect(files.forgotten).toEqual(['blob:1']);
   });
 });
 

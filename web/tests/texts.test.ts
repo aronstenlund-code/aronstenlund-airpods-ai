@@ -1,14 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { allTexts, clockText, dayText, grouped, pickLanguage, translator } from '../src/texts';
+import { allTexts, chosenLanguage, clockText, dayText, grouped, translator } from '../src/texts';
 
-describe('the language (D251)', () => {
-  it('is Swedish when the browser is Swedish, otherwise English', () => {
-    expect(pickLanguage(['sv-SE', 'en'], undefined)).toBe('sv');
-    expect(pickLanguage(['sv'], undefined)).toBe('sv');
-    expect(pickLanguage(['en-GB', 'sv'], undefined)).toBe('en');
-    expect(pickLanguage(['de-DE'], undefined)).toBe('en');
-    expect(pickLanguage([], 'sv-FI')).toBe('sv');
-    expect(pickLanguage(undefined, undefined)).toBe('en');
+describe('the language (D253)', () => {
+  it('always starts in English; Swedish only when the user has chosen it (D253)', () => {
+    expect(chosenLanguage(null)).toBe('en');
+    expect(chosenLanguage('sv')).toBe('sv');
+    expect(chosenLanguage('en')).toBe('en');
+    expect(chosenLanguage('de')).toBe('en'); // anything else that was stored is not a choice
   });
 
   it('has every text in both languages, with the same things to fill in', () => {

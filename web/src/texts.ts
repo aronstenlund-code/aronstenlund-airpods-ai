@@ -1,12 +1,12 @@
-/// Every word the beta shows, in English (the base, D251) and Swedish. The words are Kelly's (Ke86:
+/// Every word the beta shows, in English (the base, D251/D253) and Swedish. The words are Kelly's (Ke86:
 /// docs/design/engelska.md and docs/design/webbeta.md); the Swedish follows the iOS app where the same thing is said
 /// there. One place, so her changes go in without touching anything else. `{name}` is filled in by `t()`.
 export type Lang = 'en' | 'sv';
 
-/// D251: Swedish when the browser is Swedish, otherwise English.
-export function pickLanguage(languages: readonly string[] | undefined, fallback: string | undefined): Lang {
-  const first = (languages && languages.length > 0 ? languages[0] : fallback) ?? 'en';
-  return first.toLowerCase().startsWith('sv') ? 'sv' : 'en';
+/// D253 (changes D251): the beta always starts in English. Swedish is a choice the user makes with the EN/SV
+/// switch; it is kept in the browser and comes back the next time.
+export function chosenLanguage(stored: string | null): Lang {
+  return stored === 'sv' ? 'sv' : 'en';
 }
 
 const en = {
@@ -73,6 +73,13 @@ const en = {
   pressesText: 'On your AirPods: 1 press pauses · 2 next sentence · 3 previous sentence',
   blocked: 'The browser stopped the sound. Tap Play once more.',
 
+  // Download the sound (D253)
+  download: 'Download the sound',
+  downloadPreparing: 'Getting the sound \u2026 {n} of {m}',
+  downloadSave: 'Save the MP3',
+  downloadFailed: 'The sound couldn\u2019t be downloaded. Try again.',
+  downloadNote: 'A downloaded file plays with the screen off in your phone\u2019s own player.',
+
   // Quizzes
   nextQuiz: 'Next quiz',
   otherQuizzes: 'Other quizzes',
@@ -134,6 +141,8 @@ const en = {
   language: 'Language',
   english: 'English',
   swedish: 'Svenska',
+  langEn: 'EN',
+  langSv: 'SV',
   privacyTitle: 'What is sent',
   privacyLine: 'Texts you add are sent to EarMind’s server to make the questions and the sound. Start quiz never uses the microphone. Nothing is recorded.',
   startOver: 'Forget this browser',
@@ -209,6 +218,12 @@ const sv: Record<Key, string> = {
   pressesText: 'På dina AirPods: 1 tryck pausar · 2 nästa mening · 3 föregående mening',
   blocked: 'Webbläsaren stoppade ljudet. Tryck på Spela en gång till.',
 
+  download: 'Ladda ner ljudet',
+  downloadPreparing: 'Hämtar ljudet \u2026 {n} av {m}',
+  downloadSave: 'Spara MP3-filen',
+  downloadFailed: 'Ljudet kunde inte laddas ner. Försök igen.',
+  downloadNote: 'En nedladdad fil går att lyssna på med skärmen av i telefonens egen spelare.',
+
   nextQuiz: 'Nästa prov',
   otherQuizzes: 'Andra prov',
   newQuiz: 'Nytt prov',
@@ -267,6 +282,8 @@ const sv: Record<Key, string> = {
   language: 'Språk',
   english: 'English',
   swedish: 'Svenska',
+  langEn: 'EN',
+  langSv: 'SV',
   privacyTitle: 'Vad som skickas',
   privacyLine: 'Texter du lägger in skickas till EarMinds server för att göra frågorna och ljudet. Starta prov använder aldrig mikrofonen. Inget spelas in.',
   startOver: 'Glöm den här webbläsaren',
