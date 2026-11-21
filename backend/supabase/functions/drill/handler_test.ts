@@ -778,11 +778,11 @@ Deno.test("K72 an English text with the subject Historia is read in English; eve
 });
 
 // ---------- K74: rules version per drill, eleven_v4 prepared but off ----------
-Deno.test("K74 a new drill gets the newest voice rules (3 since K75); an old drill (version 1) keeps the text it had, so nothing is made again", async () => {
+Deno.test("K74 a new drill gets the newest voice rules (4 since K115); an old drill (version 1) keeps the text it had, so nothing is made again", async () => {
   const w = world();
   const its = [{ question: "Vad gör klorofyll (i bladen)?", short: "Det fångar ljus.", long: "Det fångar ljus." }];
   const j = await (await w.h("u1")(post({ action: "save", items: its }))).json();
-  assertEquals(w.drills.get(j.drill.id)!.voice_rules, 3);
+  assertEquals(w.drills.get(j.drill.id)!.voice_rules, 4);
   assert([...w.audio.values()].some((a) => a.text === "Vad gör klorofyll, i bladen?"));
   // an old drill: version 1 and its version 1 files
   const old = await (await w.h("u2")(post({ action: "save", defer_audio: true, items: its }))).json();
@@ -1209,6 +1209,19 @@ Deno.test("K114 (D252): mixing picks voices in the text's language (English text
   const old = world({ catalog: CAT });
   const c = await (await old.h("u3")(post({ action: "save", defer_audio: true, drill: { kind: "text", mix_voices: true }, items: sv }))).json();
   assertEquals(c.items.map((i: { voice_id?: string }) => i.voice_id), va);
+});
+
+Deno.test("K115 (D253): the user's lang decides the voice's language when the text cannot tell (1999); the text's own language wins", async () => {
+  const w = world();
+  const text = (u: string, b: Record<string, unknown>) => w.h(u)(post({ action: "save", drill: { kind: "text" }, items: [{ kind: "para", text: "1999" }], ...b }));
+  await text("u1", { lang: "en" });
+  await text("u2", { lang: "sv" });
+  const said = [...w.audio.values()].filter((f) => f.kind === "text").map((f) => f.text);
+  assert(said.includes("1999."), `English: ${said}`);
+  assert(said.includes("Nittonhundranittio nio."), `Swedish: ${said}`);
+  // an English text with lang sv is still read in English (the exam/text language rule, D251)
+  await w.h("u3")(post({ action: "save", drill: { kind: "text" }, items: [{ kind: "para", text: "The euro came in 1999 and the people of the country were happy with it." }], lang: "sv" }));
+  assert([...w.audio.values()].some((f) => f.kind === "text" && f.text.startsWith("The euro came in 1999")), "English text keeps its digits");
 });
 
 Deno.test("O81: with mixed voices the same text gets the same voice in a new drill, so its audio is reused (cost 0)", async () => {

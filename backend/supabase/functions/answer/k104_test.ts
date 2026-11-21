@@ -81,7 +81,7 @@ Deno.test("K104: /answer sends `searching` before the first delta, once, and not
   assertEquals(s.tool, "web_search");
   assert(typeof s.ms === "number");
   const said = ev.filter((e) => e.event === "delta").map((e) => e.data.text).join("");
-  assert(said.startsWith("Riksdagen har trehundrafyrtionio ledamöter"), said);
+  assert(said.startsWith("Riksdagen har trehundrafyrtio nio ledamöter"), said);
   assertEquals(ev.at(-1)!.event, "done");
 });
 
