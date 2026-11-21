@@ -82,3 +82,32 @@ Deno.test("A156: listening from the web (Scribe tokens) is capped per network an
   assertEquals((await h(req({ sub: "app" }))).status, 200, "the app is not counted");
   assert(WEB_LIMITS.sttTokensGlobalPerDay >= WEB_LIMITS.sttTokensPerIpPerDay);
 });
+
+// ---------- K116 (D254): test traffic outside the web's caps, test accounts in their own pool ----------
+const testReq = (sub: string, ip = "203.0.113.90") =>
+  new Request("http://x/drill", { method: "POST", headers: { origin: WEB, authorization: `Bearer ${jwt(sub)}`, "x-forwarded-for": ip, "x-earmind-test": "oscar-qa" }, body: "{}" });
+
+Deno.test("K116: x-earmind-test accounts use web-acct-test:ip (same number); they never take a real visitor's place", async () => {
+  const rl = new MemoryRateLimiter();
+  const h = withWebGuard(() => Promise.resolve(new Response("ok")), { limiter: rl });
+  for (let i = 0; i < WEB_LIMITS.accountsPerIpPerDay; i++) assertEquals((await h(testReq(`t${i}`))).status, 200);
+  const over = await h(testReq("t-over"));
+  assertEquals([over.status, (await over.json()).error.code], [429, "too_many_accounts"]);
+  // the real visitors of the same network still have all their places
+  for (let i = 0; i < WEB_LIMITS.accountsPerIpPerDay; i++) assertEquals((await h(req({ origin: WEB, sub: `r${i}`, ip: "203.0.113.90" }))).status, 200, `visitor ${i}`);
+  assertEquals((await h(req({ origin: WEB, sub: "r-over", ip: "203.0.113.90" }))).status, 429);
+});
+
+Deno.test("K116: x-earmind-test spends none of the web's credits or listening (fake audio, D180)", async () => {
+  const rl = new MemoryRateLimiter();
+  const h = withWebGuard(async () => {
+    const a = await webCredits(rl, WEB_LIMITS.creditsPerIpPerDay);
+    const b = await webCount(rl, "stt", WEB_LIMITS.sttTokensPerIpPerDay, WEB_LIMITS.sttTokensGlobalPerDay);
+    return new Response("", { status: a.allowed && b.allowed ? 200 : 429 });
+  }, { limiter: rl });
+  for (let i = 0; i < 50; i++) assertEquals((await h(testReq("t1"))).status, 200, `test call ${i}`);
+  assertEquals(rl.count("web-credits:global:d", 86400), 0);
+  assertEquals(rl.count("web-stt:global:d", 86400), 0);
+  // a real visitor still has the whole day
+  assertEquals((await h(req({ origin: WEB, sub: "v1", ip: "203.0.113.90" }))).status, 200);
+});

@@ -36,9 +36,9 @@ export function isWebRequest(req: Request, extra: string[] = []): boolean {
   return !!o && originAllowed(o, extra);
 }
 
-const ctx = new AsyncLocalStorage<{ net: string }>();
-/** Inside a web request: its network key; outside (the app): null. */
-export function currentWeb(): { net: string } | null {
+const ctx = new AsyncLocalStorage<{ net: string; test?: boolean }>();
+/** Inside a web request: its network key (and whether it is test traffic); outside (the app): null. */
+export function currentWeb(): { net: string; test?: boolean } | null {
   return ctx.getStore() ?? null;
 }
 
@@ -55,8 +55,11 @@ export function withWebGuard(
     if (o.demo && await isDemo(req)) return handler(req);
     const net = await networkKey(req);
     const sub = typeof jwtClaims(req)?.sub === "string" ? String(jwtClaims(req)!.sub).slice(0, 64) : null;
+    // K116 (D254, as D234): test traffic (x-earmind-test) has its own pool of accounts and spends none of the web's
+    // credits or listening: its audio and transcripts are fake (D180), and the caps protect the ElevenLabs plan
+    const test = req.headers.has("x-earmind-test");
     if (sub) {
-      const r = await admit(o.limiter, sub, net).catch(() => ({ allowed: true, retryAfterSec: 0 }) as RateResult);
+      const r = await admit(o.limiter, sub, net, test ? "web-acct-test" : "web-acct").catch(() => ({ allowed: true, retryAfterSec: 0 }) as RateResult);
       if (!r.allowed) {
         return new Response(JSON.stringify({
           error: {
@@ -66,7 +69,7 @@ export function withWebGuard(
         }), { status: 429, headers: { "content-type": "application/json", "retry-after": String(r.retryAfterSec) } });
       }
     }
-    return await ctx.run({ net }, () => handler(req));
+    return await ctx.run({ net, ...(test ? { test } : {}) }, () => handler(req));
   };
 }
 
@@ -83,19 +86,19 @@ async function isDemo(req: Request): Promise<boolean> {
 }
 
 /** An account already admitted today goes on; a new one takes one of the network's places (a denied place is given back). */
-async function admit(rl: RateLimiter, sub: string, net: string): Promise<RateResult> {
-  const seen = await rl.check(`web-acct:u:${sub}:d`, 0, DAY, 0); // a read: denied = counted already today
+async function admit(rl: RateLimiter, sub: string, net: string, pool: string): Promise<RateResult> {
+  const seen = await rl.check(`${pool}:u:${sub}:d`, 0, DAY, 0); // a read: denied = counted already today
   if (!seen.allowed) return { allowed: true, retryAfterSec: 0 };
-  const place = await rl.check(`web-acct:ip:${net}:d`, WEB_LIMITS.accountsPerIpPerDay, DAY, 1);
-  if (!place.allowed) return { ...place, deniedKey: `web-acct:ip:${net}:d` };
-  await rl.check(`web-acct:u:${sub}:d`, 1, DAY, 1);
+  const place = await rl.check(`${pool}:ip:${net}:d`, WEB_LIMITS.accountsPerIpPerDay, DAY, 1);
+  if (!place.allowed) return { ...place, deniedKey: `${pool}:ip:${net}:d` };
+  await rl.check(`${pool}:u:${sub}:d`, 1, DAY, 1);
   return { allowed: true, retryAfterSec: 0 };
 }
 
 /** The web's credits: allowed when the network's and the web's daily caps have room (always allowed outside the web). */
 export async function webCredits(rl: RateLimiter, credits: number): Promise<RateResult> {
   const w = currentWeb();
-  if (!w || credits <= 0) return { allowed: true, retryAfterSec: 0 };
+  if (!w || w.test || credits <= 0) return { allowed: true, retryAfterSec: 0 };
   const checks = [
     { key: `web-credits:ip:${w.net}:d`, limit: WEB_LIMITS.creditsPerIpPerDay, windowSec: DAY },
     { key: "web-credits:global:d", limit: WEB_LIMITS.creditsGlobalPerDay, windowSec: DAY },
@@ -111,7 +114,7 @@ export async function webCredits(rl: RateLimiter, credits: number): Promise<Rate
 /** A156: one unit of something the web may do only so often (listening tokens), per network and in all per UTC day. */
 export async function webCount(rl: RateLimiter, scope: string, perIp: number, global: number): Promise<RateResult> {
   const w = currentWeb();
-  if (!w) return { allowed: true, retryAfterSec: 0 };
+  if (!w || w.test) return { allowed: true, retryAfterSec: 0 };
   const checks = [
     { key: `web-${scope}:ip:${w.net}:d`, limit: perIp, windowSec: DAY },
     { key: `web-${scope}:global:d`, limit: global, windowSec: DAY },

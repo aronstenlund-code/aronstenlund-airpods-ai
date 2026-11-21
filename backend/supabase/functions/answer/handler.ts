@@ -1643,6 +1643,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // any, as for ordinals). Not with thinking (the API takes only auto then), not with phone tools ("any" could pick
       // one of them), not for songs and quotes.
       const forceSearch = !!need && webOn && !textOn && !careful && !wordProblem && !phoneTools && mustSearch(body.fragment);
+      // K116 (D254): a searched recipe or instruction (at most 70 words) is said only when the whole answer is there,
+      // so an answer without its source line is never read aloud; the found pages come along (wantSources)
+      const holdLookup = webOn && !textOn && !!need && (need.lookup === "recipe" || need.lookup === "howto") && !twoLevel;
       const baseExtras: PromptExtras = {
         ...(prefLines.length ? { preferences: prefLines } : {}),
         ...(situation ? { situation } : {}),
@@ -1677,6 +1680,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             : {}),
           // K103: a song, poem or quote is held whole (a self-correction is cut); other web answers start early (A1)
           ...(textReq ? { holdUntilEnd: true } : {}),
+          ...(holdLookup ? { wantSources: true } : {}),
           // D72 live test: "den andra statsministern" was answered wrong from memory: ordinal facts search.
           ...(tools && (ordinal || forceSearch) ? { toolChoice: { type: "any" } } : {}),
           ...(isRizz && cfg.rizzModel ? { model: cfg.rizzModel } : {}),
@@ -1776,6 +1780,11 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           // line at the end is still read (done.source)
           let webUsed = false;
           let webCapped = false;
+          // K116 (D254): held recipe/instruction text and the pages its search found
+          let holding = holdLookup;
+          let held = "";
+          let heldFallback = false;
+          const foundPages: string[] = [];
           const emitText = (raw: string) => {
             // K16: a late search marker ("… femtusen invånare. [[SÖK]]", live 3/10) is never read aloud
             if (/\[\[S[ÖO]K\]\]/iu.test(raw)) console.warn("search_marker_late", JSON.stringify({ mode: body.mode }));
@@ -1792,6 +1801,12 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             // pauses instead of reaching the voice (the words of two lines never run together)
             if (textOn) t = textForVoice(t, answerChars === 0);
             if (!t.trim()) return;
+            if (holding) {
+              held += t;
+              answerChars += t.length;
+              answerWords += countWords(t);
+              return;
+            }
             flushMeta();
             if (ttftMs === null) ttftMs = now() - t0;
             answerChars += t.length;
@@ -2001,7 +2016,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               post.addCited(chunk.cited);
               return;
             }
-            if (chunk.type === "source") return; // only the K19 link search asks for sources
+            if (chunk.type === "source") {
+              if (holding && foundPages.length < 5) foundPages.push(chunk.url); // K116: the page to answer from again
+              return; // only the K19 link search and K116 ask for sources
+            }
             if (chunk.type === "searching") {
               webUsed = true; // O91 N5: the 80-word cap of a searched answer
               // K104 (D233): the app plays a quiet tone after 1.5 s instead of spoken filler (D46); once per answer
@@ -2123,6 +2141,19 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 if (repeated) {
                   note =
                     "Your previous check question was already asked in this session (see <already_asked>). Ask ONE different check question about another part of the topic.";
+                } else if (holding && attempt === 0 && !stop && !closed && (held.trim() || nearBuf.trim()) && !post.source) {
+                  // K116 (D254): the held recipe/instruction has no source line: once more, from the page the search found
+                  const pageUrl = foundPages[0];
+                  note = pageUrl
+                    ? `Your previous answer did not end with the källa line. Answer again ONLY from this page: ${pageUrl} (fetch it with web_fetch), in the same form, and end with "källa: <domain>". If the page does not give it, say so in one sentence.`
+                    : 'Your previous answer did not end with the källa line. Search again and answer ONLY from a page you found, and end with "källa: <domain>".';
+                  if (pageUrl && need) retryTools = webTools({ ...need, search: false, fetch: true });
+                  console.warn("held_no_source", JSON.stringify({ lookup: need?.lookup ?? null, page: !!pageUrl, words: answerWords }));
+                  held = "";
+                  nearBuf = "";
+                  answerChars = 0;
+                  answerWords = 0;
+                  webCapped = false;
                 } else if (post.unverifiedQuote && ttftMs === null && !stop) {
                   // K11: the quote was not in what the search gave: nothing was said yet, ask for own words
                   note =
@@ -2134,7 +2165,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                   // Oscar 2026-11-08: an interview answer is never empty
                   note =
                     "Your previous reply only talked about facts that are not given. Answer the interviewer's question directly in first person with what you bring to the role, and never mention what is missing.";
-                } else if (ttftMs === null && !stop && !closed && !emptyRetried && parser.meta?.is_question && !silenceOn) {
+                } else if (ttftMs === null && !stop && !closed && !emptyRetried && parser.meta?.is_question && !silenceOn && !(holding && (held.trim() || nearBuf.trim()))) {
                   // Toby T17 w22 ("hur stort är Grönland", 2 of 2 after a web search): nothing could be spoken.
                   // One more try without tools before the app is told empty_answer; the reason is logged (counts only).
                   console.warn("empty_retry", JSON.stringify({ mode: body.mode, attempt, searched, out: outputTokens ?? 0, chars: post.chars, silent: post.silent, dup: post.duplicate, q_only: post.questionOnly }));
@@ -2247,6 +2278,24 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               if (inMore) sendMore(morePost.finish());
             }
             flushNear();
+            // K116 (D254): the held answer is said now, whole; without its source line the fixed sentence instead
+            if (holding) {
+              holding = false;
+              const text = held.trim();
+              held = "";
+              if (!closed && !crisisMarked && !crisisLate && status === "ok" && (text || webUsed)) {
+                if (text && post.source) emitText(text);
+                else {
+                  heldFallback = true;
+                  answerChars = answerWords = 0;
+                  const en = body.language === "en";
+                  emitText(need?.lookup === "howto"
+                    ? (en ? "I couldn't find instructions with a reliable source." : "Jag hittade ingen instruktion med en säker källa.")
+                    : (en ? "I couldn't find a recipe with a reliable source." : "Jag hittade inget recept med en säker källa."));
+                  console.warn("held_fallback", JSON.stringify({ lookup: need?.lookup ?? null, retried: retries > 0 }));
+                }
+              }
+            }
             // K36: a Spotify tool the model chose runs now; Lumen says one sentence written in code
             const st = serverTool as { name: SpotifyToolName; input: Record<string, unknown> } | null; // set in handle()
             if (st && !closed && !crisisMarked && !crisisLate) {
@@ -2375,7 +2424,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               relation: post.relation ?? parser.meta?.relation ?? null,
               source: post.source,
               // O93: a searched answer whose model named no source: marked (and logged), never given one it did not use
-              ...((webSearches > 0 || webUsed) && !post.source && !textOn
+              ...(heldFallback ? { source_fallback: true } : {}),
+              ...((webSearches > 0 || webUsed) && !post.source && !textOn && !heldFallback
                 ? (console.log("web_answer_no_source", JSON.stringify({ searches: webSearches, words: answerWords })), { source_missing: true })
                 : {}),
               memory_add: null,
