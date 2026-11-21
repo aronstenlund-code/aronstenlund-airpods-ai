@@ -20,6 +20,10 @@ on:
       screens:
         description: "Screens to take, separated by spaces"
         required: true
+      languages:
+        description: "A157: languages to take the pictures in, separated by spaces ('sv', 'en' or 'sv en'); English files are named en-…"
+        required: false
+        default: "sv"
       record:
         description: "A150: screens to record as video (light only), separated by spaces; frames are pushed as one picture"
         required: false
@@ -90,7 +94,42 @@ jobs:
             -destination "id=${{ steps.sim.outputs.udid }}" \
             -derivedDataPath DerivedData \
             CODE_SIGNING_ALLOWED=NO \
+            SWIFT_EMIT_LOC_STRINGS=YES \
             2>&1 | xcbeautify --renderer github-actions
+
+      # A157 (D251): what the compiler itself sees as texts to look up (the exact keys, with %lld and %@), and the
+      # tables the app got in each language. They go with the pictures; tools/l10n reads them.
+      - name: Collect the strings the compiler found (A157)
+        run: |
+          set -euo pipefail
+          mkdir -p shots/strings
+          python3 - <<'PY'
+          import glob, json, os, plistlib
+          out = {}
+          for f in sorted(glob.glob("DerivedData/Build/Intermediates.noindex/**/*.stringsdata", recursive=True)):
+              parts = f.split("/")
+              # .../<Project>.build/<Config>/<Target>.build/Objects-normal/<arch>/<File>.stringsdata
+              builds = [p[:-6] for p in parts if p.endswith(".build")]
+              target = builds[-1] if builds else "?"
+              data = json.load(open(f))
+              for table, rows in data.get("tables", {}).items():
+                  for row in rows:
+                      out.setdefault(target, {}).setdefault(table, []).append(
+                          {"key": row.get("key"), "comment": row.get("comment"), "file": os.path.basename(f)[:-12]})
+          json.dump(out, open("shots/strings/compiler.json", "w"), ensure_ascii=False, indent=0, sort_keys=True)
+          print({t: {k: len(v) for k, v in tables.items()} for t, tables in out.items()})
+          app = "DerivedData/Build/Products/Debug-iphonesimulator/Lumen.app"
+          built = {}
+          for f in sorted(glob.glob(app + "/**/*.lproj/*.strings", recursive=True) + glob.glob(app + "/**/*.lproj/*.stringsdict", recursive=True)):
+              try:
+                  built[os.path.relpath(f, app)] = plistlib.load(open(f, "rb"))
+              except Exception as e:
+                  built[os.path.relpath(f, app)] = {"error": str(e)}
+          json.dump(built, open("shots/strings/built.json", "w"), ensure_ascii=False, indent=0, sort_keys=True, default=str)
+          print({k: len(v) for k, v in built.items()})
+          PY
+          /usr/libexec/PlistBuddy -c "Print :CFBundleDevelopmentRegion" DerivedData/Build/Products/Debug-iphonesimulator/Lumen.app/Info.plist | tee shots/strings/development-region.txt
+          ls DerivedData/Build/Products/Debug-iphonesimulator/Lumen.app | grep lproj | tee shots/strings/lproj.txt || true
 
       - name: Take the screenshots
         run: |
@@ -107,16 +146,21 @@ jobs:
           fi
           SCREENS="${{ inputs.screens }}"
           echo "Screens: $SCREENS"
-          for appearance in light dark; do
-            xcrun simctl ui "$UDID" appearance "$appearance"
-            for screen in $SCREENS; do
-              # Swedish, as on Aron's phone (the strings' Swedish translations).
-              xcrun simctl launch --terminate-running-process "$UDID" com.rsolutions.lumen -LumenScreenshot "$screen" -AppleLanguages "(sv)" -AppleLocale sv_SE
-              sleep 9
-              if ! xcrun simctl spawn "$UDID" launchctl list | grep -q com.rsolutions.lumen; then
-                echo "::warning::$appearance $screen: the app is not running (crash?)"
-              fi
-              xcrun simctl io "$UDID" screenshot "shots/${appearance}-${screen}.png"
+          # A157 (D251): Swedish as on Aron's phone, English as on a phone in any other language. English files are
+          # named en-…; the Swedish ones keep their names.
+          LANGUAGES="${{ inputs.languages || 'sv' }}"
+          for language in $LANGUAGES; do
+            if [ "$language" = "sv" ]; then REGION="sv_SE"; PREFIX=""; else REGION="en_US"; PREFIX="${language}-"; fi
+            for appearance in light dark; do
+              xcrun simctl ui "$UDID" appearance "$appearance"
+              for screen in $SCREENS; do
+                xcrun simctl launch --terminate-running-process "$UDID" com.rsolutions.lumen -LumenScreenshot "$screen" -AppleLanguages "($language)" -AppleLocale "$REGION"
+                sleep 9
+                if ! xcrun simctl spawn "$UDID" launchctl list | grep -q com.rsolutions.lumen; then
+                  echo "::warning::$language $appearance $screen: the app is not running (crash?)"
+                fi
+                xcrun simctl io "$UDID" screenshot "shots/${PREFIX}${appearance}-${screen}.png"
+              done
             done
           done
           # A150 (D231): how things move. The scene runs through its states by itself; the recording becomes a
@@ -150,6 +194,7 @@ jobs:
           cd shots
           rmdir crashes 2>/dev/null || true
           for f in *.png; do
+            [ -e "$f" ] || continue
             sips -Z 1400 "$f" >/dev/null
             pngquant --force --ext .png --quality 60-90 "$f" || true
           done
@@ -168,6 +213,7 @@ jobs:
             echo "commit: ${GITHUB_SHA}"
             echo "device: ${{ inputs.device }}"
             echo "text_size: ${{ inputs.text_size }}"
+            echo "languages: ${{ inputs.languages }}"
           } > RUN.txt
           git init -q -b pictures
           git config user.name "github-actions[bot]"

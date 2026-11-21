@@ -3,8 +3,10 @@
 name: Lumen
 options:
   bundleIdPrefix: com.rsolutions
-  # Kelly (A93): system labels in Swedish (PasteButton "Klistra in", Tillbaka, Klar, Sök); the app is Swedish only.
-  developmentLanguage: sv
+  # A157 (D251): English is the base language and Swedish is a translation; the app follows the phone's language
+  # (Swedish on a Swedish phone, English on every other). The system's own labels (PasteButton, Back, Done, Search)
+  # follow the same choice, because both languages are in the bundle (the String Catalogs).
+  developmentLanguage: en
   deploymentTarget:
     iOS: "26.0"
   createIntermediateGroups: true
@@ -164,6 +166,10 @@ schemes:
     test:
       config: Debug
       gatherCoverageData: false
+      # A157 (D251): the unit tests compare the Swedish texts, so they run in Swedish whatever the Simulator is set
+      # to. The English texts have tests of their own (A157LanguageTests reads the English table directly).
+      language: sv
+      region: SE
       targets:
         - LumenTests
   # A1: `xcodebuild test -scheme LumenE2E …` (Toby). Not in the push workflow.
