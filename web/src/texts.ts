@@ -150,6 +150,7 @@ const en = {
   listenMicDenied: 'The browser didn’t let EarMind use the microphone. Allow it in the browser’s settings and try again.',
   listenFailed: 'Listening stopped. Try again in a moment.',
   listenHidden: 'Listening stopped because the page was hidden or the screen turned off.',
+  listenLimit: 'Listening stopped after 30 minutes. Start again to go on.',
   listenAnswerFailed: 'No answer this time. Ask again.',
   listenNoSpeech: 'The answer couldn’t be read aloud right now.',
 
@@ -322,6 +323,7 @@ const sv: Record<Key, string> = {
   listenMicDenied: 'Webbläsaren lät inte EarMind använda mikrofonen. Tillåt den i webbläsarens inställningar och försök igen.',
   listenFailed: 'Lyssningen stannade. Försök igen om en stund.',
   listenHidden: 'Lyssningen stannade för att sidan doldes eller skärmen släcktes.',
+  listenLimit: 'Lyssningen stannade efter 30 minuter. Starta igen för att fortsätta.',
   listenAnswerFailed: 'Inget svar den här gången. Fråga igen.',
   listenNoSpeech: 'Svaret kunde inte läsas upp just nu.',
 

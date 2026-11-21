@@ -66,6 +66,9 @@ export class ListenSession {
   static readonly fakeAfterMs = 1_000;
   static readonly reopenAfterMs = 20_000;
   static readonly maxReopens = 3;
+  /// Kevin K117: the server limits how many passes a network may start, not how long one lasts (the socket goes
+  /// straight to Scribe), so the page ends a pass itself after 30 minutes and says so.
+  static readonly maxMs = 30 * 60_000;
 
   private line: Line | null = null;
   private opened = 0;
@@ -77,6 +80,7 @@ export class ListenSession {
   private cancelTurn: (() => void) | null = null;
   private cancelAlive: (() => void) | null = null;
   private cancelFake: (() => void) | null = null;
+  private cancelLimit: (() => void) | null = null;
   private abort: AbortController | null = null;
   private queue: Promise<string | null>[] = [];
   private speaking: string | null = null;
@@ -122,6 +126,9 @@ export class ListenSession {
       mic.stop(); // stopped while the browser was asking
       return;
     }
+    this.cancelLimit = this.deps.clock.after(ListenSession.maxMs, () => {
+      if (mine === this.run) this.fail(t('listenLimit'));
+    });
     await this.connect(mine);
   }
 
@@ -152,7 +159,8 @@ export class ListenSession {
     this.cancelTurn?.();
     this.cancelAlive?.();
     this.cancelFake?.();
-    this.cancelTurn = this.cancelAlive = this.cancelFake = null;
+    this.cancelLimit?.();
+    this.cancelTurn = this.cancelAlive = this.cancelFake = this.cancelLimit = null;
     this.abort?.abort();
     this.abort = null;
     this.dropSpeech();

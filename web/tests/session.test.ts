@@ -331,4 +331,31 @@ describe('listening on the web (A156 part 2)', () => {
     expect(lines[0].open).toBe(false);
     expect(session.error).toBe('Listening stopped because the page was hidden or the screen turned off.');
   });
+
+  it('a pass ends by itself after 30 minutes, says so, and reports its seconds (Kevin K117)', async () => {
+    const { session, clock, mic, lines, reported, awake } = make();
+    await session.start();
+    mic.speak(16_000 * 5);
+    clock.advance(ListenSession.maxMs - 1_000);
+    expect(session.phase).toBe('listening');
+    clock.advance(1_000);
+    expect(session.phase).toBe('off');
+    expect(session.error).toBe('Listening stopped after 30 minutes. Start again to go on.');
+    expect(mic.on).toBe(false);
+    expect(lines[0].open).toBe(false);
+    expect(awake[awake.length - 1]).toBe('release');
+    expect(reported.length).toBe(1);
+    expect(reported[0]).toBeGreaterThanOrEqual(5);
+  });
+
+  it('a pass that was stopped does not end a later one early', async () => {
+    const { session, clock } = make();
+    await session.start();
+    clock.advance(20 * 60_000);
+    session.stop();
+    await session.start();
+    clock.advance(15 * 60_000); // 35 minutes after the first start, 15 into the second
+    expect(session.phase).toBe('listening');
+    expect(session.error).toBeNull();
+  });
 });
