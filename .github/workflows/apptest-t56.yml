@@ -1,0 +1,71 @@
+name: Apptest web beta (T56)
+
+# T56 (Toby, D249): the web beta in the Safari engine (WebKit as an iPhone 15) and Chrome (Chromium as a Pixel 7).
+# Linux machines only (no macOS, D217). Two runs per engine:
+#  - local: the committed site/ against a pretend server with silent audio (nothing leaves the machine);
+#  - live:  the published page (earmind.vercel.app/beta) and the real server. D180, 0 ElevenLabs: the server treats
+#           requests from GitHub Actions IPs as test traffic (fake audio, guard before ElevenLabs, _shared/testmode.ts),
+#           and the script stops any request to an ElevenLabs host.
+on:
+  workflow_dispatch:
+    inputs:
+      live:
+        description: "Also run against the published beta (true/false)"
+        required: false
+        default: "true"
+      url:
+        description: "The published beta"
+        required: false
+        default: "https://earmind.vercel.app/beta"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apptest-t56-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  browser:
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: [webkit, chromium]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Playwright 1.63.0 (a test tool, not in the repo; DECISIONS T56)
+        run: |
+          npm install --no-save --no-audit --no-fund --prefix "$RUNNER_TEMP/pw" playwright@1.63.0
+          "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps ${{ matrix.engine }}
+      - name: Local (pretend server)
+        id: local
+        env:
+          NODE_PATH: ${{ runner.temp }}/pw/node_modules
+        run: node scripts/apptest/t56/beta.mjs ${{ matrix.engine }} apptest-out/t56/${{ matrix.engine }}-local
+      - name: Live (published beta, real server, fake audio)
+        if: ${{ always() && github.event.inputs.live != 'false' }}
+        env:
+          NODE_PATH: ${{ runner.temp }}/pw/node_modules
+        run: node scripts/apptest/t56/beta.mjs ${{ matrix.engine }} apptest-out/t56/${{ matrix.engine }}-live --live "${{ github.event.inputs.url || 'https://earmind.vercel.app/beta' }}"
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### T56 ${{ matrix.engine }}"
+            for f in apptest-out/t56/*/result.json; do
+              [ -f "$f" ] || continue
+              jq -r '"**\(.live // "local")**: \([.results[] | select(.ok)] | length) of \(.results | length) green", (.results[] | select(.ok | not) | "- FAIL \(.name) \(.detail)"), (.notes[] | "- note: \(.)")' "$f"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-t56-${{ matrix.engine }}
+          path: apptest-out/t56
+          if-no-files-found: ignore
