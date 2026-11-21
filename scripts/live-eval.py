@@ -360,7 +360,7 @@ def web_meta(done):
     done = done or {}
     # O93 (Kevin): a searched answer that came without a source is marked done.source_missing
     return dict(web_searches=(done.get("usage") or {}).get("web_searches"), source=done.get("source"),
-                source_missing=bool(done.get("source_missing")))
+                source_missing=bool(done.get("source_missing")), source_fallback=bool(done.get("source_fallback")))
 
 
 def run(cases, rizz, domains, only, now):
@@ -455,7 +455,10 @@ def run(cases, rizz, domains, only, now):
                     problems += interview_checks(text, turn)
                 problems += case_checks(text, answers[-1] if answers else None, turn, now)
                 if turn.get("web"):
-                    problems += web_checks(text, domains, (r["done"] or {}).get("source"))
+                    # K116 (D254): the fixed sentence "Jag hittade inget recept med en säker källa." is the right answer
+                    # when no source was found (done.source_fallback), not a missing source line
+                    if not (r["done"] or {}).get("source_fallback"):
+                        problems += web_checks(text, domains, (r["done"] or {}).get("source"))
             rel = r["done"].get("relation") if r["done"] else None
             rel_exp = None
             if ti > 0 and turn.get("follow"):
@@ -487,12 +490,15 @@ def report(rows, date):
     bad = [r for r in rows if r["problems"]]
     skipped = [r for r in rows if r.get("skipped")]
     nosrc = [r for r in rows if r.get("source_missing")]
+    fallback = [r for r in rows if r.get("source_fallback")]
     out = [f"# Live-eval {date}", "",
            f"Backend: {URL} (anonym inloggning, publik nyckel). **{len(rows)} turer, {len(rows) - len(bad)} utan anmärkning, "
            f"{len(bad)} med anmärkning.**" + (f" {len(skipped)} överhoppade (testtrafikens webbtak fullt, D234): "
            + ", ".join(sorted({r['id'] for r in skipped})) + "." if skipped else "")
            + (f" {len(nosrc)} sökta svar utan källa (source_missing, O93): " + ", ".join(sorted({r['id'] for r in nosrc})) + "."
-              if nosrc else ""), "",
+              if nosrc else "")
+           + (f" {len(fallback)} sade \"inget recept med en säker källa\" (source_fallback, K116): " + ", ".join(sorted({r['id'] for r in fallback})) + "."
+              if fallback else ""), "",
            "| Kategori | Turer | Anmärkningar | p50 första ord (ms) | p95 (ms) |", "|---|---:|---:|---:|---:|"]
     for c in cats:
         rs = [r for r in rows if r["cat"] == c]
