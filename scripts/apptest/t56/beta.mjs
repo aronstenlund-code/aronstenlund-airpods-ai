@@ -169,6 +169,7 @@ note(`browser ${engine} ${browser.version()}, as ${engine === 'webkit' ? 'iPhone
 // Where the page is opened. Local: ?test=toby (x-earmind-test, checked below). Live: no ?test (see the top).
 const page0 = live ? liveURL : `${base}/beta?test=toby`;
 const hostsSeen = new Set();
+const serverLog = [];
 const elevenLabs = [];
 
 async function run(name, { locale, colorScheme, viewport }, steps) {
@@ -204,6 +205,17 @@ async function run(name, { locale, colorScheme, viewport }, steps) {
     elevenLabs.push(route.request().url());
     return route.abort();
   });
+  if (live) {
+    // What the real server answers (path and status only, never bodies or headers), so a stop can be read in the log.
+    page.on('response', (r) => {
+      const u = new URL(r.url());
+      if (u.hostname.endsWith('.supabase.co')) {
+        const action = (() => { try { return JSON.parse(r.request().postData() ?? '{}').action ?? ''; } catch { return ''; } })();
+        serverLog.push(`${name} ${r.request().method()} ${u.pathname.replace('/functions/v1/', '')}${action ? ` ${action}` : ''} → ${r.status()}`);
+      }
+    });
+    page.on('requestfailed', (r) => serverLog.push(`${name} FAILED ${r.method()} ${new URL(r.url()).hostname}${new URL(r.url()).pathname}: ${r.failure()?.errorText ?? '?'}`));
+  }
   const outside = [];
   page.on('request', (r) => {
     if (r.url().startsWith('data:') || r.url().startsWith('blob:')) return;
@@ -263,7 +275,7 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
 
   // Säg → Spela (silent WAV from the pretend server)
   await page.getByTestId('say-field').fill('Photosynthesis: carbon dioxide + water + light become sugar and oxygen. It happens in the chloroplasts.');
-  await page.getByTestId('cost').waitFor();
+  await until('the cost shows under the field', () => !!document.querySelector('[data-testid=cost]'), page, 30000);
   if (live) await until('the server’s cost shows', () => /\d/.test(document.querySelector('[data-testid=cost]')?.textContent ?? ''), page, 20000);
   const cost = await text(page, 'cost');
   check('the cost is the server’s number', live ? /\d.*credits?$/.test(cost) : cost === '102 credits', cost);
@@ -283,7 +295,7 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   }
   const audioState = await page.evaluate(() => ({ elements: document.querySelectorAll('audio').length, time: document.querySelector('#sound')?.currentTime ?? -1 }));
   check('only one audio element on the page', audioState.elements === 1, `${audioState.elements}`);
-  await page.waitForTimeout(800);
+  await page.waitForFunction((t0) => (document.querySelector('#sound')?.currentTime ?? -1) > t0, audioState.time, { timeout: 5000 }).catch(() => undefined);
   const moved = await page.evaluate(() => document.querySelector('#sound')?.currentTime ?? -1);
   check('the audio clock moves (it really plays)', moved > audioState.time, `${audioState.time.toFixed(2)} → ${moved.toFixed(2)} s`);
   const asked = await page.evaluate(() => ({ has: !!navigator.wakeLock, ...window.__t56Wake }));
@@ -321,11 +333,13 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   await page.getByTestId('quiz-create').click();
   if (live) {
     // A156 §4.2: a new web account's credits may not cover three questions; then the server's words and no purchase.
-    await page.waitForFunction(() => document.querySelector('[data-testid=quiz-right]') || document.querySelector('[data-testid=no-purchases]') || /iOS app/.test(document.body.innerText), null, { timeout: 90000 }).catch(() => undefined);
+    await page.waitForFunction(() => document.querySelector('[data-testid=quiz-right]') || document.querySelector('[data-testid=quiz-error]'), null, { timeout: 90000 }).catch(() => undefined);
     if ((await page.getByTestId('quiz-right').count()) === 0) {
-      const said = (await page.locator('body').innerText()).replace(/\s+/g, ' ');
       await shot('5-quiz-refused');
-      check('Prov från text: no quiz for a new web account; it says why, and no purchase on the web', /iOS app/.test(said), said.slice(0, 300));
+      const said = (await page.getByTestId('quiz-error').count()) > 0 ? await text(page, 'quiz-error') : '';
+      const under = (await page.getByTestId('quiz-sheet').innerText().catch(() => '')).replace(/\s+/g, ' ');
+      check('Prov från text refused: the server’s words in the sheet', said.length > 0, said.slice(0, 200) || 'no quiz-error and no questions after 90 s');
+      check('Prov från text refused: "Purchases come with the iOS app." under them, no purchase', /Purchases come with the iOS app/.test(under) && !/Buy|Top up|Fyll på/i.test(under), under.slice(0, 300));
       note('Prov från text: the server made no quiz for a new web account (A156 §4.2), so the quiz player was not reached live.');
       return finishLive(page, shot);
     }
@@ -364,14 +378,14 @@ await run('sv-light', { locale: 'sv-SE', colorScheme: 'light' }, async (page, sh
   }
   check('the Swedish screen line says 10 meter', /10\smeter/u.test(await text(page, 'screen-line')), JSON.stringify(await text(page, 'screen-line')).slice(0, 160));
   await page.getByTestId('say-field').fill('Fotosyntes: koldioxid + vatten + ljus blir socker och syre.');
-  await page.getByTestId('cost').waitFor();
+  await until('the cost shows under the field', () => !!document.querySelector('[data-testid=cost]'), page, 30000);
   await shot('1-first');
 });
 
 await run('small', { locale: 'en-GB', colorScheme: 'dark', viewport: { width: 320, height: 568 } }, async (page, shot) => {
   await page.goto(page0);
   await page.getByTestId('say-field').fill('A short line.');
-  await page.getByTestId('cost').waitFor();
+  await until('the cost shows under the field', () => !!document.querySelector('[data-testid=cost]'), page, 30000);
   check('320 wide: nothing is wider than the screen', await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
   await shot('1-first');
 });
@@ -379,6 +393,7 @@ await run('small', { locale: 'en-GB', colorScheme: 'dark', viewport: { width: 32
 await browser.close();
 server.close();
 if (live) note(`hosts the page asked: ${[...hostsSeen].sort().join(', ')}`);
+for (const line of serverLog.slice(0, 80)) console.log(`server [${engine}] ${line}`);
 writeFileSync(join(out, 'result.json'), JSON.stringify({ engine, live: liveURL, results, notes }, null, 2));
 console.log(failures.length === 0 ? `\n[${engine}] all ${results.length} checks passed.` : `\n[${engine}] ${failures.length} of ${results.length} failed: ${failures.join('; ')}`);
 process.exit(failures.length === 0 ? 0 : 1);
