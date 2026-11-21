@@ -164,8 +164,10 @@ export class DrillApi {
 
   async voices(): Promise<{ catalog: Voice[]; defaultName: string | null }> {
     const reply = await this.client.call<{ catalog?: Voice[]; default_voice?: { name?: string } }>('voices');
+    // K114: the voices of the user's language first, then the others, each in the server's order.
+    const own = (voice: Voice): number => ((voice.language ?? '').toLowerCase().startsWith(this.client.lang) ? 0 : 1);
     return {
-      catalog: (reply.catalog ?? []).filter((voice) => voice.review !== true),
+      catalog: (reply.catalog ?? []).filter((voice) => voice.review !== true).sort((a, b) => own(a) - own(b)),
       defaultName: reply.default_voice?.name ?? null,
     };
   }

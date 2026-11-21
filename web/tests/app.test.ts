@@ -428,3 +428,42 @@ describe('Download the sound (D253)', () => {
   });
 });
 
+describe('small things the others asked for', () => {
+  it('the voices of the user\'s language come first (Kevin K114)', async () => {
+    const { app } = make((fn) =>
+      fn === 'voices'
+        ? ok({ catalog: [{ voice_id: 's1', name: 'Saga', language: 'sv' }, { voice_id: 'e1', name: 'Niki', language: 'en' }, { voice_id: 'x', name: 'Any' }, { voice_id: 'e2', name: 'Chris', language: 'en-GB' }], default_voice: { name: 'Adam' } })
+        : ok({ limit: 1500, remaining: 1500 }),
+    );
+    await app.init();
+    expect(app.voices.map((v) => v.name)).toEqual(['Niki', 'Chris', 'Saga', 'Any']);
+  });
+
+  it('a server that cannot be reached with the network up is not blamed on the connection (Oscar O94)', async () => {
+    const storage = new MemoryStorage();
+    const clock = new FakeClock();
+    const dead = async (): Promise<Response> => {
+      throw new TypeError('Failed to fetch');
+    };
+    const client = new Client({ projectURL: 'https://example.supabase.co', publishableKey: 'pk' }, dead, storage, () => clock.now(), 'web', 'en');
+    const base = { drill: new DrillApi(client), exam: new ExamApi(client), sound: new FakeSound(), clock, store: new Store(storage), awake: new FakeAwake(), files: new FakeFiles(), t: translator('en') };
+    const up = new App({ ...base, online: () => true });
+    await up.say('One.', '');
+    expect(up.sayError).toBe('EarMind couldn\u2019t be reached right now. Try again in a moment.');
+    const down = new App({ ...base, online: () => false });
+    await down.say('One.', '');
+    expect(down.sayError).toBe('The sound couldn\u2019t be loaded. Check your connection.');
+  });
+
+  it('Play stops listening first: one thing at a time', async () => {
+    const storage = new MemoryStorage();
+    const server = new RoutedServer((_fn, action) => (action === 'save' ? ok(textView('d1', true)) : ok({})));
+    const clock = new FakeClock();
+    const client = new Client({ projectURL: 'https://example.supabase.co', publishableKey: 'pk' }, server.fetch, storage, () => clock.now(), 'web', 'en');
+    let stopped = 0;
+    const app = new App({ drill: new DrillApi(client), exam: new ExamApi(client), sound: new FakeSound(), clock, store: new Store(storage), awake: new FakeAwake(), files: new FakeFiles(), t: translator('en'), stopListening: () => (stopped += 1) });
+    await app.say('One. Two.', '');
+    expect(stopped).toBe(1);
+  });
+});
+

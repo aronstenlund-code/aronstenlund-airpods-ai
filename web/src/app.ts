@@ -27,6 +27,10 @@ export interface Files {
 export type Download = { stage: 'idle' } | { stage: 'preparing'; done: number; total: number } | { stage: 'ready'; url: string; name: string } | { stage: 'failed' };
 
 export interface Deps {
+  /// The browser's own word on whether there is a network at all; without it, a failed call is taken as no network.
+  online?: () => boolean;
+  /// Listening (if on) is stopped when something is played: one thing at a time.
+  stopListening?: () => void;
   files: Files;
   drill: DrillApi;
   exam: ExamApi;
@@ -149,6 +153,7 @@ export class App {
   /// lets the browser play the sound when it arrives a few seconds later.
   async say(text: string, style: string): Promise<void> {
     if (parts(text).length === 0 || this.sayBusy) return;
+    this.deps.stopListening?.();
     this.stopAll();
     const mine = (this.attempt += 1);
     const { sound, store, drill, awake, clock } = this.deps;
@@ -344,6 +349,7 @@ export class App {
   async startExam(id: string): Promise<void> {
     const exam = this.deps.store.exams.find((e) => e.id === id);
     if (exam === undefined || exam.serverID === null || this.examBusy !== null) return;
+    this.deps.stopListening?.();
     this.stopAll();
     const mine = (this.attempt += 1);
     const { sound, store, drill, awake, clock } = this.deps;
@@ -550,7 +556,8 @@ export class App {
   }
 
   private words(error: unknown): string {
-    if (error instanceof OfflineError) return this.deps.t('errorOffline');
+    // Oscar O94: a call that fails with the network up is not the user's connection.
+    if (error instanceof OfflineError) return this.deps.t(this.deps.online?.() === true ? 'errorUnreached' : 'errorOffline');
     if (error instanceof ApiError && error.message.trim().length > 0) return error.message;
     return this.deps.t('errorGeneric');
   }

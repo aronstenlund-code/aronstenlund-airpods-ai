@@ -145,6 +145,13 @@ export class Client {
 
   /// `POST` (or `GET` without a body) to a function with the user's token. A 401 renews the token and asks once more.
   async call<T>(fn: string, body?: Record<string, unknown>, query = ''): Promise<T> {
+    const response = await this.raw(fn, body, query);
+    return (await response.json().catch(() => ({}))) as T;
+  }
+
+  /// The same, for an answer that is not one piece of JSON: a stream of events (`/answer`) or sound (`/tts`). The
+  /// reply comes back when the server has said yes; a no is thrown with the server's words. `signal` ends it.
+  async raw(fn: string, body?: Record<string, unknown>, query = '', signal?: AbortSignal): Promise<Response> {
     const once = async (): Promise<Response> => {
       const headers: Record<string, string> = {
         Authorization: `Bearer ${await this.token()}`,
@@ -158,6 +165,7 @@ export class Client {
         method: body === undefined ? 'GET' : 'POST',
         headers,
         body: body === undefined ? undefined : JSON.stringify(body),
+        ...(signal === undefined ? {} : { signal }),
       });
     };
     let response = await once();
@@ -165,11 +173,11 @@ export class Client {
       if (this.session !== null) this.session = { ...this.session, expiresAt: 0 };
       response = await once();
     }
-    const data = (await response.json().catch(() => ({}))) as Record<string, unknown>;
     if (!response.ok) {
+      const data = (await response.json().catch(() => ({}))) as Record<string, unknown>;
       const error = (data.error ?? {}) as { code?: string; message?: string };
       throw new ApiError(response.status, error.code ?? `http_${response.status}`, error.message ?? '', data);
     }
-    return data as T;
+    return response;
   }
 }

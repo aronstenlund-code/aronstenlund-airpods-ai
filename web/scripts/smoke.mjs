@@ -90,6 +90,21 @@ async function answer(route) {
   const fn = url.pathname.replace('/functions/v1/', '');
   const body = req.postData() ? JSON.parse(req.postData()) : {};
   calls.push({ fn, action: body.action ?? '', headers: req.headers(), body });
+  // Listening: test traffic gets no Scribe socket, only one sentence (D180); the answer comes as events.
+  if (fn === 'stt-token') {
+    if (req.method() === 'POST') return json({ ok: true });
+    return json({ fake: true, token: null, ws_url: null, expires_in: 0, model_id: 'fake', transcript: 'What does photosynthesis make?' });
+  }
+  if (fn === 'answer') {
+    const events = [
+      ['meta', { reconstructed_question: 'What does photosynthesis make?', is_question: true }],
+      ['delta', { text: 'Photosynthesis makes sugar ' }],
+      ['delta', { text: 'and oxygen. The plant uses the sugar.' }],
+      ['done', { answered: true }],
+    ];
+    return route.fulfill({ status: 200, headers: { ...cors, 'content-type': 'text/event-stream' }, body: events.map(([e, d]) => `event: ${e}\ndata: ${JSON.stringify(d)}\n\n`).join('') });
+  }
+  if (fn === 'tts') return route.fulfill({ status: 200, headers: { ...cors, 'content-type': 'audio/mpeg', 'x-earmind-fake': '1' }, body: wav(0.6) });
   if (fn === 'voices') {
     return json({
       default_voice: { name: 'Astrid' },
@@ -137,7 +152,8 @@ const check = (name, ok, detail = '') => {
   if (!ok) failures.push(name);
 };
 
-const browser = await chromium.launch({ args: ['--autoplay-policy=user-gesture-required'] });
+// A pretend microphone, so listening can be tried without one (and without asking anyone).
+const browser = await chromium.launch({ args: ['--autoplay-policy=user-gesture-required', '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'] });
 
 async function run(name, { locale, colorScheme, width = 393, height = 852, scale = 2 }, steps) {
   const context = await browser.newContext({ locale, colorScheme, viewport: { width, height }, deviceScaleFactor: scale, hasTouch: true, isMobile: true });
@@ -302,6 +318,60 @@ await run('sv-light', { locale: 'sv-SE', colorScheme: 'light' }, async (page, sh
   await shot('1-first');
   await page.getByTestId('settings').click();
   await shot('2-settings');
+});
+
+await run('listen', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot) => {
+  await page.goto(`${base}/beta?test=smoke`);
+  await page.getByTestId('listen-start').scrollIntoViewIfNeeded();
+  await shot('1-more-modes');
+  await page.getByTestId('listen-start').click();
+  await page.getByTestId('consent-sheet').waitFor();
+  const consent = await page.getByTestId('consent-sheet').textContent();
+  check('every point of the consent can be read (the sheet scrolls inside itself)', await page.evaluate(() => {
+    const body = document.querySelector('[data-testid=consent-sheet] .sheet-body');
+    const scrolls = body.scrollHeight > body.clientHeight;
+    body.scrollTop = body.scrollHeight;
+    const last = [...body.querySelectorAll('.point')].pop().getBoundingClientRect();
+    const box = body.getBoundingClientRect();
+    const button = document.querySelector('[data-testid=consent-accept]').getBoundingClientRect();
+    return scrolls && last.height > 40 && last.bottom <= box.bottom + 1 && box.bottom <= button.top + 1;
+  }));
+  await shot('2b-consent-end');
+  check('the consent screen comes before the microphone (D21)', consent.includes('Before you start') && consent.includes('transcribed by ElevenLabs') && consent.includes('Other people\u2019s words can be included') && !calls.some((c) => c.fn === 'stt-token'));
+  await shot('2-consent');
+  await page.getByTestId('consent-accept').click();
+  await page.getByTestId('listen-bar').waitFor();
+  await page.waitForFunction(() => document.querySelector('[data-testid=listen-bar]')?.textContent.includes('Listening'));
+  check('while it listens a row at the top says so, with Stop', (await page.getByTestId('listen-bar').textContent()).includes('Listening') && (await page.getByTestId('listen-stop').isVisible()));
+  check('the screen line shows while it listens', (await page.getByTestId('screen-line').count()) === 1);
+  await page.getByTestId('listen-answer').waitFor({ timeout: 8000 });
+  await page.waitForFunction(() => document.querySelector('[data-testid=listen-answer]').textContent.includes('uses the sugar'));
+  check('a question is answered on the screen', (await page.getByTestId('listen-answer').textContent()) === 'Photosynthesis makes sugar and oxygen. The plant uses the sugar.');
+  await shot('3-answering');
+  await page.waitForFunction(() => document.querySelector('[data-testid=listen-phase]')?.textContent === 'Listening', null, { timeout: 10000 });
+  const spoken = calls.filter((c) => c.fn === 'tts').map((c) => c.body.text);
+  check('and read sentence by sentence, then it listens again', JSON.stringify(spoken) === JSON.stringify(['Photosynthesis makes sugar and oxygen.', 'The plant uses the sugar.']), JSON.stringify(spoken));
+  const asked = calls.find((c) => c.fn === 'answer');
+  check('the turn is sent as the app sends it, in the chosen language', asked.body.mode === 'tutor' && asked.body.lang === 'en' && asked.body.language === 'en' && asked.body.fragment === 'What does photosynthesis make?' && asked.headers['x-earmind-test'] === 'smoke');
+  await shot('4-listening-again');
+  await page.getByTestId('listen-stop').click();
+  check('Stop: the row is gone and nothing plays', (await page.getByTestId('listen-bar').count()) === 0 && (await page.evaluate(() => document.querySelector('#sound').paused)));
+  await page.getByTestId('listen-start').click();
+  await page.getByTestId('listen-bar').waitFor();
+  check('the second time no consent screen is in the way', (await page.getByTestId('consent-sheet').count()) === 0);
+  // Play stops the listening: one thing at a time.
+  await page.getByTestId('say-field').fill('A short line.');
+  await page.getByTestId('play').click();
+  await page.getByTestId('status').waitFor();
+  check('Play stops the listening', (await page.getByTestId('listen-bar').count()) === 0);
+  await page.getByTestId('stop').click();
+  await page.getByTestId('settings').click();
+  await page.getByTestId('consent-withdraw').click();
+  await page.getByTestId('confirm').click();
+  await page.getByTestId('sheet-done').click();
+  await page.getByTestId('listen-start').click();
+  await page.getByTestId('consent-sheet').waitFor();
+  check('consent taken back in Settings: the consent screen comes again', true);
 });
 
 await run('small', { locale: 'en-GB', colorScheme: 'dark', width: 320, height: 568 }, async (page, shot) => {

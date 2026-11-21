@@ -5,7 +5,7 @@ import { dayText, grouped } from '../texts';
 import { h, icon } from './dom';
 import type { ViewDeps } from './view';
 
-export type SheetName = 'credits' | 'guide' | 'voices' | 'duration' | 'settings';
+export type SheetName = 'credits' | 'guide' | 'voices' | 'duration' | 'settings' | 'consent';
 
 export interface Sheets {
   open(name: SheetName): void;
@@ -18,7 +18,7 @@ const questionChoices = [3, 5, 8, 10, 12, 15, 20, 25, 30];
 
 /// The sheets that come up from the bottom, one at a time, as in the app.
 export function openSheet(host: HTMLElement, deps: ViewDeps, changed: () => void): Sheets {
-  const { app, t, lang, store, platform } = deps;
+  const { app, t, lang, store, platform, listen, consent: consented } = deps;
   let name: SheetName | null = null;
   let asking: { question: string; action: string; run: () => void } | null = null;
   let shown = '';
@@ -201,8 +201,41 @@ export function openSheet(host: HTMLElement, deps: ViewDeps, changed: () => void
           icon('chevron', 16),
         ),
       ),
-      h('h3', { class: 'group-title', text: t('privacyTitle') }),
+      h('h3', { class: 'group-title', text: t('privacyConsent') }),
       h('p', { class: 'quiet-text', text: t('privacyLine') }),
+      // The consent for listening can be read again and taken back here (consent point 5).
+      h(
+        'div',
+        { class: 'group' },
+        h(
+          'button',
+          {
+            class: 'row tappable',
+            attrs: { type: 'button' },
+            onclick: () => {
+              name = 'consent';
+              changed();
+            },
+          },
+          h('span', { text: consented.given() === null ? t('consentTitle') : t('consentGiven', { day: dayText(consented.given() ?? '', lang) ?? '' }) }),
+          icon('chevron', 16),
+        ),
+        consented.given() !== null
+          ? h(
+              'button',
+              {
+                class: 'row tappable danger',
+                attrs: { type: 'button', 'data-testid': 'consent-withdraw' },
+                onclick: () =>
+                  ask(t('consentWithdrawAsk'), t('consentWithdraw'), () => {
+                    listen.stop();
+                    consented.withdraw();
+                  }),
+              },
+              h('span', { text: t('consentWithdraw') }),
+            )
+          : null,
+      ),
       h(
         'div',
         { class: 'group' },
@@ -210,6 +243,47 @@ export function openSheet(host: HTMLElement, deps: ViewDeps, changed: () => void
       ),
       h('p', { class: 'quiet-text', text: t('startOverLine') }),
     ]);
+
+  /// Before the first listening (D21; Kelly's words, webbeta.md §9). The button starts the listening straight from
+  /// the tap; only then does the browser ask for the microphone. Opened from Settings it is for reading.
+  const consent = (): HTMLElement => {
+    const given = consented.given() !== null;
+    return sheet(
+      t('consentTitle'),
+      [
+        h('p', { text: t('consentIntro') }),
+        h(
+          'div',
+          { class: 'group consent-points' },
+          ...(['consent1', 'consent2', 'consent3', 'consent4', 'consent5'] as const).map((key) => {
+            const [title, text] = t(key).split('|');
+            return h('div', { class: 'point' }, h('h3', { text: title }), h('p', { text: text ?? '' }));
+          }),
+        ),
+        h('p', { class: 'quiet-text', text: t('consentNote') }),
+      ],
+      {
+        done: given ? t('done') : t('cancel'),
+        testid: 'consent-sheet',
+        bottom: given
+          ? null
+          : h(
+              'button',
+              {
+                class: 'main-button',
+                attrs: { type: 'button', 'data-testid': 'consent-accept' },
+                onclick: () => {
+                  consented.give();
+                  name = null;
+                  void listen.start();
+                  changed();
+                },
+              },
+              h('span', { text: t('consentButton') }),
+            ),
+      },
+    );
+  };
 
   // MARK: New quiz
 
@@ -362,8 +436,8 @@ export function openSheet(host: HTMLElement, deps: ViewDeps, changed: () => void
       build = () => confirmBox(a);
     } else if (name !== null) {
       const which = name;
-      key = `${which}:${JSON.stringify(which === 'credits' ? [app.quota] : which === 'voices' ? [store.settings.voiceID, app.voices.length, previewing] : which === 'duration' ? [store.settings.minutes] : [])}`;
-      build = () => ({ credits, guide, voices, duration, settings })[which]();
+      key = `${which}:${JSON.stringify(which === 'credits' ? [app.quota] : which === 'voices' ? [store.settings.voiceID, app.voices.length, previewing] : which === 'duration' ? [store.settings.minutes] : [consented.given()])}`;
+      build = () => ({ credits, guide, voices, duration, settings, consent })[which]();
     } else if (app.link.stage !== 'closed') {
       const link = app.link;
       key = `link:${JSON.stringify(link)}`;

@@ -1128,3 +1128,134 @@ button:disabled {
   background: none;
   padding: 4px 4px 0;
 }
+
+/* Kelly §10: the credits capsule in short on the narrowest phones. */
+@media (max-width: 359px) {
+  .capsule.credits[data-short] .wide {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+  .capsule.credits[data-short]::after {
+    content: attr(data-short);
+  }
+}
+
+/* Listening (A156 part 2): a row at the top of every screen while the microphone is on. */
+.listen-bar-host:empty {
+  display: none;
+}
+
+.listen-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: calc(6px + env(safe-area-inset-top)) calc(16px + env(safe-area-inset-right)) 6px calc(16px + env(safe-area-inset-left));
+  background: var(--card);
+  color: var(--card-text);
+}
+
+.listen-bar .capsule {
+  min-height: 40px;
+  font-weight: 600;
+}
+
+body.is-listening .page {
+  padding-top: calc(64px + env(safe-area-inset-top));
+}
+
+body.is-listening .sheet {
+  max-height: calc(100dvh - 76px - env(safe-area-inset-top));
+}
+
+.modes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modes .section-head {
+  justify-content: flex-start;
+  gap: 8px;
+  min-height: 36px;
+}
+
+.card.listen {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.status.on-surface {
+  color: var(--accent);
+}
+
+/* A long sheet scrolls inside itself; its parts are never squeezed and cut (the consent's last point was). */
+.sheet-body {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.sheet-body > * {
+  flex-shrink: 0;
+}
+
+.meter {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  overflow: hidden;
+  margin-left: 8px;
+}
+
+.meter span {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform-origin: left;
+  transition: transform 0.12s linear;
+}
+
+.heard {
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+
+.answer-text {
+  text-align: left;
+  font-size: 18px;
+  line-height: 1.35;
+  -webkit-user-select: text;
+  user-select: text;
+  overflow-wrap: anywhere;
+}
+
+.consent-points {
+  padding: 4px 16px;
+}
+
+.consent-points .point {
+  padding: 10px 0;
+}
+
+.consent-points .point + .point {
+  border-top: 1px solid var(--line);
+}
+
+.consent-points h3 {
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.consent-points p {
+  font-size: 16px;
+}

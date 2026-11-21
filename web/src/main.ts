@@ -1,9 +1,12 @@
 import { Client, type KeyValue } from './api/client';
 import { DrillApi } from './api/drill';
+import { ListenApi } from './api/listen';
 import { ExamApi } from './api/exam';
 import { App } from './app';
 import { backend, testTraffic } from './config';
+import { ListenSession } from './listen/session';
 import { BrowserSound, ScreenAwake, browserClock, listenForPresses, showNothingPlaying, showNowPlaying } from './platform/browser';
+import { BrowserMic, openLine } from './platform/mic';
 import { Store } from './store';
 import './styles.css';
 import { chosenLanguage, translator, type Lang } from './texts';
@@ -44,6 +47,7 @@ const langKey = 'earmind.beta.lang';
 // D253: always English first; Swedish when the user has chosen it with the EN/SV switch (kept in this browser).
 const lang: Lang = chosenLanguage(kept.getItem(langKey));
 const draftKey = 'earmind.beta.draft';
+const consentKey = 'earmind.beta.consent.v1';
 document.documentElement.lang = lang;
 const t = translator(lang);
 
@@ -52,7 +56,30 @@ const sound = new BrowserSound(audio);
 const awake = new ScreenAwake();
 const client = new Client(backend, (url, init) => fetch(url, init), kept, () => Date.now(), testTraffic(window.location.search, tab), lang);
 const store = new Store(kept);
-const app = new App({
+const files = {
+  link: (bytes: Uint8Array, name: string): string => URL.createObjectURL(new File([bytes], name, { type: 'audio/mpeg' })),
+  forget: (url: string): void => URL.revokeObjectURL(url),
+};
+
+// Listening (A156 part 2): the microphone is transcribed, a question is answered and read aloud. One thing at a
+// time: it stops whatever plays, and Play stops it.
+const listen: ListenSession = new ListenSession({
+  api: new ListenApi(client),
+  mic: new BrowserMic(),
+  open: openLine,
+  sound,
+  files,
+  clock: browserClock,
+  awake,
+  lang,
+  voiceID: () => store.settings.voiceID,
+  t,
+  stopOthers: () => app.stopAll(),
+});
+
+const app: App = new App({
+  online: () => navigator.onLine,
+  stopListening: () => listen.stop(),
   drill: new DrillApi(client),
   exam: new ExamApi(client),
   sound,
@@ -67,8 +94,7 @@ const app = new App({
       if (!reply.ok) throw new Error(`sound file: ${reply.status}`);
       return new Uint8Array(await reply.arrayBuffer());
     },
-    link: (bytes, name) => URL.createObjectURL(new File([bytes], name, { type: 'audio/mpeg' })),
-    forget: (url) => URL.revokeObjectURL(url),
+    ...files,
   },
 });
 
@@ -85,6 +111,13 @@ const view = new View(root, {
   t,
   lang,
   flags: kept,
+  listen,
+  // D21: the consent is kept in this browser with the day it was given; taking it back removes it.
+  consent: {
+    given: () => kept.getItem(consentKey),
+    give: () => kept.setItem(consentKey, new Date().toISOString().slice(0, 10)),
+    withdraw: () => kept.removeItem(consentKey),
+  },
   platform: {
     awakeSupported: awake.supported,
     awakeHeld: () => awake.held,
@@ -108,16 +141,25 @@ const view = new View(root, {
 });
 
 app.onChange = () => view.render();
+listen.onChange = () => view.render();
 awake.onChange = () => view.render();
 sample.addEventListener('ended', () => view.render());
 
 // The sound stopped by itself. With the page hidden it was the screen (D250): the user is told when they come back.
 sound.onInterrupted = () => {
+  if (listen.isOn) {
+    listen.press(); // the answer stopped by itself: the page listens again
+    return;
+  }
   if (!app.isPlaying) return;
   view.stoppedByScreen = true;
   app.interrupted();
 };
 sound.onBlocked = () => {
+  if (listen.isOn) {
+    listen.press();
+    return;
+  }
   if (!app.isPlaying) return;
   view.blocked = true;
   app.interrupted();
@@ -128,13 +170,19 @@ listenForPresses(
   (press) => {
     view.stoppedByScreen = false;
     view.blocked = false;
-    app.press(press);
+    if (listen.isOn) listen.press();
+    else app.press(press);
     view.render();
   },
-  () => app.stopAll(),
+  () => {
+    listen.stop();
+    app.stopAll();
+  },
 );
 
 document.addEventListener('visibilitychange', () => {
+  // The page never listens where it cannot be seen: hidden, or the screen dark, ends the listening (D250).
+  if (document.visibilityState === 'hidden') listen.halt(t('listenHidden'));
   if (document.visibilityState === 'visible') {
     void app.refreshQuota();
     view.render();
