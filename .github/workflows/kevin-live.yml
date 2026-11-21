@@ -44,6 +44,7 @@ on:
           - k114-voices.py
           - k116-live.py
           - k117-live.py
+          - k118-live.py
           - qa/o86_eval_reproduce.py
           - k93-live.py
           - k94-apple-root.py
