@@ -1,0 +1,42 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=393">
+<title>Webbeta sketch (Kelly Ke86)</title>
+<style>
+:root{--bg:#f2f2f7;--surface:#fff;--card:#101319;--card-text:#fff;--accent:#2346c8;--accent-on-card:#7f9bff;--tint:#d7def5;--secondary:#6b6b70;--warn:#fff4d6;--line:#e2e2e8;--ink:#111}
+.dark{--bg:#000;--surface:#1c1c1e;--accent:#7f9bff;--tint:#2a3350;--secondary:#a1a1a6;--warn:#3a3120;--line:#2c2c2e;--ink:#f2f2f7}
+*{box-sizing:border-box;margin:0}body{font:15px/1.35 -apple-system,system-ui,"Inter",sans-serif;background:#d9d9de;padding:20px;display:flex;gap:20px}
+.phone{width:393px;height:852px;background:var(--bg);color:var(--ink);border-radius:44px;overflow:hidden;position:relative;padding:54px 16px 0}
+.top{display:flex;align-items:center;gap:8px}.cap{background:var(--surface);color:var(--accent);border-radius:999px;padding:7px 14px;font-size:15px}
+.beta{font-size:11px;font-weight:700;color:var(--accent);background:var(--tint);border-radius:6px;padding:2px 6px}
+.gear{margin-left:auto;width:36px;height:36px;border-radius:50%;background:var(--surface);display:grid;place-items:center;color:var(--accent);font-size:18px}
+.warn{background:var(--warn);border-radius:16px;padding:12px 14px;margin-top:12px;font-size:14px}.warn b{display:block;font-size:15px;margin-bottom:2px}
+.warn a{color:var(--accent);text-decoration:none;font-weight:600;display:inline-block;margin-top:6px}
+.card{background:var(--card);color:var(--card-text);border-radius:22px;padding:14px 16px;margin-top:12px}
+.dot{color:var(--accent-on-card);font-size:13px;font-weight:600}.mono{font:15px/1.4 ui-monospace,"SF Mono",Menlo,"DejaVu Sans Mono",monospace;margin:8px 0 10px}
+.row{display:flex;align-items:center;gap:10px}.pp{width:40px;height:40px;border-radius:50%;background:var(--accent-on-card);display:grid;place-items:center;color:#101319;font-weight:700}
+.left{font-size:17px;font-weight:600}.stop{margin-left:auto;color:var(--accent-on-card);font-size:16px}
+.small{font-size:12px;color:#c7c9d1;margin-top:8px}
+.sec{background:var(--surface);border-radius:18px;padding:14px 16px;margin-top:12px}.sec small{color:var(--secondary);font-size:12px}
+.sec h3{font-size:19px;margin:2px 0}.btn{display:block;text-align:center;border-radius:999px;padding:11px;margin-top:10px;background:var(--tint);color:var(--accent);font-weight:600}
+.bar{position:absolute;left:0;right:0;bottom:0;padding:14px 16px 30px;display:flex;justify-content:space-between;color:var(--accent);background:var(--bg);border-top:1px solid var(--line);font-size:16px}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.35)}.sheet{position:absolute;left:0;right:0;bottom:0;top:120px;background:var(--bg);border-radius:24px 24px 0 0;padding:16px}
+.sheet .hd{display:flex;justify-content:center;position:relative;font-weight:600;font-size:16px;padding:6px 0 14px}.sheet .hd span{position:absolute;right:0;color:var(--accent)}
+.sheet p{margin-top:10px;font-size:15px}.sheet .step{background:var(--surface);border-radius:14px;padding:12px 14px;margin-top:10px}
+.sheet .step b{display:block;margin-bottom:2px}.mut{color:var(--secondary);font-size:13px}
+</style></head><body>
+<div id="out"></div>
+<script>
+const T={en:{left:'1.2k credits left',kt:'Keep the screen on',kx:'In the beta, the screen has to stay on while it plays or listens. Your phone can be up to about 10\u00a0m (33\u00a0ft) from your AirPods, so you can put it down.',ka:'How to keep it on',play:'● Playing in AirPods · Astrid',tl:'7:32 left',stop:'Stop',wl:'The screen stays on while it plays.',nq:'Next quiz',st:'Start quiz',new:'New quiz',ol:'Open link',done:'Done',
+gh:'Keep the screen on',g1:'The beta keeps the screen awake while it plays. If your screen still turns off:',gi:'iPhone',gi2:'Settings › Display & Brightness › Auto-Lock › Never.',glp:'Low Power Mode locks the screen after 30 seconds anyway, so turn it off while you listen.',ga:'Android',ga2:'Settings › Display › Screen timeout.',gb:'Change it back when you’re done.',q:'5 questions · about 1 min per round'},
+sv:{left:'1,2k krediter kvar',kt:'Ha skärmen på',kx:'I betan måste skärmen vara på medan det spelar eller lyssnar. Telefonen kan ligga upp till cirka 10\u00a0meter från dina AirPods, så du kan lägga ifrån dig den.',ka:'Så håller du den på',play:'● Spelar i AirPods · Astrid',tl:'7:32 kvar',stop:'Stoppa',wl:'Skärmen hålls på medan det spelar.',nq:'Nästa prov',st:'Starta prov',new:'Nytt prov',ol:'Öppna länk',done:'Klar',
+gh:'Håll skärmen på',g1:'Betan håller skärmen vaken medan det spelar. Släcks den ändå:',gi:'iPhone',gi2:'Inställningar › Skärm och ljusstyrka › Automatisk låsning › Aldrig.',glp:'Strömsparläget låser skärmen efter 30 sekunder ändå, så stäng av det medan du lyssnar.',ga:'Android',ga2:'Inställningar › Skärm › Tidsgräns för skärm.',gb:'Ändra tillbaka när du är klar.',q:'5 frågor · cirka 1 min per varv'}};
+function home(t){return `<div class="top"><span class="cap">${t.left}</span><span class="beta">BETA</span><span class="gear">⚙︎</span></div>
+<div class="warn"><b>${t.kt}</b>${t.kx}<br><a>${t.ka} ›</a></div>
+<div class="card"><div class="dot">${t.play}</div><div class="mono">Photosynthesis: carbon dioxide + water + light become sugar and oxygen.</div>
+<div class="row"><span class="pp">❚❚</span><span class="left">${t.tl}</span><span class="stop">${t.stop}</span></div><div class="small">${t.wl}</div></div>
+<div class="sec"><small>${t.nq}</small><h3>Biology</h3><small>${t.q}</small><span class="btn">▶ ${t.st}</span></div>
+<div class="bar"><span>⊕ ${t.new}</span><span>${t.ol}</span></div>`}
+function guide(t){return home(t)+`<div class="scrim"></div><div class="sheet"><div class="hd">${t.gh}<span>${t.done}</span></div><p>${t.g1}</p>
+<div class="step"><b>${t.gi}</b>${t.gi2}<div class="mut" style="margin-top:6px">${t.glp}</div></div><div class="step"><b>${t.ga}</b>${t.ga2}</div><p class="mut">${t.gb}</p></div>`}
+const id=new URLSearchParams(location.search).get('v')||'en-light';const [lang,mode]=id.split('-');const t=T[lang];
+document.getElementById('out').outerHTML=`<div class="phone ${mode}">${home(t)}</div><div class="phone ${mode}">${guide(t)}</div>`;
+</script></body></html>
