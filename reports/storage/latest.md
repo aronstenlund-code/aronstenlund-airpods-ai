@@ -1,10 +1,10 @@
-# Lagring (K59), 2026-11-20
+# Lagring (K59), 2026-11-21
 
-- **Totalt i Storage:** 156.0 MB av 1 GB (15.6%). Varning vid 70 %.
-- **drill_audio:** 156.0 MB i 2106 filer.
-- **Databasen:** 49.8 MB av 500 MB (10.0%).
+- **Totalt i Storage:** 156.2 MB av 1 GB (15.6%). Varning vid 70 %.
+- **drill_audio:** 156.2 MB i 2112 filer.
+- **Databasen:** 50.4 MB av 500 MB (10.1%).
 - **ElevenLabs-krediter (K62):** 20 389 av 90 000 kvar (23%)  senast sett 2026-11-17 20:10 UTC
-- **Snitt per dag (senaste 8 dagarna med ljud):** 19.5 MB, 70 % nås om cirka 28 dagar i den takten.
+- **Snitt per dag (senaste 9 dagarna med ljud):** 17.4 MB, 70 % nås om cirka 31 dagar i den takten.
 
 | Dag | Filer | MB |
 |---|---|---|
@@ -16,3 +16,4 @@
 | 2026-11-18 | 217 | 8.6 |
 | 2026-11-19 | 39 | 1.6 |
 | 2026-11-20 | 16 | 0.8 |
+| 2026-11-21 | 6 | 0.2 |
