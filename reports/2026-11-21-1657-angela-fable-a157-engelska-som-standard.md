@@ -75,6 +75,9 @@ engelska nycklarna och i behörighetstexten för rörelse); "A-svar" är "top-gr
 katalogen efter bildkörningen (nyckeln hade fel typ på talet): "about 1 min per round". Godkänt av Kelly: trycken
 (press once/twice/three times), årskurserna och språkvalets texter. `check.py`: 0 fel.
 
+**På main 18:24:** main-bygget 44922695406 (fdddcced, A157 med D253) och 44922932517 (43b1f239, med Kellys ord) är
+gröna: enhetsbygge utan varningar, alla enhetstester, App Store-arkivet (verifierat i CI).
+
 ## Kända brister och risker
 
 - **Otestat på telefon.** Allt är verifierat i CI (Simulator).
