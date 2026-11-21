@@ -128,21 +128,21 @@ enum VoiceDescription {
     /// Voices described from the reports (K14: Adam is a Swedish narrator voice; O12: Saga and Max are as clear,
     /// with more long pauses). Keyed by the lowercased first word of the service's name.
     static let known: [String: Words] = [
-        "adam": Words(title: "Lugn berättarröst", detail: "Svensk, tydlig"),
+        "adam": Words(title: String(localized: "Lugn berättarröst"), detail: String(localized: "Svensk, tydlig")),
     ]
 
     static func words(for choice: VoiceChoice, described: String? = nil) -> Words {
         switch choice.kind {
         case .apple:
-            if choice.voiceID.isEmpty { return Words(title: "iPhonens röst", detail: "Fungerar utan nät") }
+            if choice.voiceID.isEmpty { return Words(title: String(localized: "iPhonens röst"), detail: String(localized: "Fungerar utan nät")) }
             let name = choice.name.replacingOccurrences(of: "Apple · ", with: "") // "Apple · Alva" → "Alva"
-            return Words(title: name, detail: "iPhonens röst, fungerar utan nät")
+            return Words(title: name, detail: String(localized: "iPhonens röst, fungerar utan nät"))
         case .elevenLabs:
             if let described, !described.trimmingCharacters(in: .whitespaces).isEmpty {
-                return Words(title: described, detail: "Svensk röst")
+                return Words(title: described, detail: String(localized: "Svensk röst"))
             }
             let key = choice.name.split(separator: " ").first.map { $0.lowercased() } ?? ""
-            return known[key] ?? Words(title: choice.name, detail: "Svensk röst")
+            return known[key] ?? Words(title: choice.name, detail: String(localized: "Svensk röst"))
         }
     }
 }

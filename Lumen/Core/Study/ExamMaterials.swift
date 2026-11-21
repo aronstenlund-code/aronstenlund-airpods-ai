@@ -33,16 +33,16 @@ final class ExamMaterials {
         guard !text.isEmpty else { return }
         isReading = true
         defer { isReading = false }
-        status = "Läser frågorna …"
+        status = String(localized: "Läser frågorna …")
         guard let parsed = await client.parse(text: text, subject: subject, grade: grade) else {
-            status = "Kunde inte läsa texten. Försök igen med internet."
+            status = String(localized: "Kunde inte läsa texten. Försök igen med internet.")
             return
         }
         paper = ExamPaper()
         paper.name = name
         paper.merge(tasks: parsed.tasks, boundaries: parsed.boundaries)
         save()
-        status = "\(paper.tasks.count) frågor."
+        status = String(localized: "\(paper.tasks.count) frågor.")
     }
 
     /// A PDF with a text layer is read as text (K15), which is cheaper and exact; one without goes as page images.
@@ -54,23 +54,23 @@ final class ExamMaterials {
         defer { isReading = false }
         if urls.count == 1, let url = urls.first, url.pathExtension.lowercased() == "pdf",
            let text = try? DocumentText.read(url), text.count >= Self.textLayerMinimum {
-            status = "Läser \(url.lastPathComponent) …"
+            status = String(localized: "Läser \(url.lastPathComponent) …")
             if let parsed = await client.parse(text: text, subject: subject, grade: grade) {
                 if paper.name.isEmpty { paper.name = url.deletingPathExtension().lastPathComponent }
                 paper.merge(tasks: parsed.tasks, boundaries: parsed.boundaries)
                 save()
-                status = "\(paper.tasks.count) uppgifter" + (paper.boundaries.isEmpty ? "." : ", betygsgränser hittade.")
+                status = String(localized: "\(paper.tasks.count) uppgifter") + (paper.boundaries.isEmpty ? "." : String(localized: ", betygsgränser hittade."))
                 return
             }
             // the text call failed: the pages as images below
         }
         var pages: [Data] = []
         for url in urls {
-            status = "Förbereder \(url.lastPathComponent) …"
+            status = String(localized: "Förbereder \(url.lastPathComponent) …")
             pages += await Self.pages(from: url)
         }
         guard !pages.isEmpty else {
-            status = "Inga sidor kunde läsas ur filerna."
+            status = String(localized: "Inga sidor kunde läsas ur filerna.")
             return
         }
         if paper.name.isEmpty { paper.name = urls.first?.deletingPathExtension().lastPathComponent ?? "" }
@@ -78,16 +78,16 @@ final class ExamMaterials {
         for start in stride(from: 0, to: pages.count, by: ExamClient.pagesPerCall) {
             batch += 1
             let slice = Array(pages[start..<min(start + ExamClient.pagesPerCall, pages.count)])
-            status = "Läser sida \(start + 1)–\(start + slice.count) av \(pages.count) …"
+            status = String(localized: "Läser sida \(start + 1)–\(start + slice.count) av \(pages.count) …")
             guard let parsed = await client.parse(pages: slice, subject: subject, grade: grade) else {
-                status = "Kunde inte läsa sidorna (\(batch). omgången). Försök igen med internet."
+                status = String(localized: "Kunde inte läsa sidorna (\(batch). omgången). Försök igen med internet.")
                 save()
                 return
             }
             paper.merge(tasks: parsed.tasks, boundaries: parsed.boundaries)
         }
         save()
-        status = "\(paper.tasks.count) uppgifter" + (paper.boundaries.isEmpty ? "." : ", betygsgränser hittade.")
+        status = String(localized: "\(paper.tasks.count) uppgifter") + (paper.boundaries.isEmpty ? "." : String(localized: ", betygsgränser hittade."))
     }
 
     private func save() {

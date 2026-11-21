@@ -19,9 +19,9 @@ struct MyAnswer: Identifiable, Codable, Equatable, Sendable {
 
         var title: String {
             switch self {
-            case .mine: "Din"
-            case .lumen: "EarMinds förslag"
-            case .recording: "Från inspelning"
+            case .mine: String(localized: "Din")
+            case .lumen: String(localized: "EarMinds förslag")
+            case .recording: String(localized: "Från inspelning")
             }
         }
     }

@@ -172,9 +172,9 @@ enum StudyPlanAPI {
     /// A38: the countdown in a day's reminder, the same words as K31: "3 dagar kvar till Biologiprovet".
     static func countdown(name: String, daysLeft: Int) -> String {
         switch daysLeft {
-        case ..<1: return "I dag är det \(name). Lycka till!"
-        case 1: return "I morgon är det \(name)"
-        default: return "\(daysLeft) dagar kvar till \(name)"
+        case ..<1: return String(localized: "I dag är det \(name). Lycka till!")
+        case 1: return String(localized: "I morgon är det \(name)")
+        default: return String(localized: "\(daysLeft) dagar kvar till \(name)")
         }
     }
 
@@ -201,7 +201,7 @@ enum StudyPlanAPI {
     /// "I dag: 10 min Biologi (cellandning, klorofyll)".
     static func todayLine(subject: String, day: Day) -> String {
         let concepts = day.concepts.prefix(3).joined(separator: ", ")
-        return "I dag: \(day.minutes) min \(subject)" + (concepts.isEmpty ? "" : " (\(concepts))")
+        return String(localized: "I dag: \(day.minutes) min \(subject)") + (concepts.isEmpty ? "" : " (\(concepts))")
     }
 }
 
@@ -348,15 +348,15 @@ final class LumenNotifications: NSObject, UNUserNotificationCenterDelegate, Send
                 .map { (name: $0.name, left: calendar.dateComponents([.day], from: start, to: calendar.startOfDay(for: $0.date)).day ?? -1) }
                 .filter { $0.left >= 0 }
                 .min { $0.left < $1.left }
-            let title = next.map { StudyPlanAPI.countdown(name: $0.name, daysLeft: $0.left) } ?? "5 snabba frågor"
+            let title = next.map { StudyPlanAPI.countdown(name: $0.name, daysLeft: $0.left) } ?? String(localized: "5 snabba frågor")
             let concept = plan[day]?.first
             let body: String
             if let concept {
-                body = "5 snabba frågor på \(concept). Det tar två minuter."
+                body = String(localized: "5 snabba frågor på \(concept). Det tar två minuter.")
             } else if next != nil {
-                body = "5 snabba frågor. Det tar två minuter."
+                body = String(localized: "5 snabba frågor. Det tar två minuter.")
             } else {
-                body = "Det tar två minuter och håller din svit vid liv."
+                body = String(localized: "Det tar två minuter och håller din svit vid liv.")
             }
             out.append(Daily(date: day, title: title, body: body))
         }
@@ -403,7 +403,7 @@ final class LumenNotifications: NSObject, UNUserNotificationCenterDelegate, Send
         guard await allowed(ask: true) else { return }
         let content = UNMutableNotificationContent()
         content.title = link.title
-        content.body = "Från \(link.sourceName)" + (link.loginLikely == true ? ", kan kräva skolkonto." : ".") + " Tryck för att öppna."
+        content.body = String(localized: "Från \(link.sourceName)") + (link.loginLikely == true ? String(localized: ", kan kräva skolkonto.") : ".") + String(localized: " Tryck för att öppna.")
         content.userInfo = ["url": link.url.absoluteString]
         let request = UNNotificationRequest(identifier: "lumen.link." + UUID().uuidString, content: content, trigger: nil)
         try? await UNUserNotificationCenter.current().add(request)
@@ -414,12 +414,12 @@ final class LumenNotifications: NSObject, UNUserNotificationCenterDelegate, Send
 
 /// Kelly's texts come with Ke65; until then these. One place, so they are changed here only.
 enum PracticeReminderText {
-    static let title = "Dags att plugga"
+    static let title = String(localized: "Dags att plugga")
     static func body(examTitle: String?) -> String {
         guard let examTitle = examTitle?.trimmingCharacters(in: .whitespacesAndNewlines), !examTitle.isEmpty else {
-            return "Ett varv tar bara några minuter."
+            return String(localized: "Ett varv tar bara några minuter.")
         }
-        return "\(examTitle) väntar. Ett varv tar bara några minuter."
+        return String(localized: "\(examTitle) väntar. Ett varv tar bara några minuter.")
     }
 }
 

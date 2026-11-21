@@ -239,8 +239,8 @@ struct MyAnswerEditor: View {
     private enum Field { case question, answer }
 
     private var title: String {
-        if draft != nil { return "Nytt svar" }
-        return existing == nil ? "Ny fråga" : "Ändra svar"
+        if draft != nil { return String(localized: "Nytt svar") }
+        return existing == nil ? String(localized: "Ny fråga") : String(localized: "Ändra svar")
     }
 
     private var canSave: Bool {
@@ -251,7 +251,7 @@ struct MyAnswerEditor: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
-                field("Fråga") {
+                field(String(localized: "Fråga")) {
                     TextField("Skriv provfrågan", text: $question, axis: .vertical)
                         .font(LumenFont.text(17))
                         .focused($focus, equals: .question)
@@ -261,7 +261,7 @@ struct MyAnswerEditor: View {
                         .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
                 }
                 if let draft {
-                    field("Från din inspelning · \(MyAnswerText.clock(draft.seconds))") {
+                    field(String(localized: "Från din inspelning · \(MyAnswerText.clock(draft.seconds))")) {
                         Text(MyAnswerText.excerpt(draft.transcript))
                             .font(LumenFont.text(15))
                             .foregroundStyle(LumenColor.muted)
@@ -270,7 +270,7 @@ struct MyAnswerEditor: View {
                             .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
                     }
                 } else if let suggestion, !suggestion.isEmpty {
-                    field("EarMinds förslag") {
+                    field(String(localized: "EarMinds förslag")) {
                         VStack(alignment: .leading, spacing: 8) {
                             Text(suggestion)
                                 .font(LumenFont.text(15))
@@ -288,7 +288,7 @@ struct MyAnswerEditor: View {
                         .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
                     }
                 }
-                field("Ditt svar · det här säger EarMind") {
+                field(String(localized: "Ditt svar · det här säger EarMind")) {
                     ZStack(alignment: .topLeading) {
                         TextEditor(text: $answer)
                             .font(LumenFont.text(17))
@@ -452,7 +452,7 @@ struct MyAnswerVersionsView: View {
                 ForEach(Array(versions.enumerated()), id: \.element.id) { index, version in
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
-                            Text(index == 0 ? "Nu" : version.author.title)
+                            Text(index == 0 ? String(localized: "Nu") : version.author.title)
                                 .font(LumenFont.text(15, .semibold))
                             Spacer()
                             Text(version.savedAt.formatted(date: .abbreviated, time: .shortened))

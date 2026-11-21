@@ -32,7 +32,7 @@ enum CommandTips {
     /// A18: one command at a time on the listening screen, the one this mode is for.
     static func firstLine(for mode: ConversationMode, table: CommandTable) -> String {
         let first = essentials(for: mode).first.map { spoken($0, table: table) } ?? "Lumen, …"
-        return "Säg ”" + first + "”"
+        return String(localized: "Säg ”") + first + "”"
     }
 
     /// Tip candidates, in order: what helps most in that mode.
@@ -56,8 +56,8 @@ enum CommandTips {
     /// "Säg ”Lumen, förhör mig”, ”Lumen, kortare” eller ”Lumen, pausa”."
     static func line(for mode: ConversationMode, table: CommandTable) -> String {
         let quoted = top(for: mode).map { "”" + spoken($0, table: table) + "”" }
-        guard quoted.count > 1 else { return "Säg " + (quoted.first ?? "”Lumen, …”") + "." }
-        return "Säg " + quoted.dropLast().joined(separator: ", ") + " eller " + quoted.last! + "."
+        guard quoted.count > 1 else { return String(localized: "Säg ") + (quoted.first ?? "”Lumen, …”") + "." }
+        return String(localized: "Säg ") + quoted.dropLast().joined(separator: ", ") + String(localized: " eller ") + quoted.last! + "."
     }
 
     /// The one-line tip, said in a pause and shown on the screen.

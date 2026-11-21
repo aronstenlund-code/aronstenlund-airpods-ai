@@ -40,7 +40,11 @@ def language(text: str, interpolated: bool = False) -> str:
         return "none"
     if re.search(r"[åäöÅÄÖ]", t):
         return "sv"
-    if not interpolated and " " not in t and IDENT.match(t) and (re.search(r"[._:/\-]|[a-z][A-Z]|\d", t) or t.islower() and len(words) == 1 and t not in SV and t not in EN):
+    # An identifier, a key, a file name or a format ("repetition.progress", "too_long", "yyyy-MM-dd", "cloud"), but
+    # not a word with a colon or a full stop after it ("Saknas:", "Klart.").
+    if not interpolated and " " not in t and IDENT.match(t) and (
+            re.search(r"\w[._:/\-]\w|[a-z][A-Z]|\d|[%@#*+_]", t)
+            or t.islower() and len(words) == 1 and t not in SV and t not in EN and t.isalpha()):
         return "none"
     sv = sum(w in SV for w in words)
     en = sum(w in EN for w in words)
@@ -66,6 +70,9 @@ LSK = re.compile(r"""(?x)
   | (?:\b(?:prompt|description|message|title|subtitle|label|text|placeholder)\s*:\s*Text\s*\(\s*$)
   | (?::\s*(?:LocalizedStringKey|LocalizedStringResource|Text)\s*=\s*$)
   | (?:\bString\s*\(\s*localized\s*:\s*$)
+  | (?:\bshortTitle\s*:\s*$)
+  | (?:@Parameter\s*\([^)]*\b(?:title|description)\s*:\s*$)
+  | (?:\bphrases\s*:\s*\[[^\]]*$)
 """)
 LOG = re.compile(r"\b(?:Log\.\w+|logger|Logger|log|os_log|print|debugPrint|assert|assertionFailure|precondition|preconditionFailure|fatalError|NSLog)\b[^\"]*$")
 VERBATIM = re.compile(r"\bText\s*\(\s*verbatim\s*:\s*$")

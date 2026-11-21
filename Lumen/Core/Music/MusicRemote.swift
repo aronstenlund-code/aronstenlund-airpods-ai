@@ -105,7 +105,7 @@ final class SpotifyRemote: NSObject, SpotifyLink {
     private let appRemote: SPTAppRemote
     private var token: (value: String, expires: Date)?
     private var waiting: [CommandAction] = []
-    private(set) var status = "Inte kopplad"
+    private(set) var status = String(localized: "Inte kopplad")
 
     init(clientID: String) {
         let configuration = SPTConfiguration(clientID: clientID, redirectURL: Self.redirectURL)
@@ -120,7 +120,7 @@ final class SpotifyRemote: NSObject, SpotifyLink {
     }
 
     func link() {
-        status = "Öppnar Spotify …"
+        status = String(localized: "Öppnar Spotify …")
         appRemote.authorizeAndPlayURI("", completionHandler: nil)
     }
 
@@ -130,9 +130,9 @@ final class SpotifyRemote: NSObject, SpotifyLink {
         if let value = parameters?[SPTAppRemoteAccessTokenKey] {
             token = (value, Date().addingTimeInterval(55 * 60))
             appRemote.connectionParameters.accessToken = value
-            status = "Kopplad (i cirka en timme)"
+            status = String(localized: "Kopplad (i cirka en timme)")
         } else {
-            status = "Kopplingen misslyckades: " + (parameters?[SPTAppRemoteErrorDescriptionKey] ?? "okänt fel")
+            status = String(localized: "Kopplingen misslyckades: ") + (parameters?[SPTAppRemoteErrorDescriptionKey] ?? String(localized: "okänt fel"))
         }
         return true
     }
@@ -162,7 +162,7 @@ final class SpotifyRemote: NSObject, SpotifyLink {
 
 extension SpotifyRemote: @preconcurrency SPTAppRemoteDelegate {
     func appRemoteDidEstablishConnection(_ appRemote: SPTAppRemote) {
-        status = "Kopplad"
+        status = String(localized: "Kopplad")
         if let api = appRemote.playerAPI {
             for action in waiting { send(action, to: api) }
         }
@@ -176,11 +176,11 @@ extension SpotifyRemote: @preconcurrency SPTAppRemoteDelegate {
 
     func appRemote(_ appRemote: SPTAppRemote, didFailConnectionAttemptWithError error: (any Error)?) {
         waiting.removeAll()
-        status = "Spotify svarar inte. Spelar musiken?"
+        status = String(localized: "Spotify svarar inte. Spelar musiken?")
     }
 
     func appRemote(_ appRemote: SPTAppRemote, didDisconnectWithError error: (any Error)?) {
-        if error != nil { status = "Frånkopplad" }
+        if error != nil { status = String(localized: "Frånkopplad") }
     }
 }
 #else

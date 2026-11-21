@@ -16,11 +16,11 @@ struct TestModeSheet: View {
                     .font(LumenFont.text(26, .bold, relativeTo: .title))
                     .accessibilityAddTraits(.isHeader)
                 VStack(alignment: .leading, spacing: 14) {
-                    point("waveform", "Allt ljud medan EarMind lyssnar skickas till oss, också andras röster och bakgrundsljud. Det hjälper oss att höra om frågan uppfattades rätt.")
-                    point("calendar", "Ljudet sparas i 14 dagar och raderas sedan.")
-                    point("record.circle", "Så länge ljud skickas står det ”Testläge · ljud skickas” där EarMind visar att den lyssnar.")
-                    point("person.2", "Slå bara på det där de som hörs vet om det.")
-                    point("switch.2", "Du stänger av det när du vill i Inställningar › Testläge.")
+                    point("waveform", String(localized: "Allt ljud medan EarMind lyssnar skickas till oss, också andras röster och bakgrundsljud. Det hjälper oss att höra om frågan uppfattades rätt."))
+                    point("calendar", String(localized: "Ljudet sparas i 14 dagar och raderas sedan."))
+                    point("record.circle", String(localized: "Så länge ljud skickas står det ”Testläge · ljud skickas” där EarMind visar att den lyssnar."))
+                    point("person.2", String(localized: "Slå bara på det där de som hörs vet om det."))
+                    point("switch.2", String(localized: "Du stänger av det när du vill i Inställningar › Testläge."))
                 }
                 VStack(spacing: 10) {
                     Button(action: onConfirm) {

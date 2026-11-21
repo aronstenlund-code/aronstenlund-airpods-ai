@@ -59,7 +59,7 @@ struct SleepReportView: View {
                     timeline
                     if !night.talks.isEmpty {
                         VStack(alignment: .leading, spacing: 8) {
-                            SectionLabel("Det du sa").padding(.leading, 4)
+                            SectionLabel(String(localized: "Det du sa")).padding(.leading, 4)
                             VStack(spacing: 0) {
                                 ForEach(Array(night.talks.enumerated()), id: \.element.id) { index, talk in
                                     talkRow(talk, divider: index > 0)
@@ -86,9 +86,9 @@ struct SleepReportView: View {
     }
 
     private var summary: String {
-        var parts = [night.snoreMinutes == 0 ? "Ingen snarkning" : "Snarkade \(night.snoreMinutes) min"]
+        var parts = [night.snoreMinutes == 0 ? String(localized: "Ingen snarkning") : String(localized: "Snarkade \(night.snoreMinutes) min")]
         let restless = night.restlessPeriods
-        parts.append(restless == 0 ? "lugn natt" : (restless == 1 ? "1 orolig period" : "\(restless) oroliga perioder"))
+        parts.append(restless == 0 ? String(localized: "lugn natt") : (restless == 1 ? String(localized: "1 orolig period") : String(localized: "\(restless) oroliga perioder")))
         if let battery = night.batteryUsed { parts.append(String(format: "batteri %.0f %%", battery)) }
         return parts.joined(separator: " · ")
     }
@@ -96,7 +96,7 @@ struct SleepReportView: View {
     private var timeline: some View {
         let slots = night.timeline()
         return VStack(alignment: .leading, spacing: 8) {
-            SectionLabel("Natten").padding(.leading, 4)
+            SectionLabel(String(localized: "Natten")).padding(.leading, 4)
             HStack(spacing: 2) {
                 ForEach(Array(slots.enumerated()), id: \.offset) { _, slot in
                     RoundedRectangle(cornerRadius: 2)
@@ -108,10 +108,10 @@ struct SleepReportView: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(summary)
             HStack(spacing: 14) {
-                legend(.talk, "Prat")
-                legend(.snoring, "Snarkning")
-                legend(.restless, "Oroligt")
-                legend(.calm, "Lugnt")
+                legend(.talk, String(localized: "Prat"))
+                legend(.snoring, String(localized: "Snarkning"))
+                legend(.restless, String(localized: "Oroligt"))
+                legend(.calm, String(localized: "Lugnt"))
             }
             .font(LumenFont.text(13))
             .foregroundStyle(LumenColor.muted)

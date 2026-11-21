@@ -181,7 +181,7 @@ final class LivePhoneTools: PhoneToolRunning {
     nonisolated private static func startTimer(seconds: Double, label: String?) async -> (status: ToolRound.Status, result: JSONValue?) {
         guard await alarmAllowed() else { return (.error, .object(["reason": .string("no_permission")])) }
         do {
-            let configuration = AlarmManager.AlarmConfiguration<LumenAlarmMetadata>.timer(duration: seconds, attributes: attributes(label ?? "Timer"))
+            let configuration = AlarmManager.AlarmConfiguration<LumenAlarmMetadata>.timer(duration: seconds, attributes: attributes(label ?? String(localized: "Timer")))
             _ = try await AlarmManager.shared.schedule(id: UUID(), configuration: configuration)
             return (.ok, .object(["ok": .bool(true)]))
         } catch {
@@ -193,7 +193,7 @@ final class LivePhoneTools: PhoneToolRunning {
         guard await alarmAllowed() else { return (.error, .object(["reason": .string("no_permission")])) }
         let id = UUID()
         do {
-            let configuration = AlarmManager.AlarmConfiguration<LumenAlarmMetadata>.alarm(schedule: .fixed(date), attributes: attributes(label ?? "Larm"))
+            let configuration = AlarmManager.AlarmConfiguration<LumenAlarmMetadata>.alarm(schedule: .fixed(date), attributes: attributes(label ?? String(localized: "Larm")))
             _ = try await AlarmManager.shared.schedule(id: id, configuration: configuration)
             return (.ok, .object(["alarm_id": .string(id.uuidString)]))
         } catch {

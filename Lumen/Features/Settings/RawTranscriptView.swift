@@ -55,16 +55,16 @@ struct RawTranscriptView: View {
             Section("Fördröjning") {
                 if let latest = model.latency.latest { Text(verbatim: latest.summary).font(.footnote.monospacedDigit()) }
                 if let p50 = model.latency.firstSpeechP50, let p95 = model.latency.firstSpeechP95 {
-                    Text(verbatim: "röst p50 \(Int(p50)) ms, p95 \(Int(p95)) ms, n=\(model.latency.records.count)")
+                    Text(verbatim: String(localized: "röst p50 \(Int(p50)) ms, p95 \(Int(p95)) ms, n=\(model.latency.records.count)"))
                         .font(.footnote.monospacedDigit())
                 }
                 if let route = model.routeSummary { Text(verbatim: route).font(.footnote) }
                 // A4: hack in the voice, as numbers from Aron's phone.
                 if let last = model.speaker.lastAnswerStats {
-                    Text(verbatim: "Röst, senaste svaret: \(last.summary)").font(.footnote.monospacedDigit())
+                    Text(verbatim: String(localized: "Röst, senaste svaret: \(last.summary)")).font(.footnote.monospacedDigit())
                 }
-                Text(verbatim: "Röst, totalt: \(model.speaker.totalStats.summary)").font(.footnote.monospacedDigit())
-                Text(verbatim: "Taligenkänning: \(model.recognizerName)").font(.footnote)
+                Text(verbatim: String(localized: "Röst, totalt: \(model.speaker.totalStats.summary)")).font(.footnote.monospacedDigit())
+                Text(verbatim: String(localized: "Taligenkänning: \(model.recognizerName)")).font(.footnote)
             }
         }
         .lumenForm()
@@ -75,7 +75,7 @@ struct RawTranscriptView: View {
     static func caption(_ turn: AnswerTurn) -> String {
         var parts = [turn.createdAt.formatted(date: .omitted, time: .shortened), turn.source]
         if let latency = turn.latencyMs { parts.append(String(format: "%.0f ms", latency)) }
-        if turn.interrupted == true { parts.append("avbrutet") }
+        if turn.interrupted == true { parts.append(String(localized: "avbrutet")) }
         return parts.joined(separator: ", ")
     }
 }

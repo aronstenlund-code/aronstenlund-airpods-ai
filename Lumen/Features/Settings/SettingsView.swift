@@ -44,7 +44,7 @@ struct SettingsView: View {
             // the study plan's older one after it. Nothing is removed.
             if let repetition = model.repetition {
                 PracticeReminderSection(model: repetition,
-                                        mergedFooter: "Varje påminnelse kommer högst en gång om dagen, och inte de dagar du redan har pluggat.") {
+                                        mergedFooter: String(localized: "Varje påminnelse kommer högst en gång om dagen, och inte de dagar du redan har pluggat.")) {
                     studyReminderRows(merged: true)
                 }
             } else {
@@ -255,11 +255,11 @@ struct SettingsView: View {
 
     static func modeName(_ mode: ConversationMode) -> String {
         switch mode {
-        case .standard: "Standardläge" // A37
+        case .standard: String(localized: "Standardläge") // A37
         case .prov: "Provläge"
-        case .interview: "Intervju"
-        case .social: "Socialt"
-        case .rizz: "Rizz"
+        case .interview: String(localized: "Intervju")
+        case .social: String(localized: "Socialt")
+        case .rizz: String(localized: "Rizz")
         }
     }
 
@@ -292,10 +292,10 @@ struct SettingsView: View {
                 Text("Testläge")
             } footer: {
                 Text(settings.isEnabled && settings.serverRefused
-                     ? "Servern tar inte emot testljud från det här kontot ännu. Inget ljud sparas eller skickas."
+                     ? String(localized: "Servern tar inte emot testljud från det här kontot ännu. Inget ljud sparas eller skickas.")
                      : settings.isEnabled
-                     ? TestModeSettings.soundNote + " Brickan visar ”Testläge · ljud skickas” så länge ljud skickas."
-                     : "Av. Slå bara på det om du testar EarMind åt oss: då skickas allt ljud medan EarMind lyssnar, så att vi kan höra om frågan urskildes rätt.")
+                     ? TestModeSettings.soundNote + String(localized: " Brickan visar ”Testläge · ljud skickas” så länge ljud skickas.")
+                     : String(localized: "Av. Slå bara på det om du testar EarMind åt oss: då skickas allt ljud medan EarMind lyssnar, så att vi kan höra om frågan urskildes rätt."))
             }
         }
     }
@@ -386,9 +386,9 @@ struct SettingsView: View {
         } header: {
             Text("Förhör och förklaringar")
         } footer: {
-            Text("Provet, datumet och årskursen ändrar du på provkortet på Start. " + (model.headMotion.isAvailable
-                 ? "Ja–nej-frågor kan besvaras med en nick eller en skakning med huvudet. Du kan också säga ”Lumen, korta förklaringar” eller ”Lumen, provet är på fredag”."
-                 : "Dina AirPods stöder inte huvudrörelser just nu: svara på ja–nej-frågor med rösten. Du kan också säga ”Lumen, korta förklaringar” eller ”Lumen, provet är på fredag”."))
+            Text(String(localized: "Provet, datumet och årskursen ändrar du på provkortet på Start. ") + (model.headMotion.isAvailable
+                 ? String(localized: "Ja–nej-frågor kan besvaras med en nick eller en skakning med huvudet. Du kan också säga ”Lumen, korta förklaringar” eller ”Lumen, provet är på fredag”.")
+                 : String(localized: "Dina AirPods stöder inte huvudrörelser just nu: svara på ja–nej-frågor med rösten. Du kan också säga ”Lumen, korta förklaringar” eller ”Lumen, provet är på fredag”.")))
         }
     }
 
@@ -406,10 +406,10 @@ struct SettingsView: View {
     /// D78: what the local detector is doing, including the one-time model download.
     private var vadStatusText: String {
         switch model.transcription.vad?.status {
-        case .loading: "Hämtar röstdetektorn (Silero, några MB, en gång)…"
-        case .ready: "Bara tal skickas till Scribe; tystnad och brus stannar på telefonen."
-        case .unavailable(let reason): "Röstdetektorn kunde inte laddas (\(reason)). Allt ljud går till Scribe."
-        case .idle, nil: "Laddas när du börjar lyssna."
+        case .loading: String(localized: "Hämtar röstdetektorn (Silero, några MB, en gång)…")
+        case .ready: String(localized: "Bara tal skickas till Scribe; tystnad och brus stannar på telefonen.")
+        case .unavailable(let reason): String(localized: "Röstdetektorn kunde inte laddas (\(reason)). Allt ljud går till Scribe.")
+        case .idle, nil: String(localized: "Laddas när du börjar lyssna.")
         }
     }
 
@@ -536,7 +536,7 @@ struct SettingsView: View {
             HStack {
                 Text("Your voice is louder than")
                 Slider(value: $modes.speakerThresholdDBFS, in: -60 ... -10, step: 1)
-                Text(verbatim: "\(Int(modes.speakerThresholdDBFS)) dB")
+                Text(verbatim: String(localized: "\(Int(modes.speakerThresholdDBFS)) dB"))
                     .font(.footnote.monospacedDigit())
                     .frame(width: 52, alignment: .trailing)
             }
@@ -602,9 +602,9 @@ enum SpeedChoice: CaseIterable, Hashable {
 
     var title: String {
         switch self {
-        case .slow: "Lugn"
-        case .normal: "Normal"
-        case .fast: "Snabb"
+        case .slow: String(localized: "Lugn")
+        case .normal: String(localized: "Normal")
+        case .fast: String(localized: "Snabb")
         }
     }
 

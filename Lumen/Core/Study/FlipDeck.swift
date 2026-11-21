@@ -32,7 +32,7 @@ struct FlipDeck: Equatable, Sendable {
     var missed: [StudyCard] { cards.filter { knew[$0.id] == false } }
 
     /// "3 av 12": the card being shown.
-    var position: String { "\(min(index + 1, cards.count)) av \(cards.count)" }
+    var position: String { String(localized: "\(min(index + 1, cards.count)) av \(cards.count)") }
 
     /// Turns the card both ways (the answer can be hidden again).
     mutating func flip() {
@@ -56,7 +56,7 @@ struct FlipDeck: Equatable, Sendable {
         return missed.isEmpty ? nil : FlipDeck(cards: missed)
     }
 
-    var summary: String { "Du kunde \(knewCount) av \(cards.count)." }
+    var summary: String { String(localized: "Du kunde \(knewCount) av \(cards.count).") }
 
     /// The concept a card counts for: the exam's topic it mentions ("fotosyntes" in "Vad behöver fotosyntesen?"),
     /// else the question itself, shortened. Cards have no concept of their own yet.

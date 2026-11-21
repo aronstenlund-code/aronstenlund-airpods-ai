@@ -9,8 +9,8 @@ enum BuildInfo {
         let version = version ?? "–"
         let build = build ?? "–"
         let sha = (sha ?? "").trimmingCharacters(in: .whitespaces)
-        guard !sha.isEmpty, !sha.hasPrefix("$(") else { return "Version \(version) (\(build))" }
-        return "Version \(version) (körning \(build) · \(sha))"
+        guard !sha.isEmpty, !sha.hasPrefix("$(") else { return String(localized: "Version \(version) (\(build))") }
+        return String(localized: "Version \(version) (körning \(build) · \(sha))")
     }
 
     static var line: String {

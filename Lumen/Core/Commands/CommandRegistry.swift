@@ -71,53 +71,53 @@ enum CommandAction: String, CaseIterable, Codable, Sendable, Identifiable {
     /// Settings › Röstkommandon.
     var title: String {
         switch self {
-        case .musicHandOff: "Pausa Lumen och spela musik"
-        case .backToLumen: "Tillbaka till Lumen"
-        case .nextTrack: "Nästa låt"
-        case .previousTrack: "Förra låten"
-        case .pauseMusic: "Pausa musiken"
-        case .switchMode: "Byt läge (följs av lägets namn)"
-        case .stop: "Avsluta"
-        case .wrong: "Det där var fel"
-        case .repeatAnswer: "Upprepa senaste svaret"
-        case .whisper: "Viska (tystare röst)"
-        case .louder: "Högre röst"
-        case .shorter: "Kortare svar resten av passet"
-        case .longer: "Längre svar resten av passet"
-        case .saveAnswer: "Spara svaret i Anteckningar"
-        case .nextExam: "Vilket prov har jag härnäst?"
-        case .quizMe: "Förhör mig (på …)"
-        case .moreDetail: "Utveckla svaret"
-        case .simpler: "Förklara enklare"
-        case .example: "Ge ett exempel"
-        case .summary: "Sammanfatta det viktigaste"
-        case .aLevel: "Förklaring på A-nivå"
-        case .harderQuestion: "Ställ en svår fråga"
-        case .quickQuiz: "Snabbförhör (5 frågor)"
-        case .weakAreas: "Testa mina svagaste områden"
-        case .careful: "Var säker (starkare modell)"
-        case .catchUp: "Vad missade jag?"
-        case .discreet: "Hjälp mig diskret (en mening)"
-        case .asUsual: "Svara som jag brukar"
-        case .interviewHelp: "Intervju: hjälp mig svara"
-        case .interviewBetter: "Intervju: bättre svar"
-        case .interviewConfident: "Intervju: mer självsäkert"
-        case .interviewCounter: "Intervju: motfråga"
-        case .interviewStuck: "Intervju: jag fastnar"
-        case .socialReply: "Vad ska jag svara?"
-        case .funnier: "Roligare"
-        case .moreNatural: "Mer naturligt"
-        case .changeTopic: "Byt ämne"
-        case .followUp: "Smart följdfråga"
-        case .whatMeant: "Vad menade personen?"
-        case .rizz: "Ge mig lite rizz"
-        case .moreConfident: "Mer självsäker"
-        case .flirtier: "Flirtigare"
-        case .subtler: "Mer subtil"
-        case .cockier: "Kaxigare"
-        case .rescue: "Rädda mig"
-        case .lessCringe: "Mindre cringe"
-        case .threeOptions: "Tre alternativ"
+        case .musicHandOff: String(localized: "Pausa Lumen och spela musik")
+        case .backToLumen: String(localized: "Tillbaka till Lumen")
+        case .nextTrack: String(localized: "Nästa låt")
+        case .previousTrack: String(localized: "Förra låten")
+        case .pauseMusic: String(localized: "Pausa musiken")
+        case .switchMode: String(localized: "Byt läge (följs av lägets namn)")
+        case .stop: String(localized: "Avsluta")
+        case .wrong: String(localized: "Det där var fel")
+        case .repeatAnswer: String(localized: "Upprepa senaste svaret")
+        case .whisper: String(localized: "Viska (tystare röst)")
+        case .louder: String(localized: "Högre röst")
+        case .shorter: String(localized: "Kortare svar resten av passet")
+        case .longer: String(localized: "Längre svar resten av passet")
+        case .saveAnswer: String(localized: "Spara svaret i Anteckningar")
+        case .nextExam: String(localized: "Vilket prov har jag härnäst?")
+        case .quizMe: String(localized: "Förhör mig (på …)")
+        case .moreDetail: String(localized: "Utveckla svaret")
+        case .simpler: String(localized: "Förklara enklare")
+        case .example: String(localized: "Ge ett exempel")
+        case .summary: String(localized: "Sammanfatta det viktigaste")
+        case .aLevel: String(localized: "Förklaring på A-nivå")
+        case .harderQuestion: String(localized: "Ställ en svår fråga")
+        case .quickQuiz: String(localized: "Snabbförhör (5 frågor)")
+        case .weakAreas: String(localized: "Testa mina svagaste områden")
+        case .careful: String(localized: "Var säker (starkare modell)")
+        case .catchUp: String(localized: "Vad missade jag?")
+        case .discreet: String(localized: "Hjälp mig diskret (en mening)")
+        case .asUsual: String(localized: "Svara som jag brukar")
+        case .interviewHelp: String(localized: "Intervju: hjälp mig svara")
+        case .interviewBetter: String(localized: "Intervju: bättre svar")
+        case .interviewConfident: String(localized: "Intervju: mer självsäkert")
+        case .interviewCounter: String(localized: "Intervju: motfråga")
+        case .interviewStuck: String(localized: "Intervju: jag fastnar")
+        case .socialReply: String(localized: "Vad ska jag svara?")
+        case .funnier: String(localized: "Roligare")
+        case .moreNatural: String(localized: "Mer naturligt")
+        case .changeTopic: String(localized: "Byt ämne")
+        case .followUp: String(localized: "Smart följdfråga")
+        case .whatMeant: String(localized: "Vad menade personen?")
+        case .rizz: String(localized: "Ge mig lite rizz")
+        case .moreConfident: String(localized: "Mer självsäker")
+        case .flirtier: String(localized: "Flirtigare")
+        case .subtler: String(localized: "Mer subtil")
+        case .cockier: String(localized: "Kaxigare")
+        case .rescue: String(localized: "Rädda mig")
+        case .lessCringe: String(localized: "Mindre cringe")
+        case .threeOptions: String(localized: "Tre alternativ")
         }
     }
 
@@ -367,11 +367,11 @@ enum CommandWarning: Equatable, Sendable {
 
     var text: String {
         switch self {
-        case .empty: "Skriv en fras."
-        case .tooLong: "Högst \(CommandPhraseStore.phraseLimit) tecken."
-        case .usedBy(let action): "Används redan för \"\(action.title)\"."
-        case .commonWords: "Består av vanliga ord. Den kan sägas av misstag mitt i en fråga."
-        case .soundsLikeAQuestion: "Låter som början på en fråga. Säg \"Lumen\" före om den krockar."
+        case .empty: String(localized: "Skriv en fras.")
+        case .tooLong: String(localized: "Högst \(CommandPhraseStore.phraseLimit) tecken.")
+        case .usedBy(let action): String(localized: "Används redan för \"\(action.title)\".")
+        case .commonWords: String(localized: "Består av vanliga ord. Den kan sägas av misstag mitt i en fråga.")
+        case .soundsLikeAQuestion: String(localized: "Låter som början på en fråga. Säg \"Lumen\" före om den krockar.")
         }
     }
 

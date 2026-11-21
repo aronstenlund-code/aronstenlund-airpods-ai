@@ -62,6 +62,12 @@ def main(compiler_path=None, areas=False, everything=False):
         is_key = ctx == "key" or l10n.is_localized(lit)
         for target in l10n.target_of(lit.file):
             seen = [k for k, files in comp.get(target, {}).items() if base in files and pat.match(k)]
+            if comp.get(target) and not seen and not l10n.is_localized(lit):
+                # The compiler's list says this literal is a plain String, whatever the call before it looks like.
+                if is_key and lang == "sv" and lit.text not in skip.get(lit.file, {}) and (
+                        everything or any(lit.file.startswith(d) for d in done)):
+                    errors.append(f"{lit.file}:{lit.line}: looks like a text but is a plain String (never looked up): {lit.text!r}")
+                continue
             if not (is_key or seen):
                 continue
             looked_up += 1

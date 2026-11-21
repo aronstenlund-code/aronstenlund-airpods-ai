@@ -51,9 +51,9 @@ enum SpeechPace {
 
     /// "Långsammare tal i Biologi", "Lite långsammare tal i Frågor".
     static func line(factor: Double, mode: ConversationMode, subject: String?) -> String {
-        let how = factor <= steps.last! + 0.001 ? "Långsammare tal" : "Lite långsammare tal"
-        if let subject, !subject.trimmingCharacters(in: .whitespaces).isEmpty { return how + " i " + subject }
-        return how + " i " + mode.shortName.replacingOccurrences(of: " 18+", with: "")
+        let how = factor <= steps.last! + 0.001 ? String(localized: "Långsammare tal") : String(localized: "Lite långsammare tal")
+        if let subject, !subject.trimmingCharacters(in: .whitespaces).isEmpty { return how + String(localized: " i ") + subject }
+        return how + String(localized: " i ") + mode.shortName.replacingOccurrences(of: " 18+", with: "")
     }
 }
 

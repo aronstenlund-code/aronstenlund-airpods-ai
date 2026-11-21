@@ -123,7 +123,7 @@ struct ShopSections: View {
             .buttonBorderShape(.capsule)
             .tint(.accentColor)
             .disabled(shop.buying != nil)
-            .accessibilityLabel("Köp \(title) för \(item.displayPrice)" + (badge ? ", \(ShopText.bestValue.lowercased())" : "")) // Ke79
+            .accessibilityLabel(String(localized: "Köp \(title) för \(item.displayPrice)") + (badge ? ", \(ShopText.bestValue.lowercased())" : "")) // Ke79
         }
     }
 

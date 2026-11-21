@@ -42,7 +42,7 @@ final class TestModeSettings {
     var needsServerNotice = false
 
     /// Ke45/Ke46 T4: D138's sentence is not true while the test mode is on; this replaces it then.
-    nonisolated static let soundNote = "Testläget är på: ljudet skickas till oss och sparas i 14 dagar. Sömnläget sparar klippen bara på din telefon."
+    nonisolated static let soundNote = String(localized: "Testläget är på: ljudet skickas till oss och sparas i 14 dagar. Sömnläget sparar klippen bara på din telefon.")
 }
 
 /// A142 (D218 point 4, Kelly Ke76): the test mode sends the microphone's audio to us, so it is in the builds for us

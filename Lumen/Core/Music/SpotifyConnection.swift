@@ -48,7 +48,7 @@ final class SpotifyConnection {
         guard let client else { return nil }
         notice = nil
         guard let url = await client.start() else {
-            notice = "Det gick inte att koppla Spotify just nu."
+            notice = String(localized: "Det gick inte att koppla Spotify just nu.")
             return nil
         }
         return url
@@ -73,9 +73,9 @@ final class SpotifyConnection {
         let status = URLComponents(url: callback, resolvingAgainstBaseURL: false)?.queryItems?.first { $0.name == "status" }?.value
         switch status {
         case "ok": return nil
-        case "premium_required": return "Kopplat, men Spotify spelar bara upp med Premium."
-        case "denied": return "Du sa nej i Spotify. Inget kopplades."
-        default: return "Det gick inte att koppla Spotify just nu."
+        case "premium_required": return String(localized: "Kopplat, men Spotify spelar bara upp med Premium.")
+        case "denied": return String(localized: "Du sa nej i Spotify. Inget kopplades.")
+        default: return String(localized: "Det gick inte att koppla Spotify just nu.")
         }
     }
 }

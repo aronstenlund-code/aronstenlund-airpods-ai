@@ -28,9 +28,9 @@ struct WelcomeView: View {
                     .accessibilityAddTraits(.isHeader)
                     .padding(.top, isLarge ? 8 : 20)
                 VStack(alignment: .leading, spacing: isLarge ? 20 : 26) {
-                    row("camera", "Fota materialet", "EarMind gör provfrågor med A-svar.")
-                    row("waveform", "Lyssna i dina AirPods", "Frågorna läses upp. Tryck för svaret.")
-                    row("book.closed", "Plugga utan mobilen", "Telefonen kan ligga i fickan.")
+                    row("camera", String(localized: "Fota materialet"), String(localized: "EarMind gör provfrågor med A-svar."))
+                    row("waveform", String(localized: "Lyssna i dina AirPods"), String(localized: "Frågorna läses upp. Tryck för svaret."))
+                    row("book.closed", String(localized: "Plugga utan mobilen"), String(localized: "Telefonen kan ligga i fickan."))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, isLarge ? 16 : 36)

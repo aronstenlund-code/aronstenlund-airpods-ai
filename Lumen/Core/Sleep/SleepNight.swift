@@ -30,9 +30,9 @@ struct SleepNight: Codable, Equatable, Sendable, Identifiable {
     /// "Du pratade 3 gånger i sömnen".
     var talkLine: String {
         switch talks.count {
-        case 0: return "Du pratade inte i sömnen"
-        case 1: return "Du pratade 1 gång i sömnen"
-        default: return "Du pratade \(talks.count) gånger i sömnen"
+        case 0: return String(localized: "Du pratade inte i sömnen")
+        case 1: return String(localized: "Du pratade 1 gång i sömnen")
+        default: return String(localized: "Du pratade \(talks.count) gånger i sömnen")
         }
     }
 

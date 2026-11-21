@@ -11,12 +11,12 @@ enum LogoChoice: String, CaseIterable, Codable, Sendable {
     /// Ke31/Ke40: the names under the icons, nothing that favours one.
     var name: String {
         switch self {
-        case .a: "Klotet"
-        case .b: "Den gröna formen"
-        case .c: "Den orange ringen"
-        case .d: "Glasklotet"
-        case .e: "Glasringen"
-        case .f: "Glasvågen"
+        case .a: String(localized: "Klotet")
+        case .b: String(localized: "Den gröna formen")
+        case .c: String(localized: "Den orange ringen")
+        case .d: String(localized: "Glasklotet")
+        case .e: String(localized: "Glasringen")
+        case .f: String(localized: "Glasvågen")
         }
     }
 

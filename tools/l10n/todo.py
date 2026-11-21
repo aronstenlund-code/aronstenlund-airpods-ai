@@ -30,7 +30,10 @@ def items(prefixes, compiler_path=None, langs=("sv", "unknown")):
                 if base in files and pat.match(k):
                     key, kind = k, "key"
                     break
-        if kind == "plain" and (ctx == "key" or l10n.is_localized(lit)):
+        # With the compiler's list at hand it decides (Text("a" + b) is a String, a helper may take a key);
+        # without it, the call before the literal is the guess.
+        known = all(comp.get(t) for t in l10n.target_of(lit.file))
+        if kind == "plain" and (l10n.is_localized(lit) or (ctx == "key" and not known)):
             kind = "key"
         if kind == "plain" and ctx == "verbatim":
             kind = "verbatim"

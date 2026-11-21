@@ -25,8 +25,8 @@ struct AddExamView: View {
     @State private var topics = ""
     @State private var listeningForVoice = false
 
-    static let grades: [(StudyProfile.Grade, String)] = [(.y6, "Åk 6"), (.y7, "Åk 7"), (.y8, "Åk 8"), (.y9, "Åk 9"),
-                                                         (.gy1, "Gy 1"), (.gy2, "Gy 2"), (.gy3, "Gy 3"), (.university, "Högskola")]
+    static let grades: [(StudyProfile.Grade, String)] = [(.y6, String(localized: "Åk 6")), (.y7, String(localized: "Åk 7")), (.y8, String(localized: "Åk 8")), (.y9, String(localized: "Åk 9")),
+                                                         (.gy1, String(localized: "Gy 1")), (.gy2, String(localized: "Gy 2")), (.gy3, String(localized: "Gy 3")), (.university, String(localized: "Högskola"))]
 
     @State private var pickedSubject = false
     /// A33 (D109): in the first start the voice comes first; the form is the fallback behind "Skriv i stället".
@@ -160,11 +160,11 @@ struct AddExamView: View {
                             .background(LumenColor.chip, in: RoundedRectangle(cornerRadius: 10))
                     }
                     if pickedSubject, area == .annat {
-                        labeledField("Vilket ämne?", placeholder: "T.ex. Teknik eller Filosofi", text: $otherSubject)
+                        labeledField(String(localized: "Vilket ämne?"), placeholder: String(localized: "T.ex. Teknik eller Filosofi"), text: $otherSubject)
                     }
                     if pickedSubject {
                         // A47: optional; the study plan (A19) and the quiz use it.
-                        labeledField("Vad handlar provet om? (valfritt)", placeholder: "T.ex. cellandning och fotosyntes", text: $topics)
+                        labeledField(String(localized: "Vad handlar provet om? (valfritt)"), placeholder: String(localized: "T.ex. cellandning och fotosyntes"), text: $topics)
                     }
                 }
                 VStack(spacing: 0) {
@@ -237,7 +237,7 @@ struct AddExamView: View {
                     .font(LumenFont.text(34, .bold, relativeTo: .largeTitle))
                     .accessibilityAddTraits(.isHeader)
                 Spacer()
-                IconButton(systemName: "xmark", label: "Stäng", action: onClose)
+                IconButton(systemName: "xmark", label: String(localized: "Stäng"), action: onClose)
             }
             Text("Då pratar EarMind på din nivå, hör dina ämnesord rätt och vet vad du ska öva på.")
                 .font(LumenFont.text(16))
@@ -276,7 +276,7 @@ struct AddExamView: View {
             Text("Årskurs").font(LumenFont.text(16, .semibold)).accessibilityAddTraits(.isHeader)
             FlowChips(items: Self.grades.map { ($0.1, grade == $0.0) }) { index in grade = Self.grades[index].0 }
             if grade?.isGymnasium == true || grade == .university {
-                labeledField("Kurs", placeholder: "T.ex. Biologi 1 eller Matematik 1c", text: $course)
+                labeledField(String(localized: "Kurs"), placeholder: String(localized: "T.ex. Biologi 1 eller Matematik 1c"), text: $course)
             }
         }
     }
@@ -298,7 +298,7 @@ struct AddExamView: View {
                     .background(LumenColor.chip, in: RoundedRectangle(cornerRadius: 10))
             }
             if area == .annat {
-                labeledField("Vilket ämne?", placeholder: "T.ex. Teknik eller Filosofi", text: $otherSubject)
+                labeledField(String(localized: "Vilket ämne?"), placeholder: String(localized: "T.ex. Teknik eller Filosofi"), text: $otherSubject)
             }
         }
     }
@@ -309,7 +309,7 @@ struct AddExamView: View {
             let today = Calendar.current.startOfDay(for: Date())
             let tomorrow = Calendar.current.date(byAdding: .day, value: 1, to: today) ?? today
             HStack(spacing: 8) {
-                Chip(label: "Imorgon", selected: Calendar.current.isDate(date, inSameDayAs: tomorrow)) {
+                Chip(label: String(localized: "Imorgon"), selected: Calendar.current.isDate(date, inSameDayAs: tomorrow)) {
                     date = tomorrow
                     pickedDate = true
                 }

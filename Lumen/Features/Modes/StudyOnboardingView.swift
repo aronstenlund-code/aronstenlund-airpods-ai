@@ -43,11 +43,11 @@ struct StudyOnboardingView: View {
 
     private var title: String {
         switch step {
-        case 0: "När har du ditt prov?"
-        case 1: "Vilken årskurs går du i?"
-        case 2: "Vilket ämne?"
-        case 3: "Kontrollfrågor?"
-        default: "Hur långa förklaringar?"
+        case 0: String(localized: "När har du ditt prov?")
+        case 1: String(localized: "Vilken årskurs går du i?")
+        case 2: String(localized: "Vilket ämne?")
+        case 3: String(localized: "Kontrollfrågor?")
+        default: String(localized: "Hur långa förklaringar?")
         }
     }
 
@@ -55,10 +55,10 @@ struct StudyOnboardingView: View {
     private var options: some View {
         switch step {
         case 0:
-            choice("Idag") { setExam(.today) }
-            choice("Imorgon") { setExam(.tomorrow) }
-            choice("Inom en vecka") { setExam(.withinWeek) }
-            choice("Senare") { pickingDate = true }
+            choice(String(localized: "Idag")) { setExam(.today) }
+            choice(String(localized: "Imorgon")) { setExam(.tomorrow) }
+            choice(String(localized: "Inom en vecka")) { setExam(.withinWeek) }
+            choice(String(localized: "Senare")) { pickingDate = true }
             if pickingDate {
                 DatePicker("Datum", selection: $laterDate, in: Date()..., displayedComponents: .date)
                     .datePickerStyle(.graphical)
@@ -70,7 +70,7 @@ struct StudyOnboardingView: View {
                 }
                 .buttonStyle(.borderedProminent)
             }
-            choice("Inget prov just nu") {
+            choice(String(localized: "Inget prov just nu")) {
                 profile.noExam = true
                 profile.examDate = nil
                 next()

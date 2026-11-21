@@ -18,9 +18,9 @@ struct MicrophoneDeniedView: View {
                         .foregroundStyle(LumenColor.muted)
                 }
                 VStack(alignment: .leading, spacing: 12) {
-                    step(1, "Tryck Öppna Inställningar")
-                    step(2, "Slå på Mikrofon")
-                    step(3, "Kom tillbaka hit")
+                    step(1, String(localized: "Tryck Öppna Inställningar"))
+                    step(2, String(localized: "Slå på Mikrofon"))
+                    step(3, String(localized: "Kom tillbaka hit"))
                 }
                 .padding(18)
                 .frame(maxWidth: .infinity, alignment: .leading)

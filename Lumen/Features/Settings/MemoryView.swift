@@ -127,8 +127,8 @@ struct MemoryView: View {
     private func caption(_ item: MemoryItem) -> String {
         let source = switch item.source {
         case .voice: "sagt"
-        case .manual: "skrivet"
-        case .automatic: "hittat av EarMind"
+        case .manual: String(localized: "skrivet")
+        case .automatic: String(localized: "hittat av EarMind")
         }
         return "\(item.createdAt.formatted(date: .abbreviated, time: .omitted)), \(source)"
     }

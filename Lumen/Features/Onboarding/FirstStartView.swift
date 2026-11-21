@@ -118,11 +118,11 @@ extension IntroView {
     /// A2's short consent: three points and "Läs mer" (A26: a list, not a card).
     var promises: some View {
         VStack(alignment: .leading, spacing: 4) {
-            point("mic", "Lyssnar bara när du har startat den")
-            point("eye", "Du ser alltid när den lyssnar")
-            point("waveform.slash", "Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon.") // A73 (D138)
+            point("mic", String(localized: "Lyssnar bara när du har startat den"))
+            point("eye", String(localized: "Du ser alltid när den lyssnar"))
+            point("waveform.slash", String(localized: "Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon.")) // A73 (D138)
             // A41 (D116): what is sent for analysis is part of what "Testa nu" agrees to.
-            point("paperplane", "Frågor och svar skickas till oss")
+            point("paperplane", String(localized: "Frågor och svar skickas till oss"))
             Button("Läs mer") { isReadingMore = true } // the word Toby's screen tour looks for
                 .font(LumenFont.text(16, .semibold))
                 .foregroundStyle(LumenColor.blue)
@@ -226,8 +226,8 @@ struct FirstQuestionView: View {
 
     /// A26 R4 (Kelly): the badge says what is true.
     private var badgeTitle: String {
-        if model.isListening { return "Lyssnar" }
-        return isPaused ? "Pausad" : "Startar …"
+        if model.isListening { return String(localized: "Lyssnar") }
+        return isPaused ? String(localized: "Pausad") : String(localized: "Startar …")
     }
 
     private var hasAnswer: Bool {

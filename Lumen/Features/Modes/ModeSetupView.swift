@@ -51,8 +51,8 @@ struct InterviewSetupView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                ModeHeader(mode: .interview, title: "Intervjuläge",
-                           text: "Till för träning: en kompis ställer frågan och du hör ett färdigt svar. Använd det inte i en riktig intervju utan att den andra vet om det.")
+                ModeHeader(mode: .interview, title: String(localized: "Intervjuläge"),
+                           text: String(localized: "Till för träning: en kompis ställer frågan och du hör ett färdigt svar. Använd det inte i en riktig intervju utan att den andra vet om det."))
                 VStack(alignment: .leading, spacing: 8) {
                     FieldLabel(text: "Roll eller jobbannons")
                     TextField("Klistra in annonsen eller skriv rollen", text: $settings.interviewSetup, axis: .vertical)
@@ -61,12 +61,12 @@ struct InterviewSetupView: View {
                         .accessibilityLabel("Roll eller jobbannons")
                 }
                 VStack(alignment: .leading, spacing: 8) {
-                    FieldLabel(text: "CV", detail: "Läses på telefonen och sparas bara här. Högst 2 000 tecken skickas, utan e-post, telefonnummer, personnummer och adress.")
+                    FieldLabel(text: String(localized: "CV"), detail: String(localized: "Läses på telefonen och sparas bara här. Högst 2 000 tecken skickas, utan e-post, telefonnummer, personnummer och adress."))
                     if settings.interviewCV.isEmpty {
                         Button("Lägg till CV (PDF eller text)") { isPickingCV = true }
                             .buttonStyle(SystemButton(kind: .secondary))
                     } else {
-                        Text(settings.interviewCVName.isEmpty ? "CV inläst" : settings.interviewCVName)
+                        Text(settings.interviewCVName.isEmpty ? String(localized: "CV inläst") : settings.interviewCVName)
                             .font(LumenFont.text(16, .medium))
                         HStack(spacing: 10) {
                             Button("Byt CV") { isPickingCV = true }
@@ -108,9 +108,9 @@ struct InterviewSetupView: View {
             if let text = InterviewProfile.text(from: url) {
                 settings.interviewCV = text
                 settings.interviewCVName = url.lastPathComponent
-                cvNotice = "\(text.count) tecken inlästa."
+                cvNotice = String(localized: "\(text.count) tecken inlästa.")
             } else {
-                cvNotice = "Ingen text hittades i filen (en inskannad PDF går inte att läsa). Klistra in texten i stället."
+                cvNotice = String(localized: "Ingen text hittades i filen (en inskannad PDF går inte att läsa). Klistra in texten i stället.")
             }
         }
         .navigationTitle("")
@@ -127,8 +127,8 @@ struct AgeGateView: View {
         // A12: the age limit and what is stored must be readable in full before the button: the text scrolls and
         // the sheet can grow (it was cut on the iPhone SE and at the largest text size).
         ScrollView {
-            ModeHeader(mode: .rizz, title: "Rizz är för 18 år och äldre",
-                       text: "Frågan ställs en gång och sparas bara på den här telefonen.")
+            ModeHeader(mode: .rizz, title: String(localized: "Rizz är för 18 år och äldre"),
+                       text: String(localized: "Frågan ställs en gång och sparas bara på den här telefonen."))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(24)
         }
@@ -160,10 +160,10 @@ struct LiveStartView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 22) {
-                ModeHeader(mode: mode, title: mode == .rizz ? "Rizzläge" : "Socialt läge",
-                           text: "Prova med en kompis och berätta att appen lyssnar. Det ni båda säger går till ElevenLabs och Anthropic för att göra förslag. Orden glöms när sessionen slutar.")
+                ModeHeader(mode: mode, title: mode == .rizz ? String(localized: "Rizzläge") : String(localized: "Socialt läge"),
+                           text: String(localized: "Prova med en kompis och berätta att appen lyssnar. Det ni båda säger går till ElevenLabs och Anthropic för att göra förslag. Orden glöms när sessionen slutar."))
                 VStack(alignment: .leading, spacing: 8) {
-                    FieldLabel(text: "Om dig", detail: "Valfritt. Förslagen kan bygga på det.")
+                    FieldLabel(text: String(localized: "Om dig"), detail: String(localized: "Valfritt. Förslagen kan bygga på det."))
                     TextField("Intressen, med komma emellan", text: $settings.rizzInterests)
                         .textFieldStyle(LumenFieldStyle())
                         .accessibilityLabel("Intressen")

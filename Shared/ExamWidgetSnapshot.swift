@@ -26,9 +26,9 @@ struct ExamWidgetSnapshot: Codable, Equatable, Sendable {
     func daysLeftText(now: Date = Date(), calendar: Calendar = .current) -> String? {
         guard let days = daysLeft(now: now, calendar: calendar), days >= 0 else { return nil }
         switch days {
-        case 0: return "I dag"
-        case 1: return "I morgon"
-        default: return "\(days) dagar kvar"
+        case 0: return String(localized: "I dag")
+        case 1: return String(localized: "I morgon")
+        default: return String(localized: "\(days) dagar kvar")
         }
     }
 

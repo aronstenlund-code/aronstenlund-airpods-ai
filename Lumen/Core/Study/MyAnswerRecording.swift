@@ -110,8 +110,8 @@ final class MyAnswerRecording {
         let reply = await compress(transcript, asked)
         isCompressing = false
         guard let reply, !reply.answer.isEmpty else {
-            problem = reply == nil ? "EarMind kunde inte göra ett svar just nu. Försök igen."
-                                   : "EarMind hörde inget svar i inspelningen."
+            problem = reply == nil ? String(localized: "EarMind kunde inte göra ett svar just nu. Försök igen.")
+                                   : String(localized: "EarMind hörde inget svar i inspelningen.")
             return nil
         }
         return MyAnswerDraft(question: reply.q.isEmpty ? asked : reply.q, answer: reply.answer,

@@ -97,7 +97,7 @@ struct MyAnswerRecordView: View {
 
     /// No recording while EarMind listens: one microphone at a time.
     private var blocked: String? {
-        model.isActiveSession ? "Avsluta EarMind för att spela in." : nil
+        model.isActiveSession ? String(localized: "Avsluta EarMind för att spela in.") : nil
     }
 
     // MARK: 1. The question
@@ -109,7 +109,7 @@ struct MyAnswerRecordView: View {
         if recorder.state == .recording {
             HStack(spacing: 10) {
                 RecordingDot()
-                Text(verbatim: "Spelar in frågan · \(MyAnswerText.clock(recorder.elapsed))").monospacedDigit()
+                Text(verbatim: String(localized: "Spelar in frågan · \(MyAnswerText.clock(recorder.elapsed))")).monospacedDigit()
                 Spacer(minLength: 8)
                 Button("Stoppa") { Task { await recording.finishQuestion() } }
                     .buttonStyle(.bordered)
@@ -173,7 +173,7 @@ struct MyAnswerRecordView: View {
                     Text(verbatim: MyAnswerText.clock(answer.elapsed))
                         .font(.largeTitle.bold())
                         .monospacedDigit()
-                    Text(verbatim: "av \(MyAnswerText.clock(AnswerRecorder.limit))")
+                    Text(verbatim: String(localized: "av \(MyAnswerText.clock(AnswerRecorder.limit))"))
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .monospacedDigit()
@@ -217,14 +217,14 @@ struct MyAnswerRecordView: View {
         if answer.state == .recording {
             MainActionBar(title: "Stoppa", systemImage: "stop.fill") { recording.stopAnswer() }
         } else if answer.state == .recorded || isMakingAnswer {
-            MainActionBar(title: isMakingAnswer ? "Gör ett svar …" : "Klar",
+            MainActionBar(title: isMakingAnswer ? String(localized: "Gör ett svar …") : String(localized: "Klar"),
                           isBusy: isMakingAnswer,
                           isDisabled: !recording.canFinish) {
                 Task { await finish() }
             }
         } else {
-            MainActionBar(title: "Spela in svaret", systemImage: "mic.fill",
-                          note: recording.hasQuestion ? nil : "Välj eller skriv frågan först.",
+            MainActionBar(title: String(localized: "Spela in svaret"), systemImage: "mic.fill",
+                          note: recording.hasQuestion ? nil : String(localized: "Välj eller skriv frågan först."),
                           isDisabled: !recording.canRecordAnswer || blocked != nil) {
                 questionFocused = false
                 Task { await recording.recordAnswer() }

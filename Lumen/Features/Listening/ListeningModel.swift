@@ -1172,7 +1172,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         if let session = rizz, !session.offered.isEmpty {
             let lines = ownLinesAreReliable ? session.ownLines.joined(separator: "\n") : ""
             history.record(HistoryEntry(question: lines.isEmpty ? nil : lines, answer: "",
-                                        summary: "\(mode == .rizz ? "Rizzläge" : "Socialt läge"): \(session.offered.count) förslag.",
+                                        summary: String(localized: "\(mode == .rizz ? String(localized: "Rizzläge") : String(localized: "Socialt läge")): \(session.offered.count) förslag."),
                                         suggestions: session.offered, mode: mode.rawValue, persona: "social"))
         }
         liveMode.end() // D199 step 2: the session, the early request, the instruction and its triggers
@@ -2211,7 +2211,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A45: "Lumen hör och pratar lite sämre just nu", once per session, while a stand-in engine is used.
     private(set) var fallbackNotice: String?
     @ObservationIgnored private var fallbackNotedThisSession = false
-    static let fallbackLine = "EarMind hör och pratar lite sämre just nu"
+    static let fallbackLine = String(localized: "EarMind hör och pratar lite sämre just nu")
 
     private func noteFallback(what: String) {
         guard !fallbackNotedThisSession else { return }
@@ -2305,7 +2305,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return String(fact.text.dropFirst(prefix.count)).trimmingCharacters(in: CharacterSet(charactersIn: "\"…"))
         }
         if let cards = studyCards?.current().filter({ $0.wrong > $0.right && ($0.subject ?? plan.subject) == plan.subject }), !cards.isEmpty {
-            return cards.prefix(2).map(\.question).joined(separator: " och ")
+            return cards.prefix(2).map(\.question).joined(separator: String(localized: " och "))
         }
         return plan.topics.isEmpty ? nil : plan.topics
     }

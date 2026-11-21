@@ -112,7 +112,7 @@ struct PracticeRun: Equatable, Sendable {
     var task: ExamTask { paper.tasks[index] }
     var nos: [String] { paper.tasks.map(\.no) }
     /// "Fråga 3 av 12".
-    var progress: String { "Fråga \(index + 1) av \(count)" }
+    var progress: String { String(localized: "Fråga \(index + 1) av \(count)") }
 
     /// How Lumen reads the question: Kevin's `spoken` (numbers in words, the points last), else the D84 form.
     static func spoken(_ task: ExamTask) -> String {

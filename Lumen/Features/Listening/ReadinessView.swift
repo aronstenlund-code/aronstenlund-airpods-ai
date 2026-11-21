@@ -52,21 +52,21 @@ struct ReadinessView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     header
                     if let weakest = readiness.weakest, !weakest.isEmpty {
-                        group("Öva på") {
+                        group(String(localized: "Öva på")) {
                             ForEach(Array(weakest.enumerated()), id: \.offset) { index, weak in
                                 row(title: weak.concept, detail: weak.why.map(Self.reason), divider: index > 0)
                             }
                         }
                     }
                     if !known.isEmpty {
-                        group("Det här kan du") {
+                        group(String(localized: "Det här kan du")) {
                             ForEach(Array(known.enumerated()), id: \.offset) { index, concept in
                                 row(title: concept, detail: nil, divider: index > 0, done: true)
                             }
                         }
                     }
                     if let today {
-                        group("Dagens pass") {
+                        group(String(localized: "Dagens pass")) {
                             Text(today)
                                 .font(LumenFont.text(17, .semibold))
                                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -79,7 +79,7 @@ struct ReadinessView: View {
             }
             .safeAreaInset(edge: .bottom) {
                 Button(action: onQuiz) {
-                    TwoLineLabel(title: "Förhör mig", detail: "EarMind börjar med det du behöver öva på")
+                    TwoLineLabel(title: String(localized: "Förhör mig"), detail: String(localized: "EarMind börjar med det du behöver öva på"))
                 }
                 .buttonStyle(SystemButton())
                 .padding(.horizontal, 20)

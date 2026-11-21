@@ -9,12 +9,12 @@ struct ExamPlan: Codable, Equatable, Identifiable, Sendable {
 
         var title: String {
             switch self {
-            case .matte: "Matte"
-            case .no: "NO"
-            case .so: "SO"
-            case .sprak: "Språk"
-            case .praktiskt: "Praktiskt"
-            case .annat: "Annat"
+            case .matte: String(localized: "Matte")
+            case .no: String(localized: "NO")
+            case .so: String(localized: "SO")
+            case .sprak: String(localized: "Språk")
+            case .praktiskt: String(localized: "Praktiskt")
+            case .annat: String(localized: "Annat")
             }
         }
 
@@ -55,10 +55,11 @@ struct ExamPlan: Codable, Equatable, Identifiable, Sendable {
     var name: String {
         if let title = title?.trimmingCharacters(in: .whitespaces), !title.isEmpty { return title }
         let s = subject.trimmingCharacters(in: .whitespaces)
-        guard !s.isEmpty else { return "Provet" }
-        if area == .matte { return "Matteprovet" }
-        if area == .annat, !StudyProfile.subjects.contains(s) { return "Provet i \(s)" }
-        return s.prefix(1).uppercased() + s.dropFirst().lowercased() + "provet"
+        guard !s.isEmpty else { return String(localized: "Provet") }
+        if area == .matte { return String(localized: "Matteprovet") }
+        if area == .annat, !StudyProfile.subjects.contains(s) { return String(localized: "Provet i \(s)") }
+        // A157 (D251): the whole name is one text, so English can say "Biologi quiz".
+        return String(localized: "\(s.prefix(1).uppercased() + s.dropFirst().lowercased())provet")
     }
 
     func daysLeft(now: Date = Date(), calendar: Calendar = .current) -> Int {
@@ -79,32 +80,37 @@ struct ExamPlan: Codable, Equatable, Identifiable, Sendable {
     }
 
     /// D189: a repetition exam without a date.
-    static let noDateLine = "Inget datum"
+    static let noDateLine = String(localized: "Inget datum")
 
     static func inDays(_ days: Int) -> String {
         switch days {
-        case ..<0: "har varit"
-        case 0: "idag"
-        case 1: "imorgon"
-        default: "om \(days) dagar"
+        case ..<0: String(localized: "har varit")
+        case 0: String(localized: "idag")
+        case 1: String(localized: "imorgon")
+        default: String(localized: "om \(days) dagar")
         }
     }
 
     /// "5 dagar kvar", "1 dag kvar", "Idag".
     static func daysLeftText(_ days: Int) -> String {
         switch days {
-        case ..<1: "Idag"
-        case 1: "1 dag kvar"
-        default: "\(days) dagar kvar"
+        case ..<1: String(localized: "Idag")
+        case 1: String(localized: "1 dag kvar")
+        default: String(localized: "\(days) dagar kvar")
         }
     }
 
     static func shortDate(_ date: Date, calendar: Calendar = .current) -> String {
+        let language = AppLanguage.current
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "sv_SE")
+        formatter.locale = language == .sv ? Locale(identifier: "sv_SE") : language.locale
         formatter.calendar = calendar
         formatter.timeZone = calendar.timeZone
-        formatter.dateFormat = "EEE d MMM"
+        if language == .sv {
+            formatter.dateFormat = "EEE d MMM"
+        } else {
+            formatter.setLocalizedDateFormatFromTemplate("EEEdMMM") // A157: "Fri, Nov 20" in English
+        }
         let text = formatter.string(from: date).replacingOccurrences(of: ".", with: "")
         return text.prefix(1).uppercased() + text.dropFirst()
     }

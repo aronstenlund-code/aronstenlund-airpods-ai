@@ -86,7 +86,7 @@ final class NotesStore {
     @discardableResult
     func add(text: String, at date: Date = Date()) -> Note {
         let note = Note(createdAt: date, language: "sv",
-                        answers: [AnswerTurn(question: "Anteckning", answer: text, createdAt: date, source: "note")])
+                        answers: [AnswerTurn(question: String(localized: "Anteckning"), answer: text, createdAt: date, source: "note")])
         notes.insert(note, at: 0)
         persist()
         return note

@@ -2,3 +2,14 @@
 Lumen/Features/Repetition
 Lumen/Core/Repetition
 Lumen/Core/Language
+Lumen/Features/Settings
+Lumen/Features/Onboarding
+Lumen/Features/Modes
+Lumen/Features/Sleep
+Lumen/Features/Commands
+Lumen/Features/Prep
+Lumen/Features/Notes
+Lumen/Features/Listening
+Lumen/App
+LumenControls
+Shared

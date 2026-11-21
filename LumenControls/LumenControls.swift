@@ -82,7 +82,7 @@ struct ListeningLiveActivity: Widget {
             } compactLeading: {
                 LumenLogo(size: 18)
             } compactTrailing: {
-                Text(context.state.isPaused ? "Pausad" : "Lyssnar")
+                Text(context.state.isPaused ? String(localized: "Pausad") : String(localized: "Lyssnar"))
                     .font(LumenFont.text(12, .semibold))
             } minimal: {
                 StatusSymbol(isPaused: context.state.isPaused)
@@ -121,7 +121,7 @@ private struct ListeningStatus: View {
     var body: some View {
         HStack(spacing: 6) {
             StatusSymbol(isPaused: isPaused)
-            Text(isPaused ? "Pausad" : "Lyssnar").font(LumenFont.text(14, .semibold))
+            Text(isPaused ? String(localized: "Pausad") : String(localized: "Lyssnar")).font(LumenFont.text(14, .semibold))
         }
         .accessibilityElement(children: .combine)
     }
@@ -158,7 +158,7 @@ private struct ToggleButton: View {
 
     var body: some View {
         Button(intent: ToggleListeningIntent()) {
-            Label(isPaused ? "Fortsätt" : "Pausa", systemImage: isPaused ? "play.fill" : "pause.fill")
+            Label(isPaused ? String(localized: "Fortsätt") : String(localized: "Pausa"), systemImage: isPaused ? "play.fill" : "pause.fill")
                 .font(LumenFont.text(15, .semibold))
                 .frame(maxWidth: .infinity, minHeight: 36)
         }

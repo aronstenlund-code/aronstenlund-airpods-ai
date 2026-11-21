@@ -31,21 +31,24 @@ struct PrefSetting: Codable, Equatable, Sendable, Identifiable {
     /// The readable line for Minne, the same words as Kevin's `describe()` (`memory/settings.ts`).
     var text: String {
         let words: [String: String] = [
-            "length:shorter": "kortare svar", "length:longer": "längre, utförligare svar", "simplicity:simpler": "enklare förklaringar",
-            "examples:more": "fler exempel", "accuracy:careful": "extra noggrann kontroll av fakta",
+            // A157 (D251): the line in the app's language ("Shorter answers in maths").
+            "length:shorter": String(localized: "kortare svar"), "length:longer": String(localized: "längre, utförligare svar"),
+            "simplicity:simpler": String(localized: "enklare förklaringar"), "examples:more": String(localized: "fler exempel"),
+            "accuracy:careful": String(localized: "extra noggrann kontroll av fakta"),
         ]
-        let kinds = ["fact": "faktasvar", "explanation": "förklaringar", "math": "matte"]
-        let modes = ["prov": "Provläge", "fragor": "Standardläge", "intervju": "Intervju", "socialt": "Socialt", "rizz": "Rizz"]
+        let kinds = ["fact": String(localized: "faktasvar"), "explanation": String(localized: "förklaringar"), "math": String(localized: "matte")]
+        let modes = ["prov": String(localized: "Provläge"), "fragor": String(localized: "Standardläge"), "intervju": String(localized: "Intervju"),
+                     "socialt": String(localized: "Socialt"), "rizz": String(localized: "Rizz")]
         let what = words["\(key):\(value)"] ?? "\(key) \(value)"
         var line = what.prefix(1).uppercased() + what.dropFirst()
         if let kind = scope.answerType {
-            line += " i " + (kinds[kind] ?? kind)
+            line += String(localized: " i ") + (kinds[kind] ?? kind)
         } else if let subject = scope.subject {
-            line += " i " + subject.lowercased()
+            line += String(localized: " i ") + subject.lowercased()
         } else if let exam = scope.exam {
-            line += " inför " + exam
+            line += String(localized: " inför ") + exam
         } else if let mode = scope.mode {
-            line += " i " + (modes[mode] ?? mode)
+            line += String(localized: " i ") + (modes[mode] ?? mode)
         }
         return line
     }

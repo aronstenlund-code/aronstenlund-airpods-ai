@@ -92,7 +92,7 @@ struct ListeningScreen: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityAddTraits(.isHeader)
                 HStack {
-                    IconButton(systemName: "chevron.left", label: "Tillbaka till start", background: .clear, action: onBack)
+                    IconButton(systemName: "chevron.left", label: String(localized: "Tillbaka till start"), background: .clear, action: onBack)
                     Spacer()
                     Menu {
                         Button("Byt läge") { isSwitching = true }
@@ -110,7 +110,7 @@ struct ListeningScreen: View {
                     .accessibilityLabel("Mer")
                 }
             }
-            StatusBadge(title: model.isRecordingDebugAudio ? "Testläge · ljud skickas" : stateTitle,
+            StatusBadge(title: model.isRecordingDebugAudio ? String(localized: "Testläge · ljud skickas") : stateTitle,
                         active: listening && hearing && model.speaker.status == .idle,
                         levelDBFS: listening && hearing ? model.controller.level.rmsDBFS : nil,
                         testMode: model.isRecordingDebugAudio) // A76 (Ke46 T1): one indicator, in the test colour
@@ -142,22 +142,22 @@ struct ListeningScreen: View {
 
     private var stateTitle: String {
         switch state {
-        case .listening: model.speaker.status != .idle ? "Svarar" : (hearing ? "Lyssnar" : "Hör inte, försöker igen") // A11
-        case .paused: "Pausad"
-        case .idle, .error: model.isStarting ? "Startar …" : "Pausad" // A26 R4: the badge and "Lyssna igen" agree
+        case .listening: model.speaker.status != .idle ? String(localized: "Svarar") : (hearing ? String(localized: "Lyssnar") : String(localized: "Hör inte, försöker igen")) // A11
+        case .paused: String(localized: "Pausad")
+        case .idle, .error: model.isStarting ? String(localized: "Startar …") : String(localized: "Pausad") // A26 R4: the badge and "Lyssna igen" agree
         }
     }
 
     private var stateDetail: String {
         if let run = model.practice {
-            return "Provfrågor, " + run.progress.lowercased() + ". Svara högt, eller säg nästa." // A16
+            return String(localized: "Provfrågor, ") + run.progress.lowercased() + String(localized: ". Svara högt, eller säg nästa.") // A16
         }
         if let quiz = model.silentQuiz {
-            return "Tyst förhör, fråga \(max(1, quiz.asked)) av \(SilentQuiz.questions). Nicka för ja, skaka för nej." // A20.2
+            return String(localized: "Tyst förhör, fråga \(max(1, quiz.asked)) av \(SilentQuiz.questions). Nicka för ja, skaka för nej.") // A20.2
         }
         return switch state {
-        case .paused: "Tryck Lyssna igen eller säg ”Lumen, fortsätt”"
-        default: mode.isLive ? "EarMind ger ett förslag i pausen" : ""
+        case .paused: String(localized: "Tryck Lyssna igen eller säg ”Lumen, fortsätt”")
+        default: mode.isLive ? String(localized: "EarMind ger ett förslag i pausen") : ""
         }
     }
 
@@ -429,9 +429,9 @@ struct ModeSwitchSheet: View {
 
     private var footnote: String {
         // Ke53 point 11 (Kelly S1): one footnote for the section instead of a badge on every row.
-        "Alla lägen här lyssnar och är i BETA. " + (onPick == nil
-            ? "EarMind lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
-            : "Valet gäller Starta EarMind. Starta prov använder aldrig mikrofonen.") // Kelly N4
+        String(localized: "Alla lägen här lyssnar och är i BETA. ") + (onPick == nil
+            ? String(localized: "EarMind lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”.")
+            : String(localized: "Valet gäller Starta EarMind. Starta prov använder aldrig mikrofonen.")) // Kelly N4
     }
 
     var body: some View {
@@ -441,7 +441,7 @@ struct ModeSwitchSheet: View {
                     ForEach(order) { mode in
                         if onPick != nil, mode == .interview {
                             // Ke29: Standardläge and Provläge first, then FLER LÄGEN with Sov last.
-                            SectionLabel("Fler lägen")
+                            SectionLabel(String(localized: "Fler lägen"))
                                 .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding(.top, 14)
                                 .padding(.leading, 4)
@@ -462,7 +462,7 @@ struct ModeSwitchSheet: View {
                                     // (in the largest text the badge broke the names: "Stan/dardl/äge").
                                     Text(mode.shortName).font(LumenFont.text(17, .semibold))
                                         .lineLimit(1).minimumScaleFactor(0.7) // Kelly S1b: never "Standard / läge"
-                                    Text(mode == .prov ? "Förhör med rösten" : mode.tagline) // Kelly N4
+                                    Text(mode == .prov ? String(localized: "Förhör med rösten") : mode.tagline) // Kelly N4
                                         .font(LumenFont.text(14)).foregroundStyle(LumenColor.muted)
                                 }
                                 Spacer()
@@ -562,7 +562,7 @@ struct TermChips: View {
             }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Ämnesord: " + terms.joined(separator: ", "))
+        .accessibilityLabel(String(localized: "Ämnesord: ") + terms.joined(separator: ", "))
     }
 }
 
@@ -643,7 +643,7 @@ struct PracticeCard: View {
         if points.E > 0 { parts.append("\(ExamSession.number(points.E)) E") }
         if points.C > 0 { parts.append("\(ExamSession.number(points.C)) C") }
         if points.A > 0 { parts.append("\(ExamSession.number(points.A)) A") }
-        return parts.joined(separator: ", ") + " poäng"
+        return parts.joined(separator: ", ") + String(localized: " poäng")
     }
 }
 
@@ -658,10 +658,10 @@ struct PracticeResultCard: View {
             Text("\(result.right) rätt av \(result.answered)")
                 .font(LumenFont.text(28, .bold, relativeTo: .title))
             HStack(spacing: 16) {
-                count("Rätt", result.right)
-                count("Delvis", result.partly)
-                count("Fel", result.wrong)
-                if result.skipped > 0 { count("Hoppade över", result.skipped) }
+                count(String(localized: "Rätt"), result.right)
+                count(String(localized: "Delvis"), result.partly)
+                count(String(localized: "Fel"), result.wrong)
+                if result.skipped > 0 { count(String(localized: "Hoppade över"), result.skipped) }
             }
             if !result.practise.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
@@ -702,7 +702,7 @@ struct LinkRow: View {
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(link.title).font(LumenFont.text(16, .semibold)).foregroundStyle(LumenColor.ink).multilineTextAlignment(.leading)
-                    Text(link.sourceName + (link.loginLikely == true ? ", kan kräva skolkonto" : ""))
+                    Text(link.sourceName + (link.loginLikely == true ? String(localized: ", kan kräva skolkonto") : ""))
                         .font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
                 }
                 Spacer(minLength: 0)

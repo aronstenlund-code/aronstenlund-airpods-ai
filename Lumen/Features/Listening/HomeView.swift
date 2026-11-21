@@ -193,7 +193,7 @@ struct HomeView: View {
                 }
                 .accessibilityLabel("Testläget är på. Öppna inställningar")
             }
-            IconButton(systemName: "gearshape", label: "Inställningar") { model.isShowingSettings = true }
+            IconButton(systemName: "gearshape", label: String(localized: "Inställningar")) { model.isShowingSettings = true }
         }
     }
 
@@ -399,7 +399,7 @@ struct HomeView: View {
             let header = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6))
                 : AnyLayout(HStackLayout(alignment: .center))
             header {
-                SectionLabel("Nästa prov")
+                SectionLabel(String(localized: "Nästa prov"))
                 if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
                 if plan.hasDate { RedPenRing(text: ExamPlan.daysLeftText(plan.daysLeft())) } // D189: no countdown without a date
             }
@@ -465,7 +465,7 @@ struct HomeView: View {
                 Button {
                     Task { await model.startQuiz(for: plan) }
                 } label: {
-                    TwoLineLabel(title: "Förhör med rösten (BETA)", detail: "EarMind frågar ut dig och svarar på dina frågor") // A80
+                    TwoLineLabel(title: String(localized: "Förhör med rösten (BETA)"), detail: String(localized: "EarMind frågar ut dig och svarar på dina frågor")) // A80
                 }
                 // A50 (D124): secondary, the Start button is the screen's one blue button. "Få A-svar till provet"
                 // moved into Provläge ("Mina svar", A53, D126).
@@ -551,7 +551,7 @@ struct HomeView: View {
 
     private func otherExams(_ others: [ExamPlan]) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            if !others.isEmpty { SectionLabel("Andra prov").padding(.leading, 4) }
+            if !others.isEmpty { SectionLabel(String(localized: "Andra prov")).padding(.leading, 4) }
             VStack(spacing: 0) {
                 ForEach(others) { plan in
                     Button {
@@ -777,7 +777,7 @@ struct LumenCanDoAll: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("EarMind kan allt. Säg Lumen och vad du vill, till exempel: "
+        .accessibilityLabel(String(localized: "EarMind kan allt. Säg Lumen och vad du vill, till exempel: ")
             + Self.window(at: 0).map { $0.trimmingCharacters(in: CharacterSet(charactersIn: "”")) }.joined(separator: ", "))
     }
 

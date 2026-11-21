@@ -54,7 +54,7 @@ struct FlipCardsView: View {
     private var topBar: some View {
         VStack(spacing: 12) {
             HStack {
-                IconButton(systemName: "xmark", label: "Stäng", action: onClose)
+                IconButton(systemName: "xmark", label: String(localized: "Stäng"), action: onClose)
                 Spacer()
                 VStack(spacing: 2) {
                     Text("Vändkort").font(LumenFont.text(17, .semibold, relativeTo: .headline))
@@ -79,7 +79,7 @@ struct FlipCardsView: View {
     private func face(_ card: StudyCard) -> some View {
         Button(action: flip) {
             VStack(alignment: .leading, spacing: 14) {
-                SectionLabel(deck.isFlipped ? "Svar" : "Fråga")
+                SectionLabel(deck.isFlipped ? String(localized: "Svar") : String(localized: "Fråga"))
                 if deck.isFlipped {
                     Text(card.answer)
                         .font(LumenFont.text(20, relativeTo: .title3))
@@ -127,7 +127,7 @@ struct FlipCardsView: View {
 
     private var done: some View {
         VStack(alignment: .leading, spacing: 10) {
-            SectionLabel("Klart")
+            SectionLabel(String(localized: "Klart"))
             Text(deck.summary)
                 .font(LumenFont.text(28, .bold, relativeTo: .title))
             Text(deck.missed.isEmpty
@@ -144,7 +144,7 @@ struct FlipCardsView: View {
     private var doneButtons: some View {
         VStack(spacing: 10) {
             if let again = deck.againWithMissed() {
-                Button("Öva på \(again.cards.count == 1 ? "det" : "de \(again.cards.count)") igen") {
+                Button("Öva på \(again.cards.count == 1 ? String(localized: "det") : String(localized: "de \(again.cards.count)")) igen") {
                     withAnimation(.easeOut(duration: 0.2)) { deck = again }
                 }
                 .buttonStyle(SystemButton())

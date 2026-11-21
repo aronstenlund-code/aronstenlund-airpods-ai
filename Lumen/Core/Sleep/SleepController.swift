@@ -33,7 +33,7 @@ final class SleepController {
         do {
             try recorder.start()
         } catch {
-            problem = "Sömnläget kunde inte starta mikrofonen."
+            problem = String(localized: "Sömnläget kunde inte starta mikrofonen.")
             return
         }
         problem = nil

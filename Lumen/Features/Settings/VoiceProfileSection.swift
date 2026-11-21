@@ -9,7 +9,7 @@ struct VoiceProfileSection: View {
     @State private var notice: String?
     @State private var isConfirmingDelete = false
 
-    static let readingText = "Hej Lumen. Det här är min röst. Jag läser den här texten i lugn takt så att du kan känna igen mig. Solen gick upp över sjön, och fåglarna började sjunga i träden. Nu vet du hur jag låter."
+    static let readingText = String(localized: "Hej Lumen. Det här är min röst. Jag läser den här texten i lugn takt så att du kan känna igen mig. Solen gick upp över sjön, och fåglarna började sjunga i träden. Nu vet du hur jag låter.")
 
     var body: some View {
         Section {
@@ -45,7 +45,7 @@ struct VoiceProfileSection: View {
         .confirmationDialog("Radera röstprofilen?", isPresented: $isConfirmingDelete, titleVisibility: .visible) {
             Button("Radera", role: .destructive) {
                 model.deleteVoiceProfile()
-                notice = "Röstprofilen är raderad."
+                notice = String(localized: "Röstprofilen är raderad.")
             }
         }
     }
@@ -64,10 +64,10 @@ struct VoiceProfileSection: View {
         countdown.cancel()
         isEnrolling = false
         switch result {
-        case .saved(let seconds)?: notice = "Sparad (\(Int(seconds)) s tal). EarMind känner igen din röst nu."
-        case .tooLittleSpeech?: notice = "För lite tal hördes. Försök igen och läs hela texten högt."
-        case .modelsUnavailable?: notice = "Röstmodellen kunde inte laddas. Försök igen med internet."
-        case nil: notice = "Mikrofonen kunde inte starta."
+        case .saved(let seconds)?: notice = String(localized: "Sparad (\(Int(seconds)) s tal). EarMind känner igen din röst nu.")
+        case .tooLittleSpeech?: notice = String(localized: "För lite tal hördes. Försök igen och läs hela texten högt.")
+        case .modelsUnavailable?: notice = String(localized: "Röstmodellen kunde inte laddas. Försök igen med internet.")
+        case nil: notice = String(localized: "Mikrofonen kunde inte starta.")
         }
     }
 }

@@ -197,16 +197,16 @@ final class AccountDeletionModel {
 
     nonisolated static func line(_ failure: AccountDeletionFailure) -> String {
         switch failure {
-        case .offline: "Det gick inte att radera kontot, för telefonen har inget nät. Inget är raderat. Försök igen när du är uppkopplad."
-        case .busy: "För många försök. Vänta en minut och försök igen."
-        case .failed: "Det gick inte att radera kontot just nu. Försök igen om en stund."
+        case .offline: String(localized: "Det gick inte att radera kontot, för telefonen har inget nät. Inget är raderat. Försök igen när du är uppkopplad.")
+        case .busy: String(localized: "För många försök. Vänta en minut och försök igen.")
+        case .failed: String(localized: "Det gick inte att radera kontot just nu. Försök igen om en stund.")
         }
     }
 
     /// The words before the press (Deangelo, A145).
-    nonisolated static let question = "Radera kontot?"
-    nonisolated static let questionDetail = "Allt du har gjort raderas, både på telefonen och hos oss: prov, texter, ljud, krediter, historik och inställningar. Det går inte att ångra."
-    nonisolated static let passLine = "Har du veckokortet? Det avslutas inte när kontot raderas. Säg upp det i Inställningar › ditt namn › Prenumerationer."
-    nonisolated static let doneTitle = "Kontot är raderat"
-    nonisolated static let doneLine = "EarMind börjar om som ny på den här telefonen."
+    nonisolated static let question = String(localized: "Radera kontot?")
+    nonisolated static let questionDetail = String(localized: "Allt du har gjort raderas, både på telefonen och hos oss: prov, texter, ljud, krediter, historik och inställningar. Det går inte att ångra.")
+    nonisolated static let passLine = String(localized: "Har du veckokortet? Det avslutas inte när kontot raderas. Säg upp det i Inställningar › ditt namn › Prenumerationer.")
+    nonisolated static let doneTitle = String(localized: "Kontot är raderat")
+    nonisolated static let doneLine = String(localized: "EarMind börjar om som ny på den här telefonen.")
 }

@@ -21,7 +21,7 @@ struct PrepView: View {
                     NavigationLink {
                         ExamSetupView(model: model, materials: materials, client: client, isSheet: false)
                     } label: {
-                        LabeledContent("Provfrågor", value: materials.isReady ? "\(materials.paper.tasks.count) frågor" : "Lägg till")
+                        LabeledContent("Provfrågor", value: materials.isReady ? String(localized: "\(materials.paper.tasks.count) frågor") : String(localized: "Lägg till"))
                     }
                 } footer: {
                     Text("Ett prov (PDF, foto eller text) som EarMind läser upp fråga för fråga i Provläge och rättar.")

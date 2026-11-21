@@ -34,12 +34,12 @@ final class AnswerRecorder {
     func start() async {
         guard state != .recording else { return }
         guard await AudioSessionPermission.microphone() else {
-            state = .failed("EarMind får inte använda mikrofonen. Tillåt den i Inställningar.")
+            state = .failed(String(localized: "EarMind får inte använda mikrofonen. Tillåt den i Inställningar."))
             return
         }
         // The words are written out by the phone's speech recognition, which iOS asks about once.
         guard await LegacySpeechProvider.requestAuthorization() == .authorized else {
-            state = .failed("EarMind får inte använda taligenkänningen. Tillåt den i Inställningar.")
+            state = .failed(String(localized: "EarMind får inte använda taligenkänningen. Tillåt den i Inställningar."))
             return
         }
         let url = FileManager.default.temporaryDirectory.appendingPathComponent("mitt-svar-\(UUID().uuidString).caf")
@@ -51,7 +51,7 @@ final class AnswerRecorder {
         } catch {
             tap.stop()
             try? FileManager.default.removeItem(at: url)
-            state = .failed("Inspelningen kunde inte starta.")
+            state = .failed(String(localized: "Inspelningen kunde inte starta."))
             return
         }
         self.tap = tap
@@ -100,7 +100,7 @@ final class AnswerRecorder {
             state = .idle
             return text
         }
-        state = .failed("EarMind kunde inte höra något svar i inspelningen.")
+        state = .failed(String(localized: "EarMind kunde inte höra något svar i inspelningen."))
         return nil
     }
 

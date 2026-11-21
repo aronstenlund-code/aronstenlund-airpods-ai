@@ -31,10 +31,10 @@ final class PagePhotoController {
         guard let host else { return }
         isReading = true
         defer { isReading = false }
-        status = "Läser sidan …"
+        status = String(localized: "Läser sidan …")
         let text = await PagePhoto.text(of: image)
         guard text.count >= PagePhoto.minimumCharacters else {
-            status = "Jag kunde inte läsa sidan. Fota den rakt uppifrån, i bra ljus."
+            status = String(localized: "Jag kunde inte läsa sidan. Fota den rakt uppifrån, i bra ljus.")
             host.modeLog("Page photo: too little text (\(text.count) characters) (A36)")
             return
         }
@@ -43,7 +43,7 @@ final class PagePhotoController {
         host.refreshKeyterms()
         host.modeLog("Page photo: \(text.count) characters, \(terms) terms (A36)")
         if let examMaterials = host.examMaterials, let examClient = host.examClient, PagePhoto.mayReplace(examMaterials.paper) {
-            status = "Gör övningsfrågor av sidan …"
+            status = String(localized: "Gör övningsfrågor av sidan …")
             let profile = host.studyProfile.profile
             await examMaterials.read(text: text, name: title, with: examClient,
                                      subject: profile.subject.isEmpty ? plan.subject : profile.subject,

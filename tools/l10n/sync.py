@@ -24,8 +24,9 @@ def main(compiler_path=None):
     comp = l10n.compiler_keys(compiler_path)
     en = l10n.load(l10n.EN, {})
     cats = {t: l10n.load(os.path.join(l10n.ROOT, c[0]), None) for t, c in l10n.CATALOGS.items()}
-    added = changed = 0
+    added = changed = removed = 0
     problems = []
+    produced = {t: set() for t in l10n.CATALOGS}
     for lit in l10n.area_literals(()):
         text = lit.text
         if text not in en:
@@ -43,6 +44,7 @@ def main(compiler_path=None):
                     continue
                 keys = [l10n.key_with(lit.parts, [l10n.guess(e) for e in l10n.exprs(lit.parts)])]
             strings = cats[target]["strings"]
+            produced[target].update(keys)
             for key in keys:
                 specs = [m.group(0) for m in l10n.SPEC_RE.finditer(key.replace("%%", "\x00\x00"))] if lit.interpolated else []
                 try:
@@ -59,9 +61,15 @@ def main(compiler_path=None):
                     old.setdefault("comment", NOTE); changed += 1
                 elif old.get("comment") == NOTE and l10n.english_of(key, old) != value:
                     old["localizations"]["en"]["stringUnit"]["value"] = value; changed += 1
+    # An entry of mine that no text in the code becomes any more (a guessed %@ that the compiler made %lld, a text
+    # that was reworded) goes away, so the catalog holds only what is looked up.
+    for t in l10n.CATALOGS:
+        strings = cats[t]["strings"]
+        for key in [k for k, e in strings.items() if e.get("comment") == NOTE and k not in produced[t]]:
+            del strings[key]; removed += 1
     for t, c in l10n.CATALOGS.items():
         l10n.save_catalog(os.path.join(l10n.ROOT, c[0]), cats[t])
-    print(f"{added} added, {changed} changed")
+    print(f"{added} added, {changed} changed, {removed} removed")
     for p in problems:
         print("PROBLEM", p)
     return 1 if problems else 0

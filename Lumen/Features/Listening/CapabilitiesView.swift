@@ -68,25 +68,25 @@ struct LumenCapability: Identifiable, Equatable, Sendable {
         "social": "person.2.wave.2", "sleep": "moon.stars", "translate": "character.bubble", "web": "globe",
     ]
     static let places: [String: String] = [
-        "music": "Öppnar Spotify med sökningen", "interview": "Byt läge", "social": "Byt läge",
+        "music": String(localized: "Öppnar Spotify med sökningen"), "interview": String(localized: "Byt läge"), "social": String(localized: "Byt läge"),
     ]
 
     /// Ke29's rows, the list before A77 (used only without the file).
     static let fallback: [LumenCapability] = [
-        .init(id: "quiz", group: .study, title: "Förhör", symbol: "graduationcap", say: "”Lumen, förhör mig på fotosyntes”", setup: .nothing),
-        .init(id: "questions", group: .study, title: "Svar på frågor", symbol: "questionmark.bubble", say: "”Lumen, vad betyder ambivalent?”", setup: .nothing),
-        .init(id: "myAnswers", group: .study, title: "Mina svar", symbol: "text.badge.checkmark", say: "Dina egna svar på provfrågor, i örat", setup: .place("I Provläget")),
-        .init(id: "calendar", group: .everyday, title: "Kalender", symbol: "calendar", say: "”Lumen, vad har jag i dag?”", setup: .permission(.calendar)),
-        .init(id: "reminders", group: .everyday, title: "Påminnelser", symbol: "checklist", say: "”Lumen, påminn mig om träningen kl. 18”", setup: .permission(.reminders)),
-        .init(id: "timer", group: .everyday, title: "Timer", symbol: "timer", say: "”Lumen, sätt en timer på 10 minuter”", setup: .permission(.alarms)),
-        .init(id: "alarm", group: .everyday, title: "Larm", symbol: "alarm", say: "”Lumen, väck mig kvart i sju”", setup: .permission(.alarms)),
-        .init(id: "notes", group: .everyday, title: "Anteckningar", symbol: "note.text", say: "”Lumen, spara det”", setup: .nothing),
-        .init(id: "training", group: .everyday, title: "Träning", symbol: "figure.run", say: "”Lumen, ge mig ett styrkepass på 20 minuter”", setup: .nothing),
-        .init(id: "spotify", group: .musicAndCalls, title: "Spotify", symbol: "music.note", say: "”Lumen, kör spellistan Plugg”", setup: .soon),
-        .init(id: "call", group: .musicAndCalls, title: "Ring", symbol: "phone", say: "”Lumen, ring mamma”", setup: .permission(.contacts)), // A58
-        .init(id: "music", group: .musicAndCalls, title: "Öppna musik", symbol: "music.note.list", say: "”Lumen, spela lugn pluggmusik”", setup: .place("Öppnar Spotify med sökningen")), // A58
-        .init(id: "interview", group: .more, title: "Intervju", symbol: "briefcase", say: "Färdiga svar på intervjufrågor", setup: .place("Byt läge")),
-        .init(id: "sleep", group: .more, title: "Sömn", symbol: "moon.stars", say: "Tryck Sov på kvällen. Morgonrapport när du vaknar", setup: .nothing),
+        .init(id: "quiz", group: .study, title: String(localized: "Förhör"), symbol: "graduationcap", say: "”Lumen, förhör mig på fotosyntes”", setup: .nothing),
+        .init(id: "questions", group: .study, title: String(localized: "Svar på frågor"), symbol: "questionmark.bubble", say: "”Lumen, vad betyder ambivalent?”", setup: .nothing),
+        .init(id: "myAnswers", group: .study, title: String(localized: "Mina svar"), symbol: "text.badge.checkmark", say: String(localized: "Dina egna svar på provfrågor, i örat"), setup: .place(String(localized: "I Provläget"))),
+        .init(id: "calendar", group: .everyday, title: String(localized: "Kalender"), symbol: "calendar", say: "”Lumen, vad har jag i dag?”", setup: .permission(.calendar)),
+        .init(id: "reminders", group: .everyday, title: String(localized: "Påminnelser"), symbol: "checklist", say: "”Lumen, påminn mig om träningen kl. 18”", setup: .permission(.reminders)),
+        .init(id: "timer", group: .everyday, title: String(localized: "Timer"), symbol: "timer", say: "”Lumen, sätt en timer på 10 minuter”", setup: .permission(.alarms)),
+        .init(id: "alarm", group: .everyday, title: String(localized: "Larm"), symbol: "alarm", say: "”Lumen, väck mig kvart i sju”", setup: .permission(.alarms)),
+        .init(id: "notes", group: .everyday, title: String(localized: "Anteckningar"), symbol: "note.text", say: "”Lumen, spara det”", setup: .nothing),
+        .init(id: "training", group: .everyday, title: String(localized: "Träning"), symbol: "figure.run", say: "”Lumen, ge mig ett styrkepass på 20 minuter”", setup: .nothing),
+        .init(id: "spotify", group: .musicAndCalls, title: String(localized: "Spotify"), symbol: "music.note", say: "”Lumen, kör spellistan Plugg”", setup: .soon),
+        .init(id: "call", group: .musicAndCalls, title: String(localized: "Ring"), symbol: "phone", say: "”Lumen, ring mamma”", setup: .permission(.contacts)), // A58
+        .init(id: "music", group: .musicAndCalls, title: String(localized: "Öppna musik"), symbol: "music.note.list", say: "”Lumen, spela lugn pluggmusik”", setup: .place(String(localized: "Öppnar Spotify med sökningen"))), // A58
+        .init(id: "interview", group: .more, title: String(localized: "Intervju"), symbol: "briefcase", say: String(localized: "Färdiga svar på intervjufrågor"), setup: .place(String(localized: "Byt läge"))),
+        .init(id: "sleep", group: .more, title: String(localized: "Sömn"), symbol: "moon.stars", say: String(localized: "Tryck Sov på kvällen. Morgonrapport när du vaknar"), setup: .nothing),
     ]
 
     var permission: Permission? {
@@ -198,14 +198,14 @@ enum CapabilityAccess: Equatable, Sendable {
     /// The status line under a row (Ke29): what is needed, or nothing.
     static func line(for setup: LumenCapability.Setup, access: CapabilityAccess?) -> (text: String, needsAction: Bool) {
         switch setup {
-        case .nothing: return ("Inget att ställa in", false)
-        case .soon: return ("Kommer snart", false)
+        case .nothing: return (String(localized: "Inget att ställa in"), false)
+        case .soon: return (String(localized: "Kommer snart"), false)
         case .place(let place): return (place, false)
         case .permission(let permission):
             switch access ?? .notAsked {
-            case .allowed: return ("✓ Tillåtet", false)
-            case .notAsked: return ("Behöver tillgång till \(permission.rawValue)", true)
-            case .denied: return ("Avstängt i Inställningar", true)
+            case .allowed: return (String(localized: "✓ Tillåtet"), false)
+            case .notAsked: return (String(localized: "Behöver tillgång till \(permission.rawValue)"), true)
+            case .denied: return (String(localized: "Avstängt i Inställningar"), true)
             }
         }
     }

@@ -14,9 +14,9 @@ struct ListeningIndicatorBar: View {
     var body: some View {
         switch state {
         case .listening:
-            bar(title: testMode ? "Lyssnar · Testläge, ljud skickas" : "Lyssnar", active: true, action: "Avsluta", perform: onStop)
+            bar(title: testMode ? String(localized: "Lyssnar · Testläge, ljud skickas") : String(localized: "Lyssnar"), active: true, action: String(localized: "Avsluta"), perform: onStop)
         case .paused(let reason):
-            bar(title: pausedTitle(reason), active: false, action: "Fortsätt", perform: onResume)
+            bar(title: pausedTitle(reason), active: false, action: String(localized: "Fortsätt"), perform: onResume)
         case .idle, .error:
             EmptyView()
         }
@@ -24,10 +24,10 @@ struct ListeningIndicatorBar: View {
 
     private func pausedTitle(_ reason: PauseReason) -> String {
         switch reason {
-        case .user: "Pausad"
-        case .interruption, .awaitingUserResume: "Pausad, tryck Fortsätt för att lyssna igen"
-        case .outputDeviceLost: "Pausad, AirPods kopplades bort"
-        case .mediaServicesReset: "Pausad, ljudet startades om"
+        case .user: String(localized: "Pausad")
+        case .interruption, .awaitingUserResume: String(localized: "Pausad, tryck Fortsätt för att lyssna igen")
+        case .outputDeviceLost: String(localized: "Pausad, AirPods kopplades bort")
+        case .mediaServicesReset: String(localized: "Pausad, ljudet startades om")
         }
     }
 
