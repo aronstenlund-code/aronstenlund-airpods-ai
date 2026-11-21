@@ -31,7 +31,7 @@ final class AppHolder {
     private(set) var deletedNotice: String?
     /// D253: English until Svenska is chosen in Inställningar. Kept when the account is deleted (it is the phone's
     /// owner's choice of language, not the account's data).
-    let language = LanguageSettings()
+    let language = AppLanguageSettings()
 
     init() {
         container = AppContainer()

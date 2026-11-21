@@ -34,7 +34,7 @@ struct SettingsView: View {
     }
 
     @Environment(\.webAuthenticationSession) private var webAuthenticationSession
-    @Environment(LanguageSettings.self) private var appLanguage: LanguageSettings?
+    @Environment(AppLanguageSettings.self) private var appLanguage: AppLanguageSettings?
 
     var body: some View {
         Form {

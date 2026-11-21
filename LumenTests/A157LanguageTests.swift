@@ -40,8 +40,10 @@ import Testing
         let system = try #require(UserDefaults(suiteName: "a157-system-\(UUID().uuidString)"))
         let choice = LanguageChoice(arguments: ["Lumen"], stores: [app, group], localizations: ["sv"], rereads: false, systemStore: system)
         #expect(choice.language == .en && !choice.isSetFromOutside)
-        let settings = LanguageSettings(choice: choice, reloadsWidgets: false)
+        let settings = AppLanguageSettings(choice: choice, reloadsWidgets: false, defaults: app)
         #expect(settings.language == .en)
+        // What is listened for keeps the phone's language (the tests' phone is Swedish), whatever the texts are in.
+        #expect(app.string(forKey: LanguageSettings.defaultsKey) == TranscriptionLanguage.swedish.rawValue)
         #expect(system.stringArray(forKey: "AppleLanguages") == ["en"]) // English system buttons from the next start
         settings.choose(.sv)
         #expect(settings.language == .sv && choice.language == .sv)

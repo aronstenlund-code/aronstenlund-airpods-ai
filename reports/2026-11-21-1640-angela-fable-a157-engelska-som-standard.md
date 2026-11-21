@@ -28,7 +28,7 @@ Angela Fable (moln), 2026-11-21. Beställt av Deangelo 11:20 (D251) och 16:17 (D
   bara rader i katalogen. **Texter i vanlig kod** (1 030 ställen: rader från modellerna, sammansatta meningar,
   VoiceOver-rader) slås nu upp med `String(localized: "…")`.
 - **Språkvalet (D253)**: `Shared/AppLanguage.swift` (`AppLanguage`, `LanguageChoice`) och
-  `Lumen/Core/Language/LanguageSettings.swift`. Valet ligger i appens inställningar och i appgruppen (för widgeten).
+  `Lumen/Core/Language/AppLanguageSettings.swift`. Valet ligger i appens inställningar och i appgruppen (för widgeten).
   `String(localized:)` går i appen och widgeten genom en egen initierare som slår upp i det valda språkets tabell;
   SwiftUI:s texter får språket genom `\.locale` på roten, och roten får ny identitet när språket byts, så att allt
   ritas om. Texter som låg i `static let` (65 st) räknas nu fram varje gång, annars hade de stannat på det gamla
