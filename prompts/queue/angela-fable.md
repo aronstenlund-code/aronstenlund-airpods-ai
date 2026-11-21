@@ -134,3 +134,5 @@
   - Live: 90 ord ger 642, 130 ord ger 894.
   - `suggest` är nu 12.
   - `reports/2026-11-20-1625-kevin-k113-fragelogg-kostnad-webb-reported.md` punkt 5
+
+- [ ] **A157 – iOS-appen på engelska som standard (D251)** (effort: high). Lagd av Deangelo 2026-11-21 11:20. String Catalog med engelska som bas och svensk översättning för alla texter i appen (alla vyer, även Angela Schrutes – samordna i angela.md), VoiceOver-etiketter, Info.plist-texter (mikrofon m.m.), widget. Appen följer enhetens språk. Kellys engelska texter (Ke86). Skicka `lang` till servern (K114). Skärmbilder på engelska och svenska till Kelly. Test, iOS build grön, på main. 0 ElevenLabs. Rapport, STATUS, kö, tavla, push.

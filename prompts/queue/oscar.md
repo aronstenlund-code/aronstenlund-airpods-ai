@@ -306,3 +306,5 @@
   - Händer det ändå markerar `done` det med `source_missing: true`. Servern lägger aldrig till en källa som svaret inte använde.
   - Räkna gärna `source_missing` i nattens eval, särskilt för praktiskt-04.
   - `reports/2026-11-20-1625-kevin-k113-fragelogg-kostnad-webb-reported.md` punkt 7
+
+- [ ] **O94 – Webbetan live (D249)** (effort: high). Lagd av Deangelo 2026-11-21 11:20. När Angela Schrute och Kevin säger till: CORS, anonym inloggning från webben, missbruksskyddet (nya konton per IP, dygnstak), 1 500 utan välkomst, Säg och prov via webben med testhuvud, `lang` en/sv. Testkonton, falskt ljud, 0 ElevenLabs. Rapport, push; fynd till respektive kö.

@@ -79,3 +79,6 @@ Release-bygget är klart (A155, main grön 44694689538). Hela listan står i `re
 
 ## #35 Anthropic-nyckeln går ut 3 december (2026-11-20 16:15)
 Nyckeln som servern använder för AI-svaren skapades 3 november med 30 dagars giltighet (STATUS › Reminders). Går den ut slutar appen svara. Senast 2 december: skapa en ny nyckel i console.anthropic.com (API Keys › Create Key, utan utgångsdatum eller med ett långt) och klistra in den i Supabase › Project Settings › Edge Functions › Secrets som `ANTHROPIC_API_KEY`. Säg till, så öppnar jag sidorna åt dig och Kevin kontrollerar efteråt att svaren fungerar.
+
+## #36 Webbetan (2026-11-21 11:20)
+Webbetan byggs nu på earmind.vercel.app/beta (D249–D252). Jag säger till när den är uppe, och Kelly skriver ett TikTok-svar du kan klistra in. Om Kevin behöver ändra röstlistan i en hemlighet för att ta bort Marlon får du exakta klick.
