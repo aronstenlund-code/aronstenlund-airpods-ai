@@ -163,7 +163,7 @@ check("Rösterna (D252): ingen Marlon; PS3 character, Niki, Chris, Paul, Alyssa 
       {"antal": len(cat), "namn": names, "språk": sorted({str(c.get("language")) for c in cat}), "default": (v.get("default_voice") or {}).get("name") if isinstance(v, dict) else None})
 
 # Säg i AirPods from the web: save with start:true, fake audio, credits drawn
-say = "Kom ihåg att ta med gympakläder på tisdag och lämna in uppsatsen på fredag."
+say = "Ring mormor på söndag och fråga om hon vill följa med på bio, och köp mjölk på vägen hem."  # not the browser's text (that audio is then free, D144)
 s, _, j = call("POST", "/functions/v1/drill", {"action": "save", "start": True, "lang": "sv", "drill": {"kind": "text", "title": "O94 (QA)", "said": True, "client_id": str(uuid.uuid4())},
                                                "items": [{"kind": "para", "text": say}]}, A, {"x-earmind-lang": "sv"})
 d = (j.get("drill") or {}) if isinstance(j, dict) else {}
@@ -192,6 +192,7 @@ check("Prov via webben: frågorna följer textens språk (svensk text svenska fr
       and lang_rows["engelsk text, lang sv"]["en-ord"] > lang_rows["engelsk text, lang sv"]["sv-ord"], lang_rows)
 # the user's way (user-path): 12 questions, 402 with fits, message in the asked language
 msgs = {}
+time.sleep(65)  # the exam limit per minute (the two exams above), so the 402 is not a 429
 for lang in ("sv", "en"):
     s, _, e = call("POST", "/functions/v1/exam", {"action": "drill", "answers": False, "questions": 12, "subject": "Biologi", "pages": [], "text": SV, "lang": lang}, A,
                    {"x-earmind-test": "oscar-qa user-path", "x-earmind-lang": lang, "accept-language": lang})
