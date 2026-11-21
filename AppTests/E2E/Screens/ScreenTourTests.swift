@@ -309,7 +309,7 @@ final class ScreenTourTests: XCTestCase {
             miss("settings row \(labels[0]) not found")
             return
         }
-        centered(found, labels: labels).tap()
+        found.tap()
         pause(1.5)
         // The last rows sit at the sheet's bottom edge, where a tap can miss (seen at the largest text size):
         // look the row up again each time and tap it only when it is hittable, never a stale element.
@@ -400,41 +400,31 @@ final class ScreenTourTests: XCTestCase {
 
     /// Swipes up (then back down) until an element with one of the labels is hittable.
     private func scrollTo(_ labels: [String], buttonsOnly: Bool = false) -> XCUIElement? {
-        // Run 44809087832 (iPhone SE): swipeDown at the top of a sheet closes the sheet, and the search went on
-        // over Start. Downwards it drags slowly over a third of the screen (the sheet springs back), and it stops
-        // when the sheet's Klar is gone.
-        // Run 44835830516 (iPhone 17 Pro): after going back the next row could sit just above the view, and the
-        // slow drags could not climb back from the bottom of the list (Minne, Röstkommandon missed). First a few
-        // drags up the list, then swipes down to the end, then drags up to the top; each phase ends when the list
-        // stops moving.
+        // Run 44809087832 (iPhone SE): swipeDown at the top of a sheet closed Inställningar, and the search went on
+        // over Start. When that happens Settings is opened again and searched from the top (swipes up only).
+        // Run 44862440315: an end-of-list check on the first loaded cell stopped the search after 2–3 swipes (that
+        // cell does not move), so the plain 25 + 25 swipes of the green run 44804596958 are back.
         let inSheet = app.buttons["Klar"].exists
-        if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
-        for (towardsEnd, steps) in [(false, 3), (true, 30), (false, 50)] {
-            var last = listPosition()
-            var taken = 0
-            for _ in 0..<steps {
-                taken += 1
-                if towardsEnd {
-                    app.swipeUp()
-                } else {
-                    app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.35))
-                        .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.7)),
-                               withVelocity: .slow, thenHoldForDuration: 0.2)
-                }
-                if inSheet, !app.buttons["Klar"].exists {
-                    record("note: the sheet closed while looking for \(labels[0])")
-                    return nil
-                }
+        for direction in [true, false] {
+            // 25 swipes: Settings at the largest text size is about 30 screens long.
+            for _ in 0..<25 {
                 if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
-                let now = listPosition()
-                if now != nil, now == last {  // the end (or the top) of the list
-                    record("note: scroll \(labels[0]): \(towardsEnd ? "down" : "up") stopped after \(taken) at \(now ?? "-")")
+                if direction { app.swipeUp() } else { app.swipeDown() }
+                if inSheet, !app.buttons["Klar"].exists {
+                    record("note: the sheet closed while looking for \(labels[0]); Settings opened again")
+                    pause(1)
+                    tap(["Inställningar"], step: "start → Inställningar (sheet closed)")
+                    guard app.buttons["Klar"].waitForExistence(timeout: 5) else { return nil }
+                    pause(1)
+                    for _ in 0..<25 {
+                        if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
+                        app.swipeUp()
+                    }
                     break
                 }
-                last = now
             }
         }
-        record("note: scroll \(labels[0]) gave up; list at \(listPosition() ?? "no list")")
+        record("note: scroll \(labels[0]) gave up")
         dumpButtons()
         return nil
     }
@@ -443,13 +433,6 @@ final class ScreenTourTests: XCTestCase {
     private func dumpButtons() {
         let lines = app.debugDescription.split(separator: "\n").filter { $0.contains("Button,") || $0.contains("CollectionView,") }
         for line in lines.prefix(45) { record("note: tree: \(line.trimmingCharacters(in: .whitespaces).prefix(150))") }
-    }
-
-    /// Where the list is: the first loaded cell's label and top edge. Unchanged after a swipe = the list's end.
-    private func listPosition() -> String? {
-        let cell = app.collectionViews.firstMatch.cells.firstMatch
-        guard cell.exists else { return nil }
-        return "\(cell.label)@\(Int(cell.frame.minY))"
     }
 
     /// Run 44809087832 (iPhone SE): a row at the sheet's lower edge is "hittable" but the tap opens nothing. Drag it
