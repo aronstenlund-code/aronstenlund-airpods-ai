@@ -634,7 +634,10 @@
 
   /* Ke86 (D249, D251): English page – beta card instead of the live demo, language link */
   .top { display: flex; align-items: center; justify-content: space-between; }
-  .lang { color: var(--blue); font-size: .9375rem; text-decoration: none; }
+  .langsw { display: inline-flex; border-radius: 999px; background: var(--line, rgba(127,127,127,.18)); padding: 3px; gap: 2px; }
+  .langsw a { padding: 5px 12px; border-radius: 999px; font-size: .875rem; color: inherit; text-decoration: none; }
+  .langsw a[aria-current="true"] { background: Canvas; color: CanvasText; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+
   .betacard { padding: 22px; display: grid; gap: 12px; align-content: start; }
   .betacard .pill { justify-self: start; }
   .betacard .note { color: var(--mut); font-size: .9375rem; }
@@ -645,7 +648,7 @@
 <body>
 <header class="top wrap">
   <a class="name" href="/"><img src="img/ikon-64.webp" width="32" height="32" alt=""> <span>EarMind</span></a>
-  <a class="lang" href="/sv" hreflang="sv" lang="sv">Svenska</a>
+  <nav class="langsw" aria-label="Language"><a href="/" hreflang="en" lang="en" data-lang="en" aria-current="true">English</a><a href="/sv" hreflang="sv" lang="sv" data-lang="sv" >Svenska</a></nav>
 </header>
 <main>
   <section class="hero wrap" aria-labelledby="hero-h">
@@ -778,6 +781,11 @@ $("wait").addEventListener("submit", async (e) => {
   }
   btn.disabled = false; btn.textContent = label;
 });
+</script>
+<script>
+// Ke87 (D253): English first; the choice is saved with the same key as the beta, so it carries over.
+(function(){var k="earmind.beta.lang";try{document.querySelectorAll(".langsw a").forEach(function(a){a.addEventListener("click",function(){try{localStorage.setItem(k,a.dataset.lang)}catch(e){}})});
+if(location.pathname==="/"&&localStorage.getItem(k)==="sv")location.replace("/sv");}catch(e){}})();
 </script>
 </body>
 </html>
