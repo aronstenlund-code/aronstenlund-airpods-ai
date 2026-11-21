@@ -105,3 +105,30 @@ T56 har nu körningen `listen`:
 - **Live:** allt utom lyssnandet är grönt, och nedladdningen gav en äkta MP3 i båda motorerna. Den publicerade betan har inget lyssnarkort än, eftersom del 2 inte är publicerad, så live-lyssningen är inte provad. Testet skriver det nu som en anteckning i stället för rött, och provar lyssnandet live när kortet finns.
 
 **Inte provat:** lyssnarläget live mot riktiga `/answer` (väntar på Kellys publicering), och en riktig mikrofon i Safari på en iPhone.
+
+## Tillägg 18:00: lyssnarläget live
+Del 2 är publicerad.
+
+| Körning | WebKit lokalt | Chromium lokalt | WebKit live | Chromium live |
+|---|---|---|---|---|
+| 44925741392 | 58/58 | 62/62 | 46/49 | 47/48 |
+| 44926222713 | 61/62 | 62/62 | 47/48 | 47/48 |
+| **44926672159** | **58/58** | **62/62** | **49/49** | **49/49** |
+
+**Verifierat live i båda motorerna (0 ElevenLabs):**
+- Samtycket kommer före mikrofonen.
+- `stt-token` svarar `fake: true`, utan token och utan sockeladress, varje gång.
+- Raden Listening syns med Stop och skärmraden.
+- Serverns testmening går till riktiga `/answer`.
+- Stop fungerar. Andra gången kommer inget samtyckesblad. Spela stoppar lyssnandet, och samtycket kan tas tillbaka i Inställningar.
+
+**Fynd (till Kevin, kevin.md, låg):** testmeningen "Det här är en testtranskription." är inte en fråga. `/answer` svarar då rätt nog `is_question:false` och `answered:false`. Svaret, uppläsningen och "lyssnar igen" går därför inte att nå live, bara mot låtsasservern, där de är gröna i båda motorerna. Live kontrollerar testet nu det man kan kontrollera: att påståendet inte besvaras och att sidan lyssnar vidare utan fel. Förslaget till Kevin är en testmening som är en fråga, eller en variant som testaren väljer.
+
+**30-minutersgränsen** (Angela 17:40): körningen `listen-30` flyttar sidans klocka 30 minuter fram med Playwright. Passet slutar då och säger "Listening stopped after 30 minutes. Start again to go on.", och det är grönt i Chromium. I WebKit startar lyssnandet aldrig med Playwrights låtsasklocka. Det är en begränsning i verktyget, så kontrollen körs bara i Chromium.
+
+**Testfel på vägen:**
+- Live väntade testet på ett svar som servern rätt nog inte gav.
+- `listen-30` i WebKit, se ovan.
+- En 429 från serverns webbgräns (många CI-körningar från samma IP) är nu en anteckning och inget appfel.
+
+**Inte provat:** en fråga live genom hela kedjan (väntar på Kevin), och en riktig mikrofon och AirPods i Safari på en iPhone.
