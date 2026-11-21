@@ -198,6 +198,7 @@ const stamp = live ? ` ${process.env.GITHUB_RUN_ID ?? Date.now()}-${engine}` : '
 const hostsSeen = new Set();
 const serverLog = [];
 const sttTokens = [];
+const rateLimited = new Set();
 const elevenLabs = [];
 
 async function run(name, { locale, colorScheme, viewport }, steps) {
@@ -224,7 +225,7 @@ async function run(name, { locale, colorScheme, viewport }, steps) {
   const page = await context.newPage();
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
-  page.on('console', (m) => (m.type() === 'error' && !/status of 402|402 \(/.test(m.text()) ? errors.push(m.text()) : undefined));
+  page.on('console', (m) => (m.type() === 'error' && !/status of 402|402 \(|status of 429/.test(m.text()) ? errors.push(m.text()) : undefined));
   if (!live) {
     await page.route('https://xjczbzfkmbjdebwlccki.supabase.co/**', answer);
     await page.route('https://files.test/**', answer);
@@ -241,6 +242,12 @@ async function run(name, { locale, colorScheme, viewport }, steps) {
       if (u.hostname.endsWith('.supabase.co')) {
         const action = (() => { try { return JSON.parse(r.request().postData() ?? '{}').action ?? ''; } catch { return ''; } })();
         serverLog.push(`${name} ${r.request().method()} ${u.pathname.replace('/functions/v1/', '')}${action ? ` ${action}` : ''} → ${r.status()}`);
+        if (r.status() === 429) rateLimited.add(name);
+        if (u.pathname.endsWith('/functions/v1/answer')) {
+          // What the server said to the test sentence (events only, cut short), to read a missing answer in the log.
+          const sent = (() => { try { return JSON.parse(r.request().postData() ?? '{}'); } catch { return {}; } })();
+          r.text().then((t) => serverLog.push(`${name} answer to "${String(sent.fragment ?? '').slice(0, 80)}": ${t.replace(/\s+/g, ' ').slice(0, 400)}`), () => undefined);
+        }
       }
     });
     page.on('requestfailed', (r) => serverLog.push(`${name} FAILED ${r.method()} ${new URL(r.url()).hostname}${new URL(r.url()).pathname}: ${r.failure()?.errorText ?? '?'}`));
@@ -277,6 +284,7 @@ async function run(name, { locale, colorScheme, viewport }, steps) {
     await shot('stopped').catch(() => undefined);
   }
   check(`${name}: no script errors`, errors.length === 0, errors.join(' | ').slice(0, 300));
+  if (rateLimited.has(name)) note(`${name}: the server answered 429 (its web rate limit, many CI runs from one IP); a missing cost here is that`);
   if (!live) check(`${name}: nothing asked outside the pretend server`, outside.length === 0, outside.join(' ').slice(0, 200));
   check(`${name}: no request to ElevenLabs (D180)`, elevenLabs.length === 0, elevenLabs.join(' ').slice(0, 200));
   await context.close();
