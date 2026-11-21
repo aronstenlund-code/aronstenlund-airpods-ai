@@ -1,5 +1,6 @@
 // POST /functions/v1/drill - K46 (D142-D145): Repetitionsläget, drills and their audio per account. See handler.ts.
 import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
+import { withWebGuard } from "../_shared/webguard.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { useQuotaFromDb } from "../_shared/wallet_db.ts";
@@ -169,7 +170,8 @@ function warmable(h: (req: Request) => Promise<Response>): (req: Request) => Pro
   };
 }
 
-Deno.serve(warmable(withCors(withTestMode("drill", timed(
+// K114 (D249): the web beta counts accounts per network and its credits (webguard.ts)
+Deno.serve(warmable(withCors(withWebGuard(withTestMode("drill", timed(
   createDrillHandler({
     authenticate,
     rateLimiter: new SupabaseRateLimiter(db),
@@ -389,6 +391,6 @@ Deno.serve(warmable(withCors(withTestMode("drill", timed(
         },
       }
       : null,
-  }))),
+  }))), { limiter: new SupabaseRateLimiter(db), extraOrigins: extraOriginsFromEnv() }),
   extraOriginsFromEnv(),
 )));
