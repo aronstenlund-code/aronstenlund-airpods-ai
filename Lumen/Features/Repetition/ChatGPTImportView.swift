@@ -87,7 +87,7 @@ struct ChatGPTImportView: View {
                     stepButton(copied ? String(localized: "Kopierad") : String(localized: "Kopiera prompten"), prominent: !copied) { copyPrompt() }
                         .sensoryFeedback(.success, trigger: copied) { _, now in now }
                 }
-                step(2, done: opened, "Klistra in i ChatGPT",
+                step(2, done: opened, String(localized: "Klistra in i ChatGPT"),
                      String(localized: "Bifoga dina filer, till exempel foton av sidorna eller en PDF, och skicka.")) {
                     // The next thing to do is the filled button: step 1 until it is done, then this one.
                     stepButton(String(localized: "Öppna ChatGPT"), prominent: copied && !opened) { openChatGPT() }

@@ -736,19 +736,19 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "%@ · cirka %@ min per varv": {
+    "%@ · cirka %lld min per varv": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "%@ · about %@ min per round"
+            "value": "%@ · about %lld min per round"
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ · cirka %@ min per varv"
+            "value": "%@ · cirka %lld min per varv"
           }
         }
       },
@@ -3548,6 +3548,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Biologiprovet"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Bjud in": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Invite"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bjud in"
           }
         }
       },
@@ -12251,6 +12269,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Klistra in": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Paste"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klistra in"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Klistra in annonsen eller skriv rollen": {
       "extractionState": "manual",
       "localizations": {
@@ -12300,6 +12336,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Klistra in en länk"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Klistra in i ChatGPT": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Paste in ChatGPT"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klistra in i ChatGPT"
           }
         }
       },
@@ -24019,19 +24073,19 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "Text · %@ · cirka %@ min": {
+    "Text · %@ · cirka %lld min": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Text · %@ · about %@ min"
+            "value": "Text · %@ · about %lld min"
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Text · %@ · cirka %@ min"
+            "value": "Text · %@ · cirka %lld min"
           }
         }
       },
@@ -24091,19 +24145,19 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "Text · cirka %@ min": {
+    "Text · cirka %lld min": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Text · about %@ min"
+            "value": "Text · about %lld min"
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Text · cirka %@ min"
+            "value": "Text · cirka %lld min"
           }
         }
       },
@@ -27742,6 +27796,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "som %@"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "standard": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "default"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "standard"
           }
         }
       },

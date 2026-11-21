@@ -573,7 +573,7 @@ enum ShopText {
     static var welcomeLine: String { String(localized: "välkomstkrediter") }
     /// Ke77 §1c, without a name (the accounts are anonymous): "+2 000 krediter för en inbjudan."
     static func rewardLine(_ credits: Int) -> String { String(localized: "+\(CreditText.number(credits)) krediter för en inbjudan.") }
-    static let inviteButton = "Bjud in"
+    static var inviteButton: String { String(localized: "Bjud in") }
     static var refill: String { String(localized: "Fyll på") }
     static var included: String { String(localized: "Ingår") }
     static var weekIsOut: String { String(localized: "Veckans tak är nått") }

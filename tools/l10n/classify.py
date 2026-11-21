@@ -17,7 +17,8 @@ andra samma själv redan ännu snart senare idag imorgon igår nyss just vill be
 ordet ord mening rad rader sida sidor bild bilder fil filer länk namn kod steg läge lägen av på till din
 avbrutet avsluta dokument enklare foto foton klart kortare meningar skola skrivet skymd sparade stycke stycken syns
 upprepa viska pausad tryck gånger gång varv kvar vald tillagt publicerat senare tidigare kommande ämne
-cirka ungefär högst minst först sist hela halva per utan med mot hos vid""".split())
+cirka ungefär högst minst först sist hela halva per utan med mot hos vid
+bjud klistra redo standard""".split())
 EN = set("""the and that this with for from you your are was were will would can could should have has had not but
 what when where why how which who all any some more most other into over under after before between out off on in
 of to is it as at by be or if no yes do does did done make made get got set use used show hide open close start

@@ -109,6 +109,17 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "EarMind listening": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EarMind lyssnar"
+          }
+        }
+      }
+    },
     "Fortsätt": {
       "extractionState": "manual",
       "localizations": {
@@ -333,6 +344,17 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Opens EarMind and starts listening.": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öppnar EarMind och börjar lyssna."
+          }
+        }
+      }
+    },
     "Opens Lumen and starts listening.": {
       "extractionState": "manual",
       "localizations": {
@@ -413,6 +435,17 @@
         }
       }
     },
+    "Pause or resume EarMind": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausa eller fortsätt EarMind"
+          }
+        }
+      }
+    },
     "Pause or resume Lumen": {
       "extractionState": "manual",
       "localizations": {
@@ -442,6 +475,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fortsätt"
+          }
+        }
+      }
+    },
+    "Start EarMind": {
+      "extractionState": "manual",
+      "localizations": {
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starta EarMind"
           }
         }
       }
@@ -488,6 +532,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Svit: 1 dag"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "redo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "ready"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "redo"
           }
         }
       },

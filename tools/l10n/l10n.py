@@ -15,6 +15,7 @@ import swiftlit, classify
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 EN = os.path.join(HERE, "en.json")          # Swedish literal (as written in Swift) → English literal
+COMPILER = os.path.join(HERE, "compiler.json")  # the keys the compiler found in the latest Fable screens run
 SKIP = os.path.join(HERE, "skip.json")      # file → Swedish literals that are not texts on the screen (and why)
 CATALOGS = {                                # target → (its catalog, the folders compiled into it)
     "Lumen": ("Lumen/Resources/Localizable.xcstrings", ("Lumen", "Shared")),
@@ -149,6 +150,7 @@ def is_localized(lit) -> bool:
 def compiler_keys(path):
     """{target: {key: set(file basenames)}} from the list the Fable screens run collects (strings/compiler.json)."""
     out = {}
+    path = path or (COMPILER if os.path.exists(COMPILER) else None)
     if not path:
         return out
     for target, tables in load(path, {}).items():
