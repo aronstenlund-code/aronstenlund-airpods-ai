@@ -3296,7 +3296,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Only my voice in Provläge and Standard mode"
+            "value": "Only my voice in Quiz mode and Standard mode"
           }
         },
         "sv": {
@@ -6392,7 +6392,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "EarMind makes quiz questions with A-grade answers."
+            "value": "EarMind makes quiz questions with top-grade answers."
           }
         },
         "sv": {
@@ -7107,8 +7107,15 @@
             "state": "translated",
             "value": "Ekodämpning (voiceChat) i provläge"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Echo cancellation (voiceChat) in Quiz mode"
+          }
         }
-      }
+      },
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Edit memory": {
       "extractionState": "manual",
@@ -7309,8 +7316,15 @@
             "state": "translated",
             "value": "Avsluta provläge"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "End Quiz mode"
+          }
         }
-      }
+      },
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "End session": {
       "extractionState": "manual",
@@ -7430,7 +7444,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "A paper (PDF, photo or text) that EarMind reads aloud question by question in Provläge and grades."
+            "value": "A paper (PDF, photo or text) that EarMind reads aloud question by question in Quiz mode and grades."
           }
         },
         "sv": {
@@ -9162,7 +9176,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Explanation at A level"
+            "value": "Top-grade explanation"
           }
         },
         "sv": {
@@ -10610,7 +10624,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "In Provläge"
+            "value": "In Quiz mode"
           }
         },
         "sv": {
@@ -11093,7 +11107,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "No study cards yet. The questions you ask in Provläge become cards, with the answer in brief, until the quiz."
+            "value": "No study cards yet. The questions you ask in Quiz mode become cards, with the answer in brief, until the quiz."
           }
         },
         "sv": {
@@ -11888,11 +11902,11 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Intervjuläge"
+            "value": "Interview mode"
           }
         }
       },
-      "comment": "A157: a mode's name, the same in English until Kelly says otherwise (Ke86)."
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Intressen": {
       "extractionState": "manual",
@@ -12995,7 +13009,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Short words without “Lumen” in Provläge and Standard mode"
+            "value": "Short words without “Lumen” in Quiz mode and Standard mode"
           }
         },
         "sv": {
@@ -15351,7 +15365,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "While the question plays: press once for the question's A-grade answer. Press twice for a short A-grade answer of one to two sentences. Press three times to pause. Press again to continue."
+            "value": "While the question plays: press once for the question's top-grade answer. Press twice for a short top-grade answer of one to two sentences. Press three times to pause. Press again to continue."
           }
         },
         "sv": {
@@ -16305,7 +16319,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "When a question you have saved comes up in Provläge, EarMind says your answer, word for word. Off means EarMind answers by itself; nothing is deleted."
+            "value": "When a question you have saved comes up in Quiz mode, EarMind says your answer, word for word. Off means EarMind answers by itself; nothing is deleted."
           }
         },
         "sv": {
@@ -16323,7 +16337,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "When the question comes up in Provläge, EarMind says your answer, word for word."
+            "value": "When the question comes up in Quiz mode, EarMind says your answer, word for word."
           }
         },
         "sv": {
@@ -17928,11 +17942,11 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Provläge"
+            "value": "Quiz mode"
           }
         }
       },
-      "comment": "A157: a mode's name, the same in English until Kelly says otherwise (Ke86)."
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Provläge ended after %lld min of silence; the microphone was switched off.": {
       "extractionState": "manual",
@@ -17942,8 +17956,15 @@
             "state": "translated",
             "value": "Provläget avslutades efter %lld min tystnad; mikrofonen stängdes av."
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Quiz mode ended after %lld min of silence; the microphone was switched off."
+          }
         }
-      }
+      },
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Provläge · I hear you…": {
       "extractionState": "manual",
@@ -17953,8 +17974,15 @@
             "state": "translated",
             "value": "Provläge · jag hör dig …"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Quiz mode · I hear you…"
+          }
         }
-      }
+      },
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Provläge · speaking — talk to interrupt": {
       "extractionState": "manual",
@@ -17964,8 +17992,15 @@
             "state": "translated",
             "value": "Provläge · talar – prata för att avbryta"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Quiz mode · speaking — talk to interrupt"
+          }
         }
-      }
+      },
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Provläge · thinking…": {
       "extractionState": "manual",
@@ -17975,8 +18010,15 @@
             "state": "translated",
             "value": "Provläge · tänker …"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Quiz mode · thinking…"
+          }
         }
-      }
+      },
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Provläge · your turn — just speak": {
       "extractionState": "manual",
@@ -17986,8 +18028,15 @@
             "state": "translated",
             "value": "Provläge · din tur – prata bara"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Quiz mode · your turn — just speak"
+          }
         }
-      }
+      },
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Provsessionen är som på riktigt: EarMind svarar bara på ”Lumen, …”: uppgift sju, ledtråd, rätta jag fick …, nästa, starta provtid nittio minuter, hur gick det, avsluta provet.": {
       "extractionState": "manual",
@@ -18695,7 +18744,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Rizzläge"
+            "value": "Rizz mode"
           }
         },
         "sv": {
@@ -18719,11 +18768,11 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Rizzläge (18+)"
+            "value": "Rizz mode (18+)"
           }
         }
       },
-      "comment": "A157: a mode's name, the same in English until Kelly says otherwise (Ke86)."
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Rizzläge and Socialt läge": {
       "extractionState": "manual",
@@ -18737,7 +18786,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Rizzläge and Socialt läge"
+            "value": "Rizz mode and Social mode"
           }
         }
       },
@@ -18751,8 +18800,15 @@
             "state": "translated",
             "value": "Rizzläge är bara för dig som är 18 år eller äldre"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Rizz mode is only for people aged 18 or older"
+          }
         }
-      }
+      },
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Role or job ad": {
       "extractionState": "manual",
@@ -19365,7 +19421,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The voice profile is a voiceprint of your voice, not a recording. It is saved only on this phone (not in iCloud) and is never sent. With it Intervjuläge only answers the interviewer, Rizzläge knows who is talking, the memory only saves what you said yourself, and only your voice can interrupt EarMind. Without a profile the sound level decides as before. Speaker 1, 2 … is only a label for the session; nobody is identified. Licenses are under About the app."
+            "value": "The voice profile is a voiceprint of your voice, not a recording. It is saved only on this phone (not in iCloud) and is never sent. With it Interview mode only answers the interviewer, Rizz mode knows who is talking, the memory only saves what you said yourself, and only your voice can interrupt EarMind. Without a profile the sound level decides as before. Speaker 1, 2 … is only a label for the session; nobody is identified. Licenses are under About the app."
           }
         },
         "sv": {
@@ -19754,8 +19810,15 @@
             "state": "translated",
             "value": "Förbered Intervjuläge"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Set up Interview mode"
+          }
         }
-      }
+      },
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Set up Rizzläge": {
       "extractionState": "manual",
@@ -19765,8 +19828,15 @@
             "state": "translated",
             "value": "Förbered Rizzläge"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Set up Rizz mode"
+          }
         }
-      }
+      },
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Set up Socialt läge": {
       "extractionState": "manual",
@@ -19776,8 +19846,15 @@
             "state": "translated",
             "value": "Förbered Socialt läge"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Set up Social mode"
+          }
         }
-      }
+      },
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Settings": {
       "extractionState": "manual",
@@ -19984,7 +20061,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Create read-aloud"
+            "value": "Create audio"
           }
         },
         "sv": {
@@ -20002,7 +20079,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Creating a read-aloud needs internet."
+            "value": "Creating audio needs internet."
           }
         },
         "sv": {
@@ -20164,7 +20241,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Type a quiz question and how you want to answer. When the question comes up in Provläge, EarMind says your answer, word for word."
+            "value": "Type a quiz question and how you want to answer. When the question comes up in Quiz mode, EarMind says your answer, word for word."
           }
         },
         "sv": {
@@ -20620,11 +20697,11 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Socialt läge"
+            "value": "Social mode"
           }
         }
       },
-      "comment": "A157: a mode's name, the same in English until Kelly says otherwise (Ke86)."
+      "comment": "A157: English after Kelly's answers (Ke86, docs/design/engelska.md §7)."
     },
     "Socker och syre bildas av koldioxid och vatten med hjälp av ljus.": {
       "extractionState": "manual",
@@ -21662,7 +21739,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Start Provläge"
+            "value": "Start Quiz mode"
           }
         }
       },
@@ -21753,7 +21830,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Start Provläge (or tap Record, and it starts), study as usual for up to 10 minutes and tap Stop. Then export all three files: audio, transcript with answers and times, and the same data as JSON."
+            "value": "Start Quiz mode (or tap Record, and it starts), study as usual for up to 10 minutes and tap Stop. Then export all three files: audio, transcript with answers and times, and the same data as JSON."
           }
         },
         "sv": {
@@ -24898,7 +24975,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Press twice for a short A-grade answer of one to two sentences."
+            "value": "Press twice for a short top-grade answer of one to two sentences."
           }
         },
         "sv": {
@@ -27843,7 +27920,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "press once for the question's A-grade answer."
+            "value": "press once for the question's top-grade answer."
           }
         },
         "sv": {

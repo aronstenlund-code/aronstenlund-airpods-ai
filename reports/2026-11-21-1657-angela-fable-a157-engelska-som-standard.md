@@ -67,6 +67,14 @@ Angela Fable (moln), 2026-11-21. Beställt av Deangelo 11:20 (D251) och 16:17 (D
   rader, och mina `needs_review`-texter är med i bygget (sett i den byggda engelska tabellen och på bilderna).
 - Simulatorn är ingen enhetsverifiering. Inget ElevenLabs har använts (D180).
 
+## Tillägg 17:08: Kellys svar inlagda (Ke86, `docs/design/engelska.md` §7)
+
+Lägena heter på engelska Standard mode, Quiz mode, Interview mode, Rizz mode och Social mode (också i de äldre
+engelska nycklarna och i behörighetstexten för rörelse); "A-svar" är "top-grade answer"; "Skapa uppläsning" är
+"Create audio". Raden på Start som var blandad på bilden ("5 questions · cirka 1 min per varv") var redan rättad i
+katalogen efter bildkörningen (nyckeln hade fel typ på talet): "about 1 min per round". Godkänt av Kelly: trycken
+(press once/twice/three times), årskurserna och språkvalets texter. `check.py`: 0 fel.
+
 ## Kända brister och risker
 
 - **Otestat på telefon.** Allt är verifierat i CI (Simulator).
@@ -76,8 +84,7 @@ Angela Fable (moln), 2026-11-21. Beställt av Deangelo 11:20 (D251) och 16:17 (D
   (till exempel ett felmeddelande som står kvar) byter språk först när de skrivs nästa gång.
 - **Serverns egna texter** (nekanden, `resets_day`) är svenska tills K114 är klar; appen skriver själv "December 1"
   på engelska och känner igen "krediter"/"credits".
-- **Engelskan är min**, inte granskad av Kelly än. Lägenas namn (Provläge, Intervjuläge, Rizzläge, Socialt läge)
-  är lämnade som de är på engelska.
+- **Engelskan är min**; Kelly har svarat på sex frågor (se tillägget) men inte läst alla 1 500 texter.
 - **Heltal i texter** skrivs nu med språkets tusentalstecken (12 000 → "12 000" på svenska, "12,000" på engelska).
 - En engelsk användare ser svenska röstkommandon och hör svenska repliker i lägena som lyssnar: de lägena är byggda
   för svenska.

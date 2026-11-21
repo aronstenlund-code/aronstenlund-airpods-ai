@@ -53,7 +53,7 @@ struct LumenShortcuts: AppShortcutsProvider {
                     shortTitle: "Ask EarMind", systemImageName: "questionmark.bubble")
         AppShortcut(intent: StartProvlageIntent(),
                     // A157 (D251): an English phrase too, so the shortcut can be said on an English phone.
-                    phrases: ["Starta provläge med \(.applicationName)", "Start exam mode with \(.applicationName)"],
+                    phrases: ["Starta provläge med \(.applicationName)", "Start quiz mode with \(.applicationName)"],
                     shortTitle: "Start Provläge", systemImageName: "graduationcap")
         AppShortcut(intent: PauseLumenIntent(),
                     phrases: ["Pausa \(.applicationName)", "Pause \(.applicationName)"],
