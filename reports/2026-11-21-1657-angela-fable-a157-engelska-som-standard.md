@@ -57,8 +57,8 @@ Angela Fable (moln), 2026-11-21. Beställt av Deangelo 11:20 (D251) och 16:17 (D
   telefon; valet sparas, syns direkt, når widgeten och ber systemet om samma språk; en körning som anger språk får
   det; Kellys ord finns i båda tabellerna; värden står rätt i engelska meningar också när ordningen ändras; tal
   och dagar per språk; `lang` i anropen; serverns ord läses på båda språken.
-- **iOS build 44921123992 på min gren: enhetsbygget utan varningar och alla enhetstester gröna** (verifierat i CI,
-  Simulator). Körningen före (44919130580) föll bara på mitt eget test, som läste testkörningens eget språkargument
+- **iOS build 44921123992 på min gren är grön i sin helhet:** enhetsbygget utan varningar, alla enhetstester och
+  App Store-arkivet (Release) (verifierat i CI, Simulator). Körningen före (44919130580) föll bara på mitt eget test, som läste testkörningens eget språkargument
   i stället för det appen hade skrivit; alla andra tester var gröna också där.
 - **Bilder på engelska och svenska** (Fable screens 44919130567, iPhone 17 Pro, Simulator): Inställningar med
   språkvalet, startskärmen, krediter och Nytt prov. `reports/2026-11-21-a157-bilder/`. Till Kelly.
