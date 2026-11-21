@@ -1935,12 +1935,14 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           // only a clear "nej" ignores it, anything else (an error, a time-out, "ja", another reply) keeps the crisis answer
           let markerChecked = false;
           let markerIgnored = false;
+          let markerResult: "ignored" | "kept" | null = null; // O96: in done, so the live eval counts each checked marker
           let markedMeta: Meta | null = null;
           let afterMarker = ""; // K117: text that came with the marker (Auto: after the meta line)
           const markerCheck = async (): Promise<boolean> => {
             if (markerChecked) return false;
             markerChecked = true;
             if (fragLevel !== null || otherLevels.some(Boolean) || !provider0) return false;
+            markerResult = "kept"; // until a clear "nej"
             let reply = "";
             try {
               for await (const c of provider0.stream({
@@ -1956,6 +1958,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               return false;
             }
             const no = /^\s*nej[.!]?\s*$/iu.test(reply);
+            if (no) markerResult = "ignored";
             console.warn(JSON.stringify({ event: no ? "crisis_marker_ignored" : "crisis_marker_kept", mode: body.mode, reply: reply.trim().slice(0, 10) }));
             return no;
           };
@@ -2479,6 +2482,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               source: post.source,
               // O93: a searched answer whose model named no source: marked (and logged), never given one it did not use
               ...(heldFallback ? { source_fallback: true } : {}),
+              ...(markerResult ? { crisis_marker: markerResult } : {}),
               ...((webSearches > 0 || webUsed) && !post.source && !textOn && !heldFallback
                 ? (console.log("web_answer_no_source", JSON.stringify({ searches: webSearches, words: answerWords })), { source_missing: true })
                 : {}),

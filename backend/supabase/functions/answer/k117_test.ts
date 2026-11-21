@@ -85,3 +85,11 @@ Deno.test("K117: the code's own hits are untouched: a clear crisis phrase is ans
   assertEquals(r.said, CRISIS_SELF);
   assertEquals(w.seen.length, 0);
 });
+
+Deno.test("O96: done.crisis_marker says 'ignored' or 'kept' whenever the marker was checked; nothing otherwise", async () => {
+  assertEquals((await run(world(["[[KRIS]]", "Koka riset. källa: ica.se"], "nej"), RIS)).done.crisis_marker, "ignored");
+  assertEquals((await run(world(["[[KRIS]]"], "ja"), RIS)).done.crisis_marker, "kept");
+  assertEquals((await run(world(["[[KRIS]]"], new Error("timeout")), RIS)).done.crisis_marker, "kept");
+  assertEquals((await run(world(["Ris är ett sädesslag."], "nej"), PLAIN)).done.crisis_marker, undefined);
+  assertEquals((await run(world(["Koka riset."], "nej"), { fragment: "jag vill inte leva längre", mode: "push_to_talk" })).done.crisis_marker, undefined);
+});

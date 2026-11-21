@@ -9,7 +9,7 @@ import { secret } from "../_shared/secrets.ts";
 import { envInt, supabaseUsageSink } from "../_shared/usage.ts";
 import { createSttHandler, DEFAULT_STT_CONFIG } from "./handler.ts";
 import { CORS_HEADERS } from "../_shared/errors.ts";
-import { FAKE_TRANSCRIPT, guardedFetch, withTestMode } from "../_shared/testmode.ts";
+import { fakeTranscript, guardedFetch, withTestMode } from "../_shared/testmode.ts";
 
 const env = Deno.env;
 const db = restDbFromEnv();
@@ -42,7 +42,7 @@ const handler = createSttHandler({
 const fake = (req: Request) =>
   req.method === "GET"
     ? new Response(JSON.stringify({
-      fake: true, token: null, ws_url: null, expires_in: 0, model_id: "fake", language_code: "swe", transcript: FAKE_TRANSCRIPT,
+      fake: true, token: null, ws_url: null, expires_in: 0, model_id: "fake", language_code: /^\s*en\b/i.test(req.headers.get("x-earmind-lang") ?? "") ? "eng" : "swe", transcript: fakeTranscript(req),
       reason: "D180: test accounts never use ElevenLabs",
     }), { status: 200, headers: { "content-type": "application/json", "cache-control": "no-store", ...CORS_HEADERS } })
     : null;

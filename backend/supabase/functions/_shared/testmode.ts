@@ -31,7 +31,7 @@ export interface TestInfo {
   tag?: string;
 }
 export function testTag(v: string | null): string {
-  const w = (v ?? "").toLowerCase().split(/\s+/).filter((x) => x && x !== "unavailable" && x !== "slow")[0] ?? "";
+  const w = (v ?? "").toLowerCase().split(/\s+/).filter((x) => x && x !== "unavailable" && x !== "slow" && x !== "question")[0] ?? "";
   return w.replace(/[^a-z0-9-]/g, "").slice(0, 30) || "x";
 }
 
@@ -277,6 +277,12 @@ export function silentMp3(seconds = 1): Uint8Array<ArrayBuffer> {
   return out;
 }
 export const FAKE_TRANSCRIPT = "Det här är en testtranskription.";
+/** Toby T56: `x-earmind-test: … question` gives a fake transcript that is a question (sv, or en with x-earmind-lang: en),
+ *  so the web's listening mode can be tested live to the answer; the default sentence is unchanged. */
+export function fakeTranscript(req: Request): string {
+  if (!/\bquestion\b/i.test(req.headers.get("x-earmind-test") ?? "")) return FAKE_TRANSCRIPT;
+  return /^\s*en\b/i.test(req.headers.get("x-earmind-lang") ?? "") ? "What does photosynthesis do?" : "Vad gör fotosyntesen?";
+}
 export const TEST_VOICE_ID = "earmind-test-silent";
 
 /**
