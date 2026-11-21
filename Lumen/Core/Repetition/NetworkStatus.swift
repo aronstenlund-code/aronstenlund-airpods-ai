@@ -51,7 +51,7 @@ final class NetworkStatus: @unchecked Sendable {
     }
 
     /// A103 (Angela Fable A104, for Kelly): the one wording for "this needs the network and there is none".
-    static let noNetworkLine = "Ingen internetanslutning. Försök igen när du är uppkopplad."
+    static let noNetworkLine = String(localized: "Ingen internetanslutning. Försök igen när du är uppkopplad.")
 
     /// True until the monitor has said otherwise (a request is tried rather than refused on a guess).
     var isOnline: Bool {

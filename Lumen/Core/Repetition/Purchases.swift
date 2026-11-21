@@ -308,13 +308,13 @@ final class CreditShop {
     @ObservationIgnored private var askedWelcome = false
 
     // Kelly Ke73/Ke77 §5.
-    static let failedLine = "Köpet gick inte igenom. Inget har dragits."
-    static let nothingToRestoreLine = "Det fanns inga köp att hämta."
+    static let failedLine = String(localized: "Köpet gick inte igenom. Inget har dragits.")
+    static let nothingToRestoreLine = String(localized: "Det fanns inga köp att hämta.")
     // Kelly (kop.md §5): the App Store took the purchase but the server could not be told yet.
-    static let owedLine = "Köpet är gjort. Krediterna kommer när EarMind har kontakt igen."
-    static let pendingLine = "Köpet väntar på godkännande. Krediterna kommer när det är godkänt."
-    static let restoreFailedLine = "Det gick inte att hämta köpen just nu. Försök igen om en stund."
-    static let inviteText = "Plugga med EarMind. Du får 5 000 krediter att börja med."
+    static let owedLine = String(localized: "Köpet är gjort. Krediterna kommer när EarMind har kontakt igen.")
+    static let pendingLine = String(localized: "Köpet väntar på godkännande. Krediterna kommer när det är godkänt.")
+    static let restoreFailedLine = String(localized: "Det gick inte att hämta köpen just nu. Försök igen om en stund.")
+    static let inviteText = String(localized: "Plugga med EarMind. Du får 5 000 krediter att börja med.")
 
     static let welcomeDoneKey = "credits.welcomeDone"
     /// Oscar O90 (2026-11-19): a new name, so tries that were used up while the server was not set up (it answered 503
@@ -560,40 +560,40 @@ final class CreditShop {
 
 /// Ke73/Ke77: the words of the purchase part of the credits sheet.
 enum ShopText {
-    static let bestValue = "Bäst värde"
+    static let bestValue = String(localized: "Bäst värde")
     // Toby T48 (his words; Kelly reviews).
-    static let noProducts = "Paketen kunde inte hämtas från App Store just nu."
-    static let tryAgain = "Försök igen"
-    static let examLine = "Ett prov ≈ 6 000 krediter."
+    static let noProducts = String(localized: "Paketen kunde inte hämtas från App Store just nu.")
+    static let tryAgain = String(localized: "Försök igen")
+    static let examLine = String(localized: "Ett prov ≈ 6 000 krediter.")
     static let creditsPerExam = 6000
-    static let weeklyTitle = "Veckokort"
-    static let inviteTitle = "Få 2 000 krediter"
-    static let inviteLine = "när en kompis har spelat sin första text"
-    static let inviteFullLine = "Du har bjudit in 10 i månaden. Fler ger krediter nästa månad."
-    static let welcomeLine = "välkomstkrediter"
+    static let weeklyTitle = String(localized: "Veckokort")
+    static let inviteTitle = String(localized: "Få 2 000 krediter")
+    static let inviteLine = String(localized: "när en kompis har spelat sin första text")
+    static let inviteFullLine = String(localized: "Du har bjudit in 10 i månaden. Fler ger krediter nästa månad.")
+    static let welcomeLine = String(localized: "välkomstkrediter")
     /// Ke77 §1c, without a name (the accounts are anonymous): "+2 000 krediter för en inbjudan."
-    static func rewardLine(_ credits: Int) -> String { "+\(CreditText.number(credits)) krediter för en inbjudan." }
+    static func rewardLine(_ credits: Int) -> String { String(localized: "+\(CreditText.number(credits)) krediter för en inbjudan.") }
     static let inviteButton = "Bjud in"
-    static let refill = "Fyll på"
-    static let included = "Ingår"
-    static let weekIsOut = "Veckans tak är nått"
-    static let manage = "Hantera veckokortet"
+    static let refill = String(localized: "Fyll på")
+    static let included = String(localized: "Ingår")
+    static let weekIsOut = String(localized: "Veckans tak är nått")
+    static let manage = String(localized: "Hantera veckokortet")
     static let termsURL = URL(string: "https://earmind.vercel.app/villkor")
     static let privacyURL = URL(string: "https://earmind.vercel.app/integritet")
 
     /// "100 krediter", "2 000 krediter".
-    static func pack(_ credits: Int) -> String { "\(CreditText.number(credits)) krediter" }
+    static func pack(_ credits: Int) -> String { String(localized: "\(CreditText.number(credits)) krediter") }
 
     /// "79 kr i veckan · cirka 3 prov" (the week's ceiling over an exam's credits).
     static func weeklyLine(price: String, weekLimit: Int?) -> String {
         let exams = (weekLimit ?? 20_000) / creditsPerExam
-        return exams > 0 ? "\(price) i veckan · cirka \(exams) prov" : "\(price) i veckan"
+        return exams > 0 ? String(localized: "\(price) i veckan · cirka \(exams) prov") : String(localized: "\(price) i veckan")
     }
 
     /// Apple's guideline 3.1.2: what the subscription costs, that it renews, and how it is ended.
     static func terms(price: String) -> String {
-        "Veckokortet kostar \(price) i veckan och förnyas automatiskt tills du säger upp det, senast 24 timmar före nästa vecka. "
-            + "Säg upp i Inställningar › ditt namn › Prenumerationer."
+        String(localized: "Veckokortet kostar \(price) i veckan och förnyas automatiskt tills du säger upp det, senast 24 timmar före nästa vecka. ")
+            + String(localized: "Säg upp i Inställningar › ditt namn › Prenumerationer.")
     }
 
     /// "24 nov" from the server's "2026-11-24T10:00:00.000Z".
@@ -603,19 +603,24 @@ enum ShopText {
         withFraction.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
         guard let date = withFraction.date(from: iso) ?? ISO8601DateFormatter().date(from: iso) else { return nil }
         let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "sv_SE")
+        let language = AppLanguage.current
+        formatter.locale = language == .sv ? Locale(identifier: "sv_SE") : language.locale
         formatter.timeZone = TimeZone(identifier: "Europe/Stockholm")
-        formatter.dateFormat = "d MMM"
+        if language == .sv {
+            formatter.dateFormat = "d MMM"
+        } else {
+            formatter.setLocalizedDateFormatFromTemplate("dMMM") // A157: "Nov 24" in English
+        }
         return formatter.string(from: date).replacingOccurrences(of: ".", with: "")
     }
 
     /// "till 24 nov · 16 200 av 20 000 tecken kvar i veckan".
     static func weekLine(_ subscription: DrillQuota.Subscription) -> String {
         var parts: [String] = []
-        if let day = day(subscription.until) { parts.append("till \(day)") }
+        if let day = day(subscription.until) { parts.append(String(localized: "till \(day)")) }
         if let limit = subscription.week_limit {
             let left = max(0, limit - (subscription.week_used ?? 0))
-            parts.append("\(CreditText.number(left)) av \(CreditText.number(limit)) tecken kvar i veckan")
+            parts.append(String(localized: "\(CreditText.number(left)) av \(CreditText.number(limit)) tecken kvar i veckan"))
         }
         return parts.joined(separator: " · ")
     }
@@ -623,7 +628,7 @@ enum ShopText {
     /// "Förnyas automatiskt den 24 nov för 79 kr."
     static func renews(_ subscription: DrillQuota.Subscription, price: String?) -> String? {
         guard let day = day(subscription.until) else { return nil }
-        return price.map { "Förnyas automatiskt den \(day) för \($0)." } ?? "Förnyas automatiskt den \(day)."
+        return price.map { String(localized: "Förnyas automatiskt den \(day) för \($0).") } ?? String(localized: "Förnyas automatiskt den \(day).")
     }
 
     /// K94: the week's characters are used up (the month's and the bought credits may still cover a text).

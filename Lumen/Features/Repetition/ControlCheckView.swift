@@ -89,7 +89,7 @@ struct ControlCheckView: View {
         }
         // The check waits a few seconds per press: after the help it starts again from the first press.
         .sheet(isPresented: $showsHelp, onDismiss: { if beginsOnAppear { check.restart() } }) {
-            if let helpModel { HelpChatView(model: helpModel, suggestion: "Hur fungerar trycken?") }
+            if let helpModel { HelpChatView(model: helpModel, suggestion: String(localized: "Hur fungerar trycken?")) }
         }
         // SYSTEM §0.6: haptics only when something really happened: a press arrived.
         .sensoryFeedback(.success, trigger: check.passed.count) { old, new in new > old }
@@ -123,26 +123,26 @@ struct ControlCheckView: View {
 
     private var title: String {
         if let step = check.step { return step.prompt }
-        if check.allWork { return "Allt fungerar" }
-        return check.needsEarbudSettings ? "Dina AirPods har dubbeltryck per lur" : "Trycken kom inte fram"
+        if check.allWork { return String(localized: "Allt fungerar") }
+        return check.needsEarbudSettings ? String(localized: "Dina AirPods har dubbeltryck per lur") : String(localized: "Trycken kom inte fram")
     }
 
     private var detail: String {
         if let step = check.step {
             // Kelly N2: say why a question starts playing.
             return sound != nil && check.heard.isEmpty
-                ? "\(step.hint). \(forText ? "Början av texten" : "Frågan") spelas en gång så att trycken kommer fram."
+                ? String(localized: "\(step.hint). \(forText ? String(localized: "Början av texten") : String(localized: "Frågan")) spelas en gång så att trycken kommer fram.")
                 : "\(step.hint)."
         }
         if check.allWork {
-            return forText ? "Knapparna på skärmen och på låsskärmen gör samma sak."
-                : "Under paus fortsätter vilket tryck som helst. Knapparna på låsskärmen gör samma sak."
+            return forText ? String(localized: "Knapparna på skärmen och på låsskärmen gör samma sak.")
+                : String(localized: "Under paus fortsätter vilket tryck som helst. Knapparna på låsskärmen gör samma sak.")
         }
         if check.needsEarbudSettings {
-            return "Ställ in Vänster på Nästa spår och Höger på Spela/pausa, så fungerar alla tre. "
-                + "Inställningar › Bluetooth › ⓘ vid dina AirPods › Dubbeltryck."
+            return String(localized: "Ställ in Vänster på Nästa spår och Höger på Spela/pausa, så fungerar alla tre. ")
+                + String(localized: "Inställningar › Bluetooth › ⓘ vid dina AirPods › Dubbeltryck.")
         }
-        return "Kolla att båda AirPods sitter i öronen och är anslutna. Knapparna på låsskärmen fungerar alltid."
+        return String(localized: "Kolla att båda AirPods sitter i öronen och är anslutna. Knapparna på låsskärmen fungerar alltid.")
     }
 
     // MARK: The three steps
@@ -150,17 +150,17 @@ struct ControlCheckView: View {
     /// A90 (Aron 23:13): the controls in exactly these words, one sentence per row.
     private var steps: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(forText ? "Medan texten läses:" : "Medan frågan spelas:")
+            Text(forText ? String(localized: "Medan texten läses:") : String(localized: "Medan frågan spelas:"))
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
                 .padding(.leading, 12)
             VStack(spacing: 0) {
                 // Kelly K1: lower case after the colon, as Aron wrote it
-                row(.one, forText ? "Tryck 1 gång för att pausa eller fortsätta." : "tryck 1 gång för frågans A-svar.")
+                row(.one, forText ? String(localized: "Tryck 1 gång för att pausa eller fortsätta.") : String(localized: "tryck 1 gång för frågans A-svar."))
                 Divider().padding(.leading, 52)
-                row(.two, forText ? "Tryck 2 gånger för nästa mening." : "Tryck 2 gånger för ett kort A-svar på en till två meningar.")
+                row(.two, forText ? String(localized: "Tryck 2 gånger för nästa mening.") : String(localized: "Tryck 2 gånger för ett kort A-svar på en till två meningar."))
                 Divider().padding(.leading, 52)
-                row(.three, forText ? "Tryck 3 gånger för förra meningen." : "Tryck 3 gånger för att pausa. Tryck igen för att fortsätta.")
+                row(.three, forText ? String(localized: "Tryck 3 gånger för förra meningen.") : String(localized: "Tryck 3 gånger för att pausa. Tryck igen för att fortsätta."))
             }
             .background(Color(.secondarySystemBackground), in: RoundedRectangle(cornerRadius: 12))
         }
@@ -195,15 +195,15 @@ struct ControlCheckView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .accessibilityElement(children: .combine)
-        .accessibilityValue(check.step == step ? "Väntar på ditt tryck" : "")
+        .accessibilityValue(check.step == step ? String(localized: "Väntar på ditt tryck") : "")
     }
 
     /// Kelly B4: "Kom inte fram" and "Hoppades över" only once the test is done; "Kom fram" as soon as it did.
     private func outcome(_ step: ControlCheck.Step) -> String? {
-        if check.passed.contains(step) { return "Kom fram" }
+        if check.passed.contains(step) { return String(localized: "Kom fram") }
         guard check.isDone else { return nil }
-        if check.skipped.contains(step) { return "Hoppades över" }
-        if check.missed.contains(step) { return "Kom inte fram" }
+        if check.skipped.contains(step) { return String(localized: "Hoppades över") }
+        if check.missed.contains(step) { return String(localized: "Kom inte fram") }
         return nil
     }
 
@@ -216,7 +216,7 @@ struct ControlCheckView: View {
                 onStart()
             } label: {
                 FilledButtonLabel { // A95
-                    Text(verbatim: check.isDone && !check.allWork ? "Starta ändå" : "Starta prov")
+                    Text(verbatim: check.isDone && !check.allWork ? String(localized: "Starta ändå") : String(localized: "Starta prov"))
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                 }
@@ -228,7 +228,7 @@ struct ControlCheckView: View {
                 Button("Hoppa över") { check.skip() }
                     .frame(minHeight: 44)
             } else if check.allWork {
-                Text(forText ? "Avsluta på telefonen." : "Avsluta på telefonen. Annars börjar listan om.")
+                Text(forText ? String(localized: "Avsluta på telefonen.") : String(localized: "Avsluta på telefonen. Annars börjar listan om."))
                     .font(.footnote)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)

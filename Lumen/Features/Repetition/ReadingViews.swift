@@ -8,7 +8,7 @@ import UIKit
 
 /// The words about a text, the same on Start, on the text's own screen and in Nytt prov (Ke63 §5).
 enum ReadingText {
-    static func sentences(_ n: Int) -> String { n == 1 ? "1 mening" : "\(n) meningar" }
+    static func sentences(_ n: Int) -> String { n == 1 ? String(localized: "1 mening") : String(localized: "\(n) meningar") }
 
     /// "cirka {m} min": about 15 characters a second at the normal tempo.
     static func minutes(_ parts: [ReadingParagraph]) -> Int {
@@ -19,7 +19,7 @@ enum ReadingText {
     static func minutes(_ drill: Drill) -> Int { minutes(drill.readingParts) }
 
     /// "Texten räknas som 1 fråga."
-    static func countsAs(_ n: Int) -> String { "Texten räknas som \(DrillText.questions(n))." }
+    static func countsAs(_ n: Int) -> String { String(localized: "Texten räknas som \(DrillText.questions(n)).") }
 }
 
 /// The text with its headings, every sentence a place to tap. With `current` the sentence being read is full colour,
@@ -323,7 +323,7 @@ struct ReadingPlayerView: View {
 
     // MARK: Top
 
-    private var place: String { "Mening \(min(reader.sentenceIndex + 1, reader.sentenceCount)) av \(reader.sentenceCount)" }
+    private var place: String { String(localized: "Mening \(min(reader.sentenceIndex + 1, reader.sentenceCount)) av \(reader.sentenceCount)") }
 
     /// A115 (D203, Ke69 `spelar.png`): a text from "Säg i AirPods". The player says that it plays, all the time it
     /// does, and how much is left of the repetition.
@@ -336,7 +336,7 @@ struct ReadingPlayerView: View {
         HStack(spacing: 6) {
             // Kelly S1: not red (red is recording in iOS, and the microphone is not used): the accent colour.
             Circle().fill(plays ? Color.accentColor : Color.secondary).frame(width: 8, height: 8).accessibilityHidden(true)
-            Text(plays ? "Spelar i AirPods" : reader.isAtEnd ? "Klart" : reader.isPaused ? "Pausad" : "Spelar inte")
+            Text(plays ? String(localized: "Spelar i AirPods") : reader.isAtEnd ? String(localized: "Klart") : reader.isPaused ? String(localized: "Pausad") : String(localized: "Spelar inte"))
                 .font(.subheadline.weight(.semibold))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -349,8 +349,8 @@ struct ReadingPlayerView: View {
         if let minutes = session.saying?.repeatMinutes {
             TimelineView(.periodic(from: .now, by: 1)) { _ in
                 let left = session.repeatSecondsLeft
-                Text(verbatim: left > 0 ? "Varv \(session.readingLap) · \(SayText.clock(left)) kvar av \(SayText.howLong(minutes))"
-                                        : "Varv \(session.readingLap) · sista varvet")
+                Text(verbatim: left > 0 ? String(localized: "Varv \(session.readingLap) · \(SayText.clock(left)) kvar av \(SayText.howLong(minutes))")
+                                        : String(localized: "Varv \(session.readingLap) · sista varvet"))
             }
         } else {
             Text(verbatim: place)
@@ -481,10 +481,10 @@ struct ReadingPlayerView: View {
     /// What the screen says under the text: paused, waiting for the sound, or nothing.
     private var statusLine: String? {
         if reader.isAtEnd { return nil }
-        if reader.isPaused, !readsByHand { return "Pausad. Fortsätter från början av meningen." }
+        if reader.isPaused, !readsByHand { return String(localized: "Pausad. Fortsätter från början av meningen.") }
         if reader.phase == .waitingForAudio {
             if let problem = model.audio.problem(for: drill) { return problem }
-            return model.isOffline ? "Ingen internetanslutning. Resten av texten kommer när du är uppkopplad." : "Gör ljudet …"
+            return model.isOffline ? String(localized: "Ingen internetanslutning. Resten av texten kommer när du är uppkopplad.") : String(localized: "Gör ljudet …")
         }
         return nil
     }
@@ -500,14 +500,14 @@ struct ReadingPlayerView: View {
             }
             if !reader.isAtEnd {
                 HStack(spacing: 44) {
-                    control("backward.fill", "Förra meningen", size: 26) { session.press(.pauseToggle) }
+                    control("backward.fill", String(localized: "Förra meningen"), size: 26) { session.press(.pauseToggle) }
                     if !readsByHand { // A112 (Kelly U2): nothing plays, so there is nothing to pause
-                        control(reader.isPaused ? "play.fill" : "pause.fill", reader.isPaused ? "Fortsätt" : "Pausa", size: 44) {
+                        control(reader.isPaused ? "play.fill" : "pause.fill", reader.isPaused ? String(localized: "Fortsätt") : String(localized: "Pausa"), size: 44) {
                             session.press(.long)
                         }
                         .frame(minWidth: 64, minHeight: 64)
                     }
-                    control("forward.fill", "Nästa mening", size: 26) { session.press(.short) }
+                    control("forward.fill", String(localized: "Nästa mening"), size: 26) { session.press(.short) }
                 }
                 .frame(minHeight: 64)
                 .foregroundStyle(Color.primary)
@@ -532,11 +532,11 @@ struct ReadingPlayerView: View {
 
     /// Ke63 §5: what the AirPods' presses do now.
     private var presses: [(event: RepetitionEvent, dots: Int, title: String)] {
-        let previous: (event: RepetitionEvent, dots: Int, title: String) = (.pauseToggle, 3, "Förra meningen")
-        if readsByHand { return [(event: .short, dots: 2, title: "Nästa mening"), previous] }
-        if reader.isAtEnd { return [(event: .long, dots: 1, title: "Börja om"), previous] }
-        return [(event: .long, dots: 1, title: reader.isPaused ? "Fortsätt" : "Paus"),
-                (event: .short, dots: 2, title: "Nästa mening"), previous]
+        let previous: (event: RepetitionEvent, dots: Int, title: String) = (.pauseToggle, 3, String(localized: "Förra meningen"))
+        if readsByHand { return [(event: .short, dots: 2, title: String(localized: "Nästa mening")), previous] }
+        if reader.isAtEnd { return [(event: .long, dots: 1, title: String(localized: "Börja om")), previous] }
+        return [(event: .long, dots: 1, title: reader.isPaused ? String(localized: "Fortsätt") : String(localized: "Paus")),
+                (event: .short, dots: 2, title: String(localized: "Nästa mening")), previous]
     }
 
     private func control(_ symbol: String, _ label: String, size: CGFloat, action: @escaping () -> Void) -> some View {

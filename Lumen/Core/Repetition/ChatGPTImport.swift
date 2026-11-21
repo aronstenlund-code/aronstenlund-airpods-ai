@@ -74,14 +74,14 @@ struct ChatGPTImport: Equatable, Sendable {
         var current: Reading?
 
         func skip(_ line: Int, _ text: String, _ reason: String) {
-            unreadable.append("Rad \(line): \(String(text.trimmingCharacters(in: .whitespaces).prefix(120))) – \(reason)")
+            unreadable.append(String(localized: "Rad \(line): \(String(text.trimmingCharacters(in: .whitespaces).prefix(120))) – \(reason)"))
         }
         func warn(_ line: Int, _ reason: String) {
-            warnings.append("Rad \(line): \(reason)")
+            warnings.append(String(localized: "Rad \(line): \(reason)"))
         }
         /// T24 L3: ChatGPT's intro or sign-off, not an unreadable line.
         func leave(_ line: Int, _ text: String) {
-            leftOut.append("Rad \(line): \(String(text.trimmingCharacters(in: .whitespaces).prefix(120)))")
+            leftOut.append(String(localized: "Rad \(line): \(String(text.trimmingCharacters(in: .whitespaces).prefix(120)))"))
         }
         func flush(atEnd: Bool = false) {
             guard var reading = current else { return }
@@ -108,30 +108,30 @@ struct ChatGPTImport: Equatable, Sendable {
                                    limit: Int.max)
             // The prompt's own example ("Fråga: <frågan>") pasted instead of ChatGPT's answer is not a question.
             if questionText.hasPrefix("<") && questionText.hasSuffix(">") || answerText.hasPrefix("<") && answerText.hasSuffix(">") {
-                skip(reading.line, "Fråga: \(questionText)", "Exemplet ur prompten, inte ett svar.")
+                skip(reading.line, "Fråga: \(questionText)", String(localized: "Exemplet ur prompten, inte ett svar."))
                 return
             }
             guard !questionText.isEmpty, !answerText.isEmpty else {
-                skip(reading.line, "Fråga: \(questionText)", "Frågan har inget svar.")
+                skip(reading.line, "Fråga: \(questionText)", String(localized: "Frågan har inget svar."))
                 return
             }
             guard items.count < maxItems else {
-                skip(reading.line, "Fråga: \(questionText)", "Högst \(maxItems) frågor.")
+                skip(reading.line, "Fråga: \(questionText)", String(localized: "Högst \(maxItems) frågor."))
                 return
             }
             guard answerText.count <= maxAnswerChars else {
-                skip(reading.line, "Fråga: \(questionText)", "Svaret är för långt (högst 4 000 tecken).")
+                skip(reading.line, "Fråga: \(questionText)", String(localized: "Svaret är för långt (högst 4 000 tecken)."))
                 return
             }
             if answerText.count > longAnswerChars {
-                warn(reading.line, "Svaret har \(answerText.count) tecken, långt att lyssna på.")
+                warn(reading.line, String(localized: "Svaret har \(answerText.count) tecken, långt att lyssna på."))
             }
             var short = firstSentence(answerText)
             let rest = String(answerText.dropFirst(short.count)).trimmingCharacters(in: .whitespaces)
             if let last = short.last, !".!?".contains(last) { short += "." }
             let asked = questionText.last.map { "?.!".contains($0) } == true ? questionText : questionText + "?"
             if items.contains(where: { $0.question.lowercased() == asked.lowercased() }) {
-                warn(reading.line, "Frågan finns redan.")
+                warn(reading.line, String(localized: "Frågan finns redan."))
             }
             items.append(DrillItem(question: asked, short: short, long: DrillItem.long(rest, startingWith: short)))
         }
@@ -148,7 +148,7 @@ struct ChatGPTImport: Equatable, Sendable {
                 } else if current != nil {
                     current?.answer(rest, at: number)
                 } else {
-                    skip(number, line, "Ett svar utan fråga före.")
+                    skip(number, line, String(localized: "Ett svar utan fråga före."))
                 }
                 continue
             }
@@ -161,7 +161,7 @@ struct ChatGPTImport: Equatable, Sendable {
             // for the sign-off check if it was the last one (as Kevin's `closed`).
             if isFormatting(trimmed) {
                 if current == nil, items.isEmpty { leave(number, trimmed); continue } // T24 L3: before the first question
-                skip(number, trimmed, "Rubrik eller formatering, inte en del av svaret.")
+                skip(number, trimmed, String(localized: "Rubrik eller formatering, inte en del av svaret."))
                 if current?.state == .answer { current?.state = .closed }
                 continue
             }
@@ -170,7 +170,7 @@ struct ChatGPTImport: Equatable, Sendable {
                label(lines[index + 1])?.0 == .answer, let question = unlabelledQuestion(trimmed) {
                 flush()
                 current = Reading(line: number, question: question)
-                warn(number, "Frågan saknade Fråga:.")
+                warn(number, String(localized: "Frågan saknade Fråga:."))
                 continue
             }
             if current?.state == .answer {
@@ -180,7 +180,7 @@ struct ChatGPTImport: Equatable, Sendable {
             } else if current == nil, items.isEmpty {
                 leave(number, trimmed) // T24 L3: "Här är frågorna:" before the first question
             } else {
-                skip(number, trimmed, "Raden börjar inte med Fråga: eller Svar:.")
+                skip(number, trimmed, String(localized: "Raden börjar inte med Fråga: eller Svar:."))
             }
         }
         flush(atEnd: true)
@@ -439,11 +439,11 @@ extension RepetitionModel {
     /// "Nytt prov" (Start then said "Nästa prov · Nytt prov", and the page's title was the button's).
     nonisolated static func importTitle(_ items: [DrillItem]) -> String {
         guard let first = items.first?.question.trimmingCharacters(in: .whitespacesAndNewlines), !first.isEmpty else {
-            return "Prov"
+            return String(localized: "Prov")
         }
         var text = first
         while let last = text.last, "?.!:".contains(last) { text.removeLast() }
-        guard text.count > 40 else { return text.isEmpty ? "Prov" : text }
+        guard text.count > 40 else { return text.isEmpty ? String(localized: "Prov") : text }
         // At a word's end within 40 characters, with an ellipsis.
         let cut = text.prefix(40)
         let words = cut.split(separator: " ").dropLast()

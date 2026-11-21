@@ -1,0 +1,4 @@
+# A157: the folders whose texts are all in both languages. check.py fails on anything Swedish left in them.
+Lumen/Features/Repetition
+Lumen/Core/Repetition
+Lumen/Core/Language

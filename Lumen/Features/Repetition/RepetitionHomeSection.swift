@@ -111,7 +111,7 @@ struct RepetitionHomeSection: View {
             TextField("Länk eller kod", text: $pastedCode)
             Button("Öppna") {
                 if let code = DrillShareClient.code(inText: pastedCode) { model.open(code: code) } else {
-                    model.importMessage = "Det ser inte ut som en länk till ett prov."
+                    model.importMessage = String(localized: "Det ser inte ut som en länk till ett prov.")
                 }
                 pastedCode = ""
             }
@@ -238,11 +238,11 @@ struct RepetitionHomeSection: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             if model.canPublish { // A83 (Ke52 "Hem")
-                Button { showsSchool = true } label: { Self.textButton("Hitta prov från din skola") }
+                Button { showsSchool = true } label: { Self.textButton(String(localized: "Hitta prov från din skola")) }
             }
-            Button { askingCode = true } label: { Self.textButton("Klistra in en länk") }
+            Button { askingCode = true } label: { Self.textButton(String(localized: "Klistra in en länk")) }
             if let lastNight {
-                Button(action: onLastNight) { Text(verbatim: "I natt: \(lastNight)") }
+                Button(action: onLastNight) { Text(verbatim: String(localized: "I natt: \(lastNight)")) }
             }
         }
     }
@@ -260,7 +260,7 @@ struct RepetitionHomeSection: View {
     private func startLabel(_ saved: Int?) -> some View {
         HStack(spacing: 8) {
             Image(systemName: "play.fill").accessibilityHidden(true)
-            Text(saved == nil ? "Starta prov" : "Fortsätt")
+            Text(saved == nil ? String(localized: "Starta prov") : String(localized: "Fortsätt"))
                 .lineLimit(2)
                 .minimumScaleFactor(0.6)
                 .multilineTextAlignment(.center)
@@ -285,14 +285,14 @@ struct RepetitionHomeSection: View {
                 Section {
                     nextExam(next)
                     // Kelly Ke64 L2: a text has no questions.
-                    navigationRow(next.isText ? "Texten" : "Frågor och svar", detail: nil) { opened = next.id }
+                    navigationRow(next.isText ? String(localized: "Texten") : String(localized: "Frågor och svar"), detail: nil) { opened = next.id }
                 } footer: {
                     // A109 (D194): the days in a row of the repetition flow (3 questions or 2 minutes of a text a
                     // day), or the listening modes' when that is longer.
                     let days = max(streakDays, model.practice.streak.current)
                     if days > 0 {
                         Label {
-                            Text(verbatim: days == 1 ? "1 dag i rad" : "\(days) dagar i rad")
+                            Text(verbatim: days == 1 ? String(localized: "1 dag i rad") : String(localized: "\(days) dagar i rad"))
                         } icon: {
                             Image(systemName: "flame").accessibilityHidden(true) // A95 (Toby): not read as "Flamma"
                         }
@@ -312,13 +312,13 @@ struct RepetitionHomeSection: View {
             if model.canPublish || lastNight != nil || showsMoreModes {
                 Section {
                     if model.canPublish { // A83 (Ke52 "Hem")
-                        navigationRow("Prov från din skola", detail: nil) { showsSchool = true }
+                        navigationRow(String(localized: "Prov från din skola"), detail: nil) { showsSchool = true }
                     }
                     if let lastNight {
-                        navigationRow("I natt", detail: lastNight, action: onLastNight)
+                        navigationRow(String(localized: "I natt"), detail: lastNight, action: onLastNight)
                     }
                     if showsMoreModes { // A100
-                        navigationRow("Fler lägen", detail: "Beta · använder mikrofonen", action: onMoreModes)
+                        navigationRow(String(localized: "Fler lägen"), detail: String(localized: "Beta · använder mikrofonen"), action: onMoreModes)
                             .accessibilityLabel("Fler lägen")
                             .accessibilityHint("Beta. Lägen som lyssnar på vad du säger")
                     }
@@ -381,8 +381,8 @@ struct RepetitionHomeSection: View {
             .animation(SayMotion.change(reduceMotion), value: model.sayHoldsTheStage)
             .controlSize(.large)
             .disabled(!model.canStart(drill) && !model.isReadingAloudOff(drill)) // A112b: the text can be opened
-            .accessibilityHint(drill.isText ? "Läser upp texten i dina AirPods. EarMind använder inte mikrofonen."
-                                   : "Spelar frågorna i dina AirPods. EarMind använder inte mikrofonen.")
+            .accessibilityHint(drill.isText ? String(localized: "Läser upp texten i dina AirPods. EarMind använder inte mikrofonen.")
+                                   : String(localized: "Spelar frågorna i dina AirPods. EarMind använder inte mikrofonen."))
         }
         .padding(.vertical, 6)
         .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
@@ -391,44 +391,44 @@ struct RepetitionHomeSection: View {
     /// "Du var på fråga 3 av 5", "5 frågor · cirka 1 min per varv" or the sound's progress.
     private func facts(_ drill: Drill, saved: Int?) -> String {
         if drill.audioTrimmed == true, saved == nil { // A135: removed for space, fetched again at Starta prov
-            return (drill.isText ? "Text" : DrillText.questions(drill.items.count)) + " · Ljudet hämtas när du startar"
+            return (drill.isText ? String(localized: "Text") : DrillText.questions(drill.items.count)) + String(localized: " · Ljudet hämtas när du startar")
         }
         if drill.isText { // A106 (Ke63): "Text · cirka 6 min"; the word says what it is, the card is the same
-            if let saved { return "Du var på mening \(saved + 1) av \(drill.sentenceCount)" }
-            if let problem = shortProblem(drill) { return "Text · \(problem)" }
+            if let saved { return String(localized: "Du var på mening \(saved + 1) av \(drill.sentenceCount)") }
+            if let problem = shortProblem(drill) { return String(localized: "Text · \(problem)") }
             if model.awaitsAudioStart(drill) {
                 if let quota = model.quota, quota.isCredits { // A131 (D213): the server's cost, in credits
-                    if quota.isUnlimited { return "Text · Ljudet görs när du startar" } // A133 (D216)
-                    return drill.startCost.map { "Text · \(CreditText.cardLine(cost: $0))" } ?? "Text · Ljudet görs när du startar"
+                    if quota.isUnlimited { return String(localized: "Text · Ljudet görs när du startar") } // A133 (D216)
+                    return drill.startCost.map { String(localized: "Text · \(CreditText.cardLine(cost: $0))") } ?? String(localized: "Text · Ljudet görs när du startar")
                 }
-                if let quota = model.quota { return "Text · Räknas som \(startCount(drill)) av dina \(quota.left) när du startar" }
-                return "Text · Ljudet görs när du startar"
+                if let quota = model.quota { return String(localized: "Text · Räknas som \(startCount(drill)) av dina \(quota.left) när du startar") }
+                return String(localized: "Text · Ljudet görs när du startar")
             }
             let p = model.progress(drill)
-            if p.total > 0, p.ready == p.total { return "Text · cirka \(ReadingText.minutes(drill)) min" }
-            return "Text · Ljud: \(p.ready) av \(p.total) klara"
+            if p.total > 0, p.ready == p.total { return String(localized: "Text · cirka \(ReadingText.minutes(drill)) min") }
+            return String(localized: "Text · Ljud: \(p.ready) av \(p.total) klara")
         }
-        if let saved { return "Du var på fråga \(saved + 1) av \(drill.items.count)" }
+        if let saved { return String(localized: "Du var på fråga \(saved + 1) av \(drill.items.count)") }
         // A100 (K62): when the sound cannot be made, say so instead of a counter that stands still.
         if let problem = shortProblem(drill) { return "\(DrillText.questions(drill.items.count)) · \(problem)" }
         // A107 (D190): not started yet, so no "Ljud: 0 av N".
         if model.awaitsAudioStart(drill) {
             // Kelly Ke64b N5: Starta prov on the card starts at once, so the card says what starting counts as.
             if let quota = model.quota, quota.isCredits { // A131 (D213)
-                if quota.isUnlimited { return "\(DrillText.questions(drill.items.count)) · Ljudet görs när du startar" } // A133
+                if quota.isUnlimited { return String(localized: "\(DrillText.questions(drill.items.count)) · Ljudet görs när du startar") } // A133
                 return drill.startCost.map { "\(DrillText.questions(drill.items.count)) · \(CreditText.cardLine(cost: $0))" }
-                    ?? "\(DrillText.questions(drill.items.count)) · Ljudet görs när du startar"
+                    ?? String(localized: "\(DrillText.questions(drill.items.count)) · Ljudet görs när du startar")
             }
             if let quota = model.quota {
-                return "\(DrillText.questions(drill.items.count)) · Räknas som \(startCount(drill)) av dina \(quota.left) när du startar"
+                return String(localized: "\(DrillText.questions(drill.items.count)) · Räknas som \(startCount(drill)) av dina \(quota.left) när du startar")
             }
-            return "\(DrillText.questions(drill.items.count)) · Ljudet görs när du startar"
+            return String(localized: "\(DrillText.questions(drill.items.count)) · Ljudet görs när du startar")
         }
         let p = model.progress(drill)
         if p.total > 0, p.ready == p.total {
-            return "\(DrillText.questions(drill.items.count)) · cirka \(DrillText.minutesPerLap(drill)) min per varv"
+            return String(localized: "\(DrillText.questions(drill.items.count)) · cirka \(DrillText.minutesPerLap(drill)) min per varv")
         }
-        return "\(DrillText.questions(drill.items.count)) · Ljud: \(p.ready) av \(p.total) klara"
+        return String(localized: "\(DrillText.questions(drill.items.count)) · Ljud: \(p.ready) av \(p.total) klara")
     }
 
     /// Kelly (A100): on Start only the first sentence of the sound's problem, without the full stop ("Ljudet kan
@@ -484,11 +484,11 @@ struct RepetitionHomeSection: View {
     private func otherExam(_ drill: Drill) -> some View {
         let p = model.progress(drill)
         let ready = p.total > 0 && p.ready == p.total
-        let what = drill.isText ? "Text · cirka \(ReadingText.minutes(drill)) min" : DrillText.questions(drill.items.count)
-        let detail = ready ? "\(what) · ljud klart"
-            : drill.audioTrimmed == true ? "\(what) · Ljudet hämtas när du startar" // A135: no counter that stands still
+        let what = drill.isText ? String(localized: "Text · cirka \(ReadingText.minutes(drill)) min") : DrillText.questions(drill.items.count)
+        let detail = ready ? String(localized: "\(what) · ljud klart")
+            : drill.audioTrimmed == true ? String(localized: "\(what) · Ljudet hämtas när du startar") // A135: no counter that stands still
             : shortProblem(drill) ?? (model.awaitsAudioStart(drill) ? what // A107: nothing to count before Starta prov
-                : "Ljud: \(p.ready) av \(p.total) klara") // A100 (K62)
+                : String(localized: "Ljud: \(p.ready) av \(p.total) klara")) // A100 (K62)
         return HStack(spacing: 12) {
             Button {
                 opened = drill.id
@@ -541,7 +541,7 @@ struct BetaModesHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 6) {
-                SectionLabel("Fler lägen")
+                SectionLabel(String(localized: "Fler lägen"))
                 BetaBadge()
             }
             Text("De här lägena lyssnar på vad du säger. De är i BETA och blir bättre hela tiden.")

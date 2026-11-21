@@ -118,6 +118,9 @@ final class CloudAnswerProvider: AnswerProvider {
             var fragment: String
             var mode: String
             var language: String
+            /// A157 (K114, D251): the language of the app's texts ("en"/"sv"): the answer comes in the user's language.
+            /// `language` above is the language being listened for, which can be another.
+            var lang: String = AppLanguage.current.code
             var context: Context
             var length: String
             var goals: String?

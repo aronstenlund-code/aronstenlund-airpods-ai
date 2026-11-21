@@ -1,7 +1,7 @@
 """A157 (D251): finds the string literals in Swift source. A small lexer, not a parser: it knows comments, ordinary
 and multi-line strings, raw strings and interpolation (nested), which is what the language check needs."""
 from __future__ import annotations
-import dataclasses, os
+import dataclasses, os, re
 
 
 @dataclasses.dataclass
@@ -18,8 +18,9 @@ class Literal:
 
     @property
     def text(self) -> str:
-        """The literal with every interpolation written as \\(…) (what a reader sees)."""
-        return "".join(p if isinstance(p, str) else "\\(" + p[1] + ")" for p in self.parts)
+        """The literal with every interpolation written as \\(…) (what a reader sees). A String(localized:) around
+        a literal inside an interpolation is left out, so the text is the same before and after the wrapping."""
+        return "".join(escaped(p) if isinstance(p, str) else "\\(" + unwrapped(p[1]) + ")" for p in self.parts)
 
     @property
     def plain(self) -> str:
@@ -29,6 +30,19 @@ class Literal:
     @property
     def interpolated(self) -> bool:
         return any(not isinstance(p, str) for p in self.parts)
+
+
+WRAPPED = re.compile(r'String\(localized:\s*("(?:[^"\\]|\\.)*")\)')
+
+
+def escaped(text: str) -> str:
+    """Text as it is written inside a Swift string literal on one line."""
+    return (text.replace("\\", "\\\\").replace('"', '\\"').replace("\n", "\\n").replace("\t", "\\t")
+            .replace("\r", "\\r"))
+
+
+def unwrapped(expr: str) -> str:
+    return WRAPPED.sub(r"\1", expr)
 
 
 ESC = {"n": "\n", "t": "\t", "r": "\r", "0": "\0", "\\": "\\", '"': '"', "'": "'"}
@@ -63,7 +77,7 @@ def _string(src: str, i: int, hashes: int):
                     k += 1
                 if buf:
                     parts.append("".join(buf)); buf = []
-                parts.append(("expr", src[j + 1:k - 1]))
+                parts.append(("expr", src[j + 1:k - 1], j + 1))
                 i = k
                 continue
             if c == "u" and src.startswith("{", j + 1):
@@ -109,10 +123,18 @@ def _dedent(parts):
 
 
 def literals(path: str, src: str | None = None):
+    """Every string literal in the file, in order of where it starts; a literal inside an interpolation comes
+    after the literal it is in."""
     if src is None:
         with open(path, encoding="utf-8") as f:
             src = f.read()
-    out, i, n = [], 0, len(src)
+    out = []
+    _scan(path, src, 0, len(src), out)
+    out.sort(key=lambda l: l.start)
+    return out
+
+
+def _scan(path, src, i, n, out):
     while i < n:
         c = src[i]
         if src.startswith("//", i):
@@ -149,11 +171,13 @@ def literals(path: str, src: str | None = None):
             continue
         ls = src.rfind("\n", 0, start) + 1
         le = src.find("\n", end)
-        le = n if le < 0 else le
+        le = len(src) if le < 0 else le
         out.append(Literal(path, src.count("\n", 0, start) + 1, start, end, parts, multi, hashes > 0,
                            src[ls:start], src[end:le]))
+        for p in parts:
+            if not isinstance(p, str) and len(p) > 2:
+                _scan(path, src, p[2], p[2] + len(p[1]), out)
         i = end
-    return out
 
 
 def swift_files(*roots):

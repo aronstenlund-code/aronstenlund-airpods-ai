@@ -312,13 +312,13 @@ final class RepetitionSession {
     /// "EarMind · <exam> · mening 5 av 9". The title changes only with the heading, so the Lock Screen does not blink.
     static func readingNowPlaying(_ reader: ReadingPlayer, title: String) -> (title: String, artist: String) {
         let n = min(reader.sentenceIndex + 1, reader.sentenceCount)
-        return (reader.currentHeading ?? title, "EarMind · \(title) · mening \(n) av \(reader.sentenceCount)")
+        return (reader.currentHeading ?? title, String(localized: "EarMind · \(title) · mening \(n) av \(reader.sentenceCount)"))
     }
 
     /// A122 (D209): "Säg i AirPods" on the Lock Screen. Title = "EarMind · Säg i AirPods"; artist = the text's first
     /// words, with the lap when it repeats ("Fotosyntes … · varv 2"). It changes only with the lap.
     static func sayingNowPlaying(title: String, lap: Int, repeats: Bool) -> (title: String, artist: String) {
-        ("EarMind · Säg i AirPods", repeats ? "\(title) · varv \(lap)" : title)
+        (String(localized: "EarMind · Säg i AirPods"), repeats ? String(localized: "\(title) · varv \(lap)") : title)
     }
 
     private func updateNowPlaying() {
@@ -338,7 +338,7 @@ final class RepetitionSession {
         // Kelly Ke49 "Låsskärmen": title = the question, artist = "EarMind · <exam> · 7 av 20".
         MPNowPlayingInfoCenter.default().nowPlayingInfo = [
             MPMediaItemPropertyTitle: item?.question ?? drill.title,
-            MPMediaItemPropertyArtist: "EarMind · \(drill.title) · \(player.index + 1) av \(player.count)",
+            MPMediaItemPropertyArtist: String(localized: "EarMind · \(drill.title) · \(player.index + 1) av \(player.count)"),
             MPMediaItemPropertyAlbumTitle: drill.title,
             MPNowPlayingInfoPropertyPlaybackRate: player.isPaused ? 0.0 : 1.0,
         ]

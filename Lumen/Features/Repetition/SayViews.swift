@@ -57,13 +57,19 @@ enum SayText {
     #endif
 
     /// "10 min" … "1 timme" on the button.
-    static func howLong(_ minutes: Int) -> String { minutes == 60 ? "1 timme" : "\(minutes) min" }
+    /// A157 (K114): the server's refusal comes in the app's language, so the word is looked for in both.
+    static func isAboutCredits(_ refusal: String) -> Bool {
+        let words = refusal.lowercased()
+        return words.contains("krediter") || words.contains("credit")
+    }
+
+    static func howLong(_ minutes: Int) -> String { minutes == 60 ? String(localized: "1 timme") : String(localized: "\(minutes) min") }
 
     /// "1,0×", "1,25×".
     static func tempo(_ tempo: Double) -> String {
         let text = tempo == tempo.rounded() || (tempo * 10) == (tempo * 10).rounded() ? String(format: "%.1f", tempo)
             : String(format: "%.2f", tempo)
-        return text.replacingOccurrences(of: ".", with: ",") + "×"
+        return AppLanguage.decimal(text) + "×" // A157: "1,5×" in Swedish, "1.5×" in English
     }
 
     /// Ke69 asks for 0,5 · 0,75 · 1,0 · 1,25 · 1,5. The tempos the player takes are decided in D151 (and pinned by
@@ -80,7 +86,7 @@ enum SayText {
     /// A122 (D209, Aron 2026-11-17): the phone does not have to be out. The player goes on with the screen locked
     /// (background audio) and is steered from the Lock Screen and the AirPods.
     /// A132 (D215.2, Kelly Ke72): shorter, and only until Spela has been pressed once.
-    static let lockLine = "Du kan låsa telefonen. Det hörs i AirPods ändå."
+    static let lockLine = String(localized: "Du kan låsa telefonen. Det hörs i AirPods ändå.")
     static let hasPlayedKey = "say.hasPlayed"
 
     /// A144 (D225, after Toby's T50 and Kevin's times: saving and starting a new text takes 9–10 s today). While
@@ -89,9 +95,9 @@ enum SayText {
     /// and Försök igen. Sound that is already on the phone plays at once and never comes here.
     static let slowAfter: Duration = .seconds(8)
     static let giveUpAfter: Duration = .seconds(25)
-    static let slowServerLine = "Det tar längre tid än vanligt." // Kelly
-    static let slowLine = "Ljudet kunde inte hämtas. Kolla nätet." // Kelly: the button says the rest
-    static let failedLine = "Ljudet kunde inte hämtas." // the network is up: it is not blamed
+    static let slowServerLine = String(localized: "Det tar längre tid än vanligt.") // Kelly
+    static let slowLine = String(localized: "Ljudet kunde inte hämtas. Kolla nätet.") // Kelly: the button says the rest
+    static let failedLine = String(localized: "Ljudet kunde inte hämtas.") // the network is up: it is not blamed
     static func slowLine(online: Bool) -> String { online ? failedLine : slowLine }
 
     enum Wait: Equatable { case quiet, slow, gaveUp }
@@ -110,31 +116,31 @@ enum SayText {
     }
 
     /// A136 (D220, Kelly Ke75): the words of the style row and of "Skriv i takt".
-    static let stylePrompt = "Hur ska det låta?"
-    static let paceTitle = "Skriv i takt"
-    static let paceCapsule = "I takt"
-    static let voiceCapsule = "Röst" // no voice chosen: the server's own
+    static let stylePrompt = String(localized: "Hur ska det låta?")
+    static let paceTitle = String(localized: "Skriv i takt")
+    static let paceCapsule = String(localized: "I takt")
+    static let voiceCapsule = String(localized: "Röst") // no voice chosen: the server's own
     static let inPaceKey = "say.inPace"
     static let voiceKey = "say.voiceID"
     static let mixKey = "say.mixVoices"
     // A140 (D223): mine, for Kelly to review.
-    static let mixCapsule = "Blandat"
+    static let mixCapsule = String(localized: "Blandat")
 
     /// A140 (K99, Kelly): why the server chose the voice in the capsule beside it: "Vald efter stilen · Lugn och tydlig."
     static func pickedLine(reason: String?) -> String {
         let why = (reason ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        return why.isEmpty ? "Vald efter stilen." : "Vald efter stilen · \(why)"
+        return why.isEmpty ? String(localized: "Vald efter stilen.") : String(localized: "Vald efter stilen · \(why)")
     }
 
     /// A140 (D223): "Spelar i AirPods · Astrid" while it plays.
-    static func playingLine(voice: String?) -> String { voice.map { "Spelar i AirPods · \($0)" } ?? "Spelar i AirPods" }
+    static func playingLine(voice: String?) -> String { voice.map { String(localized: "Spelar i AirPods · \($0)") } ?? String(localized: "Spelar i AirPods") }
 
     /// A132 (Ke72): the main button says how long: "Spela i 10 min", "Spela i 1 timme".
-    static func playTitle(_ minutes: Int) -> String { "Spela i \(howLong(minutes))" }
+    static func playTitle(_ minutes: Int) -> String { String(localized: "Spela i \(howLong(minutes))") }
 
     /// A132 (Ke72): the cost as two words by the button: "120 krediter", "0 krediter", or "120 krediter · du har 88".
     static func creditsLine(cost: Int, left: Int) -> String {
-        cost > left ? "\(CreditText.credits(cost)) · du har \(CreditText.short(left, .down))" : CreditText.credits(cost)
+        cost > left ? String(localized: "\(CreditText.credits(cost)) · du har \(CreditText.short(left, .down))") : CreditText.credits(cost)
     }
 
     /// A134 (Ke73 §3): the cost by the button with the weekly card. While the week covers the text it is "Ingår"; when
@@ -172,12 +178,12 @@ enum SayText {
     /// "Kostar 120 krediter", "Kostar 120 krediter, du har 88". "Ingår" and "Veckans tak är nått" stand as they are.
     static func spokenCost(_ line: String) -> String {
         let spoken = line.replacingOccurrences(of: " · ", with: ", ")
-        return spoken.first?.isNumber == true ? "Kostar \(spoken)" : spoken
+        return spoken.first?.isNumber == true ? String(localized: "Kostar \(spoken)") : spoken
     }
 
     /// "Tempo, normal" for 1,0×; "Tempo, 1,25 gånger" else.
     static func spokenTempo(_ value: Double) -> String {
-        value == 1 ? "Tempo, normal" : "Tempo, \(tempo(value).replacingOccurrences(of: "×", with: " gånger"))"
+        value == 1 ? String(localized: "Tempo, normal") : String(localized: "Tempo, \(tempo(value).replacingOccurrences(of: "×", with: String(localized: " gånger")))")
     }
 
     /// A capsule in Senaste: the whole text (the screen cuts it with "…"), then its style or voice.
@@ -191,8 +197,8 @@ enum SayText {
     /// the clock (7:07 is "7 minuter kvar", Kelly Ke79 round 5), and the last minute is "under en minut kvar".
     static func spokenPlaying(voice: String?, secondsLeft: Int, paused: Bool) -> String {
         let minutes = max(0, secondsLeft) / 60
-        let left = minutes == 0 ? "under en minut kvar" : minutes == 1 ? "1 minut kvar" : "\(minutes) minuter kvar"
-        return "Spelar i AirPods" + (voice.map { " med \($0)" } ?? "") + ", \(left)" + (paused ? ", pausad" : "")
+        let left = minutes == 0 ? String(localized: "under en minut kvar") : minutes == 1 ? String(localized: "1 minut kvar") : String(localized: "\(minutes) minuter kvar")
+        return String(localized: "Spelar i AirPods") + (voice.map { String(localized: " med \($0)") } ?? "") + ", \(left)" + (paused ? String(localized: ", pausad") : "")
     }
 
     /// A132 (Ke72): a said text as a capsule under the field: its beginning, at most about 24 characters.
@@ -204,10 +210,10 @@ enum SayText {
     static func costLine(counts: Int, left: Int?, readingAloudOff: Bool) -> String {
         if readingAloudOff { return CloudDrillAudio.unavailableLine }
         if let left, counts > left {
-            return "Texten räknas som \(DrillText.questions(counts)), och du har \(left) kvar. "
-                + "Korta texten eller vänta till den 1 \(ChatGPTImportView.nextMonth())."
+            return String(localized: "Texten räknas som \(DrillText.questions(counts)), och du har \(left) kvar. ")
+                + String(localized: "Korta texten eller vänta till den 1 \(ChatGPTImportView.nextMonth()).")
         }
-        return "Räknas som \(DrillText.questions(counts)). Upprepningar kostar inget."
+        return String(localized: "Räknas som \(DrillText.questions(counts)). Upprepningar kostar inget.")
     }
 }
 
@@ -458,7 +464,7 @@ struct SayInAirPodsField: View {
     /// button: the same words, the same press. In the style row there is room for the symbol only.
     @ViewBuilder
     private func keyboardPlay(compact: Bool) -> some View {
-        let title = canRetry ? "Försök igen" : SayText.playTitle(minutes)
+        let title = canRetry ? String(localized: "Försök igen") : SayText.playTitle(minutes)
         let narrow = SayKeyboard.isNarrow(cardWidth: cardWidth, largeText: typeSize.isAccessibilitySize)
         let cost = compact ? nil : keyboardCost
         if creditsShort, !compact {
@@ -504,7 +510,7 @@ struct SayInAirPodsField: View {
             .disabled(isStarting || tooMany)
             // The whole of it, also when the row has room for "Spela" or the symbol only; then the cost. Kelly
             // (2026-11-19): greyed out for want of credits it says so, so that the press does not end in a no.
-            .accessibilityLabel(tooMany && model.quota?.isCredits == true ? "\(title), krediterna räcker inte"
+            .accessibilityLabel(tooMany && model.quota?.isCredits == true ? String(localized: "\(title), krediterna räcker inte")
                                 : cost.map { "\(title). \(SayText.spokenCost($0))" } ?? title)
         }
     }
@@ -550,7 +556,7 @@ struct SayInAirPodsField: View {
     private func runMotionDemo() async {
         func pause(_ seconds: Double) async { try? await Task.sleep(for: .seconds(seconds)) }
         await pause(2.5)
-        text = "Fotosyntes: koldioxid + vatten + ljus blir socker och syre."
+        text = String(localized: "Fotosyntes: koldioxid + vatten + ljus blir socker och syre.")
         await pause(1.5)
         asked = (text, sound, 120, nil, nil, nil)
         await pause(1.5)
@@ -644,14 +650,14 @@ struct SayInAirPodsField: View {
             HStack(spacing: 6) {
                 Circle().fill(SayText.accent).frame(width: 8, height: 8).accessibilityHidden(true)
                 // A140 (D223): which voice speaks now (the part's own when they are mixed).
-                Text(verbatim: waiting ? "Gör ljudet …" : SayText.playingLine(voice: model.speakingVoice(drill, part: reader.position?.part)))
+                Text(verbatim: waiting ? String(localized: "Gör ljudet …") : SayText.playingLine(voice: model.speakingVoice(drill, part: reader.position?.part)))
                     .font(.footnote.weight(.semibold))
             }
             .foregroundStyle(SayText.accent)
             .dynamicTypeSize(...DynamicTypeSize.accessibility2)
             .accessibilityElement(children: .ignore)
             // Ke79: the row as one: "Spelar i AirPods med Astrid, 7 minuter kvar". The clock below is for the eye.
-            .accessibilityLabel(waiting ? "Gör ljudet" : SayText.spokenPlaying(voice: model.speakingVoice(drill, part: reader.position?.part),
+            .accessibilityLabel(waiting ? String(localized: "Gör ljudet") : SayText.spokenPlaying(voice: model.speakingVoice(drill, part: reader.position?.part),
                                                                                secondsLeft: Int(model.session.repeatSecondsLeft), paused: reader.isPaused))
             .accessibilityAddTraits(.isStaticText) // Ke79 round 5: it is read, not pressed
         }
@@ -700,11 +706,11 @@ struct SayInAirPodsField: View {
                     .background(SayText.accent, in: Circle())
             }
             .buttonStyle(.pressFeedbackRound)
-            .accessibilityLabel(reader.isPaused ? "Fortsätt" : "Pausa")
+            .accessibilityLabel(reader.isPaused ? String(localized: "Fortsätt") : String(localized: "Pausa"))
             .transition(SayMotion.appear)
             }
             TimelineView(.periodic(from: .now, by: 1)) { _ in
-                Text(verbatim: "\(SayText.clock(model.session.repeatSecondsLeft)) kvar" + (reader.isPaused ? " · pausad" : ""))
+                Text(verbatim: String(localized: "\(SayText.clock(model.session.repeatSecondsLeft)) kvar") + (reader.isPaused ? String(localized: " · pausad") : ""))
                     .font(.body.weight(.semibold))
                     .monospacedDigit()
                     .lineLimit(1)
@@ -794,7 +800,7 @@ struct SayInAirPodsField: View {
     private var writingCard: some View {
         HStack(alignment: .top, spacing: 8) { // the empty field keeps three rows: the mark stands at the first
             Text(verbatim: "›").foregroundStyle(SayText.accent).accessibilityHidden(true)
-            TextField("", text: $text, prompt: Text(typeSize.isAccessibilitySize ? "Skriv här" : "Skriv eller klistra in det du vill höra").foregroundStyle(SayText.ink.opacity(SayText.promptOpacity)),
+            TextField("", text: $text, prompt: Text(typeSize.isAccessibilitySize ? String(localized: "Skriv här") : String(localized: "Skriv eller klistra in det du vill höra")).foregroundStyle(SayText.ink.opacity(SayText.promptOpacity)),
                       axis: .vertical)
                 // A132 (D215.4): at most 5 rows, then it scrolls inside; 3 rows when it is not being written in.
                 .lineLimit(focused ? (typeSize.isAccessibilitySize ? 2...5 : 3...5) : (typeSize.isAccessibilitySize ? 2...3 : 3...3))
@@ -815,7 +821,7 @@ struct SayInAirPodsField: View {
         if isReadingMaterial || materialNote != nil {
             HStack(spacing: 8) {
                 if isReadingMaterial { ProgressView().controlSize(.small) }
-                Text(verbatim: isReadingMaterial ? "Läser materialet …" : materialNote ?? "")
+                Text(verbatim: isReadingMaterial ? String(localized: "Läser materialet …") : materialNote ?? "")
                     .font(.footnote)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -903,7 +909,7 @@ struct SayInAirPodsField: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.updatesFrequently)
             // A134 (D218): the server said the credits do not cover it; the packs are one tap away.
-            if model.shop != nil, tooMany || refused.contains("krediter") {
+            if model.shop != nil, tooMany || SayText.isAboutCredits(refused) {
                 Button(ShopText.refill) { showsCredits = true }
                     .font(.footnote.weight(.semibold))
                     .buttonStyle(.pressFeedback)
@@ -1004,7 +1010,7 @@ struct SayInAirPodsField: View {
         } label: {
             Image(systemName: "timer")
         }
-        .accessibilityLabel("Hur länge, \(minutes == 60 ? "1 timme" : "\(minutes) minuter")")
+        .accessibilityLabel("Hur länge, \(minutes == 60 ? String(localized: "1 timme") : String(localized: "\(minutes) minuter"))")
         .smallSayControl()
     }
 
@@ -1023,7 +1029,7 @@ struct SayInAirPodsField: View {
         } label: {
             Text(verbatim: inPace ? SayText.paceCapsule : SayText.tempo(tempo)).monospacedDigit().lineLimit(1).fixedSize()
         }
-        .accessibilityLabel(inPace ? "Tempo, \(SayText.paceTitle)" : SayText.spokenTempo(tempo)) // Ke79
+        .accessibilityLabel(inPace ? String(localized: "Tempo, \(SayText.paceTitle)") : SayText.spokenTempo(tempo)) // Ke79
         .smallSayControl()
     }
 
@@ -1055,7 +1061,7 @@ struct SayInAirPodsField: View {
                     // Kelly: Försök igen must not look as if it plays at once.
                     if isStarting { ProgressView().controlSize(.small) } else { Image(systemName: canRetry ? "arrow.clockwise" : "play.fill").contentTransition(.symbolEffect(.replace)).accessibilityHidden(true) }
                     // In a row of its own (the largest text) it may shrink; it must never be wider than the card.
-                    Text(verbatim: canRetry ? "Försök igen" : SayText.playTitle(minutes)).lineLimit(1)
+                    Text(verbatim: canRetry ? String(localized: "Försök igen") : SayText.playTitle(minutes)).lineLimit(1)
                         .fixedSize(horizontal: !wide, vertical: false)
                         .minimumScaleFactor(0.6)
                 }
@@ -1113,7 +1119,7 @@ struct SayInAirPodsField: View {
     private func takePhotos() {
         let status = AVCaptureDevice.authorizationStatus(for: .video)
         if status == .denied || status == .restricted {
-            materialNote = "EarMind får inte använda kameran. Tillåt den i Inställningar, eller välj bilder ur bildbiblioteket."
+            materialNote = String(localized: "EarMind får inte använda kameran. Tillåt den i Inställningar, eller välj bilder ur bildbiblioteket.")
         } else {
             materialNote = nil
             isTakingPhotos = true
@@ -1148,7 +1154,7 @@ struct SayInAirPodsField: View {
         defer { if scoped { url.stopAccessingSecurityScopedResource() } }
         let name = url.lastPathComponent
         if url.pathExtension.lowercased() == "docx" {
-            guard let data = try? Data(contentsOf: url) else { materialNote = "\(name) gick inte att öppna."; return }
+            guard let data = try? Data(contentsOf: url) else { materialNote = String(localized: "\(name) gick inte att öppna."); return }
             await reading { try await model.maker.documentText(docx: data) } // iOS cannot read Word; the server does
             return
         }
@@ -1156,16 +1162,16 @@ struct SayInAirPodsField: View {
             add(text)
         } else if url.pathExtension.lowercased() == "pdf" {
             let scanned = await ExamMaterials.pages(from: url) // a scanned PDF has no text: its pages go as photos
-            if scanned.isEmpty { materialNote = "\(name) har ingen text som går att läsa. Fota sidorna i stället." } else { await readPages(scanned) }
+            if scanned.isEmpty { materialNote = String(localized: "\(name) har ingen text som går att läsa. Fota sidorna i stället.") } else { await readPages(scanned) }
         } else {
-            materialNote = "\(name) har ingen text som går att läsa. Fota sidorna i stället."
+            materialNote = String(localized: "\(name) har ingen text som går att läsa. Fota sidorna i stället.")
         }
     }
 
     /// D204 (Kevin's K81): the server reads the page; only its readable text comes back.
     private func addLink(_ pasted: String) async {
         guard let address = FetchedPage.address(pasted) else {
-            materialNote = "Det ser inte ut som en länk."
+            materialNote = String(localized: "Det ser inte ut som en länk.")
             return
         }
         await reading { try await model.maker.fetchPage(address).text }

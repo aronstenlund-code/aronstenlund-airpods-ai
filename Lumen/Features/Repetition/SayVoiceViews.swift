@@ -61,12 +61,12 @@ struct SayVoicesSheet: View {
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
     private var reduceMotion: Bool { SayMotion.reduces(systemReduceMotion) }
 
-    static let footnote = "Provlyssning kostar inget. En ny röst blir nytt ljud."
+    static let footnote = String(localized: "Provlyssning kostar inget. En ny röst blir nytt ljud.")
     // A140 (D223): mine, for Kelly to review.
-    static let mixTitle = "Blanda röster"
-    static let mixLine = "Varje stycke får en egen röst, samma varje gång."
-    static let reviewTitle = "Att provlyssna"
-    static let notInCatalog = "Kan bara provlyssnas" // Kelly"
+    static let mixTitle = String(localized: "Blanda röster")
+    static let mixLine = String(localized: "Varje stycke får en egen röst, samma varje gång.")
+    static let reviewTitle = String(localized: "Att provlyssna")
+    static let notInCatalog = String(localized: "Kan bara provlyssnas") // Kelly"
 
     private var query: String { search.trimmingCharacters(in: .whitespaces) }
 
@@ -103,7 +103,7 @@ struct SayVoicesSheet: View {
                         } else if isSearching {
                             HStack(spacing: 8) { ProgressView(); Text("Söker …").foregroundStyle(LumenColor.secondaryText) }
                         } else {
-                            Text(verbatim: NetworkStatus.shared.isOnline ? "Det gick inte att söka just nu." : NetworkStatus.noNetworkLine)
+                            Text(verbatim: NetworkStatus.shared.isOnline ? String(localized: "Det gick inte att söka just nu.") : NetworkStatus.noNetworkLine)
                                 .foregroundStyle(LumenColor.secondaryText)
                         }
                     } footer: {
@@ -111,7 +111,7 @@ struct SayVoicesSheet: View {
                     }
                 }
             }
-            .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: "Sök bland alla röster")
+            .searchable(text: $search, placement: .navigationBarDrawer(displayMode: .always), prompt: String(localized: "Sök bland alla röster"))
             .task(id: query) { await look() }
             .navigationTitle("Röst")
             .navigationBarTitleDisplayMode(.inline)
@@ -207,7 +207,7 @@ struct SayVoicesSheet: View {
                     .frame(minWidth: 44, minHeight: 44)
             }
             .buttonStyle(.pressFeedbackRound)
-            .accessibilityLabel(preview.playingID == voice.id ? "Pausa \(voice.name)" : "Provlyssna \(voice.name)")
+            .accessibilityLabel(preview.playingID == voice.id ? String(localized: "Pausa \(voice.name)") : String(localized: "Provlyssna \(voice.name)"))
         }
     }
 

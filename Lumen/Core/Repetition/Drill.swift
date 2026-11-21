@@ -138,8 +138,8 @@ enum DrillLengthClass: String, Codable, Sendable {
     var label: String? {
         switch self {
         case .normal: nil
-        case .longer: "Lite längre än vanligt"
-        case .tooLong: "Mycket lång"
+        case .longer: String(localized: "Lite längre än vanligt")
+        case .tooLong: String(localized: "Mycket lång")
         }
     }
 
@@ -147,8 +147,8 @@ enum DrillLengthClass: String, Codable, Sendable {
     var editorNote: String? {
         switch self {
         case .normal: nil
-        case .longer: "Frågan och svaret är lite längre än vanligt."
-        case .tooLong: "Frågan och svaret är mycket långa. Korta svaret om du vill."
+        case .longer: String(localized: "Frågan och svaret är lite längre än vanligt.")
+        case .tooLong: String(localized: "Frågan och svaret är mycket långa. Korta svaret om du vill.")
         }
     }
 }
@@ -410,8 +410,8 @@ enum DrillText {
         return kept.hasSuffix(".") ? String(kept.dropLast()) : kept
     }
 
-    static func questions(_ n: Int) -> String { n == 1 ? "1 fråga" : "\(n) frågor" }
-    static func things(_ n: Int) -> String { n == 1 ? "1 sak" : "\(n) saker" }
+    static func questions(_ n: Int) -> String { n == 1 ? String(localized: "1 fråga") : String(localized: "\(n) frågor") }
+    static func things(_ n: Int) -> String { n == 1 ? String(localized: "1 sak") : String(localized: "\(n) saker") }
 
     /// "cirka {m} min per varv": the question (about 3 s) and the thinking time, without answers.
     static func minutesPerLap(_ drill: Drill) -> Int {
@@ -449,7 +449,7 @@ struct SaySound: Equatable, Hashable, Sendable {
         return String(joined.prefix(SaidText.maxStyleChars))
     }
 
-    static let suggestions = ["Tydligt", "Lugnt", "Glatt", "Viskande"]
+    static let suggestions = [String(localized: "Tydligt"), String(localized: "Lugnt"), String(localized: "Glatt"), String(localized: "Viskande")]
 }
 
 enum SaidText {
@@ -485,14 +485,15 @@ enum SaidText {
     /// A130 (D212): what stands under the field when Spela did not start anything.
     static func refusalLine(problem: String?, quotaExceeded: Bool, refill: String?) -> String {
         let said = (problem ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        let base = said.isEmpty ? (quotaExceeded ? "Du har inga frågor kvar den här månaden." : "Det gick inte att spela just nu. Försök igen om en stund.") : said
+        let base = said.isEmpty ? (quotaExceeded ? String(localized: "Du har inga frågor kvar den här månaden.") : String(localized: "Det gick inte att spela just nu. Försök igen om en stund.")) : said
         // A131 (K90): in credits the server's own line already says when ("Nya krediter 1 december.").
-        guard quotaExceeded, let refill, !base.contains(refill), !base.contains("Nya krediter") else { return base }
+        guard quotaExceeded, let refill, !base.contains(refill), !base.contains("Nya krediter"),
+              !base.contains("New credits") else { return base } // A157 (K114): the server's line in either language
         return "\(base) \(refill)"
     }
 
     static func title(_ text: String) -> String {
-        guard let first = parts(text).first else { return "Text" }
+        guard let first = parts(text).first else { return String(localized: "Text") }
         let words = first.split(separator: " ").prefix(5).joined(separator: " ")
         let cut = words.count > 32 ? String(words.prefix(31)) + "…" : words
         return cut.count < first.count && !cut.hasSuffix("…") ? cut + " …" : cut
@@ -506,9 +507,10 @@ enum CreditText {
     /// "1 236": thousands with a space that does not break the line.
     static func number(_ n: Int) -> String {
         let digits = String(abs(n))
+        let grouping = AppLanguage.current.grouping // A157: "1 236" in Swedish, "1,236" in English
         var out = ""
         for (i, ch) in digits.enumerated() {
-            if i > 0, (digits.count - i) % 3 == 0 { out.append("\u{00A0}") }
+            if i > 0, (digits.count - i) % 3 == 0 { out.append(grouping) }
             out.append(ch)
         }
         return n < 0 ? "-" + out : out
@@ -524,51 +526,51 @@ enum CreditText {
         let tenths = rounding == .down ? n / 100 : (n + 99) / 100
         if tenths >= 100 { // 10 000 and up: whole thousands
             let thousands = rounding == .down ? n / 1000 : (n + 999) / 1000
-            return "\(number(thousands))k"
+            return String(localized: "\(number(thousands))k")
         }
-        return "\(tenths / 10),\(tenths % 10)k"
+        return "\(tenths / 10)\(AppLanguage.current.decimalSign)\(tenths % 10)k" // A157: "5,3k" / "5.3k"
     }
 
     /// What one has: "88 krediter", "5,3k krediter" (rounded down).
-    static func have(_ n: Int) -> String { n == 1 ? "1 kredit" : "\(short(n, .down)) krediter" }
+    static func have(_ n: Int) -> String { n == 1 ? String(localized: "1 kredit") : String(localized: "\(short(n, .down)) krediter") }
     /// What something costs: "764 krediter", "1,3k krediter" (rounded up).
-    static func credits(_ n: Int) -> String { n == 1 ? "1 kredit" : "\(short(n, .up)) krediter" }
+    static func credits(_ n: Int) -> String { n == 1 ? String(localized: "1 kredit") : String(localized: "\(short(n, .up)) krediter") }
     /// The exact number with its word, for the credits sheet: "1 500 krediter".
-    static func exact(_ n: Int) -> String { n == 1 ? "1 kredit" : "\(number(n)) krediter" }
+    static func exact(_ n: Int) -> String { n == 1 ? String(localized: "1 kredit") : String(localized: "\(number(n)) krediter") }
 
     /// The capsule: "764 krediter kvar", "5,3k krediter kvar".
-    static func capsule(_ left: Int) -> String { "\(have(left)) kvar" }
+    static func capsule(_ left: Int) -> String { String(localized: "\(have(left)) kvar") }
 
     /// Under the field in Säg i AirPods, before Spela.
     static func sayLine(cost: Int) -> String {
-        cost == 0 ? "Kostar inget. Ljudet finns redan." : "Kostar \(credits(cost)). Upprepningar kostar inget."
+        cost == 0 ? String(localized: "Kostar inget. Ljudet finns redan.") : String(localized: "Kostar \(credits(cost)). Upprepningar kostar inget.")
     }
 
     /// On the exam's card and screen: "Kostar 2 340 krediter".
-    static func cardLine(cost: Int) -> String { cost == 0 ? "Kostar inget" : "Kostar \(credits(cost))" }
+    static func cardLine(cost: Int) -> String { cost == 0 ? String(localized: "Kostar inget") : String(localized: "Kostar \(credits(cost))") }
 
     /// A154 (D241): Nytt prov, when the credits cover fewer questions than the standard: "Krediterna räcker till 5 frågor."
-    static func examFits(_ questions: Int) -> String { "Krediterna räcker till \(DrillText.questions(questions))." }
+    static func examFits(_ questions: Int) -> String { String(localized: "Krediterna räcker till \(DrillText.questions(questions)).") }
     /// A154 (D241): Nytt prov, when they cover no exam at all (said with "Fyll på", before anything is made).
     /// Kelly (kop.md §7): what the smallest exam costs, and what one has.
     static func examHasNoRoom(cost: Int, left: Int, minQuestions: Int) -> String {
-        "Ett prov med \(DrillText.questions(minQuestions)) kostar cirka \(credits(cost)). Du har \(short(left, .down))."
+        String(localized: "Ett prov med \(DrillText.questions(minQuestions)) kostar cirka \(credits(cost)). Du har \(short(left, .down)).")
     }
 
     /// The credits do not cover it (said before anything is saved or started).
     static func notEnough(cost: Int, left: Int, resetsDay: String?) -> String {
-        "Det här kostar \(credits(cost)). Du har \(short(left, .down)) kvar." + (resetsDay.map { " Nya krediter den \($0)." } ?? "")
+        String(localized: "Det här kostar \(credits(cost)). Du har \(short(left, .down)) kvar.") + (resetsDay.map { String(localized: " Nya krediter den \($0).") } ?? "")
     }
 
     /// The sheet's rows ("Så räknas det").
     static let rows: [(title: String, value: String)] = [
-        ("1 tecken nytt ljud", "1 kredit"), ("Ljud som redan finns", "0"), ("Upprepa samma text", "0"),
-        ("Prov som andra har delat eller publicerat", "0"),
+        (String(localized: "1 tecken nytt ljud"), String(localized: "1 kredit")), (String(localized: "Ljud som redan finns"), "0"), (String(localized: "Upprepa samma text"), "0"),
+        (String(localized: "Prov som andra har delat eller publicerat"), "0"),
     ]
 
     /// The sheet's footnote, with the month's limit from the server.
     static func footnote(limit: Int, resetsDay: String?) -> String {
-        "En text på 764 tecken kostar 764 krediter. Du får \(exact(limit)) varje månad."
-            + (resetsDay.map { " Nya krediter den \($0)." } ?? "") + " Oanvända krediter sparas inte."
+        String(localized: "En text på 764 tecken kostar 764 krediter. Du får \(exact(limit)) varje månad.")
+            + (resetsDay.map { String(localized: " Nya krediter den \($0).") } ?? "") + String(localized: " Oanvända krediter sparas inte.")
     }
 }

@@ -10,9 +10,9 @@ struct DrillSettings: Equatable, Sendable {
         case shorter, normal, longer
         var label: String {
             switch self {
-            case .shorter: "Kortare"
-            case .normal: "Normal"
-            case .longer: "Längre"
+            case .shorter: String(localized: "Kortare")
+            case .normal: String(localized: "Normal")
+            case .longer: String(localized: "Längre")
             }
         }
         /// D146: about 90 words by default.
@@ -41,8 +41,8 @@ enum DrillShareError: Error, Equatable {
 
     var userMessage: String {
         switch self {
-        case .audioNotReady(let ready, let total): "Delas när ljudet är klart (\(ready) av \(total))."
-        case .notAvailable: "Delning kommer snart."
+        case .audioNotReady(let ready, let total): String(localized: "Delas när ljudet är klart (\(ready) av \(total)).")
+        case .notAvailable: String(localized: "Delning kommer snart.")
         case .server(let message): message
         }
     }
@@ -815,8 +815,8 @@ final class RepetitionModel {
         let parts = (resets ?? "").split(separator: "-").compactMap { Int($0) }
         guard parts.count == 3, (1...12).contains(parts[1]), (1...31).contains(parts[2]) else { return nil }
         var calendar = Calendar(identifier: .gregorian)
-        calendar.locale = Locale(identifier: "sv_SE")
-        return "Fylls på den \(parts[2]) \(calendar.monthSymbols[parts[1] - 1])."
+        calendar.locale = AppLanguage.current.locale // A157: the month in the app's language
+        return String(localized: "Fylls på den \(parts[2]) \(calendar.monthSymbols[parts[1] - 1]).")
     }
 
     /// A135 (D219.1): the same line of text has the same sound on the server (the same voice), so a part whose exact
@@ -999,7 +999,7 @@ final class RepetitionModel {
 
     /// D175: nothing left this month, shown in Nytt prov before Skapa frågor (the server's words, K61).
     var quotaUsedUp: Bool { quota?.isUsedUp ?? false }
-    static let quotaUsedUpLine = "Du har inga frågor kvar den här månaden. Andras prov är gratis."
+    static let quotaUsedUpLine = String(localized: "Du har inga frågor kvar den här månaden. Andras prov är gratis.")
 
     /// K61: the month's questions now (Nytt prov on opening, and after an exam is saved).
     func refreshQuota() async {
@@ -1025,7 +1025,7 @@ final class RepetitionModel {
     }
 
     static func tempoLabel(_ tempo: Double) -> String {
-        tempo == 1 ? "Normal" : String(format: "%.2f", tempo).replacingOccurrences(of: ".", with: ",") + "×"
+        tempo == 1 ? String(localized: "Normal") : AppLanguage.decimal(String(format: "%.2f", tempo)) + "×"
     }
 
     /// The bundled sample of a voice (the blind test's three sentences, `Resources/VoiceSamples`).
@@ -1098,7 +1098,7 @@ final class RepetitionModel {
     func publish(_ drill: Drill, school: DrillSchool, subject: String, examDate: Date,
                  displayName: String?) async throws(DrillCloudError) {
         guard let publishing, let id = drill.serverID else {
-            throw .refused(status: 409, code: "publish_incomplete", message: "Publiceras när ljudet är klart.")
+            throw .refused(status: 409, code: "publish_incomplete", message: String(localized: "Publiceras när ljudet är klart."))
         }
         let view: DrillPublicationView
         do throws(DrillCloudError) {
@@ -1138,7 +1138,7 @@ final class RepetitionModel {
 
     /// "Lägg till i mina prov": the user's own copy with the same sound (0 characters).
     func addPublication(_ publication: DrillPublicationView) async throws(DrillCloudError) -> Drill {
-        guard let publishing else { throw .refused(status: 400, code: "unavailable", message: "Prov från din skola går inte att öppna än.") }
+        guard let publishing else { throw .refused(status: 400, code: "unavailable", message: String(localized: "Prov från din skola går inte att öppna än.")) }
         let view = try await publishing.importPublication(id: publication.id)
         var drill = Drill.from(view)
         drill.fromPublication = publication.id
@@ -1194,9 +1194,9 @@ final class RepetitionModel {
             store.save(drill)
             prepareAudio(drill)
             openDrill = drill.id
-            importMessage = "\(drill.title) är tillagt."
+            importMessage = String(localized: "\(drill.title) är tillagt.")
         } catch {
-            importMessage = error == .notAvailable ? "Delade prov går inte att öppna än." : error.userMessage
+            importMessage = error == .notAvailable ? String(localized: "Delade prov går inte att öppna än.") : error.userMessage
         }
     }
 }
@@ -1214,17 +1214,17 @@ final class ControlCheck {
 
         var prompt: String {
             switch self {
-            case .one: "Tryck en gång nu"
-            case .two: "Tryck två gånger nu"
-            case .three: "Tryck tre gånger nu"
+            case .one: String(localized: "Tryck en gång nu")
+            case .two: String(localized: "Tryck två gånger nu")
+            case .three: String(localized: "Tryck tre gånger nu")
             }
         }
 
         var hint: String {
             switch self {
-            case .one: "på skaftet, som när du pausar musik"
-            case .two: "på skaftet, som när du byter låt"
-            case .three: "på skaftet, som när du går tillbaka en låt"
+            case .one: String(localized: "på skaftet, som när du pausar musik")
+            case .two: String(localized: "på skaftet, som när du byter låt")
+            case .three: String(localized: "på skaftet, som när du går tillbaka en låt")
             }
         }
 
@@ -1281,7 +1281,7 @@ final class ControlCheck {
                 player.play()
                 self.player = player
             }
-            MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyTitle: "Styr med dina AirPods",
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = [MPMediaItemPropertyTitle: String(localized: "Styr med dina AirPods"),
                                                                MPNowPlayingInfoPropertyPlaybackRate: 1.0]
         }
         hub.takeOver { [weak self] command in self?.received(command) }

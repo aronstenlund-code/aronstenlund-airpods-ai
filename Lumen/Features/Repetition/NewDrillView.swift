@@ -112,11 +112,11 @@ struct NewDrillView: View {
                     if make == .text { textConfirmView } else { confirmView }
                 }
             }
-            .navigationTitle(stage == .confirm ? "Stämmer det här?" : "Nytt prov")
+            .navigationTitle(stage == .confirm ? String(localized: "Stämmer det här?") : String(localized: "Nytt prov"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button(isFirstStart ? "Senare" : "Avbryt") {
+                    Button(isFirstStart ? String(localized: "Senare") : String(localized: "Avbryt")) {
                         making?.cancel()
                         answering?.cancel()
                         if let onLater { onLater() } else { dismiss() }
@@ -133,7 +133,7 @@ struct NewDrillView: View {
                 }
             }
         }
-        .sheet(isPresented: $showsHelp) { HelpChatView(model: model, suggestion: "Vad kan jag fota?") }
+        .sheet(isPresented: $showsHelp) { HelpChatView(model: model, suggestion: String(localized: "Vad kan jag fota?")) }
         // A154 (D241): the packs, from "Fyll på". When the sheet closes the credits are read again, and Nytt prov
         // proposes what they cover now.
         .sheet(isPresented: $showsCredits, onDismiss: creditsClosed) { CreditsSheet(model: model) }
@@ -236,7 +236,7 @@ struct NewDrillView: View {
                 // Kelly Ke64 T2: with the largest text the long line filled the screen.
                 Section {
                     Text(verbatim: typeSize.isAccessibilitySize
-                         ? "Inga frågor kvar förrän den 1 \(ChatGPTImportView.nextMonth())." : Self.usedUpLine)
+                         ? String(localized: "Inga frågor kvar förrän den 1 \(ChatGPTImportView.nextMonth()).") : Self.usedUpLine)
                 }
             } else if model.isOffline { // A104 (A103): said before the user has taken photos and waited
                 Section {
@@ -286,18 +286,18 @@ struct NewDrillView: View {
                 // A94: in the first start Fota sidor is the only row in the accent colour, and bold.
                 let strong: Bool? = isFirstStart ? true : nil
                 let plain: Bool? = isFirstStart ? false : nil
-                Button { takePhotos() } label: { Self.materialRow("Fota sidor", "camera.fill", Color.blue, strong) }
+                Button { takePhotos() } label: { Self.materialRow(String(localized: "Fota sidor"), "camera.fill", Color.blue, strong) }
                 PhotosPicker(selection: $photoItems, maxSelectionCount: 20, matching: .images) {
-                    Self.materialRow("Välj bilder", "photo.fill", Color.green, plain)
+                    Self.materialRow(String(localized: "Välj bilder"), "photo.fill", Color.green, plain)
                 }
-                Button { isAddingText = true } label: { Self.materialRow("Skriv text", "text.alignleft", Color.orange, plain) }
-                Button { isImporting = true } label: { Self.materialRow("Lägg till dokument", "doc.fill", Color.gray, plain) }
+                Button { isAddingText = true } label: { Self.materialRow(String(localized: "Skriv text"), "text.alignleft", Color.orange, plain) }
+                Button { isImporting = true } label: { Self.materialRow(String(localized: "Lägg till dokument"), "doc.fill", Color.gray, plain) }
                 if !isFirstStart { // A116 (D204, K81): a web page's text, read by the server
                     Button {
                         link = ""
                         askingLink = true
                     } label: {
-                        Self.materialRow("Klistra in länk", "link", Color.teal, plain)
+                        Self.materialRow(String(localized: "Klistra in länk"), "link", Color.teal, plain)
                     }
                     .disabled(readingDocument)
                 }
@@ -321,13 +321,13 @@ struct NewDrillView: View {
                 }
                 if !pages.isEmpty { thumbnails }
                 if !pasted.isEmpty {
-                    added("Text", "\(pasted.split(whereSeparator: \.isWhitespace).count) ord") { pasted = "" }
+                    added(String(localized: "Text"), String(localized: "\(pasted.split(whereSeparator: \.isWhitespace).count) ord")) { pasted = "" }
                 }
                 ForEach(documents.indices, id: \.self) { i in
-                    added(documents[i].name, "Dokument") { documents.remove(at: i) }
+                    added(documents[i].name, String(localized: "Dokument")) { documents.remove(at: i) }
                 }
                 if !scannedPDFPages.isEmpty {
-                    added("Skannad PDF", "\(scannedPDFPages.count) sidor") { scannedPDFPages = [] }
+                    added(String(localized: "Skannad PDF"), String(localized: "\(scannedPDFPages.count) sidor")) { scannedPDFPages = [] }
                 }
                 if readingDocument {
                     HStack(spacing: 8) {
@@ -350,8 +350,8 @@ struct NewDrillView: View {
                     Text("Material")
                 }
             } footer: {
-                Text(isFirstStart ? "iOS frågar om kameran första gången. Fotona sparas inte."
-                                  : "Foton, dokument och text skickas en gång för att göra frågorna och sparas inte.")
+                Text(isFirstStart ? String(localized: "iOS frågar om kameran första gången. Fotona sparas inte.")
+                                  : String(localized: "Foton, dokument och text skickas en gång för att göra frågorna och sparas inte."))
             }
 
             if isFirstStart {
@@ -384,12 +384,12 @@ struct NewDrillView: View {
         }
         .safeAreaInset(edge: .bottom) {
             // Kelly N3: the reason while the button is grey. A84 (D155): else what is left of the month's questions.
-            MainActionBar(title: make == .text ? "Skapa uppläsning"
-                              : fitsAfterNo != nil ? "Skapa \(DrillText.questions(settings.questions))" : "Skapa frågor",
-                          note: model.quotaUsedUp ? "Inga frågor kvar den här månaden." // Kelly: the long line is at the top
-                              : hasNoRoom ? "Krediterna räcker inte till ett prov." // A154 (D241): the long line is at the top
-                              : model.isOffline ? (make == .text ? "Skapa uppläsning kräver internet." : "Skapa frågor kräver internet.")
-                              : material.isEmpty ? "Lägg till minst en sida, bild eller text." : model.quota.map { $0.line + "." },
+            MainActionBar(title: make == .text ? String(localized: "Skapa uppläsning")
+                              : fitsAfterNo != nil ? String(localized: "Skapa \(DrillText.questions(settings.questions))") : String(localized: "Skapa frågor"),
+                          note: model.quotaUsedUp ? String(localized: "Inga frågor kvar den här månaden.") // Kelly: the long line is at the top
+                              : hasNoRoom ? String(localized: "Krediterna räcker inte till ett prov.") // A154 (D241): the long line is at the top
+                              : model.isOffline ? (make == .text ? String(localized: "Skapa uppläsning kräver internet.") : String(localized: "Skapa frågor kräver internet."))
+                              : material.isEmpty ? String(localized: "Lägg till minst en sida, bild eller text.") : model.quota.map { $0.line + "." },
                           isDisabled: material.isEmpty || readingDocument || model.quotaUsedUp || model.isOffline || hasNoRoom) {
                 if make == .text { createText() } else { create(correction: nil) }
             }
@@ -402,8 +402,8 @@ struct NewDrillView: View {
             }
             if let stagedReading, make == .questions {
                 make = .text
-                if title.isEmpty { title = "Biologiprovet" }
-                if pasted.isEmpty { pasted = "Fotosyntesen. Växter tillverkar sin egen näring genom fotosyntes." }
+                if title.isEmpty { title = String(localized: "Biologiprovet") }
+                if pasted.isEmpty { pasted = String(localized: "Fotosyntesen. Växter tillverkar sin egen näring genom fotosyntes.") }
                 if case .confirm(let draft) = stagedReading {
                     textDraft = draft
                     stage = .confirm
@@ -412,18 +412,18 @@ struct NewDrillView: View {
             if let stagedFits, fitsAfterNo == nil {
                 fitsAfterNo = stagedFits
                 settings.questions = stagedFits
-                if pasted.isEmpty { pasted = "Fotosyntes. Växter gör socker av koldioxid och vatten med ljusets energi." }
+                if pasted.isEmpty { pasted = String(localized: "Fotosyntes. Växter gör socker av koldioxid och vatten med ljusets energi.") }
             }
             if let stagedProblem, problem == nil {
                 problem = stagedProblem
-                if pasted.isEmpty { pasted = "Fotosyntes. Växter gör socker av koldioxid och vatten med ljusets energi." }
+                if pasted.isEmpty { pasted = String(localized: "Fotosyntes. Växter gör socker av koldioxid och vatten med ljusets energi.") }
             }
         }
     }
 
     /// Kelly (A99): "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 december."
     private static var usedUpLine: String {
-        "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(ChatGPTImportView.nextMonth())."
+        String(localized: "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(ChatGPTImportView.nextMonth()).")
     }
 
     /// A154 (D241): the credits cover no exam (questions only; a text read aloud is counted on its own length).
@@ -477,11 +477,11 @@ struct NewDrillView: View {
     private var materialLine: String {
         var parts: [String] = []
         let photos = pages.count + scannedPDFPages.count
-        if photos > 0 { parts.append(photos == 1 ? "1 foto" : "\(photos) foton") }
-        if !documents.isEmpty { parts.append(documents.count == 1 ? "1 dokument" : "\(documents.count) dokument") }
-        if !pasted.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { parts.append("1 text") }
+        if photos > 0 { parts.append(photos == 1 ? String(localized: "1 foto") : String(localized: "\(photos) foton")) }
+        if !documents.isEmpty { parts.append(documents.count == 1 ? String(localized: "1 dokument") : String(localized: "\(documents.count) dokument")) }
+        if !pasted.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty { parts.append(String(localized: "1 text")) }
         guard let last = parts.popLast() else { return "" }
-        return (parts.isEmpty ? last : parts.joined(separator: ", ") + " och " + last) + "."
+        return (parts.isEmpty ? last : parts.joined(separator: ", ") + String(localized: " och ") + last) + "."
     }
 
     /// A row of the material list: the symbol on a coloured square, as in Inställningar (SYSTEM §0.4).
@@ -593,7 +593,7 @@ struct NewDrillView: View {
     /// counted on the text, as for everything else.
     private func addLink(_ pasted: String) async {
         guard let address = FetchedPage.address(pasted) else {
-            problem = "Det ser inte ut som en länk."
+            problem = String(localized: "Det ser inte ut som en länk.")
             return
         }
         readingDocument = true
@@ -605,7 +605,7 @@ struct NewDrillView: View {
                 return
             }
             let name = page.title?.trimmingCharacters(in: .whitespacesAndNewlines)
-            documents.append((name?.isEmpty == false ? name! : (URL(string: page.url ?? address)?.host ?? "Länk"), page.text))
+            documents.append((name?.isEmpty == false ? name! : (URL(string: page.url ?? address)?.host ?? String(localized: "Länk")), page.text))
             if title.trimmingCharacters(in: .whitespaces).isEmpty, let name, !name.isEmpty { title = String(name.prefix(60)) }
         } catch {
             switch error {
@@ -626,12 +626,12 @@ struct NewDrillView: View {
             defer { if scoped { url.stopAccessingSecurityScopedResource() } }
             if url.pathExtension.lowercased() == "docx" {
                 // iOS cannot read Word: the server does (K45 doc_text, no model, no cost).
-                guard let data = try? Data(contentsOf: url) else { problem = "\(name) gick inte att öppna."; continue }
+                guard let data = try? Data(contentsOf: url) else { problem = String(localized: "\(name) gick inte att öppna."); continue }
                 do {
                     let text = try await model.maker.documentText(docx: data)
                     documents.append((name, text))
                 } catch {
-                    problem = "\(name) gick inte att läsa. Spara det som PDF och lägg till det i stället."
+                    problem = String(localized: "\(name) gick inte att läsa. Spara det som PDF och lägg till det i stället.")
                 }
                 continue
             }
@@ -642,9 +642,9 @@ struct NewDrillView: View {
                 if url.pathExtension.lowercased() == "pdf" {
                     // A scanned PDF has no text: its pages go as photos.
                     let scanned = await ExamMaterials.pages(from: url)
-                    if scanned.isEmpty { problem = "\(name) har ingen text som går att läsa. Fota sidorna i stället." } else { scannedPDFPages += scanned }
+                    if scanned.isEmpty { problem = String(localized: "\(name) har ingen text som går att läsa. Fota sidorna i stället.") } else { scannedPDFPages += scanned }
                 } else {
-                    problem = "\(name) har ingen text som går att läsa. Fota sidorna i stället."
+                    problem = String(localized: "\(name) har ingen text som går att läsa. Fota sidorna i stället.")
                 }
             }
         }
@@ -652,9 +652,9 @@ struct NewDrillView: View {
 
     // MARK: Läser materialet
 
-    private static let questionSteps = ["Läser sidorna", "Tar reda på ämne och årskurs", "Gör frågor", "Skriver svar"]
+    private static let questionSteps = [String(localized: "Läser sidorna"), String(localized: "Tar reda på ämne och årskurs"), String(localized: "Gör frågor"), String(localized: "Skriver svar")]
     /// A106 (Ke63 §5).
-    private static let textSteps = ["Läser sidorna", "Tar reda på ämne och årskurs", "Gör texten klar för uppläsning"]
+    private static let textSteps = [String(localized: "Läser sidorna"), String(localized: "Tar reda på ämne och årskurs"), String(localized: "Gör texten klar för uppläsning")]
     private var steps: [String] { make == .text ? Self.textSteps : Self.questionSteps }
 
     private var makingView: some View {
@@ -683,7 +683,7 @@ struct NewDrillView: View {
                             .foregroundStyle(i <= stepsDone ? Color.primary : Color.secondary)
                     }
                     .accessibilityElement(children: .combine)
-                    .accessibilityValue(i < stepsDone ? "klart" : i == stepsDone ? "pågår" : "")
+                    .accessibilityValue(i < stepsDone ? String(localized: "klart") : i == stepsDone ? String(localized: "pågår") : "")
                 }
             }
             Text("Det tar ungefär en minut. Du kan lämna appen.").font(.subheadline).foregroundStyle(.secondary)
@@ -791,13 +791,13 @@ struct NewDrillView: View {
                 let headings = Self.headings(draft.parts)
                 Section {
                     ForEach(Array(headings.enumerated()), id: \.offset) { _, heading in
-                        LabeledContent(heading.title, value: heading.paragraphs == 1 ? "1 stycke" : "\(heading.paragraphs) stycken")
+                        LabeledContent(heading.title, value: heading.paragraphs == 1 ? String(localized: "1 stycke") : String(localized: "\(heading.paragraphs) stycken"))
                     }
                     if headings.isEmpty, let first = draft.parts.first {
                         Text(verbatim: first.long).lineLimit(3)
                     }
                 } header: {
-                    Text(headings.isEmpty ? "Texten börjar" : "Rubriker")
+                    Text(headings.isEmpty ? String(localized: "Texten börjar") : String(localized: "Rubriker"))
                 } footer: {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Cirka \(ReadingText.minutes(draft.drill)) min. Sidnummer och sidhuvuden är borttagna.")
@@ -813,7 +813,7 @@ struct NewDrillView: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            MainActionBar(title: "Ser rätt ut", note: textDraft.map(countsLine), isDisabled: textDraft.map(tooLong) ?? true) {
+            MainActionBar(title: String(localized: "Ser rätt ut"), note: textDraft.map(countsLine), isDisabled: textDraft.map(tooLong) ?? true) {
                 if let textDraft { saveText(textDraft) }
             }
         }
@@ -847,10 +847,10 @@ struct NewDrillView: View {
                 : CreditText.sayLine(cost: cost)
         }
         if draft.countsAs > quota.left {
-            return "Texten räknas som \(DrillText.questions(draft.countsAs)), och du har \(quota.left) kvar den här månaden. "
-                + "Ta bort några sidor, eller vänta till den 1 \(ChatGPTImportView.nextMonth())."
+            return String(localized: "Texten räknas som \(DrillText.questions(draft.countsAs)), och du har \(quota.left) kvar den här månaden. ")
+                + String(localized: "Ta bort några sidor, eller vänta till den 1 \(ChatGPTImportView.nextMonth()).")
         }
-        return "\(ReadingText.countsAs(draft.countsAs)) \(quota.left - draft.countsAs) kvar sedan."
+        return String(localized: "\(ReadingText.countsAs(draft.countsAs)) \(quota.left - draft.countsAs) kvar sedan.")
     }
 
     private func saveText(_ draft: DrillTextDraft) {
@@ -881,7 +881,7 @@ struct NewDrillView: View {
                     problem = no.message
                     costStopsSave = true
                 } else {
-                    problem = "EarMind kunde inte skriva svaren just nu. Försök igen om en stund."
+                    problem = String(localized: "EarMind kunde inte skriva svaren just nu. Försök igen om en stund.")
                 }
             }
             isAnswering = false
@@ -964,8 +964,8 @@ struct NewDrillView: View {
         }
         .safeAreaInset(edge: .bottom) {
             // A154: by the button too, where the eye is when it has just been pressed.
-            MainActionBar(title: isAnswering ? "Skriver svar …" : "Ser rätt ut",
-                          note: costStopsSave ? "Krediterna räcker inte till provet." : nil,
+            MainActionBar(title: isAnswering ? String(localized: "Skriver svar …") : String(localized: "Ser rätt ut"),
+                          note: costStopsSave ? String(localized: "Krediterna räcker inte till provet.") : nil,
                           isBusy: isAnswering || isSaving,
                           isDisabled: answersMissing || isSaving) {
                 if let draft { save(draft) }
@@ -982,7 +982,7 @@ struct NewDrillView: View {
     private func save(_ draft: DrillDraft) {
         let name = title.trimmingCharacters(in: .whitespaces)
         let subject = draft.summary.subject.trimmingCharacters(in: .whitespaces)
-        var made = Drill(title: name.isEmpty ? (subject.isEmpty ? "Nytt prov" : "\(subject)provet") : name,
+        var made = Drill(title: name.isEmpty ? (subject.isEmpty ? String(localized: "Nytt prov") : String(localized: "\(subject)provet")) : name,
                          summary: draft.summary, items: draft.items.filter { !$0.short.isEmpty },
                          questionCount: settings.questions, longWords: settings.length.words)
         made.voiceModel = voice // A84: sent with the first save

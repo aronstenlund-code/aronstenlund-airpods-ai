@@ -27,7 +27,7 @@ struct HelpChatView: View {
     @State private var isAsking = false
     @State private var showsTry = false
 
-    private static let suggestions = ["Hur fungerar trycken?", "Hur delar jag ett prov?", "Varför blev det färre frågor?"]
+    private static let suggestions = [String(localized: "Hur fungerar trycken?"), String(localized: "Hur delar jag ett prov?"), String(localized: "Varför blev det färre frågor?")]
 
     private var offered: [String] {
         guard let suggestion, !Self.suggestions.contains(suggestion) else { return Self.suggestions }
@@ -260,12 +260,12 @@ struct HelpTryView: View {
         .safeAreaInset(edge: .bottom) {
             if draft == nil {
                 // A104 (D175): no questions left is said before anything is sent.
-                MainActionBar(title: "Gör frågor",
-                              note: model.quotaUsedUp ? "Inga frågor kvar den här månaden." : nil,
+                MainActionBar(title: String(localized: "Gör frågor"),
+                              note: model.quotaUsedUp ? String(localized: "Inga frågor kvar den här månaden.") : nil,
                               isBusy: isMaking,
                               isDisabled: isMaking || isEmpty || model.quotaUsedUp) { make() }
             } else {
-                MainActionBar(title: "Spara som prov", isBusy: isMaking, isDisabled: isMaking) { save() }
+                MainActionBar(title: String(localized: "Spara som prov"), isBusy: isMaking, isDisabled: isMaking) { save() }
             }
         }
         .navigationTitle("Prova på en kort text")
@@ -293,7 +293,7 @@ struct HelpTryView: View {
         let subject = draft.summary.subject.trimmingCharacters(in: .whitespaces)
         let items = draft.items.filter { !$0.short.isEmpty }
         guard !items.isEmpty else { return }
-        let drill = model.save(Drill(title: subject.isEmpty ? "Nytt prov" : "\(subject)provet",
+        let drill = model.save(Drill(title: subject.isEmpty ? String(localized: "Nytt prov") : String(localized: "\(subject)provet"),
                                      summary: draft.summary, items: items, questionCount: items.count))
         model.openDrill = drill.id // Start opens it
         onSaved()

@@ -1,0 +1,135 @@
+{
+ "Lumen/Core/Repetition/ChatGPTImport.swift": {
+  "(inga än)": "part of the ChatGPT prompt (Swedish, see the report)",
+  "Du hjälper mig plugga till ett prov i {{AMNE}} för {{ARSKURS}}. Läs alla filer jag har bifogat. Läs också frågorna nedan som jag redan har övat på.\\n\\nFrågor jag har övat på:\\n{{FRAGOR}}\\n\\nGör {{ANTAL}} provfrågor med svar. Regler:\\n1. Frågorna ska bara bygga på det som står i filerna och i frågorna ovan. Hitta inte på något som inte står där.\\n2. Ta med frågorna ovan om de finns i materialet, och fyll på med nya tills det är {{ANTAL}}. Finns det inte stoff till {{ANTAL}} frågor, gör färre.\\n3. Varje fråga ska vara kort, helst högst 5 ord, och fråga efter förståelse: varför, hur, vad betyder, vad är skillnaden. Till exempel \\\"Varför behöver växter ljus?\\\".\\n4. Varje svar ska vara ett fullständigt svar som ger högsta betyg, på ungefär 90 ord.\\n5. Den första meningen i varje svar ska ensam vara ett fullgott kort svar på frågan, högst 25 ord. Den ska svara direkt, inte inleda (\\\"Det finns flera orsaker\\\" räcker inte). Resten av svaret förklarar mer.\\n6. Skriv i hela meningar som går att läsa högt. Inga listor, inga punkter, ingen fetstil, inga rubriker, ingen markdown.\\n\\nSvara BARA i det här formatet, utan något före eller efter (ingen inledning, ingen avslutning):\\n\\nFråga: <frågan>\\nSvar: <svaret>\\n\\nFråga: <frågan>\\nSvar: <svaret>\\n\\nEn tom rad mellan varje fråga. Varje svar på en enda rad efter \\\"Svar:\\\".": "the ChatGPT prompt (Swedish, with the markers the reader looks for; see the report)",
+  "Fråga: \\(questionText)": "the pasted line with the prompt's own marker (Fråga:), shown as it was pasted",
+  "\\\\s(?:\\\\*\\\\*|__)?(?:svar|s)(?:\\\\*\\\\*|__)?\\\\s*[:：](?:\\\\*\\\\*|__)?\\\\s": "a pattern for the prompt's markers",
+  "behöver du": "language data: how ChatGPT signs off in Swedish",
+  "det här ämnet": "part of the ChatGPT prompt (Swedish, see the report)",
+  "fråga": "the prompt's marker, read from the pasted answer",
+  "fråga gärna": "language data: how ChatGPT signs off in Swedish",
+  "har du fler": "language data: how ChatGPT signs off in Swedish",
+  "hör av dig": "language data: how ChatGPT signs off in Swedish",
+  "jag kan också": "language data: how ChatGPT signs off in Swedish",
+  "lycka till": "language data: how ChatGPT signs off in Swedish",
+  "min årskurs": "part of the ChatGPT prompt (Swedish, see the report)",
+  "om du vill": "language data: how ChatGPT signs off in Swedish",
+  "skriv om du": "language data: how ChatGPT signs off in Swedish",
+  "svar": "the prompt's marker, read from the pasted answer",
+  "säg till": "language data: how ChatGPT signs off in Swedish",
+  "vill du": "language data: how ChatGPT signs off in Swedish",
+  "{{AMNE}}": "a slot in the ChatGPT prompt",
+  "{{ANTAL}}": "a slot in the ChatGPT prompt",
+  "{{ARSKURS}}": "a slot in the ChatGPT prompt",
+  "{{FRAGOR}}": "a slot in the ChatGPT prompt"
+ },
+ "Lumen/Core/Repetition/Drill.swift": {
+  "Nya krediter": "compared with the server's own line (both languages, see Drill.swift)",
+  "\\(tenths / 10),\\(tenths % 10)k": "the decimal sign is the language's own, see CreditText.short",
+  "\\(tenths / 10)\\(AppLanguage.current.decimalSign)\\(tenths % 10)k": "a number, written with the language's decimal sign"
+ },
+ "Lumen/Core/Repetition/DrillCloud.swift": {
+  "Bearer \\(token)": "an HTTP header",
+  "POST": "HTTP",
+  "bad reply": "an internal reason, logged",
+  "http_\\(status)": "an error code",
+  "text": "a part's name in the request",
+  "{\\\"action\\\":\\\"warm\\\"}": "a request body"
+ },
+ "Lumen/Core/Repetition/DrillServices.swift": {
+  "Bearer \\(token)": "an HTTP header",
+  "HTTP \\(status)": "an internal reason, logged",
+  "POST": "HTTP",
+  "PUT": "HTTP",
+  "URLError \\(error.code.rawValue)": "an internal reason, logged",
+  "Word-filer läses av servern (K45 doc_text)": "an internal reason, logged",
+  "\\(DrillAudioKey.name(text: text, voice: voice)).wav": "a file name",
+  "text": "a part's name in the request"
+ },
+ "Lumen/Core/Repetition/HelpService.swift": {
+  "Bearer \\(token)": "an HTTP header",
+  "POST": "HTTP",
+  "din skola": "language data: words looked for in the answer (both languages, see HelpService.guess)",
+  "dokument": "language data: words looked for in the answer (both languages, see HelpService.guess)",
+  "inställning": "language data: words looked for in the answer (both languages, see HelpService.guess)",
+  "längd": "language data: words looked for in the answer (both languages, see HelpService.guess)",
+  "länk": "language data: words looked for in the answer (both languages, see HelpService.guess)",
+  "nytt prov": "language data: words looked for in the answer (both languages, see HelpService.guess)",
+  "prov från": "language data: words looked for in the answer (both languages, see HelpService.guess)",
+  "röst": "language data: words looked for in the answer (both languages, see HelpService.guess)",
+  "skapa frågor": "language data: words looked for in the answer (both languages, see HelpService.guess)",
+  "text": "a part's name in the request",
+  "tryck": "language data: words looked for in the answer (both languages, see HelpService.guess)",
+  "väd": "a word looked for in the question (the mock help)"
+ },
+ "Lumen/Core/Repetition/Publishing.swift": {
+  "Annat": "a school subject as the server stores and searches it",
+  "EEE d MMM": "a date format",
+  "EEE d MMM yyyy": "a date format",
+  "Engelska": "a school subject as the server stores and searches it",
+  "Fysik": "a school subject as the server stores and searches it",
+  "Geografi": "a school subject as the server stores and searches it",
+  "Historia": "a school subject as the server stores and searches it",
+  "Kemi": "a school subject as the server stores and searches it",
+  "Matematik": "a school subject as the server stores and searches it",
+  "Moderna språk": "a school subject as the server stores and searches it",
+  "Religion": "a school subject as the server stores and searches it",
+  "SO": "a school subject as the server stores and searches it",
+  "Samhällskunskap": "a school subject as the server stores and searches it",
+  "Svenska": "a school subject as the server stores and searches it",
+  "Teknik": "a school subject as the server stores and searches it"
+ },
+ "Lumen/Core/Repetition/Purchases.swift": {
+  "Bearer \\(token)": "an HTTP header",
+  "POST": "HTTP",
+  "bad reply": "an internal reason, logged",
+  "d MMM": "a date format"
+ },
+ "Lumen/Core/Repetition/ReadingPlayer.swift": {
+  "\\(delta > 0 ? \"next\" : \"previous\") → sentence \\(clamped + 1)": "a line in the log",
+  "system: \\(why)": "a line in the log"
+ },
+ "Lumen/Core/Repetition/RepetitionModel.swift": {
+  "A": "a voice's letter",
+  "B": "a voice's letter",
+  "C": "a voice's letter",
+  "\\(current.rawValue) tryck → \\(command.rawValue)": "a line in the control check's own log",
+  "\\(current.rawValue) tryck → inget": "a line in the control check's own log",
+  "prov": "the link's host"
+ },
+ "Lumen/Core/Repetition/RepetitionPlayer.swift": {
+  "press \\(event.rawValue)": "a line in the log",
+  "system: \\(why)": "a line in the log",
+  "thinking \\(i + 1)": "a line in the log"
+ },
+ "Lumen/Core/Repetition/RepetitionSession.swift": {
+  "Saying: lap \\(self.readingLap)": "a line in the log",
+  "audio session .playback active": "a line in the log",
+  "interruption ended": "a line in the log",
+  "output gone": "a line in the log"
+ },
+ "Lumen/Core/Repetition/TestPresses.swift": {
+  "\\\\n": "an escape"
+ },
+ "Lumen/Features/Repetition/ChatGPTImportView.swift": {
+  "<frågan>": "the prompt's own example line, compared with what was pasted",
+  "A": "a voice's letter, not a text",
+  "\\(number).circle.fill": "an SF Symbol name"
+ },
+ "Lumen/Features/Repetition/NewDrillView.swift": {
+  "<frågan>": "the prompt's own example line, compared with what was pasted",
+  "A": "a voice's letter, not a text"
+ },
+ "Lumen/Features/Repetition/SayViews.swift": {
+  "knapp \\(button) · tangentbord \\(keyboard.keyboardTop.map { String(Int($0)) } ?? \"-\") · \\(hidden ? \"skymd\" : \"syns\")": "debug numbers for the keyboard pictures",
+  "krediter": "compared with the server's refusal, see SayViews (both languages)",
+  "skymd": "debug numbers for the keyboard pictures",
+  "syns": "debug numbers for the keyboard pictures"
+ },
+ "Lumen/Features/Repetition/ShopViews.swift": {
+  "10,00 kr": "a price in the demo shop of the pictures",
+  "110,00 kr": "a price in the demo shop of the pictures",
+  "39,00 kr": "a price in the demo shop of the pictures",
+  "79,00 kr": "a price in the demo shop of the pictures"
+ }
+}

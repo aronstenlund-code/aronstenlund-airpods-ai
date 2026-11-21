@@ -218,12 +218,17 @@ struct DrillQuota: Decodable, Sendable, Equatable {
 
     /// "1 december": the server's `resets_day`, or the same read from `resets` (the list's quota has only that, K90).
     var resetsDay: String? {
-        if let resets_day, !resets_day.isEmpty { return resets_day }
+        resetsDay(in: .current)
+    }
+
+    /// A157 (D251): in English the day is written here from `resets` ("December 1"), because the server's
+    /// `resets_day` is Swedish words until K114 sends it in the app's language; in Swedish nothing changes.
+    func resetsDay(in language: AppLanguage) -> String? {
         let parts = (resets ?? "").split(separator: "-").compactMap { Int($0) }
-        guard parts.count == 3, (1...12).contains(parts[1]), (1...31).contains(parts[2]) else { return nil }
-        var calendar = Calendar(identifier: .gregorian)
-        calendar.locale = Locale(identifier: "sv_SE")
-        return "\(parts[2]) \(calendar.monthSymbols[parts[1] - 1])"
+        let read = parts.count == 3 && (1...12).contains(parts[1]) && (1...31).contains(parts[2])
+        if language == .sv || !read, let resets_day, !resets_day.isEmpty { return resets_day }
+        guard read else { return nil }
+        return language.dayAndMonth(month: parts[1], day: parts[2])
     }
 
     /// A131: the price table changed shape with the credits (K90), and it may again. A table this app cannot read is
@@ -268,9 +273,9 @@ struct DrillQuota: Decodable, Sendable, Equatable {
     var line: String {
         // A154: with bought or given credits there is more left than the month's own (seen in the picture of Nytt
         // prov: "3,3k av 1,5k krediter kvar"); then only what is left is said.
-        isCredits ? (left > limit ? "\(CreditText.have(left)) kvar"
-                     : "\(CreditText.short(left, .down)) av \(CreditText.short(limit, .down)) krediter kvar den här månaden") // A139
-            : "\(left) av \(limit) frågor kvar den här månaden"
+        isCredits ? (left > limit ? String(localized: "\(CreditText.have(left)) kvar")
+                     : String(localized: "\(CreditText.short(left, .down)) av \(CreditText.short(limit, .down)) krediter kvar den här månaden")) // A139
+            : String(localized: "\(left) av \(limit) frågor kvar den här månaden")
     }
 }
 
@@ -330,7 +335,7 @@ enum DrillCloudError: Error, Equatable {
         case .refused(_, _, let message): message
         case .offline:
             // A103: without a network, say so plainly (and that downloaded exams still play).
-            NetworkStatus.shared.isOnline ? "Ingen kontakt med EarMind just nu. Försök igen om en stund."
+            NetworkStatus.shared.isOnline ? String(localized: "Ingen kontakt med EarMind just nu. Försök igen om en stund.")
                 : NetworkStatus.noNetworkLine
         }
     }
@@ -637,7 +642,7 @@ final class DrillCloudClient: DrillCloudSyncing {
             request.timeoutInterval = 60
             let (response, data) = try await http.data(for: request)
             guard response.statusCode == 200, !data.isEmpty else {
-                throw DrillCloudError.refused(status: response.statusCode, code: "download", message: "Ljudet gick inte att hämta.")
+                throw DrillCloudError.refused(status: response.statusCode, code: "download", message: String(localized: "Ljudet gick inte att hämta."))
             }
             return data
         } catch let error as DrillCloudError {
@@ -660,7 +665,7 @@ final class DrillCloudClient: DrillCloudSyncing {
             request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.timeoutInterval = timeout
-            request.httpBody = try JSONSerialization.data(withJSONObject: body)
+            request.httpBody = try JSONSerialization.data(withJSONObject: AppLanguage.stamped(body)) // A157 (K114): lang
             (response, data) = try await http.data(for: request)
         } catch {
             Log.repetition.error("drill \(action, privacy: .public): \(error.localizedDescription, privacy: .public)")
@@ -686,7 +691,7 @@ final class DrillCloudClient: DrillCloudSyncing {
             var error: Inner?
         }
         let inner = (try? JSONDecoder().decode(Body.self, from: data))?.error
-        let fallback = status == 404 ? "Provet finns inte." : "EarMind kunde inte spara just nu. Försök igen om en stund."
+        let fallback = status == 404 ? String(localized: "Provet finns inte.") : String(localized: "EarMind kunde inte spara just nu. Försök igen om en stund.")
         return .refused(status: status, code: inner?.code ?? "http_\(status)", message: inner?.message ?? fallback)
     }
 }
@@ -720,7 +725,7 @@ extension Drill {
         var drill = local ?? Drill(title: "", summary: DrillSummary(subject: "", grade: "", covers: ""), items: [])
         drill.serverID = view.drill.id
         if let title = view.drill.title, !title.isEmpty { drill.title = title }
-        if drill.title.isEmpty { drill.title = "Prov" }
+        if drill.title.isEmpty { drill.title = String(localized: "Prov") }
         drill.summary = DrillSummary(subject: view.drill.subject ?? drill.summary.subject,
                                      grade: view.drill.grade ?? drill.summary.grade,
                                      covers: view.drill.covers ?? drill.summary.covers)
@@ -816,13 +821,13 @@ final class CloudDrillAudio: DrillAudioProviding {
     }
 
     /// A103: a file could not be written (the phone is full).
-    static let noSpaceLine = "Telefonen har inte plats för ljudet. Frigör lite lagring, så laddas resten ner."
+    static let noSpaceLine = String(localized: "Telefonen har inte plats för ljudet. Frigör lite lagring, så laddas resten ner.")
     /// Toby 2 T24 L6: the server has made nothing for a while (`slowAfter`) and the first question has no sound yet.
-    static let slowLine = "Ljudet dröjer. Provet kan starta när första frågan är klar."
+    static let slowLine = String(localized: "Ljudet dröjer. Provet kan starta när första frågan är klar.")
     /// T24 L6: how long without a new file before `slowLine` is said (shorter in the tests).
     @ObservationIgnored var slowAfter: Duration = .seconds(20)
     /// A103: no network while the sound is fetched; it goes on by itself when the phone is online again.
-    static let waitingForNetworkLine = "Ingen internetanslutning. Resten av ljudet laddas ner när du är uppkopplad igen."
+    static let waitingForNetworkLine = String(localized: "Ingen internetanslutning. Resten av ljudet laddas ner när du är uppkopplad igen.")
     /// How long `prepare` waits for the network to come back (A103), checked every `networkCheck`.
     private let networkWait: Duration = .seconds(30 * 60)
     private let networkCheck: Duration = .seconds(10)
@@ -901,7 +906,7 @@ final class CloudDrillAudio: DrillAudioProviding {
     /// K62 (Kelly): the voice service cannot make sound now (its credits ran out), said instead of a counter that
     /// never moves.
     /// A112 (D200): the calm line. The text works as usual, nothing is counted, and nothing is an error.
-    static let unavailableLine = "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt."
+    static let unavailableLine = String(localized: "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt.")
 
     /// A112 (K78): how many times the server gave questions back; the model reads the month's quota again then.
     private(set) var refunds = 0
@@ -972,7 +977,7 @@ final class CloudDrillAudio: DrillAudioProviding {
                     problems[drill.id] = Self.unavailableLine // K62
                 } else if case .refused(_, let code, _) = error, code == "rate_limited" {
                     // Ke50 §13: K46's daily limit for new sound.
-                    problems[drill.id] = "Dagens gräns för nytt ljud är nådd. Resten görs i morgon. Frågorna som har ljud kan du plugga på redan nu."
+                    problems[drill.id] = String(localized: "Dagens gräns för nytt ljud är nådd. Resten görs i morgon. Frågorna som har ljud kan du plugga på redan nu.")
                 } else {
                     problems[drill.id] = error.userMessage
                 }
@@ -1039,7 +1044,7 @@ final class CloudDrillAudio: DrillAudioProviding {
                 let files = view.items.flatMap(\.audio.files)
                 problems[drill.id] = files.contains { $0.isFailed && Self.isUnavailable($0.error) }
                     ? Self.unavailableLine // K62: the voice service is out, not this exam
-                    : "Ljudet för \(DrillText.questions(failed)) kunde inte göras. EarMind försöker igen av sig själv."
+                    : String(localized: "Ljudet för \(DrillText.questions(failed)) kunde inte göras. EarMind försöker igen av sig själv.")
                 return
             }
             polls += 1

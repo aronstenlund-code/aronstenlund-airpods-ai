@@ -26,3 +26,4 @@ Config/Local.xcconfig
 # D88: generated test audio (Actions artifact only, never git)
 audio-out/
 *.wav
+__pycache__/

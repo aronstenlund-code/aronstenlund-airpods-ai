@@ -14,7 +14,10 @@ timmar minut minuter sekund sekunder kvar räcker kostar kostnad fyll köp köpe
 telefonen mikrofonen inställningar språk svenska engelska rätt fel bra nytt ny nya gamla kort lång långa lite
 tyst högt lugnt snabbt långsamt alltid aldrig ibland kanske ja nej tack hej okej något någon några varje annan
 andra samma själv redan ännu snart senare idag imorgon igår nyss just vill behöver måste borde kunde skulle
-ordet ord mening rad rader sida sidor bild bilder fil filer länk namn kod steg läge lägen av på till din""".split())
+ordet ord mening rad rader sida sidor bild bilder fil filer länk namn kod steg läge lägen av på till din
+avbrutet avsluta dokument enklare foto foton klart kortare meningar skola skrivet skymd sparade stycke stycken syns
+upprepa viska pausad tryck gånger gång varv kvar vald tillagt publicerat senare tidigare kommande ämne
+cirka ungefär högst minst först sist hela halva per utan med mot hos vid""".split())
 EN = set("""the and that this with for from you your are was were will would can could should have has had not but
 what when where why how which who all any some more most other into over under after before between out off on in
 of to is it as at by be or if no yes do does did done make made get got set use used show hide open close start
@@ -28,15 +31,16 @@ WORD = re.compile(r"[A-Za-zÅÄÖåäöÉéÜü]+")
 IDENT = re.compile(r"^[A-Za-z0-9_.\-:/%@#+*]*$")
 
 
-def language(text: str) -> str:
-    """'sv', 'en', 'none' (no words: symbols, identifiers, formats) or 'unknown' (words in neither list)."""
+def language(text: str, interpolated: bool = False) -> str:
+    """'sv', 'en', 'none' (no words: symbols, identifiers, formats) or 'unknown' (words in neither list).
+    A literal with a value in it ("\\(n) foton") is a text, never an identifier."""
     t = text.strip()
     words = [w.lower() for w in WORD.findall(t)]
     if not words:
         return "none"
     if re.search(r"[åäöÅÄÖ]", t):
         return "sv"
-    if " " not in t and IDENT.match(t) and (re.search(r"[._:/\-]|[a-z][A-Z]|\d", t) or t.islower() and len(words) == 1 and t not in SV and t not in EN):
+    if not interpolated and " " not in t and IDENT.match(t) and (re.search(r"[._:/\-]|[a-z][A-Z]|\d", t) or t.islower() and len(words) == 1 and t not in SV and t not in EN):
         return "none"
     sv = sum(w in SV for w in words)
     en = sum(w in EN for w in words)
@@ -96,7 +100,7 @@ def context(lit: swiftlit.Literal) -> str:
 def rows(roots=("Lumen", "LumenControls", "Shared")):
     for f in swiftlit.swift_files(*roots):
         for l in swiftlit.literals(f):
-            yield l, language(l.plain), context(l)
+            yield l, language(l.plain, l.interpolated), context(l)
 
 
 if __name__ == "__main__":

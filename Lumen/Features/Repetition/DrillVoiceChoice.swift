@@ -31,7 +31,7 @@ struct DrillVoiceChoice: View {
                             .symbolRenderingMode(.hierarchical)
                     }
                     .buttonStyle(.borderless)
-                    .accessibilityLabel(playing == v ? "Stoppa röst \(v)" : "Lyssna på röst \(v)")
+                    .accessibilityLabel(playing == v ? String(localized: "Stoppa röst \(v)") : String(localized: "Lyssna på röst \(v)"))
                 }
             }
         } header: {

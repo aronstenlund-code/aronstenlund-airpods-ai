@@ -31,7 +31,7 @@ struct PublishSheet: View {
             Form {
                 Section {
                     Button { choosingSchool = true } label: {
-                        LabeledContent("Skola", value: school?.name ?? "Välj skola")
+                        LabeledContent("Skola", value: school?.name ?? String(localized: "Välj skola"))
                     }
                     .foregroundStyle(.primary)
                     Picker("Ämne", selection: $subject) {
@@ -41,7 +41,7 @@ struct PublishSheet: View {
                     if let date {
                         DatePicker("Provdatum", selection: Binding(get: { date }, set: { self.date = $0 }),
                                    in: DrillPublishing.dateRange(), displayedComponents: .date)
-                            .environment(\.locale, Locale(identifier: "sv_SE"))
+                            .environment(\.locale, AppLanguage.current.locale)
                     } else {
                         Button { date = Calendar.current.date(byAdding: .day, value: 7, to: Date()) } label: {
                             // Kelly Ke64 T3 (Toby V1): what is missing looks like something to tap.
@@ -63,13 +63,13 @@ struct PublishSheet: View {
                             .autocorrectionDisabled()
                     }
                 } footer: {
-                    Text(showsName ? "Syns för alla som hittar provet. Skriv inte ditt riktiga namn." : "Av: provet visas utan namn.")
+                    Text(showsName ? String(localized: "Syns för alla som hittar provet. Skriv inte ditt riktiga namn.") : String(localized: "Av: provet visas utan namn."))
                 }
             }
             .safeAreaInset(edge: .bottom) {
                 // Ke52: what is missing, under the button while it is grey. A104: what went wrong stands there too,
                 // next to the button that tries again, not in a row further up the form.
-                MainActionBar(title: isSending ? "Publicerar …" : isUpdate ? "Spara ändringarna" : "Publicera prov",
+                MainActionBar(title: isSending ? String(localized: "Publicerar …") : isUpdate ? String(localized: "Spara ändringarna") : String(localized: "Publicera prov"),
                               note: problem ?? missingLine,
                               isBusy: isSending,
                               isDisabled: missingLine != nil || isSending) {
@@ -80,7 +80,7 @@ struct PublishSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Avbryt") { dismiss() } } }
             .sheet(isPresented: $choosingSchool) {
-                SchoolPicker(model: model, title: "Välj skola", selected: school) { picked in
+                SchoolPicker(model: model, title: String(localized: "Välj skola"), selected: school) { picked in
                     school = picked
                     choosingSchool = false
                 }
@@ -96,7 +96,7 @@ struct PublishSheet: View {
     private var missingLine: String? {
         if let fields = DrillPublishing.missing(school: school, subject: subject, date: date) { return fields }
         let p = model.progress(drill)
-        if p.total == 0 || p.ready < p.total { return "Publiceras när ljudet är klart (\(p.ready) av \(p.total))." }
+        if p.total == 0 || p.ready < p.total { return String(localized: "Publiceras när ljudet är klart (\(p.ready) av \(p.total)).") }
         return nil
     }
 
@@ -132,7 +132,7 @@ struct PublishSheet: View {
                 } else if case .refused(let status, _, let message) = error, status == 409 || status == 400 {
                     problem = message
                 } else {
-                    problem = "Det gick inte att publicera just nu. Försök igen om en stund."
+                    problem = String(localized: "Det gick inte att publicera just nu. Försök igen om en stund.")
                 }
             }
             isSending = false
@@ -171,7 +171,7 @@ struct SchoolPicker: View {
                     } else if let problem {
                         // A104: what went wrong and the way on, in the system's own empty state.
                         ContentUnavailableView {
-                            Label(isOffline ? "Ingen internetanslutning" : "Skolorna går inte att hämta",
+                            Label(isOffline ? String(localized: "Ingen internetanslutning") : String(localized: "Skolorna går inte att hämta"),
                                   systemImage: isOffline ? "wifi.slash" : "icloud.slash")
                         } description: {
                             Text(verbatim: problem)
@@ -202,7 +202,7 @@ struct SchoolPicker: View {
                     Text("Hittar du inte skolan? Sök på orten.")
                 }
             }
-            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: "Sök skola eller ort")
+            .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always), prompt: String(localized: "Sök skola eller ort"))
             .onChange(of: query) { _, q in search(q) }
             .onAppear {
                 if let stagedQuery, query.isEmpty { query = stagedQuery }
@@ -231,10 +231,10 @@ struct SchoolPicker: View {
             } catch {
                 if case .offline = error {
                     isOffline = true
-                    problem = "Skolorna går att söka när du är uppkopplad."
+                    problem = String(localized: "Skolorna går att söka när du är uppkopplad.")
                 } else {
                     isOffline = false
-                    problem = "Försök igen om en stund."
+                    problem = String(localized: "Försök igen om en stund.")
                 }
             }
             searching = nil
@@ -260,12 +260,12 @@ struct SchoolExamsView: View {
     var body: some View {
         List {
             if typeSize.isAccessibilitySize {
-                Section { WrappingTitleRow(title: "Prov från din skola") }
+                Section { WrappingTitleRow(title: String(localized: "Prov från din skola")) }
             }
             Section {
                 Button { choosingSchool = true } label: {
                     HStack {
-                        Text(school?.name ?? "Alla skolor").foregroundStyle(Color.primary)
+                        Text(school?.name ?? String(localized: "Alla skolor")).foregroundStyle(Color.primary)
                         Spacer()
                         Text("Byt").foregroundStyle(.tint)
                     }
@@ -280,7 +280,7 @@ struct SchoolExamsView: View {
             if let problem {
                 Section { // A104: the system's empty state with the way on, not a grey line
                     ContentUnavailableView {
-                        Label(isOffline ? "Ingen internetanslutning" : "Proven går inte att hämta",
+                        Label(isOffline ? String(localized: "Ingen internetanslutning") : String(localized: "Proven går inte att hämta"),
                               systemImage: isOffline ? "wifi.slash" : "icloud.slash")
                     } description: {
                         Text(verbatim: problem)
@@ -319,14 +319,14 @@ struct SchoolExamsView: View {
             await load()
         }
         .sheet(isPresented: $choosingSchool) {
-            SchoolPicker(model: model, title: "Välj skola", selected: school) { picked in
+            SchoolPicker(model: model, title: String(localized: "Välj skola"), selected: school) { picked in
                 school = picked
                 choosingSchool = false
                 Task { await load() }
             }
         }
         .sheet(isPresented: $askingMySchool) {
-            SchoolPicker(model: model, title: "Vilken skola går du på?", onSkip: {
+            SchoolPicker(model: model, title: String(localized: "Vilken skola går du på?"), onSkip: {
                 model.mySchoolAsked = true
                 askingMySchool = false
             }) { picked in
@@ -391,10 +391,10 @@ struct SchoolExamsView: View {
         } catch {
             if case .offline = error {
                 isOffline = true
-                problem = "Proven från din skola hämtas när du är uppkopplad."
+                problem = String(localized: "Proven från din skola hämtas när du är uppkopplad.")
             } else {
                 isOffline = false
-                problem = "Försök igen om en stund."
+                problem = String(localized: "Försök igen om en stund.")
             }
         }
         loading = false
@@ -470,7 +470,7 @@ struct PublicationView: View {
                     Button {
                         toggleSample(url)
                     } label: {
-                        Label(isPlayingSample ? "Stoppa" : "Lyssna på första frågan",
+                        Label(isPlayingSample ? String(localized: "Stoppa") : String(localized: "Lyssna på första frågan"),
                               systemImage: isPlayingSample ? "stop.circle" : "play.circle")
                     }
                 }
@@ -498,8 +498,8 @@ struct PublicationView: View {
     @ViewBuilder
     private var actionBar: some View {
         if let added {
-            MainActionBar(title: "Starta prov", systemImage: "play.fill",
-                          note: "\(added.title) är tillagt. Ljudet är redan klart.") {
+            MainActionBar(title: String(localized: "Starta prov"), systemImage: "play.fill",
+                          note: String(localized: "\(added.title) är tillagt. Ljudet är redan klart.")) {
                 let drill = added
                 dismiss()
                 Task {
@@ -508,12 +508,12 @@ struct PublicationView: View {
                 }
             }
         } else if let existing = model.added(publication) {
-            MainActionBar(title: "Öppna", note: "Du har redan lagt till provet.") {
+            MainActionBar(title: String(localized: "Öppna"), note: String(localized: "Du har redan lagt till provet.")) {
                 model.openDrill = existing.id
                 dismiss()
             }
         } else {
-            MainActionBar(title: adding ? "Lägger till …" : "Lägg till i mina prov",
+            MainActionBar(title: adding ? String(localized: "Lägger till …") : String(localized: "Lägg till i mina prov"),
                           note: problem,
                           isBusy: adding,
                           isDisabled: adding) {
@@ -530,7 +530,7 @@ struct PublicationView: View {
                 added = try await model.addPublication(publication)
             } catch {
                 if case .refused(let status, _, let message) = error {
-                    problem = status == 404 ? "Provet finns inte längre." : message
+                    problem = status == 404 ? String(localized: "Provet finns inte längre.") : message
                 } else {
                     problem = NetworkStatus.noNetworkLine // A104: one wording (A103)
                 }
@@ -590,9 +590,9 @@ struct ReportSheet: View {
                 dismiss()
             } catch {
                 if case .refused(let status, _, _) = error, status == 409 {
-                    problem = "Du har redan rapporterat provet. Tack."
+                    problem = String(localized: "Du har redan rapporterat provet. Tack.")
                 } else {
-                    problem = "Något gick fel. Försök igen."
+                    problem = String(localized: "Något gick fel. Försök igen.")
                 }
             }
             sending = false
@@ -631,7 +631,7 @@ struct PublishedRow: View {
                     do throws(DrillCloudError) {
                         try await model.unpublish(drill) // T24 V2b: no alert; the row Publicerat goes away
                     } catch {
-                        problem = "Något gick fel. Försök igen."
+                        problem = String(localized: "Något gick fel. Försök igen.")
                     }
                 }
             }

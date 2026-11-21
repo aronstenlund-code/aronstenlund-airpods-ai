@@ -14,11 +14,11 @@ enum HelpPlace: String, CaseIterable, Sendable {
 
     var title: String {
         switch self {
-        case .controls: "Öppna Styr med dina AirPods"
-        case .newDrill: "Öppna Nytt prov"
-        case .share: "Öppna Dela"
-        case .publish: "Öppna Publicera prov"
-        case .settings: "Öppna Inställningar"
+        case .controls: String(localized: "Öppna Styr med dina AirPods")
+        case .newDrill: String(localized: "Öppna Nytt prov")
+        case .share: String(localized: "Öppna Dela")
+        case .publish: String(localized: "Öppna Publicera prov")
+        case .settings: String(localized: "Öppna Inställningar")
         }
     }
 
@@ -26,11 +26,13 @@ enum HelpPlace: String, CaseIterable, Sendable {
     static func guess(question: String, answer: String) -> HelpPlace? {
         let text = (question + " " + answer).lowercased()
         let rules: [(HelpPlace, [String])] = [
-            (.controls, ["tryck", "airpods", "kontroll", "paus", "skaftet"]),
-            (.publish, ["publicera", "din skola", "prov från"]),
-            (.share, ["dela", "länk", "klasskompis"]),
-            (.newDrill, ["nytt prov", "fota", "material", "dokument", "pdf", "skapa frågor"]),
-            (.settings, ["inställning", "tempo", "röst", "avancerat", "längd"]),
+            // A157 (D251): the answer comes in the app's language (K114), so the words are in both.
+            (.controls, ["tryck", "airpods", "kontroll", "paus", "skaftet", "press", "control", "pause"]),
+            (.publish, ["publicera", "din skola", "prov från", "publish", "your school", "quizzes from"]),
+            (.share, ["dela", "länk", "klasskompis", "share", "link", "classmate"]),
+            (.newDrill, ["nytt prov", "fota", "material", "dokument", "pdf", "skapa frågor", "new quiz", "photo",
+                         "document", "create questions"]),
+            (.settings, ["inställning", "tempo", "röst", "avancerat", "längd", "setting", "voice", "advanced", "length"]),
         ]
         return rules.first { _, words in words.contains { text.contains($0) } }?.0
     }
@@ -55,7 +57,7 @@ enum HelpError: Error, Equatable {
     var userMessage: String {
         switch self {
         case .offline: NetworkStatus.noNetworkLine // A103: one wording
-        case .failed: "Det gick inte att svara just nu. Försök igen."
+        case .failed: String(localized: "Det gick inte att svara just nu. Försök igen.")
         case .refused(let message): message
         }
     }
@@ -120,7 +122,7 @@ final class HelpClient: HelpAnswering {
             request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.timeoutInterval = timeout
-            request.httpBody = try JSONSerialization.data(withJSONObject: body)
+            request.httpBody = try JSONSerialization.data(withJSONObject: AppLanguage.stamped(body)) // A157 (K114): lang
             (response, data) = try await http.data(for: request)
         } catch {
             Log.repetition.error("help: \(error.localizedDescription, privacy: .public)")
@@ -157,18 +159,18 @@ final class MockHelp: HelpAnswering {
     func answer(_ question: String, history: [HelpTurn]) async throws(HelpError) -> HelpAnswer {
         let q = question.lowercased()
         if q.contains("tryck") || q.contains("airpods") {
-            let text = "Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta."
+            let text = String(localized: "Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta.")
             return HelpAnswer(text: text, place: .controls)
         }
         if q.contains("fota") || q.contains("nytt prov") {
-            let text = "1. Tryck Nytt prov.\n2. Tryck Fota sidor och fota alla sidor i följd.\n3. Tryck Skapa frågor.\n4. Kolla sammanfattningen och tryck Ser rätt ut."
+            let text = String(localized: "1. Tryck Nytt prov.\n2. Tryck Fota sidor och fota alla sidor i följd.\n3. Tryck Skapa frågor.\n4. Kolla sammanfattningen och tryck Ser rätt ut.")
             return HelpAnswer(text: text, place: .newDrill)
         }
         if q.contains("väd") || q.contains("fotboll") {
-            return HelpAnswer(text: "Det kan jag inte svara på.", place: nil,
-                              hint: "Jag svarar bara på hur EarMind fungerar, till exempel hur du gör ett nytt prov.", inScope: false)
+            return HelpAnswer(text: String(localized: "Det kan jag inte svara på."), place: nil,
+                              hint: String(localized: "Jag svarar bara på hur EarMind fungerar, till exempel hur du gör ett nytt prov."), inScope: false)
         }
-        return HelpAnswer(text: "Det vet jag inte. Skriv till oss under Inställningar › Om EarMind.", place: .settings)
+        return HelpAnswer(text: String(localized: "Det vet jag inte. Skriv till oss under Inställningar › Om EarMind."), place: .settings)
     }
 
     func tryText(_ text: String) async throws(HelpError) -> DrillDraft {

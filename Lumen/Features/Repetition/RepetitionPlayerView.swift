@@ -63,7 +63,7 @@ struct RepetitionPlayerView: View {
                 case .thinking:
                     if player.isFirstLap, player.lap == 0 { Text("Tryck på AirPods för svaret") } // Kelly N1
                 case .answer(_, let kind):
-                    Text(kind == .long ? "Långt svar" : "Kort svar").foregroundStyle(LumenColor.secondaryText)
+                    Text(kind == .long ? String(localized: "Långt svar") : String(localized: "Kort svar")).foregroundStyle(LumenColor.secondaryText)
                 case .waitingForAudio:
                     if let soundProblem {
                         // A100 (K62). Kelly: the question stays the biggest thing on the screen, so this long
@@ -172,8 +172,8 @@ struct RepetitionPlayerView: View {
 
     /// Ke50 §8: "Sparat på fråga {7}." after Avsluta.
     private var endedLine: String {
-        if let saved = RepetitionProgress.load() { return "Sparat på fråga \(saved.index + 1)." }
-        return "Provet är avslutat."
+        if let saved = RepetitionProgress.load() { return String(localized: "Sparat på fråga \(saved.index + 1).") }
+        return String(localized: "Provet är avslutat.")
     }
 
     private func lit(_ player: RepetitionPlayer) -> RepetitionEvent? {
@@ -186,14 +186,14 @@ struct RepetitionPlayerView: View {
 
     private func header(_ player: RepetitionPlayer, _ drill: Drill) -> some View {
         // Kelly R-granskning: "Varv" from lap 2.
-        let place = "Fråga \(player.index + 1) av \(player.count)" + (player.lap > 0 ? " · Varv \(player.lap + 1)" : "")
+        let place = String(localized: "Fråga \(player.index + 1) av \(player.count)") + (player.lap > 0 ? String(localized: " · Varv \(player.lap + 1)") : "")
         return VStack(spacing: 8) {
             Group {
                 if typeSize.isAccessibilitySize {
                     // Kelly S2: the thinking time as "6 s" on this row, and "Pausad" while paused.
                     Group {
                         if player.isPaused {
-                            Text(verbatim: place + " · Pausad")
+                            Text(verbatim: place + String(localized: " · Pausad"))
                         } else if case .thinking = player.phase {
                             ThinkingSeconds(prefix: place, started: player.thinkingStarted ?? Date(),
                                             seconds: player.thinkingSeconds)
@@ -236,14 +236,14 @@ struct RepetitionPlayerView: View {
                 // Kelly R4: no answer buttons on the screen; VoiceOver still has the three as actions.
                 .accessibilityAction(named: "Långt svar") { session.press(.long) }
                 .accessibilityAction(named: "Kort svar") { session.press(.short) }
-                .accessibilityAction(named: player.isPaused ? "Fortsätt" : "Paus") { session.press(.pauseToggle) }
+                .accessibilityAction(named: player.isPaused ? String(localized: "Fortsätt") : String(localized: "Paus")) { session.press(.pauseToggle) }
             if !compact, case .answer(_, let kind) = player.phase, let item, !player.isPaused {
                 Text(verbatim: kind == .short ? item.shownShort : item.shownLong) // A102
                     .foregroundStyle(LumenColor.secondaryText)
                     .multilineTextAlignment(.center)
                     .lineLimit(8)
                     // Ke79: VoiceOver says which answer it is before the answer.
-                    .accessibilityLabel("\(kind == .short ? "Kort svar" : "Långt svar"): \(kind == .short ? item.shownShort : item.shownLong)")
+                    .accessibilityLabel("\(kind == .short ? String(localized: "Kort svar") : String(localized: "Långt svar")): \(kind == .short ? item.shownShort : item.shownLong)")
             } else if case .waitingForAudio = player.phase, let item, model.soundIsNotComing(drill) {
                 // A112 (D200): reading aloud is off for now, so the answer is here as text. With the largest text it
                 // scrolls in the room it has (it was cut off after two lines on iPhone SE).
@@ -291,11 +291,11 @@ struct RepetitionPlayerView: View {
                     }
                 }
             case .answer(_, let kind):
-                Label(kind == .long ? "Långt svar" : "Kort svar", systemImage: "waveform")
+                Label(kind == .long ? String(localized: "Långt svar") : String(localized: "Kort svar"), systemImage: "waveform")
                     .font(.headline)
                     .foregroundStyle(LumenColor.secondaryText)
                     .accessibilityElement(children: .ignore) // A95: the words, not the symbol's name
-                    .accessibilityLabel(kind == .long ? "Långt svar" : "Kort svar")
+                    .accessibilityLabel(kind == .long ? String(localized: "Långt svar") : String(localized: "Kort svar"))
             case .waitingForAudio:
                 if let soundProblem {
                     // A100 (K62): no spinner that never ends when the sound cannot be made; Avsluta is below.
@@ -317,7 +317,7 @@ struct RepetitionPlayerView: View {
                             ProgressView(value: Double(made.ready), total: Double(made.total))
                                 .frame(maxWidth: 220)
                                 .accessibilityHidden(true)
-                            Text(verbatim: "\(made.ready) av \(made.total) klara").font(.footnote).monospacedDigit()
+                            Text(verbatim: String(localized: "\(made.ready) av \(made.total) klara")).font(.footnote).monospacedDigit()
                         }
                     }
                     .foregroundStyle(LumenColor.secondaryText)
@@ -342,7 +342,7 @@ private struct ThinkingSeconds: View {
         let seconds = self.seconds
         return TimelineView(.periodic(from: started, by: 0.5)) { context in
             let left = min(seconds, max(0, seconds - context.date.timeIntervalSince(started)))
-            Text(verbatim: "\(prefix) · \(max(1, Int(left.rounded(.up)))) s")
+            Text(verbatim: String(localized: "\(prefix) · \(max(1, Int(left.rounded(.up)))) s"))
         }
     }
 }
@@ -391,9 +391,9 @@ struct PressesRow: View {
             if let titles {
                 ForEach(titles, id: \.dots) { item($0.event, $0.dots, $0.title) }
             } else {
-                item(.long, 1, "Långt svar")
-                item(.short, 2, "Kort svar")
-                item(.pauseToggle, 3, paused ? "Fortsätt" : "Paus")
+                item(.long, 1, String(localized: "Långt svar"))
+                item(.short, 2, String(localized: "Kort svar"))
+                item(.pauseToggle, 3, paused ? String(localized: "Fortsätt") : String(localized: "Paus"))
             }
         }
         .frame(maxWidth: .infinity)
@@ -406,8 +406,8 @@ struct PressesRow: View {
 
     private var spoken: String {
         let rows = titles?.map { (dots: $0.dots, title: $0.title) }
-            ?? [(1, "Långt svar"), (2, "Kort svar"), (3, paused ? "Fortsätt" : "Paus")]
-        return rows.map { "\($0.title): \($0.dots) tryck." }.joined(separator: " ")
+            ?? [(1, String(localized: "Långt svar")), (2, String(localized: "Kort svar")), (3, paused ? String(localized: "Fortsätt") : String(localized: "Paus"))]
+        return rows.map { String(localized: "\($0.title): \($0.dots) tryck.") }.joined(separator: " ")
     }
 
     private func item(_ event: RepetitionEvent, _ dots: Int, _ title: String) -> some View {

@@ -16,30 +16,30 @@ enum CreditsText {
 
     /// "312 frågor kvar".
     static func capsule(_ quota: DrillQuota) -> String {
-        if quota.isUnlimited { return "Obegränsat" } // A133 (D216): the owner's account
-        if quota.hasWeeklyCard { return "Veckokort" } // A139 (D222, K94): a subscription
-        return quota.isCredits ? CreditText.capsule(quota.left) : "\(DrillText.questions(quota.left)) kvar" // A131 (D213)
+        if quota.isUnlimited { return String(localized: "Obegränsat") } // A133 (D216): the owner's account
+        if quota.hasWeeklyCard { return String(localized: "Veckokort") } // A139 (D222, K94): a subscription
+        return quota.isCredits ? CreditText.capsule(quota.left) : String(localized: "\(DrillText.questions(quota.left)) kvar") // A131 (D213)
     }
 
     /// The words under the sheet's number. With purchases the credits are not only the month's (Ke73: "krediter kvar").
     static func leftLine(_ quota: DrillQuota, withShop: Bool) -> String {
         if quota.isCredits {
-            let noun = quota.left == 1 ? "kredit kvar" : "krediter kvar"
-            return withShop ? noun : "\(noun) den här månaden"
+            let noun = quota.left == 1 ? String(localized: "kredit kvar") : String(localized: "krediter kvar")
+            return withShop ? noun : String(localized: "\(noun) den här månaden")
         }
-        return quota.left == 1 ? "fråga kvar den här månaden" : "frågor kvar den här månaden"
+        return quota.left == 1 ? String(localized: "fråga kvar den här månaden") : String(localized: "frågor kvar den här månaden")
     }
 
     /// "1", "1,5", "2".
     static func number(_ value: Double) -> String {
-        value == value.rounded() ? String(Int(value)) : String(format: "%.1f", value).replacingOccurrences(of: ".", with: ",")
+        value == value.rounded() ? String(Int(value)) : AppLanguage.decimal(String(format: "%.1f", value))
     }
 
     static func className(_ name: String) -> String {
         switch name {
-        case "normal": "Vanlig fråga"
-        case "longer": "Lite längre fråga"
-        case "too_long": "Mycket lång fråga"
+        case "normal": String(localized: "Vanlig fråga")
+        case "longer": String(localized: "Lite längre fråga")
+        case "too_long": String(localized: "Mycket lång fråga")
         default: name
         }
     }
@@ -51,14 +51,14 @@ enum CreditsText {
         // server's numbers differ.
         var rows: [Row]
         if let first = prices.classes.first, prices.classes.allSatisfy({ $0.questions == first.questions }) {
-            rows = [Row(title: "En fråga", value: number(first.questions))]
+            rows = [Row(title: String(localized: "En fråga"), value: number(first.questions))]
         } else {
             rows = prices.classes.map { Row(title: className($0.name), value: number($0.questions)) }
         }
         if let read = prices.read {
-            rows.append(Row(title: "Läs upp eller Säg i AirPods", value: "1 per \(read.chars_per_question) tecken"))
+            rows.append(Row(title: String(localized: "Läs upp eller Säg i AirPods"), value: String(localized: "1 per \(read.chars_per_question) tecken")))
         }
-        rows.append(Row(title: "Upprepa samma text", value: "0"))
+        rows.append(Row(title: String(localized: "Upprepa samma text"), value: "0"))
         return rows
     }
 
@@ -66,11 +66,11 @@ enum CreditsText {
     static func refill(_ resets: String?) -> String {
         let parts = (resets ?? "").split(separator: "-").compactMap { Int($0) }
         guard parts.count == 3, (1...12).contains(parts[1]), (1...31).contains(parts[2]) else {
-            return "Fylls på den 1 \(ChatGPTImportView.nextMonth())."
+            return String(localized: "Fylls på den 1 \(ChatGPTImportView.nextMonth()).")
         }
         var calendar = Calendar(identifier: .gregorian)
-        calendar.locale = Locale(identifier: "sv_SE")
-        return "Fylls på den \(parts[2]) \(calendar.monthSymbols[parts[1] - 1])."
+        calendar.locale = AppLanguage.current.locale
+        return String(localized: "Fylls på den \(parts[2]) \(calendar.monthSymbols[parts[1] - 1]).")
     }
 }
 
@@ -130,13 +130,13 @@ struct CreditsSheet: View {
                         VStack(spacing: 2) {
                             // A134 (Ke73 §3): with the weekly card the sheet says so, and how much of the week is left.
                             let weekly = quota.hasWeeklyCard && !quota.isUnlimited ? quota.subscription : nil
-                            Text(verbatim: quota.isUnlimited ? "Obegränsat" : weekly != nil ? ShopText.weeklyTitle
+                            Text(verbatim: quota.isUnlimited ? String(localized: "Obegränsat") : weekly != nil ? ShopText.weeklyTitle
                                  : quota.isCredits ? CreditText.number(quota.left) : "\(quota.left)")
                                 .font(.system(.largeTitle, design: .rounded).weight(.bold))
                                 .monospacedDigit()
                                 .contentTransition(SayMotion.number(reduceMotion)) // A150: rolls up after a purchase
                                 .animation(SayMotion.change(reduceMotion), value: quota.left)
-                            Text(verbatim: quota.isUnlimited ? "Det här kontot har ingen gräns"
+                            Text(verbatim: quota.isUnlimited ? String(localized: "Det här kontot har ingen gräns")
                                  : weekly.map(ShopText.weekLine)
                                  ?? (quota.isOnlyWelcome ? ShopText.welcomeLine : CreditsText.leftLine(quota, withShop: model.shop != nil)))
                                 .foregroundStyle(LumenColor.secondaryText)
@@ -173,11 +173,11 @@ struct CreditsSheet: View {
                         } header: {
                             Text("Vad det kostar")
                         } footer: {
-                            Text(verbatim: "\(CreditsText.refill(quota.resets)) Prov som andra har delat eller publicerat kostar inget.")
+                            Text(verbatim: String(localized: "\(CreditsText.refill(quota.resets)) Prov som andra har delat eller publicerat kostar inget."))
                         }
                     } else {
                         Section {
-                            Text(verbatim: "\(CreditsText.refill(quota.resets)) Prov som andra har delat eller publicerat kostar inget.")
+                            Text(verbatim: String(localized: "\(CreditsText.refill(quota.resets)) Prov som andra har delat eller publicerat kostar inget."))
                                 .foregroundStyle(LumenColor.secondaryText)
                         }
                     }
@@ -185,7 +185,7 @@ struct CreditsSheet: View {
             }
             .animation(SayMotion.change(reduceMotion), value: rows)
             .contentMargins(.top, 8, for: .scrollContent) // Kelly (review of A134): the number stands right under the title
-            .navigationTitle(model.quota?.isCredits == true ? "Krediter" : "Frågor kvar")
+            .navigationTitle(model.quota?.isCredits == true ? String(localized: "Krediter") : String(localized: "Frågor kvar"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } } }
             .task { await model.refreshQuota() }

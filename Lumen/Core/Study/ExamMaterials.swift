@@ -229,7 +229,7 @@ final class ExamClient {
             request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.timeoutInterval = timeout
-            request.httpBody = try JSONSerialization.data(withJSONObject: body)
+            request.httpBody = try JSONSerialization.data(withJSONObject: AppLanguage.stamped(body)) // A157 (K114): lang
             let (response, data) = try await http.data(for: request)
             guard response.statusCode == 200 else {
                 Log.answer.error("exam: HTTP \(response.statusCode, privacy: .public)")

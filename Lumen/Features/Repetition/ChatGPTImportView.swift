@@ -83,16 +83,16 @@ struct ChatGPTImportView: View {
             .listSectionSpacing(.compact)
 
             Section {
-                step(1, done: copied, "Kopiera prompten", "Den säger åt ChatGPT exakt vad som ska göras.") {
-                    stepButton(copied ? "Kopierad" : "Kopiera prompten", prominent: !copied) { copyPrompt() }
+                step(1, done: copied, String(localized: "Kopiera prompten"), String(localized: "Den säger åt ChatGPT exakt vad som ska göras.")) {
+                    stepButton(copied ? String(localized: "Kopierad") : String(localized: "Kopiera prompten"), prominent: !copied) { copyPrompt() }
                         .sensoryFeedback(.success, trigger: copied) { _, now in now }
                 }
                 step(2, done: opened, "Klistra in i ChatGPT",
-                     "Bifoga dina filer, till exempel foton av sidorna eller en PDF, och skicka.") {
+                     String(localized: "Bifoga dina filer, till exempel foton av sidorna eller en PDF, och skicka.")) {
                     // The next thing to do is the filled button: step 1 until it is done, then this one.
-                    stepButton("Öppna ChatGPT", prominent: copied && !opened) { openChatGPT() }
+                    stepButton(String(localized: "Öppna ChatGPT"), prominent: copied && !opened) { openChatGPT() }
                 }
-                step(3, done: false, "Klistra in svaret här", "Kopiera hela svaret från ChatGPT.") {
+                step(3, done: false, String(localized: "Klistra in svaret här"), String(localized: "Kopiera hela svaret från ChatGPT.")) {
                     pasteButton
                 }
             } footer: {
@@ -113,7 +113,7 @@ struct ChatGPTImportView: View {
                 .foregroundStyle(done ? AnyShapeStyle(Color.green) : AnyShapeStyle(.tint))
                 // A95: the number says "Steg 2" (", klart" when done); the title keeps its own text, so the audit
                 // does not take a longer label for clipped text.
-                .accessibilityLabel(done ? "Steg \(number), klart" : "Steg \(number)")
+                .accessibilityLabel(done ? String(localized: "Steg \(number), klart") : String(localized: "Steg \(number)"))
             VStack(alignment: .leading, spacing: 4) {
                 Text(verbatim: title)
                     .font(.headline)
@@ -169,13 +169,13 @@ struct ChatGPTImportView: View {
     private func pasted(_ text: String) {
         let answer = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !answer.isEmpty else {
-            note = "Det finns ingen text att klistra in. Kopiera svaret i ChatGPT först."
+            note = String(localized: "Det finns ingen text att klistra in. Kopiera svaret i ChatGPT först.")
             return
         }
         // The prompt is still on the clipboard until the answer is copied, and its own example lines
         // ("Fråga: <frågan>") would be read as questions.
         guard !answer.contains("<frågan>") else {
-            note = "Det här är prompten, inte svaret. Kopiera svaret i ChatGPT först."
+            note = String(localized: "Det här är prompten, inte svaret. Kopiera svaret i ChatGPT först.")
             return
         }
         note = nil
@@ -229,8 +229,8 @@ struct ChatGPTImportView: View {
             if !found.unreadable.isEmpty { // A93: the lines that could not be read, closed until asked for
                 Section {
                     DisclosureGroup(found.unreadable.count == 1
-                                        ? "1 rad kunde inte läsas och togs inte med."
-                                        : "\(found.unreadable.count) rader kunde inte läsas och togs inte med.",
+                                        ? String(localized: "1 rad kunde inte läsas och togs inte med.")
+                                        : String(localized: "\(found.unreadable.count) rader kunde inte läsas och togs inte med."),
                                     isExpanded: $showsUnreadable) {
                         ForEach(Array(found.unreadable.prefix(20).enumerated()), id: \.offset) { _, line in
                             Text(verbatim: line).font(.subheadline).foregroundStyle(.secondary)
@@ -241,7 +241,7 @@ struct ChatGPTImportView: View {
 
             if !found.warnings.isEmpty { // A96: kept questions with a remark ("Frågan saknade Fråga:.")
                 Section {
-                    DisclosureGroup(found.warnings.count == 1 ? "1 anmärkning" : "\(found.warnings.count) anmärkningar",
+                    DisclosureGroup(found.warnings.count == 1 ? String(localized: "1 anmärkning") : String(localized: "\(found.warnings.count) anmärkningar"),
                                     isExpanded: $showsWarnings) {
                         ForEach(Array(found.warnings.prefix(20).enumerated()), id: \.offset) { _, line in
                             Text(verbatim: line).font(.subheadline).foregroundStyle(.secondary)
@@ -257,7 +257,7 @@ struct ChatGPTImportView: View {
         }
         .listStyle(.insetGrouped)
         .safeAreaInset(edge: .bottom) {
-            MainActionBar(title: "Spara frågorna", note: "Ljudet görs som vanligt när frågorna är sparade.") {
+            MainActionBar(title: String(localized: "Spara frågorna"), note: String(localized: "Ljudet görs som vanligt när frågorna är sparade.")) {
                 save(found)
             }
         }
@@ -265,17 +265,17 @@ struct ChatGPTImportView: View {
 
     private func save(_ found: ChatGPTImport) {
         guard let saved = model.saveImport(found, title: title, grade: grade, voice: voice, into: drill) else {
-            note = "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(Self.nextMonth())." // D155
+            note = String(localized: "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(Self.nextMonth()).") // D155
             return
         }
         onSaved(saved)
         dismiss()
     }
 
-    /// "december": the month after this one, in Swedish.
-    static func nextMonth(after date: Date = Date()) -> String {
+    /// "december": the month after this one, in the app's language (A157: "December" in English).
+    static func nextMonth(after date: Date = Date(), language: AppLanguage = .current) -> String {
         var calendar = Calendar(identifier: .gregorian)
-        calendar.locale = Locale(identifier: "sv_SE")
+        calendar.locale = language.locale
         let month = calendar.component(.month, from: date) // 1...12
         return calendar.monthSymbols[month % 12]
     }

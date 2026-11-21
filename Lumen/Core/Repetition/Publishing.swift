@@ -56,10 +56,10 @@ enum DrillReportReason: String, CaseIterable, Sendable {
     /// Kelly Ke52 "Rapportera".
     var label: String {
         switch self {
-        case .fel: "Fel i frågor eller svar"
-        case .krankande: "Kränkande innehåll"
-        case .upphovsratt: "Någon annans material"
-        case .annat: "Något annat"
+        case .fel: String(localized: "Fel i frågor eller svar")
+        case .krankande: String(localized: "Kränkande innehåll")
+        case .upphovsratt: String(localized: "Någon annans material")
+        case .annat: String(localized: "Något annat")
         }
     }
 }
@@ -79,7 +79,7 @@ protocol DrillPublishingService: AnyObject, Sendable {
 /// The words and dates of Publicera prov (Kelly Ke52 §2).
 enum DrillPublishing {
     /// Ke52: the subjects in this order; the exam's own subject is chosen when it is one of them.
-    static let subjects = ["Biologi", "Fysik", "Kemi", "NO", "Matematik", "Svenska", "Engelska", "Moderna språk",
+    static let subjects = [String(localized: "Biologi"), "Fysik", "Kemi", "NO", "Matematik", "Svenska", "Engelska", "Moderna språk",
                            "Historia", "Geografi", "Religion", "Samhällskunskap", "SO", "Teknik", "Annat"]
 
     static func subject(from summary: String) -> String? {
@@ -94,12 +94,19 @@ enum DrillPublishing {
         return start...end
     }
 
-    private static func formatter(_ format: String) -> DateFormatter {
+    /// The server's days ("2026-11-20") are read and written the same on every phone; the days shown to the user
+    /// follow the app's language (A157): "fre 20 nov" in Swedish, "Fri, Nov 20" in English.
+    private static func formatter(_ format: String, shown: Bool = false) -> DateFormatter {
+        let language = AppLanguage.current
         let f = DateFormatter()
-        f.locale = Locale(identifier: "sv_SE")
+        f.locale = shown && language != .sv ? language.locale : Locale(identifier: "sv_SE")
         f.calendar = Calendar(identifier: .gregorian)
         f.timeZone = .current
-        f.dateFormat = format
+        if shown && language != .sv {
+            f.setLocalizedDateFormatFromTemplate(format.replacingOccurrences(of: " ", with: ""))
+        } else {
+            f.dateFormat = format
+        }
         return f
     }
 
@@ -112,21 +119,22 @@ enum DrillPublishing {
     static func shortDate(_ date: Date, now: Date = Date()) -> String {
         let calendar = Calendar(identifier: .gregorian)
         let sameYear = calendar.component(.year, from: date) == calendar.component(.year, from: now)
-        return formatter(sameYear ? "EEE d MMM" : "EEE d MMM yyyy").string(from: date).replacingOccurrences(of: ".", with: "")
+        return formatter(sameYear ? "EEE d MMM" : "EEE d MMM yyyy", shown: true).string(from: date)
+            .replacingOccurrences(of: ".", with: "")
     }
 
     /// "Kungsholmens gymnasium · Biologi · fre 20 nov · utan namn" / "· som plugghajen".
     static func line(_ p: DrillPublication) -> String {
-        "\(p.school.name) · \(p.subject) · \(shortDate(p.examDate)) · " + (p.displayName.map { "som \($0)" } ?? "utan namn")
+        "\(p.school.name) · \(p.subject) · \(shortDate(p.examDate)) · " + (p.displayName.map { String(localized: "som \($0)") } ?? String(localized: "utan namn"))
     }
 
     /// K49 `publish_incomplete` with `missing`: "Saknas: skola, ämne, provdatum" (Ke52), checked on the phone first.
     static func missing(school: DrillSchool?, subject: String?, date: Date?) -> String? {
         var parts: [String] = []
-        if school == nil { parts.append("skola") }
-        if subject?.isEmpty ?? true { parts.append("ämne") }
-        if date == nil { parts.append("provdatum") }
-        return parts.isEmpty ? nil : "Saknas: " + parts.joined(separator: ", ")
+        if school == nil { parts.append(String(localized: "skola")) }
+        if subject?.isEmpty ?? true { parts.append(String(localized: "ämne")) }
+        if date == nil { parts.append(String(localized: "provdatum")) }
+        return parts.isEmpty ? nil : String(localized: "Saknas: ") + parts.joined(separator: ", ")
     }
 }
 

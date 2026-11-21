@@ -198,7 +198,7 @@ struct FetchedPage: Decodable, Sendable, Equatable {
     }
 
     /// Ke69: said when the page could not be read and the server gave no words of its own.
-    static let unreadableLine = "Sidan gick inte att läsa. Kopiera texten och klistra in den i stället."
+    static let unreadableLine = String(localized: "Sidan gick inte att läsa. Kopiera texten och klistra in den i stället.")
 }
 
 extension DrillMaking {
@@ -306,7 +306,7 @@ final class DrillClient: DrillMaking {
         Log.repetition.info("exam upload: \(count, privacy: .public) photos, \(bytes, privacy: .public) bytes, \(missing, privacy: .public) failed, \(ms, privacy: .public) ms")
         guard missing == 0 else {
             if !NetworkStatus.shared.isOnline { throw .offline }
-            throw .refused("\(missing) av \(count) bilder kom inte fram. Försök igen.")
+            throw .refused(String(localized: "\(missing) av \(count) bilder kom inte fram. Försök igen."))
         }
         return uploads.prefix(pages.count).map(\.path)
     }
@@ -429,7 +429,7 @@ final class DrillClient: DrillMaking {
         let total = chars ?? items.reduce(0) { $0 + $1.long.count }
         let subjectText = subject ?? ""
         let name = title?.trimmingCharacters(in: .whitespacesAndNewlines)
-        return DrillTextDraft(title: name?.isEmpty == false ? name! : (subjectText.isEmpty ? "Text" : subjectText),
+        return DrillTextDraft(title: name?.isEmpty == false ? name! : (subjectText.isEmpty ? String(localized: "Text") : subjectText),
                               summary: DrillSummary(subject: subjectText, grade: grade ?? "", covers: ""),
                               parts: items, chars: total, countsAs: countsAs ?? DrillTextDraft.countsAs(chars: total),
                               truncated: truncated ?? false, warning: warning?.isEmpty == false ? warning : nil)
@@ -490,7 +490,7 @@ final class DrillClient: DrillMaking {
         let action = body["action"] as? String ?? ""
         let payload: Data
         do {
-            payload = try JSONSerialization.data(withJSONObject: body)
+            payload = try JSONSerialization.data(withJSONObject: AppLanguage.stamped(body)) // A157 (K114): lang
         } catch {
             throw .server("could not encode")
         }
@@ -573,15 +573,15 @@ extension DrillMakingError {
     /// Kelly Ke50 §2, §13.
     var userMessage: String {
         switch self {
-        case .noMaterial: "Lägg till material först."
+        case .noMaterial: String(localized: "Lägg till material först.")
         case .offline: NetworkStatus.noNetworkLine // A103: nothing is queued, so "försök igen"
         case .server(let why) where why == "no questions":
-            "EarMind hittade för lite att göra frågor av. Lägg till fler sidor eller mer text."
+            String(localized: "EarMind hittade för lite att göra frågor av. Lägg till fler sidor eller mer text.")
         case .server(let why) where why == "no text":
-            "EarMind hittade ingen text att läsa upp. Lägg till fler sidor eller mer text." // A105
+            String(localized: "EarMind hittade ingen text att läsa upp. Lägg till fler sidor eller mer text.") // A105
         case .refused(let message): message
         case .tooFewCredits(let no): no.message // A154: the server's own words
-        case .server: "Det gick inte att skapa frågorna. Försök igen." // A85
+        case .server: String(localized: "Det gick inte att skapa frågorna. Försök igen.") // A85
         }
     }
 }
@@ -597,22 +597,22 @@ final class MockDrillMaker: DrillMaking {
         guard !material.isEmpty else { throw .noMaterial }
         if delay > .zero { try? await Task.sleep(for: delay) }
         let topic = material.text.split(whereSeparator: { $0 == "." || $0 == "\n" }).first.map(String.init)?
-            .trimmingCharacters(in: .whitespaces) ?? "Materialet"
+            .trimmingCharacters(in: .whitespaces) ?? String(localized: "Materialet")
         let bank: [(String, String, String)] = [
-            ("Varför behövs klorofyll?", "Klorofyll fångar solljuset som växten behöver för fotosyntesen.",
-             "Utan ljusenergin kan växten inte bygga socker av koldioxid och vatten, så klorofyllet är startpunkten för hela näringskedjan."),
-            ("Vad bildas vid fotosyntesen?", "Socker och syre bildas av koldioxid och vatten med hjälp av ljus.",
-             "Sockret ger växten energi och byggmaterial, och syret släpps ut och används av djur och människor i cellandningen."),
-            ("Hur hänger fotosyntes och cellandning ihop?", "Fotosyntesen bygger socker och cellandningen bryter ner det igen.",
-             "Det ena processens produkter är den andras råvaror, så kol och syre går i ett kretslopp mellan växter och djur."),
+            (String(localized: "Varför behövs klorofyll?"), String(localized: "Klorofyll fångar solljuset som växten behöver för fotosyntesen."),
+             String(localized: "Utan ljusenergin kan växten inte bygga socker av koldioxid och vatten, så klorofyllet är startpunkten för hela näringskedjan.")),
+            (String(localized: "Vad bildas vid fotosyntesen?"), String(localized: "Socker och syre bildas av koldioxid och vatten med hjälp av ljus."),
+             String(localized: "Sockret ger växten energi och byggmaterial, och syret släpps ut och används av djur och människor i cellandningen.")),
+            (String(localized: "Hur hänger fotosyntes och cellandning ihop?"), String(localized: "Fotosyntesen bygger socker och cellandningen bryter ner det igen."),
+             String(localized: "Det ena processens produkter är den andras råvaror, så kol och syre går i ett kretslopp mellan växter och djur.")),
         ]
         let count = max(1, min(questions, 60))
         let items = (0..<count).map { i in
             let (q, s, rest) = bank[i % bank.count]
             return DrillItem(question: count > bank.count ? "\(q) (\(i + 1))" : q, short: s, long: s + " " + rest)
         }
-        return DrillDraft(summary: DrillSummary(subject: subject ?? "Biologi", grade: grade ?? "åk 8",
-                                                covers: "Exempel (testläge): \(topic)."),
+        return DrillDraft(summary: DrillSummary(subject: subject ?? String(localized: "Biologi"), grade: grade ?? String(localized: "åk 8"),
+                                                covers: String(localized: "Exempel (testläge): \(topic).")),
                           items: items, notes: material.text)
     }
 
@@ -631,8 +631,8 @@ final class MockDrillMaker: DrillMaking {
     }
 
     func answer(_ question: String, summary: DrillSummary, notes: String, longWords: Int) async throws(DrillMakingError) -> DrillItem {
-        let short = "Ett kort svar på \(question.lowercased())"
-        return DrillItem(question: question, short: short + ".", long: short + ". Och ett längre svar med förklaring och exempel.")
+        let short = String(localized: "Ett kort svar på \(question.lowercased())")
+        return DrillItem(question: question, short: short + ".", long: short + String(localized: ". Och ett längre svar med förklaring och exempel."))
     }
 
     func documentText(docx: Data) async throws(DrillMakingError) -> String {
@@ -645,7 +645,7 @@ final class MockDrillMaker: DrillMaking {
         if delay > .zero { try? await Task.sleep(for: delay) }
         var source = material.text.trimmingCharacters(in: .whitespacesAndNewlines)
         if source.isEmpty {
-            source = "Fotosyntes\nVäxter gör socker av koldioxid och vatten. De behöver ljus för det. Syre blir över."
+            source = String(localized: "Fotosyntes\nVäxter gör socker av koldioxid och vatten. De behöver ljus för det. Syre blir över.")
         }
         let parts = source.split(separator: "\n").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
             .map { line in
@@ -654,8 +654,8 @@ final class MockDrillMaker: DrillMaking {
                 return part
             }
         let chars = parts.reduce(0) { $0 + $1.long.count }
-        return DrillTextDraft(title: title ?? "Exempeltext (testläge)",
-                              summary: DrillSummary(subject: subject ?? "Biologi", grade: grade ?? "åk 8", covers: ""),
+        return DrillTextDraft(title: title ?? String(localized: "Exempeltext (testläge)"),
+                              summary: DrillSummary(subject: subject ?? String(localized: "Biologi"), grade: grade ?? String(localized: "åk 8"), covers: ""),
                               parts: parts, chars: chars, countsAs: DrillTextDraft.countsAs(chars: chars))
     }
 
