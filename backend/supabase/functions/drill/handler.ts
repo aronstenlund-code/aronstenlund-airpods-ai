@@ -11,7 +11,7 @@ import { type QuotaAnswer, walletFields } from "../_shared/wallet.ts";
 import { cleanStyle, mapOffset, STYLE_MODEL, styledKey, type Styler } from "./style.ts";
 import { textLanguage } from "../exam/read.ts";
 import { webCredits } from "../_shared/webguard.ts";
-import { composeLong, DRILL_LIMITS, estimatedCostPerQuestion, examLanguage, intIn, spokenText } from "../exam/drill.ts";
+import { composeLong, DRILL_LIMITS, estimatedCostPerQuestion, examLanguage, intIn, spokenText, textLanguage as sureLanguage } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
 import { lengthClass, lengthLimits } from "./length.ts";
 import { currentTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
@@ -922,8 +922,13 @@ export function createDrillHandler(deps: DrillDeps) {
     if (isText) {
       const asked = typeof di.language === "string" ? di.language.trim() : "";
       const known = asked === "sv" ? "sv" : examLanguage(asked) || null;
+      // K115 (D253): when the text cannot tell ("1999", a short line), the language the user chose (`lang`) decides;
+      // a text whose own language is clear keeps it (D251). Without `lang` (older apps) as before.
+      const all = rawItems.map((it) => String(it?.text ?? "")).join(" ");
+      const sure = sureLanguage(all);
+      const chose = b?.lang === "en" ? "English" : b?.lang === "sv" ? "sv" : null;
       drill.language = known ?? drill.language ??
-        (textLanguage(rawItems.map((it) => String(it?.text ?? "")).join(" "), drill.subject) || "sv");
+        (sure === "en" ? "English" : sure === "sv" && chose ? "sv" : chose ?? (textLanguage(all, drill.subject) || "sv"));
     }
     const lang = isText && drill.language ? (drill.language === "sv" ? "" : drill.language) : examLanguage(drill.subject);
     let textChars = 0;

@@ -107,7 +107,15 @@ async function answer(route) {
     if (body.action === 'save' && body.drill.said) return json(textView(false));
     if (body.action === 'save') return json(quizView(false));
     if (body.action === 'status') return json(body.id === 'e1' ? quizView(true) : textView((state.statusAsked += 1) >= 1));
-    if (body.action === 'start') return json(body.id === 'e1' ? quizView(true) : textView(true));
+    if (body.action === 'start') return json(body.id === 'e1' || body.id === 'copy1' ? quizView(true) : textView(true));
+    if (body.action === 'share_info') {
+      if (!String(body.code).includes('abc12345')) return json({ error: { code: 'share_not_found', message: 'The link no longer works.' } }, 404);
+      return json({ title: 'Cells and leaves', subject: 'Biology', grade: 'Year 8', items: 5, audio_ready: true });
+    }
+    if (body.action === 'import') {
+      const copy = quizView(true);
+      return json({ ...copy, drill: { id: 'copy1', title: 'Cells and leaves', audio_started: true }, items: copy.items.map((it) => ({ ...it, short: 'Sugar and oxygen.', long: 'A longer answer.' })), new_chars: 0 });
+    }
     return json({ ok: true });
   }
   if (fn === 'exam') {
@@ -138,7 +146,7 @@ async function run(name, { locale, colorScheme, width = 393, height = 852, scale
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   // The browser itself logs the pretend server's 402 (no credits): that one is part of the script.
-  page.on('console', (m) => (m.type() === 'error' && !m.text().includes('status of 402') ? errors.push(m.text()) : undefined));
+  page.on('console', (m) => (m.type() === 'error' && !/status of 40[24]/.test(m.text()) ? errors.push(m.text()) : undefined));
   await page.route('https://xjczbzfkmbjdebwlccki.supabase.co/**', answer);
   await page.route('https://files.test/**', answer);
   const outside = [];
@@ -161,6 +169,7 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   await page.getByTestId('credits').waitFor();
   await page.waitForFunction(() => document.querySelector('[data-testid=credits]').textContent.includes('1.2k'));
   check('English by default, credits as 1.2k', (await page.getByTestId('credits').textContent()) === '1.2k credits left');
+  check('one New quiz button on the first screen, not two (A158)', (await page.getByRole('button', { name: 'New quiz' }).count()) === 1);
   check('the screen line shows the first time, with 10 m', (await page.getByTestId('screen-line').textContent()).includes('10 m (33 ft)'));
   await shot('1-first');
   await page.getByTestId('say-field').fill('Photosynthesis: carbon dioxide + water + light become sugar and oxygen. It happens in the chloroplasts.');
@@ -170,6 +179,7 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   await page.getByTestId('voice').click();
   await page.getByTestId('voices-sheet').waitFor();
   check('voices under review are not offered', (await page.getByTestId('voice-row').count()) === 2);
+  check('the chosen voice is marked for VoiceOver too', (await page.getByTestId('voice-row').nth(0).getAttribute('aria-pressed')) === 'false');
   await shot('3-voices');
   await page.getByTestId('voice-row').nth(1).click();
   await page.getByTestId('sheet-done').click();
@@ -187,6 +197,16 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   await shot('4-playing');
   await page.waitForFunction(() => document.querySelector('[data-testid=sentence]').textContent.startsWith('It happens'), null, { timeout: 8000 });
   check('the sentence being read is the one shown', true);
+  // D253: Download the sound. One MP3 of what plays, from the files the server already made.
+  await page.getByTestId('download').click();
+  await page.getByTestId('download-save').waitFor();
+  const saved = await page.evaluate(async () => {
+    const a = document.querySelector('[data-testid=download-save]');
+    const blob = await (await fetch(a.href)).blob();
+    return { name: a.getAttribute('download'), size: blob.size, type: blob.type };
+  });
+  check('Download the sound: a file to save, named after the text', saved.name === 'EarMind - Photosynthesis carbon dioxide.mp3' && saved.type === 'audio/mpeg' && saved.size > 20000, JSON.stringify(saved));
+  await shot('4b-download');
   await page.getByTestId('pause').click();
   check('one press pauses', await page.evaluate(() => document.querySelector('#sound').paused));
   await page.getByTestId('pause').click();
@@ -241,15 +261,42 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   check('three presses pause', (await page.getByTestId('phase').textContent()) === 'Paused');
   await page.getByTestId('end').click();
   check('End: back on the first screen, continues where it was', (await page.getByTestId('start-quiz').textContent()).includes('Continue · question 2'));
+  // Open link: a quiz someone shared costs nothing.
+  await page.getByTestId('open-link').click();
+  await page.getByTestId('link-field').fill('nothing-here');
+  await page.getByTestId('link-open').click();
+  await page.getByTestId('link-error').waitFor();
+  check('a dead link: the server\u2019s words, and what was pasted stays', (await page.getByTestId('link-error').textContent()) === 'The link no longer works.' && (await page.getByTestId('link-field').inputValue()) === 'nothing-here');
+  await page.getByTestId('link-field').fill('https://earmind.vercel.app/p/abc12345');
+  await page.getByTestId('link-open').click();
+  await page.getByTestId('link-found').waitFor();
+  await shot('13-open-link');
+  await page.getByTestId('link-add').click();
+  await page.waitForFunction(() => document.querySelectorAll('[data-testid=quiz]').length === 2);
+  check('the shared quiz is added and costs nothing', !(await page.getByTestId('quiz').first().textContent()).includes('credits when you start') && (await page.getByTestId('quiz').first().textContent()).includes('Cells and leaves'));
+  await shot('14-two-quizzes');
   const exam = calls.find((c) => c.fn === 'exam');
   check('the exam is asked for in the web’s language', exam.body.lang === 'en' && exam.body.answers === false);
 });
 
 await run('sv-light', { locale: 'sv-SE', colorScheme: 'light' }, async (page, shot) => {
   await page.goto(`${base}/beta?test=smoke`);
+  await page.waitForFunction(() => document.querySelector('[data-testid=credits]')?.textContent.includes('1.2k'));
+  check('a Swedish browser also starts in English (D253)', (await page.getByTestId('credits').textContent()) === '1.2k credits left' && (await page.evaluate(() => document.documentElement.lang)) === 'en');
+  check('the EN/SV choice shows, with EN chosen', (await page.getByTestId('lang-en').getAttribute('aria-pressed')) === 'true' && (await page.getByTestId('lang-sv').isVisible()));
+  await page.getByTestId('say-field').fill('Fotosyntes: koldioxid + vatten + ljus blir socker och syre.');
+  await page.getByTestId('cost').waitFor();
+  await page.getByTestId('lang-sv').click();
   await page.waitForFunction(() => document.querySelector('[data-testid=credits]')?.textContent.includes('1,2k'));
-  check('Swedish for a Swedish browser (D251)', (await page.getByTestId('credits').textContent()) === '1,2k krediter kvar' && (await page.evaluate(() => document.documentElement.lang)) === 'sv');
+  check('SV changes everything to Swedish', (await page.getByTestId('credits').textContent()) === '1,2k krediter kvar' && (await page.evaluate(() => document.documentElement.lang)) === 'sv');
+  check('what was typed comes along', (await page.getByTestId('say-field').inputValue()).startsWith('Fotosyntes'));
   check('the Swedish line says 10 meter', (await page.getByTestId('screen-line').textContent()).includes('10 meter'));
+  await page.getByTestId('cost').waitFor();
+  const last = calls[calls.length - 1];
+  check('the server gets the chosen language', last.headers['x-earmind-lang'] === 'sv' && last.body.lang === 'sv', `${last.fn}:${last.action}`);
+  await page.reload();
+  await page.waitForFunction(() => document.querySelector('[data-testid=credits]')?.textContent.includes('1,2k'));
+  check('the choice is kept the next time', (await page.evaluate(() => document.documentElement.lang)) === 'sv' && (await page.getByTestId('lang-sv').getAttribute('aria-pressed')) === 'true');
   await page.getByTestId('say-field').fill('Fotosyntes: koldioxid + vatten + ljus blir socker och syre.');
   await page.getByTestId('cost').waitFor();
   await shot('1-first');
@@ -260,6 +307,12 @@ await run('sv-light', { locale: 'sv-SE', colorScheme: 'light' }, async (page, sh
 await run('small', { locale: 'en-GB', colorScheme: 'dark', width: 320, height: 568 }, async (page, shot) => {
   await page.goto(`${base}/beta?test=smoke`);
   await page.getByTestId('say-field').fill('A short line.');
+  await page.getByTestId('cost').waitFor();
+  await page.getByTestId('lang-sv').click();
+  await page.getByTestId('cost').waitFor();
+  check('320 wide in Swedish: nothing is wider than the screen', await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+  await shot('2-svenska');
+  await page.getByTestId('lang-en').click();
   await page.getByTestId('cost').waitFor();
   check('320 wide: nothing is wider than the screen', await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
   await shot('1-first');

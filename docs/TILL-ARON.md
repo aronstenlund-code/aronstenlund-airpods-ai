@@ -82,3 +82,6 @@ Nyckeln som servern använder för AI-svaren skapades 3 november med 30 dagars g
 
 ## #36 Webbetan (2026-11-21 11:20)
 Webbetan byggs nu på earmind.vercel.app/beta (D249–D252). Jag säger till när den är uppe, och Kelly skriver ett TikTok-svar du kan klistra in. Om Kevin behöver ändra röstlistan i en hemlighet för att ta bort Marlon får du exakta klick.
+
+## #37 Webbetan och ElevenLabs-kapaciteten (2026-11-21 16:45)
+ElevenLabs-planen räcker till cirka 90 000 tecken i månaden – ungefär 15 prov med 12 frågor för alla tillsammans. Webben får högst 10 000 tecken per dygn och varje nät 3 000. Ett nytt webbkonto har 1 500, och det minsta provet (3 frågor) kostar cirka 1 900, så besökare från TikTok kan bara använda Säg med korta texter, inte prov. Två beslut som bara du kan ta: (a) uppgradera ElevenLabs-planen (kostnad), och (b) om webbkonton ska få mer än 1 500 (till exempel 5 000 en gång). Talen kan ändras utan ny kod.

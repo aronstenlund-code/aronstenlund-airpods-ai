@@ -61,4 +61,4 @@ const fake = (req: Request, info: { mode?: string | null }) =>
     ? new Response(silentMp3(1), { status: 200, headers: { "content-type": "audio/mpeg", "cache-control": "no-store", "x-earmind-fake": "1", ...CORS_HEADERS } })
     : null;
 // K114 (D249): web beta accounts per network
-Deno.serve(withCors(withWebGuard(withTestMode("tts", handler, { fake }), { limiter: new SupabaseRateLimiter(db), extraOrigins: extraOriginsFromEnv() }), extraOriginsFromEnv()));
+Deno.serve(withCors(withWebGuard(withTestMode("tts", handler, { fake }), { limiter: new SupabaseRateLimiter(db), extraOrigins: extraOriginsFromEnv(), demo: true }), extraOriginsFromEnv()));

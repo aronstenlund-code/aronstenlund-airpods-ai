@@ -6,7 +6,7 @@ import { backend, testTraffic } from './config';
 import { BrowserSound, ScreenAwake, browserClock, listenForPresses, showNothingPlaying, showNowPlaying } from './platform/browser';
 import { Store } from './store';
 import './styles.css';
-import { pickLanguage, translator, type Lang } from './texts';
+import { chosenLanguage, translator, type Lang } from './texts';
 import { View } from './ui/view';
 
 /// The browser's storage, or the visit's memory when it is switched off (private windows): the beta still works.
@@ -41,9 +41,9 @@ const kept = storage(() => window.localStorage);
 const tab = storage(() => window.sessionStorage);
 const langKey = 'earmind.beta.lang';
 
-// D251: English, or Swedish for a Swedish browser; the choice in Settings wins.
-const chosen = kept.getItem(langKey);
-const lang: Lang = chosen === 'sv' || chosen === 'en' ? chosen : pickLanguage(navigator.languages, navigator.language);
+// D253: always English first; Swedish when the user has chosen it with the EN/SV switch (kept in this browser).
+const lang: Lang = chosenLanguage(kept.getItem(langKey));
+const draftKey = 'earmind.beta.draft';
 document.documentElement.lang = lang;
 const t = translator(lang);
 
@@ -52,7 +52,25 @@ const sound = new BrowserSound(audio);
 const awake = new ScreenAwake();
 const client = new Client(backend, (url, init) => fetch(url, init), kept, () => Date.now(), testTraffic(window.location.search, tab), lang);
 const store = new Store(kept);
-const app = new App({ drill: new DrillApi(client), exam: new ExamApi(client), sound, clock: browserClock, store, awake, t });
+const app = new App({
+  drill: new DrillApi(client),
+  exam: new ExamApi(client),
+  sound,
+  clock: browserClock,
+  store,
+  awake,
+  t,
+  // D253 "Download the sound": the files the server already made, fetched as they are and handed to the browser.
+  files: {
+    bytes: async (url) => {
+      const reply = await fetch(url);
+      if (!reply.ok) throw new Error(`sound file: ${reply.status}`);
+      return new Uint8Array(await reply.arrayBuffer());
+    },
+    link: (bytes, name) => URL.createObjectURL(new File([bytes], name, { type: 'audio/mpeg' })),
+    forget: (url) => URL.revokeObjectURL(url),
+  },
+});
 
 // A voice's sample has its own element: it is only heard while nothing else plays.
 const sample = new Audio();
@@ -74,7 +92,10 @@ const view = new View(root, {
     nowPlaying: showNowPlaying,
     nothingPlaying: showNothingPlaying,
     setLanguage: (code) => {
+      if (code === lang) return;
       kept.setItem(langKey, code);
+      // Everything is shown again in the new language; what was being typed comes along.
+      tab.setItem(draftKey, JSON.stringify(view.typed()));
       window.location.reload();
     },
     preview: (url) => {
@@ -119,6 +140,14 @@ document.addEventListener('visibilitychange', () => {
     view.render();
   }
 });
+
+try {
+  const draft = JSON.parse(tab.getItem(draftKey) ?? 'null') as { text?: string; style?: string } | null;
+  tab.removeItem(draftKey);
+  if (draft !== null) view.fill(String(draft.text ?? ''), String(draft.style ?? ''));
+} catch {
+  /* nothing to bring back */
+}
 
 view.render();
 void app.init();

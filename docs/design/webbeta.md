@@ -96,3 +96,28 @@ Samma samtyckesskärm som appen (D21) före första start; först därefter frå
 
 Kort (TikTok-svar räcker gott under 150 tecken per språk), inget om låst skärm, inget om dold användning, inga löften om
 pris eller välkomstkrediter. Länken fungerar först när /beta är publicerad.
+
+## 9. Samtycke för lyssnarläget på webben (Ke86/A156 del 2, 2026-11-21)
+Skiljer sig från appen (ConsentView): ingen Historik, inget Sömnläge, ingen iOS-bricka, och **webbens frågor och svar
+skickas inte till oss** (webben sätter inte `qa_log`; servern loggar bara med flaggan, `answer/index.ts` K30 –
+**verifierat i koden**). Visas före första start; först därefter frågar webbläsaren om mikrofonen.
+
+| | English | Svenska |
+|---|---|---|
+| Rubrik | Before you start | Innan du börjar |
+| Inledning | EarMind listens through your microphone and answers what you ask. Here's what happens to sound and text. | EarMind lyssnar genom mikrofonen och svarar på det du frågar. Så här gör den med ljud och text. |
+| 1 | **Only when you start it.** You start and stop it. While it listens, the top of the page shows "● Listening", and your browser shows its own microphone sign. | **Bara när du har startat den.** Du startar och stoppar själv. Medan den lyssnar står "● Lyssnar" överst på sidan, och webbläsaren visar sin egen mikrofonsymbol. |
+| 2 | **Speech is transcribed by ElevenLabs.** While EarMind listens, the sound goes to ElevenLabs, which turns it into text. Answers are read with an ElevenLabs voice. EarMind doesn't save the sound. | **Talet skrivs ut av ElevenLabs.** Medan EarMind lyssnar skickas ljudet till ElevenLabs, som gör det till text. Svaren läses upp med en röst från ElevenLabs. EarMind sparar inte ljudet. |
+| 3 | **Answers come from Claude.** The text goes through EarMind's server to Claude by Anthropic, which writes the answer. | **Svaren kommer från Claude.** Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. |
+| 4 | **Other people's words can be included.** If someone near you asks a question, their words are transcribed and sent the same way. Tell the people around you that you're using EarMind, and don't use it where recording isn't allowed. | **Andras ord kan komma med.** Ställer någon nära dig en fråga skrivs deras ord ut och skickas på samma sätt. Berätta för dem runt dig att du använder EarMind, och använd den inte där inspelning inte är tillåten. |
+| 5 | **Stop whenever you like.** One tap stops the microphone. You can withdraw consent in Settings on this page. | **Sluta när du vill.** Ett tryck stoppar mikrofonen. Du kan ta tillbaka samtycket i Inställningar på sidan. |
+| Knapp | I understand, start listening | Jag förstår, börja lyssna |
+| Rad under | The screen has to stay on while it listens. | Skärmen måste vara på medan den lyssnar. |
+| Lyssnarraden | ● Listening · Stop / ● Answering · Stop / Paused · Stop | ● Lyssnar · Stoppa / ● Svarar · Stoppa / Pausad · Stoppa |
+
+## 10. Beslut om Angelas frågor (A158)
+- **Hennes ord** för Ladda ner (Download the sound, Getting the sound … {n} of {m}, Save the MP3, "A downloaded file plays
+  with the screen off in your phone's own player.") och länkdelen (Got a quiz from someone? …) är godkända.
+- **EN | SV** är rätt; sajten använder nu samma ("EN"/"SV", uppläst "English"/"Svenska").
+- **BETA-brickan vid 400 px och smalare:** får försvinna överst; skärmraden säger redan "In the beta", och Inställningar
+  visar "Beta". **Kreditkapseln vid 320 px:** kortform "{1.2k} left" / "{1,2k} kvar" i stället för tre punkter.

@@ -4,6 +4,7 @@ import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/
 import { enforceLimits, type Limits, type RateLimiter, userWindows } from "../_shared/ratelimit.ts";
 import { DEFAULT_DEMO_CAPS, type DemoCaps, enforceDemo, networkKey } from "../_shared/demo.ts";
 import { readLimitedJson } from "../answer/validate.ts";
+import { WEB_LIMITS, webCount } from "../_shared/webguard.ts";
 
 /**
  * D44: `GET /stt-token` mints a single-use ElevenLabs token for Scribe v2 Realtime so the client can open
@@ -128,6 +129,15 @@ export function createSttHandler(deps: SttDeps) {
           fallback: true,
           retryAfterSec: rl.retryAfterSec,
         });
+      }
+      // A156 (D249): listening from the web beta has its own daily cap per network and for the whole web
+      if (new URL(req.url).searchParams.get("source") !== "demo") {
+        const wc = await webCount(deps.rateLimiter, "stt", WEB_LIMITS.sttTokensPerIpPerDay, WEB_LIMITS.sttTokensGlobalPerDay);
+        if (!wc.allowed) {
+          throw new HttpError(429, "web_daily_cap", "Webbetan har lyssnat mycket i dag. Försök igen i morgon, eller använd appen.", {
+            retryAfterSec: wc.retryAfterSec,
+          });
+        }
       }
       // Toby T10 del 2 (2026-11-10: the whole app got 429 until midnight UTC after ElevenLabs' quota outage, because
       // every failed retry counted): no token minted = nothing spent, so the user's and the global units go back.

@@ -81,15 +81,16 @@ Deno.test("O93: a searched answer without a källa line is marked source_missing
     provider: { name: "f", model: "claude-sonnet-5-5", stream(_r: LLMRequest): AsyncIterable<LLMChunk> {
       return (async function* () {
         yield { type: "searching", tool: "web_search" } as LLMChunk;
-        yield { type: "source", url: "https://www.ica.se/recept/kottbullar-123/", title: "Köttbullar" } as LLMChunk;
-        yield { type: "text", text: "Blanda färs, ströbröd och mjölk. Forma bollar och stek i smör." } as LLMChunk;
+        // K116 (D254): a recipe without its source line now gets a fixed sentence (k116_held_test.ts); an ordinary
+        // searched answer is still marked
+        yield { type: "text", text: "Sverige har cirka tio och en halv miljon invånare." } as LLMChunk;
         yield { type: "usage", inputTokens: 100, outputTokens: 40, webSearches: 1 } as LLMChunk;
       })();
     } },
     recordUsage: () => {},
     config: { ...cfg, webSplitFromMs: 0 },
   });
-  const raw = await (await h(new Request("http://x/answer", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ fragment: "recept på köttbullar", mode: "text", language: "sv", context: {} }) }))).text();
+  const raw = await (await h(new Request("http://x/answer", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ fragment: "hur många bor i sverige just nu", mode: "text", language: "sv", context: {} }) }))).text();
   const done = JSON.parse(raw.split("event: done\ndata: ")[1].split("\n")[0]);
   assertEquals(done.source ?? null, null, "never a source the answer did not name");
   assertEquals(done.source_missing, true);

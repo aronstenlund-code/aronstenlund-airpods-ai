@@ -1,6 +1,7 @@
 import { claimsMissing, stripYesNoLead } from "./interviewfacts.ts";
 import { numbersToSpeech } from "./svnum.ts";
 import { afterNumbers, beforeNumbers } from "./speechsym.ts";
+import { splitNine } from "../drill/voicerules.ts";
 
 /** Digits, symbols, formulas and abbreviations -> speakable Swedish (D46/D54). */
 export const toSpeech = (t: string, ctx = ""): string => {
@@ -306,7 +307,7 @@ const SEARCH_META =
   /(?:utan (?:att )?(?:beh\u00f6va |ha )?s\u00f6k|jag har inte s\u00f6kt|om du vill vara (?:helt )?s\u00e4ker|^\s*hmm\b|jag \u00e4r s\u00e4ker p\u00e5 (?:detta|det h\u00e4r|det)\b|(?:beh\u00f6ver|beh\u00f6vs) (?:inte |ingen )?s\u00f6k|ingen s\u00f6kning|jag kan svara (?:p\u00e5 )?(?:den |det |fr\u00e5gan )?direkt|^\s*(?:jag|l\u00e5t mig) (?:ska |kan |vill |m\u00e5ste |beh\u00f6ver )?(?:s\u00f6ka|s\u00f6ker|kolla|kollar|letar|leta)\b|^\s*det h\u00e4r \u00e4r en \p{L}+ fr\u00e5ga)/iu;
 /** K104 (Oscar O88 N1, said aloud while the web cap was used up): the model on its own sources and knowledge. */
 const SOURCE_META =
-  /(?:(?:kräver|behöver|behövs) (?:inte |ingen )?(?:någon )?(?:aktuell|ny|färsk|uppdaterad) information|(?:svarar|svara|utgår) (?:jag )?(?:direkt )?(?:från|ur|utifrån) (?:min |mina |egen |egna )?(?:egen |egna )?(?:kunskap|kunskaper|minne)|utan (?:webb\p{L}*|uppslag|källor|internet)|(?:kan|kunde) (?:jag )?inte (?:se|nå|komma åt|söka|kolla)\b[^.!?]*(?:källor|webben|internet|nätet|sökning)|(?:^|\s)jag (?:håller mig till|följer|utgår från|väljer) (?:de |det |den )?(?:\p{L}+ )?som [^.!?]{1,40} (?:beskriver|skriver|säger|anger|rekommenderar)\b)/iu; // O92 (live 16:05): "… så jag håller mig till de steg som Clas Ohlson beskriver."
+  /(?:(?:kräver|behöver|behövs) (?:inte |ingen )?(?:någon )?(?:aktuell|ny|färsk|uppdaterad) information|(?:svarar|svara|utgår) (?:jag )?(?:direkt )?(?:från|ur|utifrån) (?:min |mina |egen |egna )?(?:egen |egna )?(?:kunskap|kunskaper|minne)|utan (?:webb\p{L}*|uppslag|källor|internet)|(?:kan|kunde) (?:jag )?inte (?:se|nå|komma åt|söka|kolla)\b[^.!?]*(?:källor|webben|internet|nätet|sökning)|(?:^|\s)jag (?:håller mig till|följer|utgår från|väljer) (?:de |det |den )?(?:\p{L}+ )?som [^.!?]{1,40} (?:beskriver|skriver|säger|anger|rekommenderar)\b|(?:^|\s)jag bygger (?:svaret|mitt svar|det här|detta) på(?![\p{L}])|(?:ingen|inga|inte någon)\s(?:\p{L}+\s){0,2}\p{L}*källa\p{L}*[^.!?]{0,30}\bi (?:sökningen|sökresultaten|sökningarna)(?![\p{L}])|(?<![\p{L}])sökningen (?:gav|visade|hittade) (?:ingen|inga|inte någon)\s(?:\p{L}+\s){0,2}källa)/iu; // O92 (live 16:05): "… så jag håller mig till de steg som Clas Ohlson beskriver."; O93 (praktiskt-03): "Det finns ingen officiell tillverkarkälla i sökningen, så jag bygger svaret på …"
 export function isSearchMeta(sentence: string): boolean {
   return SEARCH_META.test(sentence) || SOURCE_META.test(sentence);
 }
@@ -1067,9 +1068,16 @@ export function halfFix(s: string): string {
 export class NumberStream {
   private buf = "";
   private tail = ""; // last raw text already passed on (context for the phone-number guard)
+  /** K115 (D253): "en" = an English answer: the digits stay for the voice (it says them in English itself; Swedish
+   *  number words in English were "ett komma fem noll noll people"). Anything else is Swedish, as before. */
+  constructor(private readonly lang = "sv") {}
 
   private say(raw: string): string {
-    const out = noParens(toSpeech(halfFix(codeNumbers(raw)), this.tail));
+    if (this.lang === "en") {
+      this.tail = (this.tail + raw).slice(-120);
+      return noParens(raw);
+    }
+    const out = splitNine(noParens(toSpeech(halfFix(codeNumbers(raw)), this.tail)));
     this.tail = (this.tail + raw).slice(-120);
     return out;
   }
@@ -1110,6 +1118,8 @@ export class NumberStream {
 
 // ---------- pipeline ----------
 export interface PostOptions {
+  /** K115 (D253): the answer's language from the user's choice (`lang`); "en" keeps the digits for the voice. */
+  language?: string;
   /** Earlier answers (for different fragments) to guard against repeating; empty disables the guard. */
   previousAnswers: string[];
   /** Drop a closing question to the user (false in tutoring, personas, confirmations). */
@@ -1269,9 +1279,10 @@ export class AnswerPost {
   private spoke = false;
   private readonly en: EnglishGate;
   private readonly gate: FirstLineGate;
-  private readonly nums = new NumberStream();
+  private readonly nums: NumberStream;
 
   constructor(opts: PostOptions) {
+    this.nums = new NumberStream(opts.language === "en" ? "en" : "sv");
     this.dup = new DupGuard(opts.previousAnswers);
     // K2: a profile without check questions trims every closing question, also in Provläge
     // K9: a question the student asked for ("ställ en svår fråga", "förhör mig på X") is never held to the short

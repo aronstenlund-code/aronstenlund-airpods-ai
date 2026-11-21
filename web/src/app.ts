@@ -1,8 +1,9 @@
 import { ApiError, OfflineError } from './api/client';
-import type { DrillApi, DrillView, Question, Voice } from './api/drill';
+import type { DrillApi, DrillView, Question, ShareInfo, Voice } from './api/drill';
 import type { ExamApi, QuestionsReply } from './api/exam';
 import { creditsLeft, type Quota } from './core/credits';
 import { QuestionPlayer, thinkingSeconds } from './core/questionPlayer';
+import { fileName, joinMp3 } from './core/mp3';
 import { cleanStyle, parts, title } from './core/said';
 import type { Clock, Press, Sound } from './core/sound';
 import { TextPlayer, type TextPosition } from './core/textPlayer';
@@ -15,7 +16,18 @@ export interface Awake {
   release(): Promise<void>;
 }
 
+/// The sound files as bytes, and a finished file as something the browser can save.
+export interface Files {
+  bytes(url: string): Promise<Uint8Array>;
+  link(bytes: Uint8Array, name: string): string;
+  forget(url: string): void;
+}
+
+/// D253 "Download the sound": one MP3 of what plays.
+export type Download = { stage: 'idle' } | { stage: 'preparing'; done: number; total: number } | { stage: 'ready'; url: string; name: string } | { stage: 'failed' };
+
 export interface Deps {
+  files: Files;
   drill: DrillApi;
   exam: ExamApi;
   sound: Sound;
@@ -32,6 +44,12 @@ export type ExamDraft =
   | { stage: 'making' }
   | { stage: 'check'; reply: QuestionsReply; count: number; note: string | null; error: string | null; busy: boolean }
   | { stage: 'answering' };
+
+/// Open link: a quiz someone shared (the app's "Har du fått ett prov?").
+export type LinkDraft =
+  | { stage: 'closed' }
+  | { stage: 'ask'; error: string | null; busy: boolean }
+  | { stage: 'found'; code: string; info: ShareInfo; error: string | null; busy: boolean };
 
 /// Everything the beta does, without a screen: the screens read this and call it (ui.ts), and the tests run it with
 /// a scripted server and a sound that only remembers what it was asked.
@@ -51,6 +69,8 @@ export class App {
 
   /// Exams.
   draft: ExamDraft = { stage: 'closed' };
+  link: LinkDraft = { stage: 'closed' };
+  download: Download = { stage: 'idle' };
   quiz: QuestionPlayer | null = null;
   examPlaying: SavedExam | null = null;
   examBusy: string | null = null;
@@ -171,6 +191,7 @@ export class App {
           this.text = null;
           this.saidPlaying = null;
           sound.stop();
+          this.dropDownload();
           this.rest();
         }
         this.changed();
@@ -267,6 +288,58 @@ export class App {
     this.changed();
   }
 
+  // MARK: Open link
+
+  openLink(): void {
+    this.link = { stage: 'ask', error: null, busy: false };
+    this.changed();
+  }
+
+  closeLink(): void {
+    this.link = { stage: 'closed' };
+    this.changed();
+  }
+
+  /// What was pasted, a link or the code itself: the server reads either, and says what the link holds.
+  async lookUp(pasted: string): Promise<void> {
+    const code = pasted.trim();
+    if (code.length === 0 || (this.link.stage === 'ask' && this.link.busy)) return;
+    this.link = { stage: 'ask', error: null, busy: true };
+    this.changed();
+    try {
+      const info = await this.deps.drill.shareInfo(code);
+      this.link = { stage: 'found', code, info, error: null, busy: false };
+    } catch (error) {
+      this.link = { stage: 'ask', error: this.words(error), busy: false };
+    }
+    this.changed();
+  }
+
+  /// The shared quiz becomes the user's own. Its sound is the original's: no credits are counted.
+  async addShared(): Promise<void> {
+    const link = this.link;
+    if (link.stage !== 'found' || link.busy) return;
+    this.link = { ...link, busy: true, error: null };
+    this.changed();
+    try {
+      const view = await this.deps.drill.importShared(link.code);
+      if (view.drill.kind === 'text') {
+        // A text to read aloud, not questions: the beta has no screen for those yet, so the copy is not kept.
+        void this.deps.drill.remove(view.drill.id).catch(() => undefined);
+        this.link = { ...link, busy: false, error: this.deps.t('linkIsText') };
+        this.changed();
+        return;
+      }
+      const questions: Question[] = view.items.map((item) => ({ id: item.id, question: item.question ?? '', short: item.short ?? '', long: item.long ?? '' }));
+      const name = view.drill.title || link.info.title || this.deps.t('newQuiz');
+      this.deps.store.keepExam({ id: newID(), serverID: view.drill.id, title: name, subject: link.info.subject ?? '', questions, cost: 0, started: view.drill.audio_started !== false, index: 0, at: this.deps.clock.now() });
+      this.link = { stage: 'closed' };
+    } catch (error) {
+      this.link = { ...link, busy: false, error: this.words(error) };
+    }
+    this.changed();
+  }
+
   /// Start exam. Called straight from the tap, like Play.
   async startExam(id: string): Promise<void> {
     const exam = this.deps.store.exams.find((e) => e.id === id);
@@ -337,8 +410,62 @@ export class App {
     this.examPlaying = null;
     this.sayBusy = false;
     this.examBusy = null;
+    this.dropDownload();
     this.rest();
     this.changed();
+  }
+
+  // MARK: Download the sound
+
+  /// One MP3 of what plays: a text's parts in order, or every question followed by its long answer. The links are
+  /// good for an hour, so the server is asked for fresh ones first. Nothing new is made: no credits are counted.
+  async prepareDownload(): Promise<void> {
+    const now = this.view;
+    if (now === null || !soundIsComplete(now) || this.download.stage === 'preparing' || this.download.stage === 'ready') return;
+    const mine = this.attempt;
+    const name = fileName(this.examPlaying?.title ?? (this.saidPlaying === null ? '' : title(this.saidPlaying.text)));
+    this.download = { stage: 'preparing', done: 0, total: 0 };
+    this.changed();
+    try {
+      const view = await this.deps.drill.status(now.drill.id);
+      if (mine !== this.attempt) return;
+      this.view = view;
+      const urls = this.soundUrls(view);
+      if (urls === null || urls.length === 0) throw new Error('the sound is not made');
+      const got = new Map<string, Uint8Array>();
+      for (let i = 0; i < urls.length; i += 1) {
+        if (!got.has(urls[i])) got.set(urls[i], await this.deps.files.bytes(urls[i]));
+        if (mine !== this.attempt) return;
+        this.download = { stage: 'preparing', done: i + 1, total: urls.length };
+        this.changed();
+      }
+      const file = joinMp3(urls.map((url) => got.get(url) as Uint8Array));
+      this.download = { stage: 'ready', url: this.deps.files.link(file, name), name };
+    } catch {
+      if (mine !== this.attempt) return;
+      this.download = { stage: 'failed' };
+    }
+    this.changed();
+  }
+
+  /// Every file of what plays, in the order it is heard; null while one is still being made.
+  private soundUrls(view: DrillView): string[] | null {
+    if (this.quiz === null) {
+      const urls = textParts(view).map((part) => part.url);
+      return urls.every((url): url is string => url !== null) ? urls : null;
+    }
+    const urls: string[] = [];
+    for (let i = 0; i < view.items.length; i += 1) {
+      const track = questionTrack(view, i);
+      if (track === null) return null;
+      urls.push(track.question, track.long);
+    }
+    return urls;
+  }
+
+  private dropDownload(): void {
+    if (this.download.stage === 'ready') this.deps.files.forget(this.download.url);
+    this.download = { stage: 'idle' };
   }
 
   /// The sound stopped without anyone asking (the screen went dark, a call, the browser said no): the player is
