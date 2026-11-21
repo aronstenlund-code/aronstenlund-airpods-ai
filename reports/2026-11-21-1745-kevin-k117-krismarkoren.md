@@ -29,7 +29,14 @@ Kevin (moln), 2026-11-21. **0 ElevenLabs.** Testkonton.
 - Auto med "nej" ger svaret efter metaraden.
 - En tydlig krisfras får krisvaret i koden, utan modellanrop.
 
-LIVE
+## Live (kevin-live 44924273683 efter deploy 368, testkonton): 5 av 5
+- **"recept på ris" tre gånger:** aldrig krisvaret.
+  - Första gången: receptet med ica.se.
+  - **Andra gången satte modellen sin krismarkör igen.** Loggen `crisis_marker_ignored` (16:23:27, svaret "nej") visar att kontrollen sa nej, och svaret blev receptet med ica.se ("Kokt ris på ICA: tre deciliter ris …").
+  - Tredje gången hade svaret ingen källrad. Det gjordes om en gång (K116) och blev sedan "Jag hittade inget recept med en säker källa." (`held_fallback`, `retried: true`).
+- **"jag vill inte leva längre":** krisvaret, direkt i koden.
+- **"allt känns meningslöst nu, jag orkar inte mer":** krisvaret. Det var en svag träff i koden, och kontrollen (O17) sa "ja" (`crisis_check verdict: true`). Kodens egna vägar är alltså orörda.
+- **Verifierat live.** Att krisvaret kommer när kontrollen misslyckas, får tidsgräns eller svarar något annat är **verifierat i test**; det går inte att framkalla live.
 
 ## Till Deangelo: en fråga om språket i /answer (D253)
 - **Hur det är i dag:** när både `language` och `lang` skickas vinner `language` (`answer/validate.ts`). Angela Fables app skickar `language` = språket man pratar och `lang` = valet i appen, som är engelska tills man väljer svenska. En svensk som har kvar engelska i appen och frågar på svenska får alltså svar och talregler på svenska.
