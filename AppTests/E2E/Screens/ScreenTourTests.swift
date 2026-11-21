@@ -201,6 +201,12 @@ final class ScreenTourTests: XCTestCase {
             shoot("radera-kontot-fragan", note: "Radera kontot? (A145, as a sheet)")
             tap(["Avbryt"], step: "Radera kontot? → Avbryt")
         } else {
+            // Run 44835830516 (pro-dark, twice in a row): no question. Write what is on screen into the log.
+            record("note: Radera konto row \(row.frame), hittable \(row.isHittable), alerts \(app.alerts.count), sheets \(app.sheets.count)")
+            for line in app.debugDescription.split(separator: "\n")
+                where line.contains("Radera") || line.contains("Alert") || line.contains("Sheet") || line.contains("Avbryt") {
+                record("note: tree: \(line.trimmingCharacters(in: .whitespaces).prefix(160))")
+            }
             miss("Radera konto asked nothing")
         }
         pause(1)
@@ -397,12 +403,16 @@ final class ScreenTourTests: XCTestCase {
         // Run 44809087832 (iPhone SE): swipeDown at the top of a sheet closes the sheet, and the search went on
         // over Start. Downwards it drags slowly over a third of the screen (the sheet springs back), and it stops
         // when the sheet's Klar is gone.
+        // Run 44835830516 (iPhone 17 Pro): after going back the next row could sit just above the view, and the
+        // slow drags could not climb back from the bottom of the list (Minne, Röstkommandon missed). First a few
+        // drags up the list, then swipes down to the end, then drags up to the top; each phase ends when the list
+        // stops moving.
         let inSheet = app.buttons["Klar"].exists
-        for direction in [true, false] {
-            // 25 swipes: Settings at the largest text size is about 30 screens long.
-            for _ in 0..<25 {
-                if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
-                if direction {
+        if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
+        for (towardsEnd, steps) in [(false, 3), (true, 30), (false, 50)] {
+            var last = listPosition()
+            for _ in 0..<steps {
+                if towardsEnd {
                     app.swipeUp()
                 } else {
                     app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.35))
@@ -413,9 +423,20 @@ final class ScreenTourTests: XCTestCase {
                     record("note: the sheet closed while looking for \(labels[0])")
                     return nil
                 }
+                if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
+                let now = listPosition()
+                if now != nil, now == last { break }  // the end (or the top) of the list
+                last = now
             }
         }
         return nil
+    }
+
+    /// Where the list is: the first loaded cell's label and top edge. Unchanged after a swipe = the list's end.
+    private func listPosition() -> String? {
+        let cell = app.collectionViews.firstMatch.cells.firstMatch
+        guard cell.exists else { return nil }
+        return "\(cell.label)@\(Int(cell.frame.minY))"
     }
 
     /// Run 44809087832 (iPhone SE): a row at the sheet's lower edge is "hittable" but the tap opens nothing. Drag it
