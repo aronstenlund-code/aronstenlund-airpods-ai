@@ -10,6 +10,7 @@ import { polishVoice, preVoice, V4_MODEL, VOICE_RULES_VERSION, withPauseTag } fr
 import { type QuotaAnswer, walletFields } from "../_shared/wallet.ts";
 import { cleanStyle, mapOffset, STYLE_MODEL, styledKey, type Styler } from "./style.ts";
 import { textLanguage } from "../exam/read.ts";
+import { webCredits } from "../_shared/webguard.ts";
 import { composeLong, DRILL_LIMITS, estimatedCostPerQuestion, examLanguage, intIn, spokenText } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
 import { lengthClass, lengthLimits } from "./length.ts";
@@ -401,6 +402,14 @@ const MONTHS = ["januari", "februari", "mars", "april", "maj", "juni", "juli", "
 /** K64 (Kelly, repetition-texter §6): "Nya frågor går att göra från den 1 december." (abonnemang kommer senare, HJALP.md) */
 export function newFrom(nowMs: number): string {
   return `Nya frågor går att göra från den 1 ${MONTHS[Number(nextMonthStart(nowMs).slice(5, 7)) - 1]}.`;
+}
+
+/** K114 (D251): the user's language for a message (`lang` "sv" or "en", English by default). */
+export function langOf(b: Record<string, unknown> | null | undefined): "sv" | "en" {
+  return b?.lang === "sv" || b?.language === "sv" ? "sv" : "en";
+}
+export function say(b: Record<string, unknown> | null | undefined, sv: string, en: string): string {
+  return langOf(b) === "sv" ? sv : en;
 }
 
 export function nextMonthStart(nowMs: number): string {
@@ -1014,6 +1023,13 @@ export function createDrillHandler(deps: DrillDeps) {
         throw new HttpError(429, "rate_limited", "Du har gjort mycket ljud i dag. Spara provet igen i morgon, så görs resten.", {
           retryAfterSec: rl.retryAfterSec,
         });
+      }
+    }
+    // K114 (D249): the web beta's daily caps (per network and for the whole web) before any credit is taken
+    if (cost > 0) {
+      const wc = await webCredits(deps.rateLimiter, cost);
+      if (!wc.allowed) {
+        throw new HttpError(429, "web_daily_cap", say(b, "Webbetan har gjort sitt ljud för i dag. Försök igen i morgon, eller använd appen.", "The web beta has made today's audio. Try again tomorrow, or use the app."), { retryAfterSec: wc.retryAfterSec });
       }
     }
     const q = cost > 0 ? await deps.db.useQuota(user.id, cost) : null;

@@ -2,6 +2,7 @@
 import { demoCapsFromEnv } from "../_shared/demo.ts";
 import { secret } from "../_shared/secrets.ts";
 import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
+import { withWebGuard } from "../_shared/webguard.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { MemoryRateLimiter, SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
@@ -59,4 +60,5 @@ const fake = (req: Request, info: { mode?: string | null }) =>
     : req.method === "POST"
     ? new Response(silentMp3(1), { status: 200, headers: { "content-type": "audio/mpeg", "cache-control": "no-store", "x-earmind-fake": "1", ...CORS_HEADERS } })
     : null;
-Deno.serve(withCors(withTestMode("tts", handler, { fake }), extraOriginsFromEnv()));
+// K114 (D249): web beta accounts per network
+Deno.serve(withCors(withWebGuard(withTestMode("tts", handler, { fake }), { limiter: new SupabaseRateLimiter(db), extraOrigins: extraOriginsFromEnv() }), extraOriginsFromEnv()));

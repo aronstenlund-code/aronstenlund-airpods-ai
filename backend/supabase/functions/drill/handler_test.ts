@@ -1242,3 +1242,29 @@ Deno.test("Angela Fable A154: quota with long_words says what one question costs
   const odd = await (await w.h("u1")(post({ action: "quota", long_words: 9999 }))).json();
   assertEquals(odd.exam.long_words, 200, "clamped as exam drill clamps it");
 });
+
+Deno.test("K114 (D249): a web account's new audio counts against the web's daily caps per network; the app's never", async () => {
+  const { withWebGuard, WEB_LIMITS } = await import("../_shared/webguard.ts");
+  const w = world();
+  const jwt = (sub: string) => `x.${btoa(JSON.stringify({ sub })).replace(/=+$/, "")}.y`;
+  const text = (n: number) => [{ kind: "para", text: ("Mening om cellen " + n + ". ").repeat(40).slice(0, 1200) }];
+  const web = (u: string, n: number) =>
+    withWebGuard(w.h(u), { limiter: w.limiter })(new Request("http://x/drill", {
+      method: "POST", headers: { "content-type": "application/json", origin: "https://earmind.vercel.app", authorization: `Bearer ${jwt(u)}`, "x-forwarded-for": "203.0.113.9" },
+      body: JSON.stringify({ action: "save", start: true, drill: { kind: "text", title: `W${n}` }, items: text(n) }),
+    }));
+  let paid = 0, status = 200, code = "", n = 0;
+  while (status === 200 && n < 20) {
+    const r = await web("w0", n++);
+    const j = await r.json();
+    status = r.status;
+    if (status === 200) paid += j.cost ?? 0;
+    else code = j.error?.code;
+  }
+  assertEquals(status, 429);
+  assertEquals(code, "web_daily_cap");
+  assert(paid <= WEB_LIMITS.creditsPerIpPerDay, `paid ${paid}`);
+  assert(n > 1, "the first saves were allowed");
+  // the app (no Origin) is not counted
+  assertEquals((await w.h("app")(post({ action: "save", start: true, drill: { kind: "text", title: "App" }, items: text(99) }))).status, 200);
+});

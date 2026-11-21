@@ -10,9 +10,12 @@
 // stays until Vercel is verified); other or private origins still go in the CORS_ORIGINS secret.
 export const DEFAULT_ORIGINS = ["https://aronstenlund-code.github.io", "https://earmind.vercel.app"];
 const LOCAL = /^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?::\d{1,5})?$/;
+/** K114 (D249): the earmind project's own Vercel previews (team aron-cfdc): earmind-<hash>-aron-cfdc.vercel.app and
+ *  earmind-git-<branch>-aron-cfdc.vercel.app. Another team's project can never end in -aron-cfdc.vercel.app. */
+const PREVIEW = /^https:\/\/earmind-[a-z0-9]+(?:-[a-z0-9]+)*-aron-cfdc\.vercel\.app$/;
 
 export function originAllowed(origin: string, extra: string[] = []): boolean {
-  return DEFAULT_ORIGINS.includes(origin) || extra.includes(origin) || LOCAL.test(origin);
+  return DEFAULT_ORIGINS.includes(origin) || extra.includes(origin) || LOCAL.test(origin) || PREVIEW.test(origin);
 }
 
 export function extraOriginsFromEnv(
