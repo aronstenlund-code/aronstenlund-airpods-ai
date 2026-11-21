@@ -50,6 +50,26 @@ class FakeAwake {
   }
 }
 
+/// The sound files as bytes, and the saved file as a pretend link.
+class FakeFiles {
+  asked: string[] = [];
+  links: { name: string; bytes: number[] }[] = [];
+  forgotten: string[] = [];
+  failing = false;
+  async bytes(url: string): Promise<Uint8Array> {
+    this.asked.push(url);
+    if (this.failing) throw new Error('offline');
+    return new TextEncoder().encode(`[${url.split('/').pop()}]`);
+  }
+  link(bytes: Uint8Array, name: string): string {
+    this.links.push({ name, bytes: [...bytes] });
+    return `blob:${this.links.length}`;
+  }
+  forget(url: string): void {
+    this.forgotten.push(url);
+  }
+}
+
 function make(answer: ConstructorParameters<typeof RoutedServer>[0], storage = new MemoryStorage()) {
   const server = new RoutedServer(answer);
   const clock = new FakeClock();
@@ -57,8 +77,9 @@ function make(answer: ConstructorParameters<typeof RoutedServer>[0], storage = n
   const sound = new FakeSound();
   const awake = new FakeAwake();
   const store = new Store(storage);
-  const app = new App({ drill: new DrillApi(client), exam: new ExamApi(client), sound, clock, store, awake, t: translator('en') });
-  return { app, server, clock, sound, awake, store, storage };
+  const files = new FakeFiles();
+  const app = new App({ drill: new DrillApi(client), exam: new ExamApi(client), sound, clock, store, awake, files, t: translator('en') });
+  return { app, server, clock, sound, awake, store, storage, files };
 }
 
 /// Lets what is waiting on the server run.
@@ -284,3 +305,126 @@ describe('an exam from text on the web', () => {
     expect(server.calls.find((c) => c.action === 'delete')?.body.id).toBe('e1');
   });
 });
+
+describe('Open link: a quiz someone shared', () => {
+  const shared = (): DrillView => ({
+    drill: { id: 'copy1', title: 'Cells', audio_started: true },
+    items: [0, 1, 2].map((i) => ({
+      id: `q${i}`,
+      question: `Q${i}?`,
+      short: `s${i}`,
+      long: `l${i}`,
+      audio: { question: { status: 'done', url: `https://files/q${i}.mp3`, duration_ms: 1000 }, long: { status: 'done', url: `https://files/a${i}.mp3`, duration_ms: 9000, short_end_ms: 2000 } },
+    })),
+    audio: { done: 6, total: 6 },
+  });
+
+  it('shows what the link holds, then adds it as the user\'s own quiz for nothing', async () => {
+    const { app, server, store, sound } = make((_fn, action) => {
+      if (action === 'share_info') return ok({ title: 'Cells', subject: 'Biology', grade: '8', items: 3, audio_ready: true });
+      if (action === 'import') return ok({ ...shared(), new_chars: 0 });
+      if (action === 'start') return ok(shared());
+      return ok({});
+    });
+    app.openLink();
+    await app.lookUp('  https://earmind.vercel.app/p/abc12345  ');
+    expect(app.link).toMatchObject({ stage: 'found', code: 'https://earmind.vercel.app/p/abc12345', info: { title: 'Cells', items: 3 } });
+    expect(server.calls.find((c) => c.action === 'share_info')?.body.code).toBe('https://earmind.vercel.app/p/abc12345');
+    await app.addShared();
+    expect(app.link.stage).toBe('closed');
+    expect(store.exams[0]).toMatchObject({ serverID: 'copy1', title: 'Cells', cost: 0, started: true });
+    expect(store.exams[0].questions.map((q) => q.short)).toEqual(['s0', 's1', 's2']);
+    await app.startExam(store.exams[0].id);
+    expect(sound.last).toBe('play https://files/q0.mp3 0');
+  });
+
+  it('a dead link: the server\'s words, nothing is added', async () => {
+    const { app, store } = make((_fn, action) => (action === 'share_info' ? { status: 404, body: { error: { code: 'share_not_found', message: 'The link no longer works.' } } } : ok({})));
+    app.openLink();
+    await app.lookUp('abc12345');
+    expect(app.link).toEqual({ stage: 'ask', error: 'The link no longer works.', busy: false });
+    expect(store.exams).toEqual([]);
+  });
+
+  it('nothing pasted asks nothing of the server', async () => {
+    const { app, server } = make(() => ok({}));
+    app.openLink();
+    await app.lookUp('   ');
+    expect(server.calls.length).toBe(0);
+  });
+
+  it('a shared text is not a quiz: said, not added as one', async () => {
+    const { app, store } = make((_fn, action) => {
+      if (action === 'share_info') return ok({ title: 'Notes', items: 4, audio_ready: true });
+      if (action === 'import') return ok({ drill: { id: 't1', kind: 'text', title: 'Notes' }, items: [{ id: 'p', text: 'One.' }], audio: { done: 1, total: 1 } });
+      return ok({});
+    });
+    app.openLink();
+    await app.lookUp('abc12345');
+    await app.addShared();
+    expect(store.exams).toEqual([]);
+    expect(app.link).toMatchObject({ stage: 'found', error: 'This link is a text to read aloud. The beta can only open quizzes with questions for now.' });
+  });
+});
+
+describe('Download the sound (D253)', () => {
+  const said = (text: string): string => new TextDecoder().decode(new Uint8Array(JSON.parse(text) as number[]));
+
+  it('a text: asks the server for fresh links, fetches every part once and offers one MP3', async () => {
+    const { app, server, files } = make((_fn, action) => (action === 'save' || action === 'status' ? ok(textView('d1', true)) : ok({})));
+    await app.say('One. Two.', '');
+    expect(app.download).toEqual({ stage: 'idle' });
+    await app.prepareDownload();
+    expect(server.names()).toContain('drill:status'); // the links are good for an hour: fresh ones for the download
+    expect(files.asked).toEqual(['https://files/p1.mp3']);
+    expect(app.download).toEqual({ stage: 'ready', url: 'blob:1', name: 'EarMind - One. Two.mp3' });
+    expect(said(JSON.stringify(files.links[0].bytes))).toBe('[p1.mp3]');
+    await app.prepareDownload(); // already there: nothing is fetched twice
+    expect(files.asked.length).toBe(1);
+  });
+
+  it('a quiz: every question followed by its long answer, in order', async () => {
+    const { app, store, files } = make((fn, action) => {
+      if (fn === 'exam' && action === 'drill') return ok({ summary: { subject: 'Biology', grade: '8', covers: 'Cells' }, notes: 'n', items: [0, 1, 2].map((i) => ({ id: `q${i}`, question: `Q${i}?` })) });
+      if (fn === 'exam') return ok({ items: [0, 1, 2].map((i) => ({ id: `q${i}`, question: `Q${i}?`, short: 's', long: 'l' })) });
+      if (action === 'save') return ok(examView('e1', false));
+      return ok(examView('e1', true));
+    });
+    await app.makeQuestions('Cells.', 3);
+    await app.acceptExam();
+    await app.startExam(store.exams[0].id);
+    await app.prepareDownload();
+    expect(files.asked.map((u) => u.split('/').pop())).toEqual(['q0.mp3', 'a0.mp3', 'q1.mp3', 'a1.mp3', 'q2.mp3', 'a2.mp3']);
+    expect(said(JSON.stringify(files.links[0].bytes))).toBe('[q0.mp3][a0.mp3][q1.mp3][a1.mp3][q2.mp3][a2.mp3]');
+    expect(app.download).toMatchObject({ stage: 'ready', name: 'EarMind - Biology.mp3' });
+  });
+
+  it('not while the sound is still being made', async () => {
+    const { app, files } = make((_fn, action) => (action === 'save' || action === 'status' ? ok(textView('d1', false)) : ok({})));
+    await app.say('One. Two.', '');
+    await app.prepareDownload();
+    expect(files.asked).toEqual([]);
+    expect(app.download).toEqual({ stage: 'idle' });
+  });
+
+  it('a file that cannot be fetched: says so, and a new try starts over', async () => {
+    const { app, files } = make((_fn, action) => (action === 'save' || action === 'status' ? ok(textView('d1', true)) : ok({})));
+    await app.say('One. Two.', '');
+    files.failing = true;
+    await app.prepareDownload();
+    expect(app.download).toEqual({ stage: 'failed' });
+    files.failing = false;
+    await app.prepareDownload();
+    expect(app.download.stage).toBe('ready');
+  });
+
+  it('Stop takes the file away again', async () => {
+    const { app, files } = make((_fn, action) => (action === 'save' || action === 'status' ? ok(textView('d1', true)) : ok({})));
+    await app.say('One. Two.', '');
+    await app.prepareDownload();
+    app.stopAll();
+    expect(app.download).toEqual({ stage: 'idle' });
+    expect(files.forgotten).toEqual(['blob:1']);
+  });
+});
+
