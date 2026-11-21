@@ -70,7 +70,11 @@ jämfört med hennes skiss; **Kelly har inte granskat än.**
 3. **Till Kevin inför del 2:** `/stt-token` har inget webbskydd (`withWebGuard`) i dag. Innan lyssnarlägena öppnas för
    alla på webben behöver någon bestämma vad ett webbkonto får lyssna och fråga per dag, annars kan en öppen sida dra
    ElevenLabs-krediter utan tak. **Concerns**, se nedan.
-4. Appens "Open link", + (bilder, fil, länk), "Type along"/tempo, Blanda röster, röstsök, delade och publicerade prov,
+4. **Sajtens gamla adress fick en tom kopia.** När `site/beta/` kom på main publicerade Kellys flöde Deploy demo site
+   (`pages.yml`, går automatiskt på `site/**`) hela `site/` till GitHub Pages (körning 44896297380). Betan fungerar inte
+   där (sidan ligger under `/aronstenlund-airpods-ai/beta/` och pekar på `/beta/assets/…`, som är rätt för Vercel), så
+   den sidan är tom, och inget länkar dit. Kelly avgör om `beta/` ska tas undan ur Pages-paketet. **[CI]**
+5. Appens "Open link", + (bilder, fil, länk), "Type along"/tempo, Blanda röster, röstsök, delade och publicerade prov,
    Läs upp texten och ändring av enskilda frågor finns inte på webben än.
 
 **Concerns:** lyssnarlägen på en öppen webbsida (D249) behöver samma skydd som appen: samtyckesskärmen före första
