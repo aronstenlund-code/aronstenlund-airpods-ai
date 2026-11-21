@@ -168,6 +168,9 @@ const browser = await pw[engine].launch(engine === 'chromium' ? { args: ['--auto
 note(`browser ${engine} ${browser.version()}, as ${engine === 'webkit' ? 'iPhone 15' : 'Pixel 7'}, ${live ? `live: ${liveURL}` : 'local site/ with the pretend server'}`);
 // Where the page is opened. Local: ?test=toby (x-earmind-test, checked below). Live: no ?test (see the top).
 const page0 = live ? liveURL : `${base}/beta?test=toby`;
+// Live: a word unique to this run in every text, because the server says 0 credits (and shows no cost) for a text
+// it has already made (run 44916619787); a new text makes Spela and the quiz really go through the server.
+const stamp = live ? ` ${process.env.GITHUB_RUN_ID ?? Date.now()}-${engine}` : '';
 const hostsSeen = new Set();
 const serverLog = [];
 const elevenLabs = [];
@@ -274,7 +277,7 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   await shot('1-first');
 
   // Säg → Spela (silent WAV from the pretend server)
-  await page.getByTestId('say-field').fill('Photosynthesis: carbon dioxide + water + light become sugar and oxygen. It happens in the chloroplasts.');
+  await page.getByTestId('say-field').fill(`Photosynthesis${stamp}: carbon dioxide + water + light become sugar and oxygen. It happens in the chloroplasts.`);
   await until('the cost shows under the field', () => !!document.querySelector('[data-testid=cost]'), page, 30000);
   if (live) await until('the server’s cost shows', () => /\d/.test(document.querySelector('[data-testid=cost]')?.textContent ?? ''), page, 20000);
   const cost = await text(page, 'cost');
@@ -328,7 +331,7 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   // Prov från text, with credits for five questions only
   state.fits = 5;
   await page.getByTestId('new-quiz').click();
-  await page.getByTestId('quiz-text').fill('Plants make sugar and oxygen from carbon dioxide, water and light. It happens in the chloroplasts, which hold chlorophyll.');
+  await page.getByTestId('quiz-text').fill(`Plants${stamp} make sugar and oxygen from carbon dioxide, water and light. It happens in the chloroplasts, which hold chlorophyll.`);
   await shot('4-new-quiz');
   await page.getByTestId('quiz-create').click();
   if (live) {
@@ -377,14 +380,14 @@ await run('sv-light', { locale: 'sv-SE', colorScheme: 'light' }, async (page, sh
     check('Swedish for a Swedish browser (D251)', (live ? /krediter kvar$/.test(sv) : sv === '1,2k krediter kvar') && (await page.evaluate(() => document.documentElement.lang)) === 'sv', sv);
   }
   check('the Swedish screen line says 10 meter', /10\smeter/u.test(await text(page, 'screen-line')), JSON.stringify(await text(page, 'screen-line')).slice(0, 160));
-  await page.getByTestId('say-field').fill('Fotosyntes: koldioxid + vatten + ljus blir socker och syre.');
+  await page.getByTestId('say-field').fill(`Fotosyntes${stamp}: koldioxid + vatten + ljus blir socker och syre.`);
   await until('the cost shows under the field', () => !!document.querySelector('[data-testid=cost]'), page, 30000);
   await shot('1-first');
 });
 
 await run('small', { locale: 'en-GB', colorScheme: 'dark', viewport: { width: 320, height: 568 } }, async (page, shot) => {
   await page.goto(page0);
-  await page.getByTestId('say-field').fill('A short line.');
+  await page.getByTestId('say-field').fill(`A short line${stamp}.`);
   await until('the cost shows under the field', () => !!document.querySelector('[data-testid=cost]'), page, 30000);
   check('320 wide: nothing is wider than the screen', await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
   await shot('1-first');
