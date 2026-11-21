@@ -524,6 +524,22 @@ await run('listen', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot)
   check('every stt-token answer was fake (D180)', sttTokens.every((t) => t.fake && t.token === null), JSON.stringify(sttTokens));
 });
 
+// A156 part 2 (Angela 17:40): a listening pass ends by itself after 30 minutes. Playwright's clock jumps the page's
+// time forward instead of waiting it out (local only, the pretend server).
+if (!live) await run('listen-30', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot) => {
+  await page.clock.install();
+  await page.goto(page0);
+  await page.getByTestId('listen-start').scrollIntoViewIfNeeded();
+  await page.getByTestId('listen-start').click();
+  await page.getByTestId('consent-accept').click();
+  if (!(await until('30 min: listening has started', () => document.querySelector('[data-testid=listen-bar]')?.textContent.includes('Listening'), page, 15000))) return;
+  await page.clock.fastForward('30:05');
+  if (await until('after 30 minutes the pass ends by itself and says so', () => /stopped after 30 minutes/.test(document.querySelector('[data-testid=listen-error]')?.textContent ?? ''), page, 15000)) {
+    check('after 30 minutes the pass ends by itself and says so, the row at the top is gone', (await page.getByTestId('listen-bar').count()) === 0, await text(page, 'listen-error'));
+  }
+  await shot('1-after-30-min');
+});
+
 await run('sv-light', { locale: 'sv-SE', colorScheme: 'light' }, async (page, shot) => {
   await page.goto(page0);
   // D253 (A158): English first also in a Swedish browser; SV is one tap, and the choice is kept.
