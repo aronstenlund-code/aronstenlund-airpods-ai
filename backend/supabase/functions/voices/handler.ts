@@ -1,7 +1,7 @@
 import { type Authenticator } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
 import { enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
-import { type Voice } from "../tts/voices.ts";
+import { activeVoiceId, isRetired, type Voice } from "../tts/voices.ts";
 
 export const VOICES_LIMITS: Limits = { perMinute: 30, perDay: 1000, globalPerDay: 20000 };
 
@@ -29,7 +29,7 @@ export interface VoicesDeps {
   /** K99: admin (credit_admins) also sees voices under review */
   isAdmin?: (userId: string) => Promise<boolean>;
   /** K96: ElevenLabs' voice library (GET /v1/shared-voices, language sv): no credits */
-  searchLibrary?: (q: { search?: string; accent?: string; gender?: string; page?: number; anyLanguage?: boolean }) => Promise<CatalogVoice[]>;
+  searchLibrary?: (q: { search?: string; accent?: string; gender?: string; page?: number; anyLanguage?: boolean; language?: string }) => Promise<CatalogVoice[]>;
 }
 
 const clip = (v: string | null, n: number) => (v ?? "").replace(/[^\p{L}\p{N} _.'-]/gu, "").slice(0, n);
@@ -52,7 +52,9 @@ export function createVoicesHandler(deps: VoicesDeps): (req: Request) => Promise
           retryAfterSec: rl.retryAfterSec,
         });
       }
-      const def = deps.defaultVoiceId ?? deps.voices[0]?.id ?? null;
+      // K114 (D252): a retired voice (Marlon) is never listed, accepted or the default
+      const listed = deps.voices.filter((v) => !isRetired(v.id));
+      const def = activeVoiceId(deps.defaultVoiceId) ?? listed[0]?.id ?? null;
       const url = new URL(req.url);
       if (url.searchParams.get("library") === "1") {
         // K96: search ElevenLabs' library (Swedish); a voice found here is not usable before it is in the catalog
@@ -66,21 +68,24 @@ export function createVoicesHandler(deps: VoicesDeps): (req: Request) => Promise
             page: Math.max(0, Math.min(20, Number(url.searchParams.get("page")) || 0)),
             // K99: accents (a Chinese or Indian voice) are found among voices of other languages too
             ...(url.searchParams.get("lang") === "any" ? { anyLanguage: true } : {}),
-          }).catch((e) => (console.warn("voice_library_failed", String(e).slice(0, 120)), [] as CatalogVoice[]))
+            // K114 (D252): native English voices for English users
+            ...(url.searchParams.get("lang") === "en" ? { language: "en" } : {}),
+          }).then((l) => l.filter((v) => !isRetired(v.voice_id)))
+            .catch((e) => (console.warn("voice_library_failed", String(e).slice(0, 120)), [] as CatalogVoice[]))
           : [];
         return new Response(JSON.stringify({ library: found, selectable: false }), {
           status: 200, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "private, max-age=300", ...CORS_HEADERS },
         });
       }
-      const all = deps.catalog ? await deps.catalog().catch(() => [] as CatalogVoice[]) : [];
+      const all = (deps.catalog ? await deps.catalog().catch(() => [] as CatalogVoice[]) : []).filter((v) => !isRetired(v.voice_id));
       const admin = all.some((v) => v.review) && deps.isAdmin ? await deps.isAdmin(user.id).catch(() => false) : false;
       const catalog = all.filter((v) => !v.review || admin);
       return new Response(
         JSON.stringify({
-          voices: deps.voices.map((v) => ({ name: v.name, id: v.id })),
+          voices: listed.map((v) => ({ name: v.name, id: v.id })),
           default_id: def,
           // Angela Fable (A140): the voice a text gets when none is chosen, with a name the app can show
-          ...(def ? { default_voice: { voice_id: def, name: all.find((v) => v.voice_id === def)?.name ?? deps.voices.find((v) => v.id === def)?.name ?? "Standard", in_catalog: all.some((v) => v.voice_id === def) } } : {}),
+          ...(def ? { default_voice: { voice_id: def, name: all.find((v) => v.voice_id === def)?.name ?? listed.find((v) => v.id === def)?.name ?? "Standard", in_catalog: all.some((v) => v.voice_id === def) } } : {}),
           // K96 (D220): choose one with save's drill.voice_id; it is locked for that text (D151)
           ...(deps.catalog ? { catalog } : {}),
         }),

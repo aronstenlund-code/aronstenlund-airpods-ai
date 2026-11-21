@@ -2,7 +2,7 @@
 import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
 import { secret } from "../_shared/secrets.ts";
 import { createVoiceLabHandler } from "./handler.ts";
-import { parseVoices } from "../tts/voices.ts";
+import { activeVoiceId, parseVoices } from "../tts/voices.ts";
 import { CORS_HEADERS } from "../_shared/errors.ts";
 import { guardedFetch, runWithTest, silentMp3 } from "../_shared/testmode.ts";
 
@@ -26,8 +26,21 @@ const handler = createVoiceLabHandler({
   elevenLabsKey: secret(Deno.env, "ELEVENLABS_API_KEY"),
   baseUrl: Deno.env.get("ELEVENLABS_BASE_URL") || undefined,
   // K48: the app's default voice, as /tts picks it (the secret, else the first allowlisted voice)
-  voiceId: secret(Deno.env, "ELEVENLABS_VOICE_ID") ?? parseVoices(Deno.env.get("ELEVENLABS_VOICES")).voices[0]?.id ?? null,
+  voiceId: activeVoiceId(secret(Deno.env, "ELEVENLABS_VOICE_ID")) ?? parseVoices(Deno.env.get("ELEVENLABS_VOICES")).voices[0]?.id ?? null,
   fetchImpl: guardedFetch(fetch, "voice-lab"),
+  // K114 (D252): a listing of the account's voices costs no credits and makes no audio (D180 allows it)
+  listVoices: async () => {
+    const xi = secret(Deno.env, "ELEVENLABS_API_KEY");
+    if (!xi) return [];
+    const r = await fetch("https://api.elevenlabs.io/v1/voices", { headers: { "xi-api-key": xi }, signal: AbortSignal.timeout(10_000) });
+    if (!r.ok) throw new Error(`voices ${r.status}`);
+    const j = await r.json() as { voices?: Record<string, unknown>[] };
+    return (j.voices ?? []).map((v) => {
+      const l = (v.labels ?? {}) as Record<string, unknown>;
+      const s = (x: unknown) => (typeof x === "string" && x ? x.slice(0, 60) : null);
+      return { voice_id: String(v.voice_id ?? ""), name: String(v.name ?? "").slice(0, 80), category: s(v.category), language: s(l.language), accent: s(l.accent), gender: s(l.gender), age: s(l.age) };
+    });
+  },
 });
 
 /**

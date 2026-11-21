@@ -27,7 +27,7 @@ const handler = createVoicesHandler({
   // K96: ElevenLabs' voice library, Swedish (listing costs no credits; no audio is made)
   searchLibrary: xi
     ? async (q) => {
-      const p = new URLSearchParams({ page_size: "30", page: String(q.page ?? 0), ...(q.anyLanguage ? {} : { language: "sv" }) });
+      const p = new URLSearchParams({ page_size: "30", page: String(q.page ?? 0), ...(q.anyLanguage ? {} : { language: q.language ?? "sv" }) });
       if (q.search) p.set("search", q.search);
       if (q.accent) p.set("accent", q.accent);
       if (q.gender) p.set("gender", q.gender);
@@ -35,6 +35,8 @@ const handler = createVoicesHandler({
       if (!r.ok) throw new Error(`shared-voices ${r.status}`);
       const j = await r.json() as { voices?: Record<string, unknown>[] };
       return (j.voices ?? []).slice(0, 30).map((v) => ({
+        // K114: whether the library voice is a native speaker of its language (the library's own metadata)
+        ...(v.verified_languages ? { verified_languages: (v.verified_languages as Record<string, unknown>[]).map((x) => `${x.language}:${x.accent ?? ""}`).slice(0, 4) } : {}),
         voice_id: String(v.voice_id ?? ""), name: String(v.name ?? "").slice(0, 60), gender: (v.gender as string) ?? null, age: (v.age as string) ?? null,
         accent: (v.accent as string) ?? null, language: (v.language as string) ?? null, preview_url: (v.preview_url as string) ?? null,
         description: String(v.description ?? "").slice(0, 200) || null,

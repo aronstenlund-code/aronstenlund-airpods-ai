@@ -29,6 +29,11 @@ export interface VoiceLabDeps {
    * A key that is not the function's own is accepted only if the database treats it as a service key.
    */
   verifyServiceKey?: (key: string) => Promise<boolean>;
+  /**
+   * K114 (D252): the account's own voices (GET /v1/voices: names, ids and labels, no credits, no audio), to find a
+   * voice by name ("chinese americano") for the catalog. Not guarded as a test, since it can never cost credits.
+   */
+  listVoices?: () => Promise<{ voice_id: string; name: string; category: string | null; language: string | null; accent: string | null; gender: string | null; age: string | null }[]>;
 }
 
 function safeEqual(a: string, b: string): boolean {
@@ -89,7 +94,11 @@ export function createVoiceLabHandler(deps: VoiceLabDeps) {
       if (!deps.elevenLabsKey) throw new HttpError(503, "provider_unconfigured", "ElevenLabs key not configured");
       const b = (await req.json().catch(() => null)) as Record<string, unknown> | null;
       if (b?.action === "sample") return json(await sample(b));
-      if (b?.action !== "previews") throw new HttpError(400, "invalid_request", "action must be previews or sample");
+      if (b?.action === "account_voices") {
+        if (!deps.listVoices) throw new HttpError(503, "provider_unconfigured", "Listing not configured");
+        return json({ voices: await deps.listVoices() }, 200);
+      }
+      if (b?.action !== "previews") throw new HttpError(400, "invalid_request", "action must be previews, sample or account_voices");
       const description = typeof b.voice_description === "string" ? b.voice_description.trim() : "";
       const text = typeof b.text === "string" ? b.text.trim() : "";
       if (description.length < 20 || description.length > 1000) throw new HttpError(400, "invalid_request", "voice_description: 20-1000 characters");

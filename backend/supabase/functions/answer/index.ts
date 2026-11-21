@@ -1,6 +1,7 @@
 // POST /functions/v1/answer  - streamed (SSE) answer for the Lumen app. See backend/README.md.
 import { demoCapsFromEnv } from "../_shared/demo.ts";
 import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
+import { withWebGuard } from "../_shared/webguard.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { MemoryRateLimiter, SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
@@ -119,4 +120,5 @@ const waitUntil = (p: Promise<unknown>) => {
 };
 const logged = env.get("QA_LOG") === "0" ? handler : withQaLog(handler, (row) => db.insert("qa_log", row), waitUntil);
 
-Deno.serve(withCors(logged, extraOriginsFromEnv()));
+// K114 (D249): web beta accounts per network
+Deno.serve(withCors(withWebGuard(logged, { limiter: new SupabaseRateLimiter(db), extraOrigins: extraOriginsFromEnv() }), extraOriginsFromEnv()));

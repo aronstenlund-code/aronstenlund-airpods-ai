@@ -1,5 +1,6 @@
 // POST /functions/v1/exam - D84 exam session: parse (page images, once), hint, grade, summary.
 import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
+import { withWebGuard } from "../_shared/webguard.ts";
 import { createJwtAuthenticator } from "../_shared/auth.ts";
 import { SupabaseRateLimiter } from "../_shared/ratelimit.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
@@ -79,4 +80,5 @@ const handler = createExamHandler({
   config: { ...DEFAULT_EXAM_CONFIG, model: env.get("EXAM_MODEL") || undefined },
 });
 
-Deno.serve(withCors(handler, extraOriginsFromEnv()));
+// K114 (D249): web beta accounts per network
+Deno.serve(withCors(withWebGuard(handler, { limiter: new SupabaseRateLimiter(db), extraOrigins: extraOriginsFromEnv() }), extraOriginsFromEnv()));

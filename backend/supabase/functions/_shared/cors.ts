@@ -1,3 +1,5 @@
+import { english, userLang } from "./i18n.ts";
+
 /**
  * D62: browsers may call the functions from the GitHub Pages demo and from localhost (for development) only.
  * Native apps send no Origin header and are unaffected. Extra origins go in the secret/env `CORS_ORIGINS` (comma
@@ -10,9 +12,12 @@
 // stays until Vercel is verified); other or private origins still go in the CORS_ORIGINS secret.
 export const DEFAULT_ORIGINS = ["https://aronstenlund-code.github.io", "https://earmind.vercel.app"];
 const LOCAL = /^https?:\/\/(?:localhost|127\.0\.0\.1|\[::1\])(?::\d{1,5})?$/;
+/** K114 (D249): the earmind project's own Vercel previews (team aron-cfdc): earmind-<hash>-aron-cfdc.vercel.app and
+ *  earmind-git-<branch>-aron-cfdc.vercel.app. Another team's project can never end in -aron-cfdc.vercel.app. */
+const PREVIEW = /^https:\/\/earmind-[a-z0-9]+(?:-[a-z0-9]+)*-aron-cfdc\.vercel\.app$/;
 
 export function originAllowed(origin: string, extra: string[] = []): boolean {
-  return DEFAULT_ORIGINS.includes(origin) || extra.includes(origin) || LOCAL.test(origin);
+  return DEFAULT_ORIGINS.includes(origin) || extra.includes(origin) || LOCAL.test(origin) || PREVIEW.test(origin);
 }
 
 export function extraOriginsFromEnv(
@@ -23,7 +28,7 @@ export function extraOriginsFromEnv(
   );
 }
 
-const ALLOW_HEADERS = "authorization, apikey, content-type, x-client-info, x-warm";
+const ALLOW_HEADERS = "authorization, apikey, content-type, x-client-info, x-warm, x-earmind-lang";
 const ALLOW_METHODS = "GET, POST, DELETE, OPTIONS";
 
 export function withCors(
@@ -45,7 +50,7 @@ export function withCors(
         },
       });
     }
-    const res = await handler(req);
+    const res = await toUserLanguage(req, await handler(req));
     if (!origin) return res;
     const h = new Headers(res.headers);
     if (originAllowed(origin, extra)) {
@@ -59,4 +64,24 @@ export function withCors(
     h.append("vary", "Origin");
     return new Response(res.body, { status: res.status, statusText: res.statusText, headers: h });
   };
+}
+
+/**
+ * K114 (D251): an error's message in the user's language. The code writes them in Swedish; anyone whose device or
+ * browser is not Swedish gets the English one (i18n.ts). Only JSON error replies are read; everything else streams on.
+ */
+async function toUserLanguage(req: Request, res: Response): Promise<Response> {
+  if (res.status < 400 || userLang(req) === "sv" || !(res.headers.get("content-type") ?? "").includes("json")) return res;
+  const text = await res.text();
+  try {
+    const j = JSON.parse(text) as { error?: { message?: unknown } };
+    const en = typeof j?.error?.message === "string" ? english(j.error.message) : null;
+    if (!en) return new Response(text, { status: res.status, statusText: res.statusText, headers: res.headers });
+    j.error!.message = en;
+    const h = new Headers(res.headers);
+    h.delete("content-length");
+    return new Response(JSON.stringify(j), { status: res.status, statusText: res.statusText, headers: h });
+  } catch {
+    return new Response(text, { status: res.status, statusText: res.statusText, headers: res.headers });
+  }
 }

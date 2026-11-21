@@ -5,7 +5,7 @@ import { questionKey } from "./length.ts";
 import { runWithTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
-function world(opts: { background?: (p: Promise<unknown>) => void; perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean; styler?: (t: string, s: string) => Promise<string | null>; catalog?: { voice_id: string; name: string }[]; picker?: (s: string, v: { voice_id: string }[]) => Promise<{ voice_id: string; reason: string } | null> } = {}) {
+function world(opts: { background?: (p: Promise<unknown>) => void; perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean; styler?: (t: string, s: string) => Promise<string | null>; catalog?: { voice_id: string; name: string; language?: string | null }[]; picker?: (s: string, v: { voice_id: string }[]) => Promise<{ voice_id: string; reason: string } | null> } = {}) {
   let busy = opts.busy ?? 0;
   let out = !!opts.outOfCredits; // K78: credits can come back
   const quota = new Map<string, number>();
@@ -1193,6 +1193,24 @@ Deno.test("K99 mix_voices: each part gets a catalog voice by lot, kept on later 
   assertEquals([again.cost, again.items.map((i: { voice_id?: string }) => i.voice_id)], [0, voices]);
 });
 
+Deno.test("K114 (D252): mixing picks voices in the text's language (English text: en voices; Swedish: sv, as before)", async () => {
+  const cat: { voice_id: string; name: string; language?: string }[] = [...CAT, { voice_id: "VoiceNikiEn0004", name: "Niki", language: "en" }, { voice_id: "VoicePaulEn0005", name: "Paul", language: "en" }, { voice_id: "VoiceChrisEn006", name: "Chris", language: "en" }];
+  const en = new Set(cat.filter((v) => v.language === "en").map((v) => v.voice_id));
+  const w = world({ catalog: cat });
+  const sv = ["Första meningen här och nu.", "Andra meningen är det.", "Tredje meningen som är här.", "Fjärde meningen för att det är så.", "Femte meningen med en katt.", "Sjätte meningen på en stol."].map((text) => ({ kind: "para", text }));
+  const enParts = ["The first sentence is here.", "The second one is of the same kind.", "The third is in the middle.", "The fourth is for the test.", "The fifth is with a cat.", "The sixth is by the sea."].map((text) => ({ kind: "para", text }));
+  const a = await (await w.h("u1")(post({ action: "save", defer_audio: true, drill: { kind: "text", mix_voices: true }, items: sv }))).json();
+  const b = await (await w.h("u2")(post({ action: "save", defer_audio: true, drill: { kind: "text", mix_voices: true }, items: enParts }))).json();
+  const va = a.items.map((i: { voice_id?: string }) => i.voice_id), vb = b.items.map((i: { voice_id?: string }) => i.voice_id);
+  assert(va.every((v: string) => !en.has(v)), `Swedish text, Swedish voices: ${va}`);
+  assert(vb.every((v: string) => en.has(v)), `English text, English voices: ${vb}`);
+  assert(new Set(vb).size >= 2, `mixed: ${vb}`);
+  // the Swedish pool is the one it was before English voices came, so the same Swedish text keeps its voices (O81)
+  const old = world({ catalog: CAT });
+  const c = await (await old.h("u3")(post({ action: "save", defer_audio: true, drill: { kind: "text", mix_voices: true }, items: sv }))).json();
+  assertEquals(c.items.map((i: { voice_id?: string }) => i.voice_id), va);
+});
+
 Deno.test("O81: with mixed voices the same text gets the same voice in a new drill, so its audio is reused (cost 0)", async () => {
   const w = world({ catalog: CAT });
   const parts = ["Första meningen här.", "Andra meningen här.", "Tredje meningen här.", "Fjärde meningen här."].map((text) => ({ kind: "para", text }));
@@ -1241,4 +1259,30 @@ Deno.test("Angela Fable A154: quota with long_words says what one question costs
   assertEquals(none.exam.long_words, 90, "without long_words: the default length");
   const odd = await (await w.h("u1")(post({ action: "quota", long_words: 9999 }))).json();
   assertEquals(odd.exam.long_words, 200, "clamped as exam drill clamps it");
+});
+
+Deno.test("K114 (D249): a web account's new audio counts against the web's daily caps per network; the app's never", async () => {
+  const { withWebGuard, WEB_LIMITS } = await import("../_shared/webguard.ts");
+  const w = world();
+  const jwt = (sub: string) => `x.${btoa(JSON.stringify({ sub })).replace(/=+$/, "")}.y`;
+  const text = (n: number) => [{ kind: "para", text: ("Mening om cellen " + n + ". ").repeat(40).slice(0, 1200) }];
+  const web = (u: string, n: number) =>
+    withWebGuard(w.h(u), { limiter: w.limiter })(new Request("http://x/drill", {
+      method: "POST", headers: { "content-type": "application/json", origin: "https://earmind.vercel.app", authorization: `Bearer ${jwt(u)}`, "x-forwarded-for": "203.0.113.9" },
+      body: JSON.stringify({ action: "save", start: true, drill: { kind: "text", title: `W${n}` }, items: text(n) }),
+    }));
+  let paid = 0, status = 200, code = "", n = 0;
+  while (status === 200 && n < 20) {
+    const r = await web("w0", n++);
+    const j = await r.json();
+    status = r.status;
+    if (status === 200) paid += j.cost ?? 0;
+    else code = j.error?.code;
+  }
+  assertEquals(status, 429);
+  assertEquals(code, "web_daily_cap");
+  assert(paid <= WEB_LIMITS.creditsPerIpPerDay, `paid ${paid}`);
+  assert(n > 1, "the first saves were allowed");
+  // the app (no Origin) is not counted
+  assertEquals((await w.h("app")(post({ action: "save", start: true, drill: { kind: "text", title: "App" }, items: text(99) }))).status, 200);
 });

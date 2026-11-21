@@ -155,7 +155,8 @@ export function validateAnswerRequest(raw: unknown): AnswerRequest {
   ) {
     throw bad('mode must be "push_to_talk", "auto", "text", "tutor" or "interview_prep"');
   }
-  const language = o.language;
+  // K114 (D251): English when the app or the web leaves it out; "lang" is the same field
+  const language = o.language ?? o.lang ?? "en";
   if (language !== "sv" && language !== "en") throw bad('language must be "sv" or "en"');
   // Rizzläge (D43) may be triggered by silence or an opener: then there is no fragment.
   const hasSocial = o.social !== undefined && o.social !== null;
