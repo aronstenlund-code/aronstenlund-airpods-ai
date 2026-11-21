@@ -37,18 +37,22 @@ import Testing
     @Test func theChoiceIsKeptAndShowsAtOnce() throws {
         let app = try #require(UserDefaults(suiteName: "a157-app-\(UUID().uuidString)"))
         let group = try #require(UserDefaults(suiteName: "a157-group-\(UUID().uuidString)"))
-        let system = try #require(UserDefaults(suiteName: "a157-system-\(UUID().uuidString)"))
+        let systemName = "a157-system-\(UUID().uuidString)"
+        let system = try #require(UserDefaults(suiteName: systemName))
+        // What the app has written for the system. Read from the store's own values: a plain read of AppleLanguages
+        // would give the test run's own "-AppleLanguages (sv)", which stands before every store.
+        func pinned() -> [String]? { UserDefaults.standard.persistentDomain(forName: systemName)?["AppleLanguages"] as? [String] }
         let choice = LanguageChoice(arguments: ["Lumen"], stores: [app, group], localizations: ["sv"], rereads: false, systemStore: system)
         #expect(choice.language == .en && !choice.isSetFromOutside)
         let settings = AppLanguageSettings(choice: choice, reloadsWidgets: false, defaults: app)
         #expect(settings.language == .en)
         // What is listened for keeps the phone's language (the tests' phone is Swedish), whatever the texts are in.
         #expect(app.string(forKey: LanguageSettings.defaultsKey) == TranscriptionLanguage.swedish.rawValue)
-        #expect(system.stringArray(forKey: "AppleLanguages") == ["en"]) // English system buttons from the next start
+        #expect(pinned() == ["en"]) // English system buttons from the next start
         settings.choose(.sv)
         #expect(settings.language == .sv && choice.language == .sv)
         #expect(app.string(forKey: LanguageChoice.key) == "sv" && group.string(forKey: LanguageChoice.key) == "sv")
-        #expect(system.stringArray(forKey: "AppleLanguages") == ["sv"])
+        #expect(pinned() == ["sv"])
         #expect(AppLanguage.stamped(["action": "quota"], language: choice.language)["lang"] as? String == "sv")
         // The next start, and the widget (which reads the shared store every time).
         #expect(LanguageChoice(arguments: ["Lumen"], stores: [app, group], localizations: ["en"], rereads: false, systemStore: nil).language == .sv)
@@ -60,7 +64,7 @@ import Testing
         // A run that named its language leaves the phone's settings alone.
         let named = LanguageChoice(arguments: ["Lumen", "-AppleLanguages", "(sv)"], stores: [app], localizations: ["sv"], rereads: false, systemStore: system)
         named.pinSystemLanguage()
-        #expect(named.isSetFromOutside && system.stringArray(forKey: "AppleLanguages") == ["en"])
+        #expect(named.isSetFromOutside && pinned() == ["en"])
     }
 
     /// What `String(localized:)` does in the app: the chosen language's table, with the values in place.
