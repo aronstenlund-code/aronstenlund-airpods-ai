@@ -5,8 +5,8 @@ Angela Fable (moln), 2026-11-21. Beställt av Deangelo 11:20 (D251) och 16:17 (D
 ## Vad som är gjort
 
 1. **Engelska är appens bas, svenska finns kvar.** Projektets basspråk är engelska (`project.yml`), och varje text
-   i appen och widgeten finns i String Catalog på engelska och svenska: 1 671 nycklar i appen
-   (`Lumen/Resources/Localizable.xcstrings`) och 32 i widgeten (`LumenControls/Localizable.xcstrings`).
+   i appen och widgeten finns i String Catalog på engelska och svenska: 1 675 nycklar i appen
+   (`Lumen/Resources/Localizable.xcstrings`) och 37 i widgeten (`LumenControls/Localizable.xcstrings`).
 2. **Appen startar alltid på engelska, också på en svensk telefon (D253).** Överst i Inställningar finns
    **Språk: English | Svenska**. Valet syns direkt (alla skärmar byggs om), sparas, följer med till widgeten och
    Live Activity, och går till servern som `lang` med nästa anrop.
@@ -20,7 +20,7 @@ Angela Fable (moln), 2026-11-21. Beställt av Deangelo 11:20 (D251) och 16:17 (D
 
 ## Hur det är byggt
 
-- **De svenska texterna står kvar i koden som nycklar** (beslut D254). Katalogen har engelska som källspråk, och
+- **De svenska texterna står kvar i koden som nycklar** (beslut D255). Katalogen har engelska som källspråk, och
   varje svensk nyckel har ett engelskt värde och sig själv som svenskt värde. Därför är svenskan exakt som förut
   (den är nyckeln), inga av de 1 000+ befintliga testerna behövde ändras för orden, och Tobys tester som söker på
   svenska etiketter fungerar som förut. De 239 äldre nycklarna, som var engelska, är kvar.
@@ -57,7 +57,14 @@ Angela Fable (moln), 2026-11-21. Beställt av Deangelo 11:20 (D251) och 16:17 (D
   telefon; valet sparas, syns direkt, når widgeten och ber systemet om samma språk; en körning som anger språk får
   det; Kellys ord finns i båda tabellerna; värden står rätt i engelska meningar också när ordningen ändras; tal
   och dagar per språk; `lang` i anropen; serverns ord läses på båda språken.
-- KÖRNINGAR
+- **iOS build 44921123992 på min gren: enhetsbygget utan varningar och alla enhetstester gröna** (verifierat i CI,
+  Simulator). Körningen före (44919130580) föll bara på mitt eget test, som läste testkörningens eget språkargument
+  i stället för det appen hade skrivit; alla andra tester var gröna också där.
+- **Bilder på engelska och svenska** (Fable screens 44919130567, iPhone 17 Pro, Simulator): Inställningar med
+  språkvalet, startskärmen, krediter och Nytt prov. `reports/2026-11-21-a157-bilder/`. Till Kelly.
+- **Kompilatorns egen lista** över texter som slås upp (2 041 i appen, 33 i widgeten, ur samma körning) ligger i
+  `tools/l10n/compiler.json`; `check.py` mot den: 0 fel. De byggda tabellerna har 1 668 engelska och 1 671 svenska
+  rader, och mina `needs_review`-texter är med i bygget (sett i den byggda engelska tabellen och på bilderna).
 - Simulatorn är ingen enhetsverifiering. Inget ElevenLabs har använts (D180).
 
 ## Kända brister och risker
