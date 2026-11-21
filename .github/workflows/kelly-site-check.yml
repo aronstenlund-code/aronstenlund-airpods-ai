@@ -81,6 +81,32 @@ jobs:
           cat "$out" >> "$GITHUB_STEP_SUMMARY"
           exit 0
 
+      - name: Width at 393 px (Ke87, Playwright, no clicks, no audio)
+        env:
+          URL: ${{ inputs.url }}
+        run: |
+          set +e
+          ORIGIN="${URL%/}"
+          npm i --no-save --silent playwright@1.49.1 >/dev/null 2>&1 && npx --yes playwright@1.49.1 install --with-deps chromium >/dev/null 2>&1
+          cat > w.cjs <<'JS'
+          const { chromium } = require('playwright');
+          (async () => {
+            const b = await chromium.launch();
+            for (const path of ['/', '/sv', '/beta']) {
+              const p = await b.newPage({ viewport: { width: 393, height: 852 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true });
+              const r = await p.goto(process.env.ORIGIN + path, { waitUntil: 'load' });
+              await p.waitForTimeout(1500);
+              const w = await p.evaluate(() => [innerWidth, document.documentElement.scrollWidth]);
+              console.log(`393px ${path}: status=${r.status()} innerWidth=${w[0]} scrollWidth=${w[1]} ${w[1] > w[0] ? 'HORIZONTAL SCROLL' : 'ok'}`);
+              await p.close();
+            }
+            await b.close();
+          })();
+          JS
+          ORIGIN="$ORIGIN" node w.cjs >> results.txt 2>&1 || echo "393px check failed to run" >> results.txt
+          tail -4 results.txt >> "$GITHUB_STEP_SUMMARY"
+          exit 0
+
       - name: Publish the result to the branch kelly/site-check
         if: always()
         run: |
