@@ -108,6 +108,21 @@ async function answer(route) {
   const fn = url.pathname.replace('/functions/v1/', '');
   const body = req.postData() ? JSON.parse(req.postData()) : {};
   calls.push({ fn, action: body.action ?? '', headers: req.headers(), body });
+  // Listening: test traffic gets no Scribe socket, only one sentence (D180); the answer comes as events.
+  if (fn === 'stt-token') {
+    if (req.method() === 'POST') return json({ ok: true });
+    return json({ fake: true, token: null, ws_url: null, expires_in: 0, model_id: 'fake', transcript: 'What does photosynthesis make?' });
+  }
+  if (fn === 'answer') {
+    const events = [
+      ['meta', { reconstructed_question: 'What does photosynthesis make?', is_question: true }],
+      ['delta', { text: 'Photosynthesis makes sugar ' }],
+      ['delta', { text: 'and oxygen. The plant uses the sugar.' }],
+      ['done', { answered: true }],
+    ];
+    return route.fulfill({ status: 200, headers: { ...cors, 'content-type': 'text/event-stream' }, body: events.map(([e, d]) => `event: ${e}\ndata: ${JSON.stringify(d)}\n\n`).join('') });
+  }
+  if (fn === 'tts') return route.fulfill({ status: 200, headers: { ...cors, 'content-type': 'audio/mpeg', 'x-earmind-fake': '1' }, body: wav(0.6) });
   if (fn === 'voices') {
     return json({
       default_voice: { name: 'Astrid' },
@@ -172,7 +187,8 @@ const until = async (name, fn, page, timeout = 15000) => {
   }
 };
 
-const browser = await pw[engine].launch(engine === 'chromium' ? { args: ['--autoplay-policy=user-gesture-required'] } : {});
+// A pretend microphone in Chromium (A156 part 2), so listening is tried without one and without asking anyone.
+const browser = await pw[engine].launch(engine === 'chromium' ? { args: ['--autoplay-policy=user-gesture-required', '--use-fake-device-for-media-stream', '--use-fake-ui-for-media-stream'] } : {});
 note(`browser ${engine} ${browser.version()}, as ${engine === 'webkit' ? 'iPhone 15' : 'Pixel 7'}, ${live ? `live: ${liveURL}` : 'local site/ with the pretend server'}`);
 // Where the page is opened. Local: ?test=toby (x-earmind-test, checked below). Live: no ?test (see the top).
 const page0 = live ? liveURL : `${base}/beta?test=toby`;
@@ -181,6 +197,7 @@ const page0 = live ? liveURL : `${base}/beta?test=toby`;
 const stamp = live ? ` ${process.env.GITHUB_RUN_ID ?? Date.now()}-${engine}` : '';
 const hostsSeen = new Set();
 const serverLog = [];
+const sttTokens = [];
 const elevenLabs = [];
 
 async function run(name, { locale, colorScheme, viewport }, steps) {
@@ -189,6 +206,7 @@ async function run(name, { locale, colorScheme, viewport }, steps) {
   const userAgent = live ? `${phone.userAgent} Playwright/1.63` : phone.userAgent;
   const context = await browser.newContext({ ...phone, userAgent, locale, colorScheme, ...(viewport ? { viewport } : {}) });
   await context.grantPermissions(['screen-wake-lock']).catch(() => note(`${name}: this engine has no screen-wake-lock permission to grant`));
+  if (name === 'listen') await context.grantPermissions(['microphone']).catch((e) => note(`listen: microphone permission not granted by Playwright here (${String(e).split('\n')[0].slice(0, 120)})`));
   // Count the page's own Wake Lock requests (D250) without changing what the browser answers.
   await context.addInitScript(() => {
     window.__t56Wake = { requests: 0, results: [] };
@@ -227,6 +245,20 @@ async function run(name, { locale, colorScheme, viewport }, steps) {
     });
     page.on('requestfailed', (r) => serverLog.push(`${name} FAILED ${r.method()} ${new URL(r.url()).hostname}${new URL(r.url()).pathname}: ${r.failure()?.errorText ?? '?'}`));
   }
+  // D180: a Scribe socket (wss to ElevenLabs) is never opened from a test, also if the server handed out a token.
+  await page.routeWebSocket(/elevenlabs/i, (ws) => {
+    elevenLabs.push(ws.url());
+    ws.close();
+  }).catch(() => undefined);
+  page.on('response', async (r) => {
+    if (!r.url().includes('/functions/v1/stt-token') || r.request().method() !== 'GET') return;
+    try {
+      const j = await r.json();
+      sttTokens.push({ fake: j.fake === true, token: j.token ? 'SET' : null, ws: j.ws_url ? 'SET' : null });
+    } catch {
+      sttTokens.push({ fake: false, token: '?', ws: '?' });
+    }
+  });
   const outside = [];
   page.on('request', (r) => {
     if (r.url().startsWith('data:') || r.url().startsWith('blob:')) return;
@@ -412,6 +444,78 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   check('End: Continue · question 2', (await text(page, 'start-quiz')).includes('Continue · question 2'));
 
   await finishLive(page, shot);
+});
+
+// A156 part 2: the listening mode. Test traffic gets no Scribe socket, only the server's test sentence a second after
+// the start, which goes to /answer and is read with silent /tts audio (D180, backend stt-token: "test accounts never
+// use ElevenLabs"). Locally the pretend server answers the same way.
+await run('listen', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot) => {
+  await page.goto(page0);
+  await page.getByTestId('listen-start').scrollIntoViewIfNeeded();
+  await shot('1-more-modes');
+  await page.getByTestId('listen-start').click();
+  await page.getByTestId('consent-sheet').waitFor({ timeout: 15000 });
+  const consent = (await page.getByTestId('consent-sheet').textContent()) ?? '';
+  check('the consent screen comes before the microphone (D21), and names ElevenLabs', consent.includes('Before you start') && /transcribed by ElevenLabs/.test(consent) && sttTokens.length === 0, consent.slice(0, 120));
+  await shot('2-consent');
+  await page.getByTestId('consent-accept').click();
+  // The token answer decides whether this may go on: only fake, never a token (D180).
+  await page.waitForFunction(() => true, null, { timeout: 100 }).catch(() => undefined);
+  const deadline = Date.now() + 15000;
+  while (sttTokens.length === 0 && Date.now() < deadline) await page.waitForTimeout(250);
+  const tok = sttTokens[0] ?? null;
+  const safe = tok !== null && tok.fake && tok.token === null && tok.ws === null;
+  check('stt-token: fake, no Scribe token and no socket address (D180)', safe, JSON.stringify(tok));
+  if (!safe) {
+    if ((await page.getByTestId('listen-stop').count()) > 0) await page.getByTestId('listen-stop').click().catch(() => undefined);
+    await shot('2b-stopped-not-fake');
+    return;
+  }
+  if (!(await until('Listening: the row at the top says so, with Stop', () => document.querySelector('[data-testid=listen-bar]')?.textContent.includes('Listening'), page, 15000))) {
+    const why = (await page.getByTestId('listen-error').count()) > 0 ? await text(page, 'listen-error') : '(no listen-error)';
+    note(`listen: no Listening row; ${why}`);
+    await shot('3-no-listening');
+    return;
+  }
+  check('Listening: the row at the top says so, with Stop', await page.getByTestId('listen-stop').isVisible());
+  check('the screen line shows while it listens (D250)', (await page.getByTestId('screen-line').count()) === 1);
+  await shot('3-listening');
+  // The test sentence, then the answer (live: the real /answer; whatever it says, it must say something or say why).
+  const got = await page.waitForFunction(() => {
+    const a = document.querySelector('[data-testid=listen-answer]')?.textContent?.trim();
+    const e = document.querySelector('[data-testid=listen-error]')?.textContent?.trim();
+    return a && a.length > 10 ? 'answer' : e ? 'error' : null;
+  }, null, { timeout: live ? 45000 : 10000 }).then((h) => h.jsonValue()).catch(() => null);
+  const heard = (await page.getByTestId('listen-heard').count()) > 0 ? await text(page, 'listen-heard') : '';
+  const question = (await page.getByTestId('listen-question').count()) > 0 ? await text(page, 'listen-question') : '';
+  const answer = (await page.getByTestId('listen-answer').count()) > 0 ? await text(page, 'listen-answer') : '';
+  note(`listen: heard "${heard.slice(0, 80)}", question "${question.slice(0, 80)}", answer "${answer.slice(0, 120)}"`);
+  if (live) check('a question is answered on the screen (the real /answer, fake sound)', got === 'answer', got === 'error' ? await text(page, 'listen-error') : `heard "${heard.slice(0, 60)}"`);
+  else check('a question is answered on the screen', answer === 'Photosynthesis makes sugar and oxygen. The plant uses the sugar.', answer);
+  await shot('4-answering');
+  if (got === 'answer' && (await until('then it listens again', () => document.querySelector('[data-testid=listen-phase]')?.textContent === 'Listening', page, live ? 60000 : 10000))) {
+    check('then it listens again', true);
+  }
+  await page.getByTestId('listen-stop').click();
+  check('Stop: the row is gone and nothing plays', (await page.getByTestId('listen-bar').count()) === 0 && (await page.evaluate(() => document.querySelector('#sound').paused)));
+  await page.getByTestId('listen-start').click();
+  if (await until('the second time no consent screen is in the way', () => !!document.querySelector('[data-testid=listen-bar]'), page, 15000)) {
+    check('the second time no consent screen is in the way', (await page.getByTestId('consent-sheet').count()) === 0);
+  }
+  await page.getByTestId('say-field').fill(`A short line${stamp} while listening.`);
+  await page.getByTestId('play').click();
+  await page.getByTestId('status').waitFor({ timeout: 30000 }).catch(() => undefined);
+  check('Play stops the listening (one thing at a time)', (await page.getByTestId('listen-bar').count()) === 0);
+  if ((await page.getByTestId('stop').count()) > 0) await page.getByTestId('stop').click();
+  await page.getByTestId('settings').click();
+  await page.getByTestId('consent-withdraw').click();
+  await page.getByTestId('confirm').click();
+  await page.getByTestId('sheet-done').click();
+  await page.getByTestId('listen-start').click();
+  if (await until('consent taken back in Settings: the consent screen comes again', () => !!document.querySelector('[data-testid=consent-sheet]'), page, 10000)) {
+    check('consent taken back in Settings: the consent screen comes again', true);
+  }
+  check('every stt-token answer was fake (D180)', sttTokens.every((t) => t.fake && t.token === null), JSON.stringify(sttTokens));
 });
 
 await run('sv-light', { locale: 'sv-SE', colorScheme: 'light' }, async (page, shot) => {
