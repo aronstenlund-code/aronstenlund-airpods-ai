@@ -354,13 +354,18 @@ def reliable_domains():
     return re.findall(r'"([^"]+)"', block) + ["ica.se", "clasohlson.com"]
 
 
+CRISIS_REPLY = re.compile(r"Självmordslinjen|ring ett ett två", re.I)  # answer/crisis.ts CRISIS_SELF / CRISIS_OTHER
+
+
 def web_meta(done):
     """O89 del 2: keep whether the answer searched, so a missing source line can be told apart from a
     skipped search (latest.json had no trace of it on 2026-11-19)."""
     done = done or {}
     # O93 (Kevin): a searched answer that came without a source is marked done.source_missing
     return dict(web_searches=(done.get("usage") or {}).get("web_searches"), source=done.get("source"),
-                source_missing=bool(done.get("source_missing")), source_fallback=bool(done.get("source_fallback")))
+                source_missing=bool(done.get("source_missing")), source_fallback=bool(done.get("source_fallback")),
+                # K117 (D256): the model's crisis marker that the check overruled ("nej"), when the server says so
+                crisis_marker=done.get("crisis_marker") or ("ignored" if done.get("crisis_marker_ignored") else None))
 
 
 def run(cases, rizz, domains, only, now):
@@ -491,6 +496,10 @@ def report(rows, date):
     skipped = [r for r in rows if r.get("skipped")]
     nosrc = [r for r in rows if r.get("source_missing")]
     fallback = [r for r in rows if r.get("source_fallback")]
+    # K117 (D256): every crisis reply and every ignored crisis marker on the headline, with the question, so a real
+    # miss (an ignored marker on a crisis case) or a crisis reply on an ordinary question shows at once
+    crisis = [r for r in rows if CRISIS_REPLY.search(r.get("answer") or "")]
+    ignored = [r for r in rows if r.get("crisis_marker") == "ignored"]
     out = [f"# Live-eval {date}", "",
            f"Backend: {URL} (anonym inloggning, publik nyckel). **{len(rows)} turer, {len(rows) - len(bad)} utan anmärkning, "
            f"{len(bad)} med anmärkning.**" + (f" {len(skipped)} överhoppade (testtrafikens webbtak fullt, D234): "
@@ -498,7 +507,10 @@ def report(rows, date):
            + (f" {len(nosrc)} sökta svar utan källa (source_missing, O93): " + ", ".join(sorted({r['id'] for r in nosrc})) + "."
               if nosrc else "")
            + (f" {len(fallback)} sade \"inget recept med en säker källa\" (source_fallback, K116): " + ", ".join(sorted({r['id'] for r in fallback})) + "."
-              if fallback else ""), "",
+              if fallback else "")
+           + (f" {len(crisis)} krissvar (K23): " + "; ".join(f"{r['id']} \"{r['q'][:50]}\"" for r in crisis) + "." if crisis else "")
+           + (f" **{len(ignored)} ignorerade krismarkörer (crisis_marker_ignored, K117):** "
+              + "; ".join(f"{r['id']} \"{r['q'][:60]}\"" for r in ignored) + "." if ignored else ""), "",
            "| Kategori | Turer | Anmärkningar | p50 första ord (ms) | p95 (ms) |", "|---|---:|---:|---:|---:|"]
     for c in cats:
         rs = [r for r in rows if r["cat"] == c]
