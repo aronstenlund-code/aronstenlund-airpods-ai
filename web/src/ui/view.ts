@@ -358,7 +358,7 @@ export class View {
       if (!has) return [];
       if (tooLong) return [h('p', { class: 'warn-text', text: t('tooLong', { n: grouped(length, lang), m: grouped(maxChars, lang) }) })];
       if (cost === null || cost === 'asking') return [h('p', { class: 'quiet-text', text: ' ' })];
-      if (cost === 0) return [h('p', { class: 'quiet-text', text: t('costFree') })];
+      if (cost === 0) return [h('p', { class: 'quiet-text', attrs: { 'data-testid': 'cost-free' }, text: t('costFree') })]; // Toby T56: free and unknown are told apart
       if (left !== null && cost > left) {
         return [
           h('p', { class: 'warn-text', attrs: { 'data-testid': 'cost' }, text: t('costShort', { n: grouped(cost, lang), m: grouped(left, lang) }) }),
