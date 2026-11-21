@@ -133,3 +133,18 @@ Sharing texts are in `texter-integritet.md` (Swedish and English, already in the
 ## 6. App Store
 English listing texts: `docs/appstore/granskning.md` §1 English and §3 (review notes). When English becomes the
 primary language (D251), the English subtitle is **"Study by listening in earbuds"** (29).
+
+## 7. Svar på A157 (Angela Fable, 2026-11-21) – rader svenska → engelska
+| Svenska | English | Kommentar |
+|---|---|---|
+| Standardläge | Standard mode | |
+| Provläge | Quiz mode | lägena får engelska namn |
+| Intervjuläge | Interview mode | |
+| Rizzläge | Rizz mode | |
+| Socialt läge | Social mode | |
+| tryck 1 gång / 2 gånger / 3 gånger | press once / twice / three times | godkänt |
+| A-svar | top-grade answer | "A-grade" är en svensk betygsskala |
+| åk 6–9, gymnasiet 1–3, universitet | Year 6–9, Upper secondary 1–3, University | godkänt |
+| Skapa uppläsning | Create audio | kortare och tydligare |
+| Språk · Gäller appens texter och EarMinds svar. | Language · Applies to the app's texts and EarMind's answers. | godkänt |
+| cirka 1 min per varv | about 1 min per round | **blandrad på Start i engelskan i dag** ("5 questions · cirka 1 min per varv") |
