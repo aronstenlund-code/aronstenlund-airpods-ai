@@ -47,7 +47,7 @@ const db = restDbFromEnv(); // after the fetch above, so its calls are counted
 // K100: read at most once a minute per instance (both change rarely and only by hand)
 const settingsMemo = memo(async () => Object.fromEntries(((await db.select("drill_settings", "select=key,value")) as { key: string; value: number }[]).map((r) => [r.key, Number(r.value)])));
 // K114 (D252): a retired voice (Marlon) is never mixed in, chosen or accepted
-const catalogMemo = memo(async () => ((await db.select("voice_catalog", "select=voice_id,name,description,accent,gender,age,review&enabled=eq.true&limit=60")) as { voice_id: string; name: string; review?: boolean | null }[]).filter((v) => !isRetired(v.voice_id)));
+const catalogMemo = memo(async () => ((await db.select("voice_catalog", "select=voice_id,name,description,accent,gender,age,language,review&enabled=eq.true&limit=60")) as { voice_id: string; name: string; language?: string | null; review?: boolean | null }[]).filter((v) => !isRetired(v.voice_id)));
 const stylerProvider = providerFromEnv(Deno.env);
 const rewards = rewardStore(db);
 const base = env.get("SUPABASE_URL")!.replace(/\/+$/, "");

@@ -145,6 +145,12 @@ Phase 2–4 endpoints:
     - Because the stream starts when the search starts, an error after the search comes as `event: error` with `fallback: true` inside the stream, not as an HTTP status.
 - `POST /tts` → streams audio (proxy) — or token-based direct connection if the provider supports single-use TTS tokens [ASSUMPTION – verify].
 - Auth: anonymous Supabase auth per install first; rate limiting per user from day one (cost protection).
+- **Web beta (K114, D249):** answer, drill, exam and tts accept browser calls from `https://earmind.vercel.app` and Vercel preview URLs (`earmind-*-aron-cfdc.vercel.app`). Web accounts are ordinary anonymous accounts with 1 500 credits a month and no welcome credits (no App Attest). Extra limits apply only to calls with an allowed `Origin`:
+  - at most **5 new anonymous accounts per network (hashed IP) and UTC day** → 429 `too_many_accounts`;
+  - at most **3 000 credits per network and day** and **10 000 credits per day for the whole web** → 429 `web_daily_cap`.
+  - Env overrides: `WEB_ACCOUNTS_PER_IP_PER_DAY`, `WEB_CREDITS_PER_IP_PER_DAY`, `WEB_CREDITS_GLOBAL_PER_DAY`. Code: `_shared/webguard.ts`.
+- **Language (K114, D251):** error messages follow `x-earmind-lang` or `Accept-Language` (Swedish only for `sv`, otherwise English; `_shared/i18n.ts`). `lang`/`language` (`en`|`sv`, default `en`) in the body sets the answer language; an exam follows the language of its text.
+- **Retired voices (K114, D252):** `RETIRED_VOICE_IDS` in `tts/voices.ts` are never listed, accepted or used as the default, whichever source names them.
 
 ## 11. App module layout
 

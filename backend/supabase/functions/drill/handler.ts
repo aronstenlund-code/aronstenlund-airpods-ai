@@ -218,7 +218,7 @@ export interface DrillDb {
   /** K96 (D220): is this voice in the curated catalog (voice_catalog, enabled)? */
   voiceAllowed?(voiceId: string): Promise<boolean>;
   /** K99 (D223): the catalog's voices everyone may use (enabled, not under review), for mixing and the AI's choice. */
-  catalogVoices?(): Promise<{ voice_id: string; name: string; description?: string | null; accent?: string | null; gender?: string | null; age?: string | null }[]>;
+  catalogVoices?(): Promise<{ voice_id: string; name: string; description?: string | null; accent?: string | null; gender?: string | null; age?: string | null; language?: string | null }[]>;
   /** K61 (D177): which of these question keys were already counted in /help try, and dropping them once used. */
   tryCredits?(userId: string, keys: string[]): Promise<string[]>;
   dropTryCredits?(userId: string, keys: string[]): Promise<void>;
@@ -815,8 +815,16 @@ export function createDrillHandler(deps: DrillDeps) {
     if (askedVoice && !/^[A-Za-z0-9]{10,40}$/.test(askedVoice)) throw new HttpError(400, "invalid_request", "drill.voice_id is not a voice");
     const hasId = di.id !== undefined && di.id !== null;
     const styleAsked = typeof di.style === "string" ? cleanStyle(di.style) : "";
+    // K114 (D252): mixing and the AI's choice take voices in the text's language: English voices for an English text,
+    // the Swedish ones (as before English voices came, so a Swedish text keeps its voices and audio, O81) otherwise
+    const askedLang = typeof di.language === "string" ? di.language.trim() : "";
+    const englishText = askedLang === "sv" ? false : askedLang === "en" || examLanguage(askedLang) === "English" ||
+      (textLanguage(rawItems.map((it) => `${it?.text ?? ""} ${it?.question ?? ""}`).join(" "), String(di.subject ?? "")) ||
+        examLanguage(String(di.subject ?? ""))) === "English";
     const catalogOf = async () => deps.db.catalogVoices
-      ? (await deps.db.catalogVoices().catch(() => [])).slice().sort((a, b) => a.voice_id.localeCompare(b.voice_id))
+      ? (await deps.db.catalogVoices().catch(() => []))
+        .filter((v) => (englishText ? v.language === "en" : !v.language || v.language === "sv"))
+        .slice().sort((a, b) => a.voice_id.localeCompare(b.voice_id))
       : [];
     // K100 (D225): what a save reads first, all at once (each is one database call)
     const [same, own0, count, voiceOk, settings0, catalog0] = await Promise.all([
