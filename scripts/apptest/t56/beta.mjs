@@ -4,7 +4,8 @@
 // Angela's web/scripts/smoke.mjs, A156). No request leaves the machine (checked).
 // Live (--live): the published page and the real server. D180, 0 ElevenLabs: run it ONLY in GitHub Actions. The
 // server treats every request from GitHub's Actions IP ranges as test traffic (fake audio, and a guard that stops a
-// test request before the ElevenLabs client: backend/supabase/functions/_shared/testmode.ts). The page is opened
+// test request before the ElevenLabs client: backend/supabase/functions/_shared/testmode.ts), and the user agent
+// carries "Playwright", which the server also reads as a script. The page is opened
 // without ?test, because a browser cannot send x-earmind-test until the server allows it in CORS (A156 §4.1). Any
 // request to an ElevenLabs host is stopped here and fails the run. The script refuses --live outside Actions.
 import { createServer } from 'node:http';
@@ -171,7 +172,10 @@ const hostsSeen = new Set();
 const elevenLabs = [];
 
 async function run(name, { locale, colorScheme, viewport }, steps) {
-  const context = await browser.newContext({ ...phone, locale, colorScheme, ...(viewport ? { viewport } : {}) });
+  // Live: the phone's own user agent plus "Playwright/1.63", which the server's SCRIPT_UA reads as a script, so the
+  // traffic is a test also if the Actions IP list were empty (D180; the page still sees an iPhone or Android phone).
+  const userAgent = live ? `${phone.userAgent} Playwright/1.63` : phone.userAgent;
+  const context = await browser.newContext({ ...phone, userAgent, locale, colorScheme, ...(viewport ? { viewport } : {}) });
   await context.grantPermissions(['screen-wake-lock']).catch(() => note(`${name}: this engine has no screen-wake-lock permission to grant`));
   // Count the page's own Wake Lock requests (D250) without changing what the browser answers.
   await context.addInitScript(() => {
