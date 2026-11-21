@@ -93,3 +93,15 @@ Märkning: **[CI]** = verifierat i GitHub Actions eller huvudlös Chromium här 
 ## 7. Nästa session
 
 Arons och Tobys fynd; svaret på frågan om tidsgräns (5.4); A149 väntar fortfarande på Arons telefonprov.
+
+## Tillägg 17:40 – tidsgräns per pass (Kevins svar på 5.4)
+
+Kevin: servern kan inte stänga en Scribe-sockel (den går direkt mellan webbläsaren och ElevenLabs), så gränsen ligger
+på sidan. **Ett lyssningspass stängs nu av sig självt efter 30 minuter**, sidan säger "Listening stopped after 30
+minutes. Start again to go on." / "Lyssningen stannade efter 30 minuter. Starta igen för att fortsätta.", och sekunderna
+skickas som vid Stop. Två tester skrivna först (gränsen; ett stoppat pass kortar inte nästa); 102 logiktester och 59
+kontroller i Chromium gröna. **[CI]** Web beta: se STATUS.
+
+Toby 17:10: lyssnarläget är grönt lokalt i WebKit och Chromium (T56 44922296899), och mikrofonen fungerar i Playwrights
+WebKit. Live väntar på Kellys publicering. Riktiga Scribe är fortfarande oprovad.
+
