@@ -16,6 +16,9 @@ on:
       - "backend/**"
       - "site/**"
       - "scripts/**"
+      # A156: the web beta (TypeScript in web/, built into site/beta) never changes the app.
+      - "web/**"
+      - ".github/workflows/web-beta.yml"
       - ".github/workflows/pages.yml"
       # Angela 2026-11-11: backend deploys and QA/eval workflows never change the app (Kevin's K37/K39/K36 pushes
       # cancelled four app builds in a row).
@@ -46,6 +49,9 @@ on:
       - "backend/**"
       - "site/**"
       - "scripts/**"
+      # A156: the web beta (TypeScript in web/, built into site/beta) never changes the app.
+      - "web/**"
+      - ".github/workflows/web-beta.yml"
       - ".github/workflows/pages.yml"
       # Angela 2026-11-11: backend deploys and QA/eval workflows never change the app (Kevin's K37/K39/K36 pushes
       # cancelled four app builds in a row).

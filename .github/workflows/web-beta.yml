@@ -1,0 +1,84 @@
+name: Web beta
+
+# A156 (D249): the web beta's logic tests, and that site/beta is exactly what web/ builds (Vercel serves site/ as
+# files, so the built beta is committed). D180: nothing here calls the server or ElevenLabs; the tests run against
+# scripted answers.
+on:
+  push:
+    paths:
+      - "web/**"
+      - "site/beta/**"
+      - ".github/workflows/web-beta.yml"
+  pull_request:
+    paths:
+      - "web/**"
+      - "site/beta/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: web-beta-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Install the build tools
+        working-directory: web
+        run: npm ci
+      - name: Types and logic tests
+        working-directory: web
+        run: |
+          npx tsc --noEmit
+          npm test
+      - name: site/beta is what web/ builds
+        working-directory: web
+        run: |
+          npm run build
+          cd ..
+          if [ -n "$(git status --porcelain -- site/beta)" ]; then
+            echo "::error::site/beta differs from a fresh build. Run 'npm run build' in web/ and commit site/beta."
+            git status --porcelain -- site/beta
+            git diff --stat -- site/beta
+            exit 1
+          fi
+      - name: No runtime dependencies, no secrets, and the site stays small
+        run: |
+          python3 - <<'PY'
+          import json, os, re, sys
+          pkg = json.load(open("web/package.json"))
+          bad = []
+          if pkg.get("dependencies"):
+              bad.append(f"web/package.json has runtime dependencies: {sorted(pkg['dependencies'])} (needs a DECISIONS line)")
+          secret = re.compile(r"sb_secret_|service_role|sk-ant-|xi-api-key|SUPABASE_SERVICE")
+          total = 0
+          for root, _, files in os.walk("site"):
+              for name in files:
+                  path = os.path.join(root, name)
+                  total += os.path.getsize(path)
+                  if name.endswith((".js", ".html", ".css", ".json", ".txt", ".xml")):
+                      if secret.search(open(path, encoding="utf-8", errors="replace").read()):
+                          bad.append(f"{path} contains a secret-looking string")
+          if total > 2_000_000:
+              bad.append(f"site/ is {total} bytes (limit 2 000 000)")
+          for path in ("site/beta/index.html", "site/beta/assets/app.js", "site/beta/assets/index.css"):
+              if not os.path.exists(path):
+                  bad.append(f"{path} is missing")
+          app = open("site/beta/assets/app.js", encoding="utf-8").read() if os.path.exists("site/beta/assets/app.js") else ""
+          if "elevenlabs" in app.lower():
+              bad.append("the beta's script mentions ElevenLabs: it must only talk to our own server")
+          print(f"site/: {total} bytes")
+          for line in bad:
+              print(f"::error::{line}")
+          sys.exit(1 if bad else 0)
+          PY
