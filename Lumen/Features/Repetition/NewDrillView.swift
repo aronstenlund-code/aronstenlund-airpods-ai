@@ -652,9 +652,9 @@ struct NewDrillView: View {
 
     // MARK: Läser materialet
 
-    private static let questionSteps = [String(localized: "Läser sidorna"), String(localized: "Tar reda på ämne och årskurs"), String(localized: "Gör frågor"), String(localized: "Skriver svar")]
+    private nonisolated static var questionSteps: [String] { [String(localized: "Läser sidorna"), String(localized: "Tar reda på ämne och årskurs"), String(localized: "Gör frågor"), String(localized: "Skriver svar")] }
     /// A106 (Ke63 §5).
-    private static let textSteps = [String(localized: "Läser sidorna"), String(localized: "Tar reda på ämne och årskurs"), String(localized: "Gör texten klar för uppläsning")]
+    private nonisolated static var textSteps: [String] { [String(localized: "Läser sidorna"), String(localized: "Tar reda på ämne och årskurs"), String(localized: "Gör texten klar för uppläsning")] }
     private var steps: [String] { make == .text ? Self.textSteps : Self.questionSteps }
 
     private var makingView: some View {

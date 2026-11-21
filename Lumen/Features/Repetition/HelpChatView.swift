@@ -27,7 +27,7 @@ struct HelpChatView: View {
     @State private var isAsking = false
     @State private var showsTry = false
 
-    private static let suggestions = [String(localized: "Hur fungerar trycken?"), String(localized: "Hur delar jag ett prov?"), String(localized: "Varför blev det färre frågor?")]
+    private nonisolated static var suggestions: [String] { [String(localized: "Hur fungerar trycken?"), String(localized: "Hur delar jag ett prov?"), String(localized: "Varför blev det färre frågor?")] }
 
     private var offered: [String] {
         guard let suggestion, !Self.suggestions.contains(suggestion) else { return Self.suggestions }

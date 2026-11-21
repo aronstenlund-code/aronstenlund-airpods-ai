@@ -821,13 +821,13 @@ final class CloudDrillAudio: DrillAudioProviding {
     }
 
     /// A103: a file could not be written (the phone is full).
-    static let noSpaceLine = String(localized: "Telefonen har inte plats för ljudet. Frigör lite lagring, så laddas resten ner.")
+    nonisolated static var noSpaceLine: String { String(localized: "Telefonen har inte plats för ljudet. Frigör lite lagring, så laddas resten ner.") }
     /// Toby 2 T24 L6: the server has made nothing for a while (`slowAfter`) and the first question has no sound yet.
-    static let slowLine = String(localized: "Ljudet dröjer. Provet kan starta när första frågan är klar.")
+    nonisolated static var slowLine: String { String(localized: "Ljudet dröjer. Provet kan starta när första frågan är klar.") }
     /// T24 L6: how long without a new file before `slowLine` is said (shorter in the tests).
     @ObservationIgnored var slowAfter: Duration = .seconds(20)
     /// A103: no network while the sound is fetched; it goes on by itself when the phone is online again.
-    static let waitingForNetworkLine = String(localized: "Ingen internetanslutning. Resten av ljudet laddas ner när du är uppkopplad igen.")
+    nonisolated static var waitingForNetworkLine: String { String(localized: "Ingen internetanslutning. Resten av ljudet laddas ner när du är uppkopplad igen.") }
     /// How long `prepare` waits for the network to come back (A103), checked every `networkCheck`.
     private let networkWait: Duration = .seconds(30 * 60)
     private let networkCheck: Duration = .seconds(10)
@@ -906,7 +906,7 @@ final class CloudDrillAudio: DrillAudioProviding {
     /// K62 (Kelly): the voice service cannot make sound now (its credits ran out), said instead of a counter that
     /// never moves.
     /// A112 (D200): the calm line. The text works as usual, nothing is counted, and nothing is an error.
-    static let unavailableLine = String(localized: "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt.")
+    nonisolated static var unavailableLine: String { String(localized: "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt.") }
 
     /// A112 (K78): how many times the server gave questions back; the model reads the month's quota again then.
     private(set) var refunds = 0

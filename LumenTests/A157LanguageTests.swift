@@ -2,8 +2,9 @@ import Foundation
 import Testing
 @testable import Lumen
 
-/// A157 (D251): English is the base language and Swedish a translation; the app follows the phone's language.
-/// The unit tests run in Swedish (the scheme, project.yml), so the English is read from its own table here.
+/// A157 (D251, D253): English is the base language and Swedish a translation. The app starts in English on every
+/// phone and Svenska is chosen in Inställningar. The unit tests run in Swedish (the scheme names the language, as a
+/// test run may), so the English is read from its own table here.
 @MainActor
 @Suite struct A157LanguageTests {
     private func table(_ language: String) -> Bundle? {
@@ -14,12 +15,63 @@ import Testing
         table(language)?.localizedString(forKey: key, value: "(missing)", table: nil)
     }
 
-    @Test func aSwedishPhoneGetsSwedishAndEveryOtherEnglish() {
-        #expect(AppLanguage.from(["sv"]) == .sv)
-        #expect(AppLanguage.from(["sv-SE"]) == .sv)
-        #expect(AppLanguage.from(["en"]) == .en)
-        #expect(AppLanguage.from(["de"]) == .en)
-        #expect(AppLanguage.from([]) == .en)
+    /// D253 (Aron): "den måste vara på engelska och man ska kunna byta till svenska".
+    @Test func theAppStartsInEnglishAlsoOnASwedishPhone() {
+        #expect(LanguageChoice.resolve(arguments: [], stored: nil, localizations: ["sv"]) == .en)
+        #expect(LanguageChoice.resolve(arguments: [], stored: nil, localizations: ["en"]) == .en)
+        #expect(LanguageChoice.resolve(arguments: [], stored: "sv", localizations: ["en"]) == .sv) // chosen in Inställningar
+        #expect(LanguageChoice.resolve(arguments: [], stored: "tlh", localizations: ["sv"]) == .en)
+    }
+
+    /// A run that names its language (the tests' scheme, the app tests, the pictures) gets it, as before D253.
+    @Test func aRunThatNamesItsLanguageGetsIt() {
+        let swedishRun = ["Lumen", "-AppleLanguages", "(sv)"]
+        #expect(LanguageChoice.resolve(arguments: swedishRun, stored: "en", localizations: ["sv"]) == .sv)
+        #expect(LanguageChoice.resolve(arguments: ["Lumen", "-AppleLanguages", "(en)"], stored: "sv", localizations: ["en"]) == .en)
+        #expect(LanguageChoice.resolve(arguments: swedishRun + ["-app.language", "en"], stored: nil, localizations: ["sv"]) == .en)
+        #expect(AppLanguage.from(["sv-SE"]) == .sv && AppLanguage.from(["de"]) == .en && AppLanguage.from([]) == .en)
+    }
+
+    /// The choice is kept (also where the widget reads it), shows at once, and asks the system for the same language
+    /// from the next start.
+    @Test func theChoiceIsKeptAndShowsAtOnce() throws {
+        let app = try #require(UserDefaults(suiteName: "a157-app-\(UUID().uuidString)"))
+        let group = try #require(UserDefaults(suiteName: "a157-group-\(UUID().uuidString)"))
+        let system = try #require(UserDefaults(suiteName: "a157-system-\(UUID().uuidString)"))
+        let choice = LanguageChoice(arguments: ["Lumen"], stores: [app, group], localizations: ["sv"], rereads: false, systemStore: system)
+        #expect(choice.language == .en && !choice.isSetFromOutside)
+        let settings = LanguageSettings(choice: choice, reloadsWidgets: false)
+        #expect(settings.language == .en)
+        #expect(system.stringArray(forKey: "AppleLanguages") == ["en"]) // English system buttons from the next start
+        settings.choose(.sv)
+        #expect(settings.language == .sv && choice.language == .sv)
+        #expect(app.string(forKey: LanguageChoice.key) == "sv" && group.string(forKey: LanguageChoice.key) == "sv")
+        #expect(system.stringArray(forKey: "AppleLanguages") == ["sv"])
+        #expect(AppLanguage.stamped(["action": "quota"], language: choice.language)["lang"] as? String == "sv")
+        // The next start, and the widget (which reads the shared store every time).
+        #expect(LanguageChoice(arguments: ["Lumen"], stores: [app, group], localizations: ["en"], rereads: false, systemStore: nil).language == .sv)
+        let widget = LanguageChoice(arguments: ["LumenControls"], stores: [UserDefaults(suiteName: "a157-empty-\(UUID().uuidString)") ?? .standard, group],
+                                    localizations: ["en"], rereads: true, systemStore: nil)
+        #expect(widget.language == .sv)
+        settings.choose(.en)
+        #expect(widget.language == .en && AppLanguage.sv.nativeName == "Svenska" && AppLanguage.en.nativeName == "English")
+        // A run that named its language leaves the phone's settings alone.
+        let named = LanguageChoice(arguments: ["Lumen", "-AppleLanguages", "(sv)"], stores: [app], localizations: ["sv"], rereads: false, systemStore: system)
+        named.pinSystemLanguage()
+        #expect(named.isSetFromOutside && system.stringArray(forKey: "AppleLanguages") == ["en"])
+    }
+
+    /// What `String(localized:)` does in the app: the chosen language's table, with the values in place.
+    @Test func aTextIsLookedUpInTheChosenLanguage() {
+        let english = AppLanguage.en, swedish = AppLanguage.sv
+        #expect(String(localized: "Fyll på", table: nil, bundle: english.bundle, locale: english.locale, comment: nil) == "Top up")
+        #expect(String(localized: "Fyll på", table: nil, bundle: swedish.bundle, locale: swedish.locale, comment: nil) == "Fyll på")
+        let questions = "5 questions"
+        #expect(String(localized: "Krediterna räcker till \(questions).", table: nil, bundle: english.bundle, locale: english.locale, comment: nil)
+                == "Your credits cover 5 questions.")
+        #expect(String(localized: "Du var på fråga \(3) av \(12).", table: nil, bundle: english.bundle, locale: english.locale, comment: nil)
+                == "You were on question 3 of 12.")
+        #expect(String(localized: "Du var på fråga \(3) av \(12).") == "Du var på fråga 3 av 12.") // the tests' language
     }
 
     @Test func englishIsTheBaseAndBothLanguagesAreInTheApp() {

@@ -742,10 +742,10 @@ enum RepetitionDemo {
             case "repPlayThink", "repPlayFirst", "repPlayAnswer", "repPaused", "repWaiting", "repWaitingProblem":
                 RepetitionPlayerView(model: model)
             case "moreModes": ModeSwitchSheet(model: listening, current: .standard, onPick: { _ in }, onSleep: {})
-            default: Text(verbatim: "Okänd skärm: \(name)")
+            default: Text(verbatim: String(localized: "Okänd skärm: \(name)"))
             }
         } else {
-            Text(verbatim: "Inget repetitionsläge")
+            Text(verbatim: String(localized: "Inget repetitionsläge"))
         }
     }
 }

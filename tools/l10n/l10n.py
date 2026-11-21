@@ -63,9 +63,23 @@ def filled(english: str, sv_parts) -> str:
     return re.sub(r"\{(\d+)\}", lambda m: "\\(" + swiftlit.unwrapped(values[int(m.group(1)) - 1]) + ")", english)
 
 
+# Whole numbers the patterns below do not recognise (read from the code, A157). A value not listed here and not
+# matched below is taken as text (%@); the compiler's list, when at hand, decides over both.
+INTEGERS = {
+    "$0 + 1", "$0.dots", "CommandPhraseStore.phraseLimit", "Int(modes.speakerThresholdDBFS)", "Int(p50)", "Int(p95)",
+    "Int(seconds)", "batch", "counts", "daysLeft", "drill.sentenceCount", "exams", "heading.paragraphs", "knewCount", "lap",
+    "line", "made.ready", "max(1, Int(left.rounded(.up)))", "max(1, quiz.asked)", "maxItems", "min(index + 1, cards.count)",
+    "min(reader.sentenceIndex + 1, reader.sentenceCount)", "missing", "night.snoreMinutes", "p.ready", "parts[2]", "photos",
+    "player.lap + 1", "quota.left - draft.countsAs", "read.chars_per_question", "reader.sentenceCount", "ready", "restless",
+    "saved + 1", "session.readingLap", "start + 1", "startCount(drill)",
+}
+
+
 def guess(expr: str) -> str:
     """The format specifier the compiler will most likely give an interpolation (the compiler's list corrects it)."""
     e = expr.strip()
+    if e in INTEGERS:
+        return "%lld"
     if re.search(r"(?:^|\.)(count|index|number|total|left|cost|limit|minutes|seconds|hours|days|points|max|min|n|questions|credits|characters|words|pages|rows)\b\s*(?:[-+*/]\s*\d+)?$", e, re.I) and "(" not in e.split(".")[-1]:
         return "%lld"
     if re.fullmatch(r"[\w.]*\b(n|i|k|count|index|total|left|number)\s*[-+]\s*\d+", e):

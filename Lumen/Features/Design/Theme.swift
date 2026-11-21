@@ -10,22 +10,22 @@ extension ConversationMode {
     /// The short name on the mode buttons.
     var shortName: String {
         switch self {
-        case .standard: "Standardläge" // A37 (D115)
-        case .interview: "Intervju"
-        case .social: "Socialt"
-        case .rizz: "Rizz" // D112: no 18+
-        case .prov: "Provläge"
+        case .standard: String(localized: "Standardläge") // A37 (D115)
+        case .interview: String(localized: "Intervju")
+        case .social: String(localized: "Socialt")
+        case .rizz: String(localized: "Rizz") // D112: no 18+
+        case .prov: String(localized: "Provläge")
         }
     }
 
     /// One line under the name in "Byt läge".
     var tagline: String {
         switch self {
-        case .standard: "Svarar när någon frågar"
-        case .interview: "Färdiga svar på intervjufrågor"
-        case .social: "Ett förslag i pausen"
-        case .rizz: "Flörtig wingman"
-        case .prov: "För dina prov" // D126 (owner)
+        case .standard: String(localized: "Svarar när någon frågar")
+        case .interview: String(localized: "Färdiga svar på intervjufrågor")
+        case .social: String(localized: "Ett förslag i pausen")
+        case .rizz: String(localized: "Flörtig wingman")
+        case .prov: String(localized: "För dina prov") // D126 (owner)
         }
     }
 
@@ -49,9 +49,9 @@ final class AppearanceSettings {
 
         var title: String {
             switch self {
-            case .system: "Som iPhonen"
-            case .light: "Ljust"
-            case .dark: "Mörkt"
+            case .system: String(localized: "Som iPhonen")
+            case .light: String(localized: "Ljust")
+            case .dark: String(localized: "Mörkt")
             }
         }
     }

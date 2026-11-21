@@ -204,9 +204,9 @@ final class AccountDeletionModel {
     }
 
     /// The words before the press (Deangelo, A145).
-    nonisolated static let question = String(localized: "Radera kontot?")
-    nonisolated static let questionDetail = String(localized: "Allt du har gjort raderas, både på telefonen och hos oss: prov, texter, ljud, krediter, historik och inställningar. Det går inte att ångra.")
-    nonisolated static let passLine = String(localized: "Har du veckokortet? Det avslutas inte när kontot raderas. Säg upp det i Inställningar › ditt namn › Prenumerationer.")
-    nonisolated static let doneTitle = String(localized: "Kontot är raderat")
-    nonisolated static let doneLine = String(localized: "EarMind börjar om som ny på den här telefonen.")
+    nonisolated static var question: String { String(localized: "Radera kontot?") }
+    nonisolated static var questionDetail: String { String(localized: "Allt du har gjort raderas, både på telefonen och hos oss: prov, texter, ljud, krediter, historik och inställningar. Det går inte att ångra.") }
+    nonisolated static var passLine: String { String(localized: "Har du veckokortet? Det avslutas inte när kontot raderas. Säg upp det i Inställningar › ditt namn › Prenumerationer.") }
+    nonisolated static var doneTitle: String { String(localized: "Kontot är raderat") }
+    nonisolated static var doneLine: String { String(localized: "EarMind börjar om som ny på den här telefonen.") }
 }

@@ -86,7 +86,7 @@ enum SayText {
     /// A122 (D209, Aron 2026-11-17): the phone does not have to be out. The player goes on with the screen locked
     /// (background audio) and is steered from the Lock Screen and the AirPods.
     /// A132 (D215.2, Kelly Ke72): shorter, and only until Spela has been pressed once.
-    static let lockLine = String(localized: "Du kan låsa telefonen. Det hörs i AirPods ändå.")
+    nonisolated static var lockLine: String { String(localized: "Du kan låsa telefonen. Det hörs i AirPods ändå.") }
     static let hasPlayedKey = "say.hasPlayed"
 
     /// A144 (D225, after Toby's T50 and Kevin's times: saving and starting a new text takes 9–10 s today). While
@@ -95,9 +95,9 @@ enum SayText {
     /// and Försök igen. Sound that is already on the phone plays at once and never comes here.
     static let slowAfter: Duration = .seconds(8)
     static let giveUpAfter: Duration = .seconds(25)
-    static let slowServerLine = String(localized: "Det tar längre tid än vanligt.") // Kelly
-    static let slowLine = String(localized: "Ljudet kunde inte hämtas. Kolla nätet.") // Kelly: the button says the rest
-    static let failedLine = String(localized: "Ljudet kunde inte hämtas.") // the network is up: it is not blamed
+    nonisolated static var slowServerLine: String { String(localized: "Det tar längre tid än vanligt.") } // Kelly
+    nonisolated static var slowLine: String { String(localized: "Ljudet kunde inte hämtas. Kolla nätet.") } // Kelly: the button says the rest
+    nonisolated static var failedLine: String { String(localized: "Ljudet kunde inte hämtas.") } // the network is up: it is not blamed
     static func slowLine(online: Bool) -> String { online ? failedLine : slowLine }
 
     enum Wait: Equatable { case quiet, slow, gaveUp }
@@ -116,15 +116,15 @@ enum SayText {
     }
 
     /// A136 (D220, Kelly Ke75): the words of the style row and of "Skriv i takt".
-    static let stylePrompt = String(localized: "Hur ska det låta?")
-    static let paceTitle = String(localized: "Skriv i takt")
-    static let paceCapsule = String(localized: "I takt")
-    static let voiceCapsule = String(localized: "Röst") // no voice chosen: the server's own
+    nonisolated static var stylePrompt: String { String(localized: "Hur ska det låta?") }
+    nonisolated static var paceTitle: String { String(localized: "Skriv i takt") }
+    nonisolated static var paceCapsule: String { String(localized: "I takt") }
+    nonisolated static var voiceCapsule: String { String(localized: "Röst") } // no voice chosen: the server's own
     static let inPaceKey = "say.inPace"
     static let voiceKey = "say.voiceID"
     static let mixKey = "say.mixVoices"
     // A140 (D223): mine, for Kelly to review.
-    static let mixCapsule = String(localized: "Blandat")
+    nonisolated static var mixCapsule: String { String(localized: "Blandat") }
 
     /// A140 (K99, Kelly): why the server chose the voice in the capsule beside it: "Vald efter stilen · Lugn och tydlig."
     static func pickedLine(reason: String?) -> String {

@@ -449,7 +449,7 @@ struct SaySound: Equatable, Hashable, Sendable {
         return String(joined.prefix(SaidText.maxStyleChars))
     }
 
-    static let suggestions = [String(localized: "Tydligt"), String(localized: "Lugnt"), String(localized: "Glatt"), String(localized: "Viskande")]
+    static var suggestions: [String] { [String(localized: "Tydligt"), String(localized: "Lugnt"), String(localized: "Glatt"), String(localized: "Viskande")] }
 }
 
 enum SaidText {
@@ -563,10 +563,10 @@ enum CreditText {
     }
 
     /// The sheet's rows ("Så räknas det").
-    static let rows: [(title: String, value: String)] = [
+    static var rows: [(title: String, value: String)] { [
         (String(localized: "1 tecken nytt ljud"), String(localized: "1 kredit")), (String(localized: "Ljud som redan finns"), "0"), (String(localized: "Upprepa samma text"), "0"),
         (String(localized: "Prov som andra har delat eller publicerat"), "0"),
-    ]
+    ] }
 
     /// The sheet's footnote, with the month's limit from the server.
     static func footnote(limit: Int, resetsDay: String?) -> String {

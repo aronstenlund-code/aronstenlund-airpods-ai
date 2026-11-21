@@ -79,7 +79,7 @@ protocol DrillPublishingService: AnyObject, Sendable {
 /// The words and dates of Publicera prov (Kelly Ke52 §2).
 enum DrillPublishing {
     /// Ke52: the subjects in this order; the exam's own subject is chosen when it is one of them.
-    static let subjects = [String(localized: "Biologi"), "Fysik", "Kemi", "NO", "Matematik", "Svenska", "Engelska", "Moderna språk",
+    static let subjects = ["Biologi", "Fysik", "Kemi", "NO", "Matematik", "Svenska", "Engelska", "Moderna språk",
                            "Historia", "Geografi", "Religion", "Samhällskunskap", "SO", "Teknik", "Annat"]
 
     static func subject(from summary: String) -> String? {

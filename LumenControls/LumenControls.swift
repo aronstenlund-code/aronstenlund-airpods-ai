@@ -54,6 +54,7 @@ struct ListeningLiveActivity: Widget {
                 }
             }
             .padding()
+            .environment(\.locale, AppLanguage.current.locale) // D253: the language chosen in the app
             .activityBackgroundTint(LumenColor.background)
             .foregroundStyle(LumenColor.ink)
         } dynamicIsland: { context in

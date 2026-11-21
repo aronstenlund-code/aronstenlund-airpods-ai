@@ -2211,7 +2211,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A45: "Lumen hör och pratar lite sämre just nu", once per session, while a stand-in engine is used.
     private(set) var fallbackNotice: String?
     @ObservationIgnored private var fallbackNotedThisSession = false
-    static let fallbackLine = String(localized: "EarMind hör och pratar lite sämre just nu")
+    nonisolated static var fallbackLine: String { String(localized: "EarMind hör och pratar lite sämre just nu") }
 
     private func noteFallback(what: String) {
         guard !fallbackNotedThisSession else { return }

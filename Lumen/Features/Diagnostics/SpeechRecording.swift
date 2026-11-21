@@ -32,7 +32,7 @@ final class SpeechRecordingModel {
 
     func start() {
         guard !isRecording, listening.isListening else {
-            notice = "Börja lyssna först."
+            notice = String(localized: "Börja lyssna först.")
             return
         }
         samples = []
@@ -91,7 +91,7 @@ final class SpeechRecordingModel {
         case .success(let (engine, finals)):
             write(extra: "--- \(engine) on the same recording ---\n" + (finals.isEmpty ? "(nothing recognised)" : finals.joined(separator: "\n")))
         case .failure(let reason):
-            notice = "iPhone-igenkänningen gick inte: \(reason.message)"
+            notice = String(localized: "iPhone-igenkänningen gick inte: \(reason.message)")
         }
     }
 
@@ -124,12 +124,12 @@ final class SpeechRecordingModel {
             if let extra { body += "\n\n" + extra }
             try Data(body.utf8).write(to: text)
             files = [wav, text]
-            notice = "Sparat: \(wav.lastPathComponent) och \(text.lastPathComponent)"
+            notice = String(localized: "Sparat: \(wav.lastPathComponent) och \(text.lastPathComponent)")
         } catch {
-            notice = "Kunde inte spara: \(error.localizedDescription)"
+            notice = String(localized: "Kunde inte spara: \(error.localizedDescription)")
         }
         #else
-        notice = "Inspelning finns bara i testbygget."
+        notice = String(localized: "Inspelning finns bara i testbygget.")
         #endif
     }
 

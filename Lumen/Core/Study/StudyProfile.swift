@@ -87,7 +87,7 @@ struct StudyProfile: Codable, Equatable, Sendable {
             lines.append("Inget prov just nu.")
         } else if let examDate {
             let days = calendar.dateComponents([.day], from: calendar.startOfDay(for: now), to: calendar.startOfDay(for: examDate)).day ?? 0
-            let when = days == 0 ? String(localized: "idag") : days == 1 ? String(localized: "imorgon") : days > 1 ? String(localized: "om \(days) dagar") : String(localized: "har varit")
+            let when = days == 0 ? "idag" : days == 1 ? "imorgon" : days > 1 ? "om \(days) dagar" : "har varit"
             lines.append("Prov\(subject.isEmpty ? "" : " i \(subject)") \(Self.dateText(examDate, calendar: calendar)) (\(when)).")
         }
         if let grade { lines.append("Årskurs: \(Self.gradeName(grade))\(course.isEmpty ? "" : ", kurs \(course)").") }
@@ -183,8 +183,8 @@ enum StudyProfileVoice {
         let today = calendar.startOfDay(for: now)
         let words = text.split(separator: " ").map(String.init).filter { $0 != "den" && $0 != "på" }
         guard let first = words.first else { return nil }
-        if first == String(localized: "idag") { return today }
-        if first == String(localized: "imorgon") { return calendar.date(byAdding: .day, value: 1, to: today) }
+        if first == "idag" { return today }
+        if first == "imorgon" { return calendar.date(byAdding: .day, value: 1, to: today) }
         if first == "om", words.count >= 3, let days = Int(words[1]), words[2].hasPrefix("dag") {
             return calendar.date(byAdding: .day, value: days, to: today)
         }

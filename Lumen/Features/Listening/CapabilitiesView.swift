@@ -67,12 +67,12 @@ struct LumenCapability: Identifiable, Equatable, Sendable {
         "call": "phone", "music": "music.note.list", "spotify": "music.note", "interview": "briefcase",
         "social": "person.2.wave.2", "sleep": "moon.stars", "translate": "character.bubble", "web": "globe",
     ]
-    static let places: [String: String] = [
+    static var places: [String: String] { [
         "music": String(localized: "Öppnar Spotify med sökningen"), "interview": String(localized: "Byt läge"), "social": String(localized: "Byt läge"),
-    ]
+    ] }
 
     /// Ke29's rows, the list before A77 (used only without the file).
-    static let fallback: [LumenCapability] = [
+    static var fallback: [LumenCapability] { [
         .init(id: "quiz", group: .study, title: String(localized: "Förhör"), symbol: "graduationcap", say: "”Lumen, förhör mig på fotosyntes”", setup: .nothing),
         .init(id: "questions", group: .study, title: String(localized: "Svar på frågor"), symbol: "questionmark.bubble", say: "”Lumen, vad betyder ambivalent?”", setup: .nothing),
         .init(id: "myAnswers", group: .study, title: String(localized: "Mina svar"), symbol: "text.badge.checkmark", say: String(localized: "Dina egna svar på provfrågor, i örat"), setup: .place(String(localized: "I Provläget"))),
@@ -87,7 +87,7 @@ struct LumenCapability: Identifiable, Equatable, Sendable {
         .init(id: "music", group: .musicAndCalls, title: String(localized: "Öppna musik"), symbol: "music.note.list", say: "”Lumen, spela lugn pluggmusik”", setup: .place(String(localized: "Öppnar Spotify med sökningen"))), // A58
         .init(id: "interview", group: .more, title: String(localized: "Intervju"), symbol: "briefcase", say: String(localized: "Färdiga svar på intervjufrågor"), setup: .place(String(localized: "Byt läge"))),
         .init(id: "sleep", group: .more, title: String(localized: "Sömn"), symbol: "moon.stars", say: String(localized: "Tryck Sov på kvällen. Morgonrapport när du vaknar"), setup: .nothing),
-    ]
+    ] }
 
     var permission: Permission? {
         if case .permission(let permission) = setup { return permission }

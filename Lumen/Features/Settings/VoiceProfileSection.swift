@@ -9,7 +9,7 @@ struct VoiceProfileSection: View {
     @State private var notice: String?
     @State private var isConfirmingDelete = false
 
-    static let readingText = String(localized: "Hej Lumen. Det här är min röst. Jag läser den här texten i lugn takt så att du kan känna igen mig. Solen gick upp över sjön, och fåglarna började sjunga i träden. Nu vet du hur jag låter.")
+    nonisolated static var readingText: String { String(localized: "Hej Lumen. Det här är min röst. Jag läser den här texten i lugn takt så att du kan känna igen mig. Solen gick upp över sjön, och fåglarna började sjunga i träden. Nu vet du hur jag låter.") }
 
     var body: some View {
         Section {

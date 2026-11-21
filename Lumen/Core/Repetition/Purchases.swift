@@ -308,13 +308,13 @@ final class CreditShop {
     @ObservationIgnored private var askedWelcome = false
 
     // Kelly Ke73/Ke77 §5.
-    static let failedLine = String(localized: "Köpet gick inte igenom. Inget har dragits.")
-    static let nothingToRestoreLine = String(localized: "Det fanns inga köp att hämta.")
+    nonisolated static var failedLine: String { String(localized: "Köpet gick inte igenom. Inget har dragits.") }
+    nonisolated static var nothingToRestoreLine: String { String(localized: "Det fanns inga köp att hämta.") }
     // Kelly (kop.md §5): the App Store took the purchase but the server could not be told yet.
-    static let owedLine = String(localized: "Köpet är gjort. Krediterna kommer när EarMind har kontakt igen.")
-    static let pendingLine = String(localized: "Köpet väntar på godkännande. Krediterna kommer när det är godkänt.")
-    static let restoreFailedLine = String(localized: "Det gick inte att hämta köpen just nu. Försök igen om en stund.")
-    static let inviteText = String(localized: "Plugga med EarMind. Du får 5 000 krediter att börja med.")
+    nonisolated static var owedLine: String { String(localized: "Köpet är gjort. Krediterna kommer när EarMind har kontakt igen.") }
+    nonisolated static var pendingLine: String { String(localized: "Köpet väntar på godkännande. Krediterna kommer när det är godkänt.") }
+    nonisolated static var restoreFailedLine: String { String(localized: "Det gick inte att hämta köpen just nu. Försök igen om en stund.") }
+    nonisolated static var inviteText: String { String(localized: "Plugga med EarMind. Du får 5 000 krediter att börja med.") }
 
     static let welcomeDoneKey = "credits.welcomeDone"
     /// Oscar O90 (2026-11-19): a new name, so tries that were used up while the server was not set up (it answered 503
@@ -560,24 +560,24 @@ final class CreditShop {
 
 /// Ke73/Ke77: the words of the purchase part of the credits sheet.
 enum ShopText {
-    static let bestValue = String(localized: "Bäst värde")
+    static var bestValue: String { String(localized: "Bäst värde") }
     // Toby T48 (his words; Kelly reviews).
-    static let noProducts = String(localized: "Paketen kunde inte hämtas från App Store just nu.")
-    static let tryAgain = String(localized: "Försök igen")
-    static let examLine = String(localized: "Ett prov ≈ 6 000 krediter.")
+    static var noProducts: String { String(localized: "Paketen kunde inte hämtas från App Store just nu.") }
+    static var tryAgain: String { String(localized: "Försök igen") }
+    static var examLine: String { String(localized: "Ett prov ≈ 6 000 krediter.") }
     static let creditsPerExam = 6000
-    static let weeklyTitle = String(localized: "Veckokort")
-    static let inviteTitle = String(localized: "Få 2 000 krediter")
-    static let inviteLine = String(localized: "när en kompis har spelat sin första text")
-    static let inviteFullLine = String(localized: "Du har bjudit in 10 i månaden. Fler ger krediter nästa månad.")
-    static let welcomeLine = String(localized: "välkomstkrediter")
+    static var weeklyTitle: String { String(localized: "Veckokort") }
+    static var inviteTitle: String { String(localized: "Få 2 000 krediter") }
+    static var inviteLine: String { String(localized: "när en kompis har spelat sin första text") }
+    static var inviteFullLine: String { String(localized: "Du har bjudit in 10 i månaden. Fler ger krediter nästa månad.") }
+    static var welcomeLine: String { String(localized: "välkomstkrediter") }
     /// Ke77 §1c, without a name (the accounts are anonymous): "+2 000 krediter för en inbjudan."
     static func rewardLine(_ credits: Int) -> String { String(localized: "+\(CreditText.number(credits)) krediter för en inbjudan.") }
     static let inviteButton = "Bjud in"
-    static let refill = String(localized: "Fyll på")
-    static let included = String(localized: "Ingår")
-    static let weekIsOut = String(localized: "Veckans tak är nått")
-    static let manage = String(localized: "Hantera veckokortet")
+    static var refill: String { String(localized: "Fyll på") }
+    static var included: String { String(localized: "Ingår") }
+    static var weekIsOut: String { String(localized: "Veckans tak är nått") }
+    static var manage: String { String(localized: "Hantera veckokortet") }
     static let termsURL = URL(string: "https://earmind.vercel.app/villkor")
     static let privacyURL = URL(string: "https://earmind.vercel.app/integritet")
 

@@ -999,7 +999,7 @@ final class RepetitionModel {
 
     /// D175: nothing left this month, shown in Nytt prov before Skapa frågor (the server's words, K61).
     var quotaUsedUp: Bool { quota?.isUsedUp ?? false }
-    static let quotaUsedUpLine = String(localized: "Du har inga frågor kvar den här månaden. Andras prov är gratis.")
+    nonisolated static var quotaUsedUpLine: String { String(localized: "Du har inga frågor kvar den här månaden. Andras prov är gratis.") }
 
     /// K61: the month's questions now (Nytt prov on opening, and after an exam is saved).
     func refreshQuota() async {

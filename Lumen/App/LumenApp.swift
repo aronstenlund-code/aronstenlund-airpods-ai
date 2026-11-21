@@ -29,6 +29,9 @@ final class AppHolder {
     /// After a deletion: "Kontot är raderat", with K101's notice about the weekly pass when there is one.
     var showsDeleted = false
     private(set) var deletedNotice: String?
+    /// D253: English until Svenska is chosen in Inställningar. Kept when the account is deleted (it is the phone's
+    /// owner's choice of language, not the account's data).
+    let language = LanguageSettings()
 
     init() {
         container = AppContainer()
@@ -55,7 +58,10 @@ private struct AppRoot: View {
 
     var body: some View {
         RootView(container: holder.container)
-            .id(holder.generation)
+            // D253: a new language builds every screen again, so every text is the new language's at once.
+            .id("\(holder.generation)-\(holder.language.language.rawValue)")
+            .environment(holder.language)
+            .environment(\.locale, holder.language.language.locale)
             .alert(AccountDeletionModel.doneTitle, isPresented: $holder.showsDeleted) {
                 if holder.deletedNotice != nil {
                     Button("Hantera prenumerationer") { managesSubscriptions = true }

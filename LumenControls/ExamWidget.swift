@@ -9,6 +9,7 @@ struct ExamWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: ExamWidgetSnapshot.kind, provider: ExamWidgetProvider()) { entry in
             ExamWidgetView(entry: entry)
+                .environment(\.locale, AppLanguage.current.locale) // D253: the language chosen in the app
                 .containerBackground(for: .widget) { LumenColor.background }
         }
         .configurationDisplayName("Nästa prov")
@@ -44,8 +45,8 @@ struct ExamWidgetProvider: TimelineProvider {
         completion(Timeline(entries: entries, policy: .atEnd))
     }
 
-    static let demo = ExamWidgetSnapshot(examName: String(localized: "Biologiprovet"), examDate: Calendar.current.date(byAdding: .day, value: 5, to: Date()),
-                                         streak: 3, doneToday: true, readyPct: 68, updatedAt: Date())
+    static var demo: ExamWidgetSnapshot { ExamWidgetSnapshot(examName: String(localized: "Biologiprovet"), examDate: Calendar.current.date(byAdding: .day, value: 5, to: Date()),
+                                         streak: 3, doneToday: true, readyPct: 68, updatedAt: Date()) }
 }
 
 struct ExamWidgetView: View {

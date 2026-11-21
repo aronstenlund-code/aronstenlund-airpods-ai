@@ -198,7 +198,7 @@ import Testing
                                     commands: [AnswerContext.Command(keyword: "fission", instruction: "jämför")])
         let data = CloudAnswerProvider.encodeBody(AnswerRequest(fragment: "fission", mode: "push_to_talk", language: "sv", context: context))
         let json = String(decoding: data, as: UTF8.self)
-        #expect(json == "{\"commands\":[{\"instruction\":\"jämför\",\"keyword\":\"fission\"}],\"context\":{},\"fragment\":\"fission\",\"goals\":\"Kursmål\",\"language\":\"sv\",\"length\":\"adaptive\",\"mode\":\"push_to_talk\"}", "top level, where the backend reads them")
+        #expect(json == "{\"commands\":[{\"instruction\":\"jämför\",\"keyword\":\"fission\"}],\"context\":{},\"fragment\":\"fission\",\"goals\":\"Kursmål\",\"lang\":\"sv\",\"language\":\"sv\",\"length\":\"adaptive\",\"mode\":\"push_to_talk\"}", "top level, where the backend reads them") // A157 (K114): lang, the app's language (the tests run in Swedish)
         let long = CloudAnswerProvider.encodeBody(AnswerRequest(fragment: "x", mode: "text", language: "sv", length: .long))
         #expect(String(decoding: long, as: UTF8.self).contains("\"length\":\"long\""))
 

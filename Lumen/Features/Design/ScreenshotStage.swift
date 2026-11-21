@@ -173,7 +173,7 @@ struct ScreenshotStage: View {
             case "interview": NavigationStack { InterviewSetupView(model: model, settings: model.modeSettings) }
             case "live": NavigationStack { LiveStartView(model: model, settings: model.modeSettings, mode: .social) }
             case _ where RepetitionDemo.scenes.contains(name): RepetitionDemo.view(name, listening: model)
-            default: Text(verbatim: "Okänd skärm: \(name)")
+            default: Text(verbatim: String(localized: "Okänd skärm: \(name)"))
             }
         }
     }

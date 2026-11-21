@@ -80,7 +80,7 @@ struct ExamPlan: Codable, Equatable, Identifiable, Sendable {
     }
 
     /// D189: a repetition exam without a date.
-    static let noDateLine = String(localized: "Inget datum")
+    static var noDateLine: String { String(localized: "Inget datum") }
 
     static func inDays(_ days: Int) -> String {
         switch days {

@@ -34,9 +34,11 @@ struct SettingsView: View {
     }
 
     @Environment(\.webAuthenticationSession) private var webAuthenticationSession
+    @Environment(LanguageSettings.self) private var appLanguage: LanguageSettings?
 
     var body: some View {
         Form {
+            appLanguageSection // D253: first, so it is found whatever language the app is showing
             // Vanliga
             voiceSection
             answerSection
@@ -212,9 +214,28 @@ struct SettingsView: View {
         }
     }
 
+    /// D253 (Aron): the app starts in English; Svenska is one tap here. The names are the languages' own, and the
+    /// change shows at once (`AppRoot` builds the screens again). The server gets the same choice as `lang`.
+    @ViewBuilder private var appLanguageSection: some View {
+        if let appLanguage {
+            Section {
+                Picker("Språk", selection: Binding(get: { appLanguage.language }, set: { appLanguage.choose($0) })) {
+                    ForEach(AppLanguage.allCases) { Text(verbatim: $0.nativeName).tag($0) }
+                }
+                .pickerStyle(.segmented)
+                .accessibilityIdentifier("settings.appLanguage")
+            } header: {
+                Text("Språk")
+            } footer: {
+                Text("Gäller appens texter och EarMinds svar.")
+            }
+        }
+    }
+
+    /// The language that is listened for (the speech recognition), which can be another than the texts'.
     private var languageSection: some View {
-        Section("Språk") {
-            Picker("Språk", selection: languageBinding) {
+        Section("Språk du pratar") {
+            Picker("Språk du pratar", selection: languageBinding) {
                 ForEach(TranscriptionLanguage.allCases) { language in
                     Text(language.nativeName).tag(language)
                 }

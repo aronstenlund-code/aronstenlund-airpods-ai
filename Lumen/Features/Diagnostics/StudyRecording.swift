@@ -45,7 +45,7 @@ final class StudyRecordingModel {
         guard !isRecording else { return }
         if !listening.isListening { await listening.startStudy() }
         guard listening.isListening else {
-            notice = "Mikrofonen kunde inte starta."
+            notice = String(localized: "Mikrofonen kunde inte starta.")
             return
         }
         samples = []
@@ -159,12 +159,12 @@ final class StudyRecordingModel {
             encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
             try encoder.encode(File(header: header, recordedSeconds: elapsed, events: events)).write(to: json)
             files = [wav, text, json]
-            notice = "Sparat: \(wav.lastPathComponent), .txt och .json"
+            notice = String(localized: "Sparat: \(wav.lastPathComponent), .txt och .json")
         } catch {
-            notice = "Kunde inte spara: \(error.localizedDescription)"
+            notice = String(localized: "Kunde inte spara: \(error.localizedDescription)")
         }
         #else
-        notice = "Inspelning finns bara i testbygget."
+        notice = String(localized: "Inspelning finns bara i testbygget.")
         #endif
     }
 

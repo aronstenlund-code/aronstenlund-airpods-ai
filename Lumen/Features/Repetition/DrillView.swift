@@ -502,7 +502,7 @@ struct DrillView: View {
 /// A110 (D198): Dela and Publicera are offered only once the exam has been started: the user has seen the answers and
 /// the sound exists (D190). Before that the buttons are not shown at all, and one line says what to do.
 enum DrillShareGate {
-    static let startFirstLine = String(localized: "Starta provet först så kan du dela det.")
+    static var startFirstLine: String { String(localized: "Starta provet först så kan du dela det.") }
 
     static func isOffered(_ drill: Drill) -> Bool { !drill.awaitsAudioStart }
 }

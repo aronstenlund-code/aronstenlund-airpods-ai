@@ -127,9 +127,9 @@ enum VoiceDescription {
 
     /// Voices described from the reports (K14: Adam is a Swedish narrator voice; O12: Saga and Max are as clear,
     /// with more long pauses). Keyed by the lowercased first word of the service's name.
-    static let known: [String: Words] = [
+    static var known: [String: Words] { [
         "adam": Words(title: String(localized: "Lugn berättarröst"), detail: String(localized: "Svensk, tydlig")),
-    ]
+    ] }
 
     static func words(for choice: VoiceChoice, described: String? = nil) -> Words {
         switch choice.kind {

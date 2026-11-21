@@ -61,12 +61,12 @@ struct SayVoicesSheet: View {
     @Environment(\.accessibilityReduceMotion) private var systemReduceMotion
     private var reduceMotion: Bool { SayMotion.reduces(systemReduceMotion) }
 
-    static let footnote = String(localized: "Provlyssning kostar inget. En ny röst blir nytt ljud.")
+    nonisolated static var footnote: String { String(localized: "Provlyssning kostar inget. En ny röst blir nytt ljud.") }
     // A140 (D223): mine, for Kelly to review.
-    static let mixTitle = String(localized: "Blanda röster")
-    static let mixLine = String(localized: "Varje stycke får en egen röst, samma varje gång.")
-    static let reviewTitle = String(localized: "Att provlyssna")
-    static let notInCatalog = String(localized: "Kan bara provlyssnas") // Kelly"
+    nonisolated static var mixTitle: String { String(localized: "Blanda röster") }
+    nonisolated static var mixLine: String { String(localized: "Varje stycke får en egen röst, samma varje gång.") }
+    nonisolated static var reviewTitle: String { String(localized: "Att provlyssna") }
+    nonisolated static var notInCatalog: String { String(localized: "Kan bara provlyssnas") } // Kelly"
 
     private var query: String { search.trimmingCharacters(in: .whitespaces) }
 

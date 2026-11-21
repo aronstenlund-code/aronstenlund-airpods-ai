@@ -198,7 +198,7 @@ struct FetchedPage: Decodable, Sendable, Equatable {
     }
 
     /// Ke69: said when the page could not be read and the server gave no words of its own.
-    static let unreadableLine = String(localized: "Sidan gick inte att läsa. Kopiera texten och klistra in den i stället.")
+    static var unreadableLine: String { String(localized: "Sidan gick inte att läsa. Kopiera texten och klistra in den i stället.") }
 }
 
 extension DrillMaking {

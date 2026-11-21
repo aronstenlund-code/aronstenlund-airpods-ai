@@ -25,8 +25,8 @@ struct AddExamView: View {
     @State private var topics = ""
     @State private var listeningForVoice = false
 
-    static let grades: [(StudyProfile.Grade, String)] = [(.y6, String(localized: "Åk 6")), (.y7, String(localized: "Åk 7")), (.y8, String(localized: "Åk 8")), (.y9, String(localized: "Åk 9")),
-                                                         (.gy1, String(localized: "Gy 1")), (.gy2, String(localized: "Gy 2")), (.gy3, String(localized: "Gy 3")), (.university, String(localized: "Högskola"))]
+    nonisolated static var grades: [(StudyProfile.Grade, String)] { [(.y6, String(localized: "Åk 6")), (.y7, String(localized: "Åk 7")), (.y8, String(localized: "Åk 8")), (.y9, String(localized: "Åk 9")),
+                                                         (.gy1, String(localized: "Gy 1")), (.gy2, String(localized: "Gy 2")), (.gy3, String(localized: "Gy 3")), (.university, String(localized: "Högskola"))] }
 
     @State private var pickedSubject = false
     /// A33 (D109): in the first start the voice comes first; the form is the fallback behind "Skriv i stället".

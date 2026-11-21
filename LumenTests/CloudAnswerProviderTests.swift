@@ -124,7 +124,7 @@ import Testing
     @Test func emptyContextMembersAreOmitted() {
         let data = CloudAnswerProvider.encodeBody(AnswerRequest(fragment: "x", mode: "text", language: "en"))
         let json = String(decoding: data, as: UTF8.self)
-        #expect(json == "{\"context\":{},\"fragment\":\"x\",\"language\":\"en\",\"length\":\"adaptive\",\"mode\":\"text\"}")
+        #expect(json == "{\"context\":{},\"fragment\":\"x\",\"lang\":\"sv\",\"language\":\"en\",\"length\":\"adaptive\",\"mode\":\"text\"}") // A157 (K114): lang, the app's language (the tests run in Swedish)
     }
 
     @Test func retriesOnceAfter401WithAFreshSession() async throws {

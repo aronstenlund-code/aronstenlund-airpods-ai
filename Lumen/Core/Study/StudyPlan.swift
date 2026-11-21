@@ -414,7 +414,7 @@ final class LumenNotifications: NSObject, UNUserNotificationCenterDelegate, Send
 
 /// Kelly's texts come with Ke65; until then these. One place, so they are changed here only.
 enum PracticeReminderText {
-    static let title = String(localized: "Dags att plugga")
+    static var title: String { String(localized: "Dags att plugga") }
     static func body(examTitle: String?) -> String {
         guard let examTitle = examTitle?.trimmingCharacters(in: .whitespacesAndNewlines), !examTitle.isEmpty else {
             return String(localized: "Ett varv tar bara några minuter.")
