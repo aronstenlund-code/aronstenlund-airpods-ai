@@ -103,4 +103,16 @@ _rows3 = le.run([{"id": "praktiskt-x", "cat": "praktiskt", "turns": [{"q": "rece
 le.Backend = _real_backend
 check("raden har source_missing", _rows3[0].get("source_missing") is True)
 check("rapporten räknar sökta svar utan källa", "1 sökta svar utan källa" in le.report(_rows3, "2026-11-21"))
+# K116: source_fallback is a right answer (no "källrad saknas"), kept per row and counted
+class _FakeFallback(_FakeBackend):
+    def ask(self, u, body):
+        return dict(text="Jag hittade inget recept med en säker källa.", ttft_ms=900, total_ms=1000,
+                    done={"usage": {"web_searches": 1}, "source_fallback": True}, options=None, error=None)
+
+
+le.Backend = _FakeFallback
+_rows4 = le.run([{"id": "praktiskt-y", "cat": "praktiskt", "turns": [{"q": "recept på köttbullar", "web": True}]}], {}, ["ica.se"], set(), now)
+le.Backend = _real_backend
+check("source_fallback ger ingen källrad saknas", not any("källrad" in p for p in _rows4[0]["problems"]) and _rows4[0].get("source_fallback") is True)
+check("rapporten räknar source_fallback", "1 sade" in le.report(_rows4, "2026-11-22"))
 sys.exit(0 if all(ok) else 1)
