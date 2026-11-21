@@ -348,7 +348,10 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
         const to = join(out, `${engine}-saved.mp3`);
         await file.saveAs(to);
         const { statSync } = await import('node:fs');
-        check(`${engine} saves the file (Save the MP3)`, statSync(to).size === made.size && file.suggestedFilename() === made.name, `${file.suggestedFilename()}, ${statSync(to).size} bytes`);
+        // Run 44918272697: Playwright's WebKit suggests the name with "_" for spaces; the page's download attribute has
+        // the spaces. Same name apart from that, and the same bytes.
+        const same = file.suggestedFilename().replace(/_/g, ' ') === made.name.replace(/_/g, ' ');
+        check(`${engine} saves the file (Save the MP3)`, statSync(to).size === made.size && same, `${file.suggestedFilename()}, ${statSync(to).size} bytes`);
       } catch (e) {
         check(`${engine} saves the file (Save the MP3)`, false, String(e).split('\n')[0].slice(0, 200));
       }
