@@ -75,8 +75,10 @@ jobs:
               if not os.path.exists(path):
                   bad.append(f"{path} is missing")
           app = open("site/beta/assets/app.js", encoding="utf-8").read() if os.path.exists("site/beta/assets/app.js") else ""
-          if "elevenlabs" in app.lower():
-              bad.append("the beta's script mentions ElevenLabs: it must only talk to our own server")
+          # The consent text names ElevenLabs (it has to). What must never be in the script is an ElevenLabs address:
+          # the Scribe socket's address and its single-use token always come from our server (/stt-token).
+          if "elevenlabs.io" in app.lower():
+              bad.append("the beta's script holds an ElevenLabs address: it must only come from our own server")
           print(f"site/: {total} bytes")
           for line in bad:
               print(f"::error::{line}")

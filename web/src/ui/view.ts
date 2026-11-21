@@ -3,6 +3,7 @@ import { short } from '../core/credits';
 import { thinkingSeconds } from '../core/questionPlayer';
 import { addingStyle, capsule, chars, maxChars, maxStyleChars, parts } from '../core/said';
 import type { KeyValue } from '../api/client';
+import type { ListenSession } from '../listen/session';
 import type { SavedExam, Store } from '../store';
 import { clockText, grouped, type Lang, type Translate } from '../texts';
 import { h, icon, Region } from './dom';
@@ -30,6 +31,17 @@ export interface ViewDeps {
   platform: Platform;
   /// Small things only this screen remembers (the first-time line).
   flags: KeyValue;
+  /// Listening (A156 part 2) and the consent that comes before it.
+  listen: ListenSession;
+  consent: Consent;
+}
+
+/// D21 on the web: listening never starts before the consent screen has been read and accepted in this browser.
+export interface Consent {
+  /// The day it was given (YYYY-MM-DD), or null.
+  given(): string | null;
+  give(): void;
+  withdraw(): void;
 }
 
 const seenKey = 'earmind.beta.played';
@@ -50,6 +62,8 @@ export class View {
   private readonly recents: Region;
   private readonly quizzes: Region;
   private readonly player: Region;
+  private readonly modes: Region;
+  private readonly listenBar: Region;
   private readonly live: HTMLElement;
   private readonly form: HTMLElement;
   private readonly field: HTMLTextAreaElement;
@@ -79,6 +93,8 @@ export class View {
     this.recents = region('section', 'recents');
     this.quizzes = region('section', 'quizzes');
     this.player = region('div', 'player-host');
+    this.modes = region('section', 'modes');
+    this.listenBar = region('div', 'listen-bar-host');
     this.live = h('div', { class: 'visually-hidden', attrs: { 'aria-live': 'polite', role: 'status' } });
 
     this.field = h('textarea', {
@@ -105,6 +121,7 @@ export class View {
         h('section', { class: 'card say', attrs: { 'aria-label': t('sayLabel') } }, this.form, this.playing.el),
         this.recents.el,
         this.quizzes.el,
+        this.modes.el,
         h('p', { class: 'about', text: t('about') }),
       ),
       h(
@@ -114,6 +131,7 @@ export class View {
         h('button', { class: 'text-button', text: t('openLink'), attrs: { type: 'button', 'data-testid': 'open-link' }, onclick: () => deps.app.openLink() }),
       ),
       sheetHost,
+      this.listenBar.el,
       this.player.el,
       this.live,
     );
@@ -211,13 +229,16 @@ export class View {
     const { app, t, lang, store, platform } = this.deps;
     const left = app.creditsLeft;
     const decimal = lang === 'sv' ? ',' : '.';
-    const active = app.text !== null || app.quiz !== null;
+    const listen = this.deps.listen;
+    const active = app.text !== null || app.quiz !== null || listen.isOn;
 
     this.header.show(`${left}:${lang}`, () => [
       h(
         'button',
-        { class: 'capsule credits', attrs: { type: 'button', 'data-testid': 'credits' }, onclick: () => this.sheets.open('credits') },
-        left === null ? t('credits') : left === Number.MAX_SAFE_INTEGER ? t('credits') : t('creditsLeft', { n: short(left, decimal) }),
+        // Kelly (webbeta.md §10): on the narrowest phones the short form ("1.2k left"), drawn by the style from
+        // `data-short`; the button's own text stays the whole sentence for VoiceOver and the tests.
+        { class: 'capsule credits', attrs: { type: 'button', 'data-testid': 'credits', 'data-short': left === null || left === Number.MAX_SAFE_INTEGER ? null : t('creditsLeftShort', { n: short(left, decimal) }) }, onclick: () => this.sheets.open('credits') },
+        h('span', { class: 'wide', text: left === null || left === Number.MAX_SAFE_INTEGER ? t('credits') : t('creditsLeft', { n: short(left, decimal) }) }),
       ),
       h('span', { class: 'beta', text: t('beta') }),
       h('span', { class: 'spacer' }),
@@ -299,12 +320,68 @@ export class View {
 
     this.renderQuizzes(left);
     this.renderPlayer();
+    this.renderListening();
     this.sheets.render();
 
     // The lock screen and the AirPods' owner see what plays.
     if (app.text !== null && app.saidPlaying !== null) platform.nowPlaying(capsule(app.saidPlaying.text), t('sayLabel'), !app.text.paused);
     else if (app.quiz !== null && app.examPlaying !== null) platform.nowPlaying(t('question', { n: app.quiz.index + 1, m: app.quiz.count }), app.examPlaying.title, !app.quiz.paused);
+    else if (listen.isOn) platform.nowPlaying(t(listen.phase === 'answering' ? 'answering' : 'listening'), 'EarMind', true);
     else platform.nothingPlaying();
+  }
+
+  /// Start listening: the consent screen first, the first time (D21). Only after that does the browser ask for the
+  /// microphone.
+  private startListening(): void {
+    this.blocked = false;
+    this.stoppedByScreen = false;
+    if (this.deps.consent.given() === null) {
+      this.sheets.open('consent');
+      return;
+    }
+    this.deps.flags.setItem(seenKey, '1');
+    void this.deps.listen.start();
+  }
+
+  /// "More modes": listening. While it listens, a row at the top of every screen says so, with Stop (Kelly §6).
+  private renderListening(): void {
+    const { t, listen } = this.deps;
+    const on = listen.isOn;
+    const word = listen.phase === 'answering' ? t('answering') : listen.phase === 'starting' ? t('listenStarting') : t('listening');
+    document.body.classList.toggle('is-listening', on);
+
+    this.listenBar.show(JSON.stringify([on, listen.phase]), () =>
+      on
+        ? [
+            h(
+              'div',
+              { class: 'listen-bar', attrs: { role: 'status', 'data-testid': 'listen-bar' } },
+              h('span', { class: `status${listen.phase === 'starting' ? ' still' : ''}` }, h('span', { class: 'dot' }), h('span', { text: word })),
+              h('button', { class: 'capsule on-card', text: t('stop'), attrs: { type: 'button', 'data-testid': 'listen-stop' }, onclick: () => listen.stop() }),
+            ),
+          ]
+        : [],
+    );
+
+    this.modes.show(JSON.stringify([on, listen.phase, listen.heard, listen.question, listen.answer, listen.error, listen.level]), () => [
+      h('div', { class: 'section-head' }, h('h2', { text: t('modesTitle') }), h('span', { class: 'beta', text: t('beta') })),
+      h(
+        'article',
+        { class: 'card listen', attrs: { 'data-testid': 'listen-card' } },
+        on
+          ? h('p', { class: `status on-surface${listen.phase === 'starting' ? ' still' : ''}` }, h('span', { class: 'dot' }), h('span', { attrs: { 'data-testid': 'listen-phase' }, text: word }), h('span', { class: 'meter', attrs: { 'aria-hidden': 'true' } }, h('span', { attrs: { style: `transform:scaleX(${Math.min(1, listen.level * 4).toFixed(2)})` } })))
+          : h('p', { class: 'quiet-text', text: t('listenLine') }),
+        on && listen.phase === 'listening' && listen.heard !== '' ? h('p', { class: 'heard', attrs: { 'data-testid': 'listen-heard' } }, h('span', { class: 'quiet-text', text: `${t('listenHeard')}: ` }), listen.heard) : null,
+        listen.question !== null && (on || listen.answer !== '') && listen.phase !== 'listening' ? h('p', { class: 'heard', attrs: { 'data-testid': 'listen-question' }, text: listen.question }) : null,
+        listen.answer !== ''
+          ? h('button', { class: 'answer-text', attrs: { type: 'button', 'data-testid': 'listen-answer', 'aria-label': listen.answer }, onclick: () => listen.press() }, listen.answer)
+          : null,
+        listen.error !== null ? h('p', { class: 'warn-text', attrs: { role: 'alert', 'data-testid': 'listen-error' }, text: listen.error }) : null,
+        on
+          ? h('p', { class: 'quiet-text hint', text: t('listenHint') })
+          : h('button', { class: 'main-button tinted', attrs: { type: 'button', 'data-testid': 'listen-start' }, onclick: () => this.startListening() }, h('span', { text: t('listenStart') })),
+      ),
+    ]);
   }
 
   private renderSay(left: number | null): void {

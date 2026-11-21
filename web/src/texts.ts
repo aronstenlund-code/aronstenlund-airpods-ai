@@ -124,6 +124,35 @@ const en = {
   end: 'End',
   pressesQuiz: 'On your AirPods: 1 press long answer · 2 short answer · 3 pause',
 
+  // Listening (A156 part 2). The consent is Kelly's (docs/design/webbeta.md §9): shown before the first start; only
+  // then does the browser ask for the microphone.
+  modesTitle: 'More modes',
+  listenLine: 'EarMind listens through your microphone and answers what you ask.',
+  listenStart: 'Start listening',
+  consentTitle: 'Before you start',
+  consentIntro: 'EarMind listens through your microphone and answers what you ask. Here’s what happens to sound and text.',
+  consent1: 'Only when you start it.|You start and stop it. While it listens, the top of the page shows “● Listening”, and your browser shows its own microphone sign.',
+  consent2: 'Speech is transcribed by ElevenLabs.|While EarMind listens, the sound goes to ElevenLabs, which turns it into text. Answers are read with an ElevenLabs voice. EarMind doesn’t save the sound.',
+  consent3: 'Answers come from Claude.|The text goes through EarMind’s server to Claude by Anthropic, which writes the answer.',
+  consent4: 'Other people’s words can be included.|If someone near you asks a question, their words are transcribed and sent the same way. Tell the people around you that you’re using EarMind, and don’t use it where recording isn’t allowed.',
+  consent5: 'Stop whenever you like.|One tap stops the microphone. You can withdraw consent in Settings on this page.',
+  consentButton: 'I understand, start listening',
+  consentNote: 'The screen has to stay on while it listens.',
+  consentGiven: 'Consent given {day}',
+  consentWithdraw: 'Withdraw consent',
+  consentWithdrawAsk: 'Stop listening and withdraw consent?',
+  privacyConsent: 'Privacy and consent',
+  listening: 'Listening',
+  answering: 'Answering',
+  listenStarting: 'Starting …',
+  listenHeard: 'Heard',
+  listenHint: 'On your AirPods: 1 press stops the answer',
+  listenMicDenied: 'The browser didn’t let EarMind use the microphone. Allow it in the browser’s settings and try again.',
+  listenFailed: 'Listening stopped. Try again in a moment.',
+  listenHidden: 'Listening stopped because the page was hidden or the screen turned off.',
+  listenAnswerFailed: 'No answer this time. Ask again.',
+  listenNoSpeech: 'The answer couldn’t be read aloud right now.',
+
   // Credits (D249: no purchases on the web)
   credits: 'Credits',
   creditsBig: 'credits left',
@@ -151,6 +180,8 @@ const en = {
   about: 'EarMind beta · the iPhone app is on its way.',
 
   errorOffline: 'The sound couldn’t be loaded. Check your connection.',
+  errorUnreached: 'EarMind couldn’t be reached right now. Try again in a moment.',
+  creditsLeftShort: '{n} left',
   errorGeneric: 'Can’t play right now. Try again in a moment.',
 };
 
@@ -267,6 +298,33 @@ const sv: Record<Key, string> = {
   end: 'Avsluta',
   pressesQuiz: 'På dina AirPods: 1 tryck långt svar · 2 kort svar · 3 paus',
 
+  modesTitle: 'Fler lägen',
+  listenLine: 'EarMind lyssnar genom mikrofonen och svarar på det du frågar.',
+  listenStart: 'Börja lyssna',
+  consentTitle: 'Innan du börjar',
+  consentIntro: 'EarMind lyssnar genom mikrofonen och svarar på det du frågar. Så här gör den med ljud och text.',
+  consent1: 'Bara när du har startat den.|Du startar och stoppar själv. Medan den lyssnar står ”● Lyssnar” överst på sidan, och webbläsaren visar sin egen mikrofonsymbol.',
+  consent2: 'Talet skrivs ut av ElevenLabs.|Medan EarMind lyssnar skickas ljudet till ElevenLabs, som gör det till text. Svaren läses upp med en röst från ElevenLabs. EarMind sparar inte ljudet.',
+  consent3: 'Svaren kommer från Claude.|Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret.',
+  consent4: 'Andras ord kan komma med.|Ställer någon nära dig en fråga skrivs deras ord ut och skickas på samma sätt. Berätta för dem runt dig att du använder EarMind, och använd den inte där inspelning inte är tillåten.',
+  consent5: 'Sluta när du vill.|Ett tryck stoppar mikrofonen. Du kan ta tillbaka samtycket i Inställningar på sidan.',
+  consentButton: 'Jag förstår, börja lyssna',
+  consentNote: 'Skärmen måste vara på medan den lyssnar.',
+  consentGiven: 'Samtycke givet {day}',
+  consentWithdraw: 'Ta tillbaka samtycket',
+  consentWithdrawAsk: 'Sluta lyssna och ta tillbaka samtycket?',
+  privacyConsent: 'Integritet och samtycke',
+  listening: 'Lyssnar',
+  answering: 'Svarar',
+  listenStarting: 'Startar …',
+  listenHeard: 'Hört',
+  listenHint: 'På dina AirPods: 1 tryck stoppar svaret',
+  listenMicDenied: 'Webbläsaren lät inte EarMind använda mikrofonen. Tillåt den i webbläsarens inställningar och försök igen.',
+  listenFailed: 'Lyssningen stannade. Försök igen om en stund.',
+  listenHidden: 'Lyssningen stannade för att sidan doldes eller skärmen släcktes.',
+  listenAnswerFailed: 'Inget svar den här gången. Fråga igen.',
+  listenNoSpeech: 'Svaret kunde inte läsas upp just nu.',
+
   credits: 'Krediter',
   creditsBig: 'krediter kvar',
   creditsMonthly: '{n} krediter varje månad.',
@@ -292,6 +350,8 @@ const sv: Record<Key, string> = {
   about: 'EarMind beta · appen för iPhone är på väg.',
 
   errorOffline: 'Ljudet kunde inte hämtas. Kolla nätet.',
+  errorUnreached: 'EarMind gick inte att nå just nu. Försök igen om en stund.',
+  creditsLeftShort: '{n} kvar',
   errorGeneric: 'Det gick inte att spela just nu. Försök igen om en stund.',
 };
 
