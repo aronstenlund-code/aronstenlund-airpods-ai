@@ -107,7 +107,15 @@ async function answer(route) {
     if (body.action === 'save' && body.drill.said) return json(textView(false));
     if (body.action === 'save') return json(quizView(false));
     if (body.action === 'status') return json(body.id === 'e1' ? quizView(true) : textView((state.statusAsked += 1) >= 1));
-    if (body.action === 'start') return json(body.id === 'e1' ? quizView(true) : textView(true));
+    if (body.action === 'start') return json(body.id === 'e1' || body.id === 'copy1' ? quizView(true) : textView(true));
+    if (body.action === 'share_info') {
+      if (!String(body.code).includes('abc12345')) return json({ error: { code: 'share_not_found', message: 'The link no longer works.' } }, 404);
+      return json({ title: 'Cells and leaves', subject: 'Biology', grade: 'Year 8', items: 5, audio_ready: true });
+    }
+    if (body.action === 'import') {
+      const copy = quizView(true);
+      return json({ ...copy, drill: { id: 'copy1', title: 'Cells and leaves', audio_started: true }, items: copy.items.map((it) => ({ ...it, short: 'Sugar and oxygen.', long: 'A longer answer.' })), new_chars: 0 });
+    }
     return json({ ok: true });
   }
   if (fn === 'exam') {
@@ -138,7 +146,7 @@ async function run(name, { locale, colorScheme, width = 393, height = 852, scale
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   // The browser itself logs the pretend server's 402 (no credits): that one is part of the script.
-  page.on('console', (m) => (m.type() === 'error' && !m.text().includes('status of 402') ? errors.push(m.text()) : undefined));
+  page.on('console', (m) => (m.type() === 'error' && !/status of 40[24]/.test(m.text()) ? errors.push(m.text()) : undefined));
   await page.route('https://xjczbzfkmbjdebwlccki.supabase.co/**', answer);
   await page.route('https://files.test/**', answer);
   const outside = [];
@@ -241,6 +249,20 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   check('three presses pause', (await page.getByTestId('phase').textContent()) === 'Paused');
   await page.getByTestId('end').click();
   check('End: back on the first screen, continues where it was', (await page.getByTestId('start-quiz').textContent()).includes('Continue · question 2'));
+  // Open link: a quiz someone shared costs nothing.
+  await page.getByTestId('open-link').click();
+  await page.getByTestId('link-field').fill('nothing-here');
+  await page.getByTestId('link-open').click();
+  await page.getByTestId('link-error').waitFor();
+  check('a dead link: the server\u2019s words, and what was pasted stays', (await page.getByTestId('link-error').textContent()) === 'The link no longer works.' && (await page.getByTestId('link-field').inputValue()) === 'nothing-here');
+  await page.getByTestId('link-field').fill('https://earmind.vercel.app/p/abc12345');
+  await page.getByTestId('link-open').click();
+  await page.getByTestId('link-found').waitFor();
+  await shot('13-open-link');
+  await page.getByTestId('link-add').click();
+  await page.waitForFunction(() => document.querySelectorAll('[data-testid=quiz]').length === 2);
+  check('the shared quiz is added and costs nothing', !(await page.getByTestId('quiz').first().textContent()).includes('credits when you start') && (await page.getByTestId('quiz').first().textContent()).includes('Cells and leaves'));
+  await shot('14-two-quizzes');
   const exam = calls.find((c) => c.fn === 'exam');
   check('the exam is asked for in the web’s language', exam.body.lang === 'en' && exam.body.answers === false);
 });

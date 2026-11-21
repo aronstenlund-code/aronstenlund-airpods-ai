@@ -27,11 +27,14 @@ export function openSheet(host: HTMLElement, deps: ViewDeps, changed: () => void
   let quizText = '';
   let quizCount = App.defaultQuestions;
   let correcting = false;
+  // Open link: what was pasted stays while the server looks.
+  let linkText = '';
 
   const close = (): void => {
     platform.preview(null);
     if (asking !== null) asking = null;
     else if (name !== null) name = null;
+    else if (app.link.stage !== 'closed') app.closeLink();
     else if (app.draft.stage !== 'closed') {
       correcting = false;
       app.closeDraft();
@@ -281,6 +284,43 @@ export function openSheet(host: HTMLElement, deps: ViewDeps, changed: () => void
     );
   };
 
+  // MARK: Open link
+
+  const linkSheet = (link: Exclude<App['link'], { stage: 'closed' }>): HTMLElement => {
+    const field = h('input', { class: 'input', attrs: { type: 'url', inputmode: 'url', autocapitalize: 'none', autocomplete: 'off', placeholder: t('linkPrompt'), 'aria-label': t('linkPrompt'), 'data-testid': 'link-field' } });
+    field.value = linkText;
+    field.addEventListener('input', () => {
+      linkText = field.value;
+    });
+    const go = (): void => void app.lookUp(linkText);
+    field.addEventListener('keydown', (event) => (event.key === 'Enter' ? go() : undefined));
+    const found = link.stage === 'found' ? link : null;
+    return sheet(
+      t('linkTitle'),
+      [
+        field,
+        found === null
+          ? null
+          : h(
+              'div',
+              { class: 'group pad', attrs: { 'data-testid': 'link-found' } },
+              h('h3', { text: found.info.title ?? t('newQuiz') }),
+              h('p', { class: 'quiet-text', text: [found.info.subject, found.info.grade, found.info.items !== undefined ? t('quizQuestions', { n: found.info.items }) : null].filter(Boolean).join(' \u00b7 ') }),
+            ),
+        link.error !== null ? h('p', { class: 'warn-text', attrs: { role: 'alert', 'data-testid': 'link-error' }, text: link.error }) : null,
+        h('p', { class: 'quiet-text', text: t('linkFree') }),
+      ],
+      {
+        done: t('cancel'),
+        testid: 'link-sheet',
+        bottom:
+          found === null
+            ? h('button', { class: 'main-button', attrs: { type: 'button', disabled: link.busy, 'data-testid': 'link-open' }, onclick: go }, link.busy ? h('span', { class: 'spinner' }) : null, h('span', { text: t('linkOpen') }))
+            : h('button', { class: 'main-button', attrs: { type: 'button', disabled: found.busy, 'data-testid': 'link-add' }, onclick: () => void app.addShared() }, found.busy ? h('span', { class: 'spinner' }) : null, h('span', { text: t('linkAdd') })),
+      },
+    );
+  };
+
   const confirmBox = (a: { question: string; action: string; run: () => void }): HTMLElement =>
     h(
       'div',
@@ -324,6 +364,10 @@ export function openSheet(host: HTMLElement, deps: ViewDeps, changed: () => void
       const which = name;
       key = `${which}:${JSON.stringify(which === 'credits' ? [app.quota] : which === 'voices' ? [store.settings.voiceID, app.voices.length, previewing] : which === 'duration' ? [store.settings.minutes] : [])}`;
       build = () => ({ credits, guide, voices, duration, settings })[which]();
+    } else if (app.link.stage !== 'closed') {
+      const link = app.link;
+      key = `link:${JSON.stringify(link)}`;
+      build = () => linkSheet(link);
     } else if (draft.stage === 'write') {
       key = `write:${draft.error}`;
       build = () => write(draft.error);
@@ -340,8 +384,9 @@ export function openSheet(host: HTMLElement, deps: ViewDeps, changed: () => void
       key = '';
       build = () => null;
       if (shown !== '') {
-        // A quiz that was just saved: the next one starts empty.
-        quizText = '';
+        // A quiz that was just saved or added: the next one starts empty.
+        if (shown.startsWith('link:')) linkText = '';
+        else quizText = '';
         correcting = false;
       }
     }
@@ -361,7 +406,7 @@ export function openSheet(host: HTMLElement, deps: ViewDeps, changed: () => void
     host.classList.add('open');
     host.classList.toggle('entering', !wasOpen); // it comes up once; what changes in it afterwards stays still
     // The sheet is where the keyboard and VoiceOver go: the field if there is one, else the sheet itself.
-    const first = el.querySelector<HTMLElement>('textarea, [role="dialog"], [role="alertdialog"]');
+    const first = el.querySelector<HTMLElement>('textarea, input[type="url"], [role="dialog"], [role="alertdialog"]');
     if (!wasOpen || first instanceof HTMLTextAreaElement) first?.focus({ preventScroll: true });
   };
 

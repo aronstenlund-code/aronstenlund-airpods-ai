@@ -284,3 +284,65 @@ describe('an exam from text on the web', () => {
     expect(server.calls.find((c) => c.action === 'delete')?.body.id).toBe('e1');
   });
 });
+
+describe('Open link: a quiz someone shared', () => {
+  const shared = (): DrillView => ({
+    drill: { id: 'copy1', title: 'Cells', audio_started: true },
+    items: [0, 1, 2].map((i) => ({
+      id: `q${i}`,
+      question: `Q${i}?`,
+      short: `s${i}`,
+      long: `l${i}`,
+      audio: { question: { status: 'done', url: `https://files/q${i}.mp3`, duration_ms: 1000 }, long: { status: 'done', url: `https://files/a${i}.mp3`, duration_ms: 9000, short_end_ms: 2000 } },
+    })),
+    audio: { done: 6, total: 6 },
+  });
+
+  it('shows what the link holds, then adds it as the user\'s own quiz for nothing', async () => {
+    const { app, server, store, sound } = make((_fn, action) => {
+      if (action === 'share_info') return ok({ title: 'Cells', subject: 'Biology', grade: '8', items: 3, audio_ready: true });
+      if (action === 'import') return ok({ ...shared(), new_chars: 0 });
+      if (action === 'start') return ok(shared());
+      return ok({});
+    });
+    app.openLink();
+    await app.lookUp('  https://earmind.vercel.app/p/abc12345  ');
+    expect(app.link).toMatchObject({ stage: 'found', code: 'https://earmind.vercel.app/p/abc12345', info: { title: 'Cells', items: 3 } });
+    expect(server.calls.find((c) => c.action === 'share_info')?.body.code).toBe('https://earmind.vercel.app/p/abc12345');
+    await app.addShared();
+    expect(app.link.stage).toBe('closed');
+    expect(store.exams[0]).toMatchObject({ serverID: 'copy1', title: 'Cells', cost: 0, started: true });
+    expect(store.exams[0].questions.map((q) => q.short)).toEqual(['s0', 's1', 's2']);
+    await app.startExam(store.exams[0].id);
+    expect(sound.last).toBe('play https://files/q0.mp3 0');
+  });
+
+  it('a dead link: the server\'s words, nothing is added', async () => {
+    const { app, store } = make((_fn, action) => (action === 'share_info' ? { status: 404, body: { error: { code: 'share_not_found', message: 'The link no longer works.' } } } : ok({})));
+    app.openLink();
+    await app.lookUp('abc12345');
+    expect(app.link).toEqual({ stage: 'ask', error: 'The link no longer works.', busy: false });
+    expect(store.exams).toEqual([]);
+  });
+
+  it('nothing pasted asks nothing of the server', async () => {
+    const { app, server } = make(() => ok({}));
+    app.openLink();
+    await app.lookUp('   ');
+    expect(server.calls.length).toBe(0);
+  });
+
+  it('a shared text is not a quiz: said, not added as one', async () => {
+    const { app, store } = make((_fn, action) => {
+      if (action === 'share_info') return ok({ title: 'Notes', items: 4, audio_ready: true });
+      if (action === 'import') return ok({ drill: { id: 't1', kind: 'text', title: 'Notes' }, items: [{ id: 'p', text: 'One.' }], audio: { done: 1, total: 1 } });
+      return ok({});
+    });
+    app.openLink();
+    await app.lookUp('abc12345');
+    await app.addShared();
+    expect(store.exams).toEqual([]);
+    expect(app.link).toMatchObject({ stage: 'found', error: 'This link is a text to read aloud. The beta can only open quizzes with questions for now.' });
+  });
+});
+

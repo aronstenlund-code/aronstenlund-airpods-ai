@@ -1,5 +1,5 @@
 import { ApiError, OfflineError } from './api/client';
-import type { DrillApi, DrillView, Question, Voice } from './api/drill';
+import type { DrillApi, DrillView, Question, ShareInfo, Voice } from './api/drill';
 import type { ExamApi, QuestionsReply } from './api/exam';
 import { creditsLeft, type Quota } from './core/credits';
 import { QuestionPlayer, thinkingSeconds } from './core/questionPlayer';
@@ -33,6 +33,12 @@ export type ExamDraft =
   | { stage: 'check'; reply: QuestionsReply; count: number; note: string | null; error: string | null; busy: boolean }
   | { stage: 'answering' };
 
+/// Open link: a quiz someone shared (the app's "Har du fått ett prov?").
+export type LinkDraft =
+  | { stage: 'closed' }
+  | { stage: 'ask'; error: string | null; busy: boolean }
+  | { stage: 'found'; code: string; info: ShareInfo; error: string | null; busy: boolean };
+
 /// Everything the beta does, without a screen: the screens read this and call it (ui.ts), and the tests run it with
 /// a scripted server and a sound that only remembers what it was asked.
 export class App {
@@ -51,6 +57,7 @@ export class App {
 
   /// Exams.
   draft: ExamDraft = { stage: 'closed' };
+  link: LinkDraft = { stage: 'closed' };
   quiz: QuestionPlayer | null = null;
   examPlaying: SavedExam | null = null;
   examBusy: string | null = null;
@@ -263,6 +270,58 @@ export class App {
       this.draft = { stage: 'closed' };
     } catch (error) {
       this.draft = { ...draft, error: this.words(error), busy: false };
+    }
+    this.changed();
+  }
+
+  // MARK: Open link
+
+  openLink(): void {
+    this.link = { stage: 'ask', error: null, busy: false };
+    this.changed();
+  }
+
+  closeLink(): void {
+    this.link = { stage: 'closed' };
+    this.changed();
+  }
+
+  /// What was pasted, a link or the code itself: the server reads either, and says what the link holds.
+  async lookUp(pasted: string): Promise<void> {
+    const code = pasted.trim();
+    if (code.length === 0 || (this.link.stage === 'ask' && this.link.busy)) return;
+    this.link = { stage: 'ask', error: null, busy: true };
+    this.changed();
+    try {
+      const info = await this.deps.drill.shareInfo(code);
+      this.link = { stage: 'found', code, info, error: null, busy: false };
+    } catch (error) {
+      this.link = { stage: 'ask', error: this.words(error), busy: false };
+    }
+    this.changed();
+  }
+
+  /// The shared quiz becomes the user's own. Its sound is the original's: no credits are counted.
+  async addShared(): Promise<void> {
+    const link = this.link;
+    if (link.stage !== 'found' || link.busy) return;
+    this.link = { ...link, busy: true, error: null };
+    this.changed();
+    try {
+      const view = await this.deps.drill.importShared(link.code);
+      if (view.drill.kind === 'text') {
+        // A text to read aloud, not questions: the beta has no screen for those yet, so the copy is not kept.
+        void this.deps.drill.remove(view.drill.id).catch(() => undefined);
+        this.link = { ...link, busy: false, error: this.deps.t('linkIsText') };
+        this.changed();
+        return;
+      }
+      const questions: Question[] = view.items.map((item) => ({ id: item.id, question: item.question ?? '', short: item.short ?? '', long: item.long ?? '' }));
+      const name = view.drill.title || link.info.title || this.deps.t('newQuiz');
+      this.deps.store.keepExam({ id: newID(), serverID: view.drill.id, title: name, subject: link.info.subject ?? '', questions, cost: 0, started: view.drill.audio_started !== false, index: 0, at: this.deps.clock.now() });
+      this.link = { stage: 'closed' };
+    } catch (error) {
+      this.link = { ...link, busy: false, error: this.words(error) };
     }
     this.changed();
   }

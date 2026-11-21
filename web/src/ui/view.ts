@@ -111,6 +111,7 @@ export class View {
         'nav',
         { class: 'toolbar' },
         h('button', { class: 'text-button', attrs: { type: 'button', 'data-testid': 'new-quiz' }, onclick: () => this.newQuiz() }, icon('plus', 26), h('span', { text: t('newQuiz') })),
+        h('button', { class: 'text-button', text: t('openLink'), attrs: { type: 'button', 'data-testid': 'open-link' }, onclick: () => deps.app.openLink() }),
       ),
       sheetHost,
       this.player.el,
