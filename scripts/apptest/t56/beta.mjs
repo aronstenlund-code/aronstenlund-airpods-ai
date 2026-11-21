@@ -125,7 +125,15 @@ async function answer(route) {
     if (body.action === 'save' && body.drill.said) return json(textView(false));
     if (body.action === 'save') return json(quizView(false));
     if (body.action === 'status') return json(body.id === 'e1' ? quizView(true) : textView((state.statusAsked += 1) >= 1));
-    if (body.action === 'start') return json(body.id === 'e1' ? quizView(true) : textView(true));
+    if (body.action === 'start') return json(body.id === 'e1' || body.id === 'copy1' ? quizView(true) : textView(true));
+    if (body.action === 'share_info') {
+      if (!String(body.code).includes('abc12345')) return json({ error: { code: 'share_not_found', message: 'The link no longer works.' } }, 404);
+      return json({ title: 'Cells and leaves', subject: 'Biology', grade: 'Year 8', items: 5, audio_ready: true });
+    }
+    if (body.action === 'import') {
+      const copy = quizView(true);
+      return json({ ...copy, drill: { id: 'copy1', title: 'Cells and leaves', audio_started: true }, items: copy.items.map((it) => ({ ...it, short: 'Sugar and oxygen.', long: 'A longer answer.' })), new_chars: 0 });
+    }
     return json({ ok: true });
   }
   if (fn === 'exam') {
@@ -255,14 +263,17 @@ async function finishLive(page, shot) {
   await shot('7-credits');
   await page.getByTestId('sheet-done').click();
 
-  // Språk en → sv in Settings
+  // Språk en → sv with the EN | SV control at the top (A158, D253)
   await page.getByTestId('settings').click();
   await shot('8-settings');
-  await page.getByRole('button', { name: 'Svenska' }).click();
-  if (await until('Settings › Svenska: the page is in Swedish', () => document.documentElement.lang === 'sv' && document.querySelector('[data-testid=credits]')?.textContent.includes('krediter'), page, 10000)) {
-    check('Settings › Svenska: the page is in Swedish', true);
+  await page.getByTestId('sheet-done').click();
+  await page.getByTestId('lang-sv').click();
+  if (await until('SV: the page is in Swedish', () => document.documentElement.lang === 'sv' && document.querySelector('[data-testid=credits]')?.textContent.includes('krediter'), page, 10000)) {
+    check('SV: the page is in Swedish, SV chosen', (await page.getByTestId('lang-sv').getAttribute('aria-pressed')) === 'true');
   }
   await shot('9-svenska');
+  await page.getByTestId('lang-en').click();
+  if (await until('EN: back to English', () => document.documentElement.lang === 'en', page, 10000)) check('EN: back to English', true);
 }
 const text = async (page, id) => ((await page.getByTestId(id).textContent()) ?? '').trim();
 
@@ -273,14 +284,15 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   await until('the credits capsule fills in', () => /\d/.test(document.querySelector('[data-testid=credits]').textContent), page, 20000);
   const capsule = await text(page, 'credits');
   check('English by default, credits left on the capsule', live ? /credits left$/.test(capsule) : capsule === '1.2k credits left', capsule);
+  check('EN | SV at the top, EN chosen (D253)', (await page.getByTestId('lang-en').getAttribute('aria-pressed').catch(() => null)) === 'true' && (await page.getByTestId('lang-sv').isVisible().catch(() => false)));
   check('the screen line shows the first time, with 10 m (D250)', /10\s?m \(33\s?ft\)/u.test(await text(page, 'screen-line')), JSON.stringify(await text(page, 'screen-line')).slice(0, 220));
   await shot('1-first');
 
   // Säg → Spela (silent WAV from the pretend server)
   await page.getByTestId('say-field').fill(`Photosynthesis${stamp}: carbon dioxide + water + light become sugar and oxygen. It happens in the chloroplasts.`);
-  await until('the cost shows under the field', () => !!document.querySelector('[data-testid=cost]'), page, 30000);
+  await until('the cost shows under the field', () => !!document.querySelector('[data-testid=cost], [data-testid=cost-free]'), page, 30000);
   if (live) await until('the server’s cost shows', () => /\d/.test(document.querySelector('[data-testid=cost]')?.textContent ?? ''), page, 20000);
-  const cost = await text(page, 'cost');
+  const cost = (await page.getByTestId('cost').count()) > 0 ? await text(page, 'cost') : `(${await page.getByTestId('cost-free').textContent().catch(() => 'no cost line')})`;
   check('the cost is the server’s number', live ? /\d.*credits?$/.test(cost) : cost === '102 credits', cost);
   await page.getByTestId('voice').click();
   await page.getByTestId('voices-sheet').waitFor();
@@ -315,6 +327,32 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
   await shot('3-playing');
   if (await until('the next sentence is shown when it is read', () => document.querySelector('[data-testid=sentence]').textContent.startsWith('It happens'), page, live ? 30000 : 8000)) {
     check('the next sentence is shown when it is read', true);
+  }
+  // A158 (D253): Download the sound. One MP3 from the files the server already made; live this is the real storage
+  // (signed links, CORS), and the browser must save it.
+  await page.getByTestId('download').click();
+  if (await until('Download the sound: "Save the MP3" comes', () => !!document.querySelector('[data-testid=download-save]') || /couldn.t be downloaded/.test(document.body.innerText), page, live ? 60000 : 15000)) {
+    if ((await page.getByTestId('download-save').count()) === 0) {
+      check('Download the sound: the files could be fetched', false, (await page.locator('body').innerText()).match(/[^.]*couldn.t be downloaded[^.]*\./)?.[0] ?? '');
+    } else {
+      const made = await page.evaluate(async () => {
+        const a = document.querySelector('[data-testid=download-save]');
+        const blob = await (await fetch(a.href)).blob();
+        const head = new Uint8Array(await blob.slice(0, 3).arrayBuffer());
+        return { name: a.getAttribute('download'), size: blob.size, type: blob.type, mp3: (head[0] === 0xff && (head[1] & 0xe0) === 0xe0) || (head[0] === 0x49 && head[1] === 0x44 && head[2] === 0x33) };
+      });
+      check('Download the sound: one MP3 named after the text', /^EarMind - Photosynthesis.*\.mp3$/.test(made.name ?? '') && made.type === 'audio/mpeg' && made.size > 1000 && (made.mp3 || !live), JSON.stringify(made));
+      await shot('3b-download');
+      try {
+        const [file] = await Promise.all([page.waitForEvent('download', { timeout: 15000 }), page.getByTestId('download-save').click()]);
+        const to = join(out, `${engine}-saved.mp3`);
+        await file.saveAs(to);
+        const { statSync } = await import('node:fs');
+        check(`${engine} saves the file (Save the MP3)`, statSync(to).size === made.size && file.suggestedFilename() === made.name, `${file.suggestedFilename()}, ${statSync(to).size} bytes`);
+      } catch (e) {
+        check(`${engine} saves the file (Save the MP3)`, false, String(e).split('\n')[0].slice(0, 200));
+      }
+    }
   }
   await page.getByTestId('pause').click();
   check('one press pauses', await page.evaluate(() => document.querySelector('#sound').paused));
@@ -375,22 +413,34 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
 
 await run('sv-light', { locale: 'sv-SE', colorScheme: 'light' }, async (page, shot) => {
   await page.goto(page0);
-  if (await until('Swedish for a Swedish browser (D251)', () => /krediter/.test(document.querySelector('[data-testid=credits]')?.textContent ?? ''), page, 20000)) {
-    const sv = await text(page, 'credits');
-    check('Swedish for a Swedish browser (D251)', (live ? /krediter kvar$/.test(sv) : sv === '1,2k krediter kvar') && (await page.evaluate(() => document.documentElement.lang)) === 'sv', sv);
+  // D253 (A158): English first also in a Swedish browser; SV is one tap, and the choice is kept.
+  await until('the credits capsule fills in', () => /\d/.test(document.querySelector('[data-testid=credits]')?.textContent ?? ''), page, 20000);
+  check('a Swedish browser also starts in English (D253)', /credits left$/.test(await text(page, 'credits')) && (await page.evaluate(() => document.documentElement.lang)) === 'en', await text(page, 'credits'));
+  await page.getByTestId('say-field').fill(`Fotosyntes${stamp}: koldioxid + vatten + ljus blir socker och syre.`);
+  await page.getByTestId('lang-sv').click();
+  if (await until('SV: Swedish', () => /krediter kvar$/.test(document.querySelector('[data-testid=credits]')?.textContent ?? ''), page, 20000)) {
+    check('SV: Swedish, and what was typed comes along', (await page.getByTestId('say-field').inputValue()).startsWith('Fotosyntes'), await text(page, 'credits'));
+  }
+  await page.reload();
+  if (await until('the choice is kept after a reload', () => document.documentElement.lang === 'sv', page, 20000)) {
+    check('the choice is kept after a reload', (await page.getByTestId('lang-sv').getAttribute('aria-pressed')) === 'true');
   }
   check('the Swedish screen line says 10 meter', /10\smeter/u.test(await text(page, 'screen-line')), JSON.stringify(await text(page, 'screen-line')).slice(0, 160));
-  await page.getByTestId('say-field').fill(`Fotosyntes${stamp}: koldioxid + vatten + ljus blir socker och syre.`);
-  await until('the cost shows under the field', () => !!document.querySelector('[data-testid=cost]'), page, 30000);
+  await page.getByTestId('say-field').fill(`Fotosyntes${stamp} igen: koldioxid + vatten + ljus blir socker och syre.`);
+  await until('the cost shows under the field', () => !!document.querySelector('[data-testid=cost], [data-testid=cost-free]'), page, 30000);
   await shot('1-first');
 });
 
 await run('small', { locale: 'en-GB', colorScheme: 'dark', viewport: { width: 320, height: 568 } }, async (page, shot) => {
   await page.goto(page0);
   await page.getByTestId('say-field').fill(`A short line${stamp}.`);
-  await until('the cost shows under the field', () => !!document.querySelector('[data-testid=cost]'), page, 30000);
+  await until('the cost shows under the field', () => !!document.querySelector('[data-testid=cost], [data-testid=cost-free]'), page, 30000);
   check('320 wide: nothing is wider than the screen', await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
   await shot('1-first');
+  await page.getByTestId('lang-sv').click();
+  await page.waitForTimeout(500);
+  check('320 wide in Swedish: nothing is wider than the screen', await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth));
+  await shot('2-svenska');
 });
 
 await browser.close();
