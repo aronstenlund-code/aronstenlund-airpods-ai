@@ -52,3 +52,22 @@ Kevin (moln), 2026-11-21. **0 ElevenLabs.** Testkonton.
 ## Till Oscar
 - Räkna `crisis_marker_ignored` i live-evalen (function_logs) som en egen rad, så att en verklig miss syns.
 - Ett ignorerat fall där frågan ändå var ett krisfall är ett allvarligt fynd och ska till mig och Deangelo direkt.
+
+## Tillägg 18:10: O96, T56 och ett driftstopp (kevin-live 44928287463, deploy 369)
+- **O96 (Oscar):** `done.crisis_marker` är `"ignored"` eller `"kept"` varje gång en markör kontrollerades, så att live-evalen kan räkna dem.
+  - Fel och tidsgräns räknas som `"kept"`, eftersom krisvaret ges.
+  - **Verifierat i test**, 845/845.
+- **T56 (Toby):** `x-earmind-test: … question` ger transkriptionen "Vad gör fotosyntesen?". Med `x-earmind-lang: en` blir den "What does photosynthesis do?" och `language_code: "eng"`. Utan ordet är meningen som förut.
+  - **Verifierat live** (3 av 3 kontroller av `stt-token`).
+- **Driftstopp, inte koden:** `/answer` svarar **503 `provider_quota` "LLM credits exhausted"** sedan cirka 17:00 UTC.
+  - Sista 200 var 16:51 UTC; därefter 503 vid 17:02, 17:04 och 17:07.
+  - Modelltjänstens krediter (Anthropic) är slut, och då får alla svar i appen och webbetan fel. Appen faller tillbaka (`fallback: true`).
+  - Samma anrop gav 200 lokalt mot en låtsasmodell. Funktionen startar normalt, utan startfel i loggarna.
+  - **Till Aron (bara han kan göra det), exakta klick:**
+    1. Gå till console.anthropic.com och logga in med kontot som äger API-nyckeln.
+    2. Välj **Settings › Billing**. Se saldot och köp krediter med "Buy credits", eller slå på automatisk påfyllning.
+    3. Kontrollera **Settings › Limits**: om "Monthly spend limit" är nådd, höj gränsen.
+    4. Ingen ny nyckel behövs, och inget ändras i Supabase.
+  - Det kostar pengar, så det är Arons beslut. Jag har inte rört något.
+  - När krediterna finns igen kör jag `k118-live.py` en gång till. Svaret på testfrågan är den enda kontrollen som återstår.
+
