@@ -38,6 +38,7 @@ on:
           - o93_recept_dack_live.py
           - o94_webbeta_live.py
           - o95_k116_web_live.py
+          - o96_k117_crisis_live.py
       args:
         description: "Arguments (optional, e.g. --fast)"
         required: false
