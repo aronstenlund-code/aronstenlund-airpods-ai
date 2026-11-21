@@ -41,6 +41,7 @@ on:
           - k113-live.py
           - k114-web.py
           - k115-quota.py
+          - k114-voices.py
           - qa/o86_eval_reproduce.py
           - k93-live.py
           - k94-apple-root.py
@@ -74,6 +75,8 @@ jobs:
         env:
           SCRIPT: ${{ inputs.script }}
           ARGS: ${{ inputs.args }}
+          # K114: only k114-voices.py reads it (voice-lab's listing of the account's voices, no credits)
+          SUPABASE_SERVICE_ROLE_KEY: ${{ inputs.script == 'k114-voices.py' && secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
         run: |
           mkdir -p reports/qa/data
           before=$(ls reports/qa/data | sort)

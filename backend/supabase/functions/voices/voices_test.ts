@@ -110,3 +110,12 @@ Deno.test("K99 (D223): voices under review are shown only to admin", async () =>
   assertEquals((await (await mk(false)(new Request("http://x/voices"))).json()).catalog.map((v: { name: string }) => v.name), ["Sara"]);
   assertEquals((await (await mk(true)(new Request("http://x/voices"))).json()).catalog.map((v: { name: string }) => v.name), ["Sara", "Pirat"]);
 });
+
+Deno.test("K114 (D252): the library can be searched for native English voices (lang=en)", async () => {
+  const seen: Record<string, unknown>[] = [];
+  const h = createVoicesHandler(deps({ searchLibrary: (q: Record<string, unknown>) => (seen.push(q), Promise.resolve([])) }));
+  await h(new Request("http://x/voices?library=1&lang=en&gender=female", { method: "GET" }));
+  assertEquals(seen[0].language, "en");
+  await h(new Request("http://x/voices?library=1&lang=any", { method: "GET" }));
+  assertEquals(seen[1].anyLanguage, true);
+});

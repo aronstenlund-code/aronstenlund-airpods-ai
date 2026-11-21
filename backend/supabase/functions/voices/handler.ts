@@ -29,7 +29,7 @@ export interface VoicesDeps {
   /** K99: admin (credit_admins) also sees voices under review */
   isAdmin?: (userId: string) => Promise<boolean>;
   /** K96: ElevenLabs' voice library (GET /v1/shared-voices, language sv): no credits */
-  searchLibrary?: (q: { search?: string; accent?: string; gender?: string; page?: number; anyLanguage?: boolean }) => Promise<CatalogVoice[]>;
+  searchLibrary?: (q: { search?: string; accent?: string; gender?: string; page?: number; anyLanguage?: boolean; language?: string }) => Promise<CatalogVoice[]>;
 }
 
 const clip = (v: string | null, n: number) => (v ?? "").replace(/[^\p{L}\p{N} _.'-]/gu, "").slice(0, n);
@@ -66,6 +66,8 @@ export function createVoicesHandler(deps: VoicesDeps): (req: Request) => Promise
             page: Math.max(0, Math.min(20, Number(url.searchParams.get("page")) || 0)),
             // K99: accents (a Chinese or Indian voice) are found among voices of other languages too
             ...(url.searchParams.get("lang") === "any" ? { anyLanguage: true } : {}),
+            // K114 (D252): native English voices for English users
+            ...(url.searchParams.get("lang") === "en" ? { language: "en" } : {}),
           }).catch((e) => (console.warn("voice_library_failed", String(e).slice(0, 120)), [] as CatalogVoice[]))
           : [];
         return new Response(JSON.stringify({ library: found, selectable: false }), {
