@@ -21,6 +21,16 @@ def get(path, tok):
 
 
 tok = T.signup()[0]
+PICKS = {"ljvo28cz3g2pJ1roaSVU": ("en", "Niki"), "6pePhCBvwi0Dte0AkHf3": ("en", "Chris"), "lB9K9mKVhRzwTiRZXQ3b": ("en", "Paul"),
+         "qIamWLq3y7Ucaa02ln95": ("en", "Alyssa Laine"), "AuzRHzXe606dpYMHSHYp": ("any", "Ajay"), "Qc0X0JnOfc5XzetLVusF": ("any", "Oolong")}
+if "picks" in _s.argv[1:]:
+    # the chosen voices' library metadata and preview_url (a sample ElevenLabs hosts; fetching it is not generation)
+    for vid, (lang, name) in PICKS.items():
+        j = get("/functions/v1/voices?library=1&" + urllib.parse.urlencode({"lang": lang, "search": name}), tok)
+        hit = next((x for x in j.get("library", []) if x.get("voice_id") == vid), None)
+        print("=== pick", vid, name, json.dumps(hit, ensure_ascii=False) if hit else "NOT FOUND")
+        time.sleep(7)
+    _s.exit(0)
 v = get("/functions/v1/voices", tok)
 print("=== /voices default:", v.get("default_id"))
 for x in v.get("voices", []):

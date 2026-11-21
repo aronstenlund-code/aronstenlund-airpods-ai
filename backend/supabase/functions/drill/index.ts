@@ -10,7 +10,7 @@ import { onFirstPlay } from "../_shared/rewards.ts";
 import { rewardStore } from "../_shared/rewards_db.ts";
 import { restDbFromEnv } from "../_shared/restdb.ts";
 import { secret } from "../_shared/secrets.ts";
-import { parseVoices } from "../tts/voices.ts";
+import { activeVoiceId, isRetired, parseVoices } from "../tts/voices.ts";
 import { currentTest, loadCiRanges, silentMp3, TEST_VOICE_ID, withTestMode } from "../_shared/testmode.ts";
 import { AsyncLocalStorage } from "node:async_hooks";
 import { memo } from "../_shared/memo.ts";
@@ -46,7 +46,8 @@ globalThis.fetch = (async (input: Request | URL | string, init?: RequestInit) =>
 const db = restDbFromEnv(); // after the fetch above, so its calls are counted
 // K100: read at most once a minute per instance (both change rarely and only by hand)
 const settingsMemo = memo(async () => Object.fromEntries(((await db.select("drill_settings", "select=key,value")) as { key: string; value: number }[]).map((r) => [r.key, Number(r.value)])));
-const catalogMemo = memo(async () => (await db.select("voice_catalog", "select=voice_id,name,description,accent,gender,age,review&enabled=eq.true&limit=60")) as { voice_id: string; name: string; review?: boolean | null }[]);
+// K114 (D252): a retired voice (Marlon) is never mixed in, chosen or accepted
+const catalogMemo = memo(async () => ((await db.select("voice_catalog", "select=voice_id,name,description,accent,gender,age,review&enabled=eq.true&limit=60")) as { voice_id: string; name: string; review?: boolean | null }[]).filter((v) => !isRetired(v.voice_id)));
 const stylerProvider = providerFromEnv(Deno.env);
 const rewards = rewardStore(db);
 const base = env.get("SUPABASE_URL")!.replace(/\/+$/, "");
@@ -182,7 +183,7 @@ Deno.serve(warmable(withCors(withWebGuard(withTestMode("drill", timed(
     // K99 (D223): Haiku picks the catalog voice that fits "Hur ska det låta?"
     voicePicker: stylerProvider ? haikuVoicePicker(stylerProvider) : undefined,
     model,
-    voiceId: secret(env, "ELEVENLABS_VOICE_ID") ?? parseVoices(env.get("ELEVENLABS_VOICES")).voices[0]?.id ?? null,
+    voiceId: activeVoiceId(secret(env, "ELEVENLABS_VOICE_ID")) ?? parseVoices(env.get("ELEVENLABS_VOICES")).voices[0]?.id ?? null,
     usdPer1kChars: 0.08,
     charLimits: {
       perMinute: envInt("DRILL_TTS_CHARS_PER_MINUTE", 60_000),
