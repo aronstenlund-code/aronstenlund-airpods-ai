@@ -98,8 +98,9 @@ Deno.test("K21 'min kompis säger att han inte vill leva' gives the line on how 
   assertEquals(said(ev), CRISIS_OTHER);
 });
 
-/** A fake model that answers `reply` to everything except the yes/no check ("nej"). */
-function model(reply: string) {
+/** A fake model that answers `reply` to everything except the yes/no check (`check`). K117 (D256): the model's own
+ *  marker is checked once when the code layer sees nothing, so these indirect crisis signs get the check's "ja". */
+function model(reply: string, check = "ja") {
   const seen: LLMRequest[] = [];
   const handler = createHandler({
     authenticate: () => Promise.resolve({ id: "u-k23", isAnonymous: true }),
@@ -111,7 +112,7 @@ function model(reply: string) {
         seen.push(r);
         const isCheck = r.system.startsWith("You check ONE utterance");
         return (async function* (): AsyncGenerator<LLMChunk> {
-          const t = isCheck ? "nej" : reply;
+          const t = isCheck ? check : reply;
           for (let k = 0; k < t.length; k += 6) yield { type: "text", text: t.slice(k, k + 6) };
         })();
       },

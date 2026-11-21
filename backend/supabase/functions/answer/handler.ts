@@ -35,7 +35,7 @@ import { localClockAnswer } from "./localclock.ts";
 import { capabilitiesRule, capabilityAnswer, capabilityAsked, type Capability, helpAnswer, NOT_YET_ANSWER, notYetAsked, overview } from "../_shared/capabilities.ts";
 import { askedLength, lengthCaps, lengthNote } from "./asklength.ts";
 import { aboutOther, CRISIS_CHECK_PROMPT, CRISIS_OTHER, CRISIS_SELF, crisisLevel, crisisVerdict } from "./crisis.ts";
-import { type ParserEvent, ResponseParser } from "./parser.ts";
+import { type Meta, type ParserEvent, ResponseParser } from "./parser.ts";
 import { classifyAnswerType, detectContinuation, isShortFactQuestion } from "./length.ts";
 import { buildPersonaUserMessage, personaPlan, personaSystemPrompt } from "./personas.ts";
 import { computeFollowUp, computeFragment, spokenComputed } from "./calc.ts";
@@ -1931,6 +1931,34 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             if (rest) sendMore(rest);
           };
           let searchMarked = false;
+          // K117 (D256): the model's crisis marker is checked once when the code layer saw no danger in what was said;
+          // only a clear "nej" ignores it, anything else (an error, a time-out, "ja", another reply) keeps the crisis answer
+          let markerChecked = false;
+          let markerIgnored = false;
+          let markedMeta: Meta | null = null;
+          let afterMarker = ""; // K117: text that came with the marker (Auto: after the meta line)
+          const markerCheck = async (): Promise<boolean> => {
+            if (markerChecked) return false;
+            markerChecked = true;
+            if (fragLevel !== null || otherLevels.some(Boolean) || !provider0) return false;
+            let reply = "";
+            try {
+              for await (const c of provider0.stream({
+                system: CRISIS_CHECK_PROMPT,
+                user: `<utterance>${sanitizeTagged(body.fragment.slice(0, 600))}</utterance>`,
+                maxTokens: 5,
+                cacheSystem: true,
+                noThinking: true,
+                signal: AbortSignal.timeout(4000),
+              })) if (c.type === "text") reply += c.text;
+            } catch (e) {
+              console.warn("crisis_marker_check_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
+              return false;
+            }
+            const no = /^\s*nej[.!]?\s*$/iu.test(reply);
+            console.warn(JSON.stringify({ event: no ? "crisis_marker_ignored" : "crisis_marker_kept", mode: body.mode, reply: reply.trim().slice(0, 10) }));
+            return no;
+          };
           let retrySystem = systemPrompt;
           let retryTools = tools;
           let searched = false;
@@ -1939,7 +1967,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let previewSent = false;
           let previewText: string | null = null;
           const emit = (ev: ParserEvent) => {
-            if (ev.type === "meta" && ev.meta.self_harm_risk) {
+            if (ev.type === "meta" && ev.meta.self_harm_risk && !markerIgnored) {
+              markedMeta = ev.meta; // K117: sent after all when the check says "nej"
               crisisMarked = true; // K23: the model's own flag (Auto): the crisis answer, whatever is_question says
               stop = true;
               return;
@@ -1998,6 +2027,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               if (post.silencedLate) stop = true;
             } else {
               if (!stop) deliver(post.push(ev.text));
+              else if (crisisMarked && !markerChecked) afterMarker += ev.text; // K117: said if the check says "nej"
               if (silenceOn && post.silenceMarked) stop = true; // D75: nothing more will be said
               if (post.silencedLate) stop = true; // 2026-11-08: marker after text: say nothing more
             }
@@ -2103,16 +2133,38 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             if (parser.presetMeta && !rizz && !calib) emit({ type: "meta", meta: parser.presetMeta });
             let r = first;
             for (let attempt = 0;; attempt++) {
-              while (!r.done && !stop && !closed) {
-                handle(r.value);
-                if (stop || closed || post.duplicate) break;
-                r = await it.next();
+              for (;;) {
+                while (!r.done && !stop && !closed) {
+                  handle(r.value);
+                  if (stop || closed || post.duplicate) break;
+                  r = await it.next();
+                }
+                // K117 (D256): the model's marker with nothing in the code layer: one check; a clear "nej" goes on with
+                // the same answer (Auto: the text after the meta line), else the crisis answer
+                if (crisisMarked && attempt === 0 && !closed && await markerCheck()) {
+                  crisisMarked = false;
+                  markerIgnored = true;
+                  stop = false;
+                  const mm = markedMeta as Meta | null; // set in emit()
+                  if (mm) emit({ type: "meta", meta: { ...mm, self_harm_risk: false } });
+                  if (afterMarker) deliver(post.push(afterMarker));
+                  afterMarker = "";
+                  if (!r.done) {
+                    r = await it.next();
+                    continue;
+                  }
+                }
+                break;
               }
               if (crisisMarked) break;
               if (rizz || calib || closed) break;
               let note: string | null = null;
               let history = body.context.recent_qa;
-              if (post.duplicate) {
+              if (markerIgnored && attempt === 0 && ttftMs === null && !stop && !closed && post.chars.raw === 0) {
+                // K117: the marker was all the model wrote; once more (a new marker then gives the crisis answer)
+                note = "A second check found no sign of crisis in the fragment: answer it as the ordinary request it is.";
+                headBuf = direct && !plan ? "" : null;
+              } else if (post.duplicate) {
                 note =
                   "Your previous reply repeated an earlier answer. The fragment is a new request: answer only the fragment.";
                 const m = post.dup.matched;
@@ -2343,6 +2395,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 ? "Vem vill du att jag ska ringa?"
                 : "Jag uppfattade inte riktigt vad jag skulle göra. Säg det en gång till.");
             }
+            // K117 (D256): a late marker (after text) with nothing in the code layer: one check; a clear "nej" adds nothing
+            if (crisisLate && !crisisMarked && !closed && await markerCheck()) crisisLate = false;
             // K23: the model flagged a crisis (Auto meta or [[KRIS]]): the fixed caring answer, never silence
             if (crisisMarked || crisisLate) {
               const crisisText = aboutOther(body.fragment) || plan ? CRISIS_OTHER : CRISIS_SELF;
