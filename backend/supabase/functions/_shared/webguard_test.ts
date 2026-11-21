@@ -2,7 +2,7 @@
 // the web's credits capped per network and in all per day. The iOS app (no Origin header) is never counted.
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
 import { MemoryRateLimiter } from "./ratelimit.ts";
-import { isWebRequest, WEB_LIMITS, webCredits, withWebGuard } from "./webguard.ts";
+import { isWebRequest, WEB_LIMITS, webCount, webCredits, withWebGuard } from "./webguard.ts";
 import { originAllowed } from "./cors.ts";
 
 const jwt = (sub: string) => `x.${btoa(JSON.stringify({ sub })).replace(/=+$/, "")}.y`;
@@ -45,4 +45,40 @@ Deno.test("K114: the web's credits are capped per network and in all per day; th
   assertEquals(ok, Math.floor(WEB_LIMITS.creditsPerIpPerDay / 1000), "per network");
   assertEquals((await h(req({ sub: "app" }))).status, 200, "the app's credits are not web credits");
   assert(WEB_LIMITS.creditsGlobalPerDay >= WEB_LIMITS.creditsPerIpPerDay);
+});
+
+// ---------- A156 (Angela Schrute 11:52): the demo page, listening and spoken answers from the web ----------
+const WEB = "https://earmind.vercel.app";
+const demoReq = (sub: string, how: "query" | "body") =>
+  new Request(how === "query" ? "http://x/stt-token?source=demo" : "http://x/answer", {
+    method: how === "query" ? "GET" : "POST",
+    headers: { origin: WEB, authorization: `Bearer ${jwt(sub)}`, "x-forwarded-for": "203.0.113.50" },
+    ...(how === "body" ? { body: JSON.stringify({ fragment: "hej", source: "demo" }) } : {}),
+  });
+
+Deno.test("A156: the demo page (same domain, its own caps D62) is not counted as web accounts; the body still reaches the handler", async () => {
+  const rl = new MemoryRateLimiter();
+  const seen: string[] = [];
+  const h = withWebGuard(async (r) => (seen.push(r.method === "POST" ? (await r.json()).fragment : "get"), new Response("ok")), { limiter: rl, demo: true });
+  for (let i = 0; i < WEB_LIMITS.accountsPerIpPerDay + 3; i++) {
+    assertEquals((await h(demoReq(`d${i}`, i % 2 ? "query" : "body"))).status, 200, `demo visitor ${i}`);
+  }
+  assert(seen.includes("hej"));
+  // without the demo option (drill, exam) a "source": "demo" body is an ordinary web call
+  const plain = withWebGuard(() => Promise.resolve(new Response("ok")), { limiter: rl });
+  for (let i = 0; i < WEB_LIMITS.accountsPerIpPerDay; i++) await plain(demoReq(`p${i}`, "body"));
+  assertEquals((await plain(demoReq("p-over", "body"))).status, 429);
+});
+
+Deno.test("A156: listening from the web (Scribe tokens) is capped per network and in all per day; the app's never", async () => {
+  const rl = new MemoryRateLimiter();
+  const h = withWebGuard(async () => {
+    const r = await webCount(rl, "stt", WEB_LIMITS.sttTokensPerIpPerDay, WEB_LIMITS.sttTokensGlobalPerDay);
+    return new Response("", { status: r.allowed ? 200 : 429 });
+  }, { limiter: rl });
+  let ok = 0;
+  for (let i = 0; i < WEB_LIMITS.sttTokensPerIpPerDay + 5; i++) if ((await h(req({ origin: WEB, sub: `s${i % 2}` }))).status === 200) ok++;
+  assertEquals(ok, WEB_LIMITS.sttTokensPerIpPerDay);
+  assertEquals((await h(req({ sub: "app" }))).status, 200, "the app is not counted");
+  assert(WEB_LIMITS.sttTokensGlobalPerDay >= WEB_LIMITS.sttTokensPerIpPerDay);
 });

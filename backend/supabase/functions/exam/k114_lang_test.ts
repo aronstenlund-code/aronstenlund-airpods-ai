@@ -28,3 +28,28 @@ Deno.test("K114 (D251): the plan writes the exam in the material's own language,
   assertEquals(SYSTEM_PROMPT_DRILL_PLAN.includes("even when the material is in English"), false);
   assertEquals(SYSTEM_PROMPT_DRILL_PLAN.includes("in the material's own language"), true);
 });
+
+Deno.test("K114 (D251, live 21/22): an English text's plan, refills and check get <language>English</language>; a Swedish one none", async () => {
+  const { handleDrill, shortenQuestions, SYSTEM_PROMPT_DRILL_PLAN, SYSTEM_PROMPT_DRILL_FINAL_CHECK } = await import("./drill.ts");
+  const users: string[] = [];
+  const llm: LLMProvider = { name: "f", model: "x", async *stream(r: LLMRequest): AsyncIterable<LLMChunk> {
+    // the final check keeps each question's own language ("same language"), so it needs no <language>
+    if (r.system !== SYSTEM_PROMPT_DRILL_FINAL_CHECK) users.push(r.user);
+    if (r.user.includes("<part>notes</part>")) yield { type: "text", text: JSON.stringify({ notes: "Water evaporates and condenses." }) } as LLMChunk;
+    else if (r.system.includes("You check")) yield { type: "text", text: JSON.stringify({ questions: [] }) } as LLMChunk;
+    else yield { type: "text", text: JSON.stringify({ summary: { subject: "Geografi", grade: "", covers: "The water cycle." }, questions: ["Why does water evaporate from the oceans?", "What happens to water vapour as it rises?", "How do droplets become rain?"] }) } as LLMChunk;
+  } };
+  const EN = "The Water Cycle. Water moves between the oceans, the air and the land in a cycle. The sun heats the oceans and water evaporates into the air. As the vapour rises it cools and condenses into droplets that form clouds.";
+  await handleDrill("drill", { text: EN, questions: 3, answers: false }, llm, DEFAULT_DRILL_CONFIG);
+  const plans = users.filter((u) => u.includes("<material>"));
+  assertEquals(SYSTEM_PROMPT_DRILL_PLAN.includes("When <language> is given"), true);
+  assertEquals(plans.length > 0 && plans.every((u) => u.includes("<language>English</language>")), true, plans.join("\n---\n"));
+  users.length = 0;
+  const SV = "Vattnets kretslopp. Vattnet rör sig mellan haven, luften och marken i ett kretslopp. Solen värmer haven och vattnet avdunstar till luften. När ångan stiger kyls den och bildar droppar som blir moln.";
+  await handleDrill("drill", { text: SV, questions: 3, answers: false }, llm, DEFAULT_DRILL_CONFIG);
+  assertEquals(users.some((u) => u.includes("<language>")), false);
+  // the check step translates a Swedish question back when the material is English
+  users.length = 0;
+  await shortenQuestions(llm, DEFAULT_DRILL_CONFIG, ["Varför avdunstar vatten?"], { subject: "Geografi", grade: "", covers: "" }, undefined, EN);
+  assertEquals(users[0].includes("<language>English</language>"), true);
+});

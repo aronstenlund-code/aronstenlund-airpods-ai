@@ -1,6 +1,7 @@
 import { claimsMissing, stripYesNoLead } from "./interviewfacts.ts";
 import { numbersToSpeech } from "./svnum.ts";
 import { afterNumbers, beforeNumbers } from "./speechsym.ts";
+import { splitNine } from "../drill/voicerules.ts";
 
 /** Digits, symbols, formulas and abbreviations -> speakable Swedish (D46/D54). */
 export const toSpeech = (t: string, ctx = ""): string => {
@@ -1067,9 +1068,16 @@ export function halfFix(s: string): string {
 export class NumberStream {
   private buf = "";
   private tail = ""; // last raw text already passed on (context for the phone-number guard)
+  /** K115 (D253): "en" = an English answer: the digits stay for the voice (it says them in English itself; Swedish
+   *  number words in English were "ett komma fem noll noll people"). Anything else is Swedish, as before. */
+  constructor(private readonly lang = "sv") {}
 
   private say(raw: string): string {
-    const out = noParens(toSpeech(halfFix(codeNumbers(raw)), this.tail));
+    if (this.lang === "en") {
+      this.tail = (this.tail + raw).slice(-120);
+      return noParens(raw);
+    }
+    const out = splitNine(noParens(toSpeech(halfFix(codeNumbers(raw)), this.tail)));
     this.tail = (this.tail + raw).slice(-120);
     return out;
   }
@@ -1110,6 +1118,8 @@ export class NumberStream {
 
 // ---------- pipeline ----------
 export interface PostOptions {
+  /** K115 (D253): the answer's language from the user's choice (`lang`); "en" keeps the digits for the voice. */
+  language?: string;
   /** Earlier answers (for different fragments) to guard against repeating; empty disables the guard. */
   previousAnswers: string[];
   /** Drop a closing question to the user (false in tutoring, personas, confirmations). */
@@ -1269,9 +1279,10 @@ export class AnswerPost {
   private spoke = false;
   private readonly en: EnglishGate;
   private readonly gate: FirstLineGate;
-  private readonly nums = new NumberStream();
+  private readonly nums: NumberStream;
 
   constructor(opts: PostOptions) {
+    this.nums = new NumberStream(opts.language === "en" ? "en" : "sv");
     this.dup = new DupGuard(opts.previousAnswers);
     // K2: a profile without check questions trims every closing question, also in Provläge
     // K9: a question the student asked for ("ställ en svår fråga", "förhör mig på X") is never held to the short

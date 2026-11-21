@@ -12,13 +12,22 @@ interface Props {
   onchange?: (event: Event) => void;
 }
 
+/// What an attribute is written as; null leaves it out. ARIA states are words ("true"/"false"); HTML's own
+/// switches (`disabled`) are there or not.
+export function attributeText(name: string, value: string | number | boolean | null | undefined): string | null {
+  if (value === null || value === undefined) return null;
+  if (name.startsWith('aria-')) return String(value);
+  if (value === false) return null;
+  return value === true ? '' : String(value);
+}
+
 export function h<K extends keyof HTMLElementTagNameMap>(tag: K, props: Props = {}, ...children: Child[]): HTMLElementTagNameMap[K] {
   const el = document.createElement(tag);
   if (props.class) el.className = props.class;
   if (props.text !== undefined) el.textContent = props.text;
   for (const [name, value] of Object.entries(props.attrs ?? {})) {
-    if (value === false || value === null || value === undefined) continue;
-    el.setAttribute(name, value === true ? '' : String(value));
+    const text = attributeText(name, value);
+    if (text !== null) el.setAttribute(name, text);
   }
   if (props.onclick) el.addEventListener('click', props.onclick as EventListener);
   if (props.oninput) el.addEventListener('input', props.oninput);

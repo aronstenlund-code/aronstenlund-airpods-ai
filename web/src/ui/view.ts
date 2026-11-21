@@ -84,12 +84,12 @@ export class View {
     this.field = h('textarea', {
       class: 'say-field',
       attrs: { rows: 3, placeholder: t('sayPrompt'), 'aria-label': t('sayLabel'), autocapitalize: 'sentences', 'data-testid': 'say-field' },
-      oninput: () => this.typed(),
+      oninput: () => this.typed_(),
     });
     this.style = h('input', {
       class: 'style-field',
       attrs: { type: 'text', placeholder: t('stylePrompt'), 'aria-label': t('stylePrompt'), maxlength: maxStyleChars, enterkeyhint: 'done', 'data-testid': 'style-field' },
-      oninput: () => this.typed(),
+      oninput: () => this.typed_(),
     });
     this.form = h('div', { class: 'say-form' }, this.field, this.sayExtras.el, this.cost.el, this.sayError.el, this.sayButtons.el);
 
@@ -111,6 +111,7 @@ export class View {
         'nav',
         { class: 'toolbar' },
         h('button', { class: 'text-button', attrs: { type: 'button', 'data-testid': 'new-quiz' }, onclick: () => this.newQuiz() }, icon('plus', 26), h('span', { text: t('newQuiz') })),
+        h('button', { class: 'text-button', text: t('openLink'), attrs: { type: 'button', 'data-testid': 'open-link' }, onclick: () => deps.app.openLink() }),
       ),
       sheetHost,
       this.player.el,
@@ -121,7 +122,7 @@ export class View {
 
   // MARK: What the user does
 
-  private typed(): void {
+  private typed_(): void {
     this.field.style.height = 'auto';
     this.field.style.height = `${Math.min(this.field.scrollHeight, 260)}px`;
     this.costNow = parts(this.field.value).length === 0 ? null : 'asking';
@@ -132,6 +133,17 @@ export class View {
       this.deps.app.sayOutOfCredits = false;
     }
     this.render();
+  }
+
+  /// What is in the fields now (kept when the language is changed).
+  typed(): { text: string; style: string } {
+    return { text: this.field.value, style: this.style.value };
+  }
+
+  fill(text: string, style: string): void {
+    this.field.value = text;
+    this.style.value = style;
+    if (text !== '') this.typed_();
   }
 
   private async askCost(): Promise<void> {
@@ -163,7 +175,7 @@ export class View {
     this.style.value = said.style ?? '';
     const voice = this.deps.app.voices.find((v) => v.voice_id === said.voiceID) ?? null;
     if (said.voiceID === null || voice !== null) this.deps.app.chooseVoice(voice);
-    this.typed();
+    this.typed_();
     this.field.focus();
   }
 
@@ -201,7 +213,7 @@ export class View {
     const decimal = lang === 'sv' ? ',' : '.';
     const active = app.text !== null || app.quiz !== null;
 
-    this.header.show(`${left}`, () => [
+    this.header.show(`${left}:${lang}`, () => [
       h(
         'button',
         { class: 'capsule credits', attrs: { type: 'button', 'data-testid': 'credits' }, onclick: () => this.sheets.open('credits') },
@@ -209,6 +221,19 @@ export class View {
       ),
       h('span', { class: 'beta', text: t('beta') }),
       h('span', { class: 'spacer' }),
+      // D253: the language is a choice that shows. English first; the choice is kept.
+      h(
+        'div',
+        { class: 'lang', attrs: { role: 'group', 'aria-label': t('language') } },
+        ...(['en', 'sv'] as const).map((code) =>
+          h('button', {
+            class: 'lang-choice',
+            text: t(code === 'en' ? 'langEn' : 'langSv'),
+            attrs: { type: 'button', 'aria-pressed': lang === code, 'aria-label': t(code === 'en' ? 'english' : 'swedish'), lang: code, 'data-testid': `lang-${code}` },
+            onclick: () => platform.setLanguage(code),
+          }),
+        ),
+      ),
       h('button', { class: 'round', attrs: { type: 'button', 'aria-label': t('settings'), 'data-testid': 'settings' }, onclick: () => this.sheets.open('settings') }, icon('gear', 22)),
     ]);
 
@@ -318,7 +343,7 @@ export class View {
                         attrs: { type: 'button' },
                         onclick: () => {
                           this.style.value = addingStyle(word, this.style.value);
-                          this.typed();
+                          this.typed_();
                         },
                       }),
                     ),
@@ -333,7 +358,7 @@ export class View {
       if (!has) return [];
       if (tooLong) return [h('p', { class: 'warn-text', text: t('tooLong', { n: grouped(length, lang), m: grouped(maxChars, lang) }) })];
       if (cost === null || cost === 'asking') return [h('p', { class: 'quiet-text', text: ' ' })];
-      if (cost === 0) return [h('p', { class: 'quiet-text', text: t('costFree') })];
+      if (cost === 0) return [h('p', { class: 'quiet-text', attrs: { 'data-testid': 'cost-free' }, text: t('costFree') })]; // Toby T56: free and unknown are told apart
       if (left !== null && cost > left) {
         return [
           h('p', { class: 'warn-text', attrs: { 'data-testid': 'cost' }, text: t('costShort', { n: grouped(cost, lang), m: grouped(left, lang) }) }),
@@ -386,6 +411,31 @@ export class View {
     );
   }
 
+  /// D253 "Download the sound": one MP3 of what plays. Two taps on purpose: the first fetches the files, the second
+  /// is a real link, which every browser lets a user save from.
+  private downloadRow(): HTMLElement | null {
+    const { app, t } = this.deps;
+    if (app.soundProgress !== null) return null; // the sound is still being made
+    const download = app.download;
+    if (download.stage === 'ready') {
+      return h(
+        'div',
+        { class: 'download' },
+        h('a', { class: 'capsule on-card', text: t('downloadSave'), attrs: { href: download.url, download: download.name, 'data-testid': 'download-save' } }),
+        h('p', { class: 'quiet-text', text: t('downloadNote') }),
+      );
+    }
+    if (download.stage === 'preparing') {
+      return h('div', { class: 'download', attrs: { role: 'status' } }, h('p', { class: 'quiet-text working-line' }, h('span', { class: 'spinner' }), h('span', { text: download.total > 0 ? t('downloadPreparing', { n: download.done, m: download.total }) : t('download') })));
+    }
+    return h(
+      'div',
+      { class: 'download' },
+      download.stage === 'failed' ? h('p', { class: 'warn-text', attrs: { role: 'alert' }, text: t('downloadFailed') }) : null,
+      h('button', { class: 'link on-card', text: t('download'), attrs: { type: 'button', 'data-testid': 'download' }, onclick: () => void app.prepareDownload() }),
+    );
+  }
+
   private renderPlaying(): void {
     const { app, t, platform } = this.deps;
     const text = app.text;
@@ -397,7 +447,7 @@ export class View {
     const waiting = text.phase === 'waiting';
     const voice = app.saidPlaying?.voiceName ?? null;
     const sentence = this.sentenceNow();
-    const key = JSON.stringify([text.phase, text.paused, text.position, text.lap, voice, waiting ? progress : null, sentence, platform.awakeHeld(), this.stoppedByScreen, this.blocked]);
+    const key = JSON.stringify([text.phase, text.paused, text.position, text.lap, voice, progress, sentence, platform.awakeHeld(), this.stoppedByScreen, this.blocked, app.download]);
     this.playing.show(key, () => {
       const seconds = text.secondsLeft();
       this.timeLeft.textContent = seconds === null ? '' : t(text.paused ? 'leftPaused' : 'left', { t: clockText(seconds) });
@@ -421,6 +471,7 @@ export class View {
         ),
         this.screenLine(),
         h('p', { class: 'quiet-text hint', text: t('pressesText') }),
+        this.downloadRow(),
       ];
     });
     this.announce(waiting ? t('making') : text.paused ? t('paused') : t('playing'));
@@ -476,13 +527,8 @@ export class View {
     this.quizzes.show(key, () => {
       if (exams.length === 0) {
         return [
-          h(
-            'article',
-            { class: 'card quiz empty' },
-            h('h3', { text: t('newQuiz') }),
-            h('p', { class: 'quiet-text', text: t('quizLine') }),
-            h('button', { class: 'main-button tinted', attrs: { type: 'button' }, onclick: () => this.newQuiz() }, icon('plus', 20), h('span', { text: t('newQuiz') })),
-          ),
+          // No button here: New quiz is in the row at the bottom, and two of them looked like a mistake (A158).
+          h('article', { class: 'card quiz empty', attrs: { 'data-testid': 'quiz-empty' } }, h('p', { class: 'quiet-text', text: t('quizLine') })),
         ];
       }
       const [first, ...others] = exams;
@@ -504,7 +550,7 @@ export class View {
     const phase = quiz.phase;
     const item = exam.questions[quiz.index];
     const progress = app.soundProgress;
-    const key = JSON.stringify([phase, quiz.paused, quiz.lap, phase.kind === 'waiting' ? progress : null, platform.awakeHeld(), this.stoppedByScreen, this.blocked]);
+    const key = JSON.stringify([phase, quiz.paused, quiz.lap, progress, platform.awakeHeld(), this.stoppedByScreen, this.blocked, app.download]);
     this.player.show(key, () => {
       const answering = phase.kind === 'answer';
       const label = quiz.paused
@@ -549,6 +595,7 @@ export class View {
             ),
             this.screenLine(),
             h('p', { class: 'quiet-text hint', text: t('pressesQuiz') }),
+            this.downloadRow(),
           ),
         ),
       ];

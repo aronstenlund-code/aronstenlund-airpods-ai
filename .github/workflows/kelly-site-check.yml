@@ -43,6 +43,10 @@ jobs:
             echo "og:image: $(grep -o 'property="og:image" content="[^"]*' page.html | sed 's/.*content="//')"
             echo "Ke74/Ke82-steget (Skriv det du vill höra): $(grep -c 'Skriv det du vill höra' page.html || true)"
             echo "Ke82 krediter (Gratis att börja): $(grep -c "Gratis att börja" page.html || true)"
+            echo "Ke86 engelska (Try the beta): $(grep -c 'Try the beta' page.html || true)"
+            curl -sS -o sv.html -w "sv status=%{http_code} bytes=%{size_download}\n" "$ORIGIN/sv"
+            echo "Ke86 svenska (Prova betan): $(grep -c 'Prova betan' sv.html || true)"
+            curl -sS -o /dev/null -w "beta status=%{http_code}\n" "$ORIGIN/beta"
             echo "Earmind (litet m) i sidan: $(grep -c 'Earmind' page.html || true)"
             echo "== og image"
             img=$(grep -o 'property="og:image" content="[^"]*' page.html | sed 's/.*content="//')

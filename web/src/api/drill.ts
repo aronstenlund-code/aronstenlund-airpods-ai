@@ -39,6 +39,14 @@ export interface DrillView {
   audio_unavailable?: boolean;
 }
 
+export interface ShareInfo {
+  title?: string;
+  subject?: string;
+  grade?: string;
+  items?: number;
+  audio_ready?: boolean;
+}
+
 export interface Voice {
   voice_id: string;
   name: string;
@@ -128,6 +136,16 @@ export class DrillApi {
 
   status(id: string): Promise<DrillView> {
     return this.client.call<DrillView>('drill', { action: 'status', id });
+  }
+
+  /// K47: what a shared link holds, for the screen before it is added. `code` may be the whole link.
+  shareInfo(code: string): Promise<ShareInfo> {
+    return this.client.call<ShareInfo>('drill', { action: 'share_info', code });
+  }
+
+  /// The user's own copy of a shared quiz. Its sound is the original's, so it costs nothing.
+  importShared(code: string): Promise<DrillView> {
+    return this.client.call<DrillView>('drill', { action: 'import', code });
   }
 
   remove(id: string): Promise<unknown> {

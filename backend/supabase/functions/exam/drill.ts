@@ -66,7 +66,7 @@ When the material cannot be read at all (blurred, cut off, a screen photo you ca
 - summary: "subject" the school subject in Swedish; "grade" the school year or course as Swedes say it ("åk 8", "Matematik 1b", "Svenska 1", "Engelska 6", "Samhällskunskap 1b"): from <context> when given; else from the material itself: a course name or code, a textbook title, "åk"/"årskurs", or content that only fits one level (a gymnasium course's topics such as derivatives, molar mass or language history are gymnasium; never guess "åk 8" by default); else "" (empty: the app then asks the student, D159/K52); "covers" one or two Swedish sentences on what the exam covers (the main areas, in order).
 - notes: every fact, concept, definition, formula, date, name, cause and example in the material, as compact plain text in the exam's language, in the material's order (at most about 900 words). Only what the material says; the answers are written from these notes.
 - questions_possible: how many good, different exam questions the material really supports (D159: never more than the material carries; a short text may support 4). Count before you write.
-- Language (D182): when the subject is a foreign language (Engelska, Spanska, Tyska, Franska, Italienska, Kinesiska, Japanska and other modern languages), the exam is in that language: write "covers", the notes and the questions in that language. Every other subject in the material's own language (K114, D251): an English text gives an English exam (notes, "covers" and questions), a Swedish text a Swedish one, any other language Swedish.
+- Language (D182): when the subject is a foreign language (Engelska, Spanska, Tyska, Franska, Italienska, Kinesiska, Japanska and other modern languages), the exam is in that language: write "covers", the notes and the questions in that language. Every other subject in the material's own language (K114, D251): an English text gives an English exam (notes, "covers" and questions), a Swedish text a Swedish one, any other language Swedish. When <language> is given, write "covers", the notes and every question in that language.
 - questions: the number asked for in <count>, or fewer when questions_possible is lower: then exactly questions_possible plus at most 6 extra (the weakest are removed afterwards). Never pad with repeated, trivial or outside questions to reach the number. In the exam's language, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
   - clear when only HEARD, with no text in front of the student: as short as it can be while it stays clear and natural Swedish (D176: there is no word limit; a long question with a long answer costs more, so do not make it longer than it needs to be). Never a fragment that needs the material to make sense ("Vad säger m?", "Mol metan i 16 g?" are wrong; "Vad visar m i en rät linje?", "Hur många mol är 16 gram metan?" are right). Cut filler such as "i naturen", "egentligen", "det att";
   - written as it is said: no symbols, formulas, units or abbreviations as signs ("syre", not "O2"; "kubikdecimeter", not "dm³"; "procent", not "%");
@@ -247,7 +247,7 @@ export async function shortenQuestions(
   signal?: AbortSignal,
   material = "",
 ): Promise<{ questions: string[]; usage: StepUsage | null; dropped?: number }> {
-  const lang = examLanguage(exam.subject);
+  const lang = materialLanguage(exam.subject, material);
   const long = questions.map((q, i) => ({ i, q }));
   if (!long.length) return { questions, usage: null };
   try {
@@ -728,6 +728,11 @@ export function textLanguage(text: string): "sv" | "en" | "" {
   if (en >= 3 && en > sv * 1.5) return "en";
   if (sv >= 3 && sv > en * 1.5) return "sv";
   return "";
+}
+
+/** K114 (D251): the exam's language: a language exam's (D182), else English for an English text, else "" (Swedish). */
+export function materialLanguage(subject: string, text: string): string {
+  return examLanguage(subject) || (textLanguage(text) === "en" ? "English" : "");
 }
 
 /**
@@ -1238,11 +1243,15 @@ export async function handleDrill(
     // K69: the notes (most of step 1's output, about 2 400 characters) are written in a second call at the same time:
     // the same model, the same system prompt (cached) and the same material, so the questions and the check no longer
     // wait for them. Only the questions decide when "Stämmer det här?" can show.
+    // K114 (D251, live 2026-11-21: an English text got Swedish questions from the prompt's rule alone): the language
+    // is decided here from the text and given as <language>, as for a language exam (photos alone: the prompt's rule)
+    const planLang = examLanguage(subjectIn) ? "" : materialLanguage("", text);
     const planUser = (part: string) => [
       (subjectIn || gradeIn) && `<context>${sanitizeTagged(contextLine(subjectIn, gradeIn))}</context>`,
       correction && `<correction>${sanitizeTagged(correction)}</correction>`,
       `<count>${count + DRILL_LIMITS.extraQuestions}</count>`,
       text && `<material>\n${sanitizeTagged(text)}\n</material>`,
+      planLang && `<language>${planLang}</language>`,
       images.length ? `Read the ${images.length} page images${text ? " and the material above" : ""}.` : "Read the material above.",
       part,
     ].filter(Boolean).join("\n");
@@ -1322,6 +1331,7 @@ export async function handleDrill(
               (summary.subject || summary.grade) && `<context>${sanitizeTagged(contextLine(summary.subject, summary.grade))}</context>`,
               `<count>${n + 1}</count>`,
               `<material>\n${sanitizeTagged(parts[i])}\n</material>`,
+              planLang && `<language>${planLang}</language>`,
               k > 1 ? "Read the material above (one part of a longer material: ask only about this part)." : "Read the material above.",
               // K97 (O79): the questions already chosen, so this part's questions never ask the same thing again
               chosen.length ? `<already_asked>${sanitizeTagged(JSON.stringify(chosen.map((c) => c.q)))}</already_asked>\nNever ask anything these questions already ask, in any words; a question whose answer would be the same as one of theirs is wrong.` : "",
