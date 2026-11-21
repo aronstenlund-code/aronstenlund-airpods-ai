@@ -5,7 +5,7 @@ import { questionKey } from "./length.ts";
 import { runWithTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
-function world(opts: { background?: (p: Promise<unknown>) => void; perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean; styler?: (t: string, s: string) => Promise<string | null>; catalog?: { voice_id: string; name: string }[]; picker?: (s: string, v: { voice_id: string }[]) => Promise<{ voice_id: string; reason: string } | null> } = {}) {
+function world(opts: { background?: (p: Promise<unknown>) => void; perDay?: number; noSynth?: boolean; credits?: number; busy?: number; outOfCredits?: boolean; styler?: (t: string, s: string) => Promise<string | null>; catalog?: { voice_id: string; name: string; language?: string | null }[]; picker?: (s: string, v: { voice_id: string }[]) => Promise<{ voice_id: string; reason: string } | null> } = {}) {
   let busy = opts.busy ?? 0;
   let out = !!opts.outOfCredits; // K78: credits can come back
   const quota = new Map<string, number>();
@@ -1191,6 +1191,24 @@ Deno.test("K99 mix_voices: each part gets a catalog voice by lot, kept on later 
   assert(new Set(files.map((f) => f.voice_id)).size >= 2);
   const again = await (await w.h("u1")(post({ action: "save", drill: { id: a.drill.id }, items: st.items.map((i: { id: string; text: string }) => ({ id: i.id, kind: "para", text: i.text })) }))).json();
   assertEquals([again.cost, again.items.map((i: { voice_id?: string }) => i.voice_id)], [0, voices]);
+});
+
+Deno.test("K114 (D252): mixing picks voices in the text's language (English text: en voices; Swedish: sv, as before)", async () => {
+  const cat: { voice_id: string; name: string; language?: string }[] = [...CAT, { voice_id: "VoiceNikiEn0004", name: "Niki", language: "en" }, { voice_id: "VoicePaulEn0005", name: "Paul", language: "en" }, { voice_id: "VoiceChrisEn006", name: "Chris", language: "en" }];
+  const en = new Set(cat.filter((v) => v.language === "en").map((v) => v.voice_id));
+  const w = world({ catalog: cat });
+  const sv = ["Första meningen här och nu.", "Andra meningen är det.", "Tredje meningen som är här.", "Fjärde meningen för att det är så.", "Femte meningen med en katt.", "Sjätte meningen på en stol."].map((text) => ({ kind: "para", text }));
+  const enParts = ["The first sentence is here.", "The second one is of the same kind.", "The third is in the middle.", "The fourth is for the test.", "The fifth is with a cat.", "The sixth is by the sea."].map((text) => ({ kind: "para", text }));
+  const a = await (await w.h("u1")(post({ action: "save", defer_audio: true, drill: { kind: "text", mix_voices: true }, items: sv }))).json();
+  const b = await (await w.h("u2")(post({ action: "save", defer_audio: true, drill: { kind: "text", mix_voices: true }, items: enParts }))).json();
+  const va = a.items.map((i: { voice_id?: string }) => i.voice_id), vb = b.items.map((i: { voice_id?: string }) => i.voice_id);
+  assert(va.every((v: string) => !en.has(v)), `Swedish text, Swedish voices: ${va}`);
+  assert(vb.every((v: string) => en.has(v)), `English text, English voices: ${vb}`);
+  assert(new Set(vb).size >= 2, `mixed: ${vb}`);
+  // the Swedish pool is the one it was before English voices came, so the same Swedish text keeps its voices (O81)
+  const old = world({ catalog: CAT });
+  const c = await (await old.h("u3")(post({ action: "save", defer_audio: true, drill: { kind: "text", mix_voices: true }, items: sv }))).json();
+  assertEquals(c.items.map((i: { voice_id?: string }) => i.voice_id), va);
 });
 
 Deno.test("O81: with mixed voices the same text gets the same voice in a new drill, so its audio is reused (cost 0)", async () => {

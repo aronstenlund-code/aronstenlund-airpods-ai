@@ -2,7 +2,7 @@
 import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
 import { secret } from "../_shared/secrets.ts";
 import { createVoiceLabHandler } from "./handler.ts";
-import { parseVoices } from "../tts/voices.ts";
+import { activeVoiceId, parseVoices } from "../tts/voices.ts";
 import { CORS_HEADERS } from "../_shared/errors.ts";
 import { guardedFetch, runWithTest, silentMp3 } from "../_shared/testmode.ts";
 
@@ -26,7 +26,7 @@ const handler = createVoiceLabHandler({
   elevenLabsKey: secret(Deno.env, "ELEVENLABS_API_KEY"),
   baseUrl: Deno.env.get("ELEVENLABS_BASE_URL") || undefined,
   // K48: the app's default voice, as /tts picks it (the secret, else the first allowlisted voice)
-  voiceId: secret(Deno.env, "ELEVENLABS_VOICE_ID") ?? parseVoices(Deno.env.get("ELEVENLABS_VOICES")).voices[0]?.id ?? null,
+  voiceId: activeVoiceId(secret(Deno.env, "ELEVENLABS_VOICE_ID")) ?? parseVoices(Deno.env.get("ELEVENLABS_VOICES")).voices[0]?.id ?? null,
   fetchImpl: guardedFetch(fetch, "voice-lab"),
   // K114 (D252): a listing of the account's voices costs no credits and makes no audio (D180 allows it)
   listVoices: async () => {

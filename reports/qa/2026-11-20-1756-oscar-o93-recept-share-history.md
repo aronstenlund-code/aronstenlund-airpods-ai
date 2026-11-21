@@ -43,3 +43,30 @@ select created_at, mode, persona, left(question, 60) from qa_log where mode = 'r
 - Angelas 17:26-rad: verifierat i kod och test; live med riktigt konto återstår (Aron eller Deangelos SQL).
 - Min 16:49-rad i kevin.md (receptet och upprepningen) bockas av; köttbullarnas källa är en ny rad.
 - I morgon 10:50 UTC: nattens eval (praktiskt-03/04, sånger, webbfrågorna).
+
+## Tillägg 2026-11-21 11:52: nattens eval (2026-11-21, commit 5311833d 10:14 UTC), utan egna webbanrop
+Rubrikraden säger: "388 turer, 362 utan anmärkning, 26 med anmärkning. **2 sökta svar utan källa (source_missing, O93): praktiskt-04, praktiskt-05.**" Inga överhoppade (**verifierat** i rapporten och latest.json, 388/388 rader har `source_missing`).
+
+| Fall | Sökte / källa | `source_missing` | Svar (början) | Bedömning |
+|---|---|---|---|---|
+| praktiskt-04 recept på köttbullar | 1 / – | **true** | "Till köttbullar behövs cirka femhundra gram blandfärs, … Blanda allt, forma bollar och stek dem i smör …" | **kvar:** samma allmänna svar som i min körning i går, "källrad saknas", men nu markerat |
+| praktiskt-05 hur lagar man ris | 1 / – | **true** | "Koka ris genom att använda två delar vatten på en del ris …" | **nytt fall av samma sak**; långsamt (4,2 s) |
+| ämnesbyte-09 tur 2 hur lagar man ris | 1 / ica.se | false | "Ica:s recept på kokt ris, från ica.se, …" | samma fråga **med** källa i ett annat samtal |
+| praktiskt-03 hur byter man däck | 1 / clasohlson.com | false | "**Det finns ingen officiell tillverkarkälla i sökningen, så jag bygger svaret på Clas Ohlsons guide.** Parkera på ett plant …" | stegen och längden ok; **källprat i första meningen** (en ny form av det som togs bort) |
+| webb-02 vädret | 1 / smhi.se | false | "… men källorna pekar mot kallt väder med snö. **Förmiddag mulet Högsta temperatur två grader.** SMHI har utfärdat en gul snövarning …" | källa ok; ett stycke från sidan läses upp ordagrant, utan meningsbyggnad |
+| webb-03, webb-05 | 1 / regeringen.se, scb.se | false | källa och nuläge | ok |
+| text-01, text-02 (Helan går) | 0 | false | hela sången | okapad, ok |
+
+**Slutsats:**
+- Markeringen fungerar. `source_missing` sätts precis där källan saknas, och evalen räknar det.
+- Men **prompten räcker inte för recept:** "recept på köttbullar" och "hur lagar man ris" söker och svarar ändå ur minnet, utan källa, 2 av 2 körningar för köttbullarna (min i går 16:51 och natten).
+- Samma risfråga fick källa när den kom som tur 2 i ett samtal (ämnesbyte-09). Det är alltså inte frågan i sig som saknar en källa.
+
+**Fynd (till kevin.md):**
+- (1) **medel:** sökta recept utan källa (praktiskt-04 och -05).
+  - Förslag: ett svar med `source_missing` görs om en gång med "svara från den hittade sidan" (som K16.1).
+  - Eller så säger svaret "jag hittade inget recept att hänvisa till" i stället för att svara ur minnet.
+- (2) **låg:** källprat i början av däcksvaret, "Det finns ingen officiell tillverkarkälla i sökningen, så jag bygger svaret på …". Förslag: samma borttagning i koden som för "jag håller mig till de steg som X beskriver".
+- (3) **låg:** vädersvaret läser upp ett stycke från sidan som det står ("Förmiddag mulet Högsta temperatur två grader").
+
+Övrigt i natten: fakta-05 8,8 s (över 8 s-budgeten), text-03 7,2 s, k7-logik-01 5,4 s. 18 "långsamt", mest i provläge som förut.

@@ -27,3 +27,6 @@ Config/Local.xcconfig
 audio-out/
 *.wav
 __pycache__/
+
+# A156: the web beta build tools (the built files live in site/beta)
+web/node_modules/

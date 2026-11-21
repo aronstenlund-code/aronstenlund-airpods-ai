@@ -1,0 +1,286 @@
+import { describe, expect, it } from 'vitest';
+import { Client } from '../src/api/client';
+import { DrillApi, type DrillView } from '../src/api/drill';
+import { ExamApi } from '../src/api/exam';
+import { App } from '../src/app';
+import { Store } from '../src/store';
+import { translator } from '../src/texts';
+import { FakeClock, FakeSound, MemoryStorage, RoutedServer, type Scripted } from './fakes';
+
+const ok = (body: unknown): Scripted => ({ status: 200, body });
+
+function textView(id: string, done: boolean): DrillView {
+  return {
+    drill: { id, kind: 'text', audio_started: true, voice_name: 'Alice' },
+    items: [
+      {
+        id: 'p1',
+        text: 'One. Two.',
+        sentences: ['One.', 'Two.'],
+        audio: { text: done ? { status: 'done', url: 'https://files/p1.mp3', duration_ms: 2000, sentences: [[0, 1000], [1000, 2000]] } : { status: 'working' } },
+      },
+    ],
+    audio: { done: done ? 1 : 0, total: 1 },
+  };
+}
+
+function examView(id: string, started: boolean, questions = 3): DrillView {
+  return {
+    drill: { id, audio_started: started },
+    items: Array.from({ length: questions }, (_, i) => ({
+      id: `q${i}`,
+      audio: started
+        ? { question: { status: 'done', url: `https://files/q${i}.mp3`, duration_ms: 1000 }, long: { status: 'done', url: `https://files/a${i}.mp3`, duration_ms: 9000, short_end_ms: 2000 } }
+        : undefined,
+    })),
+    audio: { done: started ? questions * 2 : 0, total: questions * 2, cost: 600 },
+  };
+}
+
+class FakeAwake {
+  log: string[] = [];
+  async keep(): Promise<void> {
+    this.log.push('keep');
+  }
+  async release(): Promise<void> {
+    this.log.push('release');
+  }
+  get on(): boolean {
+    return this.log[this.log.length - 1] === 'keep';
+  }
+}
+
+function make(answer: ConstructorParameters<typeof RoutedServer>[0], storage = new MemoryStorage()) {
+  const server = new RoutedServer(answer);
+  const clock = new FakeClock();
+  const client = new Client({ projectURL: 'https://example.supabase.co', publishableKey: 'pk' }, server.fetch, storage, () => clock.now(), 'web', 'en');
+  const sound = new FakeSound();
+  const awake = new FakeAwake();
+  const store = new Store(storage);
+  const app = new App({ drill: new DrillApi(client), exam: new ExamApi(client), sound, clock, store, awake, t: translator('en') });
+  return { app, server, clock, sound, awake, store, storage };
+}
+
+/// Lets what is waiting on the server run.
+const settle = async (): Promise<void> => {
+  for (let i = 0; i < 20; i += 1) await Promise.resolve();
+  await new Promise((r) => setTimeout(r, 0));
+};
+
+describe('Säg i AirPods on the web', () => {
+  it('Play starts the page audio at once, saves and starts in one call, and reads when the file is made', async () => {
+    const { app, server, clock, sound, awake, store } = make((_fn, action, _b, nth) => {
+      if (action === 'save') return ok(textView('d1', false));
+      if (action === 'status') return ok(textView('d1', nth >= 1));
+      if (action === 'quota') return ok({ limit: 1500, remaining: 1400 });
+      return ok({});
+    });
+    const playing = app.say('One. Two.', ' calm ');
+    expect(sound.log).toEqual(['silence']); // straight from the tap, before the server has answered
+    expect(app.sayBusy).toBe(true);
+    await playing;
+    await settle();
+    const save = server.calls.find((c) => c.action === 'save')!.body;
+    expect(save.start).toBe(true);
+    expect((save.drill as Record<string, unknown>).said).toBe(true);
+    expect((save.drill as Record<string, unknown>).style).toBe('calm');
+    expect(app.text?.phase).toBe('waiting'); // "Gör ljudet …"
+    expect(app.soundProgress).toEqual({ done: 0, total: 1 });
+    expect(awake.on).toBe(true);
+    expect(store.said[0].serverID).toBe('d1');
+
+    clock.advance(App.pollMs); // first status: still working
+    await settle();
+    clock.advance(App.pollMs); // second status: done
+    await settle();
+    clock.advance(2_000); // the player looks again
+    expect(sound.last).toBe('play https://files/p1.mp3 0');
+    expect(app.text?.phase).toBe('playing');
+    expect(app.soundProgress).toBeNull();
+    const asked = server.names().filter((n) => n === 'drill:status').length;
+    clock.advance(60_000);
+    await settle();
+    expect(server.names().filter((n) => n === 'drill:status').length).toBe(asked); // every file is made: no more asking
+  });
+
+  it('the same text with the same sound is started again, not saved again', async () => {
+    const storage = new MemoryStorage();
+    const first = make((_fn, action) => (action === 'save' ? ok(textView('d1', true)) : ok({})), storage);
+    await first.app.say('One. Two.', '');
+    first.app.stopAll();
+    const again = make((_fn, action) => (action === 'start' ? ok(textView('d1', true)) : ok({})), storage);
+    await again.app.say('  One. Two.  \n\n', '');
+    expect(again.server.names().filter((n) => n.startsWith('drill:s'))).toEqual(['drill:start']);
+    expect(again.store.said.length).toBe(1);
+    expect(again.app.text?.phase).toBe('playing');
+  });
+
+  it('a text the server no longer has is said anew', async () => {
+    const storage = new MemoryStorage();
+    const first = make((_fn, action) => (action === 'save' ? ok(textView('d1', true)) : ok({})), storage);
+    await first.app.say('One. Two.', '');
+    first.app.stopAll();
+    const again = make((_fn, action) => {
+      if (action === 'start') return { status: 404, body: { error: { code: 'not_found', message: 'gone' } } };
+      if (action === 'save') return ok(textView('d2', true));
+      return ok({});
+    }, storage);
+    await again.app.say('One. Two.', '');
+    expect(again.store.said.map((s) => s.serverID)).toEqual(['d2']);
+    expect(again.app.sayError).toBeNull();
+  });
+
+  it('out of credits: the server\'s words, nothing plays, the screen may sleep', async () => {
+    const { app, sound, awake } = make((_fn, action) =>
+      action === 'save' ? { status: 402, body: { error: { code: 'quota_exceeded', message: 'This text costs 900 credits. You have 120.' } } } : ok({}),
+    );
+    await app.say('One. Two.', '');
+    expect(app.sayError).toBe('This text costs 900 credits. You have 120.');
+    expect(app.sayOutOfCredits).toBe(true);
+    expect(app.text).toBeNull();
+    expect(app.sayBusy).toBe(false);
+    expect(sound.last).toBe('stop');
+    expect(awake.on).toBe(false);
+  });
+
+  it('Stop while the server works: the late answer starts nothing', async () => {
+    let release: (v: Scripted) => void = () => undefined;
+    const held = new Promise<Scripted>((r) => (release = r));
+    const server = { pending: held };
+    const { app, sound } = make((_fn, action) => (action === 'save' ? ({ status: 200, body: textView('d1', true), wait: server.pending } as Scripted) : ok({})));
+    const playing = app.say('One. Two.', '');
+    app.stopAll();
+    release(ok({}));
+    await playing;
+    await settle();
+    expect(app.text).toBeNull();
+    expect(app.sayBusy).toBe(false);
+    expect(sound.log.some((l) => l.startsWith('play'))).toBe(false);
+  });
+
+  it('presses reach the text: one pauses and goes on', async () => {
+    const { app, sound } = make((_fn, action) => (action === 'save' ? ok(textView('d1', true)) : ok({})));
+    await app.say('One. Two.', '');
+    app.press(1);
+    expect(app.text?.paused).toBe(true);
+    expect(sound.last).toBe('pause');
+    app.press(1);
+    expect(app.text?.paused).toBe(false);
+  });
+
+  it('the cost is the server\'s number, and a text said before is free', async () => {
+    const { app, store } = make((_fn, action) => (action === 'cost' ? ok({ cost: 340, remaining: 1500, enough: true }) : ok(textView('d1', true))));
+    expect(await app.cost('One. Two.', '')).toBe(340);
+    expect(await app.cost('   ', '')).toBeNull();
+    await app.say('One. Two.', '');
+    expect(store.said.length).toBe(1);
+    expect(await app.cost('One. Two.', '')).toBe(0);
+  });
+});
+
+describe('an exam from text on the web', () => {
+  const questions = (n: number) => ({ summary: { subject: 'Biology', grade: '8', covers: 'Cells' }, notes: 'notes', items: Array.from({ length: n }, (_, i) => ({ id: `q${i}`, question: `Q${i}?` })) });
+  const answers = (n: number) => ({ items: Array.from({ length: n }, (_, i) => ({ id: `q${i}`, question: `Q${i}?`, short: 's', long: 'l' })) });
+
+  it('questions, Looks right, saved without sound; Start exam makes the sound and asks', async () => {
+    const { app, server, sound, store, awake, clock } = make((fn, action) => {
+      if (fn === 'exam' && action === 'drill') return ok(questions(3));
+      if (fn === 'exam' && action === 'drill_answers') return ok(answers(3));
+      if (action === 'save') return ok(examView('e1', false));
+      if (action === 'start') return ok(examView('e1', true));
+      return ok({});
+    });
+    app.openDraft();
+    await app.makeQuestions('Cells are small.', 12);
+    expect(app.draft.stage).toBe('check');
+    await app.acceptExam();
+    expect(app.draft.stage).toBe('closed');
+    const save = server.calls.find((c) => c.action === 'save')!.body;
+    expect(save.defer_audio).toBe(true);
+    expect(store.exams[0]).toMatchObject({ serverID: 'e1', title: 'Biology', cost: 600, started: false });
+    expect(sound.log.some((l) => l.startsWith('play'))).toBe(false);
+
+    const starting = app.startExam(store.exams[0].id);
+    expect(sound.last).toBe('silence');
+    await starting;
+    expect(sound.last).toBe('play https://files/q0.mp3 0');
+    expect(awake.on).toBe(true);
+    expect(store.exams[0].started).toBe(true);
+    app.press(2); // the short answer
+    expect(sound.last).toBe('play https://files/a0.mp3 0-2000');
+    sound.end();
+    expect(sound.last).toBe('play https://files/q1.mp3 0');
+    expect(store.exams[0].index).toBe(1); // goes on from here next time
+    sound.end();
+    clock.advance(6_000); // three questions: six seconds to think
+    expect(sound.last).toBe('play https://files/q2.mp3 0');
+    app.stopAll();
+    expect(awake.on).toBe(false);
+    expect(app.quiz).toBeNull();
+  });
+
+  it('credits for fewer questions: the exam gets as many as fit, and says so', async () => {
+    const { app, server } = make((fn, action, body) => {
+      if (fn === 'exam' && action === 'drill') {
+        if (body.questions === 12) return { status: 402, body: { error: { code: 'quota_exceeded', message: 'Not enough credits for 12 questions.' }, fits: 5, min_questions: 3 } };
+        return ok(questions(Number(body.questions)));
+      }
+      return ok({});
+    });
+    await app.makeQuestions('Cells are small.', 12);
+    expect(server.calls.filter((c) => c.fn === 'exam').map((c) => c.body.questions)).toEqual([12, 5]);
+    expect(app.draft).toMatchObject({ stage: 'check', count: 5, note: 'Your credits cover 5 questions.' });
+  });
+
+  it('credits for fewer than three: no exam, the server\'s words', async () => {
+    const { app, server } = make((fn, action) =>
+      fn === 'exam' && action === 'drill' ? { status: 402, body: { error: { code: 'quota_exceeded', message: 'An exam needs at least 3 questions. Your credits cover 2.' }, fits: 2, min_questions: 3 } } : ok({}),
+    );
+    await app.makeQuestions('Cells are small.', 12);
+    expect(server.calls.filter((c) => c.fn === 'exam').length).toBe(1);
+    expect(app.draft).toEqual({ stage: 'write', error: 'An exam needs at least 3 questions. Your credits cover 2.' });
+  });
+
+  it('"Something is wrong" sends the notes and the line, not the text again', async () => {
+    const { app, server } = make((fn, action) => (fn === 'exam' && action === 'drill' ? ok(questions(3)) : ok({})));
+    await app.makeQuestions('A long text about cells.', 3);
+    await app.correct('It is about chapter 4.');
+    const second = server.calls.filter((c) => c.fn === 'exam')[1].body;
+    expect(second.text).toBe('notes');
+    expect(second.correction).toBe('It is about chapter 4.');
+    expect(app.draft.stage).toBe('check');
+  });
+
+  it('Start exam refused for credits: the server\'s words on that exam, nothing plays', async () => {
+    const { app, store, sound, awake } = make((fn, action) => {
+      if (fn === 'exam' && action === 'drill') return ok(questions(3));
+      if (fn === 'exam') return ok(answers(3));
+      if (action === 'save') return ok(examView('e1', false));
+      if (action === 'start') return { status: 402, body: { error: { code: 'quota_exceeded', message: 'This exam costs 600 credits. You have 100.' } } };
+      return ok({});
+    });
+    await app.makeQuestions('Cells.', 3);
+    await app.acceptExam();
+    const id = store.exams[0].id;
+    await app.startExam(id);
+    expect(app.examError).toEqual({ id, message: 'This exam costs 600 credits. You have 100.' });
+    expect(app.quiz).toBeNull();
+    expect(app.examBusy).toBeNull();
+    expect(awake.on).toBe(false);
+    expect(sound.log.some((l) => l.startsWith('play'))).toBe(false);
+  });
+
+  it('Delete takes it away here and on the server', async () => {
+    const { app, store, server } = make((fn, action) => {
+      if (fn === 'exam' && action === 'drill') return ok(questions(3));
+      if (fn === 'exam') return ok(answers(3));
+      if (action === 'save') return ok(examView('e1', false));
+      return ok({});
+    });
+    await app.makeQuestions('Cells.', 3);
+    await app.acceptExam();
+    await app.deleteExam(store.exams[0].id);
+    expect(store.exams).toEqual([]);
+    expect(server.calls.find((c) => c.action === 'delete')?.body.id).toBe('e1');
+  });
+});

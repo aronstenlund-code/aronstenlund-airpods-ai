@@ -4,7 +4,7 @@ import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/
 import { appChecks, enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
 import { readLimitedJson } from "../answer/validate.ts";
 import { DEFAULT_DEMO_CAPS, type DemoCaps, enforceDemo, networkKey } from "../_shared/demo.ts";
-import { type Voice, VOICE_ID_RE } from "./voices.ts";
+import { activeVoiceId, isRetired, type Voice, VOICE_ID_RE } from "./voices.ts";
 
 /**
  * D46 item 9 / K14: models the app, the demo and the evals may ask for, with their metering weight relative to Flash
@@ -214,7 +214,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
         ? null
         : raw.voice_id;
       if (requested !== null) {
-        const allowed = typeof requested === "string" &&
+        const allowed = typeof requested === "string" && !isRetired(requested) &&
           (deps.config.voices.some((v) => v.id === requested) || requested === deps.config.voiceId);
         if (!allowed) {
           throw new HttpError(
@@ -224,8 +224,8 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
           );
         }
       }
-      const voiceId = (requested as string | null) ?? deps.config.voiceId ??
-        deps.config.voices[0]?.id ?? null;
+      const voiceId = (requested as string | null) ?? activeVoiceId(deps.config.voiceId) ??
+        deps.config.voices.find((v) => !isRetired(v.id))?.id ?? null;
       if (!voiceId || !VOICE_ID_RE.test(voiceId)) {
         throw new HttpError(503, "provider_unconfigured", "No TTS voice configured", {
           fallback: true,
