@@ -36,7 +36,15 @@ ok("question (en)", q_en.get("transcript") == "What does photosynthesis do?" and
 said, done = "", {}
 r = urllib.request.Request(T.URL + "/functions/v1/answer", data=json.dumps({"fragment": q_sv["transcript"], "mode": "tutor", "language": "sv", "lang": "sv", "length": "adaptive", "context": {"recent_qa": []}}).encode(),
                            method="POST", headers=T.headers(tok, True))
-with urllib.request.urlopen(r, timeout=90) as x:
+import urllib.error  # noqa: E402
+try:
+    x = urllib.request.urlopen(r, timeout=90)
+except urllib.error.HTTPError as e:
+    body = e.read().decode(errors="replace")[:400]
+    ok("the question is answered (tutor)", False, {"http": e.code, "body": body})
+    print(f"=== K118: {sum(res.values())} av {len(res)}")
+    _s.exit(1)
+with x:
     ev = None
     for line in x:
         line = line.decode().rstrip("\n")
