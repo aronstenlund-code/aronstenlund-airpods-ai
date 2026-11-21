@@ -130,7 +130,7 @@ for config in "${CONFIGS[@]}"; do
   SHOTS="$(ls "$OUT/$NAME"/*.png 2>/dev/null | wc -l | tr -d ' ')"
   # The tour's own steps in the job log (the artifacts cannot always be fetched): taps, backs, notes and misses.
   echo "Tour log ($NAME):"
-  grep -E '^(tap|back|note|MISS|shot):' "$OUT/$NAME/$NAME-tour-log.txt" 2>/dev/null | cut -c1-200 | head -n 160 || echo "(no tour log)"
+  grep -E '^(tap|back|note|MISS|shot):' "$OUT/$NAME/$NAME-tour-log.txt" 2>/dev/null | cut -c1-200 | head -n 400 || echo "(no tour log)"
   MISSES="$(grep -c '^MISS:' "$OUT/$NAME/$NAME-tour-log.txt" 2>/dev/null || true)"
   [ -z "$MISSES" ] && MISSES="?"
   RESULT_TEXT="$([ $STATUS -eq 0 ] && echo 'grön' || echo 'röd')"

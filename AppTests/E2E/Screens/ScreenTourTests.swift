@@ -411,7 +411,9 @@ final class ScreenTourTests: XCTestCase {
         if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
         for (towardsEnd, steps) in [(false, 3), (true, 30), (false, 50)] {
             var last = listPosition()
+            var taken = 0
             for _ in 0..<steps {
+                taken += 1
                 if towardsEnd {
                     app.swipeUp()
                 } else {
@@ -425,11 +427,22 @@ final class ScreenTourTests: XCTestCase {
                 }
                 if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
                 let now = listPosition()
-                if now != nil, now == last { break }  // the end (or the top) of the list
+                if now != nil, now == last {  // the end (or the top) of the list
+                    record("note: scroll \(labels[0]): \(towardsEnd ? "down" : "up") stopped after \(taken) at \(now ?? "-")")
+                    break
+                }
                 last = now
             }
         }
+        record("note: scroll \(labels[0]) gave up; list at \(listPosition() ?? "no list")")
+        dumpButtons()
         return nil
+    }
+
+    /// The buttons in the tree right now, into the tour log (T3 diagnostics, run 44846862625).
+    private func dumpButtons() {
+        let lines = app.debugDescription.split(separator: "\n").filter { $0.contains("Button,") || $0.contains("CollectionView,") }
+        for line in lines.prefix(45) { record("note: tree: \(line.trimmingCharacters(in: .whitespaces).prefix(150))") }
     }
 
     /// Where the list is: the first loaded cell's label and top edge. Unchanged after a swipe = the list's end.
@@ -444,6 +457,7 @@ final class ScreenTourTests: XCTestCase {
     private func centered(_ element: XCUIElement, labels: [String], buttonsOnly: Bool = true) -> XCUIElement {
         let height = app.windows.firstMatch.frame.height
         guard height > 0, element.frame.midY > height * 0.7 else { return element }
+        record("note: centring \(labels[0]) from y \(Int(element.frame.midY)) of \(Int(height))")
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.75))
             .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.45)),
                    withVelocity: .slow, thenHoldForDuration: 0.2)
