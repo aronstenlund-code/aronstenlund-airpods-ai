@@ -1027,7 +1027,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           if (!rl.allowed) {
             throw new HttpError(429, "rate_limited", "Too many requests", { fallback: true, retryAfterSec: rl.retryAfterSec });
           }
-          const ns = new NumberStream();
+          const ns = new NumberStream(body.language);
           const spoken = ns.push(pick.item.a) + ns.finish();
           const totalMs = Math.round(now() - t0);
           const cost = (checkIn * cfg.priceInPerMTok + checkOut * cfg.priceOutPerMTok) / 1e6;
@@ -1298,7 +1298,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             retryAfterSec: rl.retryAfterSec,
           });
         }
-        const ns = new NumberStream();
+        const ns = new NumberStream(body.language);
         const spoken = (ns.push(localCalc) + ns.finish()).replace(/^\s*\p{Ll}/u, (c) => c.toUpperCase());
         const totalMs = Math.round(now() - t0);
         try {
@@ -1748,6 +1748,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             relationTag,
             web: webOn || !!need,
             dropEnglish: !!phoneTools && body.language === "sv",
+            language: body.language, // K115 (D253)
             source: textReq, // D84: texts and quotes split off their källa line
             tutor,
             silence: silenceOn,
@@ -1875,7 +1876,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           let inMore = false;
           let markBuf = "";
           let moreText = "";
-          const morePost = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor, heard: body.fragment });
+          const morePost = new AnswerPost({ previousAnswers: [], trimQuestion: false, tutor, heard: body.fragment, language: body.language });
           const sendMore = (t: string) => {
             if (!t || closed || moreText.length >= 2000) return;
             const cut = t.slice(0, 2000 - moreText.length);
@@ -2191,6 +2192,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 relationTag,
                 web: (webOn || !!need || searched) && !emptyRetried,
                 dropEnglish: !!phoneTools && body.language === "sv",
+            language: body.language, // K115 (D253)
                 source: textReq,
                 tutor,
                 silence: silenceOn,

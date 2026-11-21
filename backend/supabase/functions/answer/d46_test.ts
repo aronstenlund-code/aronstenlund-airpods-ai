@@ -133,7 +133,7 @@ Deno.test("speech: NumberStream and QuestionTrim never lose text", () => {
   const n = new NumberStream();
   let o = "";
   for (const ch of "Det var 1 789 och 12 %.") o += n.push(ch);
-  assertEquals(o + n.finish(), "Det var sjuttonhundraåttionio och tolv procent.");
+  assertEquals(o + n.finish(), "Det var sjuttonhundraåttio nio och tolv procent."); // K115: the nine apart
   const q = new QuestionTrim(true);
   assertEquals(q.push("Vad som hände var stort. ") + q.finish(), "Vad som hände var stort. ");
 });

@@ -103,6 +103,28 @@ with urllib.request.urlopen(r, timeout=90) as x:
                 done = d
 ok("answer lang=en is English", "Paris" in text and english(text + " the is"), {"answer": text[:200]})
 
+# (3d) K115 (D253): numbers in the spoken answer follow the chosen language (Claude only, no audio)
+def say(q, lang):
+    t = T.signup()[0]
+    out = ""
+    r = urllib.request.Request(T.URL + "/functions/v1/answer", data=json.dumps({"fragment": q, "mode": "text", "lang": lang, "language": lang, "context": {"recent_qa": []}}).encode(),
+                               method="POST", headers=T.headers(t, True))
+    with urllib.request.urlopen(r, timeout=90) as x:
+        ev = None
+        for line in x:
+            line = line.decode().rstrip("\n")
+            if line.startswith("event: "):
+                ev = line[7:]
+            elif line.startswith("data: ") and ev == "delta":
+                out += json.loads(line[6:]).get("text", "")
+    return out
+
+
+en_num = say("how many members does the united states senate have", "en")
+ok("K115 English answer keeps digits (no Swedish number words)", re.search(r"\b100\b|one hundred", en_num) and not re.search(r"hundra|ett komma", en_num), {"answer": en_num[:200]})
+sv_num = say("hur många ledamöter har riksdagen", "sv")
+ok("K115 Swedish answer: the nine apart", "fyrtio nio" in sv_num and "fyrtionio" not in sv_num, {"answer": sv_num[:200]})
+
 # (3c) exam from an English text: English questions
 EN_TEXT = ("The Water Cycle\n\nWater moves between the oceans, the air and the land in a cycle. The sun heats the oceans and "
            "water evaporates into the air as water vapour. As the vapour rises it cools and condenses into tiny droplets that "

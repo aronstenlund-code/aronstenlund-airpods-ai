@@ -5,7 +5,17 @@
  * Rules are versioned (`drills.voice_rules`): a drill made before K74 keeps version 1 (the same hashes, so no file
  * is made again and nothing is counted again when it is edited or started); new drills get version 2.
  */
-export const VOICE_RULES_VERSION = 3;
+export const VOICE_RULES_VERSION = 4;
+
+/**
+ * K115 (D253): Aron heard "1999" as "nittonhundranittionien". The text was right ("nittonhundranittionio"), but every
+ * x9 from 39 to 99 ends in "-tionio", which looks like a "-tion" word (station, nationen). UNTESTED ASSUMPTION that
+ * this is what the voice stumbles on (D180: nobody listens); the tens and the nine are written apart ("nittio nio"),
+ * as they are said. Used by the drill voice (rules version 4) and every spoken Swedish answer.
+ */
+export function splitNine(t: string): string {
+  return t.replace(/(trettio|fyrtio|femtio|sextio|sjuttio|åttio|nittio)nio(?![\p{L}])/giu, "$1 nio");
+}
 
 /**
  * K74 part 2: ElevenLabs v4, prepared but off. A drill may ask for it only when drill_settings.allow_eleven_v4 = 1
@@ -244,7 +254,8 @@ export function polishVoice(text: string, lang = "", version = 2): string {
     t = t.replace(r.re, r.to as never);
   }
   const sentences = t.split(/(?<=[.!?])\s+(?=["“„«(]?[\p{Lu}\p{N}])/u);
-  const out = sentences.flatMap((s) => splitLong(s, L)).join(" ").replace(/\s{2,}/g, " ").trim();
+  const out0 = sentences.flatMap((s) => splitLong(s, L)).join(" ").replace(/\s{2,}/g, " ").trim();
+  const out = version >= 4 && L === "sv" && !only ? splitNine(out0) : out0;
   // K75: the text ends with a stop, so the voice ends calmly ("... med mera", "every 5 seconds" had lost theirs)
   return version >= 3 && out && !/[.!?…:]["”»)]*$/.test(out) ? `${out}.` : out;
 }
