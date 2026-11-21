@@ -88,3 +88,20 @@ Röd i 44918272697 var bara testet: Playwrights WebKit föreslår filnamnet med 
 Två ofarliga rader i WebKit-loggen:
 - Den första hämtningen av den signerade mp3:n får status 0, och nästa får 200. Det är troligen ett avbrutet intervallanrop när `<audio>` byter källa.
 - `voices` avbryts ("Load request cancelled") när språket byts mitt i en hämtning, och hämtas sedan igen.
+
+## Tillägg 17:10: lyssnarläget (A156 del 2)
+T56 har nu körningen `listen`:
+- Ordning: More modes → `listen-start` → samtyckesbladet före mikrofonen (D21, nämner ElevenLabs) → `consent-accept` → raden Listening med Stop och skärmraden → testmeningen → svaret på skärmen och uppläst → Listening igen → Stop.
+- Andra gången kommer inget samtyckesblad. Spela stoppar lyssnandet. Samtycket tas tillbaka i Inställningar, och därefter kommer bladet igen.
+- Chromium har en låtsasmikrofon (`--use-fake-device-for-media-stream --use-fake-ui-for-media-stream`). WebKit får tillstånd till mikrofonen via Playwright.
+
+**D180 i lyssnarläget:**
+- Servern ger testtrafik ingen Scribe-token. Det är verifierat i koden: `stt-token/index.ts`, "D180: test accounts never use ElevenLabs", och en vakt kastar om ett testanrop kommer längre.
+- Testet läser varje svar från `stt-token` och kräver `fake: true` utan token och utan sockeladress. Annars stoppas lyssnandet direkt och körningen blir röd.
+- WebSockets till ElevenLabs stoppas i webbläsaren (`routeWebSocket`).
+
+**Körning 44922296899:**
+- **Lokalt:** WebKit 58/58 och Chromium 58/58. **Mikrofonen fungerar i Playwrights WebKit** när tillståndet ges, vilket Angela inte kunde prova. Båda svaren från `stt-token` var fake utan token.
+- **Live:** allt utom lyssnandet är grönt, och nedladdningen gav en äkta MP3 i båda motorerna. Den publicerade betan har inget lyssnarkort än, eftersom del 2 inte är publicerad, så live-lyssningen är inte provad. Testet skriver det nu som en anteckning i stället för rött, och provar lyssnandet live när kortet finns.
+
+**Inte provat:** lyssnarläget live mot riktiga `/answer` (väntar på Kellys publicering), och en riktig mikrofon i Safari på en iPhone.

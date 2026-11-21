@@ -451,6 +451,12 @@ await run('en-dark', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot
 // use ElevenLabs"). Locally the pretend server answers the same way.
 await run('listen', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot) => {
   await page.goto(page0);
+  await page.getByTestId('credits').waitFor();
+  // Live before Kelly has published part 2 (run 44922296899): no listening card yet. Say so instead of failing.
+  if (live && !(await page.getByTestId('listen-start').waitFor({ timeout: 15000 }).then(() => true, () => false))) {
+    note('listen: the published beta has no listening card yet (A156 part 2 not published); only the local run tried it');
+    return;
+  }
   await page.getByTestId('listen-start').scrollIntoViewIfNeeded();
   await shot('1-more-modes');
   await page.getByTestId('listen-start').click();
