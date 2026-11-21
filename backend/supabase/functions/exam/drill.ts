@@ -64,9 +64,9 @@ export const SYSTEM_PROMPT_DRILL_PLAN =
 {"summary": {"subject": "Biologi", "grade": "åk 8", "covers": "..."}, "notes": "...", "questions_possible": 12, "questions": ["Varför behövs klorofyll?", "..."]}
 When the material cannot be read at all (blurred, cut off, a screen photo you cannot make out, no school content), return ONLY {"unreadable": "<one short Swedish sentence on why, for example 'Texten på bilderna går inte att läsa.'>"}.
 - summary: "subject" the school subject in Swedish; "grade" the school year or course as Swedes say it ("åk 8", "Matematik 1b", "Svenska 1", "Engelska 6", "Samhällskunskap 1b"): from <context> when given; else from the material itself: a course name or code, a textbook title, "åk"/"årskurs", or content that only fits one level (a gymnasium course's topics such as derivatives, molar mass or language history are gymnasium; never guess "åk 8" by default); else "" (empty: the app then asks the student, D159/K52); "covers" one or two Swedish sentences on what the exam covers (the main areas, in order).
-- notes: every fact, concept, definition, formula, date, name, cause and example in the material, as compact Swedish plain text in the material's order (at most about 900 words). Only what the material says; the answers are written from these notes.
+- notes: every fact, concept, definition, formula, date, name, cause and example in the material, as compact plain text in the exam's language, in the material's order (at most about 900 words). Only what the material says; the answers are written from these notes.
 - questions_possible: how many good, different exam questions the material really supports (D159: never more than the material carries; a short text may support 4). Count before you write.
-- Language (D182): when the subject is a foreign language (Engelska, Spanska, Tyska, Franska, Italienska, Kinesiska, Japanska and other modern languages), the exam is in that language: write "covers", the notes and the questions in that language. Every other subject in Swedish, even when the material is in English.
+- Language (D182): when the subject is a foreign language (Engelska, Spanska, Tyska, Franska, Italienska, Kinesiska, Japanska and other modern languages), the exam is in that language: write "covers", the notes and the questions in that language. Every other subject in the material's own language (K114, D251): an English text gives an English exam (notes, "covers" and questions), a Swedish text a Swedish one, any other language Swedish.
 - questions: the number asked for in <count>, or fewer when questions_possible is lower: then exactly questions_possible plus at most 6 extra (the weakest are removed afterwards). Never pad with repeated, trivial or outside questions to reach the number. In the exam's language, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:
   - clear when only HEARD, with no text in front of the student: as short as it can be while it stays clear and natural Swedish (D176: there is no word limit; a long question with a long answer costs more, so do not make it longer than it needs to be). Never a fragment that needs the material to make sense ("Vad säger m?", "Mol metan i 16 g?" are wrong; "Vad visar m i en rät linje?", "Hur många mol är 16 gram metan?" are right). Cut filler such as "i naturen", "egentligen", "det att";
   - written as it is said: no symbols, formulas, units or abbreviations as signs ("syre", not "O2"; "kubikdecimeter", not "dm³"; "procent", not "%");
@@ -711,6 +711,26 @@ export function parseAnswers(text: string, strict = false): Map<string, { short:
 }
 
 /**
+ * K114 (D251): the language of a text from its common words: "sv", "en" or "" (too little to tell, or neither). The
+ * exam is made in the text's language; Swedish stays the default when it cannot tell.
+ */
+export function textLanguage(text: string): "sv" | "en" | "" {
+  const w = text.toLowerCase().match(/\p{L}+/gu) ?? [];
+  if (w.length < 6) return "";
+  const SV = new Set(["och", "att", "det", "är", "som", "en", "ett", "på", "av", "för", "med", "den", "till", "inte", "har", "från", "när", "där", "eller", "också"]);
+  const EN = new Set(["the", "and", "is", "of", "to", "in", "that", "it", "for", "with", "are", "as", "from", "this", "by", "which", "or", "an", "be", "they"]);
+  let sv = 0, en = 0;
+  for (const x of w) {
+    if (SV.has(x)) sv++;
+    if (EN.has(x)) en++;
+  }
+  sv += (text.match(/[åäö]/gi) ?? []).length / 4;
+  if (en >= 3 && en > sv * 1.5) return "en";
+  if (sv >= 3 && sv > en * 1.5) return "sv";
+  return "";
+}
+
+/**
  * D182: the language of a language exam ("Engelska 6" -> "English"), or "" (Swedish). Swedish itself is "".
  */
 export function examLanguage(subject: string): string {
@@ -790,7 +810,8 @@ export async function answerItems(
   const got = new Map<string, { short: string; long: string; question?: string; screen?: Screen; original?: OriginalAnswer }>();
   // K111: the latest answer to each question as it was asked (an unchanged answer, or "original" given with a rewrite)
   const asAsked = new Map<string, { short: string; long: string; screen?: Screen }>();
-  const lang = examLanguage(ctx.subject);
+  // K114 (D251): the answers in the material's language (English notes give English answers, any subject)
+  const lang = examLanguage(ctx.subject) || (textLanguage(`${ctx.notes} ${items.map((i) => i.question).join(" ")}`) === "en" ? "English" : "");
   const ask = async (batch: { id: string; question: string }[], strict = true, mustFix: boolean | "fact" = false, others: string[] = []) => {
     const r = await runLLM(provider, {
       system: SYSTEM_PROMPT_DRILL_ANSWERS,
