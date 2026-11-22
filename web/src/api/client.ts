@@ -1,6 +1,10 @@
 import type { BackendConfig } from '../config';
 
 /// The server said no, with words for the user where it has them (`{"error":{"code","message"}}`).
+export function isProviderCode(code: unknown): boolean {
+  return typeof code === 'string' && code.startsWith('provider_');
+}
+
 export class ApiError extends Error {
   constructor(
     readonly status: number,
@@ -9,6 +13,12 @@ export class ApiError extends Error {
     readonly body: Record<string, unknown> = {},
   ) {
     super(message);
+  }
+
+  /// O97: the model behind EarMind is out of credits, busy or down (503/502 `provider_*`). The server's `message`
+  /// for these has been technical before ("LLM credits exhausted"), so the page says its own words.
+  get isProviderDown(): boolean {
+    return isProviderCode(this.code);
   }
 
   get isOutOfCredits(): boolean {

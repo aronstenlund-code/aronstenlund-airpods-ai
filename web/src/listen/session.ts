@@ -1,4 +1,4 @@
-import { ApiError } from '../api/client';
+import { ApiError, isProviderCode } from '../api/client';
 import type { AnswerRequest } from '../api/listen';
 import type { Clock, Sound } from '../core/sound';
 import type { Translate } from '../texts';
@@ -312,7 +312,7 @@ export class ListenSession {
       await this.deps.api.answer({ fragment: turn, recent: this.recent }, (event) => (mine === this.run && this.abort === abort ? this.answered(event) : undefined), abort.signal);
     } catch (error) {
       if (mine !== this.run || this.abort !== abort) return;
-      this.error = error instanceof ApiError && error.message.trim().length > 0 ? error.message : this.deps.t('listenAnswerFailed');
+      this.error = error instanceof ApiError && error.isProviderDown ? this.deps.t('errorProvider') : error instanceof ApiError && error.message.trim().length > 0 ? error.message : this.deps.t('listenAnswerFailed');
       this.silent = true;
     }
     if (mine !== this.run || this.abort !== abort) return;
@@ -331,7 +331,8 @@ export class ListenSession {
       for (const sentence of sentences) this.enqueue(sentence);
       this.changed();
     } else if (event.event === 'error') {
-      this.error = typeof data.message === 'string' && data.message.length > 0 ? data.message : this.deps.t('listenAnswerFailed');
+      // O97: the model gave up (also in the middle of an answer): our own words, not its technical ones.
+      this.error = isProviderCode(data.code) ? this.deps.t('errorProvider') : typeof data.message === 'string' && data.message.length > 0 ? data.message : this.deps.t('listenAnswerFailed');
     } else if (event.event === 'done' && data.retract === true) {
       // The server takes the answer back: what was shown goes, what was to be said is not said.
       this.silent = true;

@@ -467,3 +467,57 @@ describe('small things the others asked for', () => {
   });
 });
 
+describe('the model behind EarMind is out of credits, busy or down (O97)', () => {
+  const down = (code: string, status = 503): Scripted => ({ status, body: { error: { code, message: 'LLM credits exhausted', fallback: true } } });
+  const own = 'EarMind can\u2019t answer right now. Try again in a while.';
+
+  it('Play: our own short words, never the server\'s technical ones; nothing is started, so nothing is counted', async () => {
+    const { app, server, sound } = make((_fn, action) => (action === 'save' ? down('provider_quota') : ok({})));
+    await app.say('One. Two.', '');
+    expect(app.sayError).toBe(own);
+    expect(app.sayOutOfCredits).toBe(false); // the user's credits are not what ran out
+    expect(app.text).toBeNull();
+    expect(server.names().filter((n) => n === 'drill:start' || n === 'drill:status')).toEqual([]);
+    expect(sound.log.some((l) => l.startsWith('play'))).toBe(false);
+  });
+
+  it('New quiz: the same words, and no quiz is saved', async () => {
+    const { app, server, store } = make((fn, action) => (fn === 'exam' && action === 'drill' ? down('provider_busy') : ok({})));
+    await app.makeQuestions('Cells are small.', 12);
+    expect(app.draft).toEqual({ stage: 'write', error: own });
+    expect(server.names()).not.toContain('drill:save');
+    expect(store.exams).toEqual([]);
+  });
+
+  it('the answers cannot be written: the questions stay, nothing is saved', async () => {
+    const { app, server } = make((fn, action) => {
+      if (fn === 'exam' && action === 'drill') return ok({ summary: { subject: 'Biology', grade: '8', covers: 'Cells' }, notes: 'n', items: [0, 1, 2].map((i) => ({ id: `q${i}`, question: `Q${i}?` })) });
+      if (fn === 'exam') return down('provider_unavailable', 502);
+      return ok({});
+    });
+    await app.makeQuestions('Cells.', 3);
+    await app.acceptExam();
+    expect(app.draft).toMatchObject({ stage: 'check', error: own });
+    expect(server.names()).not.toContain('drill:save');
+  });
+
+  it('Start quiz: the same words on that quiz', async () => {
+    const { app, store } = make((fn, action) => {
+      if (fn === 'exam' && action === 'drill') return ok({ summary: { subject: 'Biology', grade: '8', covers: 'Cells' }, notes: 'n', items: [0, 1, 2].map((i) => ({ id: `q${i}`, question: `Q${i}?` })) });
+      if (fn === 'exam') return ok({ items: [0, 1, 2].map((i) => ({ id: `q${i}`, question: `Q${i}?`, short: 's', long: 'l' })) });
+      if (action === 'save') return ok(examView('e1', false));
+      if (action === 'start') return down('provider_unconfigured');
+      return ok({});
+    });
+    await app.makeQuestions('Cells.', 3);
+    await app.acceptExam();
+    await app.startExam(store.exams[0].id);
+    expect(app.examError?.message).toBe(own);
+    expect(app.quiz).toBeNull();
+  });
+
+  it('in Swedish when Swedish is chosen', () => {
+    expect(translator('sv')('errorProvider')).toBe('EarMind kan inte svara just nu. Försök igen om en stund.');
+  });
+});
+
