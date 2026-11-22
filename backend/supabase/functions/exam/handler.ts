@@ -1,5 +1,5 @@
 import { type Authenticator } from "../_shared/auth.ts";
-import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
+import { CORS_HEADERS, errorResponse, HttpError, PROVIDER_DOWN, toHttpError } from "../_shared/errors.ts";
 import { appChecks, enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
 import { networkKey } from "../_shared/demo.ts";
 import { readLimitedJson } from "../answer/validate.ts";
@@ -371,7 +371,7 @@ export function createExamHandler(deps: ExamDeps) {
           retryAfterSec: rl.retryAfterSec,
         });
       }
-      if (!deps.provider) throw new HttpError(503, "provider_unconfigured", "LLM provider not configured");
+      if (!deps.provider) throw new HttpError(503, "provider_unconfigured", PROVIDER_DOWN, { fallback: true });
       if (drill) {
         // K61 (D175): never more questions than the month has left; none left = say so before any work
         const req0 = { ...((b ?? {}) as Record<string, unknown>) };

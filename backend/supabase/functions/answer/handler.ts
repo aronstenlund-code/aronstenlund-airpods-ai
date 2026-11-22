@@ -1,5 +1,5 @@
 import { type Authenticator } from "../_shared/auth.ts";
-import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
+import { CORS_HEADERS, errorResponse, HttpError, PROVIDER_DOWN, providerHttpError, toHttpError } from "../_shared/errors.ts";
 import {
   type AppGuard,
   appChecks,
@@ -345,32 +345,9 @@ export interface Deps {
 }
 
 export function providerErrorToHttp(e: unknown): HttpError {
-  if (e instanceof LLMProviderError) {
-    switch (e.kind) {
-      case "quota":
-        return new HttpError(503, "provider_quota", "LLM credits exhausted", { fallback: true });
-      case "rate_limited":
-        return new HttpError(503, "provider_busy", "LLM rate limited", {
-          fallback: true,
-          retryAfterSec: 5,
-        });
-      case "unconfigured":
-        return new HttpError(503, "provider_unconfigured", "LLM provider not configured", {
-          fallback: true,
-        });
-      case "auth":
-        return new HttpError(503, "provider_misconfigured", "LLM provider credentials rejected", {
-          fallback: true,
-        });
-      case "bad_request":
-        return new HttpError(502, "provider_error", "LLM rejected the request", { fallback: true });
-      default:
-        return new HttpError(502, "provider_unavailable", "LLM provider unavailable", {
-          fallback: true,
-        });
-    }
-  }
-  return new HttpError(502, "provider_unavailable", "LLM provider unavailable", { fallback: true });
+  // O97: the same mapping as /exam and /drill (_shared/errors.ts)
+  if (e instanceof LLMProviderError) return providerHttpError(e);
+  return new HttpError(502, "provider_unavailable", PROVIDER_DOWN, { fallback: true });
 }
 
 /** K105 (D234): the web cap's scope and limits for this call. Test calls (`x-earmind-test`) count against their own
@@ -624,7 +601,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const tBody = now() - t0;
       const provider = deps.provider;
       if (!provider) {
-        throw new HttpError(503, "provider_unconfigured", "LLM provider not configured", {
+        throw new HttpError(503, "provider_unconfigured", PROVIDER_DOWN, {
           fallback: true,
         });
       }

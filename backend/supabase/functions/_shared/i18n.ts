@@ -18,6 +18,8 @@ const MONTHS: Record<string, string> = {
 const month = (s: string) => s.replace(/(\d{1,2}) (januari|februari|mars|april|maj|juni|juli|augusti|september|oktober|november|december)/g, (_m, d, m) => `${d} ${MONTHS[m]}`);
 
 const EXACT: Record<string, string> = {
+  "EarMind är nere en stund. Försök igen senare.": "EarMind is down for a moment. Try again later.",
+  "EarMind har mycket att göra just nu. Försök igen om en stund.": "EarMind is busy right now. Try again in a moment.",
   "Bekräfta att kontot ska raderas.": "Confirm that the account should be deleted.",
   "Bilden tillhör inte det här kontot.": "The picture does not belong to this account.",
   "Demon är tillfälligt otillgänglig.": "The demo is temporarily unavailable.",
