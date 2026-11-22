@@ -120,6 +120,7 @@ final class HelpClient: HelpAnswering {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
             request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
+            request.markLanguage()
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.timeoutInterval = timeout
             request.httpBody = try JSONSerialization.data(withJSONObject: AppLanguage.stamped(body)) // A157 (K114): lang

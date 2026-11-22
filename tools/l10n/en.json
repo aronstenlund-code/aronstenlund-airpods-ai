@@ -266,6 +266,7 @@
  "EarMind kan allt": "EarMind can do anything",
  "EarMind kan allt. Säg Lumen och vad du vill, till exempel: ": "EarMind can do anything. Say Lumen and what you want, for example: ",
  "EarMind kan inte svara just nu": "EarMind can't answer right now",
+ "EarMind kan inte svara just nu. Försök igen om en stund.": "EarMind can’t answer right now. Try again in a while.",
  "EarMind kan mer än svara": "EarMind can do more than answer",
  "EarMind kan påminna dig klockan \\(ReminderText.clock(LumenNotifications.practiceMinutes)) de dagar du inte har pluggat. Högst en gång om dagen.": "EarMind can remind you at \\(ReminderText.clock(LumenNotifications.practiceMinutes)) on days you haven't studied. At most once a day.",
  "EarMind kom inte igång. Tryck igen om en stund.": "EarMind didn't start. Tap again in a moment.",

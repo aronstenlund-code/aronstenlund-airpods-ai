@@ -549,6 +549,7 @@ final class DrillCloudClient: DrillCloudSyncing {
         request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         request.markTestTraffic()
+        request.markLanguage()
         request.timeoutInterval = 15
         request.httpBody = Data(#"{"action":"warm"}"#.utf8)
         _ = try? await http.data(for: request)
@@ -595,6 +596,7 @@ final class DrillCloudClient: DrillCloudSyncing {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
             request.markTestTraffic()
+            request.markLanguage()
             request.timeoutInterval = 15
             (response, data) = try await http.data(for: request)
         } catch {
@@ -663,6 +665,7 @@ final class DrillCloudClient: DrillCloudSyncing {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
             request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
+            request.markLanguage()
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.timeoutInterval = timeout
             request.httpBody = try JSONSerialization.data(withJSONObject: AppLanguage.stamped(body)) // A157 (K114): lang
@@ -692,6 +695,10 @@ final class DrillCloudClient: DrillCloudSyncing {
         }
         let inner = (try? JSONDecoder().decode(Body.self, from: data))?.error
         let fallback = status == 404 ? String(localized: "Provet finns inte.") : String(localized: "EarMind kunde inte spara just nu. Försök igen om en stund.")
+        // O97: the model is out of credits, busy or down. The app's own line, never the server's message.
+        if ServerTrouble.isProvider(inner?.code) {
+            return .refused(status: status, code: inner?.code ?? "http_\(status)", message: ServerTrouble.line)
+        }
         return .refused(status: status, code: inner?.code ?? "http_\(status)", message: inner?.message ?? fallback)
     }
 }
@@ -917,6 +924,22 @@ final class CloudDrillAudio: DrillAudioProviding {
     static let unavailableCodes: Set<String> = ["audio_unavailable", "tts_unavailable", "voice_unavailable",
                                                 "tts_quota_exceeded", "voice_quota_exceeded"]
 
+    /// What the exam's card says when the server said no to saving or starting it.
+    static func problemLine(for error: DrillCloudError) -> String {
+        // O97: a 503 because the model is down is not "reading aloud is paused" (that one is about the voice).
+        if case .refused(_, let code, _) = error, ServerTrouble.isProvider(code) { return ServerTrouble.line }
+        // A136 (K96): a 400 `voice_unavailable` is about the chosen catalog voice (not offered any more), not about
+        // reading aloud being off; the server's own words are said then.
+        if case .refused(let status, let code, _) = error, (isUnavailable(code) && status != 400) || status == 503 {
+            return unavailableLine // K62
+        }
+        if case .refused(_, let code, _) = error, code == "rate_limited" {
+            // Ke50 §13: K46's daily limit for new sound.
+            return String(localized: "Dagens gräns för nytt ljud är nådd. Resten görs i morgon. Frågorna som har ljud kan du plugga på redan nu.")
+        }
+        return error.userMessage
+    }
+
     static func isUnavailable(_ code: String?) -> Bool {
         guard let code else { return false }
         return unavailableCodes.contains(code)
@@ -973,14 +996,7 @@ final class CloudDrillAudio: DrillAudioProviding {
                 }
                 // A136 (K96): a 400 `voice_unavailable` is about the chosen catalog voice (not offered any more), not
                 // about reading aloud being off; the server's own words are said then.
-                if case .refused(let status, let code, _) = error, (Self.isUnavailable(code) && status != 400) || status == 503 {
-                    problems[drill.id] = Self.unavailableLine // K62
-                } else if case .refused(_, let code, _) = error, code == "rate_limited" {
-                    // Ke50 §13: K46's daily limit for new sound.
-                    problems[drill.id] = String(localized: "Dagens gräns för nytt ljud är nådd. Resten görs i morgon. Frågorna som har ljud kan du plugga på redan nu.")
-                } else {
-                    problems[drill.id] = error.userMessage
-                }
+                problems[drill.id] = Self.problemLine(for: error)
                 if case .refused(let status, _, _) = error, status == 404, current.serverID != nil {
                     // Not this account's on the server (a relaunch as a new anonymous account, D183, or deleted on
                     // another phone): keep the phone's copy and save it as new at once (Toby T24 L5). Until then the

@@ -234,6 +234,7 @@ final class PurchaseClient: PurchaseServing {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
             request.markTestTraffic()
+            request.markLanguage()
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.timeoutInterval = 30
             request.httpBody = try JSONSerialization.data(withJSONObject: body)
