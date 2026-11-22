@@ -45,11 +45,11 @@ bett honom bekräfta (rad i hans kö).
   (iOS build 45018951753, **rött som väntat, på påståendena**: 10 fel, appen visade "LLM credits exhausted" för `/drill`
   och "Det gick inte att skapa frågorna. Försök igen." för `/exam`; tredje testet, det som inte ska ändras, gick).
   Med rättningen och tre tester till (kortets rad, språkhuvudet, koderna): **iOS build 45019046853 grön** på
-  `claude/fervent-fermi-34hrer`. Appdelen ligger på main; main-bygget står i STATUS. **[CI]** Testerna körs på svenska, som resten av sviten.
+  `claude/fervent-fermi-34hrer`. Appdelen ligger på main: **main-bygget 45021895168 grönt**. **[CI]** Testerna körs på svenska, som resten av sviten.
 - **Inte testat:** på telefon; mot riktiga servern (Kevin har visat 503 `provider_quota` live, Oscar kan prova sidan).
 
 ## 4. Kvar
 
-- Kelly publicerar den nya `site/beta/` (rad i hennes kö).
+- Kelly har publicerat den nya `site/beta/` (live 2026-11-22, hennes 16f706fa).
 - Grenen `angela/o97-test-rod` behövs inte mer; jag tar bort den om du säger till (jag raderar inget på eget bevåg).
 - A149 väntar på Arons telefonprov.
