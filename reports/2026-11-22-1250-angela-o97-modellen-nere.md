@@ -42,9 +42,10 @@ bett honom bekräfta (rad i hans kö).
   Nytt prov visar den egna raden, på svenska efter SV, och inget startas efteråt. 66 kontroller gröna. **[CI]** Web beta
   45019046787 grön på grenen; webbdelen ligger på main (e740b985).
 - **Appen, test först:** tre tester mot koden som den var gick ensamma till grenen `angela/o97-test-rod`
-  (iOS build 45018951753, väntat rött: **pågår när detta skrivs**). Med rättningen och tre tester till (kortets rad,
-  språkhuvudet, koderna): iOS build 45019046853, **pågår när detta skrivs**. Appdelen ligger på grenen
-  `claude/fervent-fermi-34hrer` och går till main först när bygget är grönt; resultaten fylls i då. Testerna körs på svenska, som resten av sviten.
+  (iOS build 45018951753, **rött som väntat, på påståendena**: 10 fel, appen visade "LLM credits exhausted" för `/drill`
+  och "Det gick inte att skapa frågorna. Försök igen." för `/exam`; tredje testet, det som inte ska ändras, gick).
+  Med rättningen och tre tester till (kortets rad, språkhuvudet, koderna): **iOS build 45019046853 grön** på
+  `claude/fervent-fermi-34hrer`. Appdelen ligger på main; main-bygget står i STATUS. **[CI]** Testerna körs på svenska, som resten av sviten.
 - **Inte testat:** på telefon; mot riktiga servern (Kevin har visat 503 `provider_quota` live, Oscar kan prova sidan).
 
 ## 4. Kvar
