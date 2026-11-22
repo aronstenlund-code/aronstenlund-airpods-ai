@@ -55,7 +55,7 @@ function wav(seconds) {
 }
 
 const calls = [];
-const state = { statusAsked: 0, credits: 1236, fits: null };
+const state = { statusAsked: 0, credits: 1236, fits: null, down: false };
 const textView = (done) => ({
   drill: { id: 'd1', kind: 'text', audio_started: true, voice_name: 'Astrid' },
   items: [
@@ -115,6 +115,10 @@ async function answer(route) {
       ],
     });
   }
+  // O97: the model behind the server is out of credits. The message is technical on purpose: the page must not show it.
+  if (state.down && (fn === 'answer' || fn === 'exam' || (fn === 'drill' && (body.action === 'save' || body.action === 'start')))) {
+    return json({ error: { code: 'provider_quota', message: 'LLM credits exhausted', fallback: true } }, 503);
+  }
   if (fn === 'drill') {
     const quota = { limit: 1500, remaining: state.credits, resets_day: '2026-12-01' };
     if (body.action === 'quota') return json(quota);
@@ -162,7 +166,7 @@ async function run(name, { locale, colorScheme, width = 393, height = 852, scale
   const errors = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   // The browser itself logs the pretend server's 402 (no credits): that one is part of the script.
-  page.on('console', (m) => (m.type() === 'error' && !/status of 40[24]/.test(m.text()) ? errors.push(m.text()) : undefined));
+  page.on('console', (m) => (m.type() === 'error' && !/status of (40[24]|503)/.test(m.text()) ? errors.push(m.text()) : undefined));
   await page.route('https://xjczbzfkmbjdebwlccki.supabase.co/**', answer);
   await page.route('https://files.test/**', answer);
   const outside = [];
@@ -372,6 +376,31 @@ await run('listen', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot)
   await page.getByTestId('listen-start').click();
   await page.getByTestId('consent-sheet').waitFor();
   check('consent taken back in Settings: the consent screen comes again', true);
+});
+
+await run('down', { locale: 'en-US', colorScheme: 'dark' }, async (page, shot) => {
+  state.down = true;
+  const before = calls.length; // the earlier scenarios' calls are not this one's
+  await page.goto(`${base}/beta?test=smoke`);
+  await page.getByTestId('say-field').fill('A short line.');
+  await page.getByTestId('play').click();
+  await page.getByTestId('say-error').waitFor();
+  check('the model is down (O97): Play says our own short words', (await page.getByTestId('say-error').textContent()) === 'EarMind can\u2019t answer right now. Try again in a while.');
+  check('and nothing about buying credits, since the user\u2019s credits are not what ran out', !(await page.locator('.say-form').textContent()).includes('Purchases'));
+  await shot('1-play');
+  await page.getByTestId('new-quiz').click();
+  await page.getByTestId('quiz-text').fill('Plants make sugar and oxygen from carbon dioxide, water and light.');
+  await page.getByTestId('quiz-create').click();
+  await page.getByTestId('quiz-error').waitFor();
+  check('New quiz says the same', (await page.getByTestId('quiz-error').textContent()) === 'EarMind can\u2019t answer right now. Try again in a while.');
+  await page.getByTestId('sheet-done').click();
+  await page.getByTestId('lang-sv').click();
+  await page.getByTestId('say-field').waitFor();
+  await page.getByTestId('play').click();
+  await page.getByTestId('say-error').waitFor();
+  check('in Swedish when Swedish is chosen', (await page.getByTestId('say-error').textContent()) === 'EarMind kan inte svara just nu. Försök igen om en stund.');
+  check('nothing was started after the refusal', !calls.slice(before).some((c) => c.fn === 'drill' && (c.action === 'status' || c.action === 'start')));
+  state.down = false;
 });
 
 await run('small', { locale: 'en-GB', colorScheme: 'dark', width: 320, height: 568 }, async (page, shot) => {

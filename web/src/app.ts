@@ -558,6 +558,7 @@ export class App {
   private words(error: unknown): string {
     // Oscar O94: a call that fails with the network up is not the user's connection.
     if (error instanceof OfflineError) return this.deps.t(this.deps.online?.() === true ? 'errorUnreached' : 'errorOffline');
+    if (error instanceof ApiError && error.isProviderDown) return this.deps.t('errorProvider');
     if (error instanceof ApiError && error.message.trim().length > 0) return error.message;
     return this.deps.t('errorGeneric');
   }

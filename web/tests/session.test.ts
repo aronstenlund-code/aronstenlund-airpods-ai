@@ -358,4 +358,30 @@ describe('listening on the web (A156 part 2)', () => {
     expect(session.phase).toBe('listening');
     expect(session.error).toBeNull();
   });
+
+  it('the model is out of credits (O97): our own short words, and it keeps listening', async () => {
+    const own = 'EarMind can\u2019t answer right now. Try again in a while.';
+    const refused = make({ answer: async () => Promise.reject(new ApiError(503, 'provider_quota', 'LLM credits exhausted')) });
+    await refused.session.start();
+    refused.lines[0].say('committed_transcript', 'What is a cell?');
+    refused.clock.advance(ListenSession.turnWaitMs);
+    await settle();
+    expect(refused.session.error).toBe(own);
+    expect(refused.session.phase).toBe('listening');
+    expect(refused.spoken).toEqual([]);
+
+    // The same when it gives up in the middle of an answer.
+    const midway = make({
+      answer: async (_r, emit) => {
+        emit({ event: 'meta', data: { is_question: true } });
+        emit({ event: 'error', data: { code: 'provider_error', message: 'upstream 529', fallback: true } });
+      },
+    });
+    await midway.session.start();
+    midway.lines[0].say('committed_transcript', 'What is a cell?');
+    midway.clock.advance(ListenSession.turnWaitMs);
+    await settle();
+    expect(midway.session.error).toBe(own);
+    expect(midway.session.phase).toBe('listening');
+  });
 });

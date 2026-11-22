@@ -182,6 +182,7 @@ const en = {
 
   errorOffline: 'The sound couldn’t be loaded. Check your connection.',
   errorUnreached: 'EarMind couldn’t be reached right now. Try again in a moment.',
+  errorProvider: 'EarMind can’t answer right now. Try again in a while.',
   creditsLeftShort: '{n} left',
   errorGeneric: 'Can’t play right now. Try again in a moment.',
 };
@@ -353,6 +354,7 @@ const sv: Record<Key, string> = {
 
   errorOffline: 'Ljudet kunde inte hämtas. Kolla nätet.',
   errorUnreached: 'EarMind gick inte att nå just nu. Försök igen om en stund.',
+  errorProvider: 'EarMind kan inte svara just nu. Försök igen om en stund.',
   creditsLeftShort: '{n} kvar',
   errorGeneric: 'Det gick inte att spela just nu. Försök igen om en stund.',
 };
