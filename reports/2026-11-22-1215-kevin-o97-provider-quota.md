@@ -28,7 +28,17 @@ Kevin (moln), 2026-11-22.
   - På engelska, med `x-earmind-lang: en` eller en engelsk Accept-Language: "EarMind is down for a moment. Try again later."
   - Hastighetsgräns: "EarMind har mycket att göra just nu. Försök igen om en stund." / "EarMind is busy right now. Try again in a moment."
   - Förut stod det "LLM credits exhausted", och det visade webbetan som det var.
-- **Verifierat i test** (`exam/o97_quota_test.ts`: /exam ger 503 provider_quota, mappningen för alla fyra slag, texten på sv och en). LIVE
+- **Verifierat i test** (`exam/o97_quota_test.ts`: /exam ger 503 provider_quota, mappningen för alla fyra slag, texten på sv och en).
+- **Verifierat live** (kevin-live 45016442186 efter deploy 370, krediterna fortfarande slut), 4 av 4:
+
+  | Anrop | Språk | Svar |
+  |---|---|---|
+  | `/exam` drill | en | 503 `provider_quota`, "EarMind is down for a moment. Try again later.", `fallback: true` |
+  | `/exam` drill | sv | 503 `provider_quota`, "EarMind är nere en stund. Försök igen senare.", `fallback: true` |
+  | `/answer` | en | 503 `provider_quota`, den engelska texten, `fallback: true` |
+  | `/answer` | sv | 503 `provider_quota`, den svenska texten, `fallback: true` |
+
+  Anropen slutar före något modellarbete, så de kostade inget.
 
 ## Appen och webbetan (rad till Angela Schrute)
 - **Webbetan** visar serverns `message` som den är, så den blir begriplig nu. Mitt förslag är ändå en egen text för alla `provider_*`-koder.
