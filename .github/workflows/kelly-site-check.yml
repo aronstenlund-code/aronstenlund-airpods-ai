@@ -47,6 +47,7 @@ jobs:
             curl -sS -o sv.html -w "sv status=%{http_code} bytes=%{size_download}\n" "$ORIGIN/sv"
             echo "Ke86 svenska (Prova betan): $(grep -c 'Prova betan' sv.html || true)"
             curl -sS -o /dev/null -w "beta status=%{http_code}\n" "$ORIGIN/beta"
+            curl -sS -o beta.js "$ORIGIN/beta/assets/app.js"; echo "beta app.js bytes=$(wc -c < beta.js) md5=$(md5sum beta.js | cut -c1-12) O97-raden=$(grep -c "EarMind can.t answer right now" beta.js || true)"
             echo "Earmind (litet m) i sidan: $(grep -c 'Earmind' page.html || true)"
             echo "== og image"
             img=$(grep -o 'property="og:image" content="[^"]*' page.html | sed 's/.*content="//')
