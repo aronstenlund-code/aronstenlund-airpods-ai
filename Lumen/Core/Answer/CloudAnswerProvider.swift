@@ -93,6 +93,7 @@ final class CloudAnswerProvider: AnswerProvider {
         urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         urlRequest.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
         urlRequest.markTestTraffic() // T24: x-earmind-test in Debug UI tests
+        urlRequest.markLanguage()
         urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
         urlRequest.setValue("text/event-stream", forHTTPHeaderField: "Accept")
         urlRequest.timeoutInterval = 30

@@ -6548,6 +6548,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "EarMind kan inte svara just nu. Försök igen om en stund.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "EarMind can’t answer right now. Try again in a while."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EarMind kan inte svara just nu. Försök igen om en stund."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "EarMind kan mer än svara": {
       "extractionState": "manual",
       "localizations": {

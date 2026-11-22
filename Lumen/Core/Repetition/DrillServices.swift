@@ -458,6 +458,7 @@ final class DrillClient: DrillMaking {
             request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
             request.markTestTraffic()
+            request.markLanguage()
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.timeoutInterval = 30
             request.httpBody = payload
@@ -506,6 +507,7 @@ final class DrillClient: DrillMaking {
                 request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
                 request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
                 request.markTestTraffic() // T24: x-earmind-test in Debug UI tests
+                request.markLanguage()
                 request.setValue("application/json", forHTTPHeaderField: "Content-Type")
                 request.timeoutInterval = timeout
                 request.httpBody = payload
@@ -556,6 +558,8 @@ final class DrillClient: DrillMaking {
             var left: Int?
         }
         let body = try? JSONDecoder().decode(Body.self, from: data)
+        // O97: the model is out of credits, busy or down (503/502 `provider_*`): the app's own line.
+        if ServerTrouble.isProvider(body?.error?.code) { return .refused(ServerTrouble.line) }
         if (400..<500).contains(status), status != 401, let message = body?.error?.message, !message.isEmpty {
             // A154 (D239, D241): the credits do not cover the exam; how many questions fit comes with the no.
             if status == 402, let fits = body?.fits {
