@@ -2413,6 +2413,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Aktiveringsord": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Activation words"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aktiveringsord"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Alla": {
       "extractionState": "manual",
       "localizations": {
@@ -8247,6 +8265,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fråga %lld. %@ %@"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Fråga du inte är beredd på? Säg": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Question you're not prepared for? Say"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fråga du inte är beredd på? Säg"
           }
         }
       },
@@ -27909,6 +27945,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "standard"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "så aktiveras vår AI.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "so our AI activates."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "så aktiveras vår AI."
           }
         }
       },

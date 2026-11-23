@@ -60,10 +60,21 @@ struct ActivationRequest: Identifiable, Equatable, Sendable {
 @Observable
 final class ActivationSettings {
     static let sensitivityKey = "activation.sensitivity"
+    static let phraseKey = "activation.phrase"
 
     var sensitivity: GateSensitivity {
         didSet { defaults.set(sensitivity.rawValue, forKey: Self.sensitivityKey) }
     }
+    /// A162 (D259): the user's own activation words ("Säg [ … ] så aktiveras vår AI"). Empty is off.
+    private(set) var phrase: String
+    /// What was typed is kept tidy (`ActivationPhrase.cleaned`) and remembered between starts.
+    func setPhrase(_ typed: String) {
+        let tidy = ActivationPhrase.cleaned(typed)
+        guard tidy != phrase else { return }
+        phrase = tidy
+        defaults.set(tidy, forKey: Self.phraseKey)
+    }
+
     /// Minimum gap between two automatic answers (R5: false positives). Parrot v0.11.3's minimum interval (D78).
     var cooldown: TimeInterval = 5
     /// Extra wait after a question. D80: zero; the user's pause per mode (when the final arrives) replaces D78's 1 s.
@@ -73,5 +84,6 @@ final class ActivationSettings {
     init(defaults: UserDefaults = .standard) {
         self.defaults = defaults
         self.sensitivity = defaults.string(forKey: Self.sensitivityKey).flatMap(GateSensitivity.init(rawValue:)) ?? .medium
+        self.phrase = ActivationPhrase.cleaned(defaults.string(forKey: Self.phraseKey) ?? "")
     }
 }

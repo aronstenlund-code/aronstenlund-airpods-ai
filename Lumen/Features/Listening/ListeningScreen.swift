@@ -46,6 +46,8 @@ struct ListeningScreen: View {
                     if let problem = model.problem {
                         ErrorCard(problem: problem) { model.act(on: problem) }
                     }
+                    // A162 (D259): the user's own activation words, where answers come (not in Socialt and Rizz).
+                    if !mode.isLive { ActivationWordsField(settings: model.activation.settings) }
                     latest
                     previous
                     notices
