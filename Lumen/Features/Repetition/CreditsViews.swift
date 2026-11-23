@@ -189,7 +189,10 @@ struct CreditsSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Klar") { dismiss() } } }
             .task { await model.refreshQuota() }
-            .task { await model.shop?.load() }
+            .task {
+                await model.shop?.load()
+                await model.shop?.loadOffer(maxAge: 60) // A161 (D259): the launch week, if it runs
+            }
         }
         // A134: with the purchase part the sheet is a whole page.
         .presentationDetents(typeSize.isAccessibilitySize || (model.shop != nil && model.quota?.isCredits == true && model.quota?.isUnlimited != true)

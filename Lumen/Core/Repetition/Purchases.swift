@@ -25,6 +25,54 @@ enum StoreCatalog {
     static var ids: [String] { entries.map(\.id) }
     /// Ke77 (D224): the pack marked "Bäst värde".
     static let bestValue = "com.rsolutions.lumen.credits.2000"
+
+    /// A161 (D259): the packs' launch twins (`….credits.<n>.launch`): the same credits at the launch price. The
+    /// weekly pass has none.
+    static func launchIDs(suffix: String) -> [String] {
+        entries.filter { $0.credits != nil }.map { $0.id + suffix }
+    }
+
+    /// The badge follows the pack, also when its launch twin stands in its place.
+    static func isBestValue(_ id: String) -> Bool {
+        id == bestValue || id.hasPrefix(bestValue + ".")
+    }
+}
+
+/// A161 (D259, Kevin's K119): the launch week as the server says it (`GET /purchase` → `launch_offer`, no sign-in):
+/// when it starts and ends and how many percent. The server decides, so the week can be started and stopped without
+/// a new app; outside the week the answer is null.
+struct LaunchOffer: Equatable, Sendable {
+    var startsAt: Date
+    var endsAt: Date
+    var percent: Int
+    var productSuffix: String = ".launch"
+
+    func isOn(_ now: Date) -> Bool { now >= startsAt && now < endsAt }
+
+    /// `{"launch_offer": {"starts_at", "ends_at", "percent", "product_suffix"} | null}`. A week that cannot be right
+    /// (it ends before it starts, no percent) is no week.
+    static func read(_ data: Data) -> LaunchOffer? {
+        struct Body: Decodable {
+            struct Offer: Decodable {
+                var starts_at: String
+                var ends_at: String
+                var percent: Int
+                var product_suffix: String?
+            }
+            var launch_offer: Offer?
+        }
+        guard let offer = (try? JSONDecoder().decode(Body.self, from: data))?.launch_offer,
+              let start = date(offer.starts_at), let end = date(offer.ends_at),
+              end > start, (1...99).contains(offer.percent) else { return nil }
+        let suffix = offer.product_suffix.flatMap { $0.isEmpty ? nil : $0 } ?? ".launch"
+        return LaunchOffer(startsAt: start, endsAt: end, percent: offer.percent, productSuffix: suffix)
+    }
+
+    private static func date(_ text: String) -> Date? {
+        let withFraction = ISO8601DateFormatter()
+        withFraction.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return withFraction.date(from: text) ?? ISO8601DateFormatter().date(from: text)
+    }
 }
 
 /// A product as the sheet shows it: the App Store's own price text.
@@ -32,6 +80,8 @@ struct StoreItem: Equatable, Identifiable, Sendable {
     var id: String
     var displayPrice: String
     var credits: Int?
+    /// A161 (D259): the ordinary pack's price, shown struck through while this is its launch twin. nil otherwise.
+    var regularPrice: String? = nil
 
     var isWeekly: Bool { credits == nil }
 }
@@ -65,6 +115,12 @@ protocol StoreFront: AnyObject {
     func restore() async throws -> [StoreReceipt]
     /// Purchases that arrive outside a tap on a button (a renewal, Ask to Buy, one bought on another device).
     func listen(_ onReceipt: @escaping @MainActor (StoreReceipt) async -> Void)
+    /// A161 (D259): the packs' launch twins that the App Store has, with their own prices. Empty when it has none.
+    func launchItems(suffix: String) async -> [StoreItem]
+}
+
+extension StoreFront {
+    func launchItems(suffix: String) async -> [StoreItem] { [] }
 }
 
 /// StoreKit 2.
@@ -79,6 +135,15 @@ final class AppStoreFront: StoreFront {
         for product in found { products[product.id] = product }
         return StoreCatalog.entries.compactMap { entry in
             products[entry.id].map { StoreItem(id: entry.id, displayPrice: $0.displayPrice, credits: entry.credits) }
+        }
+    }
+
+    func launchItems(suffix: String) async -> [StoreItem] {
+        let found = (try? await Product.products(for: StoreCatalog.launchIDs(suffix: suffix))) ?? []
+        for product in found { products[product.id] = product }
+        return StoreCatalog.entries.compactMap { entry in
+            guard let credits = entry.credits, let product = products[entry.id + suffix] else { return nil }
+            return StoreItem(id: product.id, displayPrice: product.displayPrice, credits: credits)
         }
     }
 
@@ -187,6 +252,12 @@ protocol PurchaseServing: AnyObject {
     func welcome(keyID: String, challenge: String, attestation: String) async throws(DrillCloudError) -> PurchaseReply
     func inviteCode() async throws(DrillCloudError) -> InviteLink
     func claimInvite(_ code: String) async throws(DrillCloudError)
+    /// A161 (D259, K119): the launch week, asked without signing in. nil when there is none, or no answer.
+    func launchOffer() async -> LaunchOffer?
+}
+
+extension PurchaseServing {
+    func launchOffer() async -> LaunchOffer? { nil }
 }
 
 @MainActor
@@ -221,6 +292,17 @@ final class PurchaseClient: PurchaseServing {
 
     func claimInvite(_ code: String) async throws(DrillCloudError) {
         let _: PurchaseReply = try await call(["action": "invite_claim", "code": code])
+    }
+
+    /// K119: `GET /purchase` needs no account; only the app's public key goes with it.
+    func launchOffer() async -> LaunchOffer? {
+        var request = URLRequest(url: config.projectURL.appending(path: "functions/v1/purchase"))
+        request.httpMethod = "GET"
+        request.setValue(config.publishableKey, forHTTPHeaderField: "apikey")
+        request.markTestTraffic()
+        request.timeoutInterval = 15
+        guard let (response, data) = try? await http.data(for: request), response.statusCode == 200 else { return nil }
+        return LaunchOffer.read(data)
     }
 
     private func call<Reply: Decodable>(_ body: [String: String]) async throws(DrillCloudError) -> Reply {
@@ -334,8 +416,69 @@ final class CreditShop {
         self.defaults = defaults
     }
 
-    var packs: [StoreItem] { items.filter { !$0.isWeekly } }
+    var packs: [StoreItem] { packs(now: Date()) }
     var weeklyCard: StoreItem? { items.first(where: \.isWeekly) }
+
+    // MARK: The launch week (A161, D259)
+
+    /// The week as the server said it, and the launch packs the App Store has.
+    private(set) var offer: LaunchOffer?
+    private(set) var launchItems: [StoreItem] = []
+    @ObservationIgnored private var offerAskedAt: Date?
+    static let launchSheetDayKey = "launch.sheetDay"
+
+    /// Asks the server whether the launch week runs and, if it does, the App Store for the launch packs.
+    /// `maxAge`: an answer newer than this is kept (the home screen asks when the app comes forward).
+    func loadOffer(now: Date = Date(), maxAge: TimeInterval = 0) async {
+        if let offerAskedAt, maxAge > 0, now >= offerAskedAt, now.timeIntervalSince(offerAskedAt) < maxAge { return }
+        offerAskedAt = now
+        let found = await server.launchOffer()
+        offer = found
+        guard let found, found.isOn(now) else {
+            launchItems = []
+            return
+        }
+        launchItems = await front.launchItems(suffix: found.productSuffix)
+    }
+
+    /// The week, while it runs and the App Store has at least one launch pack. Nothing is promised before the
+    /// packs exist in App Store Connect, and nothing after the week's last second.
+    func activeOffer(now: Date = Date()) -> LaunchOffer? {
+        guard let offer, offer.isOn(now), !launchItems.isEmpty else { return nil }
+        return offer
+    }
+
+    /// The packs as the sheet shows them: during the week each pack's launch twin (its own price, the ordinary one
+    /// to strike through), otherwise the ordinary packs as before.
+    func packs(now: Date) -> [StoreItem] {
+        let ordinary = items.filter { !$0.isWeekly }
+        guard let offer = activeOffer(now: now) else { return ordinary }
+        return ordinary.map { pack in
+            guard let twin = launchItems.first(where: { $0.id == pack.id + offer.productSuffix }) else { return pack }
+            return StoreItem(id: twin.id, displayPrice: twin.displayPrice, credits: pack.credits, regularPrice: pack.displayPrice)
+        }
+    }
+
+    /// The sheet that says the offer when the app is opened: during the week, once a day at most.
+    func shouldShowLaunchSheet(now: Date = Date()) -> Bool {
+        activeOffer(now: now) != nil && defaults.string(forKey: Self.launchSheetDayKey) != Self.day(now)
+    }
+
+    /// The week's last second has passed (the credits sheet waits for it while it is open).
+    func launchWeekHasEnded(now: Date = Date()) {
+        guard let offer, !offer.isOn(now) else { return }
+        self.offer = nil
+        launchItems = []
+    }
+
+    func launchSheetShown(now: Date = Date()) {
+        defaults.set(Self.day(now), forKey: Self.launchSheetDayKey)
+    }
+
+    private static func day(_ date: Date) -> String {
+        let parts = Calendar(identifier: .gregorian).dateComponents([.year, .month, .day], from: date)
+        return "\(parts.year ?? 0)-\(parts.month ?? 0)-\(parts.day ?? 0)"
+    }
 
     /// The products from the App Store, and from now on purchases that arrive by themselves.
     func load() async {

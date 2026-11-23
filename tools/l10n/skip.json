@@ -786,6 +786,7 @@
   "Teknik": "a school subject as the server stores and searches it"
  },
  "Lumen/Core/Repetition/Purchases.swift": {
+  ".launch": "the end of a product identifier",
   "Bearer \\(token)": "an HTTP header",
   "POST": "HTTP",
   "bad reply": "an internal reason, logged",
@@ -1859,6 +1860,9 @@
  "Lumen/Features/Repetition/ShopViews.swift": {
   "10,00 kr": "a price in the demo shop of the pictures",
   "110,00 kr": "a price in the demo shop of the pictures",
+  "13,65 kr": "a price in the demo shop of the pictures",
+  "3,50 kr": "a price in the demo shop of the pictures",
+  "38,50 kr": "a price in the demo shop of the pictures",
   "39,00 kr": "a price in the demo shop of the pictures",
   "79,00 kr": "a price in the demo shop of the pictures"
  },

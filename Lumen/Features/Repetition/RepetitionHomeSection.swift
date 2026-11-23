@@ -25,6 +25,10 @@ struct RepetitionHomeSection: View {
     @State private var showsSchool = false
     @State private var askingCode = false
     @State private var askingReminder = false // A109
+    @State private var showsLaunchOffer = false // A161 (D259)
+    @State private var opensShopAfterOffer = false
+    @State private var showsShop = false
+    @Environment(\.scenePhase) private var scenePhase
     @State private var pastedCode = ""
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
     @AppStorage("repetition.textControlsChecked") private var textControlsChecked = false // A106 (Ke63 §4.1)
@@ -45,6 +49,16 @@ struct RepetitionHomeSection: View {
     @State private var keyboardStripBottom: CGFloat?
     private var keyboardStripHeight: CGFloat {
         SayKeyboard.stripHeight(bottom: keyboardStripBottom, keyboardTop: keyboardTop)
+    }
+
+    /// A161 (D259): asks whether the launch week runs (at most every quarter of an hour) and shows the offer once a
+    /// day. Not on top of another sheet.
+    private func offerLaunchWeek() async {
+        guard let shop = model.shop, !showsLaunchOffer, !showsShop, !isCreating, !askingReminder, checking == nil else { return }
+        await shop.loadOffer(maxAge: 900)
+        guard shop.shouldShowLaunchSheet() else { return }
+        shop.launchSheetShown()
+        showsLaunchOffer = true
     }
 
     var body: some View {
@@ -133,6 +147,17 @@ struct RepetitionHomeSection: View {
         .onAppear { offerReminder() }
         .task { model.prepareAllAudio() }
         .task { await model.refreshQuota() } // A117: the capsule's number
+        // A161 (D259): during the launch week the offer is said once when the app is opened (once a day at most).
+        .task { await offerLaunchWeek() }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active { Task { await offerLaunchWeek() } }
+        }
+        .sheet(isPresented: $showsLaunchOffer, onDismiss: { if opensShopAfterOffer { opensShopAfterOffer = false; showsShop = true } }) {
+            if let offer = model.shop?.activeOffer() {
+                LaunchOfferSheet(offer: offer) { opensShopAfterOffer = true }
+            }
+        }
+        .sheet(isPresented: $showsShop) { CreditsSheet(model: model) }
         // Toby T36 (2026-11-17): the capsule still said 15 after a new text had been played. The number is read again
         // when the player closes, so what was counted (or given back, D200) while it played shows on Start.
         .onChange(of: model.showsPlayer) { _, shows in if !shows { Task { await model.refreshQuota() } } }

@@ -32,8 +32,11 @@ struct ShopSections: View {
         }
         if !shop.packs.isEmpty {
             Section {
+                // A161 (D259): during the launch week the offer stands first, and each pack shows its launch price
+                // with the ordinary one struck through.
+                if let offer = shop.activeOffer() { LaunchOfferRow(offer: offer, shop: shop) }
                 ForEach(shop.packs) { item in
-                    row(item, title: ShopText.pack(item.credits ?? 0), line: nil, badge: item.id == StoreCatalog.bestValue)
+                    row(item, title: ShopText.pack(item.credits ?? 0), line: nil, badge: StoreCatalog.isBestValue(item.id))
                 }
             } header: {
                 Text("Fyll på").foregroundStyle(LumenColor.secondaryText) // A148: AA
@@ -110,6 +113,14 @@ struct ShopSections: View {
                 if let line { Text(verbatim: line).font(.footnote).foregroundStyle(LumenColor.secondaryText) }
             }
             if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
+            if let regular = item.regularPrice { // A161: the ordinary price, struck through
+                Text(verbatim: regular)
+                    .font(.footnote)
+                    .strikethrough()
+                    .monospacedDigit()
+                    .foregroundStyle(LumenColor.secondaryText)
+                    .accessibilityHidden(true) // said with the button
+            }
             Button {
                 Task { await shop.buy(item) }
             } label: {
@@ -123,7 +134,9 @@ struct ShopSections: View {
             .buttonBorderShape(.capsule)
             .tint(.accentColor)
             .disabled(shop.buying != nil)
-            .accessibilityLabel(String(localized: "Köp \(title) för \(item.displayPrice)") + (badge ? ", \(ShopText.bestValue.lowercased())" : "")) // Ke79
+            .accessibilityLabel((item.regularPrice.map { LaunchOfferText.spoken(title: title, price: item.displayPrice, regular: $0) }
+                                    ?? String(localized: "Köp \(title) för \(item.displayPrice)"))
+                                + (badge ? ", \(ShopText.bestValue.lowercased())" : "")) // Ke79
         }
     }
 
@@ -188,6 +201,14 @@ struct ShopSections: View {
 final class StagedStoreFront: StoreFront {
     /// The App Store gives nothing (Toby T48).
     var isEmpty = false
+    /// A161: the launch packs are in the App Store (35 % of the ordinary prices).
+    var hasLaunchPacks = false
+    func launchItems(suffix: String) async -> [StoreItem] {
+        guard hasLaunchPacks else { return [] }
+        return [StoreItem(id: StoreCatalog.entries[0].id + suffix, displayPrice: "3,50 kr", credits: 100),
+                StoreItem(id: StoreCatalog.entries[1].id + suffix, displayPrice: "13,65 kr", credits: 500),
+                StoreItem(id: StoreCatalog.entries[2].id + suffix, displayPrice: "38,50 kr", credits: 2000)]
+    }
     func items() async -> [StoreItem] {
         if isEmpty { return [] }
         return [StoreItem(id: StoreCatalog.entries[0].id, displayPrice: "10,00 kr", credits: 100),
@@ -205,6 +226,9 @@ final class StagedStoreFront: StoreFront {
 final class StagedPurchaseServer: PurchaseServing {
     /// An invitation has just given credits.
     var rewarded = false
+    /// A161: the launch week runs.
+    var offer: LaunchOffer?
+    func launchOffer() async -> LaunchOffer? { offer }
     func verify(jws: String) async throws(DrillCloudError) -> PurchaseReply { PurchaseReply() }
     func attestChallenge() async throws(DrillCloudError) -> String { throw .offline("staged") }
     func welcome(keyID: String, challenge: String, attestation: String) async throws(DrillCloudError) -> PurchaseReply { PurchaseReply() }
