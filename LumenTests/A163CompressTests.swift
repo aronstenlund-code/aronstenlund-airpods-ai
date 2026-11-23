@@ -158,7 +158,8 @@ import Testing
         #expect(await client(http).shorten(Self.long) == .success("Kortare."))
         let request = try #require(http.requests.first)
         #expect(request.url?.path == "/functions/v1/exam" && request.httpMethod == "POST")
-        let body = try #require(JSONSerialization.jsonObject(with: try #require(request.httpBody)) as? [String: Any])
+        let sent = try #require(request.httpBody)
+        let body = try #require(JSONSerialization.jsonObject(with: sent) as? [String: Any])
         #expect(body["action"] as? String == "compress" && body["text"] as? String == Self.long)
         #expect(body["lang"] as? String == AppLanguage.current.code)
     }
