@@ -40,7 +40,10 @@ har provat på en iPhone med Apple Intelligence. Låtsasserver och låtsasmodell
 ## 3. Test
 
 - **Test först:** tre tester mot koden som den var gick ensamma till grenen `angela/a159-test-rod`
-  (iOS build 45235054600, väntat rött: REDRESULT).
+  (iOS build 45235054600, **rött som väntat, på påståendena**: 17 fel – telefonen frågades aldrig
+  (`onDevice.requests.count → 0`), inget svar kom, och skärmen sa "kan inte svara"; det tredje testet, det som inte
+  ska ändras, gick). Körningen visade också att testernas rigg själv kan säga "hör inte" efter några sekunder utan
+  ljud, så ett påstående skrevs om till att gälla just "kan inte svara"/"nätet är borta".
 - Med rättningen, 13 tester i `LumenTests/A159OnDeviceFallbackTests.swift`: telefonen svarar för fyra `provider_*`-koder;
   utan telefonmodell står det gamla felet kvar och det frågas en gång; andra nej (429) väcker inte telefonen; ett
   påbörjat svar tas inte om; telefonen får veta skälet och servern frågas inte två gånger; leverantören själv med
