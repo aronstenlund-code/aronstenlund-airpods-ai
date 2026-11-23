@@ -188,6 +188,15 @@ final class ActivationController {
         return true
     }
 
+    /// A162 (D259): the user's own activation words were heard. `question` is what was asked just before them; it is
+    /// answered as a question whatever the gate thinks of it (the user asked for it), like "answer the last thing".
+    func answer(heard question: String, language: TranscriptionLanguage, now: Date = Date()) {
+        let query = question.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return }
+        pending = nil // the same words must not be answered once more by the question gate
+        fire(query: query, trigger: .answerLast, language: language, now: now)
+    }
+
     /// Text mode (item 6), the fallback (D72), enters here.
     func submitText(_ text: String, language: TranscriptionLanguage, now: Date = Date()) {
         let query = text.trimmingCharacters(in: .whitespacesAndNewlines)
