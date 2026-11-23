@@ -48,7 +48,9 @@ har provat på en iPhone med Apple Intelligence. Låtsasserver och låtsasmodell
   utan telefonmodell står det gamla felet kvar och det frågas en gång; andra nej (429) väcker inte telefonen; ett
   påbörjat svar tas inte om; telefonen får veta skälet och servern frågas inte två gånger; leverantören själv med
   låtsasmodell: svenska, engelska, nätets rad, språk som modellen inte kan, modell som faller eller tiger; Tobys krok.
-  **iOS build GREENRUN: GREENRESULT** (hela sviten).
+  **iOS build 45238917146 grön** (hela sviten och Release-kontrollen, som också visar att låtsasmodellen inte finns i
+  Release-arkivet). Första försöket (45235717187) föll för att GitHub saknade en ledig macOS-maskin, inte på koden.
+  **[CI]**
 - **Inte testat:** den riktiga modellen på en iPhone – finns den, kan den svenska (kräver iOS 26.1), hur lång tid tar
   svaret, hur låter det. Det är Arons prov.
 
