@@ -643,6 +643,12 @@
   @media (min-width: 1180px) { .steps { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
   .pitch-cta { margin: 18px 0 0; }
   .pitch-cta .pill { text-decoration: none; display: inline-flex; }
+  /* Ke88 (D259): launch offer – hidden unless the server says the week is on (K119) */
+  .launch { display: none; margin: 12px auto 0; max-width: 1100px; padding: 0 var(--gut, 16px); }
+  .launch.on { display: block; }
+  .launch div { background: #2346c8; color: #fff; border-radius: 16px; padding: 12px 16px; font-weight: 600; text-align: center; }
+  .launch small { display: block; font-weight: 400; opacity: .9; margin-top: 2px; }
+  .activate { margin-top: 14px; font-size: 1.0625rem; }
 </style>
 </head>
 <body data-view="idle">
@@ -655,6 +661,7 @@
   <nav class="langsw" aria-label="Språk"><a href="/" hreflang="en" lang="en" data-lang="en" aria-label="English" >EN</a><a href="/sv" hreflang="sv" lang="sv" data-lang="sv" aria-label="Svenska" aria-current="true">SV</a></nav>
 </header>
 <main>
+<div class="launch" id="launch" role="status"><div>65 % på allt – lanseringsveckan<small></small></div></div>
   <section class="hero wrap" aria-labelledby="hero-h">
     <div class="intro">
       <h1 id="hero-h">Kom förberedd till provet.</h1>
@@ -788,6 +795,7 @@
        "Kommer snart" tas bort per rad när funktionen är provad på telefon (sajtens regel sedan Ke1). -->
   <section class="can wrap" id="kan" aria-labelledby="kan-h">
     <h2 id="kan-h">Fler lägen <span class="beta">Beta</span></h2>
+    <p class="activate"><b>Fråga du inte är beredd på?</b> Säg [dina ord] så aktiveras vår AI.</p>
     <p class="lead">De här lägena lyssnar på vad du säger. De är i beta och blir bättre hela tiden. Starta prov använder aldrig mikrofonen.</p>
     <ul class="can-list">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg><div><h3>Förhör</h3><p>”Lumen, förhör mig på fotosyntes”</p></div></li>
@@ -1607,6 +1615,23 @@ getToken().catch(() => {});   // Felet visas när någon faktiskt frågar.
 // Ke87 (D253): English first; the choice is saved with the same key as the beta, so it carries over.
 (function(){var k="earmind.beta.lang";try{document.querySelectorAll(".langsw a").forEach(function(a){a.addEventListener("click",function(){try{localStorage.setItem(k,a.dataset.lang)}catch(e){}})});
 if(location.pathname==="/"&&localStorage.getItem(k)==="sv")location.replace("/sv");}catch(e){}})();
+</script>
+<script>
+// Ke88 (D259): the launch offer shows only while Kevin's launch_offer (K119) is on. Not wired yet: K119's endpoint and
+// field names are not decided. When they are, set LAUNCH_URL and map the answer in readOffer().
+(function(){
+  var LAUNCH_URL = null; // K119
+  function readOffer(j){ return j && j.active && j.ends_at ? { end: new Date(j.ends_at) } : null; }
+  function show(o){
+    var el = document.getElementById("launch"); if (!el || !o) return;
+    function tick(){ var ms = o.end - Date.now(); if (ms <= 0) { el.classList.remove("on"); return; }
+      var d = Math.floor(ms/864e5), h = Math.floor(ms%864e5/36e5), m = Math.floor(ms%36e5/6e4);
+      el.querySelector("small").textContent = "Slutar om " + (d ? d + " d " : "") + h + " h " + m + " min";
+      el.classList.add("on"); }
+    tick(); setInterval(tick, 30000);
+  }
+  if (LAUNCH_URL) fetch(LAUNCH_URL).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ show(readOffer(j)); }).catch(function(){});
+})();
 </script>
 </body>
 </html>

@@ -9,12 +9,23 @@ import { walletFields } from "../_shared/wallet.ts";
 import { APPLE_ROOT_G3_SHA256 } from "./jws.ts";
 import { APPLE_APP_ATTEST_ROOT_SHA256, appleAppAttestRoot } from "./attest.ts";
 import { rewardStore } from "../_shared/rewards_db.ts";
-import { createPurchaseHandler, type LedgerRow, type Product, type SubRow } from "./handler.ts";
+import { createPurchaseHandler, type LaunchOffer, type LedgerRow, type Product, type SubRow } from "./handler.ts";
 
 const env = Deno.env;
 const db = restDbFromEnv();
 const q = (s: string) => encodeURIComponent(s);
 const wallet = useQuotaFromDb(db);
+
+let launchMemo: { at: number; v: LaunchOffer | null } | null = null;
+async function launchOfferFromSettings(): Promise<LaunchOffer | null> {
+  if (launchMemo && Date.now() - launchMemo.at < 60_000) return launchMemo.v;
+  const rows = (await db.select("drill_settings", "select=key,value&key=in.(launch_starts_at,launch_ends_at,launch_percent)")) as { key: string; value: number }[];
+  const v = (k: string) => rows.find((r) => r.key === k)?.value;
+  const s = v("launch_starts_at"), e = v("launch_ends_at"), pc = v("launch_percent");
+  const o = s && e && e > s ? { startsAt: s * 1000, endsAt: e * 1000, percent: pc ?? 65 } : null;
+  launchMemo = { at: Date.now(), v: o };
+  return o;
+}
 
 Deno.serve(withCors(
   createPurchaseHandler({
@@ -41,6 +52,8 @@ Deno.serve(withCors(
       const a = await wallet(u, 0);
       return { unit: "chars", remaining: Math.max(0, a.lim - a.used), ...(a.unlimited ? { unlimited: true } : {}), ...walletFields(a) };
     },
+    // K119 (D259): the launch week from drill_settings (Unix seconds; see the K119 report for the SQL that starts it)
+    launchOffer: launchOfferFromSettings,
     store: {
       product: async (id) => ((await db.select("store_products", `select=*&product_id=eq.${q(id)}&limit=1`)) as Product[])[0] ?? null,
       ledger: async (tx) => ((await db.select("credit_ledger", `select=*&transaction_id=eq.${q(tx)}&limit=1`)) as LedgerRow[])[0] ?? null,

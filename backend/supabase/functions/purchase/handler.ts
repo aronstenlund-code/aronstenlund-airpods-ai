@@ -23,6 +23,12 @@ export interface LedgerRow {
 }
 export interface SubRow { user_id: string; original_transaction_id: string; product_id: string; expires_at: string; status: string; environment: string | null }
 
+/** K119 (D259): the launch week (ms since epoch); null until the agents start it (drill_settings, see the report). */
+export interface LaunchOffer { startsAt: number; endsAt: number; percent: number }
+export const LAUNCH_SUFFIX = ".launch";
+/** A launch pack bought up to this long after the end still counts (it can reach the server late). */
+export const LAUNCH_GRACE_MS = 86_400_000;
+
 export interface PurchaseStore {
   product(id: string): Promise<Product | null>;
   /** the ledger row with this transaction id (purchase) or "refund:<id>", or null */
@@ -55,6 +61,8 @@ export interface PurchaseDeps {
   };
   /** the account's credits afterwards (the same wallet as /drill quota) */
   wallet?: (userId: string) => Promise<Record<string, unknown>>;
+  /** K119 (D259): the launch week, or null when none is set */
+  launchOffer?: () => Promise<LaunchOffer | null>;
   now?: () => number;
 }
 
@@ -85,10 +93,30 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
     return t;
   }
 
+  /** K119 (D259): a launch pack (`<pack>.launch`) is the ordinary credit pack under another price; null = unknown. */
+  async function productFor(productId: string): Promise<{ p: Product; launch: boolean } | null> {
+    if (!productId.endsWith(LAUNCH_SUFFIX)) {
+      const p = await deps.store.product(productId);
+      return p ? { p, launch: false } : null;
+    }
+    const base = await deps.store.product(productId.slice(0, -LAUNCH_SUFFIX.length));
+    return base && base.kind === "credits" ? { p: { ...base, product_id: productId }, launch: true } : null;
+  }
+
   /** Credits or the subscription for this account; the same transaction never counts twice. */
   async function apply(userId: string, t: Transaction) {
-    const p = await deps.store.product(t.productId);
-    if (!p) throw new Refusal(422, "purchase_invalid", "Okänd produkt.", { reason: "product" });
+    const found = await productFor(t.productId);
+    if (!found) throw new Refusal(422, "purchase_invalid", "Okänd produkt.", { reason: "product" });
+    const p = found.p;
+    if (found.launch && !t.revocationDate) {
+      // only bought within the launch week (plus a day); a refund is always taken back (notify)
+      const o = deps.launchOffer ? await deps.launchOffer().catch(() => null) : null;
+      const inWeek = !!o && t.purchaseDate >= o.startsAt && t.purchaseDate <= o.endsAt + LAUNCH_GRACE_MS;
+      // one already credited (sent again, e.g. a restore) goes on to "added 0" below
+      if (!inWeek && !(await deps.store.ledger(t.transactionId))) {
+        throw new Refusal(422, "launch_offer_over", "Lanseringserbjudandet gäller inte längre.", { reason: "launch_window" });
+      }
+    }
     // a transaction belongs to the account that bought it (StoreKit's appAccountToken is the user id when the app sets it)
     if (t.appAccountToken && t.appAccountToken.toLowerCase() !== userId.toLowerCase()) {
       throw new Refusal(409, "purchase_other_account", "Köpet hör till ett annat konto.");
@@ -136,7 +164,7 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
     if (!n.data?.signedTransactionInfo) return json({ ok: true, ignored: "no_transaction" });
     const t = await transaction(n.data.signedTransactionInfo);
     const type = n.notificationType ?? "";
-    const p = await deps.store.product(t.productId);
+    const p = (await productFor(t.productId))?.p; // K119: a launch pack's refund too, whenever it comes
     if (!p) return json({ ok: true, ignored: "product" });
     const orig = t.originalTransactionId ?? t.transactionId;
     if (p.kind === "credits") {
@@ -168,9 +196,20 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
   }
 
   return async (req: Request): Promise<Response> => {
-    if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
+    if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: { ...CORS_HEADERS, "access-control-allow-methods": "GET, POST, OPTIONS" } });
     try {
-      if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use POST");
+      // K119 (D259): the launch week for the app's store and the site, without signing in; null when none runs
+      if (req.method === "GET") {
+        const o = deps.launchOffer ? await deps.launchOffer().catch(() => null) : null;
+        const t = now();
+        const on = o && t >= o.startsAt && t < o.endsAt;
+        return new Response(JSON.stringify({
+          launch_offer: on
+            ? { starts_at: new Date(o.startsAt).toISOString(), ends_at: new Date(o.endsAt).toISOString(), percent: o.percent, product_suffix: LAUNCH_SUFFIX }
+            : null,
+        }), { status: 200, headers: { "content-type": "application/json", "cache-control": "public, max-age=60", ...CORS_HEADERS } });
+      }
+      if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use GET or POST");
       const raw = await req.text();
       if (raw.length > 64 * 1024) throw new HttpError(413, "payload_too_large", "too large");
       const b = (raw ? JSON.parse(raw) : null) as Record<string, unknown> | null;
