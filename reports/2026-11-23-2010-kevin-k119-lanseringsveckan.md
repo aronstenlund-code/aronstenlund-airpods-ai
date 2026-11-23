@@ -37,7 +37,13 @@ Kevin (moln), 2026-11-23.
   - Ett köp som redan krediterats och skickas igen (en återställning) ger "added 0" och nekas aldrig.
   - En återbetalning tar alltid tillbaka krediterna, också efter veckan.
 - **Bara kreditpack:** endast kreditpack har lanseringsversioner. `sub.week.launch` och okända pack blir "Okänd produkt." som förut.
-- **Verifierat i test** (`purchase/k119_test.ts`, 5 fall). LIVE
+- **Verifierat i test** (`purchase/k119_test.ts`, 5 fall).
+
+## Live (kevin-live 45242393062 efter deploy 371): 2 av 2
+- **`GET /purchase` utan inloggning och utan nyckel:** 200 `{"launch_offer": null}`, `cache-control: public, max-age=60`.
+- **Från sajtens adress** (`Origin: https://earmind.vercel.app`): 200, samma svar, och `access-control-allow-origin` är sajten.
+- **Verifierat live.** Ingen vecka är startad, så svaret är `null` som det ska vara.
+- Köpen kan inte provas live utan riktiga Apple-köp. De är **verifierade i test** med en falsk kedja.
 
 ## Concerns
 - **En betald produkt kan nekas.** Om lanseringsprodukterna ligger kvar till försäljning i App Store efter veckan kan någon betala och sedan få nej av servern. Pengarna kommer då tillbaka först via Apples återbetalning.
