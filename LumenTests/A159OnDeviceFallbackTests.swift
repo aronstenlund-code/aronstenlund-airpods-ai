@@ -39,7 +39,8 @@ import Testing
             #expect(model.conversation.answers.last?.answer.hasPrefix("Jag svarar med telefonens egen modell.") == true, "\(code)")
             #expect(onDevice.requests.count == 1, "\(code): asked once")
             #expect(cloud.requests.count == 1, "\(code): the server is not asked again for that answer")
-            #expect(model.problem == nil, "\(code): nothing is wrong on the screen when the phone answered")
+            // Not `== nil`: a harness without sound can say "cannot hear" by itself after a few seconds.
+            #expect(model.problem != .overloaded && model.problem != .offline, "\(code): the phone answered, so no \"cannot answer\" on the screen")
         }
     }
 
