@@ -831,6 +831,17 @@
   "Speaker \\(label)": "spoken: follows the language listened for, not the texts' language",
   "Talare \\(label)": "spoken: follows the language listened for, not the texts' language"
  },
+ "Lumen/Core/Study/AnswerGrader.swift": {
+  "Delvis rätt.": "spoken: follows the language listened for, not the texts' language",
+  "Den här frågan har inget facit.": "spoken: follows the language listened for, not the texts' language",
+  "Du rättar en elevs svar på en provfråga mot facit. Var rättvis och kortfattad. Skriv meningen på svenska.": "a prompt to the phone's model",
+  "Facit visas – rättningen är tillbaka när EarMind kan svara igen.": "spoken: follows the language listened for, not the texts' language",
+  "Facit: ": "spoken: follows the language listened for, not the texts' language",
+  "Fråga: \\(question)\\nFacit: \\(key)\\nElevens svar: \\(answer)": "a prompt to the phone's model",
+  "Inte rätt.": "spoken: follows the language listened for, not the texts' language",
+  "Rätt.": "spoken: follows the language listened for, not the texts' language",
+  "Telefonens modell:": "spoken: follows the language listened for, not the texts' language"
+ },
  "Lumen/Core/Study/AnswerRecorder.swift": {
   "mitt-svar-\\(UUID().uuidString).caf": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen"
  },

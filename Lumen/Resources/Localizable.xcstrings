@@ -12225,6 +12225,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Kan inte skapa prov just nu": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Can't create quizzes right now"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kan inte skapa prov just nu"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Kaxigare": {
       "extractionState": "manual",
       "localizations": {
@@ -21022,6 +21040,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sparade kommandon"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Sparade prov går att öva. Försök igen om en stund.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Saved quizzes still work. Try again in a moment."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sparade prov går att öva. Försök igen om en stund."
           }
         }
       },

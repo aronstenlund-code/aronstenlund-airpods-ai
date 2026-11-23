@@ -384,14 +384,24 @@ struct NewDrillView: View {
         }
         .safeAreaInset(edge: .bottom) {
             // Kelly N3: the reason while the button is grey. A84 (D155): else what is left of the month's questions.
-            MainActionBar(title: make == .text ? String(localized: "Skapa uppläsning")
-                              : fitsAfterNo != nil ? String(localized: "Skapa \(DrillText.questions(settings.questions))") : String(localized: "Skapa frågor"),
-                          note: model.quotaUsedUp ? String(localized: "Inga frågor kvar den här månaden.") // Kelly: the long line is at the top
+            // A160 (D258): while the server's model is down the button says so, with what still works, for two
+            // minutes after the server's no; then it is itself again and a press asks anew.
+            MainActionBar(title: NewQuizText.title(down: model.modelIsDown(), base: make == .text ? String(localized: "Skapa uppläsning")
+                              : fitsAfterNo != nil ? String(localized: "Skapa \(DrillText.questions(settings.questions))") : String(localized: "Skapa frågor")),
+                          note: model.modelIsDown() ? NewQuizText.downNote
+                              : model.quotaUsedUp ? String(localized: "Inga frågor kvar den här månaden.") // Kelly: the long line is at the top
                               : hasNoRoom ? String(localized: "Krediterna räcker inte till ett prov.") // A154 (D241): the long line is at the top
                               : model.isOffline ? (make == .text ? String(localized: "Skapa uppläsning kräver internet.") : String(localized: "Skapa frågor kräver internet."))
                               : material.isEmpty ? String(localized: "Lägg till minst en sida, bild eller text.") : model.quota.map { $0.line + "." },
-                          isDisabled: material.isEmpty || readingDocument || model.quotaUsedUp || model.isOffline || hasNoRoom) {
+                          isDisabled: material.isEmpty || readingDocument || model.quotaUsedUp || model.isOffline || hasNoRoom
+                              || model.modelIsDown()) {
                 if make == .text { createText() } else { create(correction: nil) }
+            }
+            .task(id: model.modelDownAt) {
+                guard let since = model.modelDownAt else { return }
+                let left = RepetitionModel.modelDownWindow - Date().timeIntervalSince(since)
+                if left > 0 { try? await Task.sleep(for: .seconds(left)) }
+                if !Task.isCancelled { model.modelDownHasPassed() }
             }
         }
         .onAppear {
@@ -613,6 +623,7 @@ struct NewDrillView: View {
             case .offline: problem = NetworkStatus.noNetworkLine
             case .tooFewCredits(let no): problem = no.message
             case .noMaterial, .server: problem = FetchedPage.unreadableLine
+            case .modelDown: problem = ServerTrouble.line
             }
         }
     }
@@ -739,6 +750,11 @@ struct NewDrillView: View {
                     AccessibilityNotification.Announcement(line).post()
                     return
                 }
+                if error == .modelDown, draft == nil { // A160 (D258): the button says it, not an error
+                    stage = .material
+                    AccessibilityNotification.Announcement(NewQuizText.title(down: true, base: "") + ". " + NewQuizText.downNote).post()
+                    return
+                }
                 problem = error.userMessage
                 if case .tooFewCredits = error { costStopsSave = true } // the answers' no: Fyll på under the words
                 stage = draft == nil ? .material : .confirm
@@ -772,8 +788,12 @@ struct NewDrillView: View {
                 stage = .confirm
             } catch {
                 guard !Task.isCancelled else { return }
-                problem = error.userMessage
                 stage = .material
+                if error == .modelDown { // A160 (D258): the button says it, not an error
+                    AccessibilityNotification.Announcement(NewQuizText.title(down: true, base: "") + ". " + NewQuizText.downNote).post()
+                    return
+                }
+                problem = error.userMessage
             }
         }
     }

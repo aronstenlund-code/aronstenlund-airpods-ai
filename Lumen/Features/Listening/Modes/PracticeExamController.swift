@@ -113,13 +113,32 @@ final class PracticeExamController: ListeningModeController {
         run = grading
         let task = grading.task
         host.modeLog("Practice exam: question \(task.no) answered, grading")
+        let language = host.language // A160: the phone grades in the language that is spoken
         Task { [weak self] in
-            let graded = await examClient.grade(task: task, answer: answer, practice: true)
+            let graded = await examClient.grade(task: task, answer: answer, practice: true, language: language)
             guard let self, let host = self.host, var current = self.run, current.task.no == task.no else { return }
             current.isGrading = false
             guard let graded else {
                 self.run = current
                 host.say("Jag kunde inte rätta just nu. Säg svaret igen, eller nästa.")
+                return
+            }
+            if graded.isKeyOnly {
+                // A160 (D258): the model is down and the phone cannot grade. The answer key is shown and said with
+                // one line about why; the question is not counted as answered.
+                current.skip()
+                current.lastFeedback = graded.feedback
+                current.lastFeedbackNo = task.no
+                host.modeLog("Practice exam: question \(task.no): the answer key without a grade (the model is down)")
+                if let next = current.nextOpenIndex {
+                    current.move(to: next)
+                    self.run = current
+                    host.say(graded.feedback + " " + current.spokenQuestion)
+                } else {
+                    self.run = current
+                    host.say(graded.feedback)
+                    self.finish(speak: true)
+                }
                 return
             }
             let max = (graded.max ?? task.points).total
