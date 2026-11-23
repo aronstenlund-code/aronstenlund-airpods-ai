@@ -178,6 +178,9 @@ struct AnswerRequest: Equatable, Sendable {
     /// `short` | `adaptive` | `long` (D35, Svarslängd).
     var length: String
     var persona: PersonaRequest?
+    /// A159: set when the phone's own model is asked instead of the server (why, for its first line). The server
+    /// never sees it: `CloudAnswerProvider` writes its body field by field.
+    var onDevice: OnDeviceReason?
 
     init(fragment: String, mode: String, language: String, context: AnswerContext = AnswerContext(), length: AnswerLength = .adaptive,
          persona: PersonaRequest? = nil) {
