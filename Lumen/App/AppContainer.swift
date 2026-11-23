@@ -84,7 +84,13 @@ final class AppContainer {
         })
         let cloud = CloudAnswerProvider(config: .lumen, auth: auth, http: http)
         let answers = AnswerEngine(provider: cloud)
-        answers.offline = OnDeviceAnswerProvider() // A40: only answers on iPhones with Apple Intelligence
+        // A40, A159: the phone's own model, only on iPhones with Apple Intelligence. T57: the test builds can be
+        // started with a pretend one (`-OnDeviceMock sv,en` | `none`), since the Simulator has none.
+        #if LUMEN_TESTMODE
+        answers.offline = OnDeviceAnswerProvider(model: PretendOnDeviceModel.requested() ?? SystemOnDeviceModel())
+        #else
+        answers.offline = OnDeviceAnswerProvider()
+        #endif
         let speaker = Speaker(settings: voiceSettings,
                               apple: AppleTTSProvider(playback: playback),
                               premium: ElevenLabsTTSProvider(config: .lumen, auth: auth, http: http, playback: playback),

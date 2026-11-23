@@ -64,9 +64,11 @@ final class AnswerEngine {
 
     var activeProvider: any AnswerProvider { useMock ? mock : cloud }
 
-    /// A40 (D115): asked once when the network is gone (`AnswerError.offline`), for questions only (not the live
-    /// modes' suggestions). In the app: `OnDeviceAnswerProvider`, which fails with `.offline` itself on iPhones
-    /// without Apple Intelligence, so they behave exactly as before.
+    /// A40 (D115) and A159 (D258): asked once when the server cannot answer, for questions only (not the live modes'
+    /// suggestions): the network is gone (`AnswerError.offline`), or the server's model is out of credits, busy or
+    /// down (`provider_*`, O97). In the app: `OnDeviceAnswerProvider`, which fails itself on iPhones without Apple
+    /// Intelligence or when its model does not speak the language; the first error is then reported, so those phones
+    /// behave exactly as before. The server is not asked again for that answer.
     var offline: (any AnswerProvider)?
 
     init(provider: any AnswerProvider, mock: any AnswerProvider = MockAnswerProvider(), settings: AnswerSettings = AnswerSettings()) {
@@ -89,7 +91,9 @@ final class AnswerEngine {
         if case .answering = status { status = .idle }
     }
 
-    private func run(_ request: ActivationRequest, context: AnswerContext, persona: PersonaRequest?, provider: any AnswerProvider) async {
+    /// `after`: the server's error that made the phone's own model the one to ask (nil for the first try).
+    private func run(_ request: ActivationRequest, context: AnswerContext, persona: PersonaRequest?, provider: any AnswerProvider,
+                     after first: AnswerError? = nil) async {
         let start = ContinuousClock.now
         sink?.answerStarted(request, source: provider.name)
         var splitter = SentenceSplitter()
@@ -97,7 +101,9 @@ final class AnswerEngine {
         var done: AnswerDone?
         var notAQuestion = false
         do {
-            for try await event in provider.answer(AnswerRequest(activation: request, context: context, length: sessionLength ?? settings.length, persona: persona)) {
+            var asked = AnswerRequest(activation: request, context: context, length: sessionLength ?? settings.length, persona: persona)
+            asked.onDevice = first.flatMap(OnDeviceReason.init)
+            for try await event in provider.answer(asked) {
                 if Task.isCancelled { return }
                 switch event {
                 case .meta(let meta):
@@ -153,11 +159,17 @@ final class AnswerEngine {
             sink?.answerCompleted(latencyMs: firstDeltaMs, done: done)
         } catch {
             if Task.isCancelled { return }
-            let answerError = AnswerError.from(error)
+            var answerError = AnswerError.from(error)
             if answerError == .cancelled { return }
-            if answerError == .offline, let offline, provider !== offline, persona.map({ $0.persona == "tutor" }) ?? true {
-                Log.answer.info("answer: offline, asking the on-device model (A40)")
-                await run(request, context: context, persona: persona, provider: offline)
+            if let first {
+                // The phone's own model could not answer either (no Apple Intelligence, a language it does not
+                // speak): what the server said is what the app says, as before A159.
+                answerError = first
+            } else if let reason = OnDeviceReason(answerError), let offline, provider !== offline,
+                      persona.map({ $0.persona == "tutor" }) ?? true,
+                      reason == .offline || firstDeltaMs == nil { // an answer that has begun is not started over
+                Log.answer.info("answer: \(reason == .offline ? "offline" : "the server's model is down", privacy: .public), asking the on-device model (A40, A159)")
+                await run(request, context: context, persona: persona, provider: offline, after: answerError)
                 return
             }
             Log.answer.error("answer failed: \(answerError.localizedDescription, privacy: .public)")

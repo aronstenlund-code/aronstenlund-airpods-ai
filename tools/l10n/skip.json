@@ -60,8 +60,16 @@
   "POST": "language data, a log line or a technical string, not a text on the screen"
  },
  "Lumen/Core/Answer/OnDeviceAnswerProvider.swift": {
+  "Du är EarMind, en pluggkompis för en skolelev. Svara på svenska, kort och korrekt: en eller två meningar som går att läsa upp. Inga listor och ingen markdown. Vet du inte säkert, säg det kort i stället för att gissa.": "instructions to the phone's own model, never on the screen (A159)",
   "Du är Lumen, en pluggkompis för en skolelev i Sverige. Svara på svenska, kort och korrekt: en eller två meningar som går att läsa upp. Inga listor och ingen markdown. Vet du inte säkert, säg det kort i stället för att gissa.": "the on-device model's instructions (Swedish, as the answers)",
-  "Jag svarar kort, nätet är borta.": "spoken: follows the language listened for, not the texts' language"
+  "Jag svarar kort, nätet är borta.": "spoken: follows the language listened for, not the texts' language",
+  "Jag svarar med telefonens egen modell.": "spoken first line of the answer: follows the language that was spoken (D257), not the app's choice (A159)",
+  "en": "a language code"
+ },
+ "Lumen/Core/Answer/OnDeviceModel.swift": {
+  "Det här är ett låtsassvar från telefonens modell.": "the pretend phone model's sentence in the test builds (T57), never in Release",
+  "Svara på svenska": "a piece of the model's instructions, to tell the two languages apart",
+  "en": "a language code"
  },
  "Lumen/Core/Answer/OnDeviceModel.swift": {
   "Det här är ett låtsassvar från telefonens modell.": "the pretend phone model of the test builds (A159/T57)",
