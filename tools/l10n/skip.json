@@ -66,6 +66,11 @@
   "Jag svarar med telefonens egen modell.": "spoken first line of the answer: follows the language that was spoken (D257), not the app's choice (A159)",
   "en": "a language code"
  },
+ "Lumen/Core/Answer/OnDeviceModel.swift": {
+  "Det här är ett låtsassvar från telefonens modell.": "the pretend phone model's sentence in the test builds (T57), never in Release",
+  "Svara på svenska": "a piece of the model's instructions, to tell the two languages apart",
+  "en": "a language code"
+ },
  "Lumen/Core/Answer/ReadAloud.swift": {
   "källa ": "language data, a log line or a technical string, not a text on the screen",
   "källa:": "language data, a log line or a technical string, not a text on the screen",

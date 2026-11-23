@@ -161,6 +161,26 @@ import Testing
         #expect(broken.error == .offline && broken.events.isEmpty)
     }
 
+    #if LUMEN_TESTMODE
+    /// T57: Toby's pretend phone model, chosen with a launch argument in the test builds.
+    @Test func thePretendModelForTheSimulatorSpeaksWhatTheLaunchAskedFor() async throws {
+        let defaults = try #require(UserDefaults(suiteName: "a159.\(UUID().uuidString)"))
+        #expect(PretendOnDeviceModel.requested(defaults) == nil, "without the argument the real model is asked")
+        defaults.set("sv, EN", forKey: "OnDeviceMock")
+        let both = try #require(PretendOnDeviceModel.requested(defaults))
+        #expect(both.isAvailable(for: "sv") && both.isAvailable(for: "en"))
+        let swedish = await events(OnDeviceAnswerProvider(model: both), request("sv", .serverDown))
+        #expect(swedish.events.contains(.delta(PretendOnDeviceModel.swedish)))
+        let english = await events(OnDeviceAnswerProvider(model: both), request("en", .serverDown))
+        #expect(english.events.contains(.delta(PretendOnDeviceModel.english)))
+        defaults.set("none", forKey: "OnDeviceMock")
+        let none = try #require(PretendOnDeviceModel.requested(defaults))
+        #expect(!none.isAvailable(for: "sv") && !none.isAvailable(for: "en"))
+        let refused = await events(OnDeviceAnswerProvider(model: none), request("en", .serverDown))
+        #expect(refused.error == .offline)
+    }
+    #endif
+
     @Test func whyThePhoneIsAsked() {
         #expect(OnDeviceReason(.offline) == .offline)
         #expect(OnDeviceReason(Self.down("provider_quota")) == .serverDown)

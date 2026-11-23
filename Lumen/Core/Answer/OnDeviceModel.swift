@@ -34,3 +34,32 @@ struct SystemOnDeviceModel: OnDeviceModel {
         return try await session.respond(to: prompt).content
     }
 }
+
+#if LUMEN_TESTMODE
+/// T57 (Toby): a pretend phone model for the Simulator, which has no Foundation Models. Only in the test builds
+/// (Debug and Beta), never in Release. `-OnDeviceMock sv,en` gives a model that speaks those languages and always
+/// says the same sentence; `-OnDeviceMock none` is a phone without Apple Intelligence. Without the argument the app
+/// asks the real model, as on a phone.
+@MainActor
+struct PretendOnDeviceModel: OnDeviceModel {
+    static let swedish = "Det här är ett låtsassvar från telefonens modell."
+    static let english = "This is a pretend answer from the phone's model."
+
+    let languages: Set<String>
+
+    /// What the launch asked for; nil when it asked for nothing.
+    static func requested(_ defaults: UserDefaults = .standard) -> (any OnDeviceModel)? {
+        guard let value = defaults.string(forKey: "OnDeviceMock") else { return nil }
+        let asked = value.lowercased().split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }
+        return PretendOnDeviceModel(languages: Set(asked).intersection(["sv", "en"]))
+    }
+
+    func isAvailable(for language: String) -> Bool {
+        languages.contains(language)
+    }
+
+    func respond(to prompt: String, instructions: String) async throws -> String {
+        instructions.contains("Svara på svenska") ? Self.swedish : Self.english
+    }
+}
+#endif
