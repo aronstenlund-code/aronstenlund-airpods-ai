@@ -1,4 +1,4 @@
-# A159 – telefonens egen modell svarar när serverns modell är nere (Angela Schrute, moln, 2026-11-23 20:05)
+# A159 – telefonens egen modell svarar när serverns modell är nere (Angela Schrute, moln, 2026-11-23 19:15)
 
 Uppdrag: Deangelo 19:16 (D258). Bara iOS-appen på main; webbetan är orörd.
 
