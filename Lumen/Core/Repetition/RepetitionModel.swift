@@ -158,6 +158,9 @@ final class RepetitionModel {
     /// sheet then has no purchase part.
     var shop: CreditShop?
 
+    /// A163 (D259): Komprimera in Säg i AirPods. Nil in tests and scenes without it: the button is not shown then.
+    var compressor: SayCompressor?
+
     /// A83 (K49): Publicera prov and Prov från din skola. Nil in the mock mode.
     @ObservationIgnored var publishing: (any DrillPublishingService)?
 

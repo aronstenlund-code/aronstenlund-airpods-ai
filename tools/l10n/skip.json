@@ -816,6 +816,13 @@
   "interruption ended": "a line in the log",
   "output gone": "a line in the log"
  },
+ "Lumen/Core/Repetition/SayCompress.swift": {
+  "Bearer \\(token)": "an HTTP header",
+  "Du kortar en text till ungefär hälften. Behåll innehållet, fakta, namn och siffror. Ge bara den kortare texten, ": "a prompt to the phone's model",
+  "POST": "HTTP",
+  "text": "a field in the request",
+  "utan inledning. Svara på svenska om texten är på svenska, annars på textens språk.": "a prompt to the phone's model"
+ },
  "Lumen/Core/Repetition/TestPresses.swift": {
   "\\\\n": "an escape"
  },
@@ -1423,6 +1430,7 @@
   "Den enas produkter är den andras råvaror, så kol och syre går runt i ett kretslopp.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Den gav kraft till fabriker, tåg och båtar oberoende av vatten och vind.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Den gav kraft till fabriker, tåg och båtar oberoende av vatten och vind. Därför kunde fabrikerna ligga nära städerna.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Den sker i kloroplasterna, där klorofyllet fångar ljuset. Som restprodukt bildas syre, som djur och människor andas.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Den visar vem som äter vem i ett ekosystem.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Det gick inte att publicera just nu. Försök igen om en stund.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Det här kostar 120 krediter. Du har 88 kvar. Nya krediter den 1 december.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
@@ -1448,6 +1456,7 @@
   "Fotosyntes: koldioxid + vatten + ljus blir socker och syre.\\nCellandning: socker + syre blir energi, koldioxid och vatten.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Fotosyntesen": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Fotosyntesen bygger socker och cellandningen bryter ner det.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Fotosyntesen är den process där gröna växter använder solens ljus för att göra socker av koldioxid och vatten. ": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Fråga: \\(question)\\nSvar: \\(answer)\\n\\n": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Fysik": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Fysikprovet": "demo data for the pictures (Debug only); Swedish until the English pictures need it",

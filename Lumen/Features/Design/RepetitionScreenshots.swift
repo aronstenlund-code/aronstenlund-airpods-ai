@@ -83,6 +83,8 @@ enum RepetitionDemo {
                                       // A161 (D259): the launch week: the credits sheet with the launch prices, and
                                       // the sheet that says the offer when the app is opened
                                       "repShopLaunch", "repShopLaunchOffer",
+                                      // A163 (D259): Komprimera on a text worth shortening, and the field after it
+                                      "repSayCompress", "repSayCompressed",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -441,6 +443,20 @@ enum RepetitionDemo {
         }
         SayText.stagedPicked = nil
         UserDefaults.standard.removeObject(forKey: SayText.mixKey)
+        SayText.stagedCompressed = nil
+        if name.hasPrefix("repSayCompress") { // A163: a text worth shortening; Komprimera, and after it Ångra
+            model.store.save(history)
+            model.store.save(drill)
+            var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = 1236
+            model.quota = credits
+            let long = "Fotosyntesen är den process där gröna växter använder solens ljus för att göra socker av koldioxid och vatten. "
+                + "Den sker i kloroplasterna, där klorofyllet fångar ljuset. Som restprodukt bildas syre, som djur och människor andas."
+            SayText.stagedForScreenshots = long
+            SayText.stagedCompressed = name == "repSayCompressed" ? MockTextShortener.firstHalf(long) : nil
+            return
+        }
         if name == "repSayKeyboardShort" { // A153: one row of text, nothing else on the card
             model.store.save(history)
             model.store.save(drill)
@@ -677,7 +693,7 @@ enum RepetitionDemo {
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
                  "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices", "repSayVoicesUser",
-                 "repShopShort", "repShopWeeklyHome", "repShopLaunchOffer", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
+                 "repShopShort", "repShopWeeklyHome", "repShopLaunchOffer", "repSayCompress", "repSayCompressed", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
                  "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced",
                  "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers", "repShopShortKeyboard",
                  "repShopShortKeyboardStyle":

@@ -31,6 +31,8 @@ enum SayText {
     #if DEBUG
     /// The screenshots: a text already written in the field.
     static var stagedForScreenshots: String?
+    /// A163: the field after Komprimera (the shorter text), for the screenshots.
+    static var stagedCompressed: String?
     /// A130: the line after a refused Spela, for the screenshots.
     static var stagedRefusal: String?
     /// A132: the server's cost, for the screenshots (no server there).
@@ -261,6 +263,9 @@ struct SayInAirPodsField: View {
     @State private var link = ""
     @State private var isReadingMaterial = false
     @State private var materialNote: String?
+    /// A163 (D259): Komprimera: the original for Ångra, the line under the field, and the wait.
+    @State private var compression = SayCompression()
+    @State private var isCompressing = false
     @FocusState private var focused: Bool
     /// A153 (D238): the card's own Spela is behind the keyboard, so Spela stands in the row above the keyboard.
     @State private var playHidden = false
@@ -744,7 +749,11 @@ struct SayInAirPodsField: View {
         // The card grows and shrinks from its top edge, and what is on its way in or out stays inside it.
         .frame(maxWidth: .infinity, alignment: .topLeading)
         .animation(SayMotion.change(reduceMotion), value: shape)
-        .onChange(of: text) { refused = nil; canRetry = false }
+        .onChange(of: text) { _, new in
+            refused = nil
+            canRetry = false
+            compression.edited(new) // A163: an emptied field forgets the original
+        }
         .padding(16)
         .foregroundStyle(SayText.ink)
         .background(scheme == .dark ? SayText.fieldDark : SayText.field, in: RoundedRectangle(cornerRadius: 16))
@@ -755,6 +764,9 @@ struct SayInAirPodsField: View {
         #if DEBUG
         .onAppear {
             if let staged = SayText.stagedForScreenshots, text.isEmpty { text = staged }
+            if let shorter = SayText.stagedCompressed, !compression.canUndo { // A163
+                text = compression.took(.shortened(shorter, by: .server), for: text)
+            }
             if let line = SayText.stagedRefusal { // after the text's own onChange
                 Task {
                     refused = line
@@ -827,6 +839,10 @@ struct SayInAirPodsField: View {
             }
             .accessibilityElement(children: .combine)
         }
+        if let compressor = model.compressor, !isEmpty,
+           isCompressing || compression.canUndo || compression.note != nil || SayCompression.offers(text) {
+            Group { compressRow(compressor) }.transition(SayMotion.appear)
+        }
         if !isEmpty { Group { styleRow }.transition(SayMotion.appear) }
         if !hasPlayed { // D215.2: said until Spela has been pressed once, then never
             Text(verbatim: SayText.lockLine)
@@ -838,6 +854,55 @@ struct SayInAirPodsField: View {
         }
         Group { costRow }.transition(SayMotion.appear)
         controls
+    }
+
+    /// A163 (D259, Aron): Komprimera makes the text shorter with the same content and puts it in the field, where it
+    /// can be changed; nothing is played until Spela. After it the button is Ångra, which gives the original back.
+    /// One small button and one line; with the largest text the line stands under the button.
+    @ViewBuilder
+    private func compressRow(_ compressor: SayCompressor) -> some View {
+        let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 6)) : AnyLayout(HStackLayout(spacing: 10))
+        layout {
+            Button {
+                if compression.canUndo {
+                    if let original = compression.undo() { text = original }
+                } else {
+                    compress(with: compressor)
+                }
+            } label: {
+                HStack(spacing: 6) {
+                    if isCompressing { ProgressView().controlSize(.small).accessibilityHidden(true) }
+                    Text(verbatim: isCompressing ? SayCompressText.working
+                         : compression.canUndo ? SayCompressText.undo : SayCompressText.compress)
+                        .lineLimit(1)
+                }
+            }
+            .smallSayControl()
+            .disabled(isCompressing || isStarting)
+            .accessibilityHint(compression.canUndo ? "" : SayCompressText.hint)
+            .accessibilityIdentifier("say.compress")
+            if let note = compression.note, !isCompressing {
+                Text(verbatim: note)
+                    .font(.footnote)
+                    .opacity(0.7)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+            }
+        }
+        .animation(SayMotion.change(reduceMotion), value: compression)
+    }
+
+    private func compress(with compressor: SayCompressor) {
+        guard !isCompressing else { return }
+        let asked = text
+        isCompressing = true
+        Task {
+            let outcome = await compressor.shorten(asked)
+            isCompressing = false
+            guard text == asked else { return } // the text was changed while it was being shortened: it stays
+            text = compression.took(outcome, for: asked)
+            if let note = compression.note { AccessibilityNotification.Announcement(note).post() }
+        }
     }
 
     /// A136 (D220, Kelly Ke75 §1): everything about how it sounds on one row, only when the field has text: the voice
