@@ -107,7 +107,7 @@ final class AppContainer {
                                        speakers: SpeakerIdentifier(), studyCards: StudyCardStore(),
                                        studyCardsClient: StudyCardsClient(config: .lumen, auth: auth, http: http),
                                        studyProfileClient: StudyProfileClient(config: .lumen, auth: auth, http: http),
-                                       examMaterials: ExamMaterials(), examClient: ExamClient(config: .lumen, auth: auth, http: http, grader: OnDeviceGrader()), // A160 (D258)
+                                       examMaterials: ExamMaterials(), examClient: ExamClient(config: .lumen, auth: auth, http: http, grader: OnDeviceGrader.forThisLaunch()), // A160 (D258)
                                        examPlans: ExamPlanStore(), phrases: CommandPhraseStore(), music: MusicRemote.live(),
                                        tips: CommandTipStore(), preferences: PreferenceStore(),
                                        studyPlanClient: StudyPlanClient(config: .lumen, auth: auth, http: http))

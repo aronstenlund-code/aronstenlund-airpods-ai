@@ -63,6 +63,11 @@
   "Du är Lumen, en pluggkompis för en skolelev i Sverige. Svara på svenska, kort och korrekt: en eller två meningar som går att läsa upp. Inga listor och ingen markdown. Vet du inte säkert, säg det kort i stället för att gissa.": "the on-device model's instructions (Swedish, as the answers)",
   "Jag svarar kort, nätet är borta.": "spoken: follows the language listened for, not the texts' language"
  },
+ "Lumen/Core/Answer/OnDeviceModel.swift": {
+  "Det här är ett låtsassvar från telefonens modell.": "the pretend phone model of the test builds (A159/T57)",
+  "Svara på svenska": "the pretend phone model of the test builds (A159/T57)",
+  "en": "a prompt to the phone's model, or a word read from its reply"
+ },
  "Lumen/Core/Answer/ReadAloud.swift": {
   "källa ": "language data, a log line or a technical string, not a text on the screen",
   "källa:": "language data, a log line or a technical string, not a text on the screen",
@@ -832,15 +837,20 @@
   "Talare \\(label)": "spoken: follows the language listened for, not the texts' language"
  },
  "Lumen/Core/Study/AnswerGrader.swift": {
+  " Börja med rätt, delvis eller fel och ett kolon.": "a prompt to the phone's model, or a word read from its reply",
   "Delvis rätt.": "spoken: follows the language listened for, not the texts' language",
   "Den här frågan har inget facit.": "spoken: follows the language listened for, not the texts' language",
   "Du rättar en elevs svar på en provfråga mot facit. Var rättvis och kortfattad. Skriv meningen på svenska.": "a prompt to the phone's model",
+  "Du rättar en elevs svar på en provfråga mot facit. Var rättvis och kortfattad. Svara på svenska.": "a prompt to the phone's model, or a word read from its reply",
   "Facit visas – rättningen är tillbaka när EarMind kan svara igen.": "spoken: follows the language listened for, not the texts' language",
   "Facit: ": "spoken: follows the language listened for, not the texts' language",
   "Fråga: \\(question)\\nFacit: \\(key)\\nElevens svar: \\(answer)": "a prompt to the phone's model",
   "Inte rätt.": "spoken: follows the language listened for, not the texts' language",
   "Rätt.": "spoken: follows the language listened for, not the texts' language",
-  "Telefonens modell:": "spoken: follows the language listened for, not the texts' language"
+  "Telefonens modell:": "spoken: follows the language listened for, not the texts' language",
+  "en": "a prompt to the phone's model, or a word read from its reply",
+  "fel": "a prompt to the phone's model, or a word read from its reply",
+  "rätt": "a prompt to the phone's model, or a word read from its reply"
  },
  "Lumen/Core/Study/AnswerRecorder.swift": {
   "mitt-svar-\\(UUID().uuidString).caf": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen"

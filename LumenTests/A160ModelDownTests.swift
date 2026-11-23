@@ -16,8 +16,7 @@ import Testing
                                answer: "Det fångar ljusets energi.", assessment: "Ljus och energi ska nämnas.")
 
     /// The pretend grader: what it is asked, and the grade it gives.
-    final class PretendGrader: AnswerGrading, @unchecked Sendable {
-        // @unchecked: the tests drive it from the main actor only.
+    @MainActor final class PretendGrader: AnswerGrading {
         var languages: Set<TranscriptionLanguage> = [.swedish, .english]
         var result: LocalGrade? = LocalGrade(verdict: .right, sentence: "Du fick med att klorofyllet fångar ljuset.")
         private(set) var asked: [(question: String, key: String, answer: String, language: TranscriptionLanguage)] = []
@@ -121,6 +120,15 @@ import Testing
         bare.answer = ""
         let none = try #require(await client(FakeHTTP([.init(status: 503, body: Self.down)]), grader: nil).grade(task: bare, answer: "x"))
         #expect(none.feedback == "Facit visas – rättningen är tillbaka när EarMind kan svara igen. Den här frågan har inget facit.")
+    }
+
+    /// A model that only gives text is read in a fixed form; anything else is no grade.
+    @Test func aTextModelsVerdictIsReadInAFixedForm() {
+        #expect(OnDeviceGrader.parsed("partly: Energin saknas.") == LocalGrade(verdict: .partly, sentence: "Energin saknas."))
+        #expect(OnDeviceGrader.parsed("Rätt: Du fick med ljuset.") == LocalGrade(verdict: .right, sentence: "Du fick med ljuset."))
+        #expect(OnDeviceGrader.parsed("wrong: It is not a root.") == LocalGrade(verdict: .wrong, sentence: "It is not a root."))
+        #expect(OnDeviceGrader.parsed("Det här är bara en mening.") == nil && OnDeviceGrader.parsed("kanske: tja") == nil)
+        #expect(OnDeviceGrader.code(.swedish) == "sv" && OnDeviceGrader.code(.english) == "en")
     }
 
     // MARK: What must not change
