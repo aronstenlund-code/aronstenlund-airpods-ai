@@ -85,3 +85,20 @@ Webbetan byggs nu på earmind.vercel.app/beta (D249–D252). Jag säger till nä
 
 ## #37 Webbetan och ElevenLabs-kapaciteten (2026-11-21 16:45)
 ElevenLabs-planen räcker till cirka 90 000 tecken i månaden – ungefär 15 prov med 12 frågor för alla tillsammans. Webben får högst 10 000 tecken per dygn och varje nät 3 000. Ett nytt webbkonto har 1 500, och det minsta provet (3 frågor) kostar cirka 1 900, så besökare från TikTok kan bara använda Säg med korta texter, inte prov. Två beslut som bara du kan ta: (a) uppgradera ElevenLabs-planen (kostnad), och (b) om webbkonton ska få mer än 1 500 (till exempel 5 000 en gång). Talen kan ändras utan ny kod.
+
+## 33. Lanseringspriser i App Store Connect (D259, Ke88), 2026-11-23
+Lanseringsveckan säljer egna produkter som ger samma krediter som de vanliga, men kostar 35 % (65 % rabatt). Servern
+visar dem bara under veckan (K119). Gör så här för **varje** paket (100, 500 och 2 000 krediter):
+1. Öppna appstoreconnect.apple.com › **Appar** › **EarMind** › i vänsterspalten **Monetarisering › In-App-köp**
+   (engelska: *Monetization › In-App Purchases*) › blå **+**.
+2. Typ **Förbrukningsbar** (*Consumable*). Referensnamn: `Krediter 100 lansering` (500, 2000). Produkt-ID exakt:
+   `com.rsolutions.lumen.credits.100.launch` (`…credits.500.launch`, `…credits.2000.launch`) › **Skapa**.
+3. **Prissättning** (*Price Schedule*) › **Lägg till pris** › basland **Sverige (SEK)** › välj prispunkten närmast
+   35 % av ordinarie: **100: cirka 3,50 kr** (ordinarie 10 kr) · **500: cirka 14 kr** (39 kr) · **2 000: cirka 39 kr**
+   (110 kr) › **Nästa** › låt Apple räkna fram övriga länder › **Bekräfta**.
+4. **App Store-lokalisering** › Svenska och Engelska: visningsnamn `100 krediter` / `100 credits`, beskrivning
+   `Lanseringspris.` / `Launch price.`
+5. **Granskningsinformation**: en skärmbild av köpbladet och anteckningen "Launch-week price of the same credit pack."
+   › **Spara**. Första gången skickas köpen in tillsammans med en appversion.
+Veckokortet (`com.rsolutions.lumen.sub.week`) är inte med i D259:s produkter; ska det också vara 65 % billigare görs det
+som ett **introduktionserbjudande** på prenumerationen (Deangelo/Kevin avgör). Inget här kostar något förrän någon köper.

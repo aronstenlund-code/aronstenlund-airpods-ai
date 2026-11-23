@@ -646,6 +646,12 @@
   .betacard .note { color: var(--mut); font-size: .9375rem; }
   .elias-still { width: 100%; height: auto; border-radius: 28px; display: block; }
   @media (min-width: 960px) { .betacard { grid-column: 2; grid-row: 1 / span 2; align-self: start; padding: 28px; } }
+  /* Ke88 (D259): launch offer – hidden unless the server says the week is on (K119) */
+  .launch { display: none; margin: 12px auto 0; max-width: 1100px; padding: 0 var(--gut, 16px); }
+  .launch.on { display: block; }
+  .launch div { background: #2346c8; color: #fff; border-radius: 16px; padding: 12px 16px; font-weight: 600; text-align: center; }
+  .launch small { display: block; font-weight: 400; opacity: .9; margin-top: 2px; }
+  .activate { margin-top: 14px; font-size: 1.0625rem; }
 </style>
 </head>
 <body>
@@ -654,6 +660,7 @@
   <nav class="langsw" aria-label="Language"><a href="/" hreflang="en" lang="en" data-lang="en" aria-label="English" aria-current="true">EN</a><a href="/sv" hreflang="sv" lang="sv" data-lang="sv" aria-label="Svenska" >SV</a></nav>
 </header>
 <main>
+<div class="launch" id="launch" role="status"><div>65 % off everything – launch week<small></small></div></div>
   <section class="hero wrap" aria-labelledby="hero-h">
     <div class="intro">
       <h1 id="hero-h">Learn it by listening.</h1>
@@ -681,6 +688,12 @@
       <li class="paper"><h3>Start quiz</h3><p>Questions are read in your AirPods. Tap once for the long answer, twice for the short one, three times to pause.</p><img class="shot" src="img/app-prov.webp" width="300" height="652" loading="lazy" alt="The quiz screen: the question, the answer and the three taps."></li>
     </ol>
     <p class="shot-note">Screens from a test version of the app (in Swedish; English is on the way).</p>
+  </section>
+
+  <section class="start wrap" id="modes" aria-labelledby="modes-h">
+    <h2 id="modes-h">More modes (beta)</h2>
+    <p class="lead">Modes that listen and answer in your ear, like a spoken quiz or interview practice. They ask first and always show that they're listening.</p>
+    <p class="activate"><b>Question you're not prepared for?</b> Say [your words] so our AI activates.</p>
   </section>
 
   <section class="price wrap" id="credits" aria-labelledby="price-h">
@@ -789,6 +802,23 @@ $("wait").addEventListener("submit", async (e) => {
 // Ke87 (D253): English first; the choice is saved with the same key as the beta, so it carries over.
 (function(){var k="earmind.beta.lang";try{document.querySelectorAll(".langsw a").forEach(function(a){a.addEventListener("click",function(){try{localStorage.setItem(k,a.dataset.lang)}catch(e){}})});
 if(location.pathname==="/"&&localStorage.getItem(k)==="sv")location.replace("/sv");}catch(e){}})();
+</script>
+<script>
+// Ke88 (D259): the launch offer shows only while Kevin's launch_offer (K119) is on. Not wired yet: K119's endpoint and
+// field names are not decided. When they are, set LAUNCH_URL and map the answer in readOffer().
+(function(){
+  var LAUNCH_URL = null; // K119
+  function readOffer(j){ return j && j.active && j.ends_at ? { end: new Date(j.ends_at) } : null; }
+  function show(o){
+    var el = document.getElementById("launch"); if (!el || !o) return;
+    function tick(){ var ms = o.end - Date.now(); if (ms <= 0) { el.classList.remove("on"); return; }
+      var d = Math.floor(ms/864e5), h = Math.floor(ms%864e5/36e5), m = Math.floor(ms%36e5/6e4);
+      el.querySelector("small").textContent = "Ends in " + (d ? d + " d " : "") + h + " h " + m + " min";
+      el.classList.add("on"); }
+    tick(); setInterval(tick, 30000);
+  }
+  if (LAUNCH_URL) fetch(LAUNCH_URL).then(function(r){ return r.ok ? r.json() : null; }).then(function(j){ show(readOffer(j)); }).catch(function(){});
+})();
 </script>
 </body>
 </html>
