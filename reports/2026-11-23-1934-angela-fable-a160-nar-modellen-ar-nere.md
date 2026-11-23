@@ -1,4 +1,4 @@
-# A160 (D258): öva sparade prov när modellen bakom EarMind är nere
+# A160 (D258, D260): öva sparade prov när modellen bakom EarMind är nere
 
 Angela Fable (moln), 2026-11-23. Beställt av Deangelo 19:17. Bara iOS-appen på main; webbetan är orörd.
 
@@ -52,7 +52,8 @@ Fler lägen (lägena som lyssnar): **Provfrågor** (övningsprovet) och **provse
   den svarar; andra fel ger ingen rättning; serverns nej känns igen som "modellen nere"; knappens ord, tvåminuters-
   fönstret och att ett sparat prov startar som förut; orden på båda språken. Eftersom CI är kompilatorn har jag
   inte kört dem röda först i en egen körning (det hade kostat ett Mac-bygge till).
-- KÖRNINGAR
+- **iOS build 45236692487 på min gren: enhetsbygge utan varningar och alla enhetstester gröna (13 nya).** Verifierat i CI (Simulator). Första försöket fick ingen Mac hos GitHub
+  ("The job was not acquired by Runner"), så körningen startades om; det var inget fel i koden.
 - **Foundation Models finns inte i CI-simulatorn** (D258 punkt 5): den riktiga rättningen är inte körd någonstans.
   `@Generable`/`@Guide` och `respond(to:generating:)` är kompilerade mot SDK:n men otestade mot en riktig modell.
 - 0 ElevenLabs (D180).
