@@ -158,6 +158,17 @@ final class ExamClient {
         var points: ExamTask.Points
         var max: ExamTask.Points?
         var feedback: String
+        /// A160 (D258): who stands behind this when the server's model could not grade. nil = the server graded.
+        var by: Source? = nil
+
+        enum Source: String, Decodable, Sendable {
+            /// The phone's own model graded (Foundation Models). Nothing was sent and nothing is counted.
+            case phone
+            /// Nothing could grade: `feedback` is one line about why and the answer key. No points.
+            case keyOnly
+        }
+
+        var isKeyOnly: Bool { by == .keyOnly }
     }
 
     struct Summary: Decodable, Sendable {
@@ -168,11 +179,14 @@ final class ExamClient {
     private let config: BackendConfig
     private let auth: SupabaseAuth
     private let http: any HTTPStreaming
+    /// A160 (D258): grades on the phone when the server says its model is down. nil = the answer key is shown.
+    private let grader: (any AnswerGrading)?
 
-    init(config: BackendConfig, auth: SupabaseAuth, http: any HTTPStreaming) {
+    init(config: BackendConfig, auth: SupabaseAuth, http: any HTTPStreaming, grader: (any AnswerGrading)? = nil) {
         self.config = config
         self.auth = auth
         self.http = http
+        self.grader = grader
     }
 
     func parse(pages: [Data], subject: String?, grade: String?) async -> Parsed? {
@@ -189,10 +203,40 @@ final class ExamClient {
         return reply?.hint
     }
 
-    func grade(task: ExamTask, answer: String, practice: Bool = false) async -> Graded? {
+    /// A160 (D258): when the server answers that its model is down (503 `provider_*`), the answer is graded by the
+    /// phone's own model, in the language that is spoken, and if the phone has none the answer key comes back with
+    /// one line about why. Any other fault is no grade, as before.
+    func grade(task: ExamTask, answer: String, practice: Bool = false,
+               language: TranscriptionLanguage = .swedish) async -> Graded? {
         var body: [String: Any] = ["action": "grade", "task": Self.json(task), "answer": String(answer.prefix(2_000))]
         if practice { body["practice"] = true } // K15: the feedback also says the right answer and why
-        return await call(body, timeout: 30)
+        switch await send(body, timeout: 30) {
+        case .ok(let data): return try? JSONDecoder().decode(Graded.self, from: data)
+        case .modelDown: return await Self.gradedOnPhone(task: task, answer: answer, language: language, grader: grader)
+        case .failed: return nil
+        }
+    }
+
+    /// The grade when the server's model is down. Right gives the task's points, partly half of them, wrong none; a
+    /// task without points counts as one point, so the run still knows right from partly.
+    static func gradedOnPhone(task: ExamTask, answer: String, language: TranscriptionLanguage,
+                              grader: (any AnswerGrading)?) async -> Graded {
+        if let grader, grader.isAvailable(for: language),
+           let local = await grader.grade(question: task.text, key: task.answer, answer: answer, language: language) {
+            let max = task.points.total > 0 ? task.points : ExamTask.Points(E: 1, C: 0, A: 0)
+            let points: ExamTask.Points = switch local.verdict {
+            case .right: max
+            case .partly: ExamTask.Points(E: max.E / 2, C: max.C / 2, A: max.A / 2)
+            case .wrong: .zero
+            }
+            var words = [PhoneGradeText.lead(language), PhoneGradeText.verdict(local.verdict, language), local.sentence]
+            if local.verdict != .right { words.append(PhoneGradeText.key(task.answer, language)) }
+            Log.answer.info("exam: task \(task.no, privacy: .public) graded on the phone (\(local.verdict.rawValue, privacy: .public)); the server's model is down")
+            return Graded(points: points, max: max, feedback: words.joined(separator: " "), by: .phone)
+        }
+        Log.answer.info("exam: task \(task.no, privacy: .public): the server's model is down and the phone cannot grade; the answer key is shown")
+        return Graded(points: .zero, max: nil,
+                      feedback: PhoneGradeText.keyOnly(language) + " " + PhoneGradeText.key(task.answer, language), by: .keyOnly)
     }
 
     /// K15: an exam given as text (pasted, or a PDF's text layer); at most 40 000 characters.
@@ -220,6 +264,18 @@ final class ExamClient {
     }
 
     private func call<Reply: Decodable>(_ body: [String: Any], timeout: TimeInterval) async -> Reply? {
+        guard case .ok(let data) = await send(body, timeout: timeout) else { return nil }
+        return try? JSONDecoder().decode(Reply.self, from: data)
+    }
+
+    private enum Sent {
+        case ok(Data)
+        /// O97: 503/502 with a `provider_*` code: the model behind EarMind is out of credits, busy or down.
+        case modelDown
+        case failed
+    }
+
+    private func send(_ body: [String: Any], timeout: TimeInterval) async -> Sent {
         do {
             let token = try await auth.accessToken()
             var request = URLRequest(url: config.examURL)
@@ -232,12 +288,17 @@ final class ExamClient {
             request.httpBody = try JSONSerialization.data(withJSONObject: AppLanguage.stamped(body)) // A157 (K114): lang
             let (response, data) = try await http.data(for: request)
             guard response.statusCode == 200 else {
-                Log.answer.error("exam: HTTP \(response.statusCode, privacy: .public)")
-                return nil
+                struct Fault: Decodable {
+                    struct Inner: Decodable { var code: String? }
+                    var error: Inner?
+                }
+                let code = (try? JSONDecoder().decode(Fault.self, from: data))?.error?.code
+                Log.answer.error("exam: HTTP \(response.statusCode, privacy: .public) \(code ?? "-", privacy: .public)")
+                return ServerTrouble.isProvider(code) ? .modelDown : .failed
             }
-            return try JSONDecoder().decode(Reply.self, from: data)
+            return .ok(data)
         } catch {
-            return nil
+            return .failed
         }
     }
 }

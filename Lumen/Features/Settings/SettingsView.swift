@@ -503,6 +503,10 @@ struct SettingsView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
+        // A162 (D259): the user's own activation words; an empty field is off.
+        Section {
+            ActivationWordsField(settings: settings)
+        }
     }
 
     @ViewBuilder

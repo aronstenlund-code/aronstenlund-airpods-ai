@@ -73,6 +73,7 @@ INTEGERS = {
     "min(reader.sentenceIndex + 1, reader.sentenceCount)", "missing", "night.snoreMinutes", "p.ready", "parts[2]", "photos",
     "player.lap + 1", "quota.left - draft.countsAs", "read.chars_per_question", "reader.sentenceCount", "ready", "restless",
     "saved + 1", "session.readingLap", "start + 1", "startCount(drill)",
+    "percent", "before", "after",
 }
 
 

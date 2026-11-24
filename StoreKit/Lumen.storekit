@@ -48,6 +48,51 @@
       "productID" : "com.rsolutions.lumen.credits.2000",
       "referenceName" : "2 000 krediter",
       "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "3.50",
+      "familyShareable" : false,
+      "internalID" : "6700000111",
+      "localizations" : [
+        {
+          "description" : "100 krediter till nytt ljud i EarMind.",
+          "displayName" : "100 krediter",
+          "locale" : "sv"
+        }
+      ],
+      "productID" : "com.rsolutions.lumen.credits.100.launch",
+      "referenceName" : "100 krediter (lansering)",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "13.65",
+      "familyShareable" : false,
+      "internalID" : "6700000112",
+      "localizations" : [
+        {
+          "description" : "500 krediter till nytt ljud i EarMind.",
+          "displayName" : "500 krediter",
+          "locale" : "sv"
+        }
+      ],
+      "productID" : "com.rsolutions.lumen.credits.500.launch",
+      "referenceName" : "500 krediter (lansering)",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "38.50",
+      "familyShareable" : false,
+      "internalID" : "6700000113",
+      "localizations" : [
+        {
+          "description" : "2 000 krediter till nytt ljud i EarMind.",
+          "displayName" : "2 000 krediter",
+          "locale" : "sv"
+        }
+      ],
+      "productID" : "com.rsolutions.lumen.credits.2000.launch",
+      "referenceName" : "2 000 krediter (lansering)",
+      "type" : "Consumable"
     }
   ],
   "settings" : {
@@ -79,7 +124,13 @@
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "6700000104",
-          "introductoryOffer" : null,
+          "introductoryOffer" : {
+            "displayPrice" : "27.65",
+            "internalID" : "6700000114",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "payAsYouGo",
+            "subscriptionPeriod" : "P1W"
+          },
           "localizations" : [
             {
               "description" : "Upp till 20 000 tecken nytt ljud i veckan.",

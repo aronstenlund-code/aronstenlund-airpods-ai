@@ -113,7 +113,7 @@ final class AppContainer {
                                        speakers: SpeakerIdentifier(), studyCards: StudyCardStore(),
                                        studyCardsClient: StudyCardsClient(config: .lumen, auth: auth, http: http),
                                        studyProfileClient: StudyProfileClient(config: .lumen, auth: auth, http: http),
-                                       examMaterials: ExamMaterials(), examClient: ExamClient(config: .lumen, auth: auth, http: http),
+                                       examMaterials: ExamMaterials(), examClient: ExamClient(config: .lumen, auth: auth, http: http, grader: OnDeviceGrader.forThisLaunch()), // A160 (D258)
                                        examPlans: ExamPlanStore(), phrases: CommandPhraseStore(), music: MusicRemote.live(),
                                        tips: CommandTipStore(), preferences: PreferenceStore(),
                                        studyPlanClient: StudyPlanClient(config: .lumen, auth: auth, http: http))
@@ -195,6 +195,10 @@ final class AppContainer {
         repetitionModel.publishing = drillCloud as? DrillCloudClient // A83 (K49)
         repetitionModel.help = mock ? MockHelp() as any HelpAnswering
             : HelpClient(config: .lumen, auth: auth, http: http) as any HelpAnswering // A92 (K57)
+        // A163 (D259): Komprimera; the phone's own model when the server cannot (D258). The mock mode has a pretend
+        // shortener (no server, no model).
+        let shortener: any TextShortening = mock ? MockTextShortener() : TextShortenClient(config: .lumen, auth: auth, http: http)
+        repetitionModel.compressor = SayCompressor(server: shortener, phone: OnDeviceGrader.forThisLaunch().model)
         if let drillCloud { // A134 (D218, K94), A141 (K98): purchases, welcome credits and invitations
             let shop = CreditShop(front: AppStoreFront(), server: PurchaseClient(config: .lumen, auth: auth, http: http))
             shop.accountID = { await drillCloud.accountID() }

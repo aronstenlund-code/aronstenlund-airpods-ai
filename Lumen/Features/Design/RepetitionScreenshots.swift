@@ -80,6 +80,11 @@ enum RepetitionDemo {
                                       "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers",
                                       // A153 (Kelly): the credits do not cover the text; "Fyll på" above the keyboard
                                       "repShopShortKeyboard", "repShopShortKeyboardStyle",
+                                      // A161 (D259): the launch week: the credits sheet with the launch prices, and
+                                      // the sheet that says the offer when the app is opened
+                                      "repShopLaunch", "repShopLaunchOffer",
+                                      // A163 (D259): Komprimera on a text worth shortening, and the field after it
+                                      "repSayCompress", "repSayCompressed",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -416,6 +421,12 @@ enum RepetitionDemo {
             shopDefaults.removeObject(forKey: CreditShop.seenRewardKey)
             let front = StagedStoreFront()
             front.isEmpty = name == "repShopEmpty"
+            if name.hasPrefix("repShopLaunch") { // A161: two days and four hours of the week are left
+                front.hasLaunchPacks = true
+                let end = Date().addingTimeInterval(2 * 86_400 + 4 * 3600 + 120)
+                server.offer = LaunchOffer(startsAt: end.addingTimeInterval(-7 * 86_400), endsAt: end, percent: 65)
+                shopDefaults.removeObject(forKey: CreditShop.launchSheetDayKey)
+            }
             let shop = CreditShop(front: front, server: server, defaults: shopDefaults)
             model.shop = shop
             Task { await shop.load() }
@@ -432,6 +443,20 @@ enum RepetitionDemo {
         }
         SayText.stagedPicked = nil
         UserDefaults.standard.removeObject(forKey: SayText.mixKey)
+        SayText.stagedCompressed = nil
+        if name.hasPrefix("repSayCompress") { // A163: a text worth shortening; Komprimera, and after it Ångra
+            model.store.save(history)
+            model.store.save(drill)
+            var credits = DrillQuota(used: 264, limit: 1500, per: "month", resets: "2026-12-01")
+            credits.unit = "chars"
+            credits.remaining = 1236
+            model.quota = credits
+            let long = "Fotosyntesen är den process där gröna växter använder solens ljus för att göra socker av koldioxid och vatten. "
+                + "Den sker i kloroplasterna, där klorofyllet fångar ljuset. Som restprodukt bildas syre, som djur och människor andas."
+            SayText.stagedForScreenshots = long
+            SayText.stagedCompressed = name == "repSayCompressed" ? MockTextShortener.firstHalf(long) : nil
+            return
+        }
         if name == "repSayKeyboardShort" { // A153: one row of text, nothing else on the card
             model.store.save(history)
             model.store.save(drill)
@@ -660,14 +685,15 @@ enum RepetitionDemo {
             case "repOffTextPlay": RepetitionPlayerView(model: model)
             case "repUnstarted", "repUnstartedTooMany": NavigationStack { DrillView(model: model, drillID: unstarted.id) }
             case "repUnstartedEdit": DrillItemEditor(model: model, drill: unstarted, itemID: unstarted.items[0].id)
-            case "repCredits", "repCreditsSheet", "repShop", "repShopWeekly", "repShopWelcome", "repShopReward", "repShopEmpty":
+            case "repCredits", "repCreditsSheet", "repShop", "repShopWeekly", "repShopWelcome", "repShopReward", "repShopEmpty",
+                 "repShopLaunch":
                 Color(.systemGroupedBackground).ignoresSafeArea()
                     .sheet(isPresented: .constant(true)) { CreditsSheet(model: model) }
             case "repSayPlay", "repSayPlayOnce": RepetitionPlayerView(model: model)
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
                  "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices", "repSayVoicesUser",
-                 "repShopShort", "repShopWeeklyHome", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
+                 "repShopShort", "repShopWeeklyHome", "repShopLaunchOffer", "repSayCompress", "repSayCompressed", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
                  "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced",
                  "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers", "repShopShortKeyboard",
                  "repShopShortKeyboardStyle":

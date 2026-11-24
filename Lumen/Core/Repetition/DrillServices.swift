@@ -66,6 +66,9 @@ enum DrillMakingError: Error, Equatable {
     /// A154 (K109/K110, D239, D241): the credits do not cover the exam that was asked for. Said by the server before
     /// it makes anything, with how many questions fit.
     case tooFewCredits(ExamRefusal)
+    /// A160 (D258, O97): the model behind EarMind cannot answer (503/502 `provider_*`: out of credits, busy, down).
+    /// Nothing was made and nothing was counted. Nytt prov says so on its button instead of as an error.
+    case modelDown
 }
 
 /// K109/K110: the server's no to an exam the credits do not cover (402 `quota_exceeded` with `fits`). Nothing was
@@ -559,7 +562,7 @@ final class DrillClient: DrillMaking {
         }
         let body = try? JSONDecoder().decode(Body.self, from: data)
         // O97: the model is out of credits, busy or down (503/502 `provider_*`): the app's own line.
-        if ServerTrouble.isProvider(body?.error?.code) { return .refused(ServerTrouble.line) }
+        if ServerTrouble.isProvider(body?.error?.code) { return .modelDown } // A160: the app's own line, and known as such
         if (400..<500).contains(status), status != 401, let message = body?.error?.message, !message.isEmpty {
             // A154 (D239, D241): the credits do not cover the exam; how many questions fit comes with the no.
             if status == 402, let fits = body?.fits {
@@ -571,6 +574,16 @@ final class DrillClient: DrillMaking {
         }
         return .server("HTTP \(status)")
     }
+}
+
+/// A160 (D258): what Nytt prov's button says while the model behind EarMind cannot answer. Short, and with what
+/// still works, instead of an error after the press.
+enum NewQuizText {
+    static func title(down: Bool, base: String) -> String {
+        down ? String(localized: "Kan inte skapa prov just nu") : base
+    }
+
+    static var downNote: String { String(localized: "Sparade prov går att öva. Försök igen om en stund.") }
 }
 
 extension DrillMakingError {
@@ -585,6 +598,7 @@ extension DrillMakingError {
             String(localized: "EarMind hittade ingen text att läsa upp. Lägg till fler sidor eller mer text.") // A105
         case .refused(let message): message
         case .tooFewCredits(let no): no.message // A154: the server's own words
+        case .modelDown: ServerTrouble.line // O97
         case .server: String(localized: "Det gick inte att skapa frågorna. Försök igen.") // A85
         }
     }

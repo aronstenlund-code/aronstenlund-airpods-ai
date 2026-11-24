@@ -1,0 +1,855 @@
+{
+ "summary": {
+  "model": "sonnet",
+  "judge": "sonnet",
+  "cases": 69,
+  "graded": 0,
+  "errors": 69,
+  "first_answer_suffices_pct": 0,
+  "correct_pct": 0,
+  "a_level_pct": 0,
+  "sufficient_pct": 0,
+  "covers_pct": 0,
+  "natural_pct": 0,
+  "length_ok_pct": 0,
+  "closing_ok_pct": 0,
+  "level_ok_pct": 0,
+  "lang_ok_pct": 0,
+  "strict_pct": 0,
+  "empty": 0,
+  "words_p50": null,
+  "words_p90": null,
+  "server_ttft_p50": null,
+  "server_ttft_p90": null,
+  "client_ttft_p50": null,
+  "answer_cost_mean_usd": 0,
+  "answer_cost_total_usd": 0,
+  "judge_cost_total_usd": 0,
+  "by_kind": {}
+ },
+ "rows": [
+  {
+   "id": "pl-001",
+   "grade": "Åk 7",
+   "subject": "Biologi",
+   "kind": "term",
+   "q": "fotosyntes",
+   "expect": "ljusenergi, koldioxid och vatten blir socker och syre, i kloroplasterna",
+   "context": [],
+   "profile": "Årskurs: Åk 7. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-004",
+   "grade": "Åk 9",
+   "subject": "Biologi",
+   "kind": "term",
+   "q": "evolution",
+   "expect": "naturligt urval, variation, ärftlighet, anpassning över många generationer",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-007",
+   "grade": "Gymnasiet 1, kurs Biologi 1",
+   "subject": "Biologi",
+   "kind": "term",
+   "q": "mitos",
+   "expect": "celldelning till två identiska dotterceller, faser profas metafas anafas telofas",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 1, kurs Biologi 1. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-010",
+   "grade": "Åk 9",
+   "subject": "Biologi",
+   "kind": "half",
+   "q": "eh skillnaden mellan mitos och",
+   "expect": "skillnaden mellan mitos och meios",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-013",
+   "grade": "Gymnasiet 1, kurs Biologi 1",
+   "subject": "Biologi",
+   "kind": "followup",
+   "q": "och den andra?",
+   "expect": "den andra typen av celldelning: meios, könsceller, halverat kromosomtal",
+   "context": [
+    {
+     "q": "vilka två typer av celldelning finns det",
+     "a": "Det finns två typer av celldelning: mitos och meios. Mitos ger två identiska celler för tillväxt."
+    }
+   ],
+   "profile": "Årskurs: Gymnasiet 1, kurs Biologi 1. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-016",
+   "grade": "Åk 9",
+   "subject": "Biologi",
+   "kind": "misheard",
+   "q": "ri bo so mer",
+   "expect": "ribosomer: där proteiner byggs i cellen",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-019",
+   "grade": "Åk 9",
+   "subject": "Biologi",
+   "kind": "exam",
+   "q": "förklara varför antibiotika inte hjälper mot virus",
+   "expect": "antibiotika angriper bakteriers egna strukturer, virus saknar dem och förökar sig i värdceller",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-022",
+   "grade": "Åk 9",
+   "subject": "Biologi",
+   "kind": "exam",
+   "q": "vad händer i en näringskedja om rovdjuren försvinner",
+   "expect": "bytesdjuren ökar, växterna minskar, obalans",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-025",
+   "grade": "Gymnasiet 1, kurs Kemi 1",
+   "subject": "Kemi",
+   "kind": "term",
+   "q": "jonbindning",
+   "expect": "metall lämnar elektroner till icke-metall, positiva och negativa joner attraheras, t.ex. NaCl",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-028",
+   "grade": "Åk 8",
+   "subject": "Kemi",
+   "kind": "term",
+   "q": "syror och baser",
+   "expect": "syror avger vätejoner, baser tar upp, pH-skalan, neutralisation",
+   "context": [],
+   "profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-031",
+   "grade": "Åk 8",
+   "subject": "Kemi",
+   "kind": "misheard",
+   "q": "perifera systemet",
+   "expect": "tolkas som periodiska systemet i kemi",
+   "context": [],
+   "profile": "Årskurs: Åk 8. Ämne: Kemi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-034",
+   "grade": "Gymnasiet 2, kurs Kemi 2",
+   "subject": "Kemi",
+   "kind": "misheard",
+   "q": "kata lysator",
+   "expect": "katalysator: sänker aktiveringsenergin, förbrukas inte",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 2, kurs Kemi 2. Ämne: Kemi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-037",
+   "grade": "Gymnasiet 1, kurs Kemi 1",
+   "subject": "Kemi",
+   "kind": "followup",
+   "q": "och metallbindning då?",
+   "expect": "metallbindning: elektronmoln, positiva metalljoner, leder ström",
+   "context": [
+    {
+     "q": "jonbindning",
+     "a": "Jonbindning är när en metall lämnar elektroner till en icke-metall och de laddade jonerna dras till varandra."
+    }
+   ],
+   "profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-040",
+   "grade": "Gymnasiet 1, kurs Kemi 1",
+   "subject": "Kemi",
+   "kind": "exam",
+   "q": "hur många mol är tjugo gram natriumhydroxid",
+   "expect": "molmassa ca 40 g/mol, ca 0,5 mol",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 1, kurs Kemi 1. Ämne: Kemi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-043",
+   "grade": "Gymnasiet 2, kurs Kemi 2",
+   "subject": "Kemi",
+   "kind": "exam",
+   "q": "vad är skillnaden mellan en stark och en svag syra",
+   "expect": "stark protolyseras fullständigt, svag delvis",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 2, kurs Kemi 2. Ämne: Kemi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-046",
+   "grade": "Åk 9",
+   "subject": "Fysik",
+   "kind": "term",
+   "q": "tryck",
+   "expect": "kraft per area, p = F/A, pascal",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-049",
+   "grade": "Gymnasiet 1, kurs Fysik 1",
+   "subject": "Fysik",
+   "kind": "term",
+   "q": "rörelseenergi",
+   "expect": "Ek = mv²/2, beror på massa och hastighet",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-052",
+   "grade": "Gymnasiet 1, kurs Fysik 1",
+   "subject": "Fysik",
+   "kind": "misheard",
+   "q": "acce le ration",
+   "expect": "acceleration: hastighetsändring per tid, m/s²",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-055",
+   "grade": "Gymnasiet 1, kurs Fysik 1",
+   "subject": "Fysik",
+   "kind": "followup",
+   "q": "och den tredje?",
+   "expect": "Newtons tredje lag: kraft och motkraft",
+   "context": [
+    {
+     "q": "newtons första lag",
+     "a": "Newtons första lag säger att en kropp behåller sin hastighet om ingen resulterande kraft verkar."
+    },
+    {
+     "q": "och den andra?",
+     "a": "Newtons andra lag är F lika med m gånger a: kraften ger massan en acceleration."
+    }
+   ],
+   "profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-058",
+   "grade": "Åk 9",
+   "subject": "Fysik",
+   "kind": "exam",
+   "q": "vad är skillnaden mellan serie och parallellkoppling",
+   "expect": "serie: samma ström, delad spänning; parallell: samma spänning, delad ström",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Fysik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-061",
+   "grade": "Åk 8",
+   "subject": "Historia",
+   "kind": "term",
+   "q": "franska revolutionen",
+   "expect": "1789, orsaker: ojämlikhet, skulder, upplysning; följder: republik, mänskliga rättigheter",
+   "context": [],
+   "profile": "Årskurs: Åk 8. Ämne: Historia. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-064",
+   "grade": "Åk 9",
+   "subject": "Historia",
+   "kind": "term",
+   "q": "kalla kriget",
+   "expect": "USA mot Sovjet, kapitalism mot kommunism, kapprustning, Berlinmuren",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-067",
+   "grade": "Åk 9",
+   "subject": "Historia",
+   "kind": "followup",
+   "q": "och andra världskriget då?",
+   "expect": "andra världskriget 1939-1945, orsaker och följder, kopplat till första",
+   "context": [
+    {
+     "q": "första världskriget",
+     "a": "Första världskriget pågick 1914 till 1918 och slutade med Versaillesfreden som straffade Tyskland hårt."
+    }
+   ],
+   "profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-070",
+   "grade": "Åk 9",
+   "subject": "Historia",
+   "kind": "misheard",
+   "q": "kall a kriget",
+   "expect": "kalla kriget",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Historia. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-073",
+   "grade": "Gymnasiet 1, kurs Historia 1b",
+   "subject": "Historia",
+   "kind": "exam",
+   "q": "jämför demokratin i antikens aten med dagens",
+   "expect": "direktdemokrati, bara fria män, idag representativ och allmän rösträtt",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 1, kurs Historia 1b. Ämne: Historia. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-076",
+   "grade": "Gymnasiet 1, kurs Samhällskunskap 1b",
+   "subject": "Samhällskunskap",
+   "kind": "term",
+   "q": "inflation",
+   "expect": "stigande priser, penningvärdet minskar, Riksbanken styr med räntan",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 1, kurs Samhällskunskap 1b. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-079",
+   "grade": "Åk 9",
+   "subject": "Samhällskunskap",
+   "kind": "term",
+   "q": "globalisering",
+   "expect": "ökad handel och kontakt över gränser, för- och nackdelar",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-082",
+   "grade": "Åk 9",
+   "subject": "Samhällskunskap",
+   "kind": "misheard",
+   "q": "demo kratin",
+   "expect": "demokratin",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-085",
+   "grade": "Åk 9",
+   "subject": "Samhällskunskap",
+   "kind": "exam",
+   "q": "förklara hur en lag blir till",
+   "expect": "förslag, utredning, remiss, proposition, riksdagen röstar",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-088",
+   "grade": "Åk 9",
+   "subject": "Geografi",
+   "kind": "term",
+   "q": "växthuseffekten",
+   "expect": "gaser som koldioxid håller kvar värme, förstärkt av människan",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Geografi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-091",
+   "grade": "Åk 9",
+   "subject": "Geografi",
+   "kind": "followup",
+   "q": "och vad kan man göra åt det?",
+   "expect": "minska utsläpp: förnybar energi, mindre fossila bränslen",
+   "context": [
+    {
+     "q": "växthuseffekten",
+     "a": "Den förstärkta växthuseffekten beror på att människan släpper ut koldioxid som håller kvar mer värme."
+    }
+   ],
+   "profile": "Årskurs: Åk 9. Ämne: Geografi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-094",
+   "grade": "Åk 8",
+   "subject": "Religion",
+   "kind": "term",
+   "q": "buddhismen",
+   "expect": "Buddha, de fyra ädla sanningarna, åttafaldiga vägen, nirvana, återfödelse",
+   "context": [],
+   "profile": "Årskurs: Åk 8. Ämne: Religion. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-097",
+   "grade": "Åk 9",
+   "subject": "Religion",
+   "kind": "followup",
+   "q": "och pliktetik?",
+   "expect": "pliktetik: handlingen själv, regler och plikter, Kant",
+   "context": [
+    {
+     "q": "konsekvensetik",
+     "a": "Konsekvensetik betyder att en handling är rätt om den ger bäst följder för flest."
+    }
+   ],
+   "profile": "Årskurs: Åk 9. Ämne: Religion. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-100",
+   "grade": "Åk 7",
+   "subject": "Svenska",
+   "kind": "term",
+   "q": "berättande text",
+   "expect": "inledning, handling, konflikt, upplösning, miljö och personer",
+   "context": [],
+   "profile": "Årskurs: Åk 7. Ämne: Svenska. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-103",
+   "grade": "Gymnasiet 1, kurs Svenska 1",
+   "subject": "Svenska",
+   "kind": "term",
+   "q": "novell",
+   "expect": "kort berättelse, få personer, ofta öppet slut",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 1, kurs Svenska 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-106",
+   "grade": "Gymnasiet 1, kurs Svenska 1",
+   "subject": "Svenska",
+   "kind": "followup",
+   "q": "ge ett exempel",
+   "expect": "exempel på pathos, t.ex. känsloladdade ord i ett tal",
+   "context": [
+    {
+     "q": "pathos",
+     "a": "Pathos är när talaren väcker känslor hos publiken för att övertyga."
+    }
+   ],
+   "profile": "Årskurs: Gymnasiet 1, kurs Svenska 1. Ämne: Svenska. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-109",
+   "grade": "Åk 9",
+   "subject": "Svenska",
+   "kind": "half",
+   "q": "hur börjar man en argumenterande",
+   "expect": "hur man inleder en argumenterande text: väck intresse, presentera tesen",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Svenska. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-112",
+   "grade": "Åk 9",
+   "subject": "Engelska",
+   "kind": "term",
+   "q": "present perfect",
+   "expect": "have/has + participle, erfarenhet eller något som fortsätter, skillnad mot past simple",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Engelska. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-115",
+   "grade": "Åk 9",
+   "subject": "Engelska",
+   "kind": "term",
+   "q": "passiv form",
+   "expect": "be + participle, the book was written",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Engelska. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-118",
+   "grade": "Åk 9",
+   "subject": "Engelska",
+   "kind": "misheard",
+   "q": "pre sent per fekt",
+   "expect": "present perfect",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Engelska. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-121",
+   "grade": "Åk 7",
+   "subject": "Matematik",
+   "kind": "term",
+   "q": "procent",
+   "expect": "hundradelar, del delat med det hela, procentuell förändring",
+   "context": [],
+   "profile": "Årskurs: Åk 7. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-124",
+   "grade": "Gymnasiet 2, kurs Matematik 2c",
+   "subject": "Matematik",
+   "kind": "term",
+   "q": "andragradsekvation",
+   "expect": "pq-formeln, x² + px + q = 0",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 2, kurs Matematik 2c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-127",
+   "grade": "Åk 9",
+   "subject": "Matematik",
+   "kind": "term",
+   "q": "sannolikhet",
+   "expect": "gynnsamma utfall delat med möjliga, mellan noll och ett",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-130",
+   "grade": "Åk 9",
+   "subject": "Matematik",
+   "kind": "followup",
+   "q": "och hur räknar man ut den andra sidan?",
+   "expect": "kateter: a² = c² − b², roten ur",
+   "context": [
+    {
+     "q": "pythagoras sats",
+     "a": "Pythagoras sats säger att i en rätvinklig triangel är a i kvadrat plus b i kvadrat lika med c i kvadrat."
+    }
+   ],
+   "profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-133",
+   "grade": "Gymnasiet 2, kurs Matematik 2c",
+   "subject": "Matematik",
+   "kind": "followup",
+   "q": "ge ett exempel",
+   "expect": "exempel med pq-formeln, t.ex. x² − 5x + 6 = 0 ger 2 och 3",
+   "context": [
+    {
+     "q": "pq-formeln",
+     "a": "pq-formeln löser andragradsekvationer på formen x i kvadrat plus px plus q är lika med noll."
+    }
+   ],
+   "profile": "Årskurs: Gymnasiet 2, kurs Matematik 2c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-136",
+   "grade": "Gymnasiet 2, kurs Matematik 2c",
+   "subject": "Matematik",
+   "kind": "misheard",
+   "q": "loga ritmer",
+   "expect": "logaritmer",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 2, kurs Matematik 2c. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-139",
+   "grade": "Åk 9",
+   "subject": "Matematik",
+   "kind": "exam",
+   "q": "hur räknar man ut arean av en cirkel",
+   "expect": "pi gånger radien i kvadrat",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-142",
+   "grade": "Åk 7",
+   "subject": "Matematik",
+   "kind": "exam",
+   "q": "vad är medelvärde median och typvärde",
+   "expect": "lägesmått: medel summa/antal, median mitten, typvärde vanligast",
+   "context": [],
+   "profile": "Årskurs: Åk 7. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-145",
+   "grade": "Åk 9",
+   "subject": "Fysik",
+   "kind": "short",
+   "q": "effekt",
+   "expect": "energi per tid, watt, P = U·I",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Fysik. Kontrollfrågor: Inga kontrollfrågor. Förklaringar: korta förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-148",
+   "grade": "Åk 9",
+   "subject": "Matematik",
+   "kind": "short",
+   "q": "kvadratrot",
+   "expect": "talet som gånger sig självt ger talet, roten ur 49 är 7",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Matematik. Kontrollfrågor: Inga kontrollfrågor. Förklaringar: korta förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-151",
+   "grade": "Åk 8",
+   "subject": "Kemi",
+   "kind": "exam_soon",
+   "q": "vad ska jag plugga på sista kvällen",
+   "expect": "pH-skalan, neutralisation, vätejoner, exempel",
+   "context": [],
+   "profile": "Prov i Kemi imorgon. Årskurs: Åk 8. På provet: syror och baser. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-154",
+   "grade": "Åk 7",
+   "subject": "Biologi",
+   "kind": "term",
+   "q": "näringskedja",
+   "expect": "producent, konsument, energin minskar i varje led",
+   "context": [],
+   "profile": "Årskurs: Åk 7. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-157",
+   "grade": "Åk 9",
+   "subject": "Kemi",
+   "kind": "term",
+   "q": "förbränning",
+   "expect": "ämne reagerar med syre, koldioxid och vatten bildas",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Kemi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-160",
+   "grade": "Gymnasiet 1, kurs Fysik 1",
+   "subject": "Fysik",
+   "kind": "term",
+   "q": "arbete",
+   "expect": "kraft gånger sträcka, joule",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-163",
+   "grade": "Gymnasiet 1, kurs Samhällskunskap 1b",
+   "subject": "Samhällskunskap",
+   "kind": "term",
+   "q": "marknadsekonomi",
+   "expect": "utbud och efterfrågan, privat ägande, konkurrens",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 1, kurs Samhällskunskap 1b. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-166",
+   "grade": "Åk 9",
+   "subject": "Svenska",
+   "kind": "term",
+   "q": "debattartikel",
+   "expect": "tes, argument, motargument, uppmaning",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Svenska. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-169",
+   "grade": "Åk 9",
+   "subject": "Matematik",
+   "kind": "term",
+   "q": "volym",
+   "expect": "längd gånger bredd gånger höjd, kubikcentimeter, liter",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-172",
+   "grade": "Åk 8",
+   "subject": "Biologi",
+   "kind": "followup",
+   "q": "och lilla kretsloppet?",
+   "expect": "lilla kretsloppet: hjärta till lungor och tillbaka, syresättning",
+   "context": [
+    {
+     "q": "stora kretsloppet",
+     "a": "Stora kretsloppet går från hjärtat ut till kroppen och tillbaka med syrefattigt blod."
+    }
+   ],
+   "profile": "Årskurs: Åk 8. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-175",
+   "grade": "Åk 9",
+   "subject": "Samhällskunskap",
+   "kind": "followup",
+   "q": "och landstinget då?",
+   "expect": "regionen: sjukvård, kollektivtrafik, regionfullmäktige",
+   "context": [
+    {
+     "q": "kommunen",
+     "a": "Kommunen ansvarar för till exempel skola och äldreomsorg och tar ut kommunalskatt."
+    }
+   ],
+   "profile": "Årskurs: Åk 9. Ämne: Samhällskunskap. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-178",
+   "grade": "Gymnasiet 1, kurs Fysik 1",
+   "subject": "Fysik",
+   "kind": "followup",
+   "q": "och effekt då?",
+   "expect": "effekt: arbete per tid, watt, P = W/t",
+   "context": [
+    {
+     "q": "arbete",
+     "a": "Arbete i fysik är kraft gånger sträcka och mäts i joule."
+    }
+   ],
+   "profile": "Årskurs: Gymnasiet 1, kurs Fysik 1. Ämne: Fysik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-181",
+   "grade": "Åk 9",
+   "subject": "Matematik",
+   "kind": "mathlevel",
+   "q": "derivata",
+   "expect": "fullgott svar: förändringshastighet, lutning i en punkt, konkret exempel med tal; grundskolenivå: inga gränsvärden, ingen kedjeregel, ingen f′-notation",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-184",
+   "grade": "Åk 8",
+   "subject": "Matematik",
+   "kind": "mathlevel",
+   "q": "lös 3x minus 7 är lika med 14",
+   "expect": "x = 7: lägg till 7 på båda sidor ger 3x = 21, dela med 3",
+   "context": [],
+   "profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-187",
+   "grade": "Gymnasiet 3, kurs Matematik 4",
+   "subject": "Matematik",
+   "kind": "mathlevel",
+   "q": "kedjeregeln",
+   "expect": "derivatan av en sammansatt funktion: yttre derivatan gånger inre derivatan, exempel (3x+1)⁵ ger 15(3x+1)⁴",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 3, kurs Matematik 4. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-190",
+   "grade": "Gymnasiet 3, kurs Matematik 4",
+   "subject": "Matematik",
+   "kind": "mathlevel",
+   "q": "produktregeln",
+   "expect": "(f·g)′ = f′·g + f·g′, ett exempel",
+   "context": [],
+   "profile": "Årskurs: Gymnasiet 3, kurs Matematik 4. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-193",
+   "grade": "Åk 8",
+   "subject": "Matematik",
+   "kind": "leveltalk",
+   "q": "vad är en derivata",
+   "expect": "förändringshastighet, lutning i en punkt (tangent), exempel med tal; säger aldrig nivå, årskurs eller vad den väljer att förklara",
+   "context": [],
+   "profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-196",
+   "grade": "Åk 9",
+   "subject": "Matematik",
+   "kind": "leveltalk",
+   "q": "kedjeregeln",
+   "expect": "derivatan av en funktion inuti en annan: yttre gånger inre förändring, ett vardagligt exempel; säger aldrig nivå, årskurs eller vad den väljer att förklara",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-199",
+   "grade": "Åk 7",
+   "subject": "Biologi",
+   "kind": "leveltalk",
+   "q": "vad är meios",
+   "expect": "celldelning som ger könsceller med halva antalet kromosomer, variation, skillnad mot mitos; säger aldrig nivå, årskurs eller vad den väljer att förklara",
+   "context": [],
+   "profile": "Årskurs: Åk 7. Ämne: Biologi. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-202",
+   "grade": "Åk 8",
+   "subject": "Matematik",
+   "kind": "logic",
+   "q": "Anna och Fredrik går hem till varandra Anna går dubbelt så snabbt som Fredrik men de möttes ändå halvvägs hur kan det komma sig",
+   "expect": "Fredrik måste ha startat tidigare (han går halva vägen på dubbelt så lång tid); inga motsägelser; ingen mening om vad som räcker på provet",
+   "context": [],
+   "profile": "Årskurs: Åk 8. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  },
+  {
+   "id": "pl-205",
+   "grade": "Åk 9",
+   "subject": "Matematik",
+   "kind": "logic",
+   "q": "om fem maskiner gör fem saker på fem minuter hur lång tid tar det för hundra maskiner att göra hundra saker",
+   "expect": "5 minuter: varje maskin gör en sak på fem minuter",
+   "context": [],
+   "profile": "Årskurs: Åk 9. Ämne: Matematik. Förklaringar: mellanlånga förklaringar.",
+   "error": "http 503 b'{\"error\":{\"code\":\"provider_quota\",\"message\":\"EarMind is down for a moment. Try again later.\",\"fallback\":true}}'"
+  }
+ ]
+}

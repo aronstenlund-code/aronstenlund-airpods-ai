@@ -100,5 +100,16 @@ visar dem bara under veckan (K119). Gör så här för **varje** paket (100, 500
    `Lanseringspris.` / `Launch price.`
 5. **Granskningsinformation**: en skärmbild av köpbladet och anteckningen "Launch-week price of the same credit pack."
    › **Spara**. Första gången skickas köpen in tillsammans med en appversion.
-Veckokortet (`com.rsolutions.lumen.sub.week`) är inte med i D259:s produkter; ska det också vara 65 % billigare görs det
-som ett **introduktionserbjudande** på prenumerationen (Deangelo/Kevin avgör). Inget här kostar något förrän någon köper.
+**Veckokortet** (`com.rsolutions.lumen.sub.week`, samma produkt, D259-tillägg): ett **introduktionserbjudande** under
+lanseringsveckan.
+1. **Appar** › **EarMind** › **Monetarisering › Prenumerationer** (*Subscriptions*) › prenumerationsgruppen › **Veckokort**.
+2. Under **Prenumerationspriser** (*Subscription Prices*) › blå **+** › **Skapa introduktionserbjudande**
+   (*Create Introductory Offer*).
+3. **Länder:** alla där veckokortet säljs › **Nästa**. **Start- och slutdatum:** lanseringsveckans första och sista dag
+   (samma dagar som servern, K119) › **Nästa**.
+4. **Typ:** **Betala per period** (*Pay as you go*), **Längd:** 1 vecka, **Antal perioder:** 1 › **Nästa**.
+5. **Pris:** Sverige (SEK) närmaste prispunkt till 35 % av 79 kr, **cirka 28 kr** › låt Apple räkna fram övriga länder ›
+   **Bekräfta**.
+Erbjudandet gäller bara den som inte har haft veckokortet förut (Apples regel för introduktionserbjudanden); veckan
+efter kostar det ordinarie 79 kr tills man säger upp det, och det ska stå vid köpknappen (A161).
+Inget här kostar något förrän någon köper.

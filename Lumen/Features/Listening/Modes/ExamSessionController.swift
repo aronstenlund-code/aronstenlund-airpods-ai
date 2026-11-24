@@ -99,11 +99,17 @@ final class ExamSessionController: ListeningModeController {
                 return
             }
             Task { [weak self] in
-                guard let graded = await examClient.grade(task: task, answer: answer) else {
+                let language = self?.host?.language ?? .swedish
+                guard let graded = await examClient.grade(task: task, answer: answer, language: language) else {
                     self?.host?.say("Jag kunde inte rätta just nu.")
                     return
                 }
                 guard let self, let host = self.host, var current = self.session else { return }
+                if graded.isKeyOnly { // A160 (D258): the model is down and the phone cannot grade: the key, no points
+                    host.say(graded.feedback)
+                    host.modeLog("Provsession: task \(task.no): the answer key without a grade (the model is down)")
+                    return
+                }
                 current.graded(graded.points)
                 self.session = current
                 host.noteQuizAnswer(at: Date()) // A38

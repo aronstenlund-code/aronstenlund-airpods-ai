@@ -158,6 +158,9 @@ final class RepetitionModel {
     /// sheet then has no purchase part.
     var shop: CreditShop?
 
+    /// A163 (D259): Komprimera in Säg i AirPods. Nil in tests and scenes without it: the button is not shown then.
+    var compressor: SayCompressor?
+
     /// A83 (K49): Publicera prov and Prov från din skola. Nil in the mock mode.
     @ObservationIgnored var publishing: (any DrillPublishingService)?
 
@@ -250,11 +253,14 @@ final class RepetitionModel {
     // MARK: Making (A79)
 
     func make(_ material: DrillMaterial, settings: DrillSettings, correction: String? = nil,
-              subject: String? = nil, grade: String? = nil) async throws(DrillMakingError) -> DrillDraft {
+              subject: String? = nil, grade: String? = nil, now: Date = Date()) async throws(DrillMakingError) -> DrillDraft {
         do throws(DrillMakingError) {
-            return try await maker.make(material, subject: subject, grade: grade, correction: correction,
-                                        questions: settings.questions, longWords: settings.length.words)
+            let made = try await maker.make(material, subject: subject, grade: grade, correction: correction,
+                                            questions: settings.questions, longWords: settings.length.words)
+            modelDownAt = nil // A160: the model answers again
+            return made
         } catch {
+            noteModelDown(error, at: now) // A160 (D258)
             // A154 (K109/K110): the credits do not cover it. What the server said a question costs is kept, so
             // Nytt prov proposes what fits from now on.
             if case .tooFewCredits(let no) = error {
@@ -335,8 +341,42 @@ final class RepetitionModel {
     /// A105 (D185, K70): Läs upp texten: the material cleaned for reading aloud. Nothing is stored or counted until
     /// `save(draft.drill)`.
     func readText(_ material: DrillMaterial, subject: String? = nil, grade: String? = nil,
-                  title: String? = nil) async throws(DrillMakingError) -> DrillTextDraft {
-        try await maker.readText(material, subject: subject, grade: grade, title: title)
+                  title: String? = nil, now: Date = Date()) async throws(DrillMakingError) -> DrillTextDraft {
+        do throws(DrillMakingError) {
+            let made = try await maker.readText(material, subject: subject, grade: grade, title: title)
+            modelDownAt = nil // A160: the model answers again
+            return made
+        } catch {
+            noteModelDown(error, at: now) // A160 (D258)
+            throw error
+        }
+    }
+
+    // MARK: The model is down (A160, D258)
+
+    /// How long Nytt prov's button says that new quizzes cannot be made after the server said its model is down.
+    /// Then the button is itself again, and a press asks the server anew.
+    static let modelDownWindow: TimeInterval = 120
+
+    /// When the server last said that the model behind EarMind cannot answer (503 `provider_*`). Saved quizzes do
+    /// not need the model: they start and play as before.
+    private(set) var modelDownAt: Date?
+
+    func modelIsDown(now: Date = Date()) -> Bool {
+        guard let modelDownAt else { return false }
+        let since = now.timeIntervalSince(modelDownAt)
+        return since >= 0 && since < Self.modelDownWindow
+    }
+
+    /// The window has passed (Nytt prov waits for it while it is on the screen).
+    func modelDownHasPassed(now: Date = Date()) {
+        if !modelIsDown(now: now) { modelDownAt = nil }
+    }
+
+    private func noteModelDown(_ error: DrillMakingError, at now: Date) {
+        guard error == .modelDown else { return }
+        modelDownAt = now
+        Log.repetition.info("Nytt prov: the server's model is down (provider); nothing was made, saved quizzes play as before")
     }
 
     /// Saves on the phone at once, then on the server, which starts the sound in the background (D143: when the exam
