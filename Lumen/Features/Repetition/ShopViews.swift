@@ -58,7 +58,8 @@ struct ShopSections: View {
                 if let offered = shop.weeklyOffer() {
                     // A161 (D259): during the launch week the first week's price, with the ordinary one struck through.
                     row(offered, title: ShopText.weeklyTitle,
-                        line: ShopText.weeklyIntroLine(intro: offered.displayPrice, regular: card.displayPrice), badge: false)
+                        line: ShopText.weeklyIntroLine(intro: offered.displayPrice, regular: card.displayPrice), badge: false,
+                        offer: shop.activeOffer().map { LaunchOfferText.badge($0.percent) })
                 } else {
                     row(card, title: ShopText.weeklyTitle,
                         line: ShopText.weeklyLine(price: card.displayPrice, weekLimit: quota.subscription?.week_limit), badge: false)
@@ -103,12 +104,16 @@ struct ShopSections: View {
 
     /// A product: its name (and a line under it), and the price as a tinted capsule. With the largest text the price
     /// stands under the name.
-    private func row(_ item: StoreItem, title: String, line: String?, badge: Bool) -> some View {
+    /// `offer` is the launch week's "-65 %" beside the name (the pass, whose section has no offer row of its own).
+    private func row(_ item: StoreItem, title: String, line: String?, badge: Bool, offer: String? = nil) -> some View {
         let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 8)) : AnyLayout(HStackLayout(spacing: 8))
         return layout {
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 8) {
                     Text(verbatim: title)
+                    if let offer {
+                        Text(verbatim: offer).font(.subheadline.weight(.semibold)).monospacedDigit().foregroundStyle(.tint)
+                    }
                     if badge {
                         Text(verbatim: ShopText.bestValue)
                             .font(.caption.weight(.semibold))
