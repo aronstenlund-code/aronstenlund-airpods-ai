@@ -1,6 +1,7 @@
 # A161 (D259): lanseringsrabatt 65 % i en vecka
 
-Angela Fable (moln), 2026-11-23. Beställt av Deangelo 19:51 (Aron 19:36). iOS-appen på main.
+Angela Fable (moln), 2026-11-23–24. Beställt av Deangelo 19:51 (Aron 19:36), tillägg 20:55 (veckokortet). iOS-appen
+på main.
 
 ## Vad som är gjort
 
@@ -9,14 +10,20 @@ Angela Fable (moln), 2026-11-23. Beställt av Deangelo 19:51 (Aron 19:36). iOS-a
    38,50 kr = 35 % av 10, 39 och 110 kr). De ger samma krediter som de ordinarie paketen (Kevins K119).
 2. **Under veckan** visar butiken (Krediter → Fyll på) lanseringspaketen: överst en rad "Lanseringsrabatt -65 %"
    med nedräkning ("Slutar om 2 dagar 4 tim"), och på varje paket lanseringspriset på knappen med ordinarie pris
-   överstruket bredvid. Utanför veckan är butiken som i dag. Veckokortet är orört.
+   överstruket under paketets namn. Utanför veckan är butiken som i dag.
+   **Veckokortet (tillägget):** samma produkt med sitt introduktionspris i App Store (första veckan, 27,65 kr i
+   testkonfigurationen): knappen visar första veckans pris, raden säger "Första veckan 27,65 kr, sedan 79,00 kr i
+   veckan", och Apples fotnot (3.1.2) säger båda priserna. Har Apple-kontot redan haft veckokortet ger App Store
+   inget introduktionspris, och kortet visas då som vanligt.
 3. **Ett blad när appen öppnas** under veckan: "-65 %", "Lanseringsrabatt", en rad om vad det gäller, nedräkning,
    knappen "Se paketen" (öppnar butiken) och "Inte nu". Halvt blad, stängs med ett tryck eller en dragning.
    **Högst en gång per dag**, och aldrig ovanpå ett annat blad.
 4. **Servern styr veckan** (K119: `GET /purchase` → `launch_offer` med start, slut och procent, utan inloggning).
    Appen frågar när den öppnas och kommer fram (högst var 15:e minut) och när butiken öppnas.
 5. **Inget utlovas som inte finns:** rabatten och bladet visas bara när servern säger att veckan pågår OCH App
-   Store har minst ett lanseringspaket. Tills Aron har lagt in produkterna i App Store Connect syns alltså
+   Store har något till lanseringspris (ett lanseringspaket eller veckokortets introduktionspris). Bladets rad
+   säger det som stämmer: "65 % rabatt på allt den här veckan.", "… på alla kreditpaket …" eller "… på första
+   veckan med veckokortet." Tills Aron har lagt in produkterna i App Store Connect syns alltså
    ingenting, även om veckan är startad på servern. Saknas ett enskilt paket visas det till ordinarie pris.
 6. **Veckan slutar medan butiken är öppen:** från slutsekunden står de ordinarie paketen där igen. (Ett köp i
    sista minuten tas emot av servern upp till ett dygn efteråt, K119.)
@@ -35,19 +42,24 @@ Angela Fable (moln), 2026-11-23. Beställt av Deangelo 19:51 (Aron 19:36). iOS-a
 
 ## Test
 
-- **Skrivna först:** `LumenTests/A161LaunchOfferTests.swift` (11 tester) med låtsas-App Store och låtsasserver:
+- **Skrivna först:** `LumenTests/A161LaunchOfferTests.swift` (13 tester) med låtsas-App Store och låtsasserver:
   serverns svar läses (pågår, null, orimlig vecka); veckan frågas efter utan inloggning; under veckan är paketen
   lanseringspaketen med ordinarie pris överstruket och samma krediter; utanför veckan som i dag; veckan slutar
   medan butiken är öppen; utan lanseringspaket i App Store utlovas inget; ett lanseringspaket köps som sig självt;
-  bladet en gång per dag och aldrig utanför veckan; orden och nedräkningen på svenska och engelska.
+  veckokortet visar första veckans pris med det ordinarie överstruket och köps som samma produkt; ett kort utan
+  introduktionspris visas som det är; bladet en gång per dag och aldrig utanför veckan; orden och nedräkningen på
+  svenska och engelska.
 - KÖRNINGAR
 - Inget köp är gjort någonstans (inte heller i sandlådan). 0 ElevenLabs (D180).
 
 ## Kända brister och risker
 
 - **Otestat på telefon och mot App Store.** Lanseringsprodukterna finns inte i App Store Connect än (TILL-ARON 33).
-- "65 % på allt": veckokortet har ingen lanseringsprodukt (uppdraget nämner bara kreditpaketen); en rabatt på det
-  kräver ett introduktionserbjudande i App Store Connect och är inte byggd.
+- Veckokortets introduktionspris sätter Aron i App Store Connect (TILL-ARON 33). Appen visar det pris App Store
+  ger; den som redan haft kortet får inget introduktionspris (Apples regel), och ser då kortet till ordinarie pris
+  även under veckan.
+- Introduktionspriset i App Store Connect gäller tills det tas bort där: efter veckan slutar appen visa det som
+  erbjudande, men App Store ger det fortfarande till nya prenumeranter tills Aron tar bort det.
 - Procenten på bladet är serverns tal; priserna är App Stores. Sätter Aron andra priser än 35 % stämmer inte "-65 %"
   med det överstrukna priset.
 - Nedräkningen går efter telefonens klocka; servern avgör om ett köp ligger inom veckan.
