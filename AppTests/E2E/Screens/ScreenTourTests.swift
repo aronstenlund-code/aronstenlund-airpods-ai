@@ -218,7 +218,7 @@ final class ScreenTourTests: XCTestCase {
 
     private func moreModes() {
         // RepetitionHomeSection: "Fler lägen · Beta" (label "Fler lägen") at the bottom of Start in some states only.
-        guard let row = find(["Fler lägen"], buttonsOnly: true) ?? scrollTo(["Fler lägen"], buttonsOnly: true) else {
+        guard let row = find(["Fler lägen", "More modes"], buttonsOnly: true) ?? scrollTo(["Fler lägen", "More modes"], buttonsOnly: true, steps: 4) else {
             record("note: no Fler lägen on Start in this state (A115 Start); the listening modes are not in the tour")
             return
         }
@@ -312,7 +312,14 @@ final class ScreenTourTests: XCTestCase {
             if advanced { expandAdvanced() }
         }
         // Buttons only: a section header with the same words ("Diagnostik") is not the row.
-        guard let found = scrollTo(labels, buttonsOnly: true) else {
+        var located = scrollTo(labels, buttonsOnly: true)
+        if located == nil, advanced {
+            // Run 45484875536 (SE): Rå transkription not found; Avancerat had folded in again. Fold it out once more.
+            record("note: \(labels[0]) not found, folding Avancerat out again")
+            expandAdvanced()
+            located = scrollTo(labels, buttonsOnly: true)
+        }
+        guard let found = located else {
             miss("settings row \(labels[0]) not found")
             return
         }
@@ -406,17 +413,17 @@ final class ScreenTourTests: XCTestCase {
     }
 
     /// Swipes up (then back down) until an element with one of the labels is hittable.
-    private func scrollTo(_ labels: [String], buttonsOnly: Bool = false) -> XCUIElement? {
+    private func scrollTo(_ labels: [String], buttonsOnly: Bool = false, steps budget: Int = 60) -> XCUIElement? {
         // Run 44809087832 (iPhone SE): swipeDown at the top of a sheet closed Inställningar, and the search went on
         // over Start. When that happens Settings is opened again and searched from the top.
         // Run 45396745804 (liten-light, A157 added rows at the top of Settings): a swipe carries on by itself and
         // moves the list more than a screen on the iPhone SE, so a row could pass between two looks every time
-        // ("Integritet och samtycke not found"). Now the list is dragged and held, about 40 % of the screen a step,
-        // so every row is in view at least once: a few steps back first (the next row is often just above), then
-        // towards the end, then towards the top.
+        // ("Integritet och samtycke not found"). Now the list is dragged and held still before it is let go, so it
+        // never carries on: every row is in view at least once. Run 45484875536: 40 % steps were too slow (37 min for
+        // the SE); 65 % steps, and 8 back first, since the next row is often just above (Minne, Röstkommandon).
         let inSheet = app.buttons["Klar"].exists
         if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
-        for (towardsEnd, steps) in [(false, 3), (true, 80), (false, 80)] {
+        for (towardsEnd, steps) in [(false, min(8, budget)), (true, budget), (false, budget)] {
             for _ in 0..<steps {
                 drag(towardsEnd: towardsEnd)
                 if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
@@ -426,7 +433,7 @@ final class ScreenTourTests: XCTestCase {
                     tap(["Inställningar"], step: "start → Inställningar (sheet closed)")
                     guard app.buttons["Klar"].waitForExistence(timeout: 5) else { return nil }
                     pause(1)
-                    for _ in 0..<80 {
+                    for _ in 0..<budget {
                         if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
                         drag(towardsEnd: true)
                     }
@@ -441,12 +448,12 @@ final class ScreenTourTests: XCTestCase {
         return nil
     }
 
-    /// One step of the list without a flick: press, drag about 40 % of the screen slowly, hold, let go.
+    /// One step of the list without a flick: press, drag about 65 % of the screen, hold still, let go.
     private func drag(towardsEnd: Bool) {
-        let (from, to) = towardsEnd ? (0.72, 0.32) : (0.32, 0.72)
+        let (from, to) = towardsEnd ? (0.82, 0.17) : (0.17, 0.82)
         app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: from))
             .press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: to)),
-                   withVelocity: .slow, thenHoldForDuration: 0.15)
+                   withVelocity: .default, thenHoldForDuration: 0.3)
     }
 
     /// The buttons in the tree right now, into the tour log (T3 diagnostics, run 44846862625).
