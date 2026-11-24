@@ -10,7 +10,18 @@ enum LaunchOfferText {
     /// "-65 %".
     static func badge(_ percent: Int) -> String { String(localized: "-\(percent) %") }
 
-    static func line(_ percent: Int) -> String { String(localized: "\(percent) % rabatt på alla kreditpaket den här veckan.") }
+    /// What the week's offer is on: the credit packs (their launch twins), the weekly pass (its first week), or both.
+    struct Covers: Equatable, Sendable {
+        var packs: Bool
+        var pass: Bool
+    }
+
+    /// One line about what the percent is on, and never more than is true.
+    static func line(_ percent: Int, covers: Covers) -> String {
+        if covers.packs && covers.pass { return String(localized: "\(percent) % rabatt på allt den här veckan.") }
+        if covers.pass { return String(localized: "\(percent) % rabatt på första veckan med veckokortet.") }
+        return String(localized: "\(percent) % rabatt på alla kreditpaket den här veckan.")
+    }
 
     /// "Slutar om 2 dagar 4 tim", "Slutar om 4 tim 12 min", "Slutar om 12 min", "Slutar om under en minut".
     static func left(seconds: TimeInterval) -> String {

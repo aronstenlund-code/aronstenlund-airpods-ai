@@ -1042,6 +1042,42 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "%lld %% rabatt på allt den här veckan.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "%lld%% off everything this week."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %% rabatt på allt den här veckan."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "%lld %% rabatt på första veckan med veckokortet.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "%lld%% off the first week of the weekly pass."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld %% rabatt på första veckan med veckokortet."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "%lld anmärkningar": {
       "extractionState": "manual",
       "localizations": {
@@ -9489,6 +9525,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Första meningen blir det korta svaret (2 tryck). Hela svaret är det långa (1 tryck)."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Första veckan %@, sedan %@ i veckan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "First week %@, then %@ a week"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Första veckan %@, sedan %@ i veckan"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Första veckan kostar %@. Sedan kostar veckokortet %@ i veckan och förnyas automatiskt tills du säger upp det, senast 24 timmar före nästa vecka. ": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "The first week costs %@. After that the weekly pass costs %@ a week and renews automatically until you cancel at least 24 hours before the next week. "
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Första veckan kostar %@. Sedan kostar veckokortet %@ i veckan och förnyas automatiskt tills du säger upp det, senast 24 timmar före nästa vecka. "
           }
         }
       },

@@ -55,8 +55,14 @@ struct ShopSections: View {
         }
         if let card = shop.weeklyCard, !quota.hasWeeklyCard {
             Section {
-                row(card, title: ShopText.weeklyTitle,
-                    line: ShopText.weeklyLine(price: card.displayPrice, weekLimit: quota.subscription?.week_limit), badge: false)
+                if let offered = shop.weeklyOffer() {
+                    // A161 (D259): during the launch week the first week's price, with the ordinary one struck through.
+                    row(offered, title: ShopText.weeklyTitle,
+                        line: ShopText.weeklyIntroLine(intro: offered.displayPrice, regular: card.displayPrice), badge: false)
+                } else {
+                    row(card, title: ShopText.weeklyTitle,
+                        line: ShopText.weeklyLine(price: card.displayPrice, weekLimit: quota.subscription?.week_limit), badge: false)
+                }
             } header: {
                 Text("Varje vecka")
             }
@@ -74,9 +80,11 @@ struct ShopSections: View {
                 }
                 if let card = shop.weeklyCard {
                     // A148: VoiceOver reads the path with commas, not the arrow signs.
-                    Text(verbatim: ShopText.terms(price: card.displayPrice))
+                    // A161: with the launch week's first-week price the footnote says both prices (3.1.2).
+                    let terms = ShopText.terms(price: card.displayPrice, intro: quota.hasWeeklyCard ? nil : shop.weeklyOffer()?.displayPrice)
+                    Text(verbatim: terms)
                         .foregroundStyle(LumenColor.secondaryText)
-                        .accessibilityLabel(ShopText.terms(price: card.displayPrice).replacingOccurrences(of: " › ", with: ", "))
+                        .accessibilityLabel(terms.replacingOccurrences(of: " › ", with: ", "))
                 }
                 links
             }
@@ -110,17 +118,20 @@ struct ShopSections: View {
                             .foregroundStyle(.tint)
                     }
                 }
-                if let line { Text(verbatim: line).font(.footnote).foregroundStyle(LumenColor.secondaryText) }
+                if let line {
+                    Text(verbatim: line).font(.footnote).foregroundStyle(LumenColor.secondaryText)
+                } else if let regular = item.regularPrice {
+                    // A161: the ordinary price, struck through, under the name so the name keeps its row (the picture
+                    // with it beside the button broke "2 000 krediter" in two). The pass says both prices in its line.
+                    Text(verbatim: regular)
+                        .font(.footnote)
+                        .strikethrough()
+                        .monospacedDigit()
+                        .foregroundStyle(LumenColor.secondaryText)
+                        .accessibilityHidden(true) // said with the button
+                }
             }
             if !typeSize.isAccessibilitySize { Spacer(minLength: 8) }
-            if let regular = item.regularPrice { // A161: the ordinary price, struck through
-                Text(verbatim: regular)
-                    .font(.footnote)
-                    .strikethrough()
-                    .monospacedDigit()
-                    .foregroundStyle(LumenColor.secondaryText)
-                    .accessibilityHidden(true) // said with the button
-            }
             Button {
                 Task { await shop.buy(item) }
             } label: {
@@ -214,7 +225,7 @@ final class StagedStoreFront: StoreFront {
         return [StoreItem(id: StoreCatalog.entries[0].id, displayPrice: "10,00 kr", credits: 100),
          StoreItem(id: StoreCatalog.entries[1].id, displayPrice: "39,00 kr", credits: 500),
          StoreItem(id: StoreCatalog.entries[2].id, displayPrice: "110,00 kr", credits: 2000),
-         StoreItem(id: StoreCatalog.weekly, displayPrice: "79,00 kr", credits: nil)]
+         StoreItem(id: StoreCatalog.weekly, displayPrice: "79,00 kr", credits: nil, introPrice: hasLaunchPacks ? "27,65 kr" : nil)]
     }
     func buy(_ id: String, account: UUID?) async throws -> StoreOutcome { .cancelled }
     func finish(_ transactionID: UInt64) async {}

@@ -5,6 +5,7 @@ import SwiftUI
 /// pull. Shown once a day at most (`CreditShop.shouldShowLaunchSheet`).
 struct LaunchOfferSheet: View {
     let offer: LaunchOffer
+    var covers = LaunchOfferText.Covers(packs: true, pass: false)
     /// "Se paketen": the sheet closes and the credits sheet opens.
     let onSeePacks: () -> Void
     @Environment(\.dismiss) private var dismiss
@@ -20,7 +21,7 @@ struct LaunchOfferSheet: View {
             Text(verbatim: LaunchOfferText.title)
                 .font(.title2.weight(.semibold))
                 .accessibilityAddTraits(.isHeader)
-            Text(verbatim: LaunchOfferText.line(offer.percent))
+            Text(verbatim: LaunchOfferText.line(offer.percent, covers: covers))
                 .multilineTextAlignment(.center)
                 .foregroundStyle(LumenColor.secondaryText)
             // The minutes move; the sheet is read again every half minute, not every second.

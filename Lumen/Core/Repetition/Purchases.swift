@@ -82,6 +82,9 @@ struct StoreItem: Equatable, Identifiable, Sendable {
     var credits: Int?
     /// A161 (D259): the ordinary pack's price, shown struck through while this is its launch twin. nil otherwise.
     var regularPrice: String? = nil
+    /// A161 (Deangelo 2026-11-23 20:55): the weekly pass's introductory price in the App Store (the first week), when
+    /// the product has one and this Apple account can still get it. nil otherwise, and for the packs.
+    var introPrice: String? = nil
 
     var isWeekly: Bool { credits == nil }
 }
@@ -133,8 +136,17 @@ final class AppStoreFront: StoreFront {
     func items() async -> [StoreItem] {
         let found = (try? await Product.products(for: StoreCatalog.ids)) ?? []
         for product in found { products[product.id] = product }
+        // A161: the pass's introductory offer (the launch week's 65 % off the first week), if this account can have it.
+        var passIntro: String?
+        if let pass = products[StoreCatalog.weekly]?.subscription, let intro = pass.introductoryOffer,
+           await pass.isEligibleForIntroOffer {
+            passIntro = intro.displayPrice
+        }
         return StoreCatalog.entries.compactMap { entry in
-            products[entry.id].map { StoreItem(id: entry.id, displayPrice: $0.displayPrice, credits: entry.credits) }
+            products[entry.id].map {
+                StoreItem(id: entry.id, displayPrice: $0.displayPrice, credits: entry.credits,
+                          introPrice: entry.credits == nil ? passIntro : nil)
+            }
         }
     }
 
@@ -441,11 +453,26 @@ final class CreditShop {
         launchItems = await front.launchItems(suffix: found.productSuffix)
     }
 
-    /// The week, while it runs and the App Store has at least one launch pack. Nothing is promised before the
-    /// packs exist in App Store Connect, and nothing after the week's last second.
+    /// The week, while it runs and the App Store has something at the launch price: a launch pack, or the pass's
+    /// introductory price. Nothing is promised before that exists in App Store Connect, and nothing after the week's
+    /// last second.
     func activeOffer(now: Date = Date()) -> LaunchOffer? {
-        guard let offer, offer.isOn(now), !launchItems.isEmpty else { return nil }
-        return offer
+        guard let offer, offer.isOn(now) else { return nil }
+        return launchItems.isEmpty && weeklyCard?.introPrice == nil ? nil : offer
+    }
+
+    /// What the week's offer is on, for the words: the packs, the pass, or both.
+    func offerCovers(now: Date = Date()) -> LaunchOfferText.Covers {
+        guard let offer, offer.isOn(now) else { return LaunchOfferText.Covers(packs: false, pass: false) }
+        return LaunchOfferText.Covers(packs: !launchItems.isEmpty, pass: weeklyCard?.introPrice != nil)
+    }
+
+    /// The weekly pass during the week: the same product at its first week's price (the App Store gives that price by
+    /// itself to an account that can have it), with the ordinary price to strike through. nil outside the week and
+    /// when there is no such price; the pass is then shown as it is.
+    func weeklyOffer(now: Date = Date()) -> StoreItem? {
+        guard let offer, offer.isOn(now), let card = weeklyCard, let intro = card.introPrice else { return nil }
+        return StoreItem(id: card.id, displayPrice: intro, credits: nil, regularPrice: card.displayPrice, introPrice: intro)
     }
 
     /// The packs as the sheet shows them: during the week each pack's launch twin (its own price, the ordinary one
@@ -732,6 +759,18 @@ enum ShopText {
     static func weeklyLine(price: String, weekLimit: Int?) -> String {
         let exams = (weekLimit ?? 20_000) / creditsPerExam
         return exams > 0 ? String(localized: "\(price) i veckan · cirka \(exams) prov") : String(localized: "\(price) i veckan")
+    }
+
+    /// A161: "Första veckan 27,65 kr, sedan 79,00 kr i veckan" (the pass during the launch week).
+    static func weeklyIntroLine(intro: String, regular: String) -> String {
+        String(localized: "Första veckan \(intro), sedan \(regular) i veckan")
+    }
+
+    /// 3.1.2 with an introductory price: what the first week costs, and what it costs after that.
+    static func terms(price: String, intro: String?) -> String {
+        guard let intro else { return terms(price: price) }
+        return String(localized: "Första veckan kostar \(intro). Sedan kostar veckokortet \(price) i veckan och förnyas automatiskt tills du säger upp det, senast 24 timmar före nästa vecka. ")
+            + String(localized: "Säg upp i Inställningar › ditt namn › Prenumerationer.")
     }
 
     /// Apple's guideline 3.1.2: what the subscription costs, that it renews, and how it is ended.

@@ -19,11 +19,17 @@ import Testing
 
     @MainActor final class Front: StoreFront {
         var launchPrices = A161LaunchOfferTests.launch
+        /// The weekly pass's introductory price in the App Store (65 % off the first week); nil = none, or this
+        /// Apple account has had the pass before.
+        var passIntro: String? = "27,65 kr"
         var bought: [String] = []
         var launchAsks = 0
 
         func items() async -> [StoreItem] {
-            StoreCatalog.entries.map { StoreItem(id: $0.id, displayPrice: A161LaunchOfferTests.ordinary[$0.id] ?? "79,00 kr", credits: $0.credits) }
+            StoreCatalog.entries.map {
+                StoreItem(id: $0.id, displayPrice: A161LaunchOfferTests.ordinary[$0.id] ?? "79,00 kr", credits: $0.credits,
+                          introPrice: $0.credits == nil ? passIntro : nil)
+            }
         }
         func launchItems(suffix: String) async -> [StoreItem] {
             launchAsks += 1
@@ -154,6 +160,7 @@ import Testing
     @Test func withoutLaunchPacksInTheAppStoreNothingIsPromised() async throws {
         let front = Front()
         front.launchPrices = [:]
+        front.passIntro = nil
         let (shop, _, _) = try shop(offer: Self.week, front: front)
         await shop.load()
         await shop.loadOffer(now: at(1))
@@ -175,6 +182,46 @@ import Testing
         await shop.buy(pack)
         #expect(front.bought == ["com.rsolutions.lumen.credits.500.launch"])
         #expect(server.verified == ["jws-com.rsolutions.lumen.credits.500.launch"], "the server gives the ordinary pack's credits (K119)")
+    }
+
+    // MARK: The weekly pass (Deangelo 2026-11-23 20:55): an introductory offer on the same product
+
+    @Test func duringTheWeekThePassShowsItsFirstWeeksPriceWithTheOrdinaryOneStruck() async throws {
+        let (shop, front, _) = try shop(offer: Self.week)
+        await shop.load()
+        await shop.loadOffer(now: at(1))
+        let pass = try #require(shop.weeklyOffer(now: at(1)))
+        #expect(pass.id == StoreCatalog.weekly, "the same product: the App Store gives the first week's price by itself")
+        #expect(pass.displayPrice == "27,65 kr" && pass.regularPrice == "79,00 kr")
+        #expect(ShopText.weeklyIntroLine(intro: "27,65 kr", regular: "79,00 kr") == "Första veckan 27,65 kr, sedan 79,00 kr i veckan")
+        #expect(ShopText.terms(price: "79,00 kr", intro: "27,65 kr").hasPrefix("Första veckan kostar 27,65 kr. Sedan kostar veckokortet 79,00 kr i veckan och förnyas automatiskt"))
+        #expect(ShopText.terms(price: "79,00 kr", intro: nil) == ShopText.terms(price: "79,00 kr"))
+        // The ordinary card is what the renewal and Apple's footnote speak of.
+        #expect(shop.weeklyCard?.displayPrice == "79,00 kr" && shop.weeklyCard?.regularPrice == nil)
+        await shop.buy(pass)
+        #expect(front.bought == [StoreCatalog.weekly])
+        // Outside the week, and when the week ends while the sheet is open: the pass as it is.
+        #expect(shop.weeklyOffer(now: Self.end) == nil && shop.weeklyOffer(now: at(-1)) == nil)
+    }
+
+    @Test func aPassWithoutAnIntroductoryPriceIsShownAsItIs() async throws {
+        let front = Front()
+        front.passIntro = nil // not set up in App Store Connect, or this account has had the pass
+        let (shop, _, _) = try shop(offer: Self.week, front: front)
+        await shop.load()
+        await shop.loadOffer(now: at(1))
+        #expect(shop.weeklyOffer(now: at(1)) == nil)
+        #expect(shop.activeOffer(now: at(1)) == Self.week, "the packs still have their launch prices")
+        #expect(shop.offerCovers(now: at(1)) == LaunchOfferText.Covers(packs: true, pass: false))
+        // Only the pass has an offer (the launch packs are not in the App Store yet): it is still an offer.
+        front.passIntro = "27,65 kr"
+        front.launchPrices = [:]
+        let (passOnly, _, _) = try self.shop(offer: Self.week, front: front)
+        await passOnly.load()
+        await passOnly.loadOffer(now: at(1))
+        #expect(passOnly.activeOffer(now: at(1)) == Self.week && passOnly.shouldShowLaunchSheet(now: at(1)))
+        #expect(passOnly.offerCovers(now: at(1)) == LaunchOfferText.Covers(packs: false, pass: true))
+        #expect(passOnly.packs(now: at(1)).allSatisfy { $0.regularPrice == nil })
     }
 
     // MARK: The sheet when the app is opened
@@ -207,7 +254,9 @@ import Testing
         #expect(LaunchOfferText.left(seconds: 20) == "Slutar om under en minut")
         #expect(LaunchOfferText.left(Self.week, now: Self.end.addingTimeInterval(-3 * 3600 - 60)) == "Slutar om 3 tim 1 min")
         #expect(LaunchOfferText.title == "Lanseringsrabatt")
-        #expect(LaunchOfferText.line(65) == "65 % rabatt på alla kreditpaket den här veckan.")
+        #expect(LaunchOfferText.line(65, covers: .init(packs: true, pass: true)) == "65 % rabatt på allt den här veckan.")
+        #expect(LaunchOfferText.line(65, covers: .init(packs: true, pass: false)) == "65 % rabatt på alla kreditpaket den här veckan.")
+        #expect(LaunchOfferText.line(65, covers: .init(packs: false, pass: true)) == "65 % rabatt på första veckan med veckokortet.")
         #expect(LaunchOfferText.spoken(title: "500 krediter", price: "13,65 kr", regular: "39,00 kr")
                 == "Köp 500 krediter för 13,65 kr, ordinarie pris 39,00 kr")
     }
@@ -218,6 +267,8 @@ import Testing
         #expect(String(format: english("-%lld %%"), 65) == "-65%")
         #expect(String(format: english("%lld %% rabatt på alla kreditpaket den här veckan."), 65) == "65% off all credit packs this week.")
         #expect(english("Se paketen") == "See the packs" && english("Inte nu") == "Not now")
+        #expect(String(format: english("%lld %% rabatt på allt den här veckan."), 65) == "65% off everything this week.")
+        #expect(String(format: english("Första veckan %@, sedan %@ i veckan"), "$0.99", "$2.99") == "First week $0.99, then $2.99 a week")
         #expect(String(format: english("Slutar om %@"), "2 days 4 h") == "Ends in 2 days 4 h")
         #expect(String(format: english("%lld dagar"), 2) == "2 days" && english("1 dag") == "1 day")
         #expect(String(format: english("%lld tim"), 4) == "4 h")

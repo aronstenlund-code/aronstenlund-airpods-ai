@@ -154,7 +154,9 @@ struct RepetitionHomeSection: View {
         }
         .sheet(isPresented: $showsLaunchOffer, onDismiss: { if opensShopAfterOffer { opensShopAfterOffer = false; showsShop = true } }) {
             if let offer = model.shop?.activeOffer() {
-                LaunchOfferSheet(offer: offer) { opensShopAfterOffer = true }
+                LaunchOfferSheet(offer: offer, covers: model.shop?.offerCovers() ?? .init(packs: true, pass: false)) {
+                    opensShopAfterOffer = true
+                }
             }
         }
         .sheet(isPresented: $showsShop) { CreditsSheet(model: model) }
