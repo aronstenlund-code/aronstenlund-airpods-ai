@@ -1,0 +1,55 @@
+name: Apptest model down (T57)
+
+# T57 (Toby, D258): the app while the server's model is out of credits. /answer answers 503 provider_quota inside the
+# test process, /stt-token and /tts are closed (D180: 0 ElevenLabs), the phone's model is A159's pretend one.
+# One macOS machine (D217). Simulator only: never a device test.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/t57*"]
+    paths:
+      - "AppTests/E2E/ModelDown/**"
+      - "scripts/apptest/t57.sh"
+      - ".github/workflows/apptest-t57.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apptest-t57-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  t57:
+    name: T57 model down (Simulator)
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Model down
+        run: |
+          bash scripts/apptest/t57.sh
+          STATUS=$?
+          cat apptest-out/t57/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-t57
+          path: |
+            apptest-out/t57
+            !apptest-out/t57/logs/*.xcresult
