@@ -58,6 +58,10 @@ Fler lägen (lägena som lyssnar): **Provfrågor** (övningsprovet) och **provse
   `@Generable`/`@Guide` och `respond(to:generating:)` är kompilerade mot SDK:n men otestade mot en riktig modell.
 - 0 ElevenLabs (D180).
 
+**Tillägg 2026-11-24 22:25:** iOS build 45484689536 på min gren grön i sin helhet (enhetsbygge utan varningar, alla enhetstester, App Store-arkivet). Bygget innehåller A160, A161 och A163 tillsammans med Angela Schrutes A159 och
+A162 från main. Rättaren frågar efter telefonens modell genom Angela Schrutes `OnDeviceModel` (hennes fil,
+oförändrad); körningarna i går fick två gånger ingen Mac hos GitHub och avbröts, därav dröjsmålet.
+
 ## Kända brister och risker
 
 - **Otestat på telefon.** Kräver en iPhone med Apple Intelligence påslaget (15 Pro eller senare) för rättningen.

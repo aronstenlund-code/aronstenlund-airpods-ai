@@ -1,4 +1,4 @@
-# A163 (D259): Komprimera före tal i Säg i AirPods
+# A163 (D259, D262): Komprimera före tal i Säg i AirPods
 
 Angela Fable (moln), 2026-11-23. Beställt av Deangelo 19:51 (Aron 19:36). iOS-appen på main.
 
@@ -41,7 +41,8 @@ just nu." och texten är orörd.
   appen är på engelska; utan någon modell står texten kvar med en rad; en text som inte blev kortare används inte;
   fältet får den kortare texten och Ångra ger originalet (också efter ändringar); serverns svar läses rätt (200,
   503 `provider_quota`, 400, 429, 500, inget nät); orden på båda språken.
-- KÖRNINGAR
+- **iOS build 45484689536 på min gren grön i sin helhet (enhetsbygge utan varningar, alla enhetstester, App Store-arkivet)** (verifierat i CI, Simulator). Bygget innehåller A160, A161 och A163 tillsammans.
+- **Bilder på svenska och engelska** (Fable screens 45250735875, iPhone 17 Pro, Simulator): `reports/2026-11-23-a161-a163-bilder/`.
 - **Den riktiga modellen på telefonen är inte körd** (Foundation Models finns inte i CI-simulatorn), och serverns
   komprimering finns inte. 0 ElevenLabs (D180).
 

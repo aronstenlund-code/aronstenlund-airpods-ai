@@ -1,4 +1,4 @@
-# A161 (D259): lanseringsrabatt 65 % i en vecka
+# A161 (D259, D261): lanseringsrabatt 65 % i en vecka
 
 Angela Fable (moln), 2026-11-23–24. Beställt av Deangelo 19:51 (Aron 19:36), tillägg 20:55 (veckokortet). iOS-appen
 på main.
@@ -49,7 +49,8 @@ på main.
   veckokortet visar första veckans pris med det ordinarie överstruket och köps som samma produkt; ett kort utan
   introduktionspris visas som det är; bladet en gång per dag och aldrig utanför veckan; orden och nedräkningen på
   svenska och engelska.
-- KÖRNINGAR
+- **iOS build 45484689536 på min gren grön i sin helhet (enhetsbygge utan varningar, alla enhetstester, App Store-arkivet)** (verifierat i CI, Simulator). Bygget innehåller A160, A161 och A163 tillsammans.
+- **Bilder på svenska och engelska** (Fable screens 45250735875, iPhone 17 Pro, Simulator): `reports/2026-11-23-a161-a163-bilder/`.
 - Inget köp är gjort någonstans (inte heller i sandlådan). 0 ElevenLabs (D180).
 
 ## Kända brister och risker
