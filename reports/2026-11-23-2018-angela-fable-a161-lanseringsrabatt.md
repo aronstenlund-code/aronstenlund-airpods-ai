@@ -50,7 +50,8 @@ på main.
   introduktionspris visas som det är; bladet en gång per dag och aldrig utanför veckan; orden och nedräkningen på
   svenska och engelska.
 - **iOS build 45484689536 på min gren grön i sin helhet (enhetsbygge utan varningar, alla enhetstester, App Store-arkivet)** (verifierat i CI, Simulator). Bygget innehåller A160, A161 och A163 tillsammans.
-- **Bilder på svenska och engelska** (Fable screens 45250735875, iPhone 17 Pro, Simulator): `reports/2026-11-23-a161-a163-bilder/`.
+- **Bilder på svenska och engelska** (Fable screens 45491181341 och 45493032045, iPhone 17 Pro, Simulator): `reports/2026-11-23-a161-a163-bilder/a161-butiken-och-bladet-sv-en.jpg`. Bilden visar butiken som den är nu: överstruket pris under paketets namn och veckokortet med "-65 %" bredvid namnet, "Första veckan 27,65 kr, sedan 79,00 kr i veckan" och båda priserna i fotnoten.
+- **Tillägg 2026-11-24 23:25:** de nya bilderna visade att veckokortets rad saknade "-65 %" (tillägget 20:55 säger att kortet visas med -65 % under veckan), så procenten står nu bredvid kortets namn. iOS build 45493033141 på min gren grön i sin helhet med den ändringen (enhetsbygge utan varningar, alla enhetstester, App Store-arkivet); main-bygget 45491059776 med A160, A161 och A163 också grönt.
 - Inget köp är gjort någonstans (inte heller i sandlådan). 0 ElevenLabs (D180).
 
 ## Kända brister och risker
