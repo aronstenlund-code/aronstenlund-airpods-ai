@@ -50,6 +50,12 @@ echo "::endgroup::"
   else
     echo "| (no modeldown.json) | | | | | |"
   fi
+  if [ -f "$OUT/modeldown-part2.jsonl" ]; then
+    echo
+    echo "**Part 2 (A160, /exam 503 provider_quota)**"
+    echo
+    jq -r '"- \(.id): " + ([to_entries[] | select(.key != "id") | "\(.key) \(.value)"] | join("; "))' "$OUT/modeldown-part2.jsonl"
+  fi
 } > "$OUT/summary.md"
 cat "$OUT/summary.md"
 [ -f "$OUT/modeldown.json" ] && jq -r '.[] | "--- \(.id)", (.log[] | "  " + .)' "$OUT/modeldown.json" | grep -E "answered|log Fel|log On-device|log Answer|asked|---" | cut -c1-300 | head -n 80
