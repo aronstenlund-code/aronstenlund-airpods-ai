@@ -570,7 +570,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// Command keywords first: they decide what happens, and Scribe takes a limited number of keyterms (D44).
     func refreshKeyterms() {
         let recent = conversation.answers.suffix(2)
-        let terms = KeytermBuilder.terms(commands: phrases.userPhrases + commands.commands.map(\.keyword),
+        // A162: the user's own activation words are words Scribe should hear right.
+        let activationWords = activation.settings.phrase.isEmpty ? [] : [activation.settings.phrase]
+        let terms = KeytermBuilder.terms(commands: activationWords + phrases.userPhrases + commands.commands.map(\.keyword),
                                          topic: recent.last?.question,
                                          answers: recent.map(\.answer),
                                          goals: goals.terms,
@@ -1220,6 +1222,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
                 study.resumeListening()
                 return
             }
+            // A162 (D259): the user's own activation words. The question just asked is answered; the words are not.
+            if answerForActivationWords(in: raw) { return }
             // "Lumen, …" can close a turn before its final result arrives (D74).
             let utterance = VoiceChannel.parse(raw)
             if let intent = utterance.intent { perform(intent) }
@@ -1298,6 +1302,28 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     // MARK: - Voice (D74)
 
     // The question gate's timer at the pause (D78, A68, A72) is `StandardModeController` now (D199 step 5).
+
+    /// A162 (D259): "Säg [ … ] så aktiveras vår AI". When the user's own words are heard in a finished turn, the
+    /// question that was just asked is answered as usual: what came before the words in the same turn, else what
+    /// follows them, else the last thing heard before this turn. The words themselves are never sent, and a turn
+    /// with them is never an ordinary turn. Not in Socialt and Rizz, which give suggestions, not answers. True
+    /// when the words were heard.
+    private func answerForActivationWords(in raw: String) -> Bool {
+        let phrase = activation.settings.phrase
+        guard !phrase.isEmpty, !mode.isLive, let match = ActivationPhrase.match(phrase, in: raw) else { return false }
+        discardAhead(reason: "the activation words")
+        let earlier = conversation.finalSegments
+            .filter { !$0.overlapsPlayback && ActivationPhrase.match(phrase, in: $0.text) == nil }
+            .map(\.text)
+        if let question = ActivationPhrase.question(for: match, earlier: earlier) {
+            controller.log("Activation words heard: answering the question just asked (\(question.count) characters)")
+            activation.answer(heard: question, language: language)
+        } else {
+            controller.log("Activation words heard, but no question before them")
+        }
+        study.resumeListening()
+        return true
+    }
 
     /// "Lumen, …" in every mode. True when the words were for Lumen: they are never conversation.
     @discardableResult
