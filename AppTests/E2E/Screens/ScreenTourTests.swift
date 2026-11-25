@@ -178,18 +178,18 @@ final class ScreenTourTests: XCTestCase {
     private func deleteAccountQuestion() {
         guard tap(["Inställningar"], step: "start → Inställningar (Konto)") else { return }
         guard waitFor(["Klar"], timeout: 5) != nil else { miss("settings sheet not shown (Konto)"); return }
-        guard let found = scrollTo(["Radera konto"], buttonsOnly: true) else {
+        guard let found = scrollTo(["Radera konto", "Delete account"], buttonsOnly: true) else {
             miss("settings row Radera konto not found")
             closeSheet()
             return
         }
-        let row = centered(found, labels: ["Radera konto"])
+        let row = centered(found, labels: ["Radera konto", "Delete account"])
         shoot("installningar-konto", note: "Settings › Konto (A145)")
         row.tap()
         let alert = app.alerts.firstMatch
         // Run 44809087832 (pro-dark): one tap asked nothing. Tap the row once more before calling it a miss.
         if !alert.waitForExistence(timeout: 5), waitFor(["Avbryt"], timeout: 1) == nil,
-           let again = find(["Radera konto"], buttonsOnly: true), again.isHittable {
+           let again = find(["Radera konto", "Delete account"], buttonsOnly: true), again.isHittable {
             record("note: Radera konto tap asked nothing, retry")
             again.tap()
         }
@@ -218,7 +218,7 @@ final class ScreenTourTests: XCTestCase {
 
     private func moreModes() {
         // RepetitionHomeSection: "Fler lägen · Beta" (label "Fler lägen") at the bottom of Start in some states only.
-        guard let row = find(["Fler lägen"], buttonsOnly: true) ?? scrollTo(["Fler lägen"], buttonsOnly: true) else {
+        guard let row = find(["Fler lägen", "More modes"], buttonsOnly: true) ?? scrollTo(["Fler lägen", "More modes"], buttonsOnly: true, steps: 4) else {
             record("note: no Fler lägen on Start in this state (A115 Start); the listening modes are not in the tour")
             return
         }
@@ -255,24 +255,31 @@ final class ScreenTourTests: XCTestCase {
             shoot("installningar-\(page)", note: "Settings, scrolled \(page - 1)")
         }
 
+        // Back to the top of the list before the pages: the language choice (A157, `settings.appLanguage`, the one
+        // row with an identifier) is the first row.
+        let top = app.descendants(matching: .any)["settings.appLanguage"]
+        for _ in 0..<30 where !(top.exists && top.isHittable) { drag(towardsEnd: false) }
+        if !(top.exists && top.isHittable) { record("note: the top of Settings (settings.appLanguage) not seen") }
+        // Run 45396745804: in the order they stand on the screen where it is known (tree of run 44862440315:
+        // Integritet, Anteckningar, Historik, Studiekort, Förberedelser), so the search mostly goes forward.
         let pages: [(name: String, labels: [String])] = [
+            ("integritet", ["Integritet och samtycke", "Privacy and consent", "Privacy & consent"]),
             ("anteckningar", ["Anteckningar", "Notes"]),
-            ("forberedelser", ["Förberedelser"]),
-            ("egna-kommandon", ["Egna kommandon"]),
-            ("integritet", ["Integritet och samtycke", "Privacy & consent"]),
             ("historik", ["Historik", "History"]),
-            ("minne", ["Minne"]),
-            ("studiekort", ["Studiekort"]),
-            ("feedback", ["Feedback och förslag", "Feedback & förslag", "Feedback & suggestions"]),
-            ("rostkommandon", ["Röstkommandon"]),
-            ("om-appen", ["Om appen"]),
+            ("studiekort", ["Studiekort", "Study cards"]),
+            ("forberedelser", ["Förberedelser", "Preparations"]),
+            ("egna-kommandon", ["Egna kommandon", "Your own commands"]),
+            ("minne", ["Minne", "Memory"]),
+            ("feedback", ["Feedback och förslag", "Feedback and suggestions", "Feedback & förslag", "Feedback & suggestions"]),
+            ("rostkommandon", ["Röstkommandon", "Voice commands"]),
+            ("om-appen", ["Om appen", "About the app"]),
         ]
         for page in pages {
             openFromSettings(page.labels, name: page.name)
         }
         // A13: "Avancerat" folds out its sections in place (not a page); the diagnostics rows are inside it.
         expandAdvanced()
-        openFromSettings(["Rå transkription och svar"], name: "ra-transkription", advanced: true)
+        openFromSettings(["Rå transkription och svar", "Raw transcription and answers"], name: "ra-transkription", advanced: true)
         openFromSettings(["Diagnostik", "Diagnostics"], name: "diagnostik", advanced: true)
         tap(["Klar"], step: "settings → Klar")
         pause(1)
@@ -280,7 +287,7 @@ final class ScreenTourTests: XCTestCase {
 
     /// Folds out "Avancerat" in Settings (once per sheet) and shoots the first screen of it.
     private func expandAdvanced() {
-        guard let row = scrollTo(["Avancerat*"], buttonsOnly: true) else {
+        guard let row = scrollTo(["Avancerat*", "Advanced*"], buttonsOnly: true) else {
             miss("settings row Avancerat not found")
             return
         }
@@ -305,7 +312,15 @@ final class ScreenTourTests: XCTestCase {
             if advanced { expandAdvanced() }
         }
         // Buttons only: a section header with the same words ("Diagnostik") is not the row.
-        guard let found = scrollTo(labels, buttonsOnly: true) else {
+        let refold: (() -> Void)? = advanced ? { [unowned self] in self.expandAdvanced() } : nil
+        var located = scrollTo(labels, buttonsOnly: true, afterReopen: refold)
+        if located == nil, advanced {
+            // Run 45484875536 (SE): Rå transkription not found; Avancerat had folded in again. Fold it out once more.
+            record("note: \(labels[0]) not found, folding Avancerat out again")
+            expandAdvanced()
+            located = scrollTo(labels, buttonsOnly: true, afterReopen: refold)
+        }
+        guard let found = located else {
             miss("settings row \(labels[0]) not found")
             return
         }
@@ -399,34 +414,50 @@ final class ScreenTourTests: XCTestCase {
     }
 
     /// Swipes up (then back down) until an element with one of the labels is hittable.
-    private func scrollTo(_ labels: [String], buttonsOnly: Bool = false) -> XCUIElement? {
+    private func scrollTo(_ labels: [String], buttonsOnly: Bool = false, steps budget: Int = 60,
+                          afterReopen: (() -> Void)? = nil, reopened: Bool = false) -> XCUIElement? {
         // Run 44809087832 (iPhone SE): swipeDown at the top of a sheet closed Inställningar, and the search went on
-        // over Start. When that happens Settings is opened again and searched from the top (swipes up only).
-        // Run 44862440315: an end-of-list check on the first loaded cell stopped the search after 2–3 swipes (that
-        // cell does not move), so the plain 25 + 25 swipes of the green run 44804596958 are back.
+        // over Start. When that happens Settings is opened again and searched from the top.
+        // Run 45396745804 (liten-light, A157 added rows at the top of Settings): a swipe carries on by itself and
+        // moves the list more than a screen on the iPhone SE, so a row could pass between two looks every time
+        // ("Integritet och samtycke not found"). Now the list is dragged and held still before it is let go, so it
+        // never carries on: every row is in view at least once. Run 45484875536: 40 % steps were too slow (37 min for
+        // the SE); 65 % steps, and 8 back first, since the next row is often just above (Minne, Röstkommandon).
+        // Run 45506656525 (liten-light): a step back from the top of the sheet closed it, and the reopened sheet had
+        // Avancerat folded in, so "Rå transkription och svar" was never there. Now no step goes back once the top row
+        // (`settings.appLanguage`) is in view, and a reopened sheet gets `afterReopen` (fold Avancerat out) and the
+        // same search once more.
         let inSheet = app.buttons["Klar"].exists
-        for direction in [true, false] {
-            // 25 swipes: Settings at the largest text size is about 30 screens long.
-            for _ in 0..<25 {
+        let top = app.descendants(matching: .any)["settings.appLanguage"]
+        if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
+        for (towardsEnd, steps) in [(false, min(8, budget)), (true, budget), (false, budget)] {
+            for _ in 0..<steps {
+                if inSheet, !towardsEnd, top.exists, top.isHittable { break }
+                drag(towardsEnd: towardsEnd)
                 if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
-                if direction { app.swipeUp() } else { app.swipeDown() }
                 if inSheet, !app.buttons["Klar"].exists {
                     record("note: the sheet closed while looking for \(labels[0]); Settings opened again")
+                    guard !reopened else { record("note: scroll \(labels[0]) gave up (sheet closed twice)"); return nil }
                     pause(1)
                     tap(["Inställningar"], step: "start → Inställningar (sheet closed)")
                     guard app.buttons["Klar"].waitForExistence(timeout: 5) else { return nil }
                     pause(1)
-                    for _ in 0..<25 {
-                        if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
-                        app.swipeUp()
-                    }
-                    break
+                    afterReopen?()
+                    return scrollTo(labels, buttonsOnly: buttonsOnly, steps: budget, reopened: true)
                 }
             }
         }
         record("note: scroll \(labels[0]) gave up")
         dumpButtons()
         return nil
+    }
+
+    /// One step of the list without a flick: press, drag about 65 % of the screen, hold still, let go.
+    private func drag(towardsEnd: Bool) {
+        let (from, to) = towardsEnd ? (0.82, 0.17) : (0.17, 0.82)
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: from))
+            .press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: to)),
+                   withVelocity: .default, thenHoldForDuration: 0.3)
     }
 
     /// The buttons in the tree right now, into the tour log (T3 diagnostics, run 44846862625).
