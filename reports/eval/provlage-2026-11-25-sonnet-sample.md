@@ -1,0 +1,85 @@
+# Provläge test bank 2026-11-25: sonnet (judge sonnet, rubric v2)
+
+**First answer is enough: 0 %** of 0 graded (69 errors). Target ≥ 90 %.
+
+Strict (correct, sufficient and covers the expected points): 0 %. Empty answers: 0. Words p50 / p90: None / None.
+
+| correct | A level | sufficient | covers | natural | length (code) | no unasked question (code) | no level talk (code) | Swedish only (code) | TTFT p50 server / client (ms) | cost per answer (USD) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| 0 % | 0 % | 0 % | 0 % | 0 % | 0 % | 0 % | 0 % | 0 % | None / None | 0 |
+
+By kind (first answer enough): 
+
+Cost: answers 0 USD, judge 0 USD.
+
+## Misses
+
+- **pl-001** (term) "fotosyntes": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-004** (term) "evolution": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-007** (term) "mitos": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-010** (half) "eh skillnaden mellan mitos och": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-013** (followup) "och den andra?": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-016** (misheard) "ri bo so mer": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-019** (exam) "förklara varför antibiotika inte hjälper mot virus": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-022** (exam) "vad händer i en näringskedja om rovdjuren försvinner": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-025** (term) "jonbindning": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-028** (term) "syror och baser": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-031** (misheard) "perifera systemet": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-034** (misheard) "kata lysator": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-037** (followup) "och metallbindning då?": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-040** (exam) "hur många mol är tjugo gram natriumhydroxid": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-043** (exam) "vad är skillnaden mellan en stark och en svag syra": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-046** (term) "tryck": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-049** (term) "rörelseenergi": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-052** (misheard) "acce le ration": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-055** (followup) "och den tredje?": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-058** (exam) "vad är skillnaden mellan serie och parallellkoppling": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-061** (term) "franska revolutionen": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-064** (term) "kalla kriget": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-067** (followup) "och andra världskriget då?": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-070** (misheard) "kall a kriget": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-073** (exam) "jämför demokratin i antikens aten med dagens": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-076** (term) "inflation": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-079** (term) "globalisering": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-082** (misheard) "demo kratin": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-085** (exam) "förklara hur en lag blir till": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-088** (term) "växthuseffekten": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-091** (followup) "och vad kan man göra åt det?": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-094** (term) "buddhismen": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-097** (followup) "och pliktetik?": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-100** (term) "berättande text": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-103** (term) "novell": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-106** (followup) "ge ett exempel": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-109** (half) "hur börjar man en argumenterande": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-112** (term) "present perfect": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-115** (term) "passiv form": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-118** (misheard) "pre sent per fekt": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-121** (term) "procent": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-124** (term) "andragradsekvation": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-127** (term) "sannolikhet": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-130** (followup) "och hur räknar man ut den andra sidan?": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-133** (followup) "ge ett exempel": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-136** (misheard) "loga ritmer": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-139** (exam) "hur räknar man ut arean av en cirkel": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-142** (exam) "vad är medelvärde median och typvärde": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-145** (short) "effekt": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-148** (short) "kvadratrot": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-151** (exam_soon) "vad ska jag plugga på sista kvällen": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-154** (term) "näringskedja": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-157** (term) "förbränning": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-160** (term) "arbete": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-163** (term) "marknadsekonomi": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-166** (term) "debattartikel": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-169** (term) "volym": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-172** (followup) "och lilla kretsloppet?": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-175** (followup) "och landstinget då?": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-178** (followup) "och effekt då?": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-181** (mathlevel) "derivata": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-184** (mathlevel) "lös 3x minus 7 är lika med 14": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-187** (mathlevel) "kedjeregeln": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-190** (mathlevel) "produktregeln": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-193** (leveltalk) "vad är en derivata": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-196** (leveltalk) "kedjeregeln": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-199** (leveltalk) "vad är meios": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-202** (logic) "Anna och Fredrik går hem till varandra Anna går dubbelt så snabbt som Fredrik men de möttes ändå halvvägs hur kan det komma sig": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
+- **pl-205** (logic) "om fem maskiner gör fem saker på fem minuter hur lång tid tar det för hundra maskiner att göra hundra saker": error http 503 b'{"error":{"code":"provider_quota","message":"EarMind is down for a moment. Try again later.","fallback":true}}'
