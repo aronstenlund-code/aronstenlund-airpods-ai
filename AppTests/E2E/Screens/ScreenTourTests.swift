@@ -312,12 +312,13 @@ final class ScreenTourTests: XCTestCase {
             if advanced { expandAdvanced() }
         }
         // Buttons only: a section header with the same words ("Diagnostik") is not the row.
-        var located = scrollTo(labels, buttonsOnly: true)
+        let refold: (() -> Void)? = advanced ? { [unowned self] in self.expandAdvanced() } : nil
+        var located = scrollTo(labels, buttonsOnly: true, afterReopen: refold)
         if located == nil, advanced {
             // Run 45484875536 (SE): Rå transkription not found; Avancerat had folded in again. Fold it out once more.
             record("note: \(labels[0]) not found, folding Avancerat out again")
             expandAdvanced()
-            located = scrollTo(labels, buttonsOnly: true)
+            located = scrollTo(labels, buttonsOnly: true, afterReopen: refold)
         }
         guard let found = located else {
             miss("settings row \(labels[0]) not found")
@@ -413,7 +414,8 @@ final class ScreenTourTests: XCTestCase {
     }
 
     /// Swipes up (then back down) until an element with one of the labels is hittable.
-    private func scrollTo(_ labels: [String], buttonsOnly: Bool = false, steps budget: Int = 60) -> XCUIElement? {
+    private func scrollTo(_ labels: [String], buttonsOnly: Bool = false, steps budget: Int = 60,
+                          afterReopen: (() -> Void)? = nil, reopened: Bool = false) -> XCUIElement? {
         // Run 44809087832 (iPhone SE): swipeDown at the top of a sheet closed Inställningar, and the search went on
         // over Start. When that happens Settings is opened again and searched from the top.
         // Run 45396745804 (liten-light, A157 added rows at the top of Settings): a swipe carries on by itself and
@@ -421,25 +423,27 @@ final class ScreenTourTests: XCTestCase {
         // ("Integritet och samtycke not found"). Now the list is dragged and held still before it is let go, so it
         // never carries on: every row is in view at least once. Run 45484875536: 40 % steps were too slow (37 min for
         // the SE); 65 % steps, and 8 back first, since the next row is often just above (Minne, Röstkommandon).
+        // Run 45506656525 (liten-light): a step back from the top of the sheet closed it, and the reopened sheet had
+        // Avancerat folded in, so "Rå transkription och svar" was never there. Now no step goes back once the top row
+        // (`settings.appLanguage`) is in view, and a reopened sheet gets `afterReopen` (fold Avancerat out) and the
+        // same search once more.
         let inSheet = app.buttons["Klar"].exists
+        let top = app.descendants(matching: .any)["settings.appLanguage"]
         if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
         for (towardsEnd, steps) in [(false, min(8, budget)), (true, budget), (false, budget)] {
             for _ in 0..<steps {
+                if inSheet, !towardsEnd, top.exists, top.isHittable { break }
                 drag(towardsEnd: towardsEnd)
                 if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
                 if inSheet, !app.buttons["Klar"].exists {
                     record("note: the sheet closed while looking for \(labels[0]); Settings opened again")
+                    guard !reopened else { record("note: scroll \(labels[0]) gave up (sheet closed twice)"); return nil }
                     pause(1)
                     tap(["Inställningar"], step: "start → Inställningar (sheet closed)")
                     guard app.buttons["Klar"].waitForExistence(timeout: 5) else { return nil }
                     pause(1)
-                    for _ in 0..<budget {
-                        if let element = find(labels, buttonsOnly: buttonsOnly), element.isHittable { return element }
-                        drag(towardsEnd: true)
-                    }
-                    record("note: scroll \(labels[0]) gave up")
-                    dumpButtons()
-                    return nil
+                    afterReopen?()
+                    return scrollTo(labels, buttonsOnly: buttonsOnly, steps: budget, reopened: true)
                 }
             }
         }
