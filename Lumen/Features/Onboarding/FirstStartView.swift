@@ -1,7 +1,7 @@
 import SwiftUI
 import UIKit
 
-/// A166 (D264): from a new install to the first answer on the shortest way, three presses. Välkommen (A94, Kelly
+/// A166 (D266): from a new install to the first answer on the shortest way, three presses. Välkommen (A94, Kelly
 /// Ke55: the repetition mode's consent, material is sent once to make the questions and the sound) → the listening
 /// consent, whole (`ConsentView`, the same page a listening mode shows), where the one button starts EarMind → iOS's
 /// own question about the microphone → Lyssnar, where the question is asked aloud. Fortsätt on Välkommen never grants

@@ -31,7 +31,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<language>en</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:38 (svensk tid, Europe/Stockholm)</now>\n<fragment>can anyone tell me what the capital of Australia is</fragment>"
+            "content": "<language>en</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<now>fredag 27 november 2026, vecka 48, klockan 00:44 (svensk tid, Europe/Stockholm)</now>\n<fragment>can anyone tell me what the capital of Australia is</fragment>"
           }
         ],
         "output_config": {
@@ -59,11 +59,11 @@
           "model": "claude-haiku-5-5",
           "is_question": true,
           "confidence": 1,
-          "input_tokens": 3744,
+          "input_tokens": 3743,
           "output_tokens": 68,
-          "ttft_ms": 289,
-          "total_ms": 296,
-          "est_cost_usd": 0.00040840000000000006,
+          "ttft_ms": 293,
+          "total_ms": 303,
+          "est_cost_usd": 0.0004083,
           "status": "ok",
           "category": "övrigt",
           "persona": "tutor"
@@ -123,29 +123,29 @@
           "data": {
             "answered": true,
             "timing": {
-              "meta_ms": 285,
-              "ttft_ms": 289,
-              "llm_first_token_ms": 282,
-              "total_ms": 295
+              "meta_ms": 286,
+              "ttft_ms": 293,
+              "llm_first_token_ms": 283,
+              "total_ms": 302
             },
             "breakdown": {
               "auth_ms": 0,
-              "body_ms": 185,
-              "limits_ms": 282,
-              "llm_first_chunk_ms": 282,
+              "body_ms": 173,
+              "limits_ms": 283,
+              "llm_first_chunk_ms": 283,
               "direct": true,
               "cold": true,
               "answer_type": "fact",
               "continuation": null
             },
             "usage": {
-              "input_tokens": 3744,
+              "input_tokens": 3743,
               "output_tokens": 68,
               "cache_read_tokens": 0,
               "cache_write_tokens": 0,
               "web_searches": 0,
               "model": "claude-haiku-5-5",
-              "est_cost_usd": 0.00040840000000000006
+              "est_cost_usd": 0.0004083
             },
             "summary": "Frågan gällde Australiens huvudstad; svaret var Canberra, en kompromiss mellan Sydney och Melbourne.",
             "relation": null,
@@ -169,29 +169,29 @@
       "done": {
         "answered": true,
         "timing": {
-          "meta_ms": 285,
-          "ttft_ms": 289,
-          "llm_first_token_ms": 282,
-          "total_ms": 295
+          "meta_ms": 286,
+          "ttft_ms": 293,
+          "llm_first_token_ms": 283,
+          "total_ms": 302
         },
         "breakdown": {
           "auth_ms": 0,
-          "body_ms": 185,
-          "limits_ms": 282,
-          "llm_first_chunk_ms": 282,
+          "body_ms": 173,
+          "limits_ms": 283,
+          "llm_first_chunk_ms": 283,
           "direct": true,
           "cold": true,
           "answer_type": "fact",
           "continuation": null
         },
         "usage": {
-          "input_tokens": 3744,
+          "input_tokens": 3743,
           "output_tokens": 68,
           "cache_read_tokens": 0,
           "cache_write_tokens": 0,
           "web_searches": 0,
           "model": "claude-haiku-5-5",
-          "est_cost_usd": 0.00040840000000000006
+          "est_cost_usd": 0.0004083
         },
         "summary": "Frågan gällde Australiens huvudstad; svaret var Canberra, en kompromiss mellan Sydney och Melbourne.",
         "relation": null,

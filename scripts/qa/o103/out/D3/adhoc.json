@@ -53,13 +53,13 @@
       "json": {
         "error": {
           "code": "provider_unavailable",
-          "message": "EarMind är nere en stund. Försök igen senare.",
+          "message": "EarMind is down for a moment. Try again later.",
           "fallback": true
         }
       },
       "error": {
         "code": "provider_unavailable",
-        "message": "EarMind är nere en stund. Försök igen senare.",
+        "message": "EarMind is down for a moment. Try again later.",
         "fallback": true
       }
     }
