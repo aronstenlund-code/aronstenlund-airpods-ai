@@ -615,14 +615,17 @@ struct HomeView: View {
             }
             .buttonStyle(SystemButton(kind: .secondary)) // A50: Start is the one blue button
             .padding(.top, 8)
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Eller säg").font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
-                Text("”Lumen, jag har prov i engelska på onsdag”").font(LumenFont.text(16, .semibold))
+            // Ke91: the sentence is understood in Swedish only (ProfileStatement); the English app does not show it.
+            if AppLanguage.current == .sv {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Eller säg").font(LumenFont.text(13)).foregroundStyle(LumenColor.muted)
+                    Text("”Lumen, jag har prov i engelska på onsdag”").font(LumenFont.text(16, .semibold))
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(14)
+                .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
+                .padding(.top, 4)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(14)
-            .background(LumenColor.surface, in: RoundedRectangle(cornerRadius: 14))
-            .padding(.top, 4)
         }
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)

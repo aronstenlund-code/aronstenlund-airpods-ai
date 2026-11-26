@@ -66,7 +66,9 @@ struct SettingsView: View {
             }
             studyProfileSection
             myAnswersSection
-            spotifySection
+            #if LUMEN_TESTMODE
+            spotifySection // Ke91: a pilot for testers (A59); not in the App Store build
+            #endif
             testModeSection
             appearanceSection
             languageSection

@@ -13,6 +13,13 @@ enum PracticeNav: Equatable, Sendable {
     case results
     case answer
 
+    /// Ke91: the English words too, so the line on the screen can say "next" in the English app.
+    static let englishNumbers: [String: Int] = [
+        "one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10,
+        "eleven": 11, "twelve": 12, "thirteen": 13, "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17,
+        "eighteen": 18, "nineteen": 19, "twenty": 20,
+    ]
+
     static let numbers: [String: Int] = [
         "ett": 1, "en": 1, "etta": 1, "två": 2, "tvåan": 2, "tre": 3, "trean": 3, "fyra": 4, "fyran": 4, "fem": 5,
         "femman": 5, "sex": 6, "sexan": 6, "sju": 7, "sjuan": 7, "åtta": 8, "åttan": 8, "nio": 9, "nian": 9, "tio": 10,
@@ -24,18 +31,25 @@ enum PracticeNav: Equatable, Sendable {
     static func decide(_ utterance: String, current: Int, nos: [String]) -> PracticeNav {
         let t = normalized(utterance)
         let clamp = { (i: Int) in max(0, min(nos.count - 1, i)) }
-        if matches(t, #"nästa(?: fråga| uppgift)?|nästa tack|vidare|gå vidare|fortsätt|nästa då"#) { return .next(clamp(current + 1)) }
-        if matches(t, #"förra(?: fråga| uppgift(?:en)?)?|föregående(?: fråga)?|tillbaka|gå tillbaka|backa|den förra"#) {
+        // Ke91: Swedish and English, whatever the app shows ("say next" in English, "säg nästa" in Swedish).
+        if matches(t, #"nästa(?: fråga| uppgift)?|nästa tack|vidare|gå vidare|fortsätt|nästa då|next(?: question| one)?|go on|move on"#) {
+            return .next(clamp(current + 1))
+        }
+        if matches(t, #"förra(?: fråga| uppgift(?:en)?)?|föregående(?: fråga)?|tillbaka|gå tillbaka|backa|den förra|previous(?: question| one)?|go back"#) {
             return .previous(clamp(current - 1))
         }
-        if matches(t, #"hoppa över(?: den(?: här)?| den här frågan| frågan)?|skippa(?: den)?|jag hoppar över den|vet inte hoppa över|pass"#) {
+        if matches(t, #"hoppa över(?: den(?: här)?| den här frågan| frågan)?|skippa(?: den)?|jag hoppar över den|vet inte hoppa över|pass|skip(?: it| this one| this question| the question)?"#) {
             return .skip(clamp(current + 1))
         }
-        if matches(t, #"upprepa(?: frågan)?|säg (?:den |frågan )?igen|en gång till|vad var frågan|läs (?:upp )?(?:den |frågan )?igen|repetera"#) {
+        if matches(t, #"upprepa(?: frågan)?|säg (?:den |frågan )?igen|en gång till|vad var frågan|läs (?:upp )?(?:den |frågan )?igen|repetera|repeat(?: the question| that)?|say (?:it |that )?again|what was the question"#) {
             return .repeatQuestion(clamp(current))
         }
-        if matches(t, #"sluta|avsluta(?: provet| övningsprovet)?|stopp|jag är klar|vi slutar|det räcker"#) { return .stop }
-        if matches(t, #"hur (?:gick|går) det|resultat(?:et)?|hur många (?:rätt|poäng)|vad fick jag"#) { return .results }
+        if matches(t, #"sluta|avsluta(?: provet| övningsprovet)?|stopp|jag är klar|vi slutar|det räcker|stop|end the (?:quiz|exam|test)|i m done|im done|that s enough|thats enough"#) {
+            return .stop
+        }
+        if matches(t, #"hur (?:gick|går) det|resultat(?:et)?|hur många (?:rätt|poäng)|vad fick jag|how did i do|how am i doing|results?|my score|score"#) {
+            return .results
+        }
         if let no = spokenNumber(t) {
             if let i = nos.firstIndex(where: { $0.lowercased() == no }) { return .go(i) }
             // "fråga 3" is the first of 3a, 3b
@@ -53,13 +67,14 @@ enum PracticeNav: Equatable, Sendable {
             .trimmingCharacters(in: .whitespaces)
         t = t.replacingOccurrences(of: #"^(?:(?:okej|ok|hej|nej|men) )?(?:lumen )?(?:(?:kan|kunde) (?:du|vi) |snälla |vi tar |ta |gå till |jag vill (?:ha|ta|göra) )*"#,
                                    with: "", options: .regularExpression)
-        t = t.replacingOccurrences(of: #" (?:tack|nu|snälla|då)$"#, with: "", options: .regularExpression)
+        t = t.replacingOccurrences(of: #"^(?:please |can you |could you )"#, with: "", options: .regularExpression)
+        t = t.replacingOccurrences(of: #" (?:tack|nu|snälla|då|please|now|thanks)$"#, with: "", options: .regularExpression)
         return t.trimmingCharacters(in: .whitespaces)
     }
 
     /// The task number said: "7", "sju", "3b", "tre b", "fråga sjuan".
     static func spokenNumber(_ t: String) -> String? {
-        let pattern = #"^(?:fråga|uppgift|uppgiften|nummer|nr|frågan|del) (?:nummer )?([\p{L}\p{N}]+)(?: ([a-f]))?$"#
+        let pattern = #"^(?:fråga|uppgift|uppgiften|nummer|nr|frågan|del|question|task|number) (?:nummer |number )?([\p{L}\p{N}]+)(?: ([a-f]))?$"#
         guard let regex = try? NSRegularExpression(pattern: pattern),
               let match = regex.firstMatch(in: t, range: NSRange(t.startIndex..., in: t)),
               let wordRange = Range(match.range(at: 1), in: t) else { return nil }
@@ -68,7 +83,7 @@ enum PracticeNav: Equatable, Sendable {
         let base: String
         if word.range(of: #"^\d{1,2}[a-f]?$"#, options: .regularExpression) != nil {
             base = word
-        } else if let number = numbers[word] {
+        } else if let number = numbers[word] ?? englishNumbers[word] {
             base = String(number)
         } else {
             return nil

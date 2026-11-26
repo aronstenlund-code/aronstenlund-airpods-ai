@@ -191,7 +191,9 @@ enum CommandAction: String, CaseIterable, Codable, Sendable, Identifiable {
     var defaultPhrases: [String] {
         switch self {
         case .musicHandOff: ["pausa", "pausa lumen", "spela musik", "pause", "pause lumen", "play music"]
-        case .backToLumen: ["tillbaka till lumen", "lyssna igen", "fortsätt lyssna", "back to lumen"]
+        // Ke91: "Lumen, fortsätt" / "Lumen, continue", as the paused screen says (named only, `worksWithoutName`).
+        case .backToLumen: ["tillbaka till lumen", "lyssna igen", "fortsätt lyssna", "fortsätt", "tillbaka till earmind",
+                            "back to lumen", "back to earmind", "continue", "continue listening", "listen again"]
         case .nextTrack: ["nästa låt", "hoppa över låten", "skippa låten", "next song", "skip song"]
         case .previousTrack: ["förra låten", "föregående låt", "spela förra låten", "previous song"]
         case .pauseMusic: ["pausa musiken", "stoppa musiken", "pause the music", "stop the music"]

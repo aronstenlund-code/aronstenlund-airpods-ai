@@ -475,7 +475,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "%@ has no text that can be read. Photograph the pages instead."
+            "value": "%@ has no text that can be read. Take photos of the pages instead."
           }
         },
         "sv": {
@@ -1844,7 +1844,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": ". Answer out loud, or say nästa."
+            "value": ". Answer out loud, or say “next”."
           }
         },
         "sv": {
@@ -2599,7 +2599,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "All modes here listen and are in BETA. "
+            "value": "All modes here listen and are in beta. "
           }
         },
         "sv": {
@@ -3108,7 +3108,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "To practise"
+            "value": "To practice"
           }
         },
         "sv": {
@@ -3422,7 +3422,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "BETA"
+            "value": "Beta"
           }
         },
         "sv": {
@@ -3948,7 +3948,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Start with “Lumen”, for example “Lumen, förhör mig”. You can add your own phrases."
+            "value": "Start with “Lumen” (EarMind's wake word), for example “Lumen, quiz me”. You can add your own phrases."
           }
         },
         "sv": {
@@ -4493,7 +4493,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "These modes listen to what you say. They are in BETA and keep getting better."
+            "value": "These modes listen to what you say. They're in beta and keep getting better."
           }
         },
         "sv": {
@@ -5603,7 +5603,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Your AirPods don't support head gestures right now: answer yes–no questions with your voice. You can also say “Lumen, korta förklaringar” or “Lumen, provet är på fredag”."
+            "value": "Your AirPods don't support head gestures right now: answer yes–no questions with your voice."
           }
         },
         "sv": {
@@ -6309,7 +6309,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Then EarMind talks at your level, hears your subject words correctly and knows what you should practise."
+            "value": "Then EarMind talks at your level, hears your subject words correctly and knows what you should practice."
           }
         },
         "sv": {
@@ -6392,7 +6392,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "EarMind starts with what you need to practise"
+            "value": "EarMind starts with what you need to practice"
           }
         },
         "sv": {
@@ -6698,7 +6698,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "EarMind can do anything"
+            "value": "Ask EarMind anything"
           }
         },
         "sv": {
@@ -6716,7 +6716,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "EarMind can do anything. Say Lumen and what you want, for example: "
+            "value": "Ask EarMind anything. Say “Lumen” and what you want, for example: "
           }
         },
         "sv": {
@@ -6986,7 +6986,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "EarMind keeps listening when you switch. You can also say “Lumen, byt till socialt”."
+            "value": "EarMind keeps listening when you switch. You can also say “Lumen, switch to social”."
           }
         },
         "sv": {
@@ -7094,7 +7094,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "EarMind reads one question at a time, you answer out loud and EarMind grades and explains. Say nästa, förra, fråga sju, hoppa över, upprepa or avsluta."
+            "value": "EarMind reads one question at a time, you answer out loud and EarMind grades and explains. Say next, previous, question seven, skip, repeat or stop."
           }
         },
         "sv": {
@@ -7476,7 +7476,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Or say ja or nej."
+            "value": "Or say “yes” or “no”."
           }
         },
         "sv": {
@@ -7494,7 +7494,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Or say “Lumen, förhör mig”."
+            "value": "Or say “Lumen, quiz me”."
           }
         },
         "sv": {
@@ -7530,7 +7530,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Once a day: days left until the quiz and 5 quick questions. No reminder on days you have already practised."
+            "value": "Once a day: days left until the quiz and 5 quick questions. No reminder on days you have already practiced."
           }
         },
         "sv": {
@@ -7660,7 +7660,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "A suggestion is shown on the Lock Screen and read aloud in a pause. Say “nästa” for a new one, “%@, mer skämt” to steer the tone and “%@, ge mig tre” for more."
+            "value": "A suggestion is shown on the Lock Screen and read aloud in a pause. Say “next” for a new one, “%@, more jokes” to steer the tone and “%@, give me three” for more."
           }
         },
         "sv": {
@@ -8006,7 +8006,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Wrong answer, send to the developers"
+            "value": "Wrong answer? Send it to us"
           }
         },
         "sv": {
@@ -8186,7 +8186,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Photograph your material. EarMind makes questions and answers, or reads the text aloud, in your AirPods."
+            "value": "Snap your textbook. EarMind makes questions and answers, or reads the text aloud, in your AirPods."
           }
         },
         "sv": {
@@ -8204,7 +8204,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Photograph the material"
+            "value": "Snap your textbook"
           }
         },
         "sv": {
@@ -8222,7 +8222,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Photograph the page you're studying"
+            "value": "Snap your textbook"
           }
         },
         "sv": {
@@ -8517,6 +8517,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fråga hur något i EarMind fungerar. Svaren handlar bara om appen."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Fråga högt": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Ask out loud"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fråga högt"
           }
         }
       },
@@ -9320,7 +9338,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Voice quizzing"
+            "value": "Spoken quiz"
           }
         },
         "sv": {
@@ -9338,7 +9356,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Voice quizzing (BETA)"
+            "value": "Spoken quiz (Beta)"
           }
         },
         "sv": {
@@ -11002,7 +11020,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "In Standard mode EarMind also answers questions that someone else asks, for example the teacher. Their words are then transcribed and sent the same way. Tell the people around you that you use Lumen, and don't use it where recording isn't allowed, for example in exams."
+            "value": "In Standard mode EarMind also answers questions that someone else asks, for example the teacher. Their words are then transcribed and sent the same way. Tell the people around you that you use EarMind, and don't use it where recording isn't allowed, for example in exams."
           }
         },
         "sv": {
@@ -11413,7 +11431,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "No rules. Say for example “Lumen, regel: svara alltid kort”."
+            "value": "No rules yet. Say for example “Lumen, rule: always answer briefly”."
           }
         },
         "sv": {
@@ -11719,7 +11737,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "No account. Try now means you accept the points above."
+            "value": "No account needed. Tapping Try now means you accept the points above."
           }
         },
         "sv": {
@@ -12447,7 +12465,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "I couldn't read the page. Photograph it straight from above, in good light."
+            "value": "I couldn't read the page. Take the photo straight from above, in good light."
           }
         },
         "sv": {
@@ -12519,7 +12537,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Yes–no questions can be answered with a nod or a shake of the head. You can also say “Lumen, korta förklaringar” or “Lumen, provet är på fredag”."
+            "value": "Yes–no questions can be answered with a nod or a shake of the head."
           }
         },
         "sv": {
@@ -13783,7 +13801,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Requires Spotify Premium. Then you can say “Lumen, spela spellistan Plugg”, “pausa” or “nästa”. Spotify must have been open on the phone."
+            "value": "Requires Spotify Premium. Then you can control Spotify with your voice. Spotify must have been open on the phone."
           }
         },
         "sv": {
@@ -14843,7 +14861,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Listening modes use the microphone. Start quiz never does."
+            "value": "More modes use the microphone. Start quiz never does."
           }
         },
         "sv": {
@@ -16341,7 +16359,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Mini test, 5 questions"
+            "value": "Mini quiz, 5 questions"
           }
         },
         "sv": {
@@ -17526,7 +17544,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Pause Lumen and play music"
+            "value": "Pause EarMind and play music"
           }
         },
         "sv": {
@@ -17819,24 +17837,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Plugga till %@, %@"
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
-    "Plugga utan mobilen": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Study without your phone"
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Plugga utan mobilen"
           }
         }
       },
@@ -18638,7 +18638,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The exam session is like the real thing: EarMind only answers “Lumen, …”: uppgift sju, ledtråd, rätta jag fick …, nästa, starta provtid nittio minuter, hur gick det, avsluta provet."
+            "value": "The exam session is like the real thing: EarMind only answers what starts with “Lumen”."
           }
         },
         "sv": {
@@ -23090,7 +23090,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Controls Spotify when you say \"nästa låt\" (only when you have connected Spotify)."
+            "value": "Controls Spotify when you say \"next song\" (only when you have connected Spotify)."
           }
         },
         "sv": {
@@ -23491,6 +23491,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Svaret kommer i örat. Nästa skärm frågar först.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "The answer comes in your ear. The next screen asks first."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svaret kommer i örat. Nästa skärm frågar först."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Svaret är för långt (högst 4 000 tecken).": {
       "extractionState": "manual",
       "localizations": {
@@ -23731,7 +23749,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Say the phrase as the whole sentence. With “Lumen” first they all work, without “Lumen” only music and “det där var fel”."
+            "value": "Say the phrase as the whole sentence. With “Lumen” first they all work, without “Lumen” only music and “that was wrong”."
           }
         },
         "sv": {
@@ -23767,7 +23785,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Say ja for more"
+            "value": "Say “yes” for more"
           }
         },
         "sv": {
@@ -23893,7 +23911,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Say “Lumen, kom ihåg …”, “Lumen, glöm …” or “Lumen, regel: …”. After each turn EarMind also saves important things you say about yourself, with the date. Sensitive details (health, religion, politics and the like) are never saved by themselves. Everything is on this iPhone, is sent with your questions and expires after 2 years."
+            "value": "Say “Lumen, remember …”, “Lumen, forget …” or “Lumen, rule: …”. After each turn EarMind also saves important things you say about yourself, with the date. Sensitive details (health, religion, politics and the like) are never saved by themselves. Everything is on this iPhone, is sent with your questions and expires after 2 years."
           }
         },
         "sv": {
@@ -23929,7 +23947,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Say “Lumen” and what you want, whenever you want."
+            "value": "Say “Lumen” (EarMind's wake word) and what you want, whenever you want."
           }
         },
         "sv": {
@@ -24693,24 +24711,6 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "Telefonen kan ligga i fickan.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Your phone can stay in your pocket."
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Telefonen kan ligga i fickan."
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
     "Telefonen stannar i fickan.": {
       "extractionState": "manual",
       "localizations": {
@@ -25266,19 +25266,19 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. Utan nät blir det inga svar.": {
+    "Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. Kan servern inte svara, svarar telefonens egen modell där den finns, och då stannar texten på telefonen.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The text is sent through EarMind's server to Claude from Anthropic, which produces the answer. Without a connection there are no answers."
+            "value": "The text is sent through EarMind's server to Claude from Anthropic, which produces the answer. If the server can't answer, the phone's own model answers where it's available, and then the text stays on your phone."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. Utan nät blir det inga svar."
+            "value": "Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. Kan servern inte svara, svarar telefonens egen modell där den finns, och då stannar texten på telefonen."
           }
         }
       },
@@ -25532,7 +25532,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Back to Lumen"
+            "value": "Back to EarMind"
           }
         },
         "sv": {
@@ -25734,7 +25734,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Tone when you can say \"ja\" for more"
+            "value": "Tone when you can say \"yes\" for more"
           }
         },
         "sv": {
@@ -25911,7 +25911,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Tap Listen again or say “Lumen, fortsätt”"
+            "value": "Tap Listen again or say “Lumen, continue”"
           }
         },
         "sv": {
@@ -27384,7 +27384,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Shows what you know and what you should practise"
+            "value": "Shows what you know and what you should practice"
           }
         },
         "sv": {
@@ -29198,7 +29198,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "THE PRACTICE PAPER"
+            "value": "Practice paper"
           }
         },
         "sv": {
@@ -29558,7 +29558,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Practise with %lld flip cards"
+            "value": "Practice with %lld flip cards"
           }
         },
         "sv": {
@@ -29576,7 +29576,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Practise more on"
+            "value": "Practice more on"
           }
         },
         "sv": {
@@ -29594,7 +29594,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Practise"
+            "value": "Practice"
           }
         },
         "sv": {
@@ -29612,7 +29612,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Practise %@ again"
+            "value": "Practice %@ again"
           }
         },
         "sv": {

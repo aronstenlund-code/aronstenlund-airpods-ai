@@ -48,7 +48,9 @@ struct ConsentView: View {
                           text: "Medan EarMind lyssnar skickas ljudet till ElevenLabs, som skriver ut det. Svaren läses också upp med en röst från ElevenLabs. Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon.")
                     point(symbol: "cloud",
                           title: "Svaren kommer från Claude",
-                          text: "Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. Utan nät blir det inga svar.")
+                          // Kelly (A166/Ke90): when the server cannot answer, the phone's own model does (A159), and
+                          // then less leaves the phone; no new consent version for that (D21: in substance).
+                          text: "Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. Kan servern inte svara, svarar telefonens egen modell där den finns, och då stannar texten på telefonen.")
                     point(symbol: "paperplane",
                           title: "Frågor och svar skickas till oss",
                           text: "Dina frågor och EarMinds svar skickas till oss så att vi kan göra EarMind bättre. Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon. Texten raderas när vi har läst den.")
