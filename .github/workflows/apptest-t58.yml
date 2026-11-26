@@ -1,0 +1,54 @@
+name: Apptest own deck (T58)
+
+# T58 (Toby, D263): Spela in själv – make, record (pretend microphone), practise; no request, the same credits.
+# One macOS machine (D217). Simulator only: never a device test.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/t58b*"]
+    paths:
+      - "AppTests/E2E/OwnDeck/**"
+      - "scripts/apptest/t58.sh"
+      - ".github/workflows/apptest-t58.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apptest-t58-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  t58:
+    name: T58 own deck (Simulator)
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Own deck
+        run: |
+          bash scripts/apptest/t58.sh
+          STATUS=$?
+          cat apptest-out/t58/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-t58
+          path: |
+            apptest-out/t58
+            !apptest-out/t58/logs/*.xcresult
