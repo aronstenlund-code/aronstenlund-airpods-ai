@@ -47,12 +47,30 @@
 
 Mer live finns inte att mäta utan modellanrop.
 
-**Live före och efter** med `scripts/k123-live.py` (en räkning som servern svarar själv, 8 gånger): LIVE_HÄR
+**Live före och efter** med `scripts/k123-live.py` (en räkning som servern svarar själv, 8 gånger): **Före** (körning 103 och 104, gamla versionen): servern p50 706 ms respektive 267 ms. Plattformen varierar mycket mellan körningar.
+
+**Uppdelning live** (körning 105 efter deploy 384, åtta räkningar, verifierat live):
+
+| Del | Tid |
+|---|---|
+| `auth_ms` | 1–174 ms (bara de första, kalla anropen) |
+| `body_ms` | 1–443 ms. Det räknas från start och inkluderar alltså inloggningen; bara de första är höga. |
+| **`limits_ms`** | **225–772 ms, p50 cirka 600 ms** |
+
+Den delade gränsen (RPC `check_rate_limits`, som gör en upsert per fönster) är alltså nästan allt ett kodsvar väntar på. På modellvägen hölls också modellens första text tills gränsen hade svarat.
+
+**Efter K123b:** LIVE_EFTER
 
 ### Ändrat
 
 1. **`supabaseUsageSink`.** På plattformen skrivs raden i bakgrunden (`EdgeRuntime.waitUntil` håller isolatet vid liv för den), och den som anropar väntar inte. Lokalt utan EdgeRuntime väntar den som förut. Inget i funktionerna läser `answer_usage` för gränser. Det gäller alla svarsvägar i /answer (10 ställen) och /exam (3 ställen).
 2. **`/exam`** läser krediterna medan gränsen kontrolleras. Det är ett databasväntande före modellen i stället för två.
+3. **K123b: den delade gränsen hålls inte före första ljudet.**
+   - **Kodsvar** (räkning, minnesregel, sparat svar, rapport, tidiga svar) svarar direkt. Den lokala gränsen per minut, som kontrolleras först i varje anrop, är spärren. Den delade räknas samtidigt i bakgrunden, så nästa modellsvar ser den.
+   - **På modellvägen** avgör det som kommer först. Kommer gränsen först gäller den som förut, och ett nej stoppar anropet. Kommer modellens första text först går svaret ut, eftersom anropet redan är startat och betalt, och ett nej gäller från nästa anrop (loggas `answer_over_limit_after_first`).
+   - Antal och priser är oförändrade. Den som är över gränsen kan få högst det svar som redan är på väg.
+   - `BLOCK_ON_SHARED_LIMIT=1` (secret) ger det gamla sättet tillbaka.
+   - Verifierat i test (`_shared/k123_latency_test.ts`, 899/899).
 
 Test: `_shared/k123_latency_test.ts`.
 
