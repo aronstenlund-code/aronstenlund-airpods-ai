@@ -26,7 +26,8 @@ const a = parseArgs(Deno.args, {
   collect: ["reply", "reply-text", "header"],
 });
 const out = a.out ?? repoPath("reports/qa/k122-out");
-const promptsDir = repoPath("reports/qa/k122-prompts");
+// an ad hoc request (--endpoint) keeps its prompts next to its result, never among the bank's prompts
+const promptsDir = a.endpoint ? out : repoPath("reports/qa/k122-prompts");
 await Deno.mkdir(out, { recursive: true });
 await Deno.mkdir(promptsDir, { recursive: true });
 
