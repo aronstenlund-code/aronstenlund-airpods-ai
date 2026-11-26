@@ -52,6 +52,7 @@ on:
           - k122-live.py
           - o100b-live.py
           - d239-live.py
+          - k123-live.py
           - qa/o86_eval_reproduce.py
           - k93-live.py
           - k94-apple-root.py
