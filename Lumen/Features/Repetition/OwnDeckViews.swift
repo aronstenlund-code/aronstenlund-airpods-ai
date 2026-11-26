@@ -301,6 +301,51 @@ struct OwnDeckOfferSheet: View {
     }
 }
 
+/// The deck whose screen is up on Start.
+struct OwnDeckSheet: Identifiable {
+    let id: UUID
+}
+
+/// What Start shows for "Spela in själv": the screen of a deck as a sheet, and the sheet that points here when the
+/// server says no. When the deck's screen has closed, what was never filled in goes, and Öva starts the deck in the
+/// same player as a quiz (a cover cannot come up while the sheet is still there).
+struct OwnDeckOnStart: ViewModifier {
+    let model: RepetitionModel
+    @Binding var shown: OwnDeckSheet?
+    /// Nothing else of Start's own is over it.
+    let isFront: Bool
+    /// The sheet about the free way is down (its button may have been pressed).
+    let onOfferClosed: () -> Void
+    /// The deck whose screen is closing (the sheet's item is already nil when its onDismiss runs).
+    @State private var closing: UUID?
+    @State private var practises: UUID?
+
+    func body(content: Content) -> some View {
+        content
+            .sheet(item: $shown, onDismiss: closed) { item in
+                if let decks = model.ownDecks {
+                    NavigationStack {
+                        OwnDeckView(decks: decks, deckID: item.id) {
+                            practises = item.id
+                            shown = nil
+                        }
+                    }
+                }
+            }
+            .onChange(of: shown?.id) { old, new in closing = new ?? old }
+            .modifier(OwnDeckOfferPresenter(model: model, isFront: isFront && shown == nil, onDismiss: onOfferClosed))
+    }
+
+    private func closed() {
+        guard let decks = model.ownDecks, let id = closing else { return }
+        let kept = OwnDeckTidy.afterEditing(id, in: decks)
+        if practises == id, kept, let deck = decks.deck(id), decks.canStart(deck) {
+            Task { await model.start(own: deck) }
+        }
+        practises = nil
+    }
+}
+
 /// Shows the sheet over the view that is in front when the server says no (Start, or Nytt prov's sheet).
 struct OwnDeckOfferPresenter: ViewModifier {
     let model: RepetitionModel
