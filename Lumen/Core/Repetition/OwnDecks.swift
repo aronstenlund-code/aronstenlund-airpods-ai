@@ -48,15 +48,6 @@ final class OwnDeckOffer {
 // MARK: The deck's screen
 
 extension OwnCard {
-    /// The own recording of a part; nil when there is none.
-    func take(_ part: OwnPart) -> OwnRecordingFile? {
-        part == .question ? questionRecording : answerRecording
-    }
-
-    func text(_ part: OwnPart) -> String {
-        part == .question ? question : answer
-    }
-
     /// Nothing written and nothing read in.
     var isBlank: Bool { !has(.question) && !has(.answer) }
 }

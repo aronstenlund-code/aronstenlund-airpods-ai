@@ -220,7 +220,7 @@ struct OwnTakeRow: View {
             .accessibilityLabel(OwnDeckText.stopLabel(decks.elapsed))
             .accessibilityAddTraits(.updatesFrequently)
             .accessibilityIdentifier(identifier + ".stop")
-        } else if let take = card.take(part) {
+        } else if let take = card.recording(part) {
             let isPlaying = decks.previewing == target
             // Two buttons in one row: each takes its own taps.
             HStack(spacing: 12) {

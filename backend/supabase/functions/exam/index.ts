@@ -8,6 +8,7 @@ import { useQuotaFromDb } from "../_shared/wallet_db.ts";
 import { supabaseUsageSink } from "../_shared/usage.ts";
 import { providerFromEnv } from "../answer/llm/factory.ts";
 import { createExamHandler, DEFAULT_EXAM_CONFIG } from "./handler.ts";
+import { drillConfigFromEnv } from "./drill.ts";
 import { fromCi, loadCiRanges } from "../_shared/testmode.ts";
 
 const env = Deno.env;
@@ -77,7 +78,7 @@ const handler = createExamHandler({
       },
     }
     : null,
-  config: { ...DEFAULT_EXAM_CONFIG, model: env.get("EXAM_MODEL") || undefined },
+  config: { ...DEFAULT_EXAM_CONFIG, model: env.get("EXAM_MODEL") || undefined, drill: drillConfigFromEnv(env) }, // K121: DRILL_ANSWER_MODEL (unset = Sonnet)
 });
 
 // K114 (D249): web beta accounts per network

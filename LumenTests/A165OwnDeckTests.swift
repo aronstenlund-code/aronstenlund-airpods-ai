@@ -52,6 +52,14 @@ import Testing
         return (model, store, audio)
     }
 
+    /// The core (A164) in a folder of its own, with a recorder and a voice that do nothing.
+    static func decks() -> OwnDeckModel {
+        let folder = FileManager.default.temporaryDirectory.appending(path: "a165-\(UUID().uuidString)", directoryHint: .isDirectory)
+        let store = OwnDeckStore(folder: folder)
+        return OwnDeckModel(store: store, audio: OwnDeckAudio(store: store, voice: SilentPhoneVoice()),
+                            recorder: A164OwnDeckTests.FakeRecorder(), activatePlayback: {}, language: { "sv" })
+    }
+
     private func tryToMake(_ model: RepetitionModel) async {
         _ = try? await model.make(DrillMaterial(text: "Fotosyntes."), settings: model.newDrillSettings)
     }
@@ -99,7 +107,7 @@ import Testing
         await tryToMake(model)
         #expect(model.modelIsDown() && model.ownOffer.showing == nil)
         // With it: the server's no brings the sheet, once.
-        model.ownDecks = OwnDeckModel()
+        model.ownDecks = Self.decks()
         await tryToMake(model)
         #expect(model.ownOffer.showing == .modelDown)
         model.ownOffer.close()
@@ -118,7 +126,7 @@ import Testing
         let maker = Maker()
         maker.no = (503, Self.down)
         let (model, _, _) = try model("a165-read", maker: maker)
-        model.ownDecks = OwnDeckModel()
+        model.ownDecks = Self.decks()
         _ = try? await model.readText(DrillMaterial(text: "Fotosyntes."))
         #expect(model.ownOffer.showing == .modelDown)
     }
@@ -127,7 +135,7 @@ import Testing
         let maker = Maker()
         maker.no = (402, Self.short)
         let (model, _, _) = try model("a165-credits", maker: maker)
-        model.ownDecks = OwnDeckModel()
+        model.ownDecks = Self.decks()
         await tryToMake(model)
         #expect(model.ownOffer.showing == .credits)
         #expect(OwnDeckText.offerTitle(.credits) == "Slut på krediter?")
@@ -143,7 +151,7 @@ import Testing
     @Test func aStartTheCreditsDoNotCoverBringsTheSheetAndAStartThatWorksEndsTheOccasion() async throws {
         let cloud = A107StartAudioTests.DeferredCloud()
         let (model, store, audio) = try model("a165-start", maker: Maker(), cloud: cloud)
-        model.ownDecks = OwnDeckModel()
+        model.ownDecks = Self.decks()
         var drill = A79A81RepetitionTests.bio(2)
         drill.needsUpload = true
         store.save(drill)
@@ -165,7 +173,7 @@ import Testing
     // MARK: The deck's screen opens at once, and what was never filled in is tidied away (Ke89 §2)
 
     @Test func aNewDeckIsReadyToWriteInAndGoesAwayWhenNothingWasWritten() {
-        let decks = OwnDeckModel()
+        let decks = Self.decks()
         let deck = OwnDeckTidy.newDeck(in: decks)
         #expect(decks.decks.count == 1 && deck.cards.count == 1, "a first card to write in")
         #expect(OwnDeckText.isDefaultTitle(deck.title) && OwnDeckTidy.shownName(deck.title) == "", "the name field is empty: the placeholder shows")
@@ -176,7 +184,7 @@ import Testing
     }
 
     @Test func aDeckThatWasWrittenInIsKeptWithoutItsBlankCards() throws {
-        let decks = OwnDeckModel()
+        let decks = Self.decks()
         let deck = OwnDeckTidy.newDeck(in: decks)
         let first = try #require(deck.cards.first)
         decks.setText("Vad gör mitokondrien?", for: .question, card: first.id, in: deck.id)
@@ -192,7 +200,7 @@ import Testing
     }
 
     @Test func aNamedDeckIsKeptEvenWithoutCardsAndTheNameIsCutAtTheLimit() throws {
-        let decks = OwnDeckModel()
+        let decks = Self.decks()
         let deck = OwnDeckTidy.newDeck(in: decks)
         decks.rename(deck.id, to: OwnDeckTidy.title(forName: "  Glosor vecka 12 "))
         #expect(decks.deck(deck.id)?.title == "Glosor vecka 12")
@@ -208,11 +216,11 @@ import Testing
 
     @Test func aCardKnowsWhatIsWrittenAndReadIn() {
         var card = OwnCard()
-        #expect(card.isBlank && card.take(.question) == nil && card.text(.answer) == "")
+        #expect(card.isBlank && card.recording(.question) == nil)
         card.answer = "Although."
         #expect(!card.isBlank && card.text(.answer) == "Although.")
         card.questionRecording = OwnRecordingFile(name: "q.m4a", seconds: 3.4)
-        #expect(card.take(.question)?.seconds == 3.4 && card.take(.answer) == nil)
+        #expect(card.recording(.question)?.seconds == 3.4 && card.recording(.answer) == nil)
     }
 
     // MARK: The words (Ke89 §5)

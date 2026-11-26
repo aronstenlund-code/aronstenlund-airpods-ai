@@ -336,7 +336,12 @@ class Backend:
                 if e.code == 401 and attempt == 0:
                     self.tokens[u] = self.signup()
                     continue
-                res["error"] = {"http": e.code}
+                # O97/O99: keep the server's own code (provider_quota …) so the night's report shows the cause
+                try:
+                    code = (json.loads(e.read() or b"{}").get("error") or {}).get("code")
+                except Exception:
+                    code = None
+                res["error"] = {"http": e.code, **({"code": code} if code else {})}
                 break
             except Exception as e:  # network trouble
                 res["error"] = {"exception": str(e)[:120]}

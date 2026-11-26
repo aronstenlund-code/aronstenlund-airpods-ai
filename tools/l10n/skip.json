@@ -600,6 +600,17 @@
  "Lumen/Core/Notes/NotesStore.swift": {
   "# EarMind — \\(createdAt.formatted(date: .long, time: .shortened))": "language data, a log line or a technical string, not a text on the screen"
  },
+ "Lumen/Core/OwnDeck/OwnDeckModel.swift": {
+  "en": "a language code"
+ },
+ "Lumen/Core/OwnDeck/OwnDeckSeed.swift": {
+  "Glosor vecka 12": "the seeded deck of the test builds (T58): the deck's own content, in the deck's language, never in Release",
+  "Vad heter Sveriges huvudstad?": "the seeded deck of the test builds (T58): the deck's own content, in the deck's language, never in Release",
+  "Vad är fotosyntes?": "the seeded deck of the test builds (T58): the deck's own content, in the deck's language, never in Release",
+  "Vad är roten ur hundra?": "the seeded deck of the test builds (T58): the deck's own content, in the deck's language, never in Release",
+  "Växter gör socker och syre av ljus, vatten och koldioxid.": "the seeded deck of the test builds (T58): the deck's own content, in the deck's language, never in Release",
+  "en": "a language code"
+ },
  "Lumen/Core/OwnDeck/OwnDeckStandIn.swift": {
   "\\(target.cardID)-\\(target.part.rawValue).m4a": "a file name (stand-in for the core, only on the branch)",
   "en": "a language code"

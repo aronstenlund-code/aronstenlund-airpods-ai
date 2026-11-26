@@ -1,3 +1,4 @@
+import { modelPrice } from "../_shared/prices.ts";
 import { wordsToNumber } from "../answer/svnum.ts";
 import { HttpError } from "../_shared/errors.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
@@ -58,6 +59,22 @@ export const DEFAULT_DRILL_CONFIG: DrillConfig = {
   answerPriceIn: 2,
   answerPriceOut: 10,
 };
+
+/**
+ * K121: the exam's answer model from `DRILL_ANSWER_MODEL` (unset = DEFAULT_DRILL_CONFIG, Sonnet), priced from the
+ * model's own prices. A cheaper model changes the answers, so it is set only after a live eval (Oscar).
+ */
+export function drillConfigFromEnv(env: { get(k: string): string | undefined }): DrillConfig {
+  const m = env.get("DRILL_ANSWER_MODEL")?.trim();
+  const p = m ? modelPrice(m) : null;
+  return m && p ? { ...DEFAULT_DRILL_CONFIG, answerModel: m, answerPriceIn: p.inPerMTok, answerPriceOut: p.outPerMTok } : DEFAULT_DRILL_CONFIG;
+}
+
+/** K121: `x-earmind-test: … model-haiku` (test traffic) runs the exam's answers on Haiku, for the live eval. */
+export function drillConfigForTest(cfg: DrillConfig, pick: "haiku" | "sonnet" | null): DrillConfig {
+  const p = modelPrice("claude-haiku-5-5")!;
+  return pick === "haiku" ? { ...cfg, answerModel: "claude-haiku-5-5", answerPriceIn: p.inPerMTok, answerPriceOut: p.outPerMTok } : cfg;
+}
 
 export const SYSTEM_PROMPT_DRILL_PLAN =
   `You prepare a Swedish student's revision list for an exam ("prov") from their study material (page photos, notes, a document's text). The student will listen to the questions and answers in their AirPods. Return ONLY a JSON object:

@@ -23,6 +23,7 @@ struct AccountSection: View {
                 Button(role: .destructive) { asks = true } label: {
                     Text("Radera konto").foregroundStyle(LumenColor.redText) // A148: the system's red is 3.6:1
                 }
+                .accessibilityIdentifier("settings.deleteAccount") // T3 (Toby)
             }
             Button("Hantera prenumerationer") { managesSubscriptions = true }
                 .manageSubscriptionsSheet(isPresented: $managesSubscriptions)

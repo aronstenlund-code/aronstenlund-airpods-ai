@@ -2,6 +2,9 @@
 
 **Förberedelse. Inget är inlagt i App Store Connect och inget skickas in** (det kräver Arons ja och TILL-ARON #27).
 Ersätter texten i `README.md` (Ke56/Ke62), som beskrev appen före Säg i AirPods (D203), krediterna (D213) och köpen (D218).
+**Ke90 (2026-11-26):** produktsidan är nu **engelska först** (appen startar på engelska, D253) och svenska som andra
+språk; båda texterna och bilderna står i `README.md`. Det nya (aktiveringsordet D259, Komprimera D262, telefonens egen
+modell D258/D260, Spela in själv D263) är kontrollerat mot koden i tabellen nedan och i §3.
 
 Märkning: **[V]** verifierat i koden eller dokumenten, **[S]** sett i simulatorn, **[O] overifierat** (måste provas eller
 bekräftas före inskickning). Inget här är provat på telefon av mig.
@@ -51,6 +54,8 @@ bekräftas före inskickning). Inget här är provat på telefon av mig.
 > Fungerar med AirPods. EarMind är inte gjord av eller kopplad till Apple. Svar från AI kan vara fel, så kontrollera mot din kursbok.
 
 ### English
+> **Ersatt av `README.md` (Ke90, 2026-11-26):** engelska är nu primärt språk; texten nedan är Ke76-versionen (historik).
+
 | Field | Text |
 |---|---|
 | Subtitle | Study by listening in earbuds *(29)* |
@@ -95,6 +100,10 @@ bekräftas före inskickning). Inget här är provat på telefon av mig.
 | Starta prov och Säg använder aldrig mikrofonen | [V] koden (repetitionsläget startar ingen mikrofon); **[O]** orange pricken på telefon (R9) |
 | 1 500 krediter i månaden, 1 kredit = 1 tecken (D213) | [V] D213/K90 |
 | Köp och veckokort | [S] A134 (låtsasbutik), [V] `/purchase`; produkterna finns inte i App Store Connect än (Aron) |
+| **Ke90:** Komprimera ger en kortare text med samma innehåll, som går att ändra före uppläsning (D262) | [V] `SayCompress`, K120 `POST /exam compress` live (O98); [S] A163 `repSayCompressed`. Knappen syns först vid 160 tecken, därför "Lång text?" |
+| **Ke90:** "Say your own words, and EarMind answers the question that was just asked" (D259, A162) | [V] `ActivationPhrase`, A162-testerna; [S] fältet i lyssnarvyn. Gäller inte Socialt och Rizz (står inte i texten, som bara säger "answers"). Hörs orden rätt i riktigt tal: **[O]** på telefon |
+| **Ke90:** "On iPhones with Apple Intelligence … answer and grade with the phone's own model … tells you … no credits" (D258, D260) | [V] `OnDeviceAnswerProvider`, `AnswerGrader` (raden "Telefonens modell:" / "The phone's model:"), inga krediter dras; bara låtsasmodell i CI. **[O] Foundation Models på riktig telefon (D258 punkt 5).** Stryk stycket om Arons prov inte går igenom före inskickning |
+| **Ke90:** Spela in själv – helt gratis, ljudet stannar på telefonen (D263) | Kärnan [V] A164; vyerna A165 **inte på main** → stycket och bild 10 läggs till först då (README §2) |
 
 ## 2. Integritetsuppgifter (App Privacy)
 **Spårning: Nej.** Ingen reklam-SDK, ingen analys-SDK, ingen IDFA [V: ingen sådan kod i `Lumen/`]. Inloggningen är ett
@@ -116,6 +125,12 @@ anonymt konto per installation (`auth/v1/signup` utan e-post) [V].
 | **Användarinnehåll › Kundsupport** (A152) | Ja | Ja | Appens funktioner | "Fel svar?", talat "rapportera" och Feedback och förslag skickar den egna frågan, svaret och kommentaren till utvecklarna, med konto-id; högst 90 dagar [V i koden, punkt 3 c] |
 | **Användarinnehåll › Annat**, syftet **Analys** (A152) | Ja | Delad historik ja; frågeloggen nej | Analys (produktförbättring) | Frågeloggen (högst 14 dagar, utan konto-id) och frivillig delad historik (högst 12 månader) [V i koden, punkt 3 a, b, d] |
 | Plats, hälsa, finans, sökhistorik | Nej | – | – | [V] |
+
+**Ke90, det nya och App Privacy (svaren i 2b ändras inte):** Komprimera skickar texten till servern och Claude som
+andra texter, och servern sparar bara en rad utan text (`exam-compress` i `answer_usage`) [V i `exam/handler.ts`].
+Aktiveringsorden sparas på telefonen och följer med som nyckelord till taligenkänningen i Fler lägen (A162 punkt 5,
+`ListeningModel`), alltså inom raden Ljuddata. Telefonens egen modell skickar inget. Spela in själv: inspelningarna
+lämnar aldrig telefonen (D263), så de är inte "collected". [V i koden, utom vyerna i A165]
 
 **Måste rättas eller beslutas före inskickning (till Deangelo/Aron):**
 1. ~~**Testläget (D140) skickar allt bakgrundsljud till oss**~~ **Klart (D227, A142): testläget finns inte i Release.** Gällde: när det är på (raderas efter 14 dagar). Det får inte finnas i
@@ -202,6 +217,22 @@ partnern kan behålla dem enligt sina villkor, därför "Collected: Yes".
 > in the app: Settings › Account › Delete account. Feedback and reports are sent only when the user taps them.
 >
 > 6. AirPods are not required; the app also plays through the phone speaker.
+>
+> 7. Compress (Say in AirPods, texts of 160 characters or more): the text is shortened by our server (Claude) or, if the
+> server can't, by the phone's own model. The shorter text is shown and can be edited or undone before anything is played.
+>
+> 8. Activation words (More modes, after consent): the user can type their own words. When they are heard while the app
+> is listening, it answers the question that was just asked. The words are only used for speech recognition.
+>
+> 9. When our server can't answer (for example busy or down), the app uses Apple's on-device model (Foundation Models)
+> where it is available, and the answer or grade says that it comes from the phone's model. No credits are used for it.
+
+**Punkt 10, läggs till när A165 är på main (Spela in själv):**
+> 10. Record it yourself (free): the user writes questions and answers and records them in their own voice. The
+> microphone is used only while the user records (system microphone prompt first). The recordings stay on the phone and
+> are never uploaded. Practice plays them back like a saved quiz and uses no credits.
+
+Punkt 1 och 2 ("The microphone is never used") stämmer fortfarande: Spela in själv är en egen skärm.
 
 **Före inskickning (Aron/Deangelo), inte i texten ovan:**
 - **Krediter för granskaren:** 1 500 räcker för Säg men inte för ett fullt prov (ett prov ≈ 6 000). Välkomsten (5 000)
@@ -213,7 +244,9 @@ Kontroll (Kelly, Ke84): punkt 1 Now Playing [V i koden: `RepetitionSession` sät
 `RemoteCommandHub`]; röster och stil [V: A136/A140, live O81]. Punkt 2 foton raderas [V: `exam/drill.ts`,
 `drill-purge`]. Punkt 3 samtycke före mikrofon [V: `ListeningModel` vägrar utan samtycke]. Punkt 4 1 500/månad, inbjudan
 [V: D213/D224, live O82], köp verifieras [V: `/purchase`]. Punkt 5 Radera konto [V: A145/K101]. Punkt 6 högtalaren
-[V i koden: Säg kräver inga hörlurar; inte provat på telefon].
+[V i koden: Säg kräver inga hörlurar; inte provat på telefon]. Ke90: punkt 7 [V `SayCompress`, D262, K120 live O98],
+punkt 8 [V `ActivationPhrase`, A162], punkt 9 [V `OnDeviceAnswerProvider`/`AnswerGrader`; **[O]** riktig Foundation
+Models, stryk punkten och stycket i beskrivningen om Arons prov inte går igenom], punkt 10 [V A164; vyerna A165 väntar].
 
 ## 4. Övrigt som Apple frågar efter
 | Fält | Förslag | Status |

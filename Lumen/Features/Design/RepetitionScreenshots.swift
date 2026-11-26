@@ -248,7 +248,7 @@ enum RepetitionDemo {
         model.ownOffer.close()
         model.ownOffer.serverAnswered(.credits)
         model.ownOffer.serverAnswered(.modelDown)
-        model.ownDecks = name.hasPrefix("repOwn") ? ownDecks(for: name) : nil
+        model.ownDecks = ownDecks(for: name) // as in the app: always there (empty outside its own scenes)
         if name == "repOwnOffer" { model.serverRefused(.credits) }
         if name == "repOwnOfferDown" { model.serverRefused(.modelDown) }
         guard name != "repHomeEmpty", name != "repOwnHomeEmpty", name != "moreModes" else { return }
@@ -656,32 +656,50 @@ enum RepetitionDemo {
     }
 
     /// A106: Nytt prov with Läs upp texten chosen, or its "Stämmer det här?".
-    // A165 (D263): the user's own decks as the pictures show them (no sound: the recordings are only lengths).
-    static let ownBiology = OwnDeck(title: "Biologi kapitel 3", cards: [
-        OwnCard(question: "Vad gör mitokondrien?", answer: "Den omvandlar näring till energi som cellen kan använda.",
-                questionRecording: OwnRecordingFile(name: "q1", seconds: 3), answerRecording: OwnRecordingFile(name: "a1", seconds: 6)),
-        OwnCard(question: "Vad är fotosyntes?", answer: "Växter gör socker och syre av koldioxid, vatten och ljus.",
-                questionRecording: OwnRecordingFile(name: "q2", seconds: 2)),
-        OwnCard(question: "Vad är skillnaden mellan DNA och RNA?", answer: "DNA lagrar arvet, RNA bär ut det till cellen."),
-    ])
-    static let ownGlossary = OwnDeck(title: "Engelska glosor", cards: [
-        OwnCard(question: "Vad heter självständig på engelska?", answer: "Independent.",
-                questionRecording: OwnRecordingFile(name: "q1", seconds: 3), answerRecording: OwnRecordingFile(name: "a1", seconds: 2)),
-        OwnCard(question: "Vad heter trots att på engelska?", answer: "Although.",
-                questionRecording: OwnRecordingFile(name: "q2", seconds: 3), answerRecording: OwnRecordingFile(name: "a2", seconds: 2)),
-    ])
+    // A165 (D263): the user's own decks as the pictures show them: the real core (A164) in a folder of its own,
+    // with a silent voice, silent files for what is "recorded", and a recorder that records nothing.
     /// The deck whose screen the pictures show.
     static var ownShown: UUID?
 
+    final class StagedOwnRecorder: OwnRecording {
+        var elapsed: TimeInterval = 4
+        var levelDBFS: Double? = -28
+        var onLimit: (@MainActor () -> Void)?
+        func start(to url: URL) async throws(OwnRecordingError) {}
+        func stop() -> TimeInterval? { nil }
+        func cancel() {}
+    }
+
     static func ownDecks(for name: String) -> OwnDeckModel {
-        ownShown = ownBiology.id
-        if name == "repOwnHomeEmpty" || name == "repOwnHomeFirst" { return OwnDeckModel() } // nothing recorded yet
-        let decks = OwnDeckModel(decks: [ownBiology, ownGlossary])
-        if name == "repOwnDeckNew" { ownShown = OwnDeckTidy.newDeck(in: decks).id }
-        if name == "repOwnRecording" { // the second card's answer is being read in
-            decks.stage(recording: OwnDeckModel.Target(deckID: ownBiology.id, cardID: ownBiology.cards[1].id, part: .answer),
-                        elapsed: 4, levelDBFS: -28)
+        let folder = FileManager.default.temporaryDirectory.appending(path: "screenshot-own-\(UUID().uuidString)", directoryHint: .isDirectory)
+        let store = OwnDeckStore(folder: folder)
+        let decks = OwnDeckModel(store: store, audio: OwnDeckAudio(store: store, voice: SilentPhoneVoice()), recorder: StagedOwnRecorder())
+        ownShown = nil
+        // Nothing recorded yet: the other scenes, and the two that show the way in before the first deck.
+        if !name.hasPrefix("repOwn") || name == "repOwnHomeEmpty" || name == "repOwnHomeFirst" { return decks }
+        // The newest deck is listed first, so the glossary is made before the biology.
+        let glossary = decks.addDeck(title: "Engelska glosor")
+        for (question, answer) in [("Vad heter självständig på engelska?", "Independent."), ("Vad heter trots att på engelska?", "Although.")] {
+            guard let card = decks.addCard(to: glossary.id, question: question, answer: answer) else { continue }
+            decks.stageRecorded(.question, card: card.id, in: glossary.id, seconds: 3)
+            decks.stageRecorded(.answer, card: card.id, in: glossary.id, seconds: 2)
         }
+        let biology = decks.addDeck(title: "Biologi kapitel 3")
+        ownShown = biology.id
+        let first = decks.addCard(to: biology.id, question: "Vad gör mitokondrien?", answer: "Den omvandlar näring till energi som cellen kan använda.")
+        let second = decks.addCard(to: biology.id, question: "Vad är fotosyntes?", answer: "Växter gör socker och syre av koldioxid, vatten och ljus.")
+        decks.addCard(to: biology.id, question: "Vad är skillnaden mellan DNA och RNA?", answer: "DNA lagrar arvet, RNA bär ut det till cellen.")
+        if let first {
+            decks.stageRecorded(.question, card: first.id, in: biology.id, seconds: 3)
+            decks.stageRecorded(.answer, card: first.id, in: biology.id, seconds: 6)
+        }
+        if let second {
+            decks.stageRecorded(.question, card: second.id, in: biology.id, seconds: 2)
+            if name == "repOwnRecording" { // the second card's answer is being read in
+                decks.stage(recording: OwnDeckModel.Target(deckID: biology.id, cardID: second.id, part: .answer))
+            }
+        }
+        if name == "repOwnDeckNew" { ownShown = OwnDeckTidy.newDeck(in: decks).id }
         return decks
     }
 

@@ -60,7 +60,9 @@ struct SettingsView: View {
             }
             Section {
                 NavigationLink("Röstkommandon") { VoiceCommandsView(store: model.phrases, music: model.music, voice: model.speaker.settings, tips: model.tips) }
+                    .accessibilityIdentifier("settings.voiceCommands") // T3 (Toby): a row is found by this, whatever the language
                 NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands, preferences: model.preferences, paces: model.paces) }
+                    .accessibilityIdentifier("settings.memory") // T3 (Toby): a row is found by this, whatever the language
             }
             studyProfileSection
             myAnswersSection
@@ -75,6 +77,7 @@ struct SettingsView: View {
                         Task { await model.withdrawConsent() }
                     })
                 }
+                .accessibilityIdentifier("settings.privacy")
             }
             if let deletion = model.accountDeletion {
                 AccountSection(model: deletion) // A145 (Ke78, K101)
@@ -84,12 +87,17 @@ struct SettingsView: View {
                     Button("Spara samtalet som anteckning") { model.saveNote() }
                 }
                 NavigationLink("Anteckningar") { NotesView(store: model.notes) }
+                    .accessibilityIdentifier("settings.notes") // T3 (Toby): a row is found by this, whatever the language
                 NavigationLink("Historik") { HistoryView(store: model.history) }
+                    .accessibilityIdentifier("settings.history") // T3 (Toby): a row is found by this, whatever the language
                 if let cards = model.studyCards {
                     NavigationLink("Studiekort") { StudyCardsView(store: cards) }
+                        .accessibilityIdentifier("settings.studyCards") // T3 (Toby): a row is found by this, whatever the language
                 }
                 NavigationLink("Förberedelser") { PrepView(store: model.prep, goals: model.goals, model: model) }
+                    .accessibilityIdentifier("settings.preparations") // T3 (Toby): a row is found by this, whatever the language
                 NavigationLink("Egna kommandon") { CommandsView(store: model.commands) }
+                    .accessibilityIdentifier("settings.customCommands") // T3 (Toby): a row is found by this, whatever the language
                 Button("Provfrågor") {
                     model.isShowingSettings = false
                     model.isShowingExamSetup = true
@@ -99,7 +107,9 @@ struct SettingsView: View {
                     NavigationLink("Fråga om EarMind") { HelpChatView(model: repetition) }
                 }
                 NavigationLink("Feedback och förslag") { FeedbackView(model: model) }
+                    .accessibilityIdentifier("settings.feedback") // T3 (Toby): a row is found by this, whatever the language
                 NavigationLink("Om appen") { AboutView() }
+                    .accessibilityIdentifier("settings.about") // T3 (Toby): a row is found by this, whatever the language
             }
             if model.repetition != nil {
                 Section { // A84
@@ -124,6 +134,7 @@ struct SettingsView: View {
                         Image(systemName: showsAdvanced ? "chevron.up" : "chevron.down").foregroundStyle(.secondary)
                     }
                 }
+                .accessibilityIdentifier("settings.advanced")
             } footer: {
                 Text("Mikrofon, pauser, känslighet, taligenkänning, röstprofil, kalibrering och diagnostik.")
             }
@@ -147,8 +158,10 @@ struct SettingsView: View {
                 }
                 Section("Diagnostik") {
                     NavigationLink("Rå transkription och svar") { RawTranscriptView(model: model) }
+                        .accessibilityIdentifier("settings.rawTranscript") // T3 (Toby): a row is found by this, whatever the language
                     if let diagnostics {
                         NavigationLink("Diagnostik") { DiagnosticsView(model: diagnostics) }
+                            .accessibilityIdentifier("settings.diagnostics") // T3 (Toby): a row is found by this, whatever the language
                     }
                 }
             }
