@@ -21,7 +21,11 @@ Kevin (moln), 2026-11-26.
   - Modellkostnaden loggas som `exam-compress` i användningen.
   - Inga användarkrediter dras, eftersom de gäller ljud och dras när det sparas.
   - Max tokens är cirka en tredjedel av textens tecken plus 200, högst 4 000.
-- **Verifierat i test** (`exam/k120_compress_test.ts`, låtsasmodell): kortare text, en prompt som behåller språket, städningen, 400 utan anrop, 503 `provider_quota`, och 502 för tomt svar. LIVE
+- **Verifierat i test** (`exam/k120_compress_test.ts`, låtsasmodell): kortare text, en prompt som behåller språket, städningen, 400 utan anrop, 503 `provider_quota`, och 502 för tomt svar.
+- **Verifierat live** (kevin-live 45776584081 efter deploy 372, krediterna slut), 6 av 6:
+  - `compress` gav 503 `provider_quota` med `fallback: true`: "EarMind is down for a moment. Try again later." på engelska och "EarMind är nere en stund. Försök igen senare." på svenska.
+  - `drill` och `/answer` svarade likadant som förut.
+  - Anropen stoppas innan modellen gör något, så de kostade inget.
 
 ## T50 (rad 331)
 - **Gäller inte längre.** Jag svarade Toby den 18 november, och han har kvitterat i sin kö: "T50 klar sedan 18/11".
