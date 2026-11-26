@@ -31,7 +31,7 @@ for i in range(8):
                 elif ev == "done":
                     done = d
     end = (time.time() - t0) * 1000
-    rows.append({"first_byte_ms": round(first), "end_ms": round(end), "server_total_ms": (done.get("timing") or {}).get("total_ms"), "model": (done.get("usage") or {}).get("model"), "said": said[:60]})
+    rows.append({"first_byte_ms": round(first), "end_ms": round(end), "server_total_ms": (done.get("timing") or {}).get("total_ms"), "breakdown": {k: v for k, v in (done.get("breakdown") or {}).items() if k.endswith("_ms")}, "model": (done.get("usage") or {}).get("model"), "said": said[:60]})
     print(json.dumps(rows[-1], ensure_ascii=False), flush=True)
 fb = [r["first_byte_ms"] for r in rows[1:]]
 st = [r["server_total_ms"] for r in rows[1:] if isinstance(r["server_total_ms"], (int, float))]

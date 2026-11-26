@@ -1267,7 +1267,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // right): arithmetic, percentages and a bare clock time are answered entirely by code, no model call.
       const localCalc = computed && !plan ? spokenComputed(computed, tutor) : null;
       if (localCalc) {
+        const tLim = now();
         const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+        const calcLimitsMs = now() - tLim; // K123: what the code answer waits for, in done.breakdown
         if (!rl.allowed) {
           throw new HttpError(429, "rate_limited", "Too many requests", {
             fallback: true,
@@ -1312,7 +1314,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           sseFrame("done", {
             answered: true,
             timing: { meta_ms: totalMs, ttft_ms: totalMs, llm_first_token_ms: null, total_ms: totalMs },
-            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null, auth_ms: Math.round(tAuth), body_ms: Math.round(tBody), limits_ms: Math.round(calcLimitsMs) },
             usage: {
               input_tokens: 0,
               output_tokens: 0,
