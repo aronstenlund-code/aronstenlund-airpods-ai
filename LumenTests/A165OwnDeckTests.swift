@@ -233,6 +233,7 @@ import Testing
         #expect(OwnDeckText.namePrompt == "T.ex. Glosor vecka 12")
         #expect(OwnDeckText.field(.question) == "Fråga" && OwnDeckText.field(.answer) == "Svar")
         #expect(OwnDeckText.record == "Spela in" && OwnDeckText.recordAgain == "Spela in igen" && OwnDeckText.notRecorded == "Inte inspelad")
+        #expect(OwnDeckText.notRecorded(hasText: true) == "Inte inspelad · läses av telefonen" && OwnDeckText.notRecorded(hasText: false) == "Inte inspelad")
         #expect(OwnDeckText.addCard == "Lägg till fråga" && OwnDeckText.delete == "Ta bort" && OwnDeckText.practise == "Öva")
         #expect(OwnDeckText.staysOnPhone == "Helt gratis. Ljudet stannar på din telefon.")
         #expect(OwnDeckText.micNote == "Mikrofonen används bara medan du spelar in.")
@@ -252,6 +253,7 @@ import Testing
                        "Spela in själv – helt gratis": "Record it yourself – completely free",
                        "Skriv frågor och svar och läs in dem med din röst.": "Write questions and answers and record them in your own voice.",
                        "T.ex. Glosor vecka 12": "e.g. Vocabulary week 12", "Inte inspelad": "Not recorded",
+                       "Inte inspelad · läses av telefonen": "Not recorded · read by the phone",
                        "Lägg till fråga": "Add question", "Ta bort": "Delete", "Öva": "Practice",
                        "Helt gratis. Ljudet stannar på din telefon.": "Completely free. The sound stays on your phone.",
                        "Mikrofonen används bara medan du spelar in.": "The microphone is only used while you record.",

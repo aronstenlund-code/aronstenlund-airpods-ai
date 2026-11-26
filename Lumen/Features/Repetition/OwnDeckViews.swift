@@ -259,7 +259,10 @@ struct OwnTakeRow: View {
                 .accessibilityLabel(OwnDeckText.recordLabel(part))
                 .accessibilityIdentifier(identifier)
                 Spacer(minLength: 8)
-                Text(verbatim: OwnDeckText.notRecorded).font(.footnote).foregroundStyle(LumenColor.secondaryText)
+                Text(verbatim: OwnDeckText.notRecorded(hasText: card.has(part)))
+                    .font(.footnote)
+                    .foregroundStyle(LumenColor.secondaryText)
+                    .multilineTextAlignment(.trailing)
             }
         }
     }
