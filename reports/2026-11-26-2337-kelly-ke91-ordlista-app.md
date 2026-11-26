@@ -30,3 +30,10 @@
 - Fable och Angela ändrar sina texter.
 - Kelly läser A167:s bilder när de kommer.
 - Ingen appkod är ändrad. 0 ElevenLabs.
+
+## Sajten live: väntar på Vercel (inte på mig)
+- Ändringen (Press, audio) ligger på main (`2a0d6ef4`). Grenen `kelly/ke66-earmind-site` ger nu bara förhandsversioner: **Vercels produktion byggs från `main`** (verifierat i Vercel, deploy `dpl_E8ECy9…` från main `ddf41012`).
+- **Vercel har inte byggt något main-commit sedan 22:33 UTC**, trots flera pushar efter det. Kontrollerat med kelly-site-check 45905958105, 45906029389, 45906360145 och 45907030714: alla visar den gamla `/` på 42 235 byte, och den nya är 42 237.
+- **Untested assumption:** Vercels gräns på antal byggen per dag. Med Hobby-planen 100 per dag, och varje push till main bygger.
+- Sajten är oförändrad och fungerar: 200 och 393 px på alla tre adresserna. Ändringen kommer ut vid nästa bygge från main.
+- Till Deangelo: om gränsen slår till ofta kan Vercel få en "Ignored Build Step" som bara bygger när `site/` har ändrats (`git diff --quiet HEAD^ HEAD -- site/`). Det är en inställning i projektet, så den görs av Aron eller med hans ja.
