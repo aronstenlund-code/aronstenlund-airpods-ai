@@ -34,7 +34,7 @@ SHOTS = {
         ("repSayVoicesUser", "Pick a voice.", "Listen first. It's free."),
         ("repSayCompressed", "Make it shorter.", "Compress keeps the content in fewer words."),
         ("repTextNew", "Snap your textbook.", "Quiz questions with answers, or the whole text read aloud."),
-        ("repPlayAnswer", "Tap for the answer.", "Once for the long answer, twice for short, three times to pause."),
+        ("repPlayAnswer", "Press for the answer.", "Once for the long answer, twice for short, three times to pause."),
         ("listeningActivation", "Say your words.", "Question you're not prepared for? Say [ … ] so our AI activates."),
         ("repShop", "Start free.", "1,500 credits are included every month."),
         ("repOwnDeck", "Record it yourself.", "Completely free. The sound stays on your phone."),

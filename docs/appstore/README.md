@@ -19,7 +19,7 @@ Rubrik ovanför en oförändrad skärmbild ur appen (Apple-stil, D160): grå bak
 | 4 | `repSayVoicesUser` | **Pick a voice.** Listen first. It's free. | **Välj en röst.** Lyssna först. Det kostar inget. |
 | 5 | `repSayCompressed` | **Make it shorter.** Compress keeps the content in fewer words. | **Gör det kortare.** Komprimera ger samma innehåll med färre ord. |
 | 6 | `repTextNew` | **Snap your textbook.** Quiz questions with answers, or the whole text read aloud. | **Fota boken.** Frågor med svar, eller hela texten uppläst. |
-| 7 | `repPlayAnswer` | **Tap for the answer.** Once for the long answer, twice for short, three times to pause. | **Tryck för svaret.** 1 gång för långt svar, 2 för kort, 3 för paus. |
+| 7 | `repPlayAnswer` | **Press for the answer.** Once for the long answer, twice for short, three times to pause. | **Tryck för svaret.** 1 gång för långt svar, 2 för kort, 3 för paus. |
 | 8 | `listeningActivation` | **Say your words.** Question you're not prepared for? Say [ … ] so our AI activates. | **Säg dina ord.** Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI. |
 | 9 | `repShop` | **Start free.** 1,500 credits are included every month. | **Börja gratis.** 1 500 krediter ingår varje månad. |
 | 10 | `repOwnDeck` | **Record it yourself.** Completely free. The sound stays on your phone. | **Spela in själv.** Helt gratis. Ljudet stannar på din telefon. |
