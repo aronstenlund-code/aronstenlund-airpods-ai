@@ -1,3 +1,4 @@
+import { clientIp } from "./testmode.ts";
 import { HttpError } from "./errors.ts";
 import type { RateLimiter } from "./ratelimit.ts";
 
@@ -79,9 +80,8 @@ export const DEMO_MESSAGES = {
 
 /** SHA-256 of the client IP (first 16 hex chars): rate-limit keys never hold a raw address. */
 export async function networkKey(req: Request): Promise<string> {
-  const ip = (req.headers.get("cf-connecting-ip") ??
-    req.headers.get("x-forwarded-for")?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "unknown")
-    .trim();
+  // O100 S1b: only the platform's address (the client's own cf-connecting-ip / x-real-ip would give a new network per call)
+  const ip = clientIp(req) || "unknown";
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`lumen-demo:${ip}`));
   return [...new Uint8Array(buf)].slice(0, 8).map((b) => b.toString(16).padStart(2, "0")).join("");
 }

@@ -417,7 +417,9 @@ export async function readLimitedJson(req: Request, maxBytes: number): Promise<u
     if (done) break;
     total += value.byteLength;
     if (total > maxBytes) {
-      await reader.cancel();
+      // O100 S5b (Oscar): never cancel the request's own stream – live, cancelling an upload still in flight held the
+      // answer back past 25 s; leaving the rest unread lets the 413 go out at once (the platform closes the connection)
+      reader.releaseLock();
       throw new HttpError(413, "payload_too_large", `Body exceeds ${maxBytes} bytes`);
     }
     chunks.push(value);

@@ -61,8 +61,13 @@ export function jwtClaims(req: Request): Record<string, unknown> | null {
   }
 }
 
+/**
+ * O100 S1b (Oscar, HIGH): the caller's address is the first x-forwarded-for entry, which the platform sets (verified
+ * live: a client's own x-forwarded-for did not get through). cf-connecting-ip and x-real-ip are NOT set by the edge,
+ * so a client could send any value there (a GitHub Actions address = "CI test traffic", or a new network per call).
+ */
 export function clientIp(req: Request): string {
-  return (req.headers.get("cf-connecting-ip") ?? req.headers.get("x-forwarded-for")?.split(",")[0] ?? req.headers.get("x-real-ip") ?? "").trim();
+  return (req.headers.get("x-forwarded-for")?.split(",")[0] ?? "").trim();
 }
 
 // ---------- GitHub Actions ranges ----------
@@ -218,6 +223,7 @@ export function detectTest(req: Request, ownerEmails: string[] = []): TestInfo {
 
 // ---------- registering test accounts ----------
 const registered = new Set<string>();
+const checking = new Set<string>(); // O100 S2b: verification in flight
 /**
  * Records a test account once per isolate: a row in public.test_accounts (who, why, first seen) and
  * app_metadata.test = true, so its next JWT says "test" from any network. Best effort, never blocks the answer.
@@ -226,8 +232,9 @@ export function registerTest(info: TestInfo, fn: string, env = Deno.env, fetchFn
   if (!info.test || !info.userId || registered.has(info.userId)) return Promise.resolve();
   const base = (env.get("SUPABASE_URL") ?? "").replace(/\/+$/, "");
   const key = env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-  if (!base || !key || !token) return Promise.resolve();
-  registered.add(info.userId);
+  if (!base || !key || !token || checking.has(info.userId)) return Promise.resolve();
+  // O100 S2b (Oscar): remembered only once verified, so a forged token cannot keep the real account from being registered
+  checking.add(info.userId);
   const h = { apikey: key, authorization: `Bearer ${key}`, "content-type": "application/json" };
   // O100 S2 (Oscar): `info.userId` is the token's unverified `sub`; Auth checks the token first, and only its own
   // account is ever marked (a forged token with someone else's id marks nobody)
@@ -238,9 +245,11 @@ export function registerTest(info: TestInfo, fn: string, env = Deno.env, fetchFn
         console.warn("test_register_refused", JSON.stringify({ fn, verified: !!who }));
         return;
       }
+      registered.add(info.userId!);
       return registerVerified(info, fn, base, h, fetchFn);
     })
-    .catch((e) => console.warn("test_register_failed", e instanceof Error ? e.message.slice(0, 80) : String(e)));
+    .catch((e) => console.warn("test_register_failed", e instanceof Error ? e.message.slice(0, 80) : String(e)))
+    .finally(() => checking.delete(info.userId!));
 }
 
 function registerVerified(info: TestInfo, fn: string, base: string, h: Record<string, string>, fetchFn: typeof fetch): Promise<void> {
