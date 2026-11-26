@@ -14,6 +14,10 @@ on:
       screens:
         description: "Screens to take, separated by spaces"
         required: true
+      languages:
+        description: "Ke90: 'en', 'sv' or 'en sv'. English files are named en-<screen>.png"
+        required: false
+        default: "sv"
       device:
         description: "Simulator name"
         required: false
@@ -85,14 +89,17 @@ jobs:
             --cellularMode active --cellularBars 4 --wifiBars 3 || true
           xcrun simctl ui "$UDID" appearance light
           mkdir -p shots
-          for screen in ${{ inputs.screens }}; do
-            xcrun simctl launch --terminate-running-process "$UDID" com.rsolutions.lumen -LumenScreenshot "$screen" \
-              -say.hasPlayed YES -AppleLanguages "(sv)" -AppleLocale sv_SE
-            sleep 10
-            if ! xcrun simctl spawn "$UDID" launchctl list | grep -q com.rsolutions.lumen; then
-              echo "::warning::$screen: the app is not running (crash?)"
-            fi
-            xcrun simctl io "$UDID" screenshot "shots/${screen}.png"
+          for language in ${{ inputs.languages || 'sv' }}; do
+            if [ "$language" = "sv" ]; then REGION="sv_SE"; PREFIX=""; else REGION="en_US"; PREFIX="${language}-"; fi
+            for screen in ${{ inputs.screens }}; do
+              xcrun simctl launch --terminate-running-process "$UDID" com.rsolutions.lumen -LumenScreenshot "$screen" \
+                -say.hasPlayed YES -AppleLanguages "($language)" -AppleLocale "$REGION"
+              sleep 10
+              if ! xcrun simctl spawn "$UDID" launchctl list | grep -q com.rsolutions.lumen; then
+                echo "::warning::$language $screen: the app is not running (crash?)"
+              fi
+              xcrun simctl io "$UDID" screenshot "shots/${PREFIX}${screen}.png"
+            done
           done
           sips -g pixelWidth -g pixelHeight shots/*.png
 
