@@ -187,6 +187,7 @@ for fn in FNS:
         t5 = ""
     table[fn] = row
     print(f"     {fn}: {row}", flush=True)
+    print(f"     {fn}: {row}", flush=True)
     for name, txt in (("utan token", t), ("falsk token", t2), ("PUT", t3), ("2 MB", t4), ("trasig JSON", t5)):
         m = LEAK.search(txt or "")
         if m:
