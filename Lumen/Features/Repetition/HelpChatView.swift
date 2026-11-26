@@ -261,7 +261,7 @@ struct HelpTryView: View {
             if draft == nil {
                 // A104 (D175): no questions left is said before anything is sent.
                 MainActionBar(title: String(localized: "Gör frågor"),
-                              note: model.quotaUsedUp ? String(localized: "Inga frågor kvar den här månaden.") : nil,
+                              note: model.quotaUsedUp ? CreditText.usedUpShort(credits: model.quota?.isCredits == true) : nil,
                               isBusy: isMaking,
                               isDisabled: isMaking || isEmpty || model.quotaUsedUp) { make() }
             } else {

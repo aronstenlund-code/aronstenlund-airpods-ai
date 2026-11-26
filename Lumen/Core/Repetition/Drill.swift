@@ -504,6 +504,16 @@ enum SaidText {
 /// A131 (D213, Aron 2026-11-17; Kelly Ke71): the month in credits. 1 credit = 1 character of new sound, repeating and
 /// sound that already exists cost nothing. Every number comes from the server; these are only the words.
 enum CreditText {
+    /// Ke91 (Kelly): an account that counts credits hears about credits, never about "questions this month".
+    static func usedUp(credits: Bool) -> String {
+        credits ? String(localized: "Du har inga krediter kvar. Nya krediter kommer den 1 \(ChatGPTImportView.nextMonth()).")
+            : String(localized: "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(ChatGPTImportView.nextMonth()).")
+    }
+
+    static func usedUpShort(credits: Bool) -> String {
+        credits ? String(localized: "Inga krediter kvar.") : String(localized: "Inga frågor kvar den här månaden.")
+    }
+
     /// "1 236": thousands with a space that does not break the line.
     static func number(_ n: Int) -> String {
         let digits = String(abs(n))

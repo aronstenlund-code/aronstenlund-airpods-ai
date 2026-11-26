@@ -265,7 +265,7 @@ struct ChatGPTImportView: View {
 
     private func save(_ found: ChatGPTImport) {
         guard let saved = model.saveImport(found, title: title, grade: grade, voice: voice, into: drill) else {
-            note = String(localized: "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(Self.nextMonth()).") // D155
+            note = CreditText.usedUp(credits: model.quota?.isCredits == true) // D155, Ke91
             return
         }
         onSaved(saved)

@@ -29,3 +29,13 @@ import Testing
         #expect(text("Helt gratis. Ljudet stannar på din telefon.", .en) == "Completely free. The sound stays on your phone.")
     }
 }
+
+/// Ke91 point 5: an account that counts credits hears about credits when it has run out, never about questions.
+@Suite struct Ke91CreditWordsTests {
+    @Test func runningOutSaysCreditsOnACreditAccount() {
+        #expect(CreditText.usedUpShort(credits: true) == "Inga krediter kvar.")
+        #expect(CreditText.usedUpShort(credits: false) == "Inga frågor kvar den här månaden.")
+        #expect(CreditText.usedUp(credits: true).hasPrefix("Du har inga krediter kvar. Nya krediter kommer den 1 "))
+        #expect(CreditText.usedUp(credits: false).hasPrefix("Du har inga frågor kvar den här månaden."))
+    }
+}

@@ -236,7 +236,8 @@ struct NewDrillView: View {
                 // Kelly Ke64 T2: with the largest text the long line filled the screen.
                 Section {
                     Text(verbatim: typeSize.isAccessibilitySize
-                         ? String(localized: "Inga frågor kvar förrän den 1 \(ChatGPTImportView.nextMonth()).") : Self.usedUpLine)
+                         ? CreditText.usedUpShort(credits: model.quota?.isCredits == true)
+                         : CreditText.usedUp(credits: model.quota?.isCredits == true))
                 }
             } else if model.isOffline { // A104 (A103): said before the user has taken photos and waited
                 Section {
@@ -276,7 +277,9 @@ struct NewDrillView: View {
                     if make == .text {
                         VStack(alignment: .leading, spacing: 6) {
                             Text("EarMind läser upp materialet som en löpande text, utan frågor. Du pausar och hoppar mellan meningar med AirPods.")
-                            Text("Texten räknas som en fråga per påbörjade 800 tecken, ungefär en tredjedel av en boksida.")
+                            if model.quota?.isCredits != true { // Ke91: an account with credits sees only credits
+                                Text("Texten räknas som en fråga per påbörjade 800 tecken, ungefär en tredjedel av en boksida.")
+                            }
                         }
                     }
                 }
@@ -389,7 +392,7 @@ struct NewDrillView: View {
             MainActionBar(title: NewQuizText.title(down: model.modelIsDown(), base: make == .text ? String(localized: "Skapa uppläsning")
                               : fitsAfterNo != nil ? String(localized: "Skapa \(DrillText.questions(settings.questions))") : String(localized: "Skapa frågor")),
                           note: model.modelIsDown() ? NewQuizText.downNote
-                              : model.quotaUsedUp ? String(localized: "Inga frågor kvar den här månaden.") // Kelly: the long line is at the top
+                              : model.quotaUsedUp ? CreditText.usedUpShort(credits: model.quota?.isCredits == true) // Kelly: the long line is at the top
                               : hasNoRoom ? String(localized: "Krediterna räcker inte till ett prov.") // A154 (D241): the long line is at the top
                               : model.isOffline ? (make == .text ? String(localized: "Skapa uppläsning kräver internet.") : String(localized: "Skapa frågor kräver internet."))
                               : material.isEmpty ? String(localized: "Lägg till minst en sida, bild eller text.") : model.quota.map { $0.line + "." },
@@ -435,10 +438,6 @@ struct NewDrillView: View {
         }
     }
 
-    /// Kelly (A99): "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 december."
-    private static var usedUpLine: String {
-        String(localized: "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(ChatGPTImportView.nextMonth()).")
-    }
 
     /// A154 (D241): the credits cover no exam (questions only; a text read aloud is counted on its own length).
     private var hasNoRoom: Bool { make == .questions && model.newDrillHasNoRoom }

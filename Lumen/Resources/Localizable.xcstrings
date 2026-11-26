@@ -5979,6 +5979,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Du har inga krediter kvar. Nya krediter kommer den 1 %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "You're out of credits. They refill on %@ 1."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du har inga krediter kvar. Nya krediter kommer den 1 %@."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Du har lyssnat igenom hela %@.": {
       "extractionState": "manual",
       "localizations": {
@@ -11335,24 +11353,6 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "Inga frågor kvar förrän den 1 %@.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "No questions left until %@ 1."
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inga frågor kvar förrän den 1 %@."
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
     "Inga kommandon än.": {
       "extractionState": "manual",
       "localizations": {
@@ -11402,6 +11402,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Inga kontrollfrågor"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Inga krediter kvar.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "No credits left."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inga krediter kvar."
           }
         }
       },
