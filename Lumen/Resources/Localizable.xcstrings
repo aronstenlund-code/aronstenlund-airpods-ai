@@ -223,7 +223,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": " · The sound is fetched when you start"
+            "value": " · The audio downloads when you start"
           }
         },
         "sv": {
@@ -475,7 +475,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "%@ has no text that can be read. Photograph the pages instead."
+            "value": "%@ has no text that can be read. Take photos of the pages instead."
           }
         },
         "sv": {
@@ -670,7 +670,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "%@ · Sound: %lld of %lld ready"
+            "value": "%@ · Audio: %lld of %lld ready"
           }
         },
         "sv": {
@@ -688,7 +688,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "%@ · The sound is made when you start"
+            "value": "%@ · The audio is created when you start"
           }
         },
         "sv": {
@@ -706,7 +706,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "%@ · The sound is fetched when you start"
+            "value": "%@ · The audio downloads when you start"
           }
         },
         "sv": {
@@ -778,7 +778,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "%@ · sound ready"
+            "value": "%@ · audio ready"
           }
         },
         "sv": {
@@ -832,7 +832,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "%@ is added. The sound is already ready."
+            "value": "%@ is added. The audio is already ready."
           }
         },
         "sv": {
@@ -2096,7 +2096,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "1 per %lld characters"
+            "value": "1 credit per %lld characters"
           }
         },
         "sv": {
@@ -2186,7 +2186,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "1 character of new sound"
+            "value": "1 character of new audio"
           }
         },
         "sv": {
@@ -2635,7 +2635,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "All modes here listen and are in BETA. "
+            "value": "All modes here listen and are in beta. "
           }
         },
         "sv": {
@@ -3021,7 +3021,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "If you use Make with ChatGPT, you send the files to ChatGPT yourself."
+            "value": "If you use Create with ChatGPT, you send the files to ChatGPT yourself."
           }
         },
         "sv": {
@@ -3126,7 +3126,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "To review"
+            "value": "Under review"
           }
         },
         "sv": {
@@ -3144,7 +3144,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "To practise"
+            "value": "To practice"
           }
         },
         "sv": {
@@ -3458,7 +3458,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "BETA"
+            "value": "Beta"
           }
         },
         "sv": {
@@ -4439,7 +4439,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Today's limit for new sound is reached. The rest is made tomorrow. You can already study the questions that have sound."
+            "value": "Today's limit for new audio is reached. The rest is created tomorrow. You can already study the questions that have audio."
           }
         },
         "sv": {
@@ -4529,7 +4529,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "These modes listen to what you say. They are in BETA and keep getting better."
+            "value": "These modes listen to what you say. They're in beta and keep getting better."
           }
         },
         "sv": {
@@ -4745,7 +4745,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Shared when the sound is ready (%lld of %lld)."
+            "value": "Shared when the audio is ready (%lld of %lld)."
           }
         },
         "sv": {
@@ -4763,7 +4763,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Shared when the sound is ready."
+            "value": "Shared when the audio is ready."
           }
         },
         "sv": {
@@ -6345,7 +6345,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Then EarMind talks at your level, hears your subject words correctly and knows what you should practise."
+            "value": "Then EarMind talks at your level, hears your subject words correctly and knows what you should practice."
           }
         },
         "sv": {
@@ -6428,7 +6428,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "EarMind starts with what you need to practise"
+            "value": "EarMind starts with what you need to practice"
           }
         },
         "sv": {
@@ -8222,7 +8222,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Photograph your material. EarMind makes questions and answers, or reads the text aloud, in your AirPods."
+            "value": "Snap your textbook. EarMind creates questions and answers, or reads the text aloud, in your AirPods."
           }
         },
         "sv": {
@@ -10040,7 +10040,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Make"
+            "value": "Create"
           }
         },
         "sv": {
@@ -10112,7 +10112,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Make questions"
+            "value": "Create questions"
           }
         },
         "sv": {
@@ -10130,7 +10130,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Making the sound"
+            "value": "Creating audio"
           }
         },
         "sv": {
@@ -10148,7 +10148,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Making the sound …"
+            "value": "Creating audio …"
           }
         },
         "sv": {
@@ -10166,7 +10166,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Make with ChatGPT"
+            "value": "Create with ChatGPT"
           }
         },
         "sv": {
@@ -10840,7 +10840,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Get others' quizzes"
+            "value": "Find quizzes from your school"
           }
         },
         "sv": {
@@ -11593,7 +11593,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "No internet connection. The rest of the sound downloads when you're back online."
+            "value": "No internet connection. The rest of the audio downloads when you're back online."
           }
         },
         "sv": {
@@ -12901,7 +12901,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Paste the link you got, and the quiz is added for you with the same sound."
+            "value": "Paste the link you got, and the quiz is added for you with the same audio."
           }
         },
         "sv": {
@@ -13027,7 +13027,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Come prepared to the quiz"
+            "value": "Be ready for your quiz"
           }
         },
         "sv": {
@@ -13711,7 +13711,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Free. The sound already exists."
+            "value": "Free. The audio already exists."
           }
         },
         "sv": {
@@ -13765,7 +13765,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Not enough credits for a quiz."
+            "value": "Not enough credits for this quiz."
           }
         },
         "sv": {
@@ -13783,7 +13783,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Not enough credits for the quiz."
+            "value": "Not enough credits for this quiz."
           }
         },
         "sv": {
@@ -14353,7 +14353,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Sound that already exists"
+            "value": "Audio that already exists"
           }
         },
         "sv": {
@@ -14371,7 +14371,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Sound: %lld of %lld ready"
+            "value": "Audio: %lld of %lld ready"
           }
         },
         "sv": {
@@ -14389,7 +14389,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Sound: %lld of %lld ready. The rest is made on %@ 1, when you have questions left."
+            "value": "Audio: %lld of %lld ready. The rest is created on %@ 1, when you have credits."
           }
         },
         "sv": {
@@ -14443,7 +14443,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The sound is taking a while. The quiz can start when the first question is ready."
+            "value": "The audio is taking a while. The quiz can start when the first question is ready."
           }
         },
         "sv": {
@@ -14461,7 +14461,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The sound for %@ couldn't be made. EarMind tries again by itself."
+            "value": "The audio for %@ couldn't be created. EarMind tries again by itself."
           }
         },
         "sv": {
@@ -14479,7 +14479,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The sound couldn't be loaded."
+            "value": "The audio couldn't be downloaded."
           }
         },
         "sv": {
@@ -14497,7 +14497,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The sound is made when you start the quiz."
+            "value": "The audio is created when you start the quiz."
           }
         },
         "sv": {
@@ -14515,7 +14515,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The sound is made when you start the quiz. Change as much as you like first."
+            "value": "The audio is created when you start the quiz. Change as much as you like first."
           }
         },
         "sv": {
@@ -14533,7 +14533,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The sound is made as usual once the questions are saved."
+            "value": "The audio is created as usual once the questions are saved."
           }
         },
         "sv": {
@@ -14551,7 +14551,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The sound is being made. You can start when the first question is ready."
+            "value": "Creating audio. You can start when the first question is ready."
           }
         },
         "sv": {
@@ -14569,7 +14569,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The sound is being made. You can start when the first paragraph is ready."
+            "value": "Creating audio. You can start when the first paragraph is ready."
           }
         },
         "sv": {
@@ -14587,7 +14587,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The sound is fetched when you start the quiz."
+            "value": "The audio downloads when you start the quiz."
           }
         },
         "sv": {
@@ -14605,7 +14605,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The sound couldn't be loaded."
+            "value": "The audio couldn't be downloaded."
           }
         },
         "sv": {
@@ -14623,7 +14623,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The sound couldn't be loaded. Check your connection."
+            "value": "The audio couldn't be downloaded. Check your connection."
           }
         },
         "sv": {
@@ -17237,7 +17237,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Something wrong? Write it"
+            "value": "Something wrong? Tell us"
           }
         },
         "sv": {
@@ -18476,7 +18476,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Quiz name"
+            "value": "Quiz name (optional)"
           }
         },
         "sv": {
@@ -18512,7 +18512,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Quiz name, optional"
+            "value": "Quiz name (optional)"
           }
         },
         "sv": {
@@ -18584,7 +18584,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Previews are free. A new voice means new sound."
+            "value": "Previews are free. A new voice means new audio."
           }
         },
         "sv": {
@@ -18782,7 +18782,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Published when the sound is ready (%lld of %lld)."
+            "value": "Published when the audio is ready (%lld of %lld)."
           }
         },
         "sv": {
@@ -18800,7 +18800,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Published when the sound is ready."
+            "value": "Published when the audio is ready."
           }
         },
         "sv": {
@@ -19925,7 +19925,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The voice can't be changed afterwards, because the sound is made with it."
+            "value": "The voice can't be changed afterwards, because the audio is created with it."
           }
         },
         "sv": {
@@ -19968,6 +19968,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rösten läser i 0,70 och resten av tiden blir pauser."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Röster": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Voices"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Röster"
           }
         }
       },
@@ -21771,7 +21789,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "If you save a change, new sound is made only for this question."
+            "value": "If you save a change, only this question gets new audio."
           }
         },
         "sv": {
@@ -23689,24 +23707,6 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "Svenska röster": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Swedish voices"
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Svenska röster"
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
     "Svit: %lld dagar i rad": {
       "extractionState": "manual",
       "localizations": {
@@ -24789,7 +24789,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Your phone has no room for the sound. Free up some storage and the rest will download."
+            "value": "Your phone has no room for the audio. Free up some storage and the rest will download."
           }
         },
         "sv": {
@@ -24876,7 +24876,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Tempo"
+            "value": "Speed"
           }
         },
         "sv": {
@@ -24894,7 +24894,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Tempo, %@"
+            "value": "Speed, %@"
           }
         },
         "sv": {
@@ -24912,7 +24912,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Tempo, normal"
+            "value": "Speed, normal"
           }
         },
         "sv": {
@@ -25128,7 +25128,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Text · Sound: %lld of %lld ready"
+            "value": "Text · Audio: %lld of %lld ready"
           }
         },
         "sv": {
@@ -25146,7 +25146,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Text · The sound is made when you start"
+            "value": "Text · The audio is created when you start"
           }
         },
         "sv": {
@@ -27492,7 +27492,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Shows what you know and what you should practise"
+            "value": "Shows what you know and what you should practice"
           }
         },
         "sv": {
@@ -27510,7 +27510,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Shows what costs what"
+            "value": "Shows what things cost"
           }
         },
         "sv": {
@@ -29594,7 +29594,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Opens the set"
+            "value": "Opens the quiz"
           }
         },
         "sv": {
@@ -29666,7 +29666,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Practise with %lld flip cards"
+            "value": "Practice with %lld flip cards"
           }
         },
         "sv": {
@@ -29684,7 +29684,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Practise more on"
+            "value": "Practice more on"
           }
         },
         "sv": {
@@ -29702,7 +29702,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Practise"
+            "value": "Practice"
           }
         },
         "sv": {
@@ -29720,7 +29720,7 @@
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Practise %@ again"
+            "value": "Practice %@ again"
           }
         },
         "sv": {

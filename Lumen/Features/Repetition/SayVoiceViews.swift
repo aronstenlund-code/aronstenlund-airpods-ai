@@ -82,7 +82,8 @@ struct SayVoicesSheet: View {
                     Section {
                         ForEach(model.sayVoices.filter { !$0.isUnderReview }) { row($0) }
                     } header: {
-                        Text("Svenska röster")
+                        // Ke91 (Kelly): the catalog has one language, so the heading does not name it.
+                        Text(verbatim: String(localized: "Röster"))
                     } footer: {
                         Text(verbatim: Self.footnote)
                     }
