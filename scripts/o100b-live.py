@@ -20,16 +20,24 @@ def ok(name, cond, info):
 
 tok = T.signup()[0]
 r = urllib.request.Request(T.URL + "/functions/v1/provlage-eval", data=b'{"action":"nope"}', method="POST",
-                           headers=T.headers(tok, True, {"cf-connecting-ip": "203.0.113.7", "x-real-ip": "203.0.113.7"}))
+                           headers=T.headers(tok, True, {"x-real-ip": "203.0.113.7"}))
 try:
     with urllib.request.urlopen(r, timeout=60) as x:
         st, body = x.status, x.read()[:200].decode()
 except urllib.error.HTTPError as e:
     st, body = e.code, e.read()[:200].decode()
-ok("S1b: a client's cf-connecting-ip / x-real-ip is ignored (CI test call still 400, not 403)", st == 400, {"status": st, "body": body})
+ok("S1b: a client's x-real-ip is ignored (CI test call still 400, not 403)", st == 400, {"status": st, "body": body})
+# a client's own cf-connecting-ip never reaches a function: Cloudflare answers 403 "error code: 1000" itself (run 100)
+r = urllib.request.Request(T.URL + "/functions/v1/provlage-eval", data=b'{"action":"nope"}', method="POST", headers=T.headers(tok, True, {"cf-connecting-ip": "203.0.113.7"}))
+try:
+    with urllib.request.urlopen(r, timeout=60) as x:
+        st, body = x.status, x.read()[:200].decode()
+except urllib.error.HTTPError as e:
+    st, body = e.code, e.read()[:200].decode()
+ok("S1b: a client's cf-connecting-ip is refused by Cloudflare before any function (error code 1000)", st == 403 and "1000" in body, {"status": st, "body": body})
 
 host = urllib.parse.urlparse(T.URL).hostname
-for n in (3, 32):
+for n in (3,):  # 32 (2 MB) blocks the client's own send once the server has answered and stopped reading
     c = http.client.HTTPSConnection(host, timeout=25)
     t0 = time.time()
     try:
