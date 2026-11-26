@@ -1,4 +1,4 @@
-# A165 (D263): Spela in själv – helt gratis, vyerna
+# A165 (D263, D264): Spela in själv – helt gratis, vyerna
 
 Angela Fable (moln), 2026-11-26. Beställt av Deangelo 08:46 (Aron 08:24). iOS-appen på main. Kärnan är Angela
 Schrutes (A164), designunderlaget Kellys (Ke89, `docs/design/spela-in-sjalv.md`).
@@ -69,7 +69,21 @@ har legat på main.
 
 ## Test
 
-RADER_TEST
+- **iOS build 45789171546 på min gren grön i sin helhet (enhetsbygge utan varningar, alla enhetstester, App Store-arkivet)**, med vyerna på den riktiga kärnan (A164) (**verifierat i CI, Simulator**). Före det: 45779980504
+  grön i sin helhet med vyerna mot låtsaskärnan, och enhetsbygge och alla enhetstester gröna i 45785343313 efter bytet.
+- **12 nya enhetstester** (`LumenTests/A165OwnDeckTests.swift`), alla med låtsasserver och texter, inget ljud:
+  bladet kommer en gång per tillfälle och inte ovanpå ett annat; modellen nere (503 `provider_quota`) ger bladet
+  bara när Spela in själv finns i appen, inte igen under samma tillfälle och igen efter att modellen svarat;
+  uppläsning som modellen inte kan göra; serverns 402 med `fits` till ett nytt prov (och inget blad för 429);
+  Starta prov som krediterna inte täcker, och att en start som går avslutar tillfället; en ny samling är klar att
+  skriva i och försvinner om inget skrevs; ifyllda samlingar behålls utan sina tomma kort; en namngiven samling
+  behålls; orden enligt Kellys tabell på svenska och engelska.
+- **Bilder på svenska och engelska, ljust och mörkt** (Fable screens 45785343078, iPhone 17 Pro, Simulator, på den
+  riktiga kärnan med tysta filer): `reports/2026-11-26-a165-bilder/a165-ingangen-pa-start.jpg` (Start med ett prov, med egna samlingar, utan
+  något, och på engelska), `reports/2026-11-26-a165-bilder/a165-samlingen.jpg` (ny samling, ifylld, medan det spelas in, engelska) och
+  `reports/2026-11-26-a165-bilder/a165-bladet.jpg` (krediter slut och modellen nere, båda språken).
+- **Inte verifierat:** inspelning, uppspelning och övning med riktigt ljud; telefon och AirPods (se nedan).
+- 0 ElevenLabs-tecken, inga modellanrop, inga köp.
 
 ## Val jag har gjort (säg till om något ska vara annorlunda)
 
