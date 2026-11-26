@@ -65,6 +65,10 @@ Deno.serve(withCors(
         return mine?.user_id === row.user_id;
       },
       subByOriginal: async (o) => ((await db.select("store_subscriptions", `select=*&original_transaction_id=eq.${q(o)}&limit=1`)) as SubRow[])[0] ?? null,
+      // O100 S3: credits from Sandbox/Xcode purchases within the window (the cap in handler.ts)
+      sandboxCredits: async (u, since) =>
+        ((await db.select("credit_ledger", `select=credits&user_id=eq.${q(u)}&kind=eq.purchase&environment=neq.Production&created_at=gte.${q(since)}`)) as { credits: number }[])
+          .reduce((n, r) => n + (r.credits ?? 0), 0),
       upsertSub: async (row) => await db.upsert("store_subscriptions", { ...row, updated_at: new Date().toISOString() }, "original_transaction_id"),
     },
   }),

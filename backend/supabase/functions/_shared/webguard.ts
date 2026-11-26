@@ -76,7 +76,9 @@ export function withWebGuard(
 /** The demo page's calls: `?source=demo` (stt-token) or `"source": "demo"` in a small JSON body (answer, tts). */
 async function isDemo(req: Request): Promise<boolean> {
   if (new URL(req.url).searchParams.get("source") === "demo") return true;
-  if (req.method !== "POST" || Number(req.headers.get("content-length") ?? 0) > 64_000) return false;
+  // O100 S5: only a body that says its length (a chunked one would be read without limit)
+  const len = req.headers.get("content-length");
+  if (req.method !== "POST" || len === null || !(Number(len) <= 64_000)) return false;
   try {
     const j = await req.clone().json();
     return !!j && typeof j === "object" && (j as { source?: unknown }).source === "demo";

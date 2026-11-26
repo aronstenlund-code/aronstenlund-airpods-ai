@@ -1,3 +1,4 @@
+import { readLimitedJson } from "../answer/validate.ts";
 /**
  * K94 (D218, D214): App Store purchases on the server.
  *   POST /purchase {"action":"verify","jws":"<StoreKit 2 signed transaction>"}  (signed in)
@@ -37,7 +38,12 @@ export interface PurchaseStore {
   addLedger(row: LedgerRow): Promise<boolean>;
   subByOriginal(origTx: string): Promise<SubRow | null>;
   upsertSub(row: SubRow): Promise<void>;
+  /** O100 S3: credits this account got from Sandbox/Xcode purchases since `sinceIso` */
+  sandboxCredits?(userId: string, sinceIso: string): Promise<number>;
 }
+
+/** O100 S3 (Oscar): Sandbox purchases are free in TestFlight; App Review buys there, so they are capped, not refused. */
+export const SANDBOX_CREDITS_PER_30D = Number(Deno.env.get("SANDBOX_CREDITS_PER_30D") ?? "") || 2000;
 
 export interface PurchaseDeps {
   authenticate: Authenticator;
@@ -126,6 +132,12 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
       if (had && had.user_id !== userId) throw new Refusal(409, "purchase_other_account", "Köpet hör till ett annat konto.");
       if (t.revocationDate) return { kind: "credits", added: 0, revoked: true };
       const credits = p.credits * Math.max(1, t.quantity ?? 1);
+      if (!had && (t.environment ?? "Production") !== "Production" && deps.store.sandboxCredits) {
+        const since = new Date(now() - 30 * 86_400_000).toISOString();
+        if ((await deps.store.sandboxCredits(userId, since)) + credits > SANDBOX_CREDITS_PER_30D) {
+          throw new Refusal(422, "sandbox_cap", "Testköpen har nått sitt tak för den här månaden.", { reason: "sandbox" });
+        }
+      }
       const added = await deps.store.addLedger({
         user_id: userId, kind: "purchase", product_id: p.product_id, transaction_id: t.transactionId,
         original_transaction_id: t.originalTransactionId ?? t.transactionId, credits, environment: t.environment ?? null,
@@ -210,9 +222,8 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
         }), { status: 200, headers: { "content-type": "application/json", "cache-control": "public, max-age=60", ...CORS_HEADERS } });
       }
       if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use GET or POST");
-      const raw = await req.text();
-      if (raw.length > 64 * 1024) throw new HttpError(413, "payload_too_large", "too large");
-      const b = (raw ? JSON.parse(raw) : null) as Record<string, unknown> | null;
+      // O100 S5: read with a limit as it streams (a chunked body has no content-length); never more than 64 KB
+      const b = (req.body ? await readLimitedJson(req, 64 * 1024) : null) as Record<string, unknown> | null;
       if (b && "signedPayload" in b) return await notify(b.signedPayload);
       const user = await deps.authenticate(req);
       // ---------- K98 (D224): welcome credits and invitations ----------

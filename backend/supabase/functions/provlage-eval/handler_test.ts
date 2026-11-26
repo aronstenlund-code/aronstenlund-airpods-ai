@@ -20,7 +20,7 @@ Deno.test("D87 eval: Provläge answers on the chosen model, grading by the judge
   const llm = new Fake((r) => r.system.includes("You grade one answer")
     ? '{"correct":1,"a_level":1,"sufficient":0,"natural":1,"length_ok":1,"note":"missing why"}'
     : "Fotosyntes är när växter bygger socker av ljus.");
-  const h = createEvalHandler({ authenticate: () => Promise.resolve({ id: "e1", isAnonymous: true }), rateLimiter: new MemoryRateLimiter(), provider: llm });
+  const h = createEvalHandler({ access: () => true, authenticate: () => Promise.resolve({ id: "e1", isAnonymous: true }), rateLimiter: new MemoryRateLimiter(), provider: llm });
   const res = await h(post({ action: "answer", model: "sonnet", request: { fragment: "fotosyntes", mode: "tutor", language: "sv", context: {} } }));
   assertEquals(res.status, 200);
   assert((await res.text()).includes("Fotosyntes"));
@@ -52,7 +52,7 @@ Deno.test("K2 judge v2: length and the closing question in code, covers apart fr
   assertEquals(closingCheck("Bra.", mid), 1);
 
   const llm = new Fake(() => '{"correct":1,"a_level":1,"sufficient":1,"covers":0,"natural":1,"note":""}');
-  const h = createEvalHandler({ authenticate: () => Promise.resolve({ id: "e2", isAnonymous: true }), rateLimiter: new MemoryRateLimiter(), provider: llm });
+  const h = createEvalHandler({ access: () => true, authenticate: () => Promise.resolve({ id: "e2", isAnonymous: true }), rateLimiter: new MemoryRateLimiter(), provider: llm });
   const g = await (await h(post({ action: "grade", judge: "opus", case: { q: "mitos", profile: mid }, answer: "Mitos är celldelning. Vad är meios?" }))).json();
   assertEquals(g.rubric, 2);
   assertEquals(g.first_answer_suffices, 1);

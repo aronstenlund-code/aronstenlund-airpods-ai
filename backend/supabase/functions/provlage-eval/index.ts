@@ -26,6 +26,7 @@ const handler = createEvalHandler({
   answerConfig: { ...DEFAULT_CONFIG, directModes: env.get("DIRECT_MODES") !== "0" },
   elevenLabsKey: secret(env, "ELEVENLABS_API_KEY"),
   fetchImpl: guardedFetch(fetch, "provlage-eval"), // K62b: a test request that gets this far throws
+  ownerEmails: (env.get("OWNER_EMAIL") ?? "").split(","), // O100 S1: the owner, or test traffic from Actions
 });
 
 // K62b (D180): the eval is test traffic: "transcribe" gets a fake transcript, never Scribe

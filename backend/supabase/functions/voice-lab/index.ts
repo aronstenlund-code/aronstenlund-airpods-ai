@@ -1,3 +1,4 @@
+import { readLimitedJson } from "../answer/validate.ts";
 // POST /functions/v1/voice-lab - K6 voice design previews, service role only (no voice is saved to the account).
 import { extraOriginsFromEnv, withCors } from "../_shared/cors.ts";
 import { secret } from "../_shared/secrets.ts";
@@ -57,7 +58,8 @@ Deno.serve(withCors(async (req: Request) => {
   if (req.method === "OPTIONS") return handler(req);
   const real = !!realToken && req.headers.get("x-earmind-real-audio") === realToken;
   if (real) return handler(req);
-  const b = (await req.clone().json().catch(() => null)) as Record<string, unknown> | null;
+  // O100 S5: read with a limit (this runs before the service-key check in the handler)
+  const b = (await readLimitedJson(req.clone(), 64 * 1024).catch(() => null)) as Record<string, unknown> | null;
   console.log("test_request", JSON.stringify({ fn: "voice-lab", reason: "script", action: b?.action ?? null }));
   const ok = (body: unknown) =>
     new Response(JSON.stringify({ ...(body as object), fake: true }), { status: 200, headers: { "content-type": "application/json", "cache-control": "no-store", ...CORS_HEADERS } });
