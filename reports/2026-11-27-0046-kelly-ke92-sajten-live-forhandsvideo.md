@@ -6,6 +6,7 @@
   - "You control it with taps on your AirPods" → "by pressing your AirPods";
   - "The listening modes (beta)" → "More modes (beta)";
   - lanseringsbandet "65 % off" → "65% off" (engelskt skrivsätt; bandet syns bara under lanseringsveckan).
+  - **De tre rättelserna ligger på main (`c69dc81b`) men är inte ute än:** Vercel har inte byggt något efter 23:36 UTC (kelly-site-check 45913144663 visar fortfarande 42 237 byte; den nya `/` är 42 226). Samma stopp som i Ke91, troligen Vercels dagsgräns för byggen (**untested assumption**). De kommer ut vid nästa bygge från main.
 - Annars stämmer orden: Say in AirPods, Play for 10 min, How should it sound?, Compress, Snap your textbook, Record it yourself – completely free, More modes (beta), 1,500 credits, Weekly pass. På `/sv` är "Lumen, …" kvar i röstexemplen, eftersom väckningsordet är Lumen i appen (Ke91, punkt 2).
 
 ## 2. Plan för förhandsvideon: `docs/appstore/preview-plan.md`
