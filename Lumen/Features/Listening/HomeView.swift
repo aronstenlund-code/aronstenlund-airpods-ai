@@ -63,7 +63,9 @@ struct HomeView: View {
                                       lastNight: lastNightLine,
                                       onLastNight: { model.sleep.report = model.sleep.store.latest },
                                       onSettings: { model.isShowingSettings = true },
-                                      onMoreModes: { showsMoreModes = true })
+                                      onMoreModes: { showsMoreModes = true },
+                                      // A166: the one who listened in the first start finds the way back from Start.
+                                      listeningConsented: model.consent.isGranted)
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
