@@ -208,7 +208,8 @@ partnern kan behålla dem enligt sina villkor, därför "Collected: Yes".
 > Stop. Audio is streamed for speech recognition and not stored by EarMind.
 >
 > 4. Credits: 1 credit is 1 character of new audio; repeats and existing audio are free. Every account gets 1,500 free
-> credits per month, enough to try Say in AirPods; the quiz screen suggests a number of questions that fits the credits.
+> credits per month, enough to try Say in AirPods. A quiz with audio needs more (about 6,000 credits); the quiz screen
+> shows the cost before anything is made, and the credits sheet offers packs and the weekly pass (about 3 quizzes a week).
 > Inviting a friend gives 2,000 credits after the friend plays a first text. Credit packs are consumables. The weekly
 > pass is an auto-renewable subscription; price, renewal and how to cancel are shown next to the purchase button, with
 > links to Terms and Privacy. Purchases are verified on our server.
@@ -236,7 +237,9 @@ partnern kan behålla dem enligt sina villkor, därför "Collected: Yes".
 Punkt 1 och 2 ("The microphone is never used") stämmer fortfarande: Spela in själv är en egen skärm.
 
 **Före inskickning (Aron/Deangelo), inte i texten ovan:**
-- **Krediter för granskaren:** 1 500 räcker för Säg men inte för ett fullt prov (ett prov ≈ 6 000). Välkomsten (5 000)
+- **Krediter för granskaren (O101 G1, hög):** 1 500 räcker för Säg men inte för ett prov (3 frågor ≈ 1 926, servern
+  säger "not enough for an exam"; ett prov ≈ 6 000). Punkt 4 är därför rättad (Ke90) och lovar inte längre att ett prov
+  ryms. Granskaren köper med sandlådan (O100 S3: App Review köper fortfarande). Välkomsten (5 000)
   kräver Team ID och App Attest (TILL-ARON #31, D239); är den på, lägg till i punkt 4: "New accounts also get 5,000
   welcome credits." Annars: ge granskaren krediter på serversidan och skriv det här. **Inget lösenord i repot.**
 - Låst skärm (D209) står inte i texten (inte provad på telefon).
@@ -247,7 +250,7 @@ Kontroll (Kelly, Ke84): punkt 1 Now Playing [V i koden: `RepetitionSession` sät
 [V: D213/D224, live O82], köp verifieras [V: `/purchase`]. Punkt 5 Radera konto [V: A145/K101]. Punkt 6 högtalaren
 [V i koden: Säg kräver inga hörlurar; inte provat på telefon]. Ke90: punkt 7 [V `SayCompress`, D262, K120 live O98],
 punkt 8 [V `ActivationPhrase`, A162], punkt 9 [V `OnDeviceAnswerProvider`/`AnswerGrader`; **[O]** riktig Foundation
-Models, stryk punkten och stycket i beskrivningen om Arons prov inte går igenom], punkt 10 [V A164/A165].
+Models, stryk punkten och stycket i beskrivningen om Arons prov inte går igenom], punkt 10 [V A164/A165]. Punkt 4 rättad efter O101 G1 (Ke90): [L] Oscar, 1 500 räcker inte till ett prov.
 
 ## 4. Övrigt som Apple frågar efter
 | Fält | Förslag | Status |
