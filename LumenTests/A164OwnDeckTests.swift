@@ -410,7 +410,7 @@ import Testing
     }
     #endif
 
-    #if LUMEN_TESTMODE
+    #if DEBUG // the test target has DEBUG, not LUMEN_TESTMODE (the app it tests is the Debug build, which has both)
     // MARK: Toby's pretend recorder (T58)
 
     @Test func thePretendRecorderKeepsTwoSilentSecondsWithoutAMicrophone() async throws {
@@ -425,7 +425,8 @@ import Testing
         let file = try #require(model.deck(deck.id)?.cards.first?.questionRecording)
         #expect(file.seconds == 2 && file.name.hasSuffix(".wav"), "named for what is in it, so the player opens it")
         #expect(FileManager.default.fileExists(atPath: store.url(for: file).path))
-        await model.audio.prepare(try #require(model.deck(deck.id)?.cards), language: "en")
+        let cards = try #require(model.deck(deck.id)?.cards)
+        await model.audio.prepare(cards, language: "en")
         #expect(model.track(in: deck.id, at: 0)?.question == store.url(for: file))
         let defaults = try #require(UserDefaults(suiteName: "a166.\(UUID().uuidString)"))
         #expect(!PretendOwnRecorder.isRequested(defaults))

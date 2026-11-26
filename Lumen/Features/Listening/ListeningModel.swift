@@ -474,7 +474,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// A166: the sharing question may be shown: nothing holds it, and nothing listens or is about to.
     var sharingQuestionIsFree: Bool { !holdsSharingQuestion && !isActiveSession && !isStarting }
 
-    /// A166 (D264): "Jag förstår, starta EarMind" in the first start: the consent, and Standardläget listens at once
+    /// A166 (D266): "Jag förstår, starta EarMind" in the first start: the consent, and Standardläget listens at once
     /// (iOS asks about the microphone). One press from the consent to the first question.
     func firstStartConsentGiven() async {
         holdsSharingQuestion = true
