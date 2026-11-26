@@ -129,8 +129,10 @@ final class OwnDeckFlowTests: XCTestCase {
         let button = practise.buttons.firstMatch.exists ? practise.buttons.firstMatch : practise
         guard button.isEnabled else { return miss("Öva is grey with two cards") }
         button.tap()
-        guard wait(["Fråga 1 av 2*"], 15) != nil else { return miss("the player did not open (\(texts().prefix(300)))") }
+        guard let place = wait(["Fråga 1 av *"], 15) else { return miss("the player did not open (\(texts().prefix(300)))") }
+        log.append("the player: \(place.label)")
         shoot("spelaren")
+        guard place.label.contains("av 2") else { return miss("the player has not the two cards: \(place.label)") }
         // Question 1 (own recording), thinking time, question 2 (the phone's voice).
         let second = wait(["Fråga 2 av 2*"], 40) != nil
         log.append("the player reached question 2: \(second)")
@@ -144,7 +146,7 @@ final class OwnDeckFlowTests: XCTestCase {
     private func onStart(before: String?) -> Bool {
         if let notNow = find(["Inte nu"]), notNow.isHittable { notNow.tap(); pause(1) } // a reminder question (A109)
         guard wait(["Nytt prov"], 15) != nil else { return miss("not back on Start") }
-        let row = app.descendants(matching: .any)["home.ownDeck"]
+        let row = app.descendants(matching: .any).matching(identifier: "home.ownDeck").firstMatch // run 45905700391: more than one element has it
         for _ in 0..<6 where !(row.exists && row.isHittable) { app.swipeUp(); pause(0.5) }
         log.append("deck row on Start: \(row.exists ? row.label : "-")")
         shoot("start-med-samling")
@@ -168,7 +170,14 @@ final class OwnDeckFlowTests: XCTestCase {
         // Run 45902890074: the second card's Svar was under the keyboard and the tap gave it no focus. Bring it into
         // view, tap, and type only when the field has the keyboard.
         for attempt in 1...4 {
-            if !field.isHittable { keyboardDown(); app.swipeUp(); pause(0.5) }
+            // Run 45905700391: the field counted as hittable under the keyboard, so the tap went to a key. Drag the
+            // list (above the keyboard) until the field is clear of it.
+            for _ in 0..<4 where covered(field) || !field.isHittable {
+                app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.45))
+                    .press(forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.2)),
+                           withVelocity: .default, thenHoldForDuration: 0.2)
+                pause(0.4)
+            }
             field.tap()
             pause(0.7)
             if (field.value(forKey: "hasKeyboardFocus") as? Bool) == true {
@@ -179,6 +188,13 @@ final class OwnDeckFlowTests: XCTestCase {
         }
         log.append("MISS: \(field.identifier) never got the keyboard")
         return false
+    }
+
+    /// The keyboard is over the field.
+    private func covered(_ field: XCUIElement) -> Bool {
+        let keyboard = app.keyboards.firstMatch
+        guard keyboard.exists, field.exists else { return false }
+        return field.frame.maxY > keyboard.frame.minY - 4
     }
 
     private func keyboardDown() {
