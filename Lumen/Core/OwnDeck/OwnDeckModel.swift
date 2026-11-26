@@ -212,6 +212,24 @@ final class OwnDeckModel {
         }
     }
 
+    #if DEBUG
+    // MARK: Screenshots (A165)
+
+    /// The picture "recording now", without a microphone: the part seems to be recorded. Give the model a pretend
+    /// recorder (`recorder:`) for the time and the level.
+    func stage(recording target: Target?) {
+        recording = target
+    }
+
+    /// A part that seems recorded: a short silent file takes the recording's place.
+    func stageRecorded(_ part: OwnPart, card cardID: UUID, in deckID: UUID, seconds: Double) {
+        let url = store.audioFolder.appending(path: "\(UUID().uuidString).wav")
+        try? WAVWriter.write(samples: [Int16](repeating: 0, count: 1_600), sampleRate: 16_000, to: url)
+        setRecording(OwnRecordingFile(name: url.lastPathComponent, seconds: seconds),
+                     for: Target(deckID: deckID, cardID: cardID, part: part))
+    }
+    #endif
+
     // MARK: Listening to one part
 
     /// Plays this part once: the recording, otherwise the phone's own voice reading the text.

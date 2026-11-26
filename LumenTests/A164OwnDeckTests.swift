@@ -392,6 +392,23 @@ import Testing
         #expect(session.player == nil && !model.showsPlayer)
     }
 
+    #if DEBUG
+    // MARK: The screenshots' helpers (A165)
+
+    @Test func aStagedRecordingLooksLikeOneAndPlays() throws {
+        let rig = makeRig()
+        let ids = try deckWithCard(rig)
+        rig.model.stageRecorded(.question, card: ids.card, in: ids.deck, seconds: 4)
+        let file = try #require(try card(rig, ids).questionRecording)
+        #expect(file.seconds == 4 && exists(rig.store.url(for: file)))
+        let target = OwnDeckModel.Target(deckID: ids.deck, cardID: ids.card, part: .answer)
+        rig.model.stage(recording: target)
+        #expect(rig.model.recording == target)
+        rig.model.stage(recording: nil)
+        #expect(rig.model.recording == nil)
+    }
+    #endif
+
     #if LUMEN_TESTMODE
     // MARK: Toby's seed (T58)
 
