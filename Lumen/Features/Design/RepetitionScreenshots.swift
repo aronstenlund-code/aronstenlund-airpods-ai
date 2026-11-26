@@ -105,8 +105,15 @@ enum RepetitionDemo {
     }()
 
 
+    /// Ke90 (Kelly, 2026-11-26): the demo data in the app's language, so the English pictures (the App Store page is
+    /// English first) do not show a Swedish quiz. Read once per launch; a launch has one language.
+    static func demo(_ swedish: String, _ english: String) -> String {
+        AppLanguage.current == .en ? english : swedish
+    }
+
     /// A115: a text someone might want to hear over and over before an exam (made up).
-    static let said = "Fotosyntes: koldioxid + vatten + ljus blir socker och syre.\nCellandning: socker + syre blir energi, koldioxid och vatten."
+    static let said = demo("Fotosyntes: koldioxid + vatten + ljus blir socker och syre.\nCellandning: socker + syre blir energi, koldioxid och vatten.",
+                           "Photosynthesis: carbon dioxide + water + light become sugar and oxygen.\nCellular respiration: sugar + oxygen become energy, carbon dioxide and water.")
 
 
     /// A107: Fysikprovet is saved but not started: no sound is asked for yet.
@@ -129,17 +136,23 @@ enum RepetitionDemo {
             item.sentences = sentences
             return item
         }
-        return Drill.text(title: "Biologiprovet", summary: DrillSummary(subject: "Biologi", grade: "åk 9", covers: ""),
+        return Drill.text(title: demo("Biologiprovet", "The biology quiz"),
+                          summary: DrillSummary(subject: demo("Biologi", "Biology"), grade: demo("åk 9", "year 9"), covers: ""),
                           parts: [
-                            part(["Fotosyntesen"], heading: true),
-                            part(["Växter tillverkar sin egen näring genom fotosyntes.", "Det sker i bladens gröna korn, kloroplasterna.",
-                                  "Där fångar klorofyllet energin i solljuset."]),
-                            part(["Växten tar upp koldioxid ur luften och vatten genom rötterna.",
-                                  "Med ljusets energi blir de till socker och syre.",
-                                  "Sockret är växtens mat, och syret släpps ut genom klyvöppningarna."]),
-                            part(["Cellandningen"], heading: true),
-                            part(["I cellandningen bryts sockret ner igen.", "Det sker i mitokondrierna, i alla levande celler.",
-                                  "Energin som frigörs använder cellen för att växa och röra sig."]),
+                            part([demo("Fotosyntesen", "Photosynthesis")], heading: true),
+                            part([demo("Växter tillverkar sin egen näring genom fotosyntes.", "Plants make their own food through photosynthesis."),
+                                  demo("Det sker i bladens gröna korn, kloroplasterna.", "It happens in the green grains of the leaves, the chloroplasts."),
+                                  demo("Där fångar klorofyllet energin i solljuset.", "There the chlorophyll captures the energy in sunlight.")]),
+                            part([demo("Växten tar upp koldioxid ur luften och vatten genom rötterna.",
+                                       "The plant takes in carbon dioxide from the air and water through its roots."),
+                                  demo("Med ljusets energi blir de till socker och syre.", "With the energy of the light they become sugar and oxygen."),
+                                  demo("Sockret är växtens mat, och syret släpps ut genom klyvöppningarna.",
+                                       "The sugar is the plant's food, and the oxygen is let out through the stomata.")]),
+                            part([demo("Cellandningen", "Cellular respiration")], heading: true),
+                            part([demo("I cellandningen bryts sockret ner igen.", "In cellular respiration the sugar is broken down again."),
+                                  demo("Det sker i mitokondrierna, i alla levande celler.", "It happens in the mitochondria, in every living cell."),
+                                  demo("Energin som frigörs använder cellen för att växa och röra sig.",
+                                       "The cell uses the energy that is released to grow and to move.")]),
                           ])
     }()
 
@@ -198,24 +211,37 @@ enum RepetitionDemo {
     }()
 
     static let items: [DrillItem] = [
-        ("Varför behövs klorofyll?", "Klorofyll fångar ljuset som fotosyntesen behöver.",
-         "Utan ljusets energi kan växten inte bygga socker av koldioxid och vatten."),
-        ("Vad bildas vid fotosyntesen?", "Socker och syre bildas av koldioxid och vatten.",
-         "Sockret ger växten energi och byggmaterial, och syret används av djur i cellandningen."),
-        ("Hur hänger fotosyntes och cellandning ihop?", "Fotosyntesen bygger socker och cellandningen bryter ner det.",
-         "Den enas produkter är den andras råvaror, så kol och syre går runt i ett kretslopp."),
-        ("Varför behöver cellen mitokondrier?", "Där sker cellandningen som ger cellen energi.",
-         "Mitokondrierna gör om socker och syre till energi i form av ATP, koldioxid och vatten."),
-        ("Vad är en näringskedja?", "Den visar vem som äter vem i ett ekosystem.",
-         "Energin från solen går från växterna till växtätarna och vidare till rovdjuren, och det mesta blir värme på vägen."),
+        (demo("Varför behövs klorofyll?", "Why is chlorophyll needed?"),
+         demo("Klorofyll fångar ljuset som fotosyntesen behöver.", "Chlorophyll captures the light that photosynthesis needs."),
+         demo("Utan ljusets energi kan växten inte bygga socker av koldioxid och vatten.",
+              "Without the energy of the light the plant cannot build sugar from carbon dioxide and water.")),
+        (demo("Vad bildas vid fotosyntesen?", "What is formed in photosynthesis?"),
+         demo("Socker och syre bildas av koldioxid och vatten.", "Sugar and oxygen are formed from carbon dioxide and water."),
+         demo("Sockret ger växten energi och byggmaterial, och syret används av djur i cellandningen.",
+              "The sugar gives the plant energy and building material, and animals use the oxygen in cellular respiration.")),
+        (demo("Hur hänger fotosyntes och cellandning ihop?", "How are photosynthesis and cellular respiration connected?"),
+         demo("Fotosyntesen bygger socker och cellandningen bryter ner det.", "Photosynthesis builds sugar and cellular respiration breaks it down."),
+         demo("Den enas produkter är den andras råvaror, så kol och syre går runt i ett kretslopp.",
+              "The products of one are the raw materials of the other, so carbon and oxygen go round in a cycle.")),
+        (demo("Varför behöver cellen mitokondrier?", "Why does the cell need mitochondria?"),
+         demo("Där sker cellandningen som ger cellen energi.", "That is where cellular respiration gives the cell its energy."),
+         demo("Mitokondrierna gör om socker och syre till energi i form av ATP, koldioxid och vatten.",
+              "The mitochondria turn sugar and oxygen into energy in the form of ATP, carbon dioxide and water.")),
+        (demo("Vad är en näringskedja?", "What is a food chain?"),
+         demo("Den visar vem som äter vem i ett ekosystem.", "It shows who eats whom in an ecosystem."),
+         demo("Energin från solen går från växterna till växtätarna och vidare till rovdjuren, och det mesta blir värme på vägen.",
+              "The energy from the sun goes from the plants to the plant-eaters and on to the predators, and most of it becomes heat on the way.")),
     ].map { DrillItem(question: $0.0, short: $0.1, long: $0.1 + " " + $0.2) }
 
-    static let drill = Drill(title: "Biologiprovet",
-                             summary: DrillSummary(subject: "Biologi", grade: "åk 9",
-                                                   covers: "Fotosyntes, cellandning, kolets kretslopp och näringskedjor."),
+    static let drill = Drill(title: demo("Biologiprovet", "The biology quiz"),
+                             summary: DrillSummary(subject: demo("Biologi", "Biology"), grade: demo("åk 9", "year 9"),
+                                                   covers: demo("Fotosyntes, cellandning, kolets kretslopp och näringskedjor.",
+                                                                "Photosynthesis, cellular respiration, the carbon cycle and food chains.")),
                              items: items, questionCount: 20)
 
-    static let history = Drill(title: "Historiaprovet", summary: DrillSummary(subject: "Historia", grade: "åk 9", covers: "Industriella revolutionen."),
+    static let history = Drill(title: demo("Historiaprovet", "The history quiz"),
+                               summary: DrillSummary(subject: demo("Historia", "History"), grade: demo("åk 9", "year 9"),
+                                                     covers: demo("Industriella revolutionen.", "The Industrial Revolution.")),
                                items: [
                                    DrillItem(question: "Varför började industrialiseringen i England?",
                                              short: "England hade kol, järn, kapital och kolonier som köpte varorna.",
@@ -464,8 +490,10 @@ enum RepetitionDemo {
             credits.unit = "chars"
             credits.remaining = 1236
             model.quota = credits
-            let long = "Fotosyntesen är den process där gröna växter använder solens ljus för att göra socker av koldioxid och vatten. "
-                + "Den sker i kloroplasterna, där klorofyllet fångar ljuset. Som restprodukt bildas syre, som djur och människor andas."
+            let long = demo("Fotosyntesen är den process där gröna växter använder solens ljus för att göra socker av koldioxid och vatten. "
+                + "Den sker i kloroplasterna, där klorofyllet fångar ljuset. Som restprodukt bildas syre, som djur och människor andas.",
+                            "Photosynthesis is the process in which green plants use the light of the sun to make sugar from carbon dioxide and water. "
+                + "It happens in the chloroplasts, where the chlorophyll captures the light. Oxygen is formed as a by-product, which animals and people breathe.")
             SayText.stagedForScreenshots = long
             SayText.stagedCompressed = name == "repSayCompressed" ? MockTextShortener.firstHalf(long) : nil
             return
@@ -501,13 +529,13 @@ enum RepetitionDemo {
                 SayVoice(voice_id: "hindi00000000006", name: "Hindi", preview_url: "https://example.com/hindi.mp3", description: "Svenska med indisk brytning", review: true),
             ].filter { name != "repSayVoicesUser" || !$0.isUnderReview }, defaultName: "Astrid")
             if name == "repSayPicked" { // A140 (K99): no voice chosen, a style: the server chose Gustav
-                SayText.stagedPicked = ("gustav000000003", "Mörk och tydlig, passar en lärare.")
+                SayText.stagedPicked = ("gustav000000003", demo("Mörk och tydlig, passar en lärare.", "Deep and clear, right for a teacher."))
             } else {
                 UserDefaults.standard.set("astrid0000000001", forKey: SayText.voiceKey)
                 UserDefaults.standard.set(true, forKey: SayText.inPaceKey)
             }
             SayText.stagedForScreenshots = said
-            SayText.stagedStyle = "Lugnt, som en lärare"
+            SayText.stagedStyle = demo("Lugnt, som en lärare", "Calm, like a teacher")
             SayText.stagedVoicesSheet = name == "repSayVoices" || name == "repSayVoicesUser"
             if name.hasPrefix("repSayKeyboard") { // A153: the keyboard comes up by itself
                 SayText.stagedKeyboard = name == "repSayKeyboardStyle" ? "style" : "text"
@@ -678,17 +706,22 @@ enum RepetitionDemo {
         // Nothing recorded yet: the other scenes, and the two that show the way in before the first deck.
         if !name.hasPrefix("repOwn") || name == "repOwnHomeEmpty" || name == "repOwnHomeFirst" { return decks }
         // The newest deck is listed first, so the glossary is made before the biology.
-        let glossary = decks.addDeck(title: "Engelska glosor")
-        for (question, answer) in [("Vad heter självständig på engelska?", "Independent."), ("Vad heter trots att på engelska?", "Although.")] {
+        let glossary = decks.addDeck(title: demo("Engelska glosor", "Spanish vocabulary"))
+        for (question, answer) in [(demo("Vad heter självständig på engelska?", "What is independent in Spanish?"), demo("Independent.", "Independiente.")),
+                                   (demo("Vad heter trots att på engelska?", "What is although in Spanish?"), demo("Although.", "Aunque."))] {
             guard let card = decks.addCard(to: glossary.id, question: question, answer: answer) else { continue }
             decks.stageRecorded(.question, card: card.id, in: glossary.id, seconds: 3)
             decks.stageRecorded(.answer, card: card.id, in: glossary.id, seconds: 2)
         }
-        let biology = decks.addDeck(title: "Biologi kapitel 3")
+        let biology = decks.addDeck(title: demo("Biologi kapitel 3", "Biology chapter 3"))
         ownShown = biology.id
-        let first = decks.addCard(to: biology.id, question: "Vad gör mitokondrien?", answer: "Den omvandlar näring till energi som cellen kan använda.")
-        let second = decks.addCard(to: biology.id, question: "Vad är fotosyntes?", answer: "Växter gör socker och syre av koldioxid, vatten och ljus.")
-        decks.addCard(to: biology.id, question: "Vad är skillnaden mellan DNA och RNA?", answer: "DNA lagrar arvet, RNA bär ut det till cellen.")
+        let first = decks.addCard(to: biology.id, question: demo("Vad gör mitokondrien?", "What does the mitochondrion do?"),
+                                  answer: demo("Den omvandlar näring till energi som cellen kan använda.", "It turns nutrients into energy the cell can use."))
+        let second = decks.addCard(to: biology.id, question: demo("Vad är fotosyntes?", "What is photosynthesis?"),
+                                   answer: demo("Växter gör socker och syre av koldioxid, vatten och ljus.",
+                                                "Plants make sugar and oxygen from carbon dioxide, water and light."))
+        decks.addCard(to: biology.id, question: demo("Vad är skillnaden mellan DNA och RNA?", "What is the difference between DNA and RNA?"),
+                      answer: demo("DNA lagrar arvet, RNA bär ut det till cellen.", "DNA stores the genes, RNA carries them out to the cell."))
         if let first {
             decks.stageRecorded(.question, card: first.id, in: biology.id, seconds: 3)
             decks.stageRecorded(.answer, card: first.id, in: biology.id, seconds: 6)
