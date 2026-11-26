@@ -10,7 +10,7 @@
 - Inget provljud görs och inget nytt ElevenLabs-anrop sker.
 - Standardrösten fungerar som förut även om den saknar provljud. `default_voice` är oförändrat.
 - Test: `voices/voices_test.ts`. K99-fixturen fick provljud, så att den fortfarande testar granskningsrösterna.
-- **Live:** LIVE_HÄR
+- **Live:** **1/1, verifierat live** (körning 107 efter deploy 386). Ett vanligt testkonto får 18 röster, och alla har ett https-provljud. Tidigare var det 19 enligt O101; den utan provljud visas inte längre. Inget ElevenLabs-anrop gjordes.
 
 ## (2) /tts och drillens ljud när ElevenLabs-kvoten är slut
 
