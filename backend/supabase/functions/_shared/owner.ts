@@ -6,6 +6,13 @@ import { HttpError } from "./errors.ts";
  * AND that was signed in by email (magic link or one-time code, `amr` "otp"/"magiclink"), so a password sign-up with
  * his address cannot read anything. Throws 401/403 (or 503 when OWNER_EMAIL is unset; never told to anonymous users).
  */
+/** The same owner rule for an account already signed in (O100: /provlage-eval). */
+export function isOwner(user: AuthedUser, ownerEmails: string[]): boolean {
+  const owners = ownerEmails.map((e) => e.trim().toLowerCase()).filter(Boolean);
+  const byEmail = (user.amr ?? []).some((m) => m === "otp" || m === "magiclink");
+  return !user.isAnonymous && !!user.email && byEmail && owners.includes(user.email.toLowerCase());
+}
+
 export async function requireOwner(
   req: Request,
   authenticate: Authenticator,
