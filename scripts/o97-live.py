@@ -25,20 +25,21 @@ def call(fn, body, lang):
 
 TEXT = "Fotosyntesen sker i växternas blad. Med ljus, vatten och koldioxid bildar växten glukos och syre."
 for fn, body in (("exam", {"action": "drill", "text": TEXT, "questions": 3, "answers": False}),
+                 ("exam", {"action": "compress", "text": TEXT, "lang": "sv"}),  # K120 (A163)
                  ("answer", {"fragment": "vad är fotosyntes", "mode": "push_to_talk", "language": "sv", "context": {}})):
     for lang, want in (("en", EN), ("sv", SV)):
         st, raw = call(fn, body, lang)
         if st == 200:
-            print(f"INFO {fn} {lang}: 200 – the credits are back", flush=True)
-            res[f"{fn} {lang}"] = True
+            print(f"INFO {fn} {body.get('action', '')} {lang}: 200 – the credits are back", raw[:120], flush=True)
+            res[f"{fn} {body.get('action', '')} {lang}"] = True
             continue
         try:
             err = json.loads(raw).get("error") or {}
         except ValueError:
             err = {}
         good = st == 503 and err.get("code") == "provider_quota" and err.get("fallback") is True and err.get("message") == want
-        res[f"{fn} {lang}"] = good
-        print(("PASS " if good else "FAIL ") + f"{fn} {lang}", json.dumps({"status": st, "error": err or raw[:200]}, ensure_ascii=False), flush=True)
+        res[f"{fn} {body.get('action', '')} {lang}"] = good
+        print(("PASS " if good else "FAIL ") + f"{fn} {body.get('action', '')} {lang}", json.dumps({"status": st, "error": err or raw[:200]}, ensure_ascii=False), flush=True)
 n = sum(res.values())
 print(f"=== O97: {n} av {len(res)}")
 _s.exit(0 if n == len(res) else 1)
