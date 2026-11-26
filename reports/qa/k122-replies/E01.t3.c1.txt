@@ -1,0 +1,4 @@
+[[REL continues]]
+Ribosomerna är cellens proteinfabriker: de läser av budbärar-RNA och fogar ihop aminosyror till proteiner. En del sitter fria i cytoplasman och andra på det kornrika endoplasmatiska nätverket, och därifrån går proteinerna vidare till Golgiapparaten. Ett exempel är insulin, som byggs på ribosomer i bukspottkörtelns celler och sedan skickas ut ur cellen. På provet kan du beskriva vägen från ribosom via endoplasmatiska nätverket och Golgiapparaten ut ur cellen. Finns det ribosomer även i bakterieceller?
+[[SVAR]] Ja | Nej, bara i djurceller, bara i växtceller, vet inte
+[[SAMMANFATTNING]] Förhör på cellens delar där eleven inte visste och fick en förklaring av ribosomerna och proteinernas väg genom cellen, följd av en kontrollfråga om ribosomer i bakterier.

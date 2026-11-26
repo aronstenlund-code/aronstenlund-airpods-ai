@@ -1,0 +1,1 @@
+{"correct": 1, "a_level": 0, "sufficient": 1, "covers": 1, "natural": 1, "note": "För tunt för A i Biologi 1: saknar att koldioxid och vatten bildas och vad ATP används till i cellen."}
