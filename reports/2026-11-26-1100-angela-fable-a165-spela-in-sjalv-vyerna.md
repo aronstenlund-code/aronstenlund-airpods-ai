@@ -100,6 +100,14 @@ har legat på main.
   inspelning" hade gett raden "Egen inspelning / Egen inspelning · 3 frågor" på Start.
 - Bladet kommer inte för nej i hjälpchatten eller i Fler lägen (provsessionen); bara i repetitionen.
 
+## Tillägg 2026-11-26 22:27: Kellys besked om de två avvikelserna
+
+Kelly har läst bilderna (inget fel) och bestämt: **Öva behåller A164:s förval** (telefonens röst läser det som inte
+är inspelat), och raden under en text som inte är inläst säger det före Öva: **"Inte inspelad · läses av
+telefonen"** / "Not recorded · read by the phone" (utan text står bara "Inte inspelad"). **"Mina frågor" / "My
+questions" står kvar.** Raden är gjord, med test; iOS build 45794923720 på min gren grön i sin helhet, på main.
+Main-bygget med A165 (45794644246) är grönt. Kelly har uppdaterat `docs/design/spela-in-sjalv.md`.
+
 ## Kända brister och risker
 
 - **Inget är provat på telefon.** Mikrofonen, AirPods-mikrofonen, uppspelningen och övningen i AirPods är kärnans
