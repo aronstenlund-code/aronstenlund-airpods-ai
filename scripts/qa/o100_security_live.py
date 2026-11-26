@@ -34,7 +34,7 @@ def req(method, path, body=None, tok=None, headers=None, raw=None, auth=True):
     data = raw if raw is not None else (json.dumps(body).encode() if body is not None else None)
     r = urllib.request.Request(T.URL + path, data=data, method=method, headers=h)
     try:
-        with urllib.request.urlopen(r, timeout=60) as x:
+        with urllib.request.urlopen(r, timeout=20) as x:
             return x.status, {k.lower(): v for k, v in x.headers.items()}, x.read().decode(errors="replace")
     except urllib.error.HTTPError as e:
         return e.code, {k.lower(): v for k, v in e.headers.items()}, (e.read() or b"").decode(errors="replace")
@@ -158,6 +158,8 @@ FNS = ["account", "answer", "anthtest", "connect", "debug-audio", "drill", "dril
        "fetch-url", "help", "logo-vote", "memory", "my-answers", "provlage-eval", "purchase", "qa-log", "real-users-admin", "shared-history",
        "stt-token", "study-cards", "study-plan", "study-profile", "tts", "usage-stats", "voice-lab", "voices", "waitlist"]
 ELEVEN = {"stt-token", "tts", "voice-lab"}  # D180: never with a valid token here
+# 2 MB only where the gateway does not check the JWT first (the code reads the body itself), plus answer and exam
+BIGFNS = {"drill", "purchase", "connect", "debug-audio", "drill-purge", "feedback-admin", "waitlist", "usage-stats", "anthtest", "evallab", "answer", "exam"}
 hdr = base64.urlsafe_b64encode(b'{"alg":"HS256","typ":"JWT"}').rstrip(b"=").decode()
 pl = base64.urlsafe_b64encode(json.dumps({"sub": B_ID, "role": "authenticated", "exp": 4102444800, "is_anonymous": False, "email": "owner@example.com"}).encode()).rstrip(b"=").decode()
 FORGED = f"{hdr}.{pl}.{base64.urlsafe_b64encode(b'x' * 32).rstrip(b'=').decode()}"
@@ -173,14 +175,18 @@ for fn in FNS:
     tok = None if fn in ELEVEN else A
     s, _, t3 = req("PUT", p, {}, tok)
     row["PUT"] = s
-    if fn not in ELEVEN:
+    if fn in BIGFNS:
         s, _, t4 = req("POST", p, tok=A, raw=BIG)
         row["2 MB"] = s
+    else:
+        t4 = ""
+    if fn not in ELEVEN:
         s, _, t5 = req("POST", p, tok=A, raw=b'{"action": "save", "x": [1,2,')
         row["trasig JSON"] = s
     else:
-        t4 = t5 = ""
+        t5 = ""
     table[fn] = row
+    print(f"     {fn}: {row}", flush=True)
     for name, txt in (("utan token", t), ("falsk token", t2), ("PUT", t3), ("2 MB", t4), ("trasig JSON", t5)):
         m = LEAK.search(txt or "")
         if m:
