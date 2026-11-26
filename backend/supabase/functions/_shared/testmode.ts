@@ -311,3 +311,12 @@ export function withTestMode(
     return runWithTest(info, () => handler(req));
   };
 }
+
+/**
+ * K104 (D233), K121: `x-earmind-test: <tag> model-haiku|model-sonnet` picks the model of a test call: searched answers
+ * (K104), Provläge and the exam's answers (K121), for the live eval of Haiku against Sonnet. Production is unchanged.
+ */
+export function testModelPick(h: string | null): "haiku" | "sonnet" | null {
+  const m = /(?:^|\s)model-(haiku|sonnet)(?:\s|$)/i.exec(h ?? "");
+  return m ? (m[1].toLowerCase() as "haiku" | "sonnet") : null;
+}

@@ -1,5 +1,7 @@
 import { type Authenticator } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, HttpError, PROVIDER_DOWN, providerHttpError, toHttpError } from "../_shared/errors.ts";
+import { cacheReadMultiplier } from "../_shared/prices.ts";
+import { testModelPick } from "../_shared/testmode.ts";
 import {
   type AppGuard,
   appChecks,
@@ -281,10 +283,7 @@ export function isRankQuestion(t: string): boolean {
 /** O91 N5: a searched answer is said up to this many words (the eval's "webbsvar för långt" is over 80). */
 export const WEB_MAX_WORDS = 80;
 
-export function testModelPick(h: string | null): "haiku" | "sonnet" | null {
-  const m = /(?:^|\s)model-(haiku|sonnet)(?:\s|$)/i.exec(h ?? "");
-  return m ? (m[1].toLowerCase() as "haiku" | "sonnet") : null;
-}
+export { testModelPick } from "../_shared/testmode.ts"; // K121: moved there, /exam uses it too
 
 export const DEFAULT_CONFIG: HandlerConfig = {
   confidenceThreshold: 0.45,
@@ -1472,11 +1471,15 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       // K42.2 (Aron's phone test: "Vättern är Sveriges största sjö"; live 19/21 on Haiku: "tredje största stad är
       // Helsingborg", "största nationalpark är Stora Sjöfallet"): a short rank question goes to the stronger model
       const rankFact = !isRizz && !tutor && !plan && !demo && !!cfg.tutorModel && !computed && isRankQuestion(body.fragment);
-      const tutorModel = (!isRizz && tutor && !plan && !demo && cfg.tutorModel && !factRoute) || rankFact
+      const tutorModel0 = (!isRizz && tutor && !plan && !demo && cfg.tutorModel && !factRoute) || rankFact
         ? cfg.tutorModel
         : demo && cfg.demoModel // K5: the demo runs on the stronger model (priced like Provläge)
         ? cfg.demoModel
         : undefined;
+      // K121: the test header's model-haiku runs Provläge (and the demo) on Haiku too, for the live eval; production
+      // keeps the configured model (TUTOR_MODEL) – a cheaper model changes the answers
+      const pickedHaiku = testModelPick(req.headers.get("x-earmind-test")) === "haiku" && !!tutorModel0;
+      const tutorModel = pickedHaiku ? provider.model : tutorModel0;
       // K7.6: a word or logic problem in Provläge gets the model's thinking (it said "Tom är nio" before working
       // out eight); everything else keeps thinking off for the first word
       const wordProblem = !!tutorModel && isWordProblem(body.fragment);
@@ -1487,15 +1490,14 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       let modelUsed = pickModel(textOn || (webOn && need) ? [true] : undefined) ?? (isRizz ? (cfg.rizzModel ?? provider.model) : tutorModel ?? provider.model);
       const priceIn = isRizz
         ? (cfg.rizzPriceInPerMTok ?? cfg.priceInPerMTok)
-        : tutorModel
+        : tutorModel && !pickedHaiku
         ? (cfg.tutorPriceInPerMTok ?? cfg.priceInPerMTok)
         : cfg.priceInPerMTok;
       const priceOut = isRizz
         ? (cfg.rizzPriceOutPerMTok ?? cfg.priceOutPerMTok)
-        : tutorModel
+        : tutorModel && !pickedHaiku
         ? (cfg.tutorPriceOutPerMTok ?? cfg.priceOutPerMTok)
         : cfg.priceOutPerMTok;
-      const cacheReadMult = 0.1; // cache hits cost 0.1x of the input price (Sonnet 5.5 and Haiku 5.5; claude-api skill 2026-10-06)
 
       function usage(s: string): UsageRecord {
         const m = parser.meta;
@@ -1505,7 +1507,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         const total = inTok ?? 0;
         const plain = Math.max(0, total - cr - cw);
         const cost = inTok !== null || outTok !== null
-          ? ((plain + cr * cacheReadMult + cw * 1.25) * priceIn +
+          ? ((plain + cr * cacheReadMultiplier(modelUsed) + cw * 1.25) * priceIn + // K121: 0.05x on Sonnet 5.5
                 (outTok ?? 0) * priceOut) / 1e6 + webSearches * WEB_SEARCH_USD
           : null;
         return {

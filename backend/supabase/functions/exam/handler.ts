@@ -7,7 +7,8 @@ import { sanitizeTagged } from "../answer/prompt.ts";
 import { finalNumber, isBareNumber } from "./spoken.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 import { practiceNav, spokenTask } from "./practice.ts";
-import { DEFAULT_DRILL_CONFIG, docxText, DRILL_LIMITS, DRILL_WEIGHT, type DrillConfig, estimateDrillCost, handleDrill, type MaterialStore, uploadUrls } from "./drill.ts";
+import { DEFAULT_DRILL_CONFIG, docxText, DRILL_LIMITS, DRILL_WEIGHT, type DrillConfig, drillConfigForTest, estimateDrillCost, handleDrill, type MaterialStore, uploadUrls } from "./drill.ts";
+import { testModelPick } from "../_shared/testmode.ts";
 import { handleRead } from "./read.ts";
 
 /**
@@ -463,12 +464,12 @@ export function createExamHandler(deps: ExamDeps) {
         }
         // K70 (D185): Läsläget, the material cleaned for reading aloud (read.ts); the quota is counted at save
         const { body, steps } = action === "read"
-          ? await handleRead(req0, deps.provider, cfg.drill ?? DEFAULT_DRILL_CONFIG, req.signal, { userId: user.id, store: deps.material ?? null })
+          ? await handleRead(req0, deps.provider, drillConfigForTest(cfg.drill ?? DEFAULT_DRILL_CONFIG, testModelPick(req.headers.get("x-earmind-test"))), req.signal, { userId: user.id, store: deps.material ?? null })
           : await handleDrill(
           action as "drill" | "drill_answers" | "drill_one",
           req0,
           deps.provider,
-          cfg.drill ?? DEFAULT_DRILL_CONFIG,
+          drillConfigForTest(cfg.drill ?? DEFAULT_DRILL_CONFIG, testModelPick(req.headers.get("x-earmind-test"))),
           req.signal,
           { userId: user.id, store: deps.material ?? null },
         );
