@@ -161,6 +161,30 @@ final class RepetitionModel {
     /// A163 (D259): Komprimera in Säg i AirPods. Nil in tests and scenes without it: the button is not shown then.
     var compressor: SayCompressor?
 
+    /// A165 (D263): "Spela in själv – helt gratis", the user's own decks with their own recordings (the core is
+    /// A164). Nil until the core is there: the way in and the sheet are not shown then.
+    var ownDecks: (any OwnDecking)?
+    /// A165: the sheet that points to "Spela in själv" when the server says no for credits or its model is down.
+    let ownOffer = OwnDeckOffer()
+
+    /// A165: the server said no (402 for credits, or `provider_*`). With "Spela in själv" in the app the sheet says
+    /// that there is a free way, once per occasion.
+    func serverRefused(_ reason: OwnDeckOffer.Reason) {
+        guard ownDecks != nil else { return }
+        ownOffer.serverRefused(reason)
+    }
+
+    /// A165: what the server said when an exam's sound was asked for (at Starta prov, or after a save).
+    private func noteSound(_ drill: Drill, started: Bool) {
+        if started {
+            ownOffer.serverAnswered(.credits)
+        } else if quotaExceeded(drill) {
+            serverRefused(.credits)
+        } else if audio.problem(for: drill) == ServerTrouble.line {
+            serverRefused(.modelDown)
+        }
+    }
+
     /// A83 (K49): Publicera prov and Prov från din skola. Nil in the mock mode.
     @ObservationIgnored var publishing: (any DrillPublishingService)?
 
@@ -258,9 +282,12 @@ final class RepetitionModel {
             let made = try await maker.make(material, subject: subject, grade: grade, correction: correction,
                                             questions: settings.questions, longWords: settings.length.words)
             modelDownAt = nil // A160: the model answers again
+            ownOffer.serverAnswered(.modelDown) // A165: the occasion is over
+            ownOffer.serverAnswered(.credits)
             return made
         } catch {
             noteModelDown(error, at: now) // A160 (D258)
+            if case .tooFewCredits = error { serverRefused(.credits) } // A165 (D263)
             // A154 (K109/K110): the credits do not cover it. What the server said a question costs is kept, so
             // Nytt prov proposes what fits from now on.
             if case .tooFewCredits(let no) = error {
@@ -345,6 +372,7 @@ final class RepetitionModel {
         do throws(DrillMakingError) {
             let made = try await maker.readText(material, subject: subject, grade: grade, title: title)
             modelDownAt = nil // A160: the model answers again
+            ownOffer.serverAnswered(.modelDown) // A165
             return made
         } catch {
             noteModelDown(error, at: now) // A160 (D258)
@@ -376,6 +404,7 @@ final class RepetitionModel {
     private func noteModelDown(_ error: DrillMakingError, at now: Date) {
         guard error == .modelDown else { return }
         modelDownAt = now
+        serverRefused(.modelDown) // A165 (D263): there is a free way that needs no model
         Log.repetition.info("Nytt prov: the server's model is down (provider); nothing was made, saved quizzes play as before")
     }
 
@@ -425,6 +454,7 @@ final class RepetitionModel {
         Task {
             let before = (audio as? CloudDrillAudio)?.refunds
             await audio.prepare(drill)
+            if self.quotaExceeded(drill) { self.serverRefused(.credits) } // A165 (D263): the save hit the credits
             // A112 (K78, D200): questions counted for sound that was never made came back.
             if let before, (audio as? CloudDrillAudio)?.refunds != before { await refreshQuota() }
         }
@@ -647,6 +677,7 @@ final class RepetitionModel {
     func startAudio(_ drill: Drill) async -> Bool {
         guard awaitsAudioStart(drill) else { return true }
         let started = await audio.startAudio(store.drill(drill.id) ?? drill)
+        noteSound(drill, started: started) // A165 (D263)
         await refreshQuota()
         return started
     }

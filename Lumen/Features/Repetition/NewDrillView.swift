@@ -397,6 +397,10 @@ struct NewDrillView: View {
                               || model.modelIsDown()) {
                 if make == .text { createText() } else { create(correction: nil) }
             }
+            // A165 (D263): the server said no for credits or its model is down: the free way is said here, where the
+            // user is, and its button closes Nytt prov (Start then opens "Spela in själv").
+            .modifier(OwnDeckOfferPresenter(model: model))
+            .onChange(of: model.ownOffer.opensDecks) { _, opens in if opens { dismiss() } }
             .task(id: model.modelDownAt) {
                 guard let since = model.modelDownAt else { return }
                 let left = RepetitionModel.modelDownWindow - Date().timeIntervalSince(since)

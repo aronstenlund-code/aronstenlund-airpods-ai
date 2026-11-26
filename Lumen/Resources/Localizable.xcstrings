@@ -624,6 +624,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "%@ · %@ av %@ inspelade": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "%@ · %@ of %@ recorded"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · %@ av %@ inspelade"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "%@ · %lld answers": {
       "extractionState": "manual",
       "localizations": {
@@ -731,6 +749,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ · Räknas som %lld av dina %lld när du startar"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "%@ · allt inspelat": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "%@ · all recorded"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · allt inspelat"
           }
         }
       },
@@ -3834,6 +3870,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Byt namn": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Rename"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Byt namn"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Byt prov: PDF eller bilder": {
       "extractionState": "manual",
       "localizations": {
@@ -5669,6 +5723,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Dina inspelningar spelas i AirPods. Det som inte är inspelat läses av telefonens röst.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Your recordings play in your AirPods. What isn't recorded is read by the phone's voice."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dina inspelningar spelas i AirPods. Det som inte är inspelat läses av telefonens röst."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Dina prov, med frågor, svar och ljud, sparas hos EarMind tills du tar bort dem.": {
       "extractionState": "manual",
       "localizations": {
@@ -7308,6 +7380,24 @@
         }
       }
     },
+    "Egna frågor med din röst": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Your own questions in your own voice"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Egna frågor med din röst"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Egna kommandon": {
       "extractionState": "manual",
       "localizations": {
@@ -8625,6 +8715,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Frågan har inget svar."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Frågan inspelad": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Question recorded"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frågan inspelad"
           }
         }
       },
@@ -10297,6 +10405,42 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Helt gratis": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Completely free"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Helt gratis"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Helt gratis. Ljudet stannar på telefonen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Completely free. The audio stays on your phone."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Helt gratis. Ljudet stannar på telefonen."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "High": {
       "extractionState": "manual",
       "localizations": {
@@ -11209,6 +11353,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Inga frågor än": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "No questions yet"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inga frågor än"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Inga kommandon än.": {
       "extractionState": "manual",
       "localizations": {
@@ -11832,6 +11994,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Inspelad": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Recorded"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspelad"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Inspelat": {
       "extractionState": "manual",
       "localizations": {
@@ -11946,6 +12126,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Inställningar › Bluetooth › ⓘ vid dina AirPods › Dubbeltryck."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Inte inspelad än": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Not recorded yet"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inte inspelad än"
           }
         }
       },
@@ -14891,6 +15089,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Lägg till en fråga först.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Add a question first."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lägg till en fråga först."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Lägg till fil": {
       "extractionState": "manual",
       "localizations": {
@@ -15282,6 +15498,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Läs mer"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Läs som du vill höra det. Utan inspelning läser telefonens röst texten.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Read it the way you want to hear it. Without a recording, the phone's voice reads the text."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Läs som du vill höra det. Utan inspelning läser telefonens röst texten."
           }
         }
       },
@@ -16296,6 +16530,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Namn, till exempel Biologi kapitel 3": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Name, for example Biology chapter 3"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Namn, till exempel Biologi kapitel 3"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Natten": {
       "extractionState": "manual",
       "localizations": {
@@ -16614,6 +16866,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ny fråga"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Ny samling": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "New set"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ny samling"
           }
         }
       },
@@ -18744,6 +19014,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Radera frågan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Delete question"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Radera frågan"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Radera konto": {
       "extractionState": "manual",
       "localizations": {
@@ -18829,6 +19117,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Radera röstprofilen?"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Radera samlingen och dess inspelningar?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Delete the set and its recordings?"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Radera samlingen och dess inspelningar?"
           }
         }
       },
@@ -20397,6 +20703,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Skapa": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Create"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skapa"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Skapa %@": {
       "extractionState": "manual",
       "localizations": {
@@ -20554,6 +20878,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Skolorna går inte att hämta"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Skriv dina frågor och svar och läs in dem. Sedan övar du på dem i dina AirPods. Helt gratis – inga krediter.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Write your questions and answers and record them. Then practise them in your AirPods. Completely free – no credits."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skriv dina frågor och svar och läs in dem. Sedan övar du på dem i dina AirPods. Helt gratis – inga krediter."
           }
         }
       },
@@ -20775,6 +21117,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Skriv svaret": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Type the answer"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skriv svaret"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Skriv text": {
       "extractionState": "manual",
       "localizations": {
@@ -20860,6 +21220,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Skriver ut frågan …"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Slut på krediter?": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Out of credits?"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slut på krediter?"
           }
         }
       },
@@ -21770,6 +22148,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Spela in dina egna frågor och svar – helt gratis.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Record your own questions and answers – completely free."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spela in dina egna frågor och svar – helt gratis."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Spela in ett svar": {
       "extractionState": "manual",
       "localizations": {
@@ -21860,6 +22256,42 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Spela in själv": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Record it yourself"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spela in själv"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Spela in själv – helt gratis": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Record it yourself – completely free"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spela in själv – helt gratis"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Spela in svaret": {
       "extractionState": "manual",
       "localizations": {
@@ -21891,6 +22323,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Spela klippet"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Spela upp · %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Play · %@"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spela upp · %@"
           }
         }
       },
@@ -21981,6 +22431,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Spelar in frågan · %@"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Spelar in · %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Recording · %@"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spelar in · %@"
           }
         }
       },
@@ -23072,6 +23540,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Svaret har inte rätt form"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Svaret inspelat": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Answer recorded"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svaret inspelat"
           }
         }
       },
@@ -29030,6 +29516,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Öppnar frågan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Opens the question"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öppnar frågan"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Öppnar lyssnarskärmen": {
       "extractionState": "manual",
       "localizations": {
@@ -29097,6 +29601,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Öppnas i Safari"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Öva": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Practise"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öva"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Öva %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Practise %@"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öva %@"
           }
         }
       },

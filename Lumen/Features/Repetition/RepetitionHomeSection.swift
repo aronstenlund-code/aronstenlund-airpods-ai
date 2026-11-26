@@ -28,6 +28,7 @@ struct RepetitionHomeSection: View {
     @State private var showsLaunchOffer = false // A161 (D259)
     @State private var opensShopAfterOffer = false
     @State private var showsShop = false
+    @State private var showsOwnDecks = false // A165 (D263)
     @Environment(\.scenePhase) private var scenePhase
     @State private var pastedCode = ""
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
@@ -61,10 +62,31 @@ struct RepetitionHomeSection: View {
         showsLaunchOffer = true
     }
 
+    /// A165 (D263): nothing of Start's own is over it, so the sheet about "Spela in själv" can come up here.
+    private var isFront: Bool {
+        !isCreating && !showsShop && !showsLaunchOffer && !askingReminder && !askingCode && checking == nil && !model.showsPlayer
+    }
+
+    /// A165: the sheet's button was pressed (here or in Nytt prov, which closes first): "Spela in själv" opens.
+    private func openOwnDecksIfAsked() {
+        guard model.ownOffer.opensDecks, !isCreating, model.ownDecks != nil else { return }
+        model.ownOffer.opensDecks = false
+        opened = nil
+        showsSchool = false
+        showsOwnDecks = true
+    }
+
     var body: some View {
         Group {
             if model.examDrills.isEmpty { emptyState } else { examList }
         }
+        // A165 (D263): "Spela in själv – helt gratis", and the sheet that points there when the server says no.
+        .navigationDestination(isPresented: $showsOwnDecks) {
+            if let decks = model.ownDecks { OwnDecksView(decks: decks) }
+        }
+        .modifier(OwnDeckOfferPresenter(model: model, isFront: isFront))
+        .onChange(of: model.ownOffer.opensDecks) { openOwnDecksIfAsked() }
+        .onChange(of: isCreating) { openOwnDecksIfAsked() }
         // A132 (D215): no large "Prov" heading; the capsule and the gear are enough, and the room goes to the field.
         // The name stays for VoiceOver and for the way back from the screens that are pushed.
         .navigationTitle("Prov")
@@ -264,6 +286,10 @@ struct RepetitionHomeSection: View {
             }
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
+            if model.ownDecks != nil { // A165 (D263): the free way, right under Nytt prov
+                Button { showsOwnDecks = true } label: { Self.textButton(OwnDeckText.entry) }
+                    .accessibilityIdentifier("home.ownDecks")
+            }
             if model.canPublish { // A83 (Ke52 "Hem")
                 Button { showsSchool = true } label: { Self.textButton(String(localized: "Hitta prov från din skola")) }
             }
@@ -336,8 +362,13 @@ struct RepetitionHomeSection: View {
                 }
             }
 
-            if model.canPublish || lastNight != nil || showsMoreModes {
+            if model.ownDecks != nil || model.canPublish || lastNight != nil || showsMoreModes {
                 Section {
+                    if model.ownDecks != nil { // A165 (D263): "Spela in själv" with "Helt gratis" under it
+                        navigationRow(OwnDeckText.title, detail: OwnDeckText.free) { showsOwnDecks = true }
+                            .accessibilityLabel(OwnDeckText.entry)
+                            .accessibilityIdentifier("home.ownDecks")
+                    }
                     if model.canPublish { // A83 (Ke52 "Hem")
                         navigationRow(String(localized: "Prov från din skola"), detail: nil) { showsSchool = true }
                     }
