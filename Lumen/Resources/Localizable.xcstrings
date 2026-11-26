@@ -5136,6 +5136,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Det gick inte att spela in just nu. Försök igen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Couldn’t record right now. Try again."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Det gick inte att spela in just nu. Försök igen."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Det gick inte att spela just nu. Försök igen om en stund.": {
       "extractionState": "manual",
       "localizations": {
@@ -6440,6 +6458,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "EarMind får inte använda mikrofonen. Slå på den i Inställningar › EarMind › Mikrofon.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "EarMind isn’t allowed to use the microphone. Turn it on in Settings › EarMind › Microphone."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EarMind får inte använda mikrofonen. Slå på den i Inställningar › EarMind › Mikrofon."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "EarMind får inte använda mikrofonen. Tillåt den i Inställningar.": {
       "extractionState": "manual",
       "localizations": {
@@ -7307,6 +7343,24 @@
           }
         }
       }
+    },
+    "Egen inspelning": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Your recording"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Egen inspelning"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
     "Egna kommandon": {
       "extractionState": "manual",

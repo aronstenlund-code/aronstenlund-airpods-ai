@@ -67,11 +67,6 @@
   "en": "a language code"
  },
  "Lumen/Core/Answer/OnDeviceModel.swift": {
-  "Det här är ett låtsassvar från telefonens modell.": "the pretend phone model's sentence in the test builds (T57), never in Release",
-  "Svara på svenska": "a piece of the model's instructions, to tell the two languages apart",
-  "en": "a language code"
- },
- "Lumen/Core/Answer/OnDeviceModel.swift": {
   "Det här är ett låtsassvar från telefonens modell.": "the pretend phone model of the test builds (A159/T57)",
   "Svara på svenska": "the pretend phone model of the test builds (A159/T57)",
   "en": "a prompt to the phone's model, or a word read from its reply"
@@ -604,6 +599,17 @@
  },
  "Lumen/Core/Notes/NotesStore.swift": {
   "# EarMind — \\(createdAt.formatted(date: .long, time: .shortened))": "language data, a log line or a technical string, not a text on the screen"
+ },
+ "Lumen/Core/OwnDeck/OwnDeckModel.swift": {
+  "en": "a language code"
+ },
+ "Lumen/Core/OwnDeck/OwnDeckSeed.swift": {
+  "Glosor vecka 12": "the seeded deck of the test builds (T58): the deck's own content, in the deck's language, never in Release",
+  "Vad heter Sveriges huvudstad?": "the seeded deck of the test builds (T58): the deck's own content, in the deck's language, never in Release",
+  "Vad är fotosyntes?": "the seeded deck of the test builds (T58): the deck's own content, in the deck's language, never in Release",
+  "Vad är roten ur hundra?": "the seeded deck of the test builds (T58): the deck's own content, in the deck's language, never in Release",
+  "Växter gör socker och syre av ljus, vatten och koldioxid.": "the seeded deck of the test builds (T58): the deck's own content, in the deck's language, never in Release",
+  "en": "a language code"
  },
  "Lumen/Core/Prep/GoalsStore.swift": {
   "Nyckelord: ": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen"

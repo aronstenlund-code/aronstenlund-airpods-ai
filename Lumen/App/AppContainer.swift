@@ -192,6 +192,19 @@ final class AppContainer {
                                               audio: drillAudio, sharing: DrillShareClient(cloud: drillCloud),
                                               remote: remote, cloud: drillCloud)
         repetitionModel.profile = listening.studyProfile // A88
+        // A164 (D263): "Spela in själv". The user's own decks, on the phone only: no server, no model, no credits.
+        let ownStore = OwnDeckStore()
+        #if LUMEN_TESTMODE
+        // T58: `-SeedOwnDeck 1` gives one deck and a silent phone voice, for the Simulator and the screenshots.
+        let seedsOwnDeck = OwnDeckSeed.isRequested()
+        if seedsOwnDeck { OwnDeckSeed.seed(into: ownStore) }
+        let ownVoice: any PhoneVoicing = seedsOwnDeck ? SilentPhoneVoice() as any PhoneVoicing : PhoneVoice() as any PhoneVoicing
+        #else
+        let ownVoice: any PhoneVoicing = PhoneVoice()
+        #endif
+        let ownDecks = OwnDeckModel(store: ownStore, audio: OwnDeckAudio(store: ownStore, voice: ownVoice))
+        ownDecks.onWillRecord = { [weak repetitionModel] in repetitionModel?.end() } // one thing at a time
+        repetitionModel.ownDecks = ownDecks
         repetitionModel.publishing = drillCloud as? DrillCloudClient // A83 (K49)
         repetitionModel.help = mock ? MockHelp() as any HelpAnswering
             : HelpClient(config: .lumen, auth: auth, http: http) as any HelpAnswering // A92 (K57)
