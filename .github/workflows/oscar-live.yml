@@ -42,6 +42,7 @@ on:
           - o97_answer_probe.py
           - o98_launch_live.py
           - o99_credits_back.py
+          - o100_security_live.py
       args:
         description: "Arguments (optional, e.g. --fast)"
         required: false
