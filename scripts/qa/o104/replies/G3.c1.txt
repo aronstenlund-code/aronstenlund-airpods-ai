@@ -1,0 +1,1 @@
+{"points": {"E": 0, "C": 0, "A": 0}, "feedback": "Ingen poäng, 1523 är året då Gustav Vasa valdes till kung, inte när Sverige blev ett arvrike. Arvriket infördes senare under hans tid som kung."}

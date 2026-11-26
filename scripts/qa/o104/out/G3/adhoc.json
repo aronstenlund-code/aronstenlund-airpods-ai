@@ -1,6 +1,6 @@
 {
   "id": "adhoc",
-  "status": "needs_reply",
+  "status": "done",
   "prompts": [
     {
       "stem": "adhoc.t1.c1",
@@ -54,7 +54,50 @@
       "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
     }
   ],
-  "turns": [],
-  "blocked": [],
-  "needs": "adhoc.t1.c1"
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "exam",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-grade",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 447,
+          "output_tokens": 56,
+          "total_ms": 10,
+          "est_cost_usd": 0.0000727,
+          "status": "ok"
+        }
+      ],
+      "credits": [],
+      "json": {
+        "points": {
+          "E": 0,
+          "C": 0,
+          "A": 0
+        },
+        "max": {
+          "E": 1,
+          "C": 0,
+          "A": 0
+        },
+        "total": 0,
+        "numeric": {
+          "expected": 1544,
+          "given": 1523,
+          "equal": false
+        },
+        "feedback": "Svaret stämmer inte, och utan uträkning finns ingen metod att ge poäng för. Visa hur du räknar, steg för steg.",
+        "usage": {
+          "input_tokens": 447,
+          "output_tokens": 56,
+          "est_cost_usd": 0.0000727
+        }
+      }
+    }
+  ],
+  "blocked": []
 }

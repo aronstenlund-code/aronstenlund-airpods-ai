@@ -1,0 +1,44 @@
+{
+ "stem": "adhoc.t1.c3",
+ "case": "adhoc",
+ "turn": 1,
+ "call": 3,
+ "endpoint": "exam",
+ "url": "https://k122-replay.invalid/v1/messages",
+ "client_request": {
+  "action": "drill",
+  "answers": true,
+  "questions": 3,
+  "subject": "Kemi",
+  "pages": [],
+  "text": "Syror och baser\n\nEn syra är ett ämne som lämnar ifrån sig vätejoner i vatten. pH-skalan går från 0 till 14, där 7 är neutralt. En lösning med pH under 7 är sur och över 7 är basisk. Saltsyra har ett pH runt 1, medan natronlut kan ha pH 14. När en syra och en bas blandas i rätt mängd bildas vatten och ett salt, och det kallas neutralisation.",
+  "lang": "sv"
+ },
+ "anthropic_request": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 450,
+  "stream": true,
+  "system": [
+   {
+    "type": "text",
+    "text": "You check Swedish exam questions that a student will only HEAR (no text in front of them). You get <exam> (subject, grade and what the exam covers) and <questions> (JSON: i and q). Return ONLY a JSON object {\"questions\": [{\"i\": 0, \"q\": \"...\"}]} with ONLY the questions you changed (none = {\"questions\": []}).\n- A question that only makes sense with the material in front of the student is rewritten so that it is clear when heard alone (\"Hur bygger man gymmodellen?\" -> \"Hur ställer man upp en linjär kostnadsmodell?\", \"Skillnad mot past simple?\" -> \"Skillnad mellan present perfect och past simple?\").\n- Symbols, formulas, units and abbreviations are written as they are said (\"3x + 5 = 20\" -> \"tre x plus fem är lika med tjugo\", \"O2\" -> \"syre\", \"dm³\" -> \"kubikdecimeter\").\n- Wrong or clumsy language is fixed (\"Vad jämför man nysvenska och fornsvenska?\" -> \"Hur skiljer sig nysvenska från fornsvenska?\"). The question stays in its language (D182: an English exam's questions stay English); never translate, except: when <language> is given, every question that is not in that language is returned translated into it (K67: a language exam's questions are in the exam's language).\n- Never make a question longer for any other reason. Filler that adds nothing may go (\"i naturen\", \"egentligen\").\n- The question must still ask the same thing: a why-question stays a why-question, the same concept, the same numbers in a calculation.\n- A calculation question keeps its numbers and units, written as words or plain digits as given; never symbols.\n- K97 (O79): with <material>, read it first: two questions are the same when the material gives them the same answer. Two questions whose answers would be the same (the same fact, cause or effect asked in other words: \"Hur påverkar inflation hushållens köpkraft?\" and \"Vad händer med köpkraften när inflationen stiger?\"; \"Varför får personer med fasta inkomster det sämre?\" and \"Varför får pensionärer med fast pension det sämre?\"): return the LATER one as {\"i\": N, \"drop\": true}. Only when a student would give the same answer to both; two questions on one topic that ask different things both stay.\nNo other text.",
+    "cache_control": {
+     "type": "ephemeral"
+    }
+   }
+  ],
+  "messages": [
+   {
+    "role": "user",
+    "content": "<exam>Ämne: Kemi. Provet handlar om syror och baser: vad en syra är, pH-skalan med sura, neutrala och basiska lösningar, och neutralisation.</exam>\n<questions>[{\"i\":0,\"q\":\"Vad är en syra?\"},{\"i\":1,\"q\":\"Hur visar pH-skalan om en lösning är sur, neutral eller basisk?\"},{\"i\":2,\"q\":\"Vad betyder det att en lösning har pH 7?\"},{\"i\":3,\"q\":\"Hur skiljer sig saltsyra från natronlut?\"},{\"i\":4,\"q\":\"Vad händer när en syra och en bas blandas i rätt mängd?\"}]</questions>\n<material>Syror och baser\n\nEn syra är ett ämne som lämnar ifrån sig vätejoner i vatten. pH-skalan går från 0 till 14, där 7 är neutralt. En lösning med pH under 7 är sur och över 7 är basisk. Saltsyra har ett pH runt 1, medan natronlut kan ha pH 14. När en syra och en bas blandas i rätt mängd bildas vatten och ett salt, och det kallas neutralisation.</material>"
+   }
+  ],
+  "output_config": {
+   "effort": "low"
+  },
+  "thinking": {
+   "type": "disabled"
+  }
+ },
+ "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
+}
