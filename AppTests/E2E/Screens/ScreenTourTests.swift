@@ -61,8 +61,18 @@ final class ScreenTourTests: XCTestCase {
     // MARK: First start (A94, Kelly Ke55)
 
     private func welcome() {
-        guard waitFor(["Välkommen till EarMind"], timeout: 25) != nil else {
-            miss("Välkommen not shown on a new installation")
+        // Run 45605345750 (T58, pro-light, the first config on a just-created simulator): the first launch never
+        // reached the screen and XCUITest then said "Application com.rsolutions.lumen is not running"; the same build
+        // was green in the six other configs. If the app is not running after the wait, launch it once more and wait
+        // again; the tour log says so, so a launch that fails twice is still red.
+        var shown = waitFor(["Välkommen till EarMind"], timeout: 25) != nil
+        if !shown, app.state != .runningForeground {
+            record("note: the app was not running after its first launch (state \(app.state.rawValue)); launched again")
+            app.launch()
+            shown = waitFor(["Välkommen till EarMind"], timeout: 45) != nil
+        }
+        guard shown else {
+            miss("Välkommen not shown on a new installation (app state \(app.state.rawValue))")
             return
         }
         shoot("valkommen", note: "Välkommen (A94)")
@@ -123,7 +133,8 @@ final class ScreenTourTests: XCTestCase {
     /// The credit capsule opens Krediter (A117, A134): the packs (none in the Simulator), Bjud in, Så räknas det.
     private func credits() {
         let capsule = app.buttons.matching(NSPredicate(format: "label CONTAINS[c] 'krediter kvar' OR label CONTAINS[c] 'kredit kvar'")).firstMatch
-        guard capsule.waitForExistence(timeout: 10) else { miss("Start: no credit capsule"); return }
+        // Runs 45160984259 and 45605345750: the capsule waits for the balance; 20 s, as on a cold simulator.
+        guard capsule.waitForExistence(timeout: 20) else { miss("Start: no credit capsule"); return }
         capsule.tap()
         record("tap: Start → the credit capsule")
         guard waitFor(["Så räknas det", "Bjud in"], timeout: 15) != nil else { miss("Krediter did not open"); return }
@@ -375,6 +386,9 @@ final class ScreenTourTests: XCTestCase {
     private func waitFor(_ labels: [String], timeout: TimeInterval) -> XCUIElement? {
         let deadline = Date().addingTimeInterval(timeout)
         repeat {
+            // A query on an app that is not running is itself a failure ("Failed to get matching snapshot",
+            // run 45605345750); wait for the state instead.
+            if app.state == .notRunning { return nil }
             if let found = find(labels) { return found }
             RunLoop.current.run(until: Date().addingTimeInterval(0.25))
         } while Date() < deadline
