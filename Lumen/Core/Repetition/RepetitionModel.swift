@@ -753,6 +753,35 @@ final class RepetitionModel {
         showsPlayer = true
     }
 
+    // MARK: Spela in själv (A164, D263)
+
+    /// The user's own decks ("Spela in själv – helt gratis"). Nil only in tests that do not need them.
+    var ownDecks: OwnDeckModel?
+
+    /// Practises an own deck through the same player and the same screen as a saved exam: the question, the
+    /// thinking time, one press for the answer. The sound is the user's own recordings, and the phone's own voice
+    /// for what is not recorded (`onlyRecorded`: only cards whose question is recorded, Kelly Ke89). Nothing is asked
+    /// of the server and no credits are counted: the deck is not in the exam store, and the player only gets files
+    /// that are on the phone.
+    func start(own deck: OwnDeck, at index: Int = 0, onlyRecorded: Bool = false) async {
+        guard let own = ownDecks else { return }
+        let cards = deck.playable(onlyRecorded: onlyRecorded)
+        guard !cards.isEmpty else { return }
+        own.stopForPractice()
+        await stopListening?()
+        let deckID = deck.id
+        let language = deck.language
+        // The phone's voice for what has no recording, made while the first cards play; the player waits for it.
+        Task { await own.audio.prepare(cards, language: language) }
+        session.start(deck.drill(onlyRecorded: onlyRecorded), count: cards.count, at: min(max(0, index), cards.count - 1),
+                      onePressPausesAnswer: ControlCheck.usesEarbudLayout(defaults),
+                      firstLap: false, cue: nil, tempo: tempo,
+                      pauseMusic: pauseMusicEnabled ? pauseMusic : nil) { i in
+            own.track(in: deckID, at: i, onlyRecorded: onlyRecorded)
+        }
+        showsPlayer = true
+    }
+
     static let playedKey = "repetition.hasPlayed"
 
     // MARK: Läsläget (A105, D185)
