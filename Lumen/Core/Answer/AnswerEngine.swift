@@ -85,6 +85,17 @@ final class AnswerEngine {
         task = Task { await run(request, context: context, persona: persona, provider: provider) }
     }
 
+    /// T57 (Toby): the same question was refused a moment ago (the answer made ahead: the server's model is down, and
+    /// the phone could not answer either). It gets that same no now, through the ordinary failure path, without the
+    /// server being asked the same thing once more.
+    func answer(_ request: ActivationRequest, context: AnswerContext, persona: PersonaRequest? = nil, refusedJustNow error: AnswerError) {
+        task?.cancel()
+        let refused = RefusedAnswerProvider(name: activeProvider.name, error: error)
+        status = .answering(query: request.query)
+        Log.answer.info("answer: refused a moment ago for the same words, not asked again (T57)")
+        task = Task { await run(request, context: context, persona: persona, provider: refused) }
+    }
+
     func cancel() {
         task?.cancel()
         task = nil
@@ -183,5 +194,22 @@ final class AnswerEngine {
         let elapsed = start.duration(to: .now)
         let components = elapsed.components
         return Double(components.seconds) * 1000 + Double(components.attoseconds) / 1e15
+    }
+}
+
+/// T57: stands in for the server when its answer is already known to be a no. Asks nothing of anyone.
+@MainActor
+final class RefusedAnswerProvider: AnswerProvider {
+    let name: String
+    private let error: AnswerError
+
+    init(name: String, error: AnswerError) {
+        self.name = name
+        self.error = error
+    }
+
+    func answer(_ request: AnswerRequest) -> AsyncThrowingStream<AnswerEvent, any Error> {
+        let error = error
+        return AsyncThrowingStream { $0.finish(throwing: error) }
     }
 }

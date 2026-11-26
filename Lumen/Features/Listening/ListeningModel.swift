@@ -1973,6 +1973,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     @ObservationIgnored private var repeatGuard = RepeatGuard()
     /// T17 finding 5: the question asked again after an empty answer ahead (once).
     @ObservationIgnored private var emptyRetried: String?
+    /// T57 (Toby): the answer made ahead was refused because the server's model is down, and when.
+    @ObservationIgnored private var aheadRefused: (error: AnswerError, at: Date)?
+    /// The pause comes within a second or two of the words; for this long the turn is not sent to the server again.
+    static let aheadRefusalMemory: TimeInterval = 10
     /// T15b finding 6: the whole utterance whose first question was asked alone (once per utterance).
     @ObservationIgnored private var splitRetried: String?
 
@@ -2634,6 +2638,14 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         currentTurnID = controller.turns.begin(fragment: request.query, mode: mode.rawValue, trigger: request.trigger.rawValue,
                                                transcript: sent.transcript)
         answerRequestedAt = Date() // A68
+        // T57 (Toby): the answer made ahead for this turn (on the words heard so far) was refused a moment ago
+        // because the server's model is down. The finished turn gets that same no, and the server is not asked again.
+        let refused = aheadRefused
+        aheadRefused = nil
+        if let refused, Date().timeIntervalSince(refused.at) < Self.aheadRefusalMemory {
+            answers.answer(request, context: sent, persona: persona, refusedJustNow: refused.error)
+            return
+        }
         answers.answer(request, context: sent, persona: persona)
     }
 
@@ -3153,6 +3165,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         if let current = ahead, !current.delivered {
             // The answer made ahead failed: at the pause the turn is asked again the normal way.
+            // T57 (Toby): unless the server's model is down (and the phone's own could not answer): then the turn
+            // gets the same no at the pause, without asking the server once more.
+            if let error = answers.lastError, OnDeviceReason(error) == .serverDown {
+                aheadRefused = (error, Date())
+            }
             ahead = nil
             controller.turns.setStatus(aheadTurnID, status: message, isQuestion: nil)
             controller.turns.finish(aheadTurnID, outcome: .failed, reason: "ahead; asked again at the pause")
