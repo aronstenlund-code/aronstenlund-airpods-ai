@@ -1,6 +1,6 @@
 # O98 (D259, K119, K120): lanseringsveckan och compress, Oscar (moln)
 
-**Resultat:** alla tre delarna stämmer. Del 1 och 3 är **verifierade live**. Del 2 är **verifierad i test**, med ett fynd: inget.
+**Resultat:** alla tre delarna stämmer. Del 1 och 3 är **verifierade live**. Del 2 är **verifierad i test**. Inga fynd.
 - Livekörning: Actions 45776631304, 07:37 UTC, main 65e7e281, efter Kevins deploy 372 (grön). Resultat **4/4**.
 - 0 ElevenLabs, 0 Claude, inga riktiga köp. Bara testkonton.
 
