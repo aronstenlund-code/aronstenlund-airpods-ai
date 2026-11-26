@@ -7,7 +7,7 @@ Angela Schrute (moln, Fable 5.2), 2026-11-26. Uppdrag: Deangelo 09:42 (A166 i `p
 - **I dag (main före ändringen): 11 skärmar och 16 tryck före Lyssnar, plus att skriva in material och vänta på servern två gånger – och vägen är stängd just nu**, eftersom den går genom "Skapa frågor", som behöver modellkrediterna.
 - **Efter: 3 skärmar och 3 tryck före Lyssnar.** Välkommen (Fortsätt) → samtycket för lyssnandet, hela (Jag förstår, starta EarMind) → iOS egen fråga om mikrofonen (Tillåt) → Lyssnar, där man säger sin fråga högt.
 - Samtycket och mikrofonfrågan är kvar, oförändrade. Lyssnarbrickan syns från första stund.
-- Det första svaret fungerar utan modellkrediter på en iPhone med Apple Intelligence (telefonens egen modell, A159). På en äldre iPhone säger appen "EarMind kan inte svara just nu. Försök igen om en stund." – där finns inget första svar förrän krediterna är påfyllda eller Spela in själv har fått sina vyer (A165).
+- Det första svaret fungerar utan modellkrediter på en iPhone med Apple Intelligence (telefonens egen modell, A159). På en äldre iPhone säger appen "EarMind kan inte svara just nu. Försök igen om en stund." – där finns inget talat svar förrän krediterna är påfyllda; Spela in själv (A165, nu på main) går att använda från Start.
 - Tobys låtsasinspelare och Kellys bildscen är med.
 - **Inget av detta är provat på telefon.** Verifierat i CI: se Testresultat.
 
@@ -49,7 +49,7 @@ Det enda man kan *höra* snabbare i dag är "Säg i AirPods" (3 skärmar, 4 tryc
 
 ## Vad som är gjort
 
-### Första starten (D264)
+### Första starten (D266)
 
 - `FirstStartView` går nu Välkommen → `FirstListeningConsentView` → klart. Stegen står i `FirstStartStep` och ordningen i `FirstStartPath.step(after:returning:listeningConsented:)` (ren funktion, testad).
 - `FirstListeningConsentView` är samma `ConsentView` som ett lyssnande läge visar (alla sju punkter, samma knapp, samma rad under knappen) i en `NavigationStack` med "Senare" (`firstStart.later`).
@@ -97,19 +97,26 @@ Den första bildkörningen visade två fel på samtycket, som nu är första sta
 
 ## Testresultat
 
-BYGGRAD
+- **iOS build 45794809838 grön** på `claude/fervent-fermi-34hrer` (0802c28f, main inmergad): enhetsbygge med varningar som fel, hela testsviten (1 173 gröna testrader, 0 röda), Release-arkivet och kontrollen att testläget och testkrokarna inte finns i Release. *Verified in CI.* De två bygg­ena före (45786309577, 45791153736) avbröts av nästa push och säger ingenting.
+- Alla 8 testerna i `A166FirstStartTests` är gröna i den körningen.
+- **Ett fel i mina egna tester, hittat nu:** tester som står inom `#if LUMEN_TESTMODE` i testmålet körs inte – flaggan sätts bara för appmålet. Det gäller det nya testet för låtsasinspelaren, och två äldre: A164:s test av `-SeedOwnDeck` och A159:s test av `-OnDeviceMock`. De har alltså aldrig körts, fast rapporterna för A159 och A164 räknade dem. Koden de prövar används av Tobys körningar (skärmturen med `-SeedOwnDeck 1` är grön), men testerna själva är *untested*. Rättas i nästa push (`#if DEBUG`, som testmålet har) med eget bygge; resultatet skrivs in här.
 
 - `LumenTests/A166FirstStartTests.swift` (8 tester): stegen i ordning för en ny installation; samtycket hoppas aldrig över; den som redan använder appen ser bara Välkommen; knappen ger samtycket och startar Standardläget; ingenting lyssnar utan samtycket; frågan om delning väntar tills det första lyssnandet är över (från första starten och från bladet); ett senare pass håller inte tillbaka den i onödan.
 - `LumenTests/A164OwnDeckTests.swift`: ett nytt test för låtsasinspelaren (2 s, `.wav`, ingen mikrofon, filen går in i spåret).
 - **Test först:** testerna skrevs före koden, men de använder bara nytt API (`FirstStartPath`, `firstStartConsentGiven`, `sharingQuestionIsFree`, `PretendOwnRecorder`), så de går inte att köra röda mot gamla koden – de kompilerar inte där. Någon röd körning finns därför inte.
 - Simulatorn räknas inte som enhetsprov. Mikrofonfrågan, AirPods, telefonens modell och rösten är **inte provade**.
 
-BILDRAD
+### Bilder (Fable screens, iPhone 17 Pro-simulatorn, ljust och mörkt, engelska och svenska)
+
+- Körning 45786375033 → grenen `fable/screens-a166-forsta-starten`: `fsWelcome`, `firstConsent` (före rättningen av knappen), `firstListening`, `listeningActivation`.
+- Körning 45791231224 → grenen `fable/screens-a166-samtycket`: `firstConsent` efter rättningen. Knappen står nu under listan med stor text, och inget syns under den.
+- Sett på bild: Välkommen, samtycket (med "Later" / "Senare"), Lyssnar för en ny användare ("● Listening", "Ask what you want. The answer comes in your ear and here."), och Kellys scen med "Help me" / "Hjälp mig" ifyllt och en fråga med svar på appens språk.
+- Bilderna visar skärmarna var för sig med demodata. **Ingen bild eller körning visar själva flödet** (trycket på knappen, iOS mikrofonruta, ett svar): det går bara på en telefon.
 
 ## Kända fel, begränsningar, risker
 
-1. **Ingen väg tillbaka till lyssnandet från Start för en ny användare.** Raden "Fler lägen" visas fortfarande bara efter AirPods-kontrollen för ett prov. Den som har lyssnat en gång och tryckt Avsluta hittar inte tillbaka (utom med Siri, "Starta EarMind"). Vyn är Angela Fables; jag har skrivit till henne (förslag: raden visas också när lyssnarsamtycket är gett). **Det här bör in innan A166 räknas som färdig för en riktig användare.**
-2. **Första svaret utan krediter finns bara på iPhone med Apple Intelligence** (iPhone 15 Pro och nyare, svenska eller engelska). På andra telefoner blir första svaret raden "EarMind kan inte svara just nu …". Spela in själv hjälper först när A165 finns på main.
+1. **Vägen tillbaka till lyssnandet (löst under dagen).** Raden "Fler lägen" på Start visades bara efter AirPods-kontrollen för ett prov. Angela Fable lade till parametern `listeningConsented` i `RepetitionHomeSection` (main afbe239c), och `HomeView` skickar nu in `consent.isGranted`: den som har gett lyssnarsamtycket ser raden direkt. Inte sett på bild.
+2. **Första svaret utan krediter finns bara på iPhone med Apple Intelligence** (iPhone 15 Pro och nyare, svenska eller engelska). På andra telefoner blir första svaret raden "EarMind kan inte svara just nu …". Spela in själv (A165, på main sedan i förmiddags) är den andra vägen till något att lyssna på utan krediter, från Start.
 3. Att höra frågan behöver fortfarande servern och ElevenLabs utskrift (Scribe). Faller den går appen över till Apples taligenkänning, som ställer en egen systemfråga till – ett fjärde tryck i det fallet.
 4. Tobys skärmtester som går Välkommen → Fortsätt → **Senare** → Start fungerar som förut (knappen heter fortfarande Senare och leder till Start), men tester som väntar sig Nytt prov direkt efter Fortsätt (`NewUserRepetitionTests`: "Fota sidor", högst tre skärmar före kameran) stämmer inte längre: vägen till kameran är nu Välkommen → Senare → Start → Nytt prov. Rad till Toby.
 5. Telefonens egen modell, mikrofonen och rösten är inte provade på en telefon (A159, A162, A164 väntar också på Arons prov).
@@ -124,7 +131,7 @@ BILDRAD
 
 ## Återstår
 
-- Raden "Fler lägen" efter lyssnarsamtycket (Angela Fable), sedan skickar jag in `consent.isGranted` från `HomeView`.
+- Testerna bakom `#if LUMEN_TESTMODE` (se Testresultat): eget bygge, sedan main.
 - Kelly: Välkommens ord när första starten leder till lyssnandet; samtyckets punkt om Claude.
 - Toby: `NewUserRepetitionTests` och skärmturens bilder av första starten.
 - Arons prov på telefon (stegen nedan).
@@ -141,5 +148,5 @@ BILDRAD
 
 ## Nästa session
 
-- Läs Angela Fables svar om "Fler lägen" och skicka in `consent.isGranted` när parametern finns.
+- Se att bygget med de tre testerna som inte kördes är grönt, och skriv in det här.
 - A149 väntar fortfarande på Arons prov och Deangelos ord.
