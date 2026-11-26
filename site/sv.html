@@ -796,6 +796,7 @@
   <section class="can wrap" id="kan" aria-labelledby="kan-h">
     <h2 id="kan-h">Fler lägen <span class="beta">Beta</span></h2>
     <p class="activate"><b>Fråga du inte är beredd på?</b> Säg [dina ord] så aktiveras vår AI.</p>
+    <p class="activate"><b>Spela in själv – helt gratis.</b> Skriv dina egna frågor och svar, läs in dem med din röst och öva i dina AirPods. Inga krediter, och ljudet stannar på din telefon.</p>
     <p class="lead">De här lägena lyssnar på vad du säger. De är i beta och blir bättre hela tiden. Starta prov använder aldrig mikrofonen.</p>
     <ul class="can-list">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg><div><h3>Förhör</h3><p>”Lumen, förhör mig på fotosyntes”</p></div></li>
@@ -1620,8 +1621,8 @@ if(location.pathname==="/"&&localStorage.getItem(k)==="sv")location.replace("/sv
 // Ke88 (D259): the launch offer shows only while Kevin's launch_offer (K119) is on. Not wired yet: K119's endpoint and
 // field names are not decided. When they are, set LAUNCH_URL and map the answer in readOffer().
 (function(){
-  var LAUNCH_URL = null; // K119
-  function readOffer(j){ return j && j.active && j.ends_at ? { end: new Date(j.ends_at) } : null; }
+  var LAUNCH_URL = "https://xjczbzfkmbjdebwlccki.supabase.co/functions/v1/purchase"; // K119: {"launch_offer": null | {starts_at, ends_at, percent, product_suffix}}
+  function readOffer(j){ var o = j && j.launch_offer; return o && o.ends_at && new Date(o.ends_at) > Date.now() ? { end: new Date(o.ends_at) } : null; }
   function show(o){
     var el = document.getElementById("launch"); if (!el || !o) return;
     function tick(){ var ms = o.end - Date.now(); if (ms <= 0) { el.classList.remove("on"); return; }

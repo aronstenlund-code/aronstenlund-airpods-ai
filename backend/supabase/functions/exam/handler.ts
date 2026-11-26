@@ -30,6 +30,20 @@ import { handleRead } from "./read.ts";
  * explains the right answer too.
  * K45 (D142): Repetitionsläget: "drill", "drill_answers", "drill_one" and "doc_text", see drill.ts.
  */
+/** K120 (A163): the longest text Komprimera takes (the app sends at most this). */
+export const COMPRESS_MAX_CHARS = 12_000;
+export const SYSTEM_PROMPT_COMPRESS =
+  `You shorten a text that a student will hear read aloud. You get <text>. Return ONLY the shortened text: about half as long, every fact, name, number and step kept, nothing added, in the same order, written in the same language as the text (never translated), as plain sentences for listening (no headings, lists, markdown or quotes). No comment before or after it.`;
+
+/** K120: the shortened text without a lead-in line ("Här är …:", "Here is …:"), markdown or wrapping quotes. */
+export function cleanCompressed(raw: string): string {
+  let t = raw.trim().replace(/^(?:här är|here is|here's|kortare version|shortened)[^\n]*:\s*/iu, "");
+  t = t.replace(/\*\*|__|^#+\s*/gmu, "").trim();
+  const q = /^["“”„«»'](.*)["“”„«»']$/su.exec(t);
+  if (q) t = q[1].trim();
+  return t;
+}
+
 export const EXAM_LIMITS = {
   bodyBytes: 24 * 1024 * 1024,
   pages: 10,
@@ -324,6 +338,48 @@ export function createExamHandler(deps: ExamDeps) {
       status,
       headers: { "content-type": "application/json", "cache-control": "no-store", ...CORS_HEADERS },
     });
+  /** K120 (A163, D259): Komprimera in Säg i AirPods. The text about half as long, the same content, in its own language;
+   *  limited and logged as the other model actions (no credits: those are audio, counted at save). */
+  async function compress(userId: string, req: Request, b: Record<string, unknown> | null): Promise<Response> {
+    const t0 = Date.now();
+    const text = typeof b?.text === "string" ? b.text.trim() : "";
+    if (!text) throw new HttpError(400, "invalid_request", "text is required");
+    if (text.length > COMPRESS_MAX_CHARS) throw new HttpError(400, "invalid_request", `text: at most ${COMPRESS_MAX_CHARS} characters`);
+    const extra = appChecks("exam", await networkKey(req), { id: userId }, { networkPerDay: cfg.networkPerDay, newUserAgeSec: 0, newUserPerHour: 0 });
+    const rl = await enforceLimits(deps.rateLimiter, "exam", userId, cfg.limits, 2, extra);
+    if (!rl.allowed) {
+      throw new HttpError(429, "rate_limited", "För många försök just nu. Vänta en liten stund och försök igen.", { retryAfterSec: rl.retryAfterSec });
+    }
+    if (!deps.provider) throw new HttpError(503, "provider_unconfigured", PROVIDER_DOWN, { fallback: true });
+    let out = "";
+    let inTok = 0, outTok = 0;
+    for await (const c of deps.provider.stream({
+      system: SYSTEM_PROMPT_COMPRESS,
+      user: `<text>\n${sanitizeTagged(text)}\n</text>`,
+      maxTokens: Math.min(4000, Math.ceil(text.length / 3) + 200),
+      cacheSystem: true,
+      signal: req.signal,
+    })) {
+      if (c.type === "text") out += c.text;
+      else if (c.type === "usage") {
+        inTok = c.inputTokens ?? inTok;
+        outTok = c.outputTokens ?? outTok;
+      }
+    }
+    const short = cleanCompressed(out);
+    if (!short) throw new HttpError(502, "provider_error", PROVIDER_DOWN, { fallback: true });
+    try {
+      await deps.recordUsage?.({
+        user_id: userId, endpoint: "exam-compress", provider: deps.provider.name, model: deps.provider.model,
+        input_tokens: inTok, output_tokens: outTok, total_ms: Date.now() - t0,
+        est_cost_usd: (inTok * cfg.priceInPerMTok + outTok * cfg.priceOutPerMTok) / 1e6, status: "ok",
+      });
+    } catch (e) {
+      console.error("usage_log_failed", e instanceof Error ? e.message : String(e));
+    }
+    return json({ text: short });
+  }
+
   return async (req: Request): Promise<Response> => {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
     const t0 = Date.now();
@@ -356,9 +412,10 @@ export function createExamHandler(deps: ExamDeps) {
         // K45: a Word file's text, read in code (iOS cannot read .docx); no model, no cost, nothing kept
         return json({ text: await docxText(String(b?.data ?? "")) });
       }
+      if (action === "compress") return await compress(user.id, req, b);
       const drill = action === "drill" || action === "drill_answers" || action === "drill_one" || action === "read";
       if (!drill && !["parse", "hint", "grade"].includes(action)) {
-        throw new HttpError(400, "invalid_request", "action must be parse, hint, grade, summary, nav, drill, drill_answers, drill_one, read or doc_text");
+        throw new HttpError(400, "invalid_request", "action must be parse, hint, grade, summary, nav, drill, drill_answers, drill_one, read, compress or doc_text");
       }
       const extra = appChecks("exam", await networkKey(req), user, {
         networkPerDay: cfg.networkPerDay,

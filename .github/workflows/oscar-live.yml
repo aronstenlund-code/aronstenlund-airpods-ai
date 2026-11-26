@@ -40,6 +40,7 @@ on:
           - o95_k116_web_live.py
           - o96_k117_crisis_live.py
           - o97_answer_probe.py
+          - o98_launch_live.py
       args:
         description: "Arguments (optional, e.g. --fast)"
         required: false

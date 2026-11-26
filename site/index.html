@@ -694,6 +694,7 @@
     <h2 id="modes-h">More modes (beta)</h2>
     <p class="lead">Modes that listen and answer in your ear, like a spoken quiz or interview practice. They ask first and always show that they're listening.</p>
     <p class="activate"><b>Question you're not prepared for?</b> Say [your words] so our AI activates.</p>
+    <p class="activate"><b>Record it yourself – completely free.</b> Write your own questions and answers, record them in your voice and practice them in your AirPods. No credits, and the sound stays on your phone.</p>
   </section>
 
   <section class="price wrap" id="credits" aria-labelledby="price-h">
@@ -807,8 +808,8 @@ if(location.pathname==="/"&&localStorage.getItem(k)==="sv")location.replace("/sv
 // Ke88 (D259): the launch offer shows only while Kevin's launch_offer (K119) is on. Not wired yet: K119's endpoint and
 // field names are not decided. When they are, set LAUNCH_URL and map the answer in readOffer().
 (function(){
-  var LAUNCH_URL = null; // K119
-  function readOffer(j){ return j && j.active && j.ends_at ? { end: new Date(j.ends_at) } : null; }
+  var LAUNCH_URL = "https://xjczbzfkmbjdebwlccki.supabase.co/functions/v1/purchase"; // K119: {"launch_offer": null | {starts_at, ends_at, percent, product_suffix}}
+  function readOffer(j){ var o = j && j.launch_offer; return o && o.ends_at && new Date(o.ends_at) > Date.now() ? { end: new Date(o.ends_at) } : null; }
   function show(o){
     var el = document.getElementById("launch"); if (!el || !o) return;
     function tick(){ var ms = o.end - Date.now(); if (ms <= 0) { el.classList.remove("on"); return; }
