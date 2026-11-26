@@ -2,10 +2,10 @@ import Foundation
 import Testing
 @testable import Lumen
 
-/// A165 (D263, Aron 2026-11-26): "Spela in själv – helt gratis", the views' side. The user's own decks are shown
-/// and edited through `OwnDecking` (the core is A164); a sheet points there when the server says no for credits
-/// (402) or because its model is down (`provider_*`), once per occasion.
-/// Pretend decks, a pretend server: nothing is recorded, played or sent, 0 ElevenLabs characters (D180).
+/// A165 (D263, Aron 2026-11-26): "Spela in själv – helt gratis", the views' side (the core is A164): a sheet points
+/// there when the server says no for credits (402) or because its model is down (`provider_*`), once per occasion;
+/// the screen of a deck opens at once and what was never filled in is tidied away; the words are Kelly's (Ke89).
+/// A pretend server and texts only: nothing is recorded, played or sent, 0 ElevenLabs characters (D180).
 @MainActor
 @Suite struct A165OwnDeckTests {
     static let down = #"{"error":{"code":"provider_quota","message":"LLM credits exhausted","fallback":true}}"#
@@ -99,7 +99,7 @@ import Testing
         await tryToMake(model)
         #expect(model.modelIsDown() && model.ownOffer.showing == nil)
         // With it: the server's no brings the sheet, once.
-        model.ownDecks = PretendOwnDecks()
+        model.ownDecks = OwnDeckModel()
         await tryToMake(model)
         #expect(model.ownOffer.showing == .modelDown)
         model.ownOffer.close()
@@ -118,7 +118,7 @@ import Testing
         let maker = Maker()
         maker.no = (503, Self.down)
         let (model, _, _) = try model("a165-read", maker: maker)
-        model.ownDecks = PretendOwnDecks()
+        model.ownDecks = OwnDeckModel()
         _ = try? await model.readText(DrillMaterial(text: "Fotosyntes."))
         #expect(model.ownOffer.showing == .modelDown)
     }
@@ -127,7 +127,7 @@ import Testing
         let maker = Maker()
         maker.no = (402, Self.short)
         let (model, _, _) = try model("a165-credits", maker: maker)
-        model.ownDecks = PretendOwnDecks()
+        model.ownDecks = OwnDeckModel()
         await tryToMake(model)
         #expect(model.ownOffer.showing == .credits)
         #expect(OwnDeckText.offerTitle(.credits) == "Slut på krediter?")
@@ -143,7 +143,7 @@ import Testing
     @Test func aStartTheCreditsDoNotCoverBringsTheSheetAndAStartThatWorksEndsTheOccasion() async throws {
         let cloud = A107StartAudioTests.DeferredCloud()
         let (model, store, audio) = try model("a165-start", maker: Maker(), cloud: cloud)
-        model.ownDecks = PretendOwnDecks()
+        model.ownDecks = OwnDeckModel()
         var drill = A79A81RepetitionTests.bio(2)
         drill.needsUpload = true
         store.save(drill)
@@ -162,113 +162,98 @@ import Testing
         #expect(model.ownOffer.showing == .credits)
     }
 
-    // MARK: The decks, as the views use them
+    // MARK: The deck's screen opens at once, and what was never filled in is tidied away (Ke89 §2)
 
-    @Test func aDeckIsMadeFilledAndCountedAndWhatIsDeletedTakesItsRecordingsAlong() async {
-        let decks = PretendOwnDecks()
-        let deck = decks.addDeck(title: "Biologi kapitel 3")
-        #expect(decks.decks.map(\.title) == ["Biologi kapitel 3"])
-        #expect(OwnDeckText.facts(cards: 0, recorded: decks.recorded(in: deck)) == "Inga frågor än")
-
-        let first = OwnCard(question: "Vad gör mitokondrien?", answer: "Den omvandlar näring till energi.")
-        let second = OwnCard(question: "Vad är fotosyntes?", answer: "")
-        decks.save(first, in: deck.id)
-        decks.save(second, in: deck.id)
-        var now = decks.deck(deck.id) ?? deck
-        #expect(now.cards.map(\.id) == [first.id, second.id])
-        // Two questions and one written answer: three things to read in.
-        #expect(decks.recorded(in: now).done == 0 && decks.recorded(in: now).of == 3)
-        #expect(OwnDeckText.facts(cards: 2, recorded: decks.recorded(in: now)) == "2 frågor")
-
-        // The question is read in: record, stop.
-        let take = OwnTake(deck: deck.id, card: first.id, side: .question)
-        await decks.record(take)
-        #expect(decks.recording == take)
-        decks.elapsed = 3
-        decks.stopRecording()
-        #expect(decks.recording == nil && decks.seconds(of: take) == 3)
-        #expect(OwnDeckText.facts(cards: 2, recorded: decks.recorded(in: now)) == "2 frågor · 1 av 3 inspelade")
-
-        // The text is changed: the same card, its recording kept.
-        var changed = first
-        changed.question = "Vad gör mitokondrierna?"
-        decks.save(changed, in: deck.id)
-        now = decks.deck(deck.id) ?? deck
-        #expect(now.cards.count == 2 && now.cards.first?.question == "Vad gör mitokondrierna?")
-        #expect(decks.seconds(of: take) == 3)
-
-        // The card is deleted: its recording goes with it.
-        decks.deleteCard(first.id, in: deck.id)
-        #expect(decks.deck(deck.id)?.cards.map(\.id) == [second.id] && decks.seconds(of: take) == nil)
-
-        // A new card that was read in but never added leaves nothing behind.
-        let never = OwnTake(deck: deck.id, card: UUID(), side: .answer)
-        await decks.record(never)
-        decks.stopRecording()
-        #expect(decks.seconds(of: never) != nil)
-        decks.deleteCard(never.card, in: deck.id)
-        #expect(decks.seconds(of: never) == nil)
-
-        await decks.practise(deck.id)
-        #expect(decks.practised == [deck.id])
-        decks.deleteDeck(deck.id)
+    @Test func aNewDeckIsReadyToWriteInAndGoesAwayWhenNothingWasWritten() {
+        let decks = OwnDeckModel()
+        let deck = OwnDeckTidy.newDeck(in: decks)
+        #expect(decks.decks.count == 1 && deck.cards.count == 1, "a first card to write in")
+        #expect(OwnDeckText.isDefaultTitle(deck.title) && OwnDeckTidy.shownName(deck.title) == "", "the name field is empty: the placeholder shows")
+        #expect(!decks.canStart(deck))
+        // Klar without having written anything: nothing is left behind.
+        #expect(OwnDeckTidy.afterEditing(deck.id, in: decks) == false)
         #expect(decks.decks.isEmpty)
     }
 
-    @Test func aSpokenAnswerWithoutTextCountsAsRecorded() {
-        let card = OwnCard(question: "Vad är fotosyntes?", answer: "")
-        let deck = OwnDeck(title: "Bio", cards: [card])
-        let decks = PretendOwnDecks(decks: [deck])
-        decks.takes[OwnTake(deck: deck.id, card: card.id, side: .question)] = 2
-        #expect(decks.recorded(in: deck).done == 1 && decks.recorded(in: deck).of == 1)
-        decks.takes[OwnTake(deck: deck.id, card: card.id, side: .answer)] = 4
-        #expect(decks.recorded(in: deck).done == 2 && decks.recorded(in: deck).of == 2)
-        #expect(OwnDeckText.facts(cards: 1, recorded: decks.recorded(in: deck)) == "1 fråga · allt inspelat")
+    @Test func aDeckThatWasWrittenInIsKeptWithoutItsBlankCards() throws {
+        let decks = OwnDeckModel()
+        let deck = OwnDeckTidy.newDeck(in: decks)
+        let first = try #require(deck.cards.first)
+        decks.setText("Vad gör mitokondrien?", for: .question, card: first.id, in: deck.id)
+        decks.setText("Den omvandlar näring till energi.", for: .answer, card: first.id, in: deck.id)
+        decks.addCard(to: deck.id) // Lägg till fråga, and then nothing written in it
+        #expect(decks.deck(deck.id)?.cards.count == 2)
+        #expect(OwnDeckTidy.afterEditing(deck.id, in: decks))
+        let kept = try #require(decks.deck(deck.id))
+        #expect(kept.cards.map(\.question) == ["Vad gör mitokondrien?"])
+        #expect(decks.canStart(kept), "a question and its answer: it can be practised (the phone's voice reads what is not read in)")
+        // Never named: it keeps the name a deck is born with, and its line on Start says what it is.
+        #expect(kept.title == "Mina frågor" && OwnDeckText.deckLine(cards: kept.cards.count) == "Egen inspelning · 1 fråga")
     }
 
-    @Test func aCardNeedsAQuestionAndIsSavedWithoutBlanksAround() {
-        var draft = OwnCardDraft(editing: nil)
-        #expect(draft.isNew && !draft.canSave)
-        draft.card.question = "   "
-        #expect(!draft.canSave)
-        draft.card.question = "  Vad är fotosyntes?\n"
-        draft.card.answer = " Växter gör socker av ljus. "
-        #expect(draft.canSave)
-        #expect(draft.cleaned.question == "Vad är fotosyntes?" && draft.cleaned.answer == "Växter gör socker av ljus.")
-        #expect(draft.cleaned.id == draft.card.id)
-        let existing = OwnCardDraft(editing: draft.cleaned)
-        #expect(!existing.isNew && existing.canSave && existing.card == draft.cleaned)
+    @Test func aNamedDeckIsKeptEvenWithoutCardsAndTheNameIsCutAtTheLimit() throws {
+        let decks = OwnDeckModel()
+        let deck = OwnDeckTidy.newDeck(in: decks)
+        decks.rename(deck.id, to: OwnDeckTidy.title(forName: "  Glosor vecka 12 "))
+        #expect(decks.deck(deck.id)?.title == "Glosor vecka 12")
+        #expect(OwnDeckTidy.afterEditing(deck.id, in: decks))
+        #expect(decks.deck(deck.id)?.cards.isEmpty == true, "the blank first card is gone, the named deck stays")
+        #expect(OwnDeckTidy.shownName("Glosor vecka 12") == "Glosor vecka 12")
+        // The field emptied again: the deck is not left without a name.
+        #expect(OwnDeckTidy.title(forName: "   ") == "Mina frågor")
+        #expect(OwnDeckTidy.title(forName: String(repeating: "a", count: 200)).count == OwnDeck.titleLimit)
+        // A deck that was named in English and is opened in Swedish is still "not named".
+        #expect(OwnDeckText.isDefaultTitle("My questions") && !OwnDeckText.isDefaultTitle("Biologi"))
     }
 
-    // MARK: The words
+    @Test func aCardKnowsWhatIsWrittenAndReadIn() {
+        var card = OwnCard()
+        #expect(card.isBlank && card.take(.question) == nil && card.text(.answer) == "")
+        card.answer = "Although."
+        #expect(!card.isBlank && card.text(.answer) == "Although.")
+        card.questionRecording = OwnRecordingFile(name: "q.m4a", seconds: 3.4)
+        #expect(card.take(.question)?.seconds == 3.4 && card.take(.answer) == nil)
+    }
 
-    @Test func theWordsSayWhatIsRecorded() {
-        #expect(OwnDeckText.cardLine(question: true, answer: true, hasAnswer: true) == "Inspelad")
-        #expect(OwnDeckText.cardLine(question: true, answer: false, hasAnswer: false) == "Inspelad")
-        #expect(OwnDeckText.cardLine(question: true, answer: false, hasAnswer: true) == "Frågan inspelad")
-        #expect(OwnDeckText.cardLine(question: false, answer: true, hasAnswer: true) == "Svaret inspelat")
-        #expect(OwnDeckText.cardLine(question: false, answer: false, hasAnswer: true) == "Inte inspelad än")
+    // MARK: The words (Ke89 §5)
+
+    @Test func theWordsAreKellys() {
+        #expect(OwnDeckText.title == "Spela in själv" && OwnDeckText.free == "Helt gratis")
+        #expect(OwnDeckText.entry == "Spela in själv – helt gratis")
+        #expect(OwnDeckText.entryLine == "Skriv frågor och svar och läs in dem med din röst.")
+        #expect(OwnDeckText.deckLine(cards: 5) == "Egen inspelning · 5 frågor")
+        #expect(OwnDeckText.namePrompt == "T.ex. Glosor vecka 12")
+        #expect(OwnDeckText.field(.question) == "Fråga" && OwnDeckText.field(.answer) == "Svar")
+        #expect(OwnDeckText.record == "Spela in" && OwnDeckText.recordAgain == "Spela in igen" && OwnDeckText.notRecorded == "Inte inspelad")
+        #expect(OwnDeckText.addCard == "Lägg till fråga" && OwnDeckText.delete == "Ta bort" && OwnDeckText.practise == "Öva")
+        #expect(OwnDeckText.staysOnPhone == "Helt gratis. Ljudet stannar på din telefon.")
+        #expect(OwnDeckText.micNote == "Mikrofonen används bara medan du spelar in.")
+        #expect(OwnDeckText.recordLabel(.question) == "Spela in frågan" && OwnDeckText.recordLabel(.answer) == "Spela in svaret")
+        #expect(OwnDeckText.playLabel(.question, seconds: 4.2) == "Spela upp frågan, 4 sekunder")
         #expect(OwnDeckText.clock(0) == "0:00" && OwnDeckText.clock(4.4) == "0:04" && OwnDeckText.clock(75) == "1:15")
-        #expect(OwnDeckText.recording(4) == "Spelar in · 0:04" && OwnDeckText.listen(6) == "Spela upp · 0:06")
-        #expect(OwnDeckText.record(.question) == "Spela in frågan" && OwnDeckText.record(.answer) == "Spela in svaret")
-        #expect(OwnDeckText.entry == "Spela in själv – helt gratis" && OwnDeckText.free == "Helt gratis")
-        #expect(OwnDeckText.offerTitle(.modelDown) == "EarMind kan inte svara just nu")
+        #expect(OwnDeckText.offerTitle(.credits) == "Slut på krediter?")
+        #expect(OwnDeckText.offerTitle(.modelDown) == "Kan inte skapa prov just nu?")
+        #expect(OwnDeckText.offerLine == "Spela in dina egna frågor och svar – helt gratis.")
     }
 
     @Test func theWordsAreInBothLanguages() {
         func text(_ key: String, _ language: AppLanguage) -> String {
             language.bundle.localizedString(forKey: key, value: "(missing)", table: nil)
         }
-        #expect(text("Spela in själv – helt gratis", .en) == "Record it yourself – completely free")
-        #expect(text("Spela in själv", .en) == "Record it yourself")
-        #expect(text("Helt gratis", .en) == "Completely free")
-        #expect(text("Slut på krediter?", .en) == "Out of credits?")
-        #expect(text("Spela in dina egna frågor och svar – helt gratis.", .en) == "Record your own questions and answers – completely free.")
-        #expect(text("Spela in själv – helt gratis", .sv) == "Spela in själv – helt gratis")
-        #expect(text("Slut på krediter?", .sv) == "Slut på krediter?")
-        for key in ["Ny samling", "Ny fråga", "Öva", "Lägg till en fråga först.", "Spela in frågan", "Spela in svaret", "Spela in igen",
-                    "Inte inspelad än", "Inspelad", "Helt gratis. Ljudet stannar på telefonen.", "EarMind kan inte svara just nu"] {
-            #expect(text(key, .en) != "(missing)" && text(key, .en) != key, "\(key)")
+        let english = ["Spela in själv": "Record it yourself", "Helt gratis": "Completely free",
+                       "Spela in själv – helt gratis": "Record it yourself – completely free",
+                       "Skriv frågor och svar och läs in dem med din röst.": "Write questions and answers and record them in your own voice.",
+                       "T.ex. Glosor vecka 12": "e.g. Vocabulary week 12", "Inte inspelad": "Not recorded",
+                       "Lägg till fråga": "Add question", "Ta bort": "Delete", "Öva": "Practice",
+                       "Helt gratis. Ljudet stannar på din telefon.": "Completely free. The sound stays on your phone.",
+                       "Mikrofonen används bara medan du spelar in.": "The microphone is only used while you record.",
+                       "Egen inspelning": "Your recording", "Slut på krediter?": "Out of credits?",
+                       "Kan inte skapa prov just nu?": "Can't create quizzes right now?",
+                       "Spela in dina egna frågor och svar – helt gratis.": "Record your own questions and answers – completely free.",
+                       "Mina frågor": "My questions"]
+        for (key, value) in english {
+            #expect(text(key, .en) == value, "\(key)")
+            #expect(text(key, .sv) == key, "\(key)")
         }
     }
 }

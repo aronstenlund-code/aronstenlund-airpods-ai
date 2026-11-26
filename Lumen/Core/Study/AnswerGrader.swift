@@ -133,7 +133,8 @@ struct OnDeviceGrader: AnswerGrading {
 /// language that is spoken (the listening modes' rule, D257), so they are not looked up in the app's language.
 enum PhoneGradeText {
     static func lead(_ language: TranscriptionLanguage) -> String {
-        language == .swedish ? "Telefonens modell:" : "The phone's model:"
+        // Kelly (2026-11-26): "Telefonens modell" says nothing to the user; where it was checked does.
+        language == .swedish ? "Rättat på telefonen:" : "Checked on your phone:"
     }
 
     static func verdict(_ verdict: LocalGrade.Verdict, _ language: TranscriptionLanguage) -> String {

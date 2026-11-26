@@ -600,6 +600,10 @@
  "Lumen/Core/Notes/NotesStore.swift": {
   "# EarMind — \\(createdAt.formatted(date: .long, time: .shortened))": "language data, a log line or a technical string, not a text on the screen"
  },
+ "Lumen/Core/OwnDeck/OwnDeckStandIn.swift": {
+  "\\(target.cardID)-\\(target.part.rawValue).m4a": "a file name (stand-in for the core, only on the branch)",
+  "en": "a language code"
+ },
  "Lumen/Core/Prep/GoalsStore.swift": {
   "Nyckelord: ": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen"
  },
@@ -770,6 +774,9 @@
   "tryck": "language data: words looked for in the answer (both languages, see HelpService.guess)",
   "väd": "a word looked for in the question (the mock help)"
  },
+ "Lumen/Core/Repetition/OwnDecks.swift": {
+  "Mina frågor": "the name a deck is born with, compared with what is stored (both languages)"
+ },
  "Lumen/Core/Repetition/Publishing.swift": {
   "Annat": "a school subject as the server stores and searches it",
   "Biologi": "a school subject as the server stores and searches it",
@@ -858,7 +865,7 @@
   "Fråga: \\(question)\\nFacit: \\(key)\\nElevens svar: \\(answer)": "a prompt to the phone's model",
   "Inte rätt.": "spoken: follows the language listened for, not the texts' language",
   "Rätt.": "spoken: follows the language listened for, not the texts' language",
-  "Telefonens modell:": "spoken: follows the language listened for, not the texts' language",
+  "Rättat på telefonen:": "spoken: follows the language listened for, not the texts' language",
   "en": "a prompt to the phone's model, or a word read from its reply",
   "fel": "a prompt to the phone's model, or a word read from its reply",
   "rätt": "a prompt to the phone's model, or a word read from its reply"

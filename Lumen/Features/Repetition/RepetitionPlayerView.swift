@@ -208,7 +208,8 @@ struct RepetitionPlayerView: View {
                     HStack(alignment: .firstTextBaseline) {
                         Text(verbatim: place).fontWeight(.semibold).monospacedDigit()
                         Spacer(minLength: 8)
-                        Text(verbatim: drill.title).lineLimit(1)
+                        // A165 (Ke89 §3): an own deck says that it is the user's own recording.
+                        Text(verbatim: model.ownDecks?.deck(drill.id) != nil ? OwnDeckText.ownRecording : drill.title).lineLimit(1)
                     }
                 }
             }

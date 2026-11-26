@@ -28,7 +28,20 @@ struct RepetitionHomeSection: View {
     @State private var showsLaunchOffer = false // A161 (D259)
     @State private var opensShopAfterOffer = false
     @State private var showsShop = false
-    @State private var showsOwnDecks = false // A165 (D263)
+    /// A165: the deck whose screen is closing (the sheet's item is already nil when its onDismiss runs).
+    @State private var closingOwnDeck: UUID?
+    /// A165 (D263): the deck whose screen is up, and the deck to practise once that screen has closed.
+    @State private var ownDeck: OwnDeckSheet?
+    @State private var practisesOwn: UUID?
+
+    struct OwnDeckSheet: Identifiable {
+        let id: UUID
+    }
+
+    /// A165: the user's own decks, listed among the quizzes (Ke89 §1).
+    private var ownDecks: [OwnDeck] { model.ownDecks?.decks ?? [] }
+    /// Start shows its list (not the empty state) when there is a quiz or an own deck.
+    private var hasList: Bool { !model.examDrills.isEmpty || !ownDecks.isEmpty }
     @Environment(\.scenePhase) private var scenePhase
     @State private var pastedCode = ""
     @AppStorage("repetition.controlsChecked") private var controlsChecked = false
@@ -64,29 +77,51 @@ struct RepetitionHomeSection: View {
 
     /// A165 (D263): nothing of Start's own is over it, so the sheet about "Spela in själv" can come up here.
     private var isFront: Bool {
-        !isCreating && !showsShop && !showsLaunchOffer && !askingReminder && !askingCode && checking == nil && !model.showsPlayer
+        !isCreating && !showsShop && !showsLaunchOffer && !askingReminder && !askingCode && checking == nil
+            && ownDeck == nil && !model.showsPlayer
     }
 
     /// A165: the sheet's button was pressed (here or in Nytt prov, which closes first): "Spela in själv" opens.
     private func openOwnDecksIfAsked() {
         guard model.ownOffer.opensDecks, !isCreating, model.ownDecks != nil else { return }
         model.ownOffer.opensDecks = false
-        opened = nil
-        showsSchool = false
-        showsOwnDecks = true
+        newOwnDeck()
+    }
+
+    /// A165 (Ke89 §2): the way in opens the screen of a new deck at once, with its first card to write in.
+    private func newOwnDeck() {
+        guard let decks = model.ownDecks, ownDeck == nil else { return }
+        ownDeck = OwnDeckSheet(id: OwnDeckTidy.newDeck(in: decks).id)
+    }
+
+    /// A165: the deck's screen has closed. What was never filled in goes, and Öva starts the deck in the player.
+    private func ownDeckClosed(_ id: UUID?) {
+        guard let decks = model.ownDecks, let id else { return }
+        let kept = OwnDeckTidy.afterEditing(id, in: decks)
+        if practisesOwn == id, kept, let deck = decks.deck(id), decks.canStart(deck) {
+            Task { await model.start(own: deck) }
+        }
+        practisesOwn = nil
     }
 
     var body: some View {
         Group {
-            if model.examDrills.isEmpty { emptyState } else { examList }
+            if hasList { examList } else { emptyState }
         }
-        // A165 (D263): "Spela in själv – helt gratis", and the sheet that points there when the server says no.
-        .navigationDestination(isPresented: $showsOwnDecks) {
-            if let decks = model.ownDecks { OwnDecksView(decks: decks) }
+        // A165 (D263): the screen of an own deck, and the sheet that points there when the server says no.
+        .sheet(item: $ownDeck, onDismiss: { ownDeckClosed(closingOwnDeck) }) { item in
+            if let decks = model.ownDecks {
+                NavigationStack {
+                    OwnDeckView(decks: decks, deckID: item.id) {
+                        practisesOwn = item.id
+                        ownDeck = nil
+                    }
+                }
+            }
         }
-        .modifier(OwnDeckOfferPresenter(model: model, isFront: isFront))
-        .onChange(of: model.ownOffer.opensDecks) { openOwnDecksIfAsked() }
-        .onChange(of: isCreating) { openOwnDecksIfAsked() }
+        .onChange(of: ownDeck?.id) { old, new in if let new { closingOwnDeck = new } else if old != nil { closingOwnDeck = old } }
+        // The sheet's button: once the sheet is down (or Nytt prov, when it was said there), the new deck comes up.
+        .modifier(OwnDeckOfferPresenter(model: model, isFront: isFront) { openOwnDecksIfAsked() })
         // A132 (D215): no large "Prov" heading; the capsule and the gear are enough, and the room goes to the field.
         // The name stays for VoiceOver and for the way back from the screens that are pushed.
         .navigationTitle("Prov")
@@ -112,7 +147,7 @@ struct RepetitionHomeSection: View {
                     .background { (scheme == .dark ? SayText.fieldDark : SayText.field).ignoresSafeArea(.all, edges: .bottom) }
                     .onGeometryChange(for: CGFloat.self) { $0.frame(in: .global).maxY } action: { keyboardStripBottom = $0 }
                     .accessibilityHidden(true)
-            } else if !model.examDrills.isEmpty || showsMoreModes {
+            } else if hasList || showsMoreModes {
                 bottomRow
             }
         }
@@ -122,7 +157,7 @@ struct RepetitionHomeSection: View {
             keyboardTop = SayKeyboard.top(from: note)
         }
         .toolbar { barItems }
-        .sheet(isPresented: $isCreating) {
+        .sheet(isPresented: $isCreating, onDismiss: { openOwnDecksIfAsked() }) { // A165: the free way, asked for in Nytt prov
             NewDrillView(model: model) { drill in opened = drill.id }
         }
         .sheet(item: $checking) { drill in
@@ -223,7 +258,7 @@ struct RepetitionHomeSection: View {
     /// (in iOS 26 the toolbar's buttons lay over the text and over Starta prov, CI 43531494112).
     private var bottomRow: some View {
         HStack(spacing: 12) {
-            if model.examDrills.isEmpty {
+            if !hasList {
                 Spacer(minLength: 0)
                 Button(action: onMoreModes) {
                     Text("Fler lägen · Beta")
@@ -287,7 +322,7 @@ struct RepetitionHomeSection: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             if model.ownDecks != nil { // A165 (D263): the free way, right under Nytt prov
-                Button { showsOwnDecks = true } label: { Self.textButton(OwnDeckText.entry) }
+                Button { newOwnDeck() } label: { Self.textButton(OwnDeckText.entry) }
                     .accessibilityIdentifier("home.ownDecks")
             }
             if model.canPublish { // A83 (Ke52 "Hem")
@@ -354,20 +389,24 @@ struct RepetitionHomeSection: View {
                 }
             }
 
-            if model.examDrills.count > 1 {
+            if model.examDrills.count > 1 || !ownDecks.isEmpty {
                 Section {
                     ForEach(model.examDrills.dropFirst()) { drill in otherExam(drill) }
+                    // A165 (Ke89 §1): the own decks lie among the quizzes, "Egen inspelning · 5 frågor".
+                    ForEach(ownDecks) { deck in ownDeckRow(deck) }
                 } header: {
-                    Text("Andra prov").foregroundStyle(LumenColor.secondaryText) // A148: AA
+                    // Without a quiz the own decks are the only ones, so the section is named after them.
+                    Group {
+                        if model.examDrills.isEmpty { Text(verbatim: OwnDeckText.title) } else { Text("Andra prov") }
+                    }
+                    .foregroundStyle(LumenColor.secondaryText) // A148: AA
                 }
             }
 
             if model.ownDecks != nil || model.canPublish || lastNight != nil || showsMoreModes {
                 Section {
-                    if model.ownDecks != nil { // A165 (D263): "Spela in själv" with "Helt gratis" under it
-                        navigationRow(OwnDeckText.title, detail: OwnDeckText.free) { showsOwnDecks = true }
-                            .accessibilityLabel(OwnDeckText.entry)
-                            .accessibilityIdentifier("home.ownDecks")
+                    if model.ownDecks != nil { // A165 (D263, Ke89 §1): "Spela in själv" with the capsule "Helt gratis"
+                        OwnDeckEntryRow { newOwnDeck() }
                     }
                     if model.canPublish { // A83 (Ke52 "Hem")
                         navigationRow(String(localized: "Prov från din skola"), detail: nil) { showsSchool = true }
@@ -571,6 +610,36 @@ struct RepetitionHomeSection: View {
             .disabled(!model.canStart(drill) && !model.isReadingAloudOff(drill)) // A112b: the text can be opened
             .accessibilityLabel("Starta \(drill.title)")
         }
+    }
+
+    /// A165 (Ke89 §1): an own deck as a quiz among the others: the row opens its screen, ▶ practises it directly.
+    private func ownDeckRow(_ deck: OwnDeck) -> some View {
+        HStack(spacing: 12) {
+            Button {
+                ownDeck = OwnDeckSheet(id: deck.id)
+            } label: {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(verbatim: deck.title).foregroundStyle(.primary)
+                    Text(verbatim: OwnDeckText.deckLine(cards: deck.cards.count))
+                        .font(.subheadline).foregroundStyle(LumenColor.secondaryText).monospacedDigit()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.pressFeedback)
+            .accessibilityHint(String(localized: "Öppnar samlingen"))
+            Button {
+                Task { await model.start(own: deck) }
+            } label: {
+                Image(systemName: "play.circle.fill")
+                    .font(.title)
+                    .symbolRenderingMode(.hierarchical)
+            }
+            .buttonStyle(.borderless)
+            .disabled(!(model.ownDecks?.canStart(deck) ?? false))
+            .accessibilityLabel("Starta \(deck.title)")
+        }
+        .accessibilityIdentifier("home.ownDeck")
     }
 
     /// A row that goes somewhere: the title, at most one line under it and the system's chevron.

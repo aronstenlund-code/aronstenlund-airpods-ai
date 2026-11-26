@@ -1,99 +1,9 @@
 import Foundation
 import Observation
 
-// A165 (D263): "Spela in själv – helt gratis". The user writes their own questions and answers, reads them in with
-// their own voice, and practises them like a saved quiz. No server, no model, no credits; the sound stays on the
-// phone. This file is what the views need: the types they show, the protocol they talk to (`OwnDecking`, the
-// core's side of it is Angela Schrute's A164), the words, and when the sheet that points here comes up.
-
-/// One question with its answer, as the user wrote them.
-struct OwnCard: Identifiable, Equatable, Sendable {
-    var id = UUID()
-    var question: String
-    var answer: String
-
-    var hasQuestion: Bool { !question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-}
-
-/// A collection of the user's own questions.
-struct OwnDeck: Identifiable, Equatable, Sendable {
-    var id = UUID()
-    var title: String
-    var cards: [OwnCard] = []
-}
-
-/// Which of a card's two recordings.
-enum OwnSide: String, Sendable, CaseIterable {
-    case question, answer
-}
-
-/// One recording: a side of a card in a deck. The card need not be saved yet (a new card is recorded before Klar);
-/// `OwnDecking.deleteCard` removes its recordings whether it was saved or not.
-struct OwnTake: Hashable, Sendable {
-    var deck: UUID
-    var card: UUID
-    var side: OwnSide
-}
-
-/// What the views of "Spela in själv" need from the core (A164): the decks, one recording at a time with the
-/// phone's or the AirPods' microphone, listening to a recording, and practising a deck through the same player as
-/// a saved quiz. Everything is on the phone; nothing here reaches the network.
-@MainActor
-protocol OwnDecking: AnyObject, Observable {
-    var decks: [OwnDeck] { get }
-    @discardableResult func addDeck(title: String) -> OwnDeck
-    func rename(deck id: UUID, to title: String)
-    /// The deck, its cards and their recordings.
-    func deleteDeck(_ id: UUID)
-    /// Adds the card, or replaces the one with the same id (its recordings are kept).
-    func save(_ card: OwnCard, in deck: UUID)
-    /// The card and its recordings (also the recordings of a card that was never saved).
-    func deleteCard(_ id: UUID, in deck: UUID)
-
-    /// How long the recording is; nil when there is none (the phone's own voice reads that side when practising).
-    func seconds(of take: OwnTake) -> TimeInterval?
-    /// What records now, how long it has recorded and how loud it is (dBFS, nil when unknown).
-    var recording: OwnTake? { get }
-    var elapsed: TimeInterval { get }
-    var levelDBFS: Double? { get }
-    /// The longest one recording can be; the core stops there by itself.
-    var takeLimit: TimeInterval { get }
-    /// Why recording or playing could not start ("Tillåt mikrofonen …"), until the next attempt.
-    var problem: String? { get }
-    /// Starts recording (asks for the microphone the first time). A recording that was there is replaced when
-    /// this one is stopped.
-    func record(_ take: OwnTake) async
-    func stopRecording()
-    func deleteTake(_ take: OwnTake)
-
-    /// What is being listened to now.
-    var playing: OwnTake? { get }
-    func play(_ take: OwnTake)
-    func stopPlaying()
-
-    /// Practises the deck as a saved quiz: the own recordings in the AirPods, the phone's voice for what has none.
-    func practise(_ deck: UUID) async
-}
-
-extension OwnDecking {
-    func deck(_ id: UUID) -> OwnDeck? { decks.first { $0.id == id } }
-
-    /// How many of the deck's sides (questions and answers that have a text) have an own recording.
-    func recorded(in deck: OwnDeck) -> (done: Int, of: Int) {
-        var done = 0
-        var total = 0
-        for card in deck.cards {
-            for side in OwnSide.allCases {
-                let isRecorded = seconds(of: OwnTake(deck: deck.id, card: card.id, side: side)) != nil
-                // An answer that is neither written nor read in is not something to record.
-                let counts = side == .question || isRecorded || !card.answer.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-                if counts { total += 1 }
-                if isRecorded { done += 1 }
-            }
-        }
-        return (done, total)
-    }
-}
+// A165 (D263): "Spela in själv – helt gratis", what the views add to the core (A164, Angela Schrute's
+// `Lumen/Core/OwnDeck/`): when the sheet that points there comes up, the words (Kelly's Ke89,
+// `docs/design/spela-in-sjalv.md`), and what is tidied away when the deck's screen is closed.
 
 // MARK: The sheet that points here
 
@@ -135,64 +45,107 @@ final class OwnDeckOffer {
     }
 }
 
-// MARK: The words
+// MARK: The deck's screen
+
+extension OwnCard {
+    /// The own recording of a part; nil when there is none.
+    func take(_ part: OwnPart) -> OwnRecordingFile? {
+        part == .question ? questionRecording : answerRecording
+    }
+
+    func text(_ part: OwnPart) -> String {
+        part == .question ? question : answer
+    }
+
+    /// Nothing written and nothing read in.
+    var isBlank: Bool { !has(.question) && !has(.answer) }
+}
+
+/// The screen of a deck opens straight from the way in (Ke89 §2), so a deck and a first card exist before anything
+/// is written. What was never filled in is taken away when the screen closes.
+@MainActor
+enum OwnDeckTidy {
+    /// A new deck with its first, empty card, ready to be written in.
+    static func newDeck(in decks: OwnDeckModel) -> OwnDeck {
+        let deck = decks.addDeck(title: OwnDeckText.defaultTitle)
+        decks.addCard(to: deck.id)
+        return decks.deck(deck.id) ?? deck
+    }
+
+    /// The blank cards go. A deck that then has no card and was never named goes too. True when the deck is left.
+    @discardableResult
+    static func afterEditing(_ deckID: UUID, in decks: OwnDeckModel) -> Bool {
+        guard let deck = decks.deck(deckID) else { return false }
+        for card in deck.cards where card.isBlank { decks.deleteCard(card.id, in: deckID) }
+        guard let left = decks.deck(deckID) else { return false }
+        if left.cards.isEmpty, OwnDeckText.isDefaultTitle(left.title) {
+            decks.delete(deckID)
+            return false
+        }
+        return true
+    }
+
+    /// What the name field shows for a title: nothing for the name a deck is born with (the placeholder shows).
+    static func shownName(_ title: String) -> String {
+        OwnDeckText.isDefaultTitle(title) ? "" : title
+    }
+
+    /// The title that is saved for what stands in the name field.
+    static func title(forName name: String) -> String {
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty ? OwnDeckText.defaultTitle : String(trimmed.prefix(OwnDeck.titleLimit))
+    }
+}
+
+// MARK: The words (Ke89 §5)
 
 enum OwnDeckText {
     static var title: String { String(localized: "Spela in själv") }
     static var free: String { String(localized: "Helt gratis") }
-    /// The way in, where it stands as one line.
+    /// The way in where it stands as one line (Start without a quiz), and for VoiceOver.
     static var entry: String { String(localized: "Spela in själv – helt gratis") }
+    static var entryLine: String { String(localized: "Skriv frågor och svar och läs in dem med din röst.") }
 
-    static var emptyTitle: String { String(localized: "Egna frågor med din röst") }
-    static var emptyLine: String {
-        String(localized: "Skriv dina frågor och svar och läs in dem. Sedan övar du på dem i dina AirPods. Helt gratis – inga krediter.")
-    }
-    static var newDeck: String { String(localized: "Ny samling") }
-    static var deckNamePrompt: String { String(localized: "Namn, till exempel Biologi kapitel 3") }
-    static var create: String { String(localized: "Skapa") }
-    static var newCard: String { String(localized: "Ny fråga") }
-    static var practise: String { String(localized: "Öva") }
-    static var addFirst: String { String(localized: "Lägg till en fråga först.") }
-    static var practiseNote: String {
-        String(localized: "Dina inspelningar spelas i AirPods. Det som inte är inspelat läses av telefonens röst.")
-    }
-    static var staysOnPhone: String { String(localized: "Helt gratis. Ljudet stannar på telefonen.") }
+    /// A deck's line among the quizzes on Start: "Egen inspelning · 5 frågor".
+    static func deckLine(cards: Int) -> String { String(localized: "Egen inspelning · \(DrillText.questions(cards))") }
+    static var ownRecording: String { String(localized: "Egen inspelning") }
 
-    static func cards(_ count: Int) -> String {
-        count == 1 ? String(localized: "1 fråga") : String(localized: "\(count) frågor")
+    /// The name of a deck that has not been named. Both languages count as "not named".
+    static var defaultTitle: String { String(localized: "Mina frågor") }
+    static func isDefaultTitle(_ title: String) -> Bool {
+        let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.isEmpty || trimmed == "Mina frågor" || trimmed == "My questions"
     }
 
-    /// "3 frågor · 4 av 6 inspelade", "3 frågor · allt inspelat", "3 frågor"; "Inga frågor än".
-    static func facts(cards: Int, recorded: (done: Int, of: Int)) -> String {
-        guard cards > 0 else { return String(localized: "Inga frågor än") }
-        if recorded.done == 0 { return OwnDeckText.cards(cards) }
-        if recorded.done >= recorded.of { return String(localized: "\(OwnDeckText.cards(cards)) · allt inspelat") }
-        return String(localized: "\(OwnDeckText.cards(cards)) · \(recorded.done) av \(recorded.of) inspelade")
+    static var name: String { String(localized: "Namn") }
+    static var namePrompt: String { String(localized: "T.ex. Glosor vecka 12") }
+    static func field(_ part: OwnPart) -> String {
+        part == .question ? String(localized: "Fråga") : String(localized: "Svar")
     }
-
-    /// Under a card's question in the deck: what is recorded.
-    static func cardLine(question: Bool, answer: Bool, hasAnswer: Bool) -> String {
-        if question, answer || !hasAnswer { return String(localized: "Inspelad") }
-        if question { return String(localized: "Frågan inspelad") }
-        if answer { return String(localized: "Svaret inspelat") }
-        return String(localized: "Inte inspelad än")
-    }
-
-    static func sideTitle(_ side: OwnSide) -> String {
-        side == .question ? String(localized: "Fråga") : String(localized: "Svar")
-    }
-    static func prompt(_ side: OwnSide) -> String {
-        side == .question ? String(localized: "Skriv frågan") : String(localized: "Skriv svaret")
-    }
-    static func record(_ side: OwnSide) -> String {
-        side == .question ? String(localized: "Spela in frågan") : String(localized: "Spela in svaret")
-    }
+    static var record: String { String(localized: "Spela in") }
     static var recordAgain: String { String(localized: "Spela in igen") }
+    static var notRecorded: String { String(localized: "Inte inspelad") }
     static var stop: String { String(localized: "Stoppa") }
-    static func recording(_ elapsed: TimeInterval) -> String { String(localized: "Spelar in · \(clock(elapsed))") }
-    static func listen(_ seconds: TimeInterval) -> String { String(localized: "Spela upp · \(clock(seconds))") }
-    static var editorNote: String {
-        String(localized: "Läs som du vill höra det. Utan inspelning läser telefonens röst texten.")
+    static var addCard: String { String(localized: "Lägg till fråga") }
+    static var delete: String { String(localized: "Ta bort") }
+    static var practise: String { String(localized: "Öva") }
+    static var staysOnPhone: String { String(localized: "Helt gratis. Ljudet stannar på din telefon.") }
+    static var micNote: String { String(localized: "Mikrofonen används bara medan du spelar in.") }
+
+    // VoiceOver
+    static func recordLabel(_ part: OwnPart) -> String {
+        part == .question ? String(localized: "Spela in frågan") : String(localized: "Spela in svaret")
+    }
+    static func recordAgainLabel(_ part: OwnPart) -> String {
+        part == .question ? String(localized: "Spela in frågan igen") : String(localized: "Spela in svaret igen")
+    }
+    static func playLabel(_ part: OwnPart, seconds: Double) -> String {
+        let whole = max(1, Int(seconds.rounded()))
+        return part == .question ? String(localized: "Spela upp frågan, \(whole) sekunder") : String(localized: "Spela upp svaret, \(whole) sekunder")
+    }
+    static func stopLabel(_ elapsed: TimeInterval) -> String {
+        let whole = max(0, Int(elapsed.rounded()))
+        return String(localized: "Stoppa inspelningen, \(whole) sekunder")
     }
 
     static func clock(_ seconds: TimeInterval) -> String {
@@ -200,102 +153,10 @@ enum OwnDeckText {
         return "\(whole / 60):" + String(format: "%02d", whole % 60)
     }
 
-    // The sheet
+    // The sheet (Ke89 §4)
     static func offerTitle(_ reason: OwnDeckOffer.Reason) -> String {
-        reason == .credits ? String(localized: "Slut på krediter?") : String(localized: "EarMind kan inte svara just nu")
+        reason == .credits ? String(localized: "Slut på krediter?") : String(localized: "Kan inte skapa prov just nu?")
     }
     static var offerLine: String { String(localized: "Spela in dina egna frågor och svar – helt gratis.") }
     static var notNow: String { String(localized: "Inte nu") }
 }
-
-/// The editor's card while it is written: Klar needs a question.
-struct OwnCardDraft: Equatable {
-    var card: OwnCard
-    let isNew: Bool
-
-    init(editing card: OwnCard?) {
-        self.card = card ?? OwnCard(question: "", answer: "")
-        isNew = card == nil
-    }
-
-    var canSave: Bool { card.hasQuestion }
-
-    /// The card as it is saved: without blanks around the texts.
-    var cleaned: OwnCard {
-        var copy = card
-        copy.question = card.question.trimmingCharacters(in: .whitespacesAndNewlines)
-        copy.answer = card.answer.trimmingCharacters(in: .whitespacesAndNewlines)
-        return copy
-    }
-}
-
-#if DEBUG
-/// The pictures and the tests: decks in memory, recordings that are only lengths, nothing recorded or played.
-@MainActor
-@Observable
-final class PretendOwnDecks: OwnDecking {
-    var decks: [OwnDeck]
-    var takes: [OwnTake: TimeInterval] = [:]
-    var recording: OwnTake?
-    var elapsed: TimeInterval = 0
-    var levelDBFS: Double?
-    let takeLimit: TimeInterval = 120
-    var problem: String?
-    var playing: OwnTake?
-    private(set) var practised: [UUID] = []
-
-    init(decks: [OwnDeck] = []) {
-        self.decks = decks
-    }
-
-    @discardableResult
-    func addDeck(title: String) -> OwnDeck {
-        let deck = OwnDeck(title: title)
-        decks.insert(deck, at: 0)
-        return deck
-    }
-
-    func rename(deck id: UUID, to title: String) {
-        guard let index = decks.firstIndex(where: { $0.id == id }) else { return }
-        decks[index].title = title
-    }
-
-    func deleteDeck(_ id: UUID) {
-        decks.removeAll { $0.id == id }
-        takes = takes.filter { $0.key.deck != id }
-    }
-
-    func save(_ card: OwnCard, in deck: UUID) {
-        guard let index = decks.firstIndex(where: { $0.id == deck }) else { return }
-        if let at = decks[index].cards.firstIndex(where: { $0.id == card.id }) {
-            decks[index].cards[at] = card
-        } else {
-            decks[index].cards.append(card)
-        }
-    }
-
-    func deleteCard(_ id: UUID, in deck: UUID) {
-        if let index = decks.firstIndex(where: { $0.id == deck }) { decks[index].cards.removeAll { $0.id == id } }
-        takes = takes.filter { $0.key.card != id }
-    }
-
-    func seconds(of take: OwnTake) -> TimeInterval? { takes[take] }
-
-    func record(_ take: OwnTake) async {
-        playing = nil
-        recording = take
-        elapsed = 0
-    }
-
-    func stopRecording() {
-        guard let take = recording else { return }
-        takes[take] = max(elapsed, 1)
-        recording = nil
-    }
-
-    func deleteTake(_ take: OwnTake) { takes[take] = nil }
-    func play(_ take: OwnTake) { if takes[take] != nil { playing = take } }
-    func stopPlaying() { playing = nil }
-    func practise(_ deck: UUID) async { practised.append(deck) }
-}
-#endif

@@ -162,8 +162,8 @@ final class RepetitionModel {
     var compressor: SayCompressor?
 
     /// A165 (D263): "Spela in själv – helt gratis", the user's own decks with their own recordings (the core is
-    /// A164). Nil until the core is there: the way in and the sheet are not shown then.
-    var ownDecks: (any OwnDecking)?
+    /// A164). Nil in tests without it: the way in and the sheet are not shown then.
+    var ownDecks: OwnDeckModel?
     /// A165: the sheet that points to "Spela in själv" when the server says no for credits or its model is down.
     let ownOffer = OwnDeckOffer()
 

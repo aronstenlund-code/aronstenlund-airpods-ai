@@ -85,11 +85,12 @@ enum RepetitionDemo {
                                       "repShopLaunch", "repShopLaunchOffer",
                                       // A163 (D259): Komprimera on a text worth shortening, and the field after it
                                       "repSayCompress", "repSayCompressed",
-                                      // A165 (D263): "Spela in själv": the way in on Start (with and without a
-                                      // quiz), the empty page, the decks, a deck, a card being read in, and the
-                                      // sheet when the credits are out or the model is down
-                                      "repOwnHome", "repOwnHomeEmpty", "repOwnEmpty", "repOwnDecks", "repOwnDeck",
-                                      "repOwnCard", "repOwnCardNew", "repOwnOffer", "repOwnOfferDown",
+                                      // A165 (D263, Ke89): "Spela in själv": the way in on Start (with quizzes
+                                      // and own decks, and without anything), a deck's screen (new, filled in,
+                                      // and while it records), and the sheet when the credits are out or the
+                                      // model is down
+                                      "repOwnHome", "repOwnHomeEmpty", "repOwnDeck", "repOwnDeckNew", "repOwnRecording",
+                                      "repOwnOffer", "repOwnOfferDown",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -655,34 +656,31 @@ enum RepetitionDemo {
     }
 
     /// A106: Nytt prov with Läs upp texten chosen, or its "Stämmer det här?".
-    // A165 (D263): the user's own decks as the pictures show them.
+    // A165 (D263): the user's own decks as the pictures show them (no sound: the recordings are only lengths).
     static let ownBiology = OwnDeck(title: "Biologi kapitel 3", cards: [
-        OwnCard(question: "Vad gör mitokondrien?", answer: "Den omvandlar näring till energi som cellen kan använda."),
-        OwnCard(question: "Vad är fotosyntes?", answer: "Växter gör socker och syre av koldioxid, vatten och ljus."),
+        OwnCard(question: "Vad gör mitokondrien?", answer: "Den omvandlar näring till energi som cellen kan använda.",
+                questionRecording: OwnRecordingFile(name: "q1", seconds: 3), answerRecording: OwnRecordingFile(name: "a1", seconds: 6)),
+        OwnCard(question: "Vad är fotosyntes?", answer: "Växter gör socker och syre av koldioxid, vatten och ljus.",
+                questionRecording: OwnRecordingFile(name: "q2", seconds: 2)),
         OwnCard(question: "Vad är skillnaden mellan DNA och RNA?", answer: "DNA lagrar arvet, RNA bär ut det till cellen."),
     ])
     static let ownGlossary = OwnDeck(title: "Engelska glosor", cards: [
-        OwnCard(question: "Vad heter självständig på engelska?", answer: "Independent."),
-        OwnCard(question: "Vad heter trots att på engelska?", answer: "Although."),
+        OwnCard(question: "Vad heter självständig på engelska?", answer: "Independent.",
+                questionRecording: OwnRecordingFile(name: "q1", seconds: 3), answerRecording: OwnRecordingFile(name: "a1", seconds: 2)),
+        OwnCard(question: "Vad heter trots att på engelska?", answer: "Although.",
+                questionRecording: OwnRecordingFile(name: "q2", seconds: 3), answerRecording: OwnRecordingFile(name: "a2", seconds: 2)),
     ])
+    /// The deck whose screen the pictures show.
+    static var ownShown: UUID?
 
-    static func ownDecks(for name: String) -> PretendOwnDecks {
-        guard name != "repOwnEmpty", name != "repOwnHomeEmpty" else { return PretendOwnDecks() }
-        let decks = PretendOwnDecks(decks: [ownBiology, ownGlossary])
-        let take: (OwnDeck, Int, OwnSide) -> OwnTake = { OwnTake(deck: $0.id, card: $0.cards[$1].id, side: $2) }
-        // Biologi: the first card read in, the second its question only; the glossary all read in.
-        decks.takes[take(ownBiology, 0, .question)] = 3
-        decks.takes[take(ownBiology, 0, .answer)] = 6
-        decks.takes[take(ownBiology, 1, .question)] = 2
-        for index in ownGlossary.cards.indices {
-            decks.takes[take(ownGlossary, index, .question)] = 3
-            decks.takes[take(ownGlossary, index, .answer)] = 2
-        }
-        if name == "repOwnCard" { // the question is read in, the answer is being read in
-            decks.takes[take(ownBiology, 1, .answer)] = nil
-            decks.recording = take(ownBiology, 1, .answer)
-            decks.elapsed = 4
-            decks.levelDBFS = -28
+    static func ownDecks(for name: String) -> OwnDeckModel {
+        ownShown = ownBiology.id
+        if name == "repOwnHomeEmpty" { return OwnDeckModel() }
+        let decks = OwnDeckModel(decks: [ownBiology, ownGlossary])
+        if name == "repOwnDeckNew" { ownShown = OwnDeckTidy.newDeck(in: decks).id }
+        if name == "repOwnRecording" { // the second card's answer is being read in
+            decks.stage(recording: OwnDeckModel.Target(deckID: ownBiology.id, cardID: ownBiology.cards[1].id, part: .answer),
+                        elapsed: 4, levelDBFS: -28)
         }
         return decks
     }
@@ -743,18 +741,12 @@ enum RepetitionDemo {
                  "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers", "repShopShortKeyboard",
                  "repShopShortKeyboardStyle":
                 NavigationStack { HomeView(model: listening) }
-            // A165 (D263): Spela in själv
-            case "repOwnEmpty", "repOwnDecks":
-                if let decks = model.ownDecks { NavigationStack { OwnDecksView(decks: decks) } }
-            case "repOwnDeck":
-                if let decks = model.ownDecks { NavigationStack { OwnDeckView(decks: decks, deckID: ownBiology.id) } }
-            case "repOwnCard", "repOwnCardNew":
-                if let decks = model.ownDecks {
+            // A165 (D263): Spela in själv, a deck's screen as the sheet it is
+            case "repOwnDeck", "repOwnDeckNew", "repOwnRecording":
+                if let decks = model.ownDecks, let shown = ownShown {
                     Color(.systemGroupedBackground).ignoresSafeArea()
                         .sheet(isPresented: .constant(true)) {
-                            NavigationStack {
-                                OwnCardEditor(decks: decks, deckID: ownBiology.id, card: name == "repOwnCardNew" ? nil : ownBiology.cards[1])
-                            }
+                            NavigationStack { OwnDeckView(decks: decks, deckID: shown) {} }
                         }
                 }
             case "repMotionFold": // the player as the app shows it: a cover over Start
