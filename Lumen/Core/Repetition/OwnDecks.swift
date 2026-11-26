@@ -131,6 +131,8 @@ enum OwnDeckText {
     static var practise: String { String(localized: "Öva") }
     static var staysOnPhone: String { String(localized: "Helt gratis. Ljudet stannar på din telefon.") }
     static var micNote: String { String(localized: "Mikrofonen används bara medan du spelar in.") }
+    /// Deangelo (2026-11-26, the first time): the way, in one line, until something is read in.
+    static var firstSteps: String { String(localized: "Skriv frågan och svaret. Tryck Spela in och läs upp dem. Tryck sedan Öva.") }
 
     // VoiceOver
     static func recordLabel(_ part: OwnPart) -> String {

@@ -854,6 +854,7 @@ struct SayInAirPodsField: View {
         }
         Group { costRow }.transition(SayMotion.appear)
         controls
+            .animation(SayMotion.change(reduceMotion), value: isEmpty) // how long and how fast come with the text
     }
 
     /// A163 (D259, Aron): Komprimera makes the text shorter with the same content and puts it in the field, where it
@@ -1028,8 +1029,7 @@ struct SayInAirPodsField: View {
         ViewThatFits(in: .horizontal) {
             HStack(spacing: 8) {
                 addMenu
-                howLongMenu
-                tempoMenu
+                textSettings
                 Spacer(minLength: 8)
                 mainButton(wide: false)
             }
@@ -1041,11 +1041,20 @@ struct SayInAirPodsField: View {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 8) {
                     addMenu
-                    howLongMenu
-                    tempoMenu
+                    textSettings
                 }
                 mainButton(wide: true)
             }
+        }
+    }
+
+    /// Deangelo (2026-11-26, the first time): how long and how fast belong to a text. With an empty field the card
+    /// is the field, + for material and the one button; the two come when there is something to play.
+    @ViewBuilder
+    private var textSettings: some View {
+        if !isEmpty {
+            howLongMenu.transition(SayMotion.appear)
+            tempoMenu.transition(SayMotion.appear)
         }
     }
 

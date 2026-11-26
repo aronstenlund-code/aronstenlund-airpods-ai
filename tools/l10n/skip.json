@@ -1579,8 +1579,10 @@
   "Fotosyntes är när växter gör socker av koldioxid och vatten med ljusenergi. Syre blir över.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Fotosyntesen bygger upp glukos och lagrar energi. Cellandningen bryter ner glukos och frigör energin. De är varandras motsats.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Fotosyntesen är när växter använder ljusenergi för att göra socker av koldioxid och vatten. Syre bildas som en restprodukt.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Fotosyntesen är när växter gör socker av koldioxid och vatten med ljusenergi. Syre blir över.": "demo data for the pictures (Debug only); the scene shows it in the app's language (A166)",
   "Förklara hur fotosyntes och cellandning hänger ihop. Använd begreppen glukos och syre.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Historia": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Hjälp mig": "demo data for the pictures (Debug only); the scene shows it in the app's language (A166)",
   "I mitokondrierna. Där blir socker och syre till energi, koldioxid och vatten.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "I mitokondrierna; koldioxid, vatten och energi": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Klorofyll är det gröna ämnet i bladen som fångar ljuset.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
@@ -1609,9 +1611,7 @@
   "fotosyntes, cellandning": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "inte övat än": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "kolets kretslopp": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
-  "nej, det är min tur att svara": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
-  "Hjälp mig": "demo data for the pictures (Debug only); the scene shows it in the app's language (A166)",
-  "Fotosyntesen är när växter gör socker av koldioxid och vatten med ljusenergi. Syre blir över.": "demo data for the pictures (Debug only); the scene shows it in the app's language (A166)"
+  "nej, det är min tur att svara": "demo data for the pictures (Debug only); Swedish until the English pictures need it"
  },
  "Lumen/Features/Diagnostics/DeviceInfo.swift": {
   "\\(device.model) \\(modelIdentifier) · \\(device.systemName) \\(device.systemVersion) · region \\(region) · locale \\(Locale.current.identifier)": "a diagnostics export, a log line or a technical string, not a text on the screen"

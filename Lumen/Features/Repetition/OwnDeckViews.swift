@@ -83,6 +83,10 @@ struct OwnDeckView: View {
     }
 
     private var deck: OwnDeck? { decks.deck(deckID) }
+    /// Something in the deck is read in (the first-time line then goes).
+    private var hasRecording: Bool {
+        deck?.cards.contains { $0.questionRecording != nil || $0.answerRecording != nil } ?? false
+    }
 
     /// iOS has not asked about the microphone yet: one line says what it is used for before it does.
     private var microphoneNotAskedYet: Bool { AVAudioApplication.shared.recordPermission == .undetermined }
@@ -108,6 +112,15 @@ struct OwnDeckView: View {
                 Section {
                     part(.question, of: card, number: index + 1)
                     part(.answer, of: card, number: index + 1)
+                } header: {
+                    // The first time: the way in one line, above the first card, until something is read in.
+                    if index == 0, !hasRecording {
+                        Text(verbatim: OwnDeckText.firstSteps)
+                            .font(.subheadline)
+                            .foregroundStyle(LumenColor.secondaryText)
+                            .textCase(nil)
+                            .accessibilityIdentifier("ownDeck.firstSteps")
+                    }
                 }
             }
             Section {

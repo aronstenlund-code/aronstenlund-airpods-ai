@@ -50,3 +50,13 @@ import Testing
         }
     }
 }
+
+/// Deangelo 2026-11-26: Spela in själv and Säg i AirPods simpler the first time.
+@MainActor
+@Suite struct FirstTimeSimplerTests {
+    @Test func theDeckSaysTheWayInOneLine() {
+        #expect(OwnDeckText.firstSteps == "Skriv frågan och svaret. Tryck Spela in och läs upp dem. Tryck sedan Öva.")
+        #expect(AppLanguage.en.bundle.localizedString(forKey: OwnDeckText.firstSteps, value: "(missing)", table: nil)
+                == "Write the question and the answer. Tap Record and read them aloud. Then tap Practice.")
+    }
+}
