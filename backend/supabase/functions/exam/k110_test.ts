@@ -73,12 +73,14 @@ Deno.test("K110 (D241 punkt 2): fewer than 3 questions fit = the text says no ex
     authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
     rateLimiter: new MemoryRateLimiter(),
     provider: llm([{}]),
-    quota: () => Promise.resolve({ used: 0, lim: 1500 }),
+    // D239 (2026-11-26): 1 500 now makes a 3-question exam with shorter long answers (d239_fit_test.ts); 900 is too
+    // little even for the shortest answers (3 × 327)
+    quota: () => Promise.resolve({ used: 0, lim: 900 }),
   });
   const r = await h(new Request("http://x/exam", { method: "POST", headers: { "content-type": "application/json", "x-forwarded-for": "1.2.3.4" }, body: JSON.stringify({ action: "drill", text: "Fotosyntes är när växter gör socker av ljus.", questions: 3 }) }));
   assertEquals(r.status, 402);
   const j = await r.json();
-  assertEquals(j.fits, 2);
+  assertEquals(j.fits, 1);
   assertEquals(j.min_questions, 3);
   assert(String(j.error.message).includes("räcker inte till ett prov"), j.error.message);
 });

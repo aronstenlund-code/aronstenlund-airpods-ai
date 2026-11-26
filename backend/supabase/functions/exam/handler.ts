@@ -7,7 +7,7 @@ import { sanitizeTagged } from "../answer/prompt.ts";
 import { finalNumber, isBareNumber } from "./spoken.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 import { practiceNav, spokenTask } from "./practice.ts";
-import { DEFAULT_DRILL_CONFIG, docxText, DRILL_LIMITS, DRILL_WEIGHT, type DrillConfig, drillConfigForTest, estimateDrillCost, handleDrill, type MaterialStore, uploadUrls } from "./drill.ts";
+import { DEFAULT_DRILL_CONFIG, docxText, DRILL_LIMITS, DRILL_WEIGHT, type DrillConfig, drillConfigForTest, estimateDrillCost, fitLongWords, handleDrill, intIn, type MaterialStore, uploadUrls } from "./drill.ts";
 import { testModelPick } from "../_shared/testmode.ts";
 import { handleRead } from "./read.ts";
 
@@ -449,7 +449,18 @@ export function createExamHandler(deps: ExamDeps) {
           }
           // K109 (D239, Oscar O90): what the exam will cost (the long answers), counted before Claude makes it; when the
           // credits do not reach, 402 with how many questions fit, so no exam is made that cannot be saved
-          const est = q.unlimited || (deps.qaMeasure && await deps.qaMeasure(req).catch(() => false)) ? null : estimateDrillCost(action, req0);
+          let est = q.unlimited || (deps.qaMeasure && await deps.qaMeasure(req).catch(() => false)) ? null : estimateDrillCost(action, req0);
+          // D239 (Toby T24): when not even the smallest exam fits at the asked length, the exam is made at the length the
+          // quota offered (/drill quota `exam`, the same fitLongWords), so a new account can always make one
+          if (est && est.cost > left && action === "drill") {
+            const asked = intIn(req0.long_words, DRILL_LIMITS.longWordsMin, DRILL_LIMITS.longWordsMax, DRILL_LIMITS.longWordsDefault);
+            const w = fitLongWords(DRILL_LIMITS.questionsMin, left, asked);
+            if (w !== null && w < asked) {
+              req0.long_words = w;
+              est = estimateDrillCost(action, req0);
+              if (est && est.cost <= left) console.log("drill_long_fitted", JSON.stringify({ asked, long_words: w, questions: est.count, left }));
+            }
+          }
           if (est && est.cost > left) {
             const fits = Math.floor(left / est.per);
             const what = action === "drill" ? `Ett prov med ${est.count} frågor` : `Svaren på ${est.count} frågor`;

@@ -1192,6 +1192,19 @@ export function estimatedCostPerQuestion(longWords: number): number {
   return COST_QUESTION_CHARS + Math.round(COST_CHARS_PER_WORD * longWords);
 }
 
+/**
+ * D239 (Toby T24/T28, 2026-11-26): a new account (1 500 free credits) must be able to make the smallest exam, but 3
+ * questions at 90 words cost about 1 926. Prices and the free amount are Aron's (D224) and unchanged: the long answers
+ * of such an exam are made shorter, as long as fits (never under longWordsMin). The long answer is capped in code at
+ * long_words (K110), so the save never costs more than this estimate. The asked length when it fits; null = none fits.
+ */
+export function fitLongWords(count: number, left: number, asked: number): number | null {
+  if (count * estimatedCostPerQuestion(asked) <= left) return asked;
+  let w = Math.min(asked, Math.floor((Math.floor(left / count) - COST_QUESTION_CHARS) / COST_CHARS_PER_WORD));
+  while (w >= DRILL_LIMITS.longWordsMin && count * estimatedCostPerQuestion(w) > left) w--;
+  return w >= DRILL_LIMITS.longWordsMin ? w : null;
+}
+
 /** K109: the estimate for a drill or drill_answers request: how many questions, the cost and the cost per question. */
 export function estimateDrillCost(action: string, b: Record<string, unknown>): { count: number; cost: number; per: number } | null {
   const longWords = intIn(b.long_words, DRILL_LIMITS.longWordsMin, DRILL_LIMITS.longWordsMax, DRILL_LIMITS.longWordsDefault);

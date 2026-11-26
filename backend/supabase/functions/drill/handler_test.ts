@@ -2,6 +2,7 @@
 import { assert, assertEquals } from "jsr:@std/assert@1.0.8";
 import { MemoryRateLimiter } from "../_shared/ratelimit.ts";
 import { questionKey } from "./length.ts";
+import { DRILL_LIMITS } from "../exam/drill.ts";
 import { runWithTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
 import { type AudioRow, createDrillHandler, type DrillRow, type ItemRow, longVoice, type PublicationRow, type SchoolRow, type ShareRow, timings, validDate, voiceText } from "./handler.ts";
 
@@ -1298,4 +1299,13 @@ Deno.test("K114 (D249): a web account's new audio counts against the web's daily
   assert(n > 1, "the first saves were allowed");
   // the app (no Origin) is not counted
   assertEquals((await w.h("app")(post({ action: "save", start: true, drill: { kind: "text", title: "App" }, items: text(99) }))).status, 200);
+});
+
+Deno.test("D239 (Toby T24): with 1 500 credits the quota prices the smallest exam at a long answer length that fits", async () => {
+  const q = await (await world({ credits: 1500 }).h("u1")(post({ action: "quota", long_words: 90 }))).json();
+  assert(q.exam.long_words < 90 && q.exam.long_words >= DRILL_LIMITS.longWordsMin, JSON.stringify(q.exam));
+  assert(q.exam.per_question * q.exam.min_questions <= 1500, JSON.stringify(q.exam));
+  assertEquals(q.exam.fitted, true);
+  const rich = await (await world({ credits: 9000 }).h("u1")(post({ action: "quota", long_words: 90 }))).json();
+  assertEquals([rich.exam.long_words, rich.exam.per_question, rich.exam.fitted], [90, 642, undefined], "enough credits: as before");
 });

@@ -11,7 +11,7 @@ import { type QuotaAnswer, walletFields } from "../_shared/wallet.ts";
 import { cleanStyle, mapOffset, STYLE_MODEL, styledKey, type Styler } from "./style.ts";
 import { textLanguage } from "../exam/read.ts";
 import { webCredits } from "../_shared/webguard.ts";
-import { composeLong, DRILL_LIMITS, estimatedCostPerQuestion, examLanguage, intIn, spokenText, textLanguage as sureLanguage } from "../exam/drill.ts";
+import { composeLong, DRILL_LIMITS, estimatedCostPerQuestion, fitLongWords, examLanguage, intIn, spokenText, textLanguage as sureLanguage } from "../exam/drill.ts";
 import { importText } from "./import_text.ts";
 import { lengthClass, lengthLimits } from "./length.ts";
 import { currentTest, TEST_VOICE_ID } from "../_shared/testmode.ts";
@@ -1219,7 +1219,9 @@ export function createDrillHandler(deps: DrillDeps) {
           // `fits`), so Nytt prov can say what fits before anything is made
           exam: (() => {
             const lw = intIn(b?.long_words, DRILL_LIMITS.longWordsMin, DRILL_LIMITS.longWordsMax, DRILL_LIMITS.longWordsDefault);
-            return { per_question: estimatedCostPerQuestion(lw), min_questions: DRILL_LIMITS.questionsMin, long_words: lw };
+            // D239 (Toby T24): too few credits for the smallest exam at this length = the length that fits (as /exam makes it)
+            const w = q.unlimited ? lw : fitLongWords(DRILL_LIMITS.questionsMin, left, lw) ?? lw;
+            return { per_question: estimatedCostPerQuestion(w), min_questions: DRILL_LIMITS.questionsMin, long_words: w, ...(w < lw ? { fitted: true } : {}) };
           })(),
           prices: {
             unit: "chars", per_char: 1,
