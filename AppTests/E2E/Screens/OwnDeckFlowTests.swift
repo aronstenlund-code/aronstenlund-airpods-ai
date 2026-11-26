@@ -77,8 +77,8 @@ final class OwnDeckFlowTests: XCTestCase {
 
     private func writeFirstCard() -> Bool {
         guard type("T58 Biologi", into: element("ownDeck.name")) else { return miss("no name field") }
-        guard type("Vad är en cell?", into: element("ownCard.question", 0)) else { return miss("no question field") }
-        guard type("Livets minsta del.", into: element("ownCard.answer", 0)) else { return miss("no answer field") }
+        guard type("Vad är en cell?", into: cardField("ownCard.question", last: false)) else { return miss("no question field") }
+        guard type("Livets minsta del.", into: cardField("ownCard.answer", last: false)) else { return miss("no answer field") }
         keyboardDown()
         shoot("samling-text")
         return true
@@ -116,8 +116,8 @@ final class OwnDeckFlowTests: XCTestCase {
         guard add.exists else { return miss("no Lägg till fråga") }
         add.tap()
         pause(1)
-        guard type("Vad gör mitokondrien?", into: element("ownCard.question", 1)) else { return miss("no second question field") }
-        guard type("Den gör energi åt cellen.", into: element("ownCard.answer", 1)) else { return miss("no second answer field") }
+        guard type("Vad gör mitokondrien?", into: cardField("ownCard.question", last: true)) else { return miss("no second question field") }
+        guard type("Den gör energi åt cellen.", into: cardField("ownCard.answer", last: true)) else { return miss("no second answer field") }
         keyboardDown()
         shoot("tva-kort")
         return true
@@ -163,6 +163,17 @@ final class OwnDeckFlowTests: XCTestCase {
 
     private func element(_ id: String, _ index: Int = 0) -> XCUIElement {
         app.descendants(matching: .any).matching(identifier: id).element(boundBy: index)
+    }
+
+    /// A card's text field (Fråga/Svar). Run 45908945834: a field that grows (`axis: .vertical`) can stand in the tree
+    /// more than once, so "the second" by `.any` was not the second card's. Text fields and text views only, and
+    /// `last: true` for the card just added (it is last).
+    private func cardField(_ id: String, last: Bool) -> XCUIElement {
+        let views = app.textViews.matching(identifier: id)
+        let fields = app.textFields.matching(identifier: id)
+        let query = views.count > 0 ? views : fields
+        log.append("\(id): \(views.count) text views, \(fields.count) text fields, \(app.descendants(matching: .any).matching(identifier: id).count) in all")
+        return last ? query.element(boundBy: max(0, query.count - 1)) : query.element(boundBy: 0)
     }
 
     private func type(_ text: String, into field: XCUIElement) -> Bool {
