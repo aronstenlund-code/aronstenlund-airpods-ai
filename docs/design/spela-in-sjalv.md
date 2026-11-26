@@ -21,13 +21,16 @@ Uppifrån:
    - **Svar** (textfält) och samma rad.
    - Svep åt vänster: **Ta bort**.
 4. Knapp **+ Lägg till fråga** (tonad, hela bredden).
-5. Längst ner, fylld: **▶ Öva** – går bara när minst en fråga är inspelad. Under: *Helt gratis. Ljudet stannar på din
+5. Längst ner, fylld: **▶ Öva** – går när minst ett kort har fråga och svar (se nedan). Under: *Helt gratis. Ljudet stannar på din
    telefon.*
 
 **Spela in:** ett tryck startar (röd punkt, tid som räknar upp), ett tryck till stoppar och visar `▶ 0:04` direkt.
 Ingen bekräftelse. Första gången frågar iOS om mikrofonen; raden före frågan: *Mikrofonen används bara medan du spelar
 in.* Medan den spelar in syns iOS orange mikrofonprick som vanligt.
-**Utan inspelning:** kortet visar *Inte inspelad* i grått; Öva hoppar över frågor utan inspelad fråga.
+**Utan inspelning (ändrat 2026-11-26 efter A165, Kelly godkänner A164:s förval):** Öva går så fort ett kort har fråga
+och svar. Det som inte är inspelat läses av telefonens egen röst (gratis, inget lämnar telefonen). Kortet visar då
+*Inte inspelad · läses av telefonen* / *Not recorded · read by the phone* i grått, så att det syns före Öva.
+En samling utan namn heter **Mina frågor** / **My questions** (A165, godkänt).
 
 ## 3. Öva
 Samma spelare som ett sparat prov: frågan spelas med din röst, tänketid, och **1 tryck** långt svar (din inspelning),
@@ -52,7 +55,7 @@ stängs med ett tryck utanför eller **Inte nu**.
 | Rubrik | Spela in själv · Klar | Record it yourself · Done |
 | Namn | Namn · T.ex. Glosor vecka 12 | Name · e.g. Vocabulary week 12 |
 | Fält | Fråga · Svar | Question · Answer |
-| Inspelning | Spela in · Spela in igen · Inte inspelad | Record · Record again · Not recorded |
+| Inspelning | Spela in · Spela in igen · Inte inspelad · läses av telefonen | Record · Record again · Not recorded · read by the phone |
 | VoiceOver | Spela in frågan · Spela upp frågan, {4} sekunder · Spela in svaret | Record the question · Play the question, {4} seconds · Record the answer |
 | Lägg till | Lägg till fråga | Add question |
 | Ta bort | Ta bort | Delete |

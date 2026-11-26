@@ -611,6 +611,7 @@
   .price .lead { margin-top: 8px; max-width: 62ch; color: var(--mut); }
   .price-grid { display: grid; gap: 18px; margin-top: 20px; align-items: start; }
   .price-card { padding: 20px; }
+  .price-card p + p { margin-top: 10px; }
   .price-card h3 { font-size: 1.125rem; }
   .price-h3 { margin-top: 20px; }
   .price-list { list-style: none; margin: 10px 0 0; padding: 0; }
@@ -762,12 +763,24 @@
     <h2 id="start-h">Så fungerar det</h2>
     <p class="lead">Skriv det du vill höra, eller fota boken. Du lyssnar i dina AirPods.</p>
     <ol class="steps">
-      <li class="paper"><h3>Skriv det du vill höra</h3><p>Skriv eller klistra in en text och tryck <b>Spela i 10 min</b>. Den läses upp om och om igen, upp till en timme.</p><img class="shot" src="img/app-sag.webp" width="300" height="652" loading="lazy" alt="Första skärmen i appen: ett mörkt fält med en text om fotosyntes, raden Hur ska det låta?, kostnaden 120 krediter och knappen Spela i 10 min."></li>
+      <li class="paper"><h3>Skriv det du vill höra</h3><p>Skriv eller klistra in en text och tryck <b>Spela i 10 min</b>. Den läses upp om och om igen, upp till en timme. Lång text? Tryck <b>Komprimera</b>, så blir den kortare med samma innehåll.</p><img class="shot" src="img/app-sag.webp" width="300" height="652" loading="lazy" alt="Första skärmen i appen: ett mörkt fält med en text om fotosyntes, raden Hur ska det låta?, kostnaden 120 krediter och knappen Spela i 10 min."></li>
       <li class="paper"><h3>Hur ska det låta?</h3><p>Skriv till exempel <b>lugnt, som en lärare</b>, så väljer <span data-app></span> en röst som passar. Eller välj själv bland rösterna och lyssna först. Det kostar inget.</p><img class="shot" src="img/app-stil.webp" width="300" height="652" loading="lazy" alt="Säg-kortet med rösten Gustav vald efter stilen Lugnt, som en lärare, och raden Vald efter stilen: Mörk och tydlig, passar en lärare."></li>
       <li class="paper"><h3>Eller fota boken</h3><p>Tryck <b>Nytt prov</b> och fota sidorna. Välj <b>Frågor</b>, eller <b>Läs upp texten</b> om du vill lyssna på materialet.</p><img class="shot" src="img/app-fota.webp" width="300" height="652" loading="lazy" alt="Skärmen Nytt prov i appen: provets namn, valet Frågor eller Läs upp texten, och Fota sidor, Välj bilder, Skriv text, Lägg till dokument och Klistra in länk."></li>
       <li class="paper"><h3>Starta prov</h3><p>Frågorna läses upp i dina AirPods. Tryck en gång för det långa svaret, två gånger för det korta och tre gånger för paus.</p><img class="shot" src="img/app-prov.webp" width="300" height="652" loading="lazy" alt="Provläget i appen: frågan Vad bildas vid fotosyntesen? med svaret, och raden med de tre trycken."></li>
     </ol>
     <p class="shot-note">Skärmbilder från en testversion av appen.</p>
+  </section>
+
+  <!-- Ke90 (D263): Spela in själv ligger på Start i appen (A165), inte bland lägena som lyssnar. -->
+  <section class="start wrap" id="spela-in" aria-labelledby="spela-in-h">
+    <h2 id="spela-in-h">Spela in själv – helt gratis</h2>
+    <div class="price-grid">
+      <div class="paper price-card">
+        <p>Skriv dina egna frågor och svar, läs in dem med din röst och öva i dina AirPods, precis som ett prov.</p>
+        <p>Inga krediter, och ljudet stannar på din telefon. Det du inte har läst in läses av telefonens egen röst.</p>
+      </div>
+      <img class="shot" src="img/app-egen.webp" width="300" height="652" loading="lazy" alt="Spela in själv i appen: namn, frågor och svar med Spela in och Spela in igen, och knappen Öva.">
+    </div>
   </section>
 
   <!-- Ke82 (D213, D224): krediterna som i appen på main (kop.md). Priserna sätts i App Store och kan ändras. -->
@@ -796,7 +809,6 @@
   <section class="can wrap" id="kan" aria-labelledby="kan-h">
     <h2 id="kan-h">Fler lägen <span class="beta">Beta</span></h2>
     <p class="activate"><b>Fråga du inte är beredd på?</b> Säg [dina ord] så aktiveras vår AI.</p>
-    <p class="activate"><b>Spela in själv – helt gratis.</b> Skriv dina egna frågor och svar, läs in dem med din röst och öva i dina AirPods. Inga krediter, och ljudet stannar på din telefon.</p>
     <p class="lead">De här lägena lyssnar på vad du säger. De är i beta och blir bättre hela tiden. Starta prov använder aldrig mikrofonen.</p>
     <ul class="can-list">
       <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg><div><h3>Förhör</h3><p>”Lumen, förhör mig på fotosyntes”</p></div></li>

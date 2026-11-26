@@ -20,18 +20,18 @@ Rubrik ovanför en oförändrad skärmbild ur appen (Apple-stil, D160): grå bak
 | 5 | `repSayCompressed` | **Make it shorter.** Compress keeps the content in fewer words. | **Gör det kortare.** Komprimera ger samma innehåll med färre ord. |
 | 6 | `repTextNew` | **Snap your textbook.** Quiz questions with answers, or the whole text read aloud. | **Fota boken.** Frågor med svar, eller hela texten uppläst. |
 | 7 | `repPlayAnswer` | **Tap for the answer.** Once for the long answer, twice for short, three times to pause. | **Tryck för svaret.** 1 gång för långt svar, 2 för kort, 3 för paus. |
-| 8 | `listening` | **Say your words.** Question you're not prepared for? Say [ … ] so our AI activates. | **Säg dina ord.** Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI. |
-| 9 | `repShop` | **Start free.** 1,500 credits are included every month. | **Börja gratis.** 1 500 krediter ingår varje månad. |
-| 10 | *(A165)* | **Record it yourself.** Completely free. The sound stays on your phone. | **Spela in själv.** Helt gratis. Ljudet stannar på din telefon. |
+| 8 | `repShop` | **Start free.** 1,500 credits are included every month. | **Börja gratis.** 1 500 krediter ingår varje månad. |
+| 9 | `repOwnDeck` | **Record it yourself.** Completely free. The sound stays on your phone. | **Spela in själv.** Helt gratis. Ljudet stannar på din telefon. |
+| (8) | *väntar* | **Say your words.** Question you're not prepared for? Say [ … ] so our AI activates. | **Säg dina ord.** Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI. |
 
-Bild 1–3 syns i sökresultatet och berättar idén. Bild 10 görs när A165 (Fables vyer för Spela in själv) är på main:
-lägg scenen i `SHOTS` i `_src/appstore.py` och kör flödet igen (kommandot sist). Telefonens egen modell (D258) syns
+Bild 1–3 syns i sökresultatet och berättar idén. Bild 9 är Spela in själv (A165, på main 2026-11-26). Telefonens egen modell (D258) syns
 inte på någon bild: den finns ingen scen för, och det riktiga provet på telefon är inte gjort; den står bara i texten
 (§2, med villkor i §5). Inget om låst skärm (D209) och inget som antyder dold användning: varje bild visar appen öppen.
-**Utkast, två saker före inskickning:** (1) de engelska bilderna visar appens **svenska demodata** (Biologiprovet,
-fotosyntes, svenska röster, priser i kr), eftersom demodatan inte är översatt (A157); beställt av Fable (engelska
-demodata när appen är på engelska). (2) Bild 8 visar lyssnarvyn **pausad med tomt ordfält**; beställt av Angela
-Schrute: en scen med orden ifyllda ("Help me" / "Hjälp mig") och "● Listening" överst. Kör sedan flödet igen.
+**Aktiveringsordet har ingen bild än:** scenen `listening` visar lyssnarvyn pausad, med tomt ordfält och svenska
+frågor också på engelska. Angela Schrute har fått beställningen (`angela.md`): orden ifyllda ("Help me" / "Hjälp mig") och
+"● Listening" överst. Då läggs den in som bild 8 (raden "(8)" ovan, `_src/appstore.py`) och sidan får tio bilder. Fram
+till dess står aktiveringsordet bara i beskrivningen. "Swedish voices" i bild 4 är appens riktiga rubrik (katalogen har
+bara svenska röster), och priserna i kr kommer från simulatorns butik.
 
 ## 2. Texter, English (primärt språk; tecken räknade med Python)
 | Field | Limit | Text | Chars |
@@ -51,7 +51,7 @@ Schrute: en scen med orden ifyllda ("Help me" / "Hjälp mig") och "● Listening
 "AirPods" står inte i namnet, undertiteln eller nyckelorden (D122, Apples varumärkesregler), bara i beskrivningen.
 Ke78-sidorna är på svenska; en engelsk version behövs innan den engelska sidan skickas in (förslag, Arons ja först).
 
-**Description** (2 209 av 4 000 tecken):
+**Description** (2 406 av 4 000 tecken):
 
 > Type what you want to hear, or snap your textbook. EarMind reads it in your earbuds, again and again.
 >
@@ -80,6 +80,10 @@ Ke78-sidorna är på svenska; en engelsk version behövs innan den engelska sida
 > • Invite a friend and get 2,000 credits when your friend has played their first text.
 > • Buy more credits or a weekly pass in the app. The weekly pass renews every week until you cancel.
 >
+> RECORD IT YOURSELF – COMPLETELY FREE
+> • Write your own questions and answers and record them in your own voice. Then practice them in your earbuds.
+> • No credits, and the sound stays on your phone.
+>
 > MORE MODES (BETA)
 > EarMind also has modes that listen to what you say and answer in your ear, like a spoken quiz. They ask for permission and for the microphone before they start, and always show that they're listening.
 > • Question you're not prepared for? Say your own words, and EarMind answers the question that was just asked.
@@ -92,12 +96,6 @@ Ke78-sidorna är på svenska; en engelsk version behövs innan den engelska sida
 > Terms: https://earmind.vercel.app/villkor
 > Privacy: https://earmind.vercel.app/integritet
 
-**När A165 är på main**, före "MORE MODES (BETA)":
-
-> RECORD IT YOURSELF – COMPLETELY FREE
-> • Write your own questions and answers and record them in your own voice. Then practice them in your earbuds.
-> • No credits, and the sound stays on your phone.
-
 ## 2b. Texter, svenska (lokalisering)
 | Fält | Gräns | Text | Tecken |
 |---|---|---|---|
@@ -109,7 +107,7 @@ Ke78-sidorna är på svenska; en engelsk version behövs innan den engelska sida
 
 URL:er, kategori och åldersgräns som på engelska.
 
-**Beskrivning** (2 212 av 4 000 tecken):
+**Beskrivning** (2 383 av 4 000 tecken):
 
 > Skriv det du vill höra, eller fota boken. EarMind läser upp det i dina hörlurar, om och om igen.
 >
@@ -138,6 +136,10 @@ URL:er, kategori och åldersgräns som på engelska.
 > • Bjud in en kompis och få 2 000 krediter när kompisen har spelat sin första text.
 > • Köp fler krediter eller ett veckokort i appen. Veckokortet förnyas varje vecka tills du säger upp det.
 >
+> SPELA IN SJÄLV – HELT GRATIS
+> • Skriv egna frågor och svar och läs in dem med din röst. Öva sedan på dem i hörlurarna.
+> • Inga krediter, och ljudet stannar på din telefon.
+>
 > FLER LÄGEN (BETA)
 > EarMind har också lägen som lyssnar på vad du säger och svarar i örat, till exempel förhör med rösten. De frågar om lov och om mikrofonen innan de startar, och visar hela tiden att de lyssnar.
 > • Fråga du inte är beredd på? Säg dina egna ord, så svarar EarMind på frågan som just ställdes.
@@ -150,12 +152,6 @@ URL:er, kategori och åldersgräns som på engelska.
 > Villkor: https://earmind.vercel.app/villkor
 > Integritet: https://earmind.vercel.app/integritet
 
-**När A165 är på main**, före "FLER LÄGEN (BETA)":
-
-> SPELA IN SJÄLV – HELT GRATIS
-> • Skriv egna frågor och svar och läs in dem med din röst. Öva sedan på dem i hörlurarna.
-> • Inga krediter, och ljudet stannar på din telefon.
-
 ## 3. Måste vara sant när den skickas in
 1. **Ke78 publicerad** (integritet och villkor), annars fungerar inte länkarna. Arons ja (TILL-ARON #30).
 2. **Produkterna** (tre paket och veckokortet) finns i App Store Connect och skickas med bygget; annars ser granskaren
@@ -164,7 +160,7 @@ URL:er, kategori och åldersgräns som på engelska.
    inskickning: kör flödet igen och `appstore.py`.
 4. **Telefonens egen modell** (D258): Aron har provat den på sin iPhone; annars stryks stycket "WHEN OUR SERVER CAN'T
    ANSWER" / "NÄR VÅR SERVER INTE KAN SVARA" och punkt 9 i granskningsanteckningarna.
-5. **Spela in själv** (D263): står bara med om A165 är på main och i bygget som skickas in.
+5. **Spela in själv** (D263): A165 är på main (2026-11-26); bygget som skickas in måste vara från main efter `afbe239c`.
 
 ## 4. Åldersgräns (förslag 13+)
 Apples frågeformulär (2025: 4+, 9+, 13+, 16+, 18+). Svar som Kelly föreslår, **Aron svarar ärligt i formuläret**:
@@ -193,12 +189,12 @@ Mot `granskning.md` §1 och dagens main. [V] i koden eller beslut, [S] sett i Si
 | Komprimera: kortare text, samma innehåll, går att ändra före uppläsning (Ke90) | [V] D262, K120 live (O98); [S] A163 |
 | Egna ord aktiverar svaret på frågan som just ställdes (Ke90) | [V] A162; att orden hörs i riktigt tal **[O]** |
 | Telefonens egen modell svarar och rättar, säger till, inga krediter (Ke90) | [V] A159/A160 med låtsasmodell i CI; **[O]** på telefon, se §3 punkt 4 |
-| Spela in själv, gratis, ljudet stannar på telefonen (Ke90) | [V] A164; vyerna A165 inte på main → inte med än |
+| Spela in själv, gratis, ljudet stannar på telefonen (Ke90) | [V] A164/A165 (`OwnDeckStore` på telefonen, `PhoneVoice` = `AVSpeechSynthesizer` för det som inte är inspelat); [S] A165. Inspelning på telefon **[O]** |
 | **Står inte i texten:** låst skärm (D209), "andra hörlurar", att ljudet fungerar utan nät | medvetet utelämnat |
 
 ## Göra om bilderna
 ```
-gh workflow run kelly-appstore-shots.yml --ref main -f branch=kelly/appstore-shots-ke90 -f languages="en sv" -f screens="repSayCredits repSayOnCard repSayPicked repSayVoicesUser repSayCompressed repTextNew repPlayAnswer listening repShop"
+gh workflow run kelly-appstore-shots.yml --ref main -f branch=kelly/appstore-shots-ke90 -f languages="en sv" -f screens="repSayCredits repSayOnCard repSayPicked repSayVoicesUser repSayCompressed repTextNew repPlayAnswer repShop repOwnDeck"
 python3 -I docs/appstore/_src/appstore.py <mapp med bilderna> en
 python3 -I docs/appstore/_src/appstore.py <mapp med bilderna> sv
 ```

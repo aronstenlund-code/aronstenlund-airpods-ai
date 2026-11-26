@@ -24,7 +24,10 @@ BG, INK, MUTED, BEZEL = (245, 245, 247), (29, 29, 31), (110, 110, 115), (29, 29,
 W, H = 1320, 2868
 
 # (scen, rubrik, rad under) per språk. Ke90 (D253, D259, D262, D263): engelska först. Inget om låst skärm (D209) och
-# inget om 5 000 välkomstkrediter (D239). Spela in själv läggs till som bild 10 när A165 är på main.
+# inget om 5 000 välkomstkrediter (D239). Sista bilden Spela in själv (A165, repOwnDeck).
+# Aktiveringsordet (scen "listening") läggs in som bild 8 när scenen med orden ifyllda finns (angela.md, Ke90):
+#   en: ("<scen>", "Say your words.", "Question you're not prepared for? Say [ … ] so our AI activates.")
+#   sv: ("<scen>", "Säg dina ord.", "Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI.")
 SHOTS = {
     "en": [
         ("repSayCredits", "Type. Listen.", "What you type is read in your earbuds."),
@@ -34,8 +37,8 @@ SHOTS = {
         ("repSayCompressed", "Make it shorter.", "Compress keeps the content in fewer words."),
         ("repTextNew", "Snap your textbook.", "Quiz questions with answers, or the whole text read aloud."),
         ("repPlayAnswer", "Tap for the answer.", "Once for the long answer, twice for short, three times to pause."),
-        ("listening", "Say your words.", "Question you're not prepared for? Say [ … ] so our AI activates."),
         ("repShop", "Start free.", "1,500 credits are included every month."),
+        ("repOwnDeck", "Record it yourself.", "Completely free. The sound stays on your phone."),
     ],
     "sv": [
         ("repSayCredits", "Skriv. Lyssna.", "Det du skriver läses upp i dina hörlurar."),
@@ -45,8 +48,8 @@ SHOTS = {
         ("repSayCompressed", "Gör det kortare.", "Komprimera ger samma innehåll med färre ord."),
         ("repTextNew", "Fota boken.", "Frågor med svar, eller hela texten uppläst."),
         ("repPlayAnswer", "Tryck för svaret.", "1 gång för långt svar, 2 för kort, 3 för paus."),
-        ("listening", "Säg dina ord.", "Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI."),
         ("repShop", "Börja gratis.", "1\u00a0500 krediter ingår varje månad."),
+        ("repOwnDeck", "Spela in själv.", "Helt gratis. Ljudet stannar på din telefon."),
     ],
 }[LANG]
 

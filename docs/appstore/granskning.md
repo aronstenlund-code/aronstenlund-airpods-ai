@@ -103,7 +103,7 @@ bekräftas före inskickning). Inget här är provat på telefon av mig.
 | **Ke90:** Komprimera ger en kortare text med samma innehåll, som går att ändra före uppläsning (D262) | [V] `SayCompress`, K120 `POST /exam compress` live (O98); [S] A163 `repSayCompressed`. Knappen syns först vid 160 tecken, därför "Lång text?" |
 | **Ke90:** "Say your own words, and EarMind answers the question that was just asked" (D259, A162) | [V] `ActivationPhrase`, A162-testerna; [S] fältet i lyssnarvyn. Gäller inte Socialt och Rizz (står inte i texten, som bara säger "answers"). Hörs orden rätt i riktigt tal: **[O]** på telefon |
 | **Ke90:** "On iPhones with Apple Intelligence … answer and grade with the phone's own model … tells you … no credits" (D258, D260) | [V] `OnDeviceAnswerProvider`, `AnswerGrader` (raden "Telefonens modell:" / "The phone's model:"), inga krediter dras; bara låtsasmodell i CI. **[O] Foundation Models på riktig telefon (D258 punkt 5).** Stryk stycket om Arons prov inte går igenom före inskickning |
-| **Ke90:** Spela in själv – helt gratis, ljudet stannar på telefonen (D263) | Kärnan [V] A164; vyerna A165 **inte på main** → stycket och bild 10 läggs till först då (README §2) |
+| **Ke90:** Spela in själv – helt gratis, ljudet stannar på telefonen (D263) | [V] A164/A165 på main (`OwnDeckStore`, `PhoneVoice`); [S] A165; inspelning på telefon **[O]** |
 
 ## 2. Integritetsuppgifter (App Privacy)
 **Spårning: Nej.** Ingen reklam-SDK, ingen analys-SDK, ingen IDFA [V: ingen sådan kod i `Lumen/`]. Inloggningen är ett
@@ -227,10 +227,11 @@ partnern kan behålla dem enligt sina villkor, därför "Collected: Yes".
 > 9. When our server can't answer (for example busy or down), the app uses Apple's on-device model (Foundation Models)
 > where it is available, and the answer or grade says that it comes from the phone's model. No credits are used for it.
 
-**Punkt 10, läggs till när A165 är på main (Spela in själv):**
+**Punkt 10 (Spela in själv, A165 på main 2026-11-26), klistra in efter punkt 9:**
 > 10. Record it yourself (free): the user writes questions and answers and records them in their own voice. The
 > microphone is used only while the user records (system microphone prompt first). The recordings stay on the phone and
-> are never uploaded. Practice plays them back like a saved quiz and uses no credits.
+> are never uploaded. Practice plays them back like a saved quiz and uses no credits; anything not recorded is read by
+> the phone's built-in voice (AVSpeechSynthesizer), also on the phone.
 
 Punkt 1 och 2 ("The microphone is never used") stämmer fortfarande: Spela in själv är en egen skärm.
 
@@ -246,7 +247,7 @@ Kontroll (Kelly, Ke84): punkt 1 Now Playing [V i koden: `RepetitionSession` sät
 [V: D213/D224, live O82], köp verifieras [V: `/purchase`]. Punkt 5 Radera konto [V: A145/K101]. Punkt 6 högtalaren
 [V i koden: Säg kräver inga hörlurar; inte provat på telefon]. Ke90: punkt 7 [V `SayCompress`, D262, K120 live O98],
 punkt 8 [V `ActivationPhrase`, A162], punkt 9 [V `OnDeviceAnswerProvider`/`AnswerGrader`; **[O]** riktig Foundation
-Models, stryk punkten och stycket i beskrivningen om Arons prov inte går igenom], punkt 10 [V A164; vyerna A165 väntar].
+Models, stryk punkten och stycket i beskrivningen om Arons prov inte går igenom], punkt 10 [V A164/A165].
 
 ## 4. Övrigt som Apple frågar efter
 | Fält | Förslag | Status |

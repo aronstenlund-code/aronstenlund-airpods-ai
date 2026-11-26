@@ -602,6 +602,7 @@
   .price .lead { margin-top: 8px; max-width: 62ch; color: var(--mut); }
   .price-grid { display: grid; gap: 18px; margin-top: 20px; align-items: start; }
   .price-card { padding: 20px; }
+  .price-card p + p { margin-top: 10px; }
   .price-card h3 { font-size: 1.125rem; }
   .price-h3 { margin-top: 20px; }
   .price-list { list-style: none; margin: 10px 0 0; padding: 0; }
@@ -682,19 +683,30 @@
     <h2 id="start-h">How it works</h2>
     <p class="lead">Type what you want to hear, or snap your textbook. You listen in your AirPods.</p>
     <ol class="steps">
-      <li class="paper"><h3>Type what you want to hear</h3><p>Type or paste a text and tap <b>Play for 10 min</b>. It repeats for up to an hour.</p><img class="shot" src="img/app-sag.webp" width="300" height="652" loading="lazy" alt="The first screen: a dark card with a text about photosynthesis, the cost and the Play button."></li>
-      <li class="paper"><h3>How should it sound?</h3><p>Type something like <b>calm, like a teacher</b> and EarMind picks a voice. Or choose one yourself and preview it for free.</p><img class="shot" src="img/app-stil.webp" width="300" height="652" loading="lazy" alt="The Say card with a voice chosen for the style."></li>
-      <li class="paper"><h3>Or snap your textbook</h3><p>Tap <b>New quiz</b> and add photos, a document, a link or text. Choose <b>Questions</b> or <b>Read aloud</b>.</p><img class="shot" src="img/app-fota.webp" width="300" height="652" loading="lazy" alt="The New quiz screen with Questions or Read aloud and the ways to add material."></li>
-      <li class="paper"><h3>Start quiz</h3><p>Questions are read in your AirPods. Tap once for the long answer, twice for the short one, three times to pause.</p><img class="shot" src="img/app-prov.webp" width="300" height="652" loading="lazy" alt="The quiz screen: the question, the answer and the three taps."></li>
+      <li class="paper"><h3>Type what you want to hear</h3><p>Type or paste a text and tap <b>Play for 10 min</b>. It repeats for up to an hour. Long text? Tap <b>Compress</b> for a shorter one with the same content.</p><img class="shot" src="img/en/app-sag.webp" width="300" height="652" loading="lazy" alt="The first screen: a dark card with a text about photosynthesis, the cost and the Play button."></li>
+      <li class="paper"><h3>How should it sound?</h3><p>Type something like <b>calm, like a teacher</b> and EarMind picks a voice. Or choose one yourself and preview it for free.</p><img class="shot" src="img/en/app-stil.webp" width="300" height="652" loading="lazy" alt="The Say card with a voice chosen for the style."></li>
+      <li class="paper"><h3>Or snap your textbook</h3><p>Tap <b>New quiz</b> and add photos, a document, a link or text. Choose <b>Questions</b> or <b>Read aloud</b>.</p><img class="shot" src="img/en/app-fota.webp" width="300" height="652" loading="lazy" alt="The New quiz screen with Questions or Read aloud and the ways to add material."></li>
+      <li class="paper"><h3>Start quiz</h3><p>Questions are read in your AirPods. Tap once for the long answer, twice for the short one, three times to pause.</p><img class="shot" src="img/en/app-prov.webp" width="300" height="652" loading="lazy" alt="The quiz screen: the question, the answer and the three taps."></li>
     </ol>
-    <p class="shot-note">Screens from a test version of the app (in Swedish; English is on the way).</p>
+    <p class="shot-note">Screens from a test version of the app.</p>
+  </section>
+
+  <!-- Ke90 (D263): Spela in själv ligger på Start i appen (A165), inte bland lägena som lyssnar. -->
+  <section class="start wrap" id="record" aria-labelledby="record-h">
+    <h2 id="record-h">Record it yourself – completely free</h2>
+    <div class="price-grid">
+      <div class="paper price-card">
+        <p>Write your own questions and answers, record them in your own voice and practice them in your AirPods, just like a quiz.</p>
+        <p>No credits, and the sound stays on your phone. Anything you haven't recorded is read by the phone's own voice.</p>
+      </div>
+      <img class="shot" src="img/en/app-egen.webp" width="300" height="652" loading="lazy" alt="Record it yourself in the app: a name, questions and answers with Record and Record again, and the Practice button.">
+    </div>
   </section>
 
   <section class="start wrap" id="modes" aria-labelledby="modes-h">
     <h2 id="modes-h">More modes (beta)</h2>
     <p class="lead">Modes that listen and answer in your ear, like a spoken quiz or interview practice. They ask first and always show that they're listening.</p>
     <p class="activate"><b>Question you're not prepared for?</b> Say [your words] so our AI activates.</p>
-    <p class="activate"><b>Record it yourself – completely free.</b> Write your own questions and answers, record them in your voice and practice them in your AirPods. No credits, and the sound stays on your phone.</p>
   </section>
 
   <section class="price wrap" id="credits" aria-labelledby="price-h">
@@ -707,7 +719,7 @@
         <h3 class="price-h3">Invite a friend</h3>
         <p>You get <b>2,000 credits</b> when your friend plays their first text.</p>
       </div>
-      <img class="shot" src="img/app-krediter.webp" width="300" height="652" loading="lazy" alt="The credits sheet in the app.">
+      <img class="shot" src="img/en/app-krediter.webp" width="300" height="652" loading="lazy" alt="The credits sheet in the app.">
     </div>
   </section>
 
