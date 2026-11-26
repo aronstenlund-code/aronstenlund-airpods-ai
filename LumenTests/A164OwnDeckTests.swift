@@ -14,6 +14,7 @@ import Testing
         var elapsed: TimeInterval = 0
         var levelDBFS: Double?
         var onLimit: (@MainActor () -> Void)?
+        let fileExtension = "m4a"
         var denied = false
         var seconds: TimeInterval = 4
         private(set) var target: URL?
@@ -410,6 +411,28 @@ import Testing
     #endif
 
     #if LUMEN_TESTMODE
+    // MARK: Toby's pretend recorder (T58)
+
+    @Test func thePretendRecorderKeepsTwoSilentSecondsWithoutAMicrophone() async throws {
+        let store = OwnDeckStore(folder: temporaryDirectory())
+        let model = OwnDeckModel(store: store, audio: OwnDeckAudio(store: store, voice: SilentPhoneVoice()), recorder: PretendOwnRecorder(),
+                                 makeSource: { A78RepetitionTests.MockSource() }, activatePlayback: {}, language: { "en" })
+        let deck = model.addDeck(title: "T58")
+        let card = try #require(model.addCard(to: deck.id, question: "One?", answer: "Yes."))
+        await model.record(.question, card: card.id, in: deck.id)
+        #expect(model.recording != nil && model.elapsed == PretendOwnRecorder.seconds && model.problem == nil)
+        model.stopRecording()
+        let file = try #require(model.deck(deck.id)?.cards.first?.questionRecording)
+        #expect(file.seconds == 2 && file.name.hasSuffix(".wav"), "named for what is in it, so the player opens it")
+        #expect(FileManager.default.fileExists(atPath: store.url(for: file).path))
+        await model.audio.prepare(try #require(model.deck(deck.id)?.cards), language: "en")
+        #expect(model.track(in: deck.id, at: 0)?.question == store.url(for: file))
+        let defaults = try #require(UserDefaults(suiteName: "a166.\(UUID().uuidString)"))
+        #expect(!PretendOwnRecorder.isRequested(defaults))
+        defaults.set(true, forKey: "FakeOwnRecorder")
+        #expect(PretendOwnRecorder.isRequested(defaults))
+    }
+
     // MARK: Toby's seed (T58)
 
     @Test func theSeedGivesOneDeckOnceAndASilentVoice() async throws {

@@ -1,0 +1,1666 @@
+[
+  {
+    "id": "F01",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F01.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F01.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F02",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F02.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F02.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F03",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F03.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F03.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F04",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F04.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F04.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F05",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F05.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F05.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F06",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F06.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F06.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F07",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F07.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F07.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F10",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F10.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F10.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F11",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F11.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F11.t1.c1",
+      "F11.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F12",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F12.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F12.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F13",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F13.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F13.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F14",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F14.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F14.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F15",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F15.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F15.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "F16",
+    "cat": "fakta",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "F16.t1.c1",
+    "reason": null,
+    "prompts": [
+      "F16.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "C01",
+    "cat": "beräkning",
+    "endpoint": "answer",
+    "status": "done",
+    "needs": null,
+    "reason": null,
+    "prompts": [],
+    "blocked": [],
+    "said": [
+      "Tjugotre gånger nitton är fyrahundratrettiosju."
+    ]
+  },
+  {
+    "id": "C02",
+    "cat": "beräkning",
+    "endpoint": "answer",
+    "status": "done",
+    "needs": null,
+    "reason": null,
+    "prompts": [],
+    "blocked": [],
+    "said": [
+      "Trettioåtta procent av tolvhundrafemtio är fyrahundrasjuttiofem."
+    ]
+  },
+  {
+    "id": "C03",
+    "cat": "beräkning",
+    "endpoint": "answer",
+    "status": "done",
+    "needs": null,
+    "reason": null,
+    "prompts": [],
+    "blocked": [],
+    "said": [
+      "Sju upphöjt till tre är trehundrafyrtiotre."
+    ]
+  },
+  {
+    "id": "C04",
+    "cat": "beräkning",
+    "endpoint": "answer",
+    "status": "done",
+    "needs": null,
+    "reason": null,
+    "prompts": [],
+    "blocked": [],
+    "said": [
+      "Roten ur sjuttonhundrasextiofyra är fyrtiotvå."
+    ]
+  },
+  {
+    "id": "C05",
+    "cat": "beräkning",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "C05.t1.c1",
+    "reason": null,
+    "prompts": [
+      "C05.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "C06",
+    "cat": "beräkning",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "C06.t1.c1",
+    "reason": null,
+    "prompts": [
+      "C06.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "C08",
+    "cat": "beräkning",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "C08.t1.c1",
+    "reason": null,
+    "prompts": [
+      "C08.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "C10",
+    "cat": "beräkning",
+    "endpoint": "answer",
+    "status": "done",
+    "needs": null,
+    "reason": null,
+    "prompts": [],
+    "blocked": [],
+    "said": [
+      "Hundra grader Fahrenheit är ungefär trettiosju komma åtta grader Celsius."
+    ]
+  },
+  {
+    "id": "C11",
+    "cat": "beräkning",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "C11.t1.c1",
+    "reason": null,
+    "prompts": [
+      "C11.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "C12",
+    "cat": "beräkning",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "C12.t1.c1",
+    "reason": null,
+    "prompts": [
+      "C12.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "T01",
+    "cat": "tid",
+    "endpoint": "answer",
+    "status": "done",
+    "needs": null,
+    "reason": null,
+    "prompts": [],
+    "blocked": [],
+    "said": [
+      "Just nu är klockan tjugotvå och trettioett i Sverige och sexton och trettioett i New York. New York är sex timmar efter Sverige."
+    ]
+  },
+  {
+    "id": "T02",
+    "cat": "tid",
+    "endpoint": "answer",
+    "status": "done",
+    "needs": null,
+    "reason": null,
+    "prompts": [],
+    "blocked": [],
+    "said": [
+      "Klockan nio i Sverige är klockan åtta i London. London är en timme efter Sverige."
+    ]
+  },
+  {
+    "id": "T03",
+    "cat": "tid",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "T03.t1.c1",
+    "reason": null,
+    "prompts": [
+      "T03.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "T04",
+    "cat": "tid",
+    "endpoint": "answer",
+    "status": "done",
+    "needs": null,
+    "reason": null,
+    "prompts": [],
+    "blocked": [],
+    "said": [
+      "Just nu är klockan tjugotvå och trettioett i Sverige och tjugotre och trettioett i Kapstaden. Kapstaden är en timme före Sverige."
+    ]
+  },
+  {
+    "id": "T05",
+    "cat": "tid",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "T05.t1.c1",
+    "reason": null,
+    "prompts": [
+      "T05.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "T06",
+    "cat": "tid",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "T06.t1.c1",
+    "reason": null,
+    "prompts": [
+      "T06.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "T07",
+    "cat": "tid",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "T07.t1.c1",
+    "reason": null,
+    "prompts": [
+      "T07.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "T08",
+    "cat": "tid",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "T08.t1.c1",
+    "reason": null,
+    "prompts": [
+      "T08.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "T09",
+    "cat": "tid",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "T09.t1.c1",
+    "reason": null,
+    "prompts": [
+      "T09.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "A01",
+    "cat": "ämnesord",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "A01.t1.c1",
+    "reason": null,
+    "prompts": [
+      "A01.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "A02",
+    "cat": "ämnesord",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "A02.t1.c1",
+    "reason": null,
+    "prompts": [
+      "A02.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "A04",
+    "cat": "ämnesord",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "A04.t1.c1",
+    "reason": null,
+    "prompts": [
+      "A04.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "A06",
+    "cat": "ämnesord",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "A06.t1.c1",
+    "reason": null,
+    "prompts": [
+      "A06.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "S01",
+    "cat": "tal-fel",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "S01.t1.c1",
+    "reason": null,
+    "prompts": [
+      "S01.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "S03",
+    "cat": "tal-fel",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "S03.t1.c1",
+    "reason": null,
+    "prompts": [
+      "S03.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "S04",
+    "cat": "tal-fel",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "S04.t1.c1",
+    "reason": null,
+    "prompts": [
+      "S04.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "S06",
+    "cat": "tal-fel",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "S06.t1.c1",
+    "reason": null,
+    "prompts": [
+      "S06.t1.c1",
+      "S06.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "S07",
+    "cat": "tal-fel",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "S07.t1.c1",
+    "reason": null,
+    "prompts": [
+      "S07.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "S08",
+    "cat": "tal-fel",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "S08.t1.c1",
+    "reason": null,
+    "prompts": [
+      "S08.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "S09",
+    "cat": "tal-fel",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "S09.t1.c1",
+    "reason": null,
+    "prompts": [
+      "S09.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "S10",
+    "cat": "tal-fel",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "S10.t1.c1",
+    "reason": null,
+    "prompts": [
+      "S10.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "U01",
+    "cat": "följdfråga",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "U01.t1.c1",
+    "reason": null,
+    "prompts": [
+      "U01.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "U02",
+    "cat": "följdfråga",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "U02.t1.c1",
+    "reason": null,
+    "prompts": [
+      "U02.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "U04",
+    "cat": "följdfråga",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "U04.t1.c1",
+    "reason": null,
+    "prompts": [
+      "U04.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "U05",
+    "cat": "följdfråga",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "U05.t1.c1",
+    "reason": null,
+    "prompts": [
+      "U05.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "U06",
+    "cat": "följdfråga",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "U06.t1.c1",
+    "reason": null,
+    "prompts": [
+      "U06.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "U07",
+    "cat": "följdfråga",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "U07.t1.c1",
+    "reason": null,
+    "prompts": [
+      "U07.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "U09",
+    "cat": "följdfråga",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "U09.t1.c1",
+    "reason": null,
+    "prompts": [
+      "U09.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "U10",
+    "cat": "följdfråga",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "U10.t1.c1",
+    "reason": null,
+    "prompts": [
+      "U10.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "B01",
+    "cat": "ämnesbyte",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "B01.t1.c1",
+    "reason": null,
+    "prompts": [
+      "B01.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "B02",
+    "cat": "ämnesbyte",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "B02.t1.c1",
+    "reason": null,
+    "prompts": [
+      "B02.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "B03",
+    "cat": "ämnesbyte",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "B03.t1.c1",
+    "reason": null,
+    "prompts": [
+      "B03.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "B05",
+    "cat": "ämnesbyte",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "B05.t2.c1",
+    "reason": null,
+    "prompts": [
+      "B05.t2.c1"
+    ],
+    "blocked": [],
+    "said": [
+      "Tjugofyra gånger sex är hundrafyrtiofyra."
+    ]
+  },
+  {
+    "id": "P01",
+    "cat": "praktiskt",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "P01.t1.c1",
+    "reason": null,
+    "prompts": [
+      "P01.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "P02",
+    "cat": "praktiskt",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "P02.t1.c1",
+    "reason": null,
+    "prompts": [
+      "P02.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "P03",
+    "cat": "praktiskt",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "P03.t1.c1",
+    "reason": null,
+    "prompts": [
+      "P03.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "P04",
+    "cat": "praktiskt",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "P04.t1.c1",
+    "reason": null,
+    "prompts": [
+      "P04.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "P05",
+    "cat": "praktiskt",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "P05.t1.c1",
+    "reason": null,
+    "prompts": [
+      "P05.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "P07",
+    "cat": "praktiskt",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "P07.t1.c1",
+    "reason": null,
+    "prompts": [
+      "P07.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "R01",
+    "cat": "recept",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "R01.t1.c1",
+    "reason": null,
+    "prompts": [
+      "R01.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "R02",
+    "cat": "recept",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "R02.t1.c1",
+    "reason": null,
+    "prompts": [
+      "R02.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "R04",
+    "cat": "recept",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "R04.t1.c1",
+    "reason": null,
+    "prompts": [
+      "R04.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "L01",
+    "cat": "språk",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "L01.t1.c1",
+    "reason": null,
+    "prompts": [
+      "L01.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "L03",
+    "cat": "språk",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "L03.t1.c1",
+    "reason": null,
+    "prompts": [
+      "L03.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "L04",
+    "cat": "språk",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "L04.t1.c1",
+    "reason": null,
+    "prompts": [
+      "L04.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "L05",
+    "cat": "språk",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "L05.t1.c1",
+    "reason": null,
+    "prompts": [
+      "L05.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "L07",
+    "cat": "språk",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "L07.t1.c1",
+    "reason": null,
+    "prompts": [
+      "L07.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "Z02",
+    "cat": "sammanfattning",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "Z02.t1.c1",
+    "reason": null,
+    "prompts": [
+      "Z02.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "Z03",
+    "cat": "sammanfattning",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "Z03.t1.c1",
+    "reason": null,
+    "prompts": [
+      "Z03.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "Z04",
+    "cat": "sammanfattning",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "Z04.t1.c1",
+    "reason": null,
+    "prompts": [
+      "Z04.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "M01",
+    "cat": "minne",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "M01.t2.c1",
+    "reason": null,
+    "prompts": [
+      "M01.t2.c1"
+    ],
+    "blocked": [],
+    "said": [
+      "Okej, det kommer jag ihåg."
+    ]
+  },
+  {
+    "id": "M02",
+    "cat": "minne",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "M02.t2.c1",
+    "reason": null,
+    "prompts": [
+      "M02.t2.c1"
+    ],
+    "blocked": [],
+    "said": [
+      "Okej, det kommer jag ihåg."
+    ]
+  },
+  {
+    "id": "M03",
+    "cat": "minne",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "M03.t2.c1",
+    "reason": null,
+    "prompts": [
+      "M03.t2.c1"
+    ],
+    "blocked": [],
+    "said": [
+      "Okej, det kommer jag ihåg."
+    ]
+  },
+  {
+    "id": "M04",
+    "cat": "minne",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "M04.t2.c1",
+    "reason": null,
+    "prompts": [
+      "M04.t2.c1"
+    ],
+    "blocked": [],
+    "said": [
+      "Okej, det kommer jag ihåg."
+    ]
+  },
+  {
+    "id": "M05",
+    "cat": "minne",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "M05.t1.c1",
+    "reason": null,
+    "prompts": [
+      "M05.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "W01",
+    "cat": "webb",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "W01.t1.c1",
+    "reason": null,
+    "prompts": [
+      "W01.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "W02",
+    "cat": "webb",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "W02.t1.c1",
+    "reason": null,
+    "prompts": [
+      "W02.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "W03",
+    "cat": "webb",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "W03.t1.c1",
+    "reason": null,
+    "prompts": [
+      "W03.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "O01",
+    "cat": "socialt",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "O01.t1.c1",
+    "reason": null,
+    "prompts": [
+      "O01.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "O02",
+    "cat": "socialt",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "O02.t1.c1",
+    "reason": null,
+    "prompts": [
+      "O02.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "O03",
+    "cat": "socialt",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "O03.t1.c1",
+    "reason": null,
+    "prompts": [
+      "O03.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "O04",
+    "cat": "socialt",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "O04.t1.c1",
+    "reason": null,
+    "prompts": [
+      "O04.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "O05",
+    "cat": "socialt",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "O05.t1.c1",
+    "reason": null,
+    "prompts": [
+      "O05.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "O06",
+    "cat": "socialt",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "O06.t1.c1",
+    "reason": null,
+    "prompts": [
+      "O06.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ1",
+    "cat": "rizz",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ1.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ1.t1.c1",
+      "RZ1.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ1s",
+    "cat": "socialt-läge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ1s.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ1s.t1.c1",
+      "RZ1s.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ2",
+    "cat": "rizz",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ2.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ2.t1.c1",
+      "RZ2.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ2s",
+    "cat": "socialt-läge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ2s.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ2s.t1.c1",
+      "RZ2s.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ3",
+    "cat": "rizz",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ3.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ3.t1.c1",
+      "RZ3.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ3s",
+    "cat": "socialt-läge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ3s.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ3s.t1.c1",
+      "RZ3s.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ4",
+    "cat": "rizz",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ4.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ4.t1.c1",
+      "RZ4.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ4s",
+    "cat": "socialt-läge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ4s.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ4s.t1.c1",
+      "RZ4s.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ5",
+    "cat": "rizz",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ5.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ5.t1.c1",
+      "RZ5.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ5s",
+    "cat": "socialt-läge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ5s.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ5s.t1.c1",
+      "RZ5s.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ6",
+    "cat": "rizz",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ6.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ6.t1.c1",
+      "RZ6.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ6s",
+    "cat": "socialt-läge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ6s.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ6s.t1.c1",
+      "RZ6s.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ7",
+    "cat": "rizz",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ7.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ7.t1.c1",
+      "RZ7.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ7s",
+    "cat": "socialt-läge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ7s.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ7s.t1.c1",
+      "RZ7s.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ8",
+    "cat": "rizz",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ8.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ8.t1.c1",
+      "RZ8.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ8s",
+    "cat": "socialt-läge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ8s.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ8s.t1.c1",
+      "RZ8s.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ9",
+    "cat": "rizz",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ9.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ9.t1.c1",
+      "RZ9.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ9s",
+    "cat": "socialt-läge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ9s.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ9s.t1.c1",
+      "RZ9s.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ0",
+    "cat": "rizz",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ0.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ0.t1.c1",
+      "RZ0.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "RZ0s",
+    "cat": "socialt-läge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "RZ0s.t1.c1",
+    "reason": null,
+    "prompts": [
+      "RZ0s.t1.c1",
+      "RZ0s.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "I01",
+    "cat": "intervju",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "I01.t1.c1",
+    "reason": null,
+    "prompts": [
+      "I01.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "I02",
+    "cat": "intervju",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "I02.t1.c1",
+    "reason": null,
+    "prompts": [
+      "I02.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "I03",
+    "cat": "intervju",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "I03.t1.c1",
+    "reason": null,
+    "prompts": [
+      "I03.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "E01",
+    "cat": "provläge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "E01.t1.c1",
+    "reason": null,
+    "prompts": [
+      "E01.t1.c1",
+      "E01.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "E02",
+    "cat": "provläge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "E02.t1.c1",
+    "reason": null,
+    "prompts": [
+      "E02.t1.c1",
+      "E02.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "E03",
+    "cat": "provläge",
+    "endpoint": "answer",
+    "status": "needs_reply",
+    "needs": "E03.t1.c1",
+    "reason": null,
+    "prompts": [
+      "E03.t1.c1",
+      "E03.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "PE1",
+    "cat": "provläge-eval",
+    "endpoint": "provlage-eval",
+    "status": "needs_reply",
+    "needs": "PE1.t1.c1",
+    "reason": null,
+    "prompts": [
+      "PE1.t1.c1",
+      "PE1.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "PE2",
+    "cat": "provläge-eval",
+    "endpoint": "provlage-eval",
+    "status": "needs_reply",
+    "needs": "PE2.t1.c1",
+    "reason": null,
+    "prompts": [
+      "PE2.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "PG1",
+    "cat": "provläge-domare",
+    "endpoint": "provlage-eval",
+    "status": "needs_reply",
+    "needs": "PG1.t1.c1",
+    "reason": null,
+    "prompts": [
+      "PG1.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "EX1",
+    "cat": "prov-drill",
+    "endpoint": "exam",
+    "status": "needs_reply",
+    "needs": "EX1.t1.c1",
+    "reason": null,
+    "prompts": [
+      "EX1.t1.c1",
+      "EX1.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "EX2",
+    "cat": "prov-drill-en",
+    "endpoint": "exam",
+    "status": "needs_reply",
+    "needs": "EX2.t1.c1",
+    "reason": null,
+    "prompts": [
+      "EX2.t1.c1",
+      "EX2.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "EX3",
+    "cat": "prov-hint",
+    "endpoint": "exam",
+    "status": "needs_reply",
+    "needs": "EX3.t1.c1",
+    "reason": null,
+    "prompts": [
+      "EX3.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "EX4",
+    "cat": "prov-rätta",
+    "endpoint": "exam",
+    "status": "needs_reply",
+    "needs": "EX4.t1.c1",
+    "reason": null,
+    "prompts": [
+      "EX4.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "CO1",
+    "cat": "komprimera",
+    "endpoint": "exam",
+    "status": "needs_reply",
+    "needs": "CO1.t1.c1",
+    "reason": null,
+    "prompts": [
+      "CO1.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "HE1",
+    "cat": "hjälp",
+    "endpoint": "help",
+    "status": "needs_reply",
+    "needs": "HE1.t1.c1",
+    "reason": null,
+    "prompts": [
+      "HE1.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "HE2",
+    "cat": "hjälp-utanför",
+    "endpoint": "help",
+    "status": "needs_reply",
+    "needs": "HE2.t1.c1",
+    "reason": null,
+    "prompts": [
+      "HE2.t1.c1"
+    ],
+    "blocked": [],
+    "said": []
+  },
+  {
+    "id": "HT1",
+    "cat": "hjälp-prova",
+    "endpoint": "help",
+    "status": "needs_reply",
+    "needs": "HT1.t1.c1",
+    "reason": null,
+    "prompts": [
+      "HT1.t1.c1",
+      "HT1.t1.c2"
+    ],
+    "blocked": [],
+    "said": []
+  }
+]

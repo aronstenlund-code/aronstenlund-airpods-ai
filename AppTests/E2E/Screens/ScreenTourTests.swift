@@ -189,18 +189,18 @@ final class ScreenTourTests: XCTestCase {
     private func deleteAccountQuestion() {
         guard tap(["Inställningar"], step: "start → Inställningar (Konto)") else { return }
         guard waitFor(["Klar"], timeout: 5) != nil else { miss("settings sheet not shown (Konto)"); return }
-        guard let found = scrollTo(["Radera konto", "Delete account"], buttonsOnly: true) else {
+        guard let found = scrollTo(["Radera konto", "Delete account", "#settings.deleteAccount"], buttonsOnly: true) else {
             miss("settings row Radera konto not found")
             closeSheet()
             return
         }
-        let row = centered(found, labels: ["Radera konto", "Delete account"])
+        let row = centered(found, labels: ["Radera konto", "Delete account", "#settings.deleteAccount"])
         shoot("installningar-konto", note: "Settings › Konto (A145)")
         row.tap()
         let alert = app.alerts.firstMatch
         // Run 44809087832 (pro-dark): one tap asked nothing. Tap the row once more before calling it a miss.
         if !alert.waitForExistence(timeout: 5), waitFor(["Avbryt"], timeout: 1) == nil,
-           let again = find(["Radera konto", "Delete account"], buttonsOnly: true), again.isHittable {
+           let again = find(["Radera konto", "Delete account", "#settings.deleteAccount"], buttonsOnly: true), again.isHittable {
             record("note: Radera konto tap asked nothing, retry")
             again.tap()
         }
@@ -274,31 +274,31 @@ final class ScreenTourTests: XCTestCase {
         // Run 45396745804: in the order they stand on the screen where it is known (tree of run 44862440315:
         // Integritet, Anteckningar, Historik, Studiekort, Förberedelser), so the search mostly goes forward.
         let pages: [(name: String, labels: [String])] = [
-            ("integritet", ["Integritet och samtycke", "Privacy and consent", "Privacy & consent"]),
-            ("anteckningar", ["Anteckningar", "Notes"]),
-            ("historik", ["Historik", "History"]),
-            ("studiekort", ["Studiekort", "Study cards"]),
-            ("forberedelser", ["Förberedelser", "Preparations"]),
-            ("egna-kommandon", ["Egna kommandon", "Your own commands"]),
-            ("minne", ["Minne", "Memory"]),
-            ("feedback", ["Feedback och förslag", "Feedback and suggestions", "Feedback & förslag", "Feedback & suggestions"]),
-            ("rostkommandon", ["Röstkommandon", "Voice commands"]),
-            ("om-appen", ["Om appen", "About the app"]),
+            ("integritet", ["Integritet och samtycke", "Privacy and consent", "Privacy & consent", "#settings.privacy"]),
+            ("anteckningar", ["Anteckningar", "Notes", "#settings.notes"]),
+            ("historik", ["Historik", "History", "#settings.history"]),
+            ("studiekort", ["Studiekort", "Study cards", "#settings.studyCards"]),
+            ("forberedelser", ["Förberedelser", "Preparations", "#settings.preparations"]),
+            ("egna-kommandon", ["Egna kommandon", "Your own commands", "#settings.customCommands"]),
+            ("minne", ["Minne", "Memory", "#settings.memory"]),
+            ("feedback", ["Feedback och förslag", "Feedback and suggestions", "Feedback & förslag", "Feedback & suggestions", "#settings.feedback"]),
+            ("rostkommandon", ["Röstkommandon", "Voice commands", "#settings.voiceCommands"]),
+            ("om-appen", ["Om appen", "About the app", "#settings.about"]),
         ]
         for page in pages {
             openFromSettings(page.labels, name: page.name)
         }
         // A13: "Avancerat" folds out its sections in place (not a page); the diagnostics rows are inside it.
         expandAdvanced()
-        openFromSettings(["Rå transkription och svar", "Raw transcription and answers"], name: "ra-transkription", advanced: true)
-        openFromSettings(["Diagnostik", "Diagnostics"], name: "diagnostik", advanced: true)
+        openFromSettings(["Rå transkription och svar", "Raw transcription and answers", "#settings.rawTranscript"], name: "ra-transkription", advanced: true)
+        openFromSettings(["Diagnostik", "Diagnostics", "#settings.diagnostics"], name: "diagnostik", advanced: true)
         tap(["Klar"], step: "settings → Klar")
         pause(1)
     }
 
     /// Folds out "Avancerat" in Settings (once per sheet) and shoots the first screen of it.
     private func expandAdvanced() {
-        guard let row = scrollTo(["Avancerat*", "Advanced*"], buttonsOnly: true) else {
+        guard let row = scrollTo(["Avancerat*", "Advanced*", "#settings.advanced"], buttonsOnly: true) else {
             miss("settings row Avancerat not found")
             return
         }
@@ -397,6 +397,16 @@ final class ScreenTourTests: XCTestCase {
 
     private func find(_ labels: [String], buttonsOnly: Bool = false) -> XCUIElement? {
         for label in labels {
+            // T58 (A164): "#settings.privacy" = the row's accessibilityIdentifier, whatever the language and the text.
+            if label.hasPrefix("#") {
+                let id = String(label.dropFirst())
+                let button = app.buttons[id]
+                if button.exists { return button }
+                if buttonsOnly { continue }
+                let any = app.descendants(matching: .any)[id]
+                if any.exists { return any }
+                continue
+            }
             // "Jag förstår*" = starts with (the app's dashes and ellipses vary; don't depend on them).
             let predicate = label.hasSuffix("*")
                 ? NSPredicate(format: "label BEGINSWITH[c] %@", String(label.dropLast()))

@@ -1,0 +1,43 @@
+{
+  "stem": "EX2.t1.c2",
+  "case": "EX2",
+  "turn": 1,
+  "call": 2,
+  "endpoint": "exam",
+  "url": "https://k122-replay.invalid/v1/messages",
+  "client_request": {
+    "action": "drill",
+    "answers": false,
+    "questions": 3,
+    "subject": "",
+    "pages": [],
+    "text": "The Water Cycle\n\nWater moves between the oceans, the air and the land in a cycle. The sun heats the oceans and water evaporates into the air as water vapour. As the vapour rises it cools and condenses into tiny droplets that form clouds. When the droplets join and become heavy they fall as precipitation: rain, snow or hail."
+  },
+  "anthropic_request": {
+    "model": "claude-haiku-5-5",
+    "max_tokens": 2040,
+    "stream": true,
+    "system": [
+      {
+        "type": "text",
+        "text": "You prepare a Swedish student's revision list for an exam (\"prov\") from their study material (page photos, notes, a document's text). The student will listen to the questions and answers in their AirPods. Return ONLY a JSON object:\n{\"summary\": {\"subject\": \"Biologi\", \"grade\": \"åk 8\", \"covers\": \"...\"}, \"notes\": \"...\", \"questions_possible\": 12, \"questions\": [\"Varför behövs klorofyll?\", \"...\"]}\nWhen the material cannot be read at all (blurred, cut off, a screen photo you cannot make out, no school content), return ONLY {\"unreadable\": \"<one short Swedish sentence on why, for example 'Texten på bilderna går inte att läsa.'>\"}.\n- summary: \"subject\" the school subject in Swedish; \"grade\" the school year or course as Swedes say it (\"åk 8\", \"Matematik 1b\", \"Svenska 1\", \"Engelska 6\", \"Samhällskunskap 1b\"): from <context> when given; else from the material itself: a course name or code, a textbook title, \"åk\"/\"årskurs\", or content that only fits one level (a gymnasium course's topics such as derivatives, molar mass or language history are gymnasium; never guess \"åk 8\" by default); else \"\" (empty: the app then asks the student, D159/K52); \"covers\" one or two Swedish sentences on what the exam covers (the main areas, in order).\n- notes: every fact, concept, definition, formula, date, name, cause and example in the material, as compact plain text in the exam's language, in the material's order (at most about 900 words). Only what the material says; the answers are written from these notes.\n- questions_possible: how many good, different exam questions the material really supports (D159: never more than the material carries; a short text may support 4). Count before you write.\n- Language (D182): when the subject is a foreign language (Engelska, Spanska, Tyska, Franska, Italienska, Kinesiska, Japanska and other modern languages), the exam is in that language: write \"covers\", the notes and the questions in that language. Every other subject in the material's own language (K114, D251): an English text gives an English exam (notes, \"covers\" and questions), a Swedish text a Swedish one, any other language Swedish. When <language> is given, write \"covers\", the notes and every question in that language.\n- questions: the number asked for in <count>, or fewer when questions_possible is lower: then exactly questions_possible plus at most 6 extra (the weakest are removed afterwards). Never pad with repeated, trivial or outside questions to reach the number. In the exam's language, in the material's order, spread over ALL parts of the material in proportion to how much the material says about each. Each question:\n  - clear when only HEARD, with no text in front of the student: as short as it can be while it stays clear and natural Swedish (D176: there is no word limit; a long question with a long answer costs more, so do not make it longer than it needs to be). Never a fragment that needs the material to make sense (\"Vad säger m?\", \"Mol metan i 16 g?\" are wrong; \"Vad visar m i en rät linje?\", \"Hur många mol är 16 gram metan?\" are right). Cut filler such as \"i naturen\", \"egentligen\", \"det att\";\n  - written as it is said: no symbols, formulas, units or abbreviations as signs (\"syre\", not \"O2\"; \"kubikdecimeter\", not \"dm³\"; \"procent\", not \"%\");\n  - tests understanding, not only recall: at least three of every four questions ask why, how, what happens if, or compare (\"Varför behövs klorofyll?\", \"Hur bildas en näringsväv?\", \"Vad händer om pH sjunker?\", \"Skillnad mellan väder och klimat?\"); \"Vad är X?\", \"Vad betyder X?\" or \"Vilka ...?\" at most one in five, only for a key term the material defines;\n  - is answered by the material (never a question the material does not cover, never a fact from outside it);\n  - asks \"Varför ...?\" only when the material itself states the cause or the reason (K97, O79: \"Varför fick Gustav Vasa med sig bönderna?\" is wrong when the material only says that they joined him) (a \"because\", \"därför att\", \"eftersom\", \"leder till\", \"beror på\" or an explained mechanism); a fact stated with no reason (\"tredje ståndet betalade nästan alla skatter\", \"taking the train is better than flying\") gets \"Vad ...?\", \"Hur ...?\" or \"Vilka följder ...?\" instead; when the material only states that something is so (a rule, a law, a definition), ask \"Vad ...?\" or \"Hur ...?\" instead (O63: \"Varför bestämmer antalet protoner vilket grundämne atomen är?\" has no answer in a material that only says it; the answer becomes circular);\n  - never claims anything the material does not say or that contradicts it (O63: \"Varför kallas medierna den fjärde statsmakten?\" when the material says \"tredje\");\n  - a real exam question a teacher would ask: no yes/no, no multiple choice, no \"enligt texten\", no page or task numbers, no question about the material itself;\n  - different from every other question (no two that ask the same thing). K97 (O79): before you return, compare every pair: when the material gives two questions the same answer (the same fact, cause or effect in other words: \"Varför kan ljud inte spridas i vakuum?\" and \"Varför är det tyst i rymden?\"; \"Varför får de med fasta inkomster det sämre?\" and \"Varför får pensionärer det sämre?\"), keep only the better one and ask about something else the material says.\n- When <correction> is given, it is the student's correction of your reading (subject, grade or what the exam covers): follow it.\nNo markdown, no other text.",
+        "cache_control": {
+          "type": "ephemeral"
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content": "<count>9</count>\n<material>\nThe Water Cycle\n\nWater moves between the oceans, the air and the land in a cycle. The sun heats the oceans and water evaporates into the air as water vapour. As the vapour rises it cools and condenses into tiny droplets that form clouds. When the droplets join and become heavy they fall as precipitation: rain, snow or hail.\n</material>\n<language>English</language>\nRead the material above.\n<part>questions</part> Return the JSON object with \"summary\", \"questions_possible\" and \"questions\" (or \"unreadable\"), but WITHOUT \"notes\": another step writes the notes at the same time."
+      }
+    ],
+    "output_config": {
+      "effort": "low"
+    },
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "reply_hint": "As the system prompt asks (exam, help and the judge read a JSON object from the reply)."
+}
