@@ -1,4 +1,4 @@
-# A164 – Spela in själv, kärnan (Angela Schrute, moln, 2026-11-26 09:30)
+# A164 – Spela in själv, kärnan (Angela Schrute, moln, 2026-11-26 09:25)
 
 Uppdrag: Deangelo 08:45 (D263, Aron 08:24). iOS-appen på main. Vyerna och bladet är Angela Fables (A165).
 
@@ -22,7 +22,8 @@ AirPods-mikrofonen), telefonens röst och uppspelningen i AirPods är inte prova
 - **Utan inspelning läser telefonens egen röst texten** (AVSpeechSynthesizer, aldrig ElevenLabs). Rösten skrivs till
   en fil första gången, så spelaren behandlar den som vilket ljud som helst och väntar medan den görs.
 - **Lyssna på en del** (▶ i redigeringen) och **allt Angela Fable behöver för vyerna** finns i `OwnDeckModel`;
-  gränssnittet skrev jag i hennes kö 09:05, innan koden.
+  gränssnittet skrev jag i hennes kö innan koden, och hon bygger vyerna mot det. Efter hennes önskemål finns två
+  DEBUG-hjälpare för skärmbilderna (`stage(recording:)`, `stageRecorded`).
 - **Tobys önskemål (T3):** raderna i Inställningar har fasta `accessibilityIdentifier` (`settings.privacy`,
   `settings.notes` … alla fjorton).
 - **Tobys fynd (T57):** se §4.
@@ -56,15 +57,15 @@ ett långsamt nät) frågas om som förut. Gäller bara telefoner utan egen mode
 
 ## 5. Test
 
-- **A164:** 19 tester i `LumenTests/A164OwnDeckTests.swift`: samlingen sparas mellan starter; nyast först; texter
+- **A164:** 22 tester i `LumenTests/A164OwnDeckTests.swift`: samlingen sparas mellan starter; nyast först; texter
   kortas; full samling; flytta kort; ljudet utanför säkerhetskopian; inspelning sparas för sin del; ny inspelning
   ersätter den gamla; avbryt behåller den gamla; gränsen sparar; för kort inspelning sparas inte; nekad mikrofon
   säger det; en i taget; borttagning tar filerna; inspelningen spelas och telefonens röst läser resten; röst som
   inte ger ljud lämnar ingen fil; vad spelaren får; lyssna på en del; **övning genom provspelaren utan anrop till
-  servern och utan att provlagret rörs**; tom samling startar inget; Tobys krok. Testerna skrevs före koden, men
+  servern och utan att provlagret rörs**; tom samling startar inget; bildhjälparna (DEBUG); Tobys krok. Testerna skrevs före koden, men
   de kunde inte köras röda i CI: allt de använder är nytt, så det hade bara blivit ett kompileringsfel.
-- **T57-fyndet:** testet gick ensamt till `angela/t57-test-rod` (iOS build 45777210628, väntat rött: REDRESULT).
-- **Byggen:** kärnan ensam iOS build 45777051564: COREBUILD. Kärnan + T57-rättningen 45777343362: BOTHBUILD.
+- **T57-fyndet:** testet gick ensamt till `angela/t57-test-rod` (iOS build 45777210628, **rött som väntat, på påståendet**: `requests.count → 2`, alltså två anrop för samma fråga; det andra testet, att andra fel frågas om, gick).
+- **Bygget som gäller:** kärnan + T57-rättningen + bildhjälparna, **iOS build 45777575993 grön** (hela sviten och Release-kontrollen, som också visar att `SilentPhoneVoice` och `OwnDeckSeed` inte finns i Release-arkivet). Det är samma appkod som ligger på main. **[CI]**
 
 ## 6. Arons prov (när Angela Fables vyer finns; tills dess går kärnan inte att nå i appen)
 
