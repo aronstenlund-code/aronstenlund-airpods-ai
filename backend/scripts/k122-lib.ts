@@ -19,6 +19,7 @@
  * again, and the next prompt appears (turn 2's prompt holds what the user heard in turn 1).
  */
 import { MemoryRateLimiter } from "../supabase/functions/_shared/ratelimit.ts";
+import { withCors } from "../supabase/functions/_shared/cors.ts";
 import { createHandler, DEFAULT_CONFIG, type UsageRecord } from "../supabase/functions/answer/handler.ts";
 import { AnthropicProvider } from "../supabase/functions/answer/llm/anthropic.ts";
 import { DEFAULT_MODEL } from "../supabase/functions/answer/llm/factory.ts";
@@ -243,7 +244,7 @@ export async function runCase(c: Case, lookup: (stem: string) => Reply | null): 
     credits.push({ fn, n });
     return Promise.resolve({ ok: true, used: 0, lim: 100_000 });
   };
-  const handler = endpoint === "answer"
+  const inner = endpoint === "answer"
     ? createHandler({ authenticate, rateLimiter, provider, recordUsage, fetchImpl: blockedFetch(res.blocked), config: DEFAULT_CONFIG })
     : endpoint === "provlage-eval"
     ? createEvalHandler({ authenticate, rateLimiter, provider, recordUsage, answerConfig: DEFAULT_CONFIG, elevenLabsKey: null, fetchImpl: blockedFetch(res.blocked), access: () => true })
@@ -257,7 +258,9 @@ export async function runCase(c: Case, lookup: (stem: string) => Reply | null): 
     : endpoint === "help"
     ? createHelpHandler({ authenticate, rateLimiter, provider, recordUsage, useQuota: wallet("help.useQuota"), addTryCredits: (_u, keys) => (credits.push({ fn: "help.addTryCredits", n: keys.length }), Promise.resolve()) })
     : null;
-  if (!handler) return { ...res, status: "refused", reason: `unknown endpoint ${endpoint}` };
+  if (!inner) return { ...res, status: "refused", reason: `unknown endpoint ${endpoint}` };
+  // O103: the same wrapper as index.ts (CORS and the error text in the caller's language, x-earmind-lang / Accept-Language)
+  const handler = withCors(inner);
 
   // the bodies, turn by turn (an /answer conversation as scripts/qa/run.py builds it)
   const bodies: (() => Record<string, any>)[] = [];

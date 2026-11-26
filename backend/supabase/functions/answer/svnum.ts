@@ -81,7 +81,9 @@ export function cardinal(n: number, g: Gender = "ett"): string {
 }
 
 /** 1100-1999 read as hundreds ("sjuttonhundraåttionio"), everything else as a cardinal. */
-export function yearOrCardinal(n: number, g: Gender = "ett"): string {
+export function yearOrCardinal(n: number, g: Gender = "ett", year = false): string {
+  // O103 Q2 (Oscar): as a year 1001-1099 is "tiohundrasextiosex" (an amount stays "tusen sextiosex")
+  if (year && Number.isInteger(n) && n >= 1001 && n <= 1099) return "tiohundra" + below100(n % 100, "ett");
   if (Number.isInteger(n) && n >= 1100 && n <= 1999) {
     const r = n % 100;
     return below100(Math.floor(n / 100), "ett") + "hundra" + (r ? below100(r, "ett") : "");
@@ -310,7 +312,7 @@ export function numbersToSpeech(text: string): string {
       const mi = Number(mo) - 1, di = Number(d);
       return mi < 0 || mi > 11 || di < 1 || di > 31
         ? m
-        : `den ${ordinal(di)} ${MONTHS[mi]} ${yearOrCardinal(Number(y))}`;
+        : `den ${ordinal(di)} ${MONTHS[mi]} ${yearOrCardinal(Number(y), "ett", true)}`;
     },
   );
   // clock times 14:30
@@ -359,7 +361,8 @@ export function numbersToSpeech(text: string): string {
       if (unitKey === "kr" && dec !== undefined && dec.length <= 2) return kronorOre(n, dec);
       let words: string;
       if (dec !== undefined) words = yearOrCardinal(n, "ett") + " komma " + readDecimals(dec);
-      else words = yearOrCardinal(n, gender);
+      // O103 Q2: after "år"/"året" or a month name the number is a year
+      else words = yearOrCardinal(n, gender, !unit && /(?:(?<![\p{L}])år(?:et)?|januari|februari|mars|april|maj|juni|juli|augusti|september|oktober|november|december)\s+$/iu.test(whole.slice(Math.max(0, off - 20), off)));
       if (unit) {
         const one = dec === undefined && n === 1;
         words += " " + (one ? unit.one : unit.many);

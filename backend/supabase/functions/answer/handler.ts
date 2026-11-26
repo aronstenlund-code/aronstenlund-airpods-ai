@@ -90,10 +90,10 @@ import {
   needsText,
   mustSearch,
   needsWeb,
-  TEXT_PROMPT,
+  textPrompt,
   textTools,
   ORDINAL_NOTE,
-  WEB_PROMPT,
+  webPrompt,
   WEB_SEARCH_USD,
   WEB_UNAVAILABLE_NOTE,
   webTools,
@@ -1575,7 +1575,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         ? systemPromptFor(answerType, tutor)
         : SYSTEM_PROMPT) +
         (relationTag ? RELATION_RULE : "") + (noSummary ? "" : SUMMARY_RULE) +
-        (webOn ? WEB_PROMPT : "") + (textReq ? TEXT_PROMPT : "") + (askSearch ? SEARCH_MARK_RULE : "") +
+        (webOn ? webPrompt(body.language) : "") + (textReq ? textPrompt(body.language) : "") + (askSearch ? SEARCH_MARK_RULE : "") +
         (twoLevel ? TWO_LEVEL_RULE : "") + (phoneTools0 ? PHONE_TOOLS_RULE : "") + (spotifyOn ? SPOTIFY_RULE : "") +
         (!plan && (tutor || quiz) && !noSummary ? QUIZ_KEY_RULE : "") +
         // K42.1 (D128): the assistant has a name; it never says it has none
@@ -2158,7 +2158,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 // K16.1: the model is not sure: search once (within the web caps), or say it does not know
                 const wl = await webLimit(user.id);
                 if (wl.allowed) {
-                  retrySystem = systemPrompt.replace(SEARCH_MARK_RULE, "") + WEB_PROMPT;
+                  retrySystem = systemPrompt.replace(SEARCH_MARK_RULE, "") + webPrompt(body.language);
                   retryTools = webTools({ search: true, fetch: false });
                   searched = true;
                   note = "Search the web for this question and answer from the sources.";

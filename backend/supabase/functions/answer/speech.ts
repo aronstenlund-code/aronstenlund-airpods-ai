@@ -223,8 +223,9 @@ export class SourceTap {
   private buf = "";
   private inSource = false;
   private src = "";
-  constructor(private readonly enabled: boolean) {}
-  private static readonly RE = /(?:^|\n|\s)källa\s*:/i;
+  /** O103 Q1: the source is said in the answer's language ("Source: BBC Good Food." in English). */
+  constructor(private readonly enabled: boolean, private readonly lang: string = "sv") {}
+  private static readonly RE = /(?:^|\n|\s)(?:källa|source)\s*:/i;
 
   push(text: string): string {
     if (!this.enabled) return text;
@@ -245,8 +246,8 @@ export class SourceTap {
     // hold back a tail that may still become "källa:"
     const tail = this.buf.slice(-8).toLowerCase();
     let hold = 0;
-    for (let k = Math.min(6, tail.length); k > 0; k--) {
-      if ("källa:".startsWith(tail.slice(-k))) {
+    for (let k = Math.min(7, tail.length); k > 0; k--) {
+      if ("källa:".startsWith(tail.slice(-k)) || "source:".startsWith(tail.slice(-k))) {
         hold = k;
         break;
       }
@@ -267,7 +268,7 @@ export class SourceTap {
     const d = /([a-z0-9][a-z0-9-]*(?:\.[a-z0-9-]+)*\.[a-z]{2,})/i.exec(this.src)?.[1] ?? null;
     this.source = d ? d.toLowerCase().replace(/^www\./, "") : null;
     this.inSource = false;
-    return this.source ? ` Källa: ${spokenSource(this.source)}.` : "";
+    return this.source ? ` ${this.lang === "en" ? "Source" : "Källa"}: ${spokenSource(this.source)}.` : "";
   }
 }
 
@@ -1349,8 +1350,9 @@ export class AnswerPost {
     this.social = new MetaGate(opts.socialLine === true, () => false, socialLineSentence);
     this.depends = new MetaGate(opts.web === true, () => false, dependsLead); // K106 (O88 N2)
     this.quizOnly = opts.quizOnly === true;
-    this.src = new SourceTap(opts.web === true || opts.source === true);
-    this.en = new EnglishGate(opts.web === true || opts.dropEnglish === true, opts.dropEnglish === true);
+    this.src = new SourceTap(opts.web === true || opts.source === true, opts.language === "en" ? "en" : "sv");
+    // O103 Q1: English sentences are dropped from a web answer only when the answer is Swedish
+    this.en = new EnglishGate((opts.web === true && opts.language !== "en") || opts.dropEnglish === true, opts.dropEnglish === true);
   }
 
   /** K11: text the web search returned (citations), used to check a verbatim quote. */
@@ -1469,7 +1471,7 @@ ${text}`;
     const out = this.cap(this.nums.push(rest) + this.nums.finish());
     // D72 live test: when every answer sentence was filtered, a lone "Källa: X." is not an answer
     // (nothing is spoken, so the handler reports empty_answer and the app falls back).
-    if (!this.spoke && /^\s*Källa: [^.]*\.\s*$/.test(out)) return "";
+    if (!this.spoke && /^\s*(?:Källa|Source): [^.]*\.\s*$/.test(out)) return "";
     if (out.trim()) this.spoke = true;
     return out;
   }

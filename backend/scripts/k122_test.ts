@@ -113,3 +113,32 @@ Deno.test("O102 P5: the model's [[KRIS]] after a relation tag or [[VET]] is the 
     assertEquals(r.turns[0].said, CRISIS_SELF, first);
   }
 });
+
+Deno.test("O103 Q1: an English web question gets an English web prompt, the English answer is said and its source in English", async () => {
+  const body = { fragment: "how do I make pancakes", mode: "push_to_talk", language: "en", lang: "en", context: {} };
+  const first = await runCase({ id: "Q1", endpoint: "answer", body, headers: { "x-earmind-lang": "en" } }, () => null);
+  const sys = JSON.stringify(first.prompts.map((p) => (p.anthropic_request as { system: unknown }).system));
+  assert(!sys.includes("Answer ONLY in Swedish"), "never the Swedish-only rule for English");
+  assert(!sys.includes("Always answer in Swedish"), "nor for texts");
+  const text = "Whisk 2.5 dl flour with 6 dl milk and 3 eggs, then fry thin pancakes in butter. källa: bbcgoodfood.com";
+  // RQ3 live path: the model says [[SÖK]] and the search turn gets the web rules (English ones now)
+  const r = await runCase({ id: "Q1", endpoint: "answer", body, headers: { "x-earmind-lang": "en" } }, map({ "Q1.t1.c1": { text: "[[SÖK]]" }, "Q1.t1.c2": { text } }));
+  const webSys = JSON.stringify((r.prompts[1].anthropic_request as { system: unknown }).system);
+  assert(webSys.includes("WEB: you have web tools") && webSys.includes("Answer ONLY in English") && !webSys.includes("ONLY in Swedish"));
+  const said = r.turns[0]?.said ?? "";
+  assert(said.startsWith("Whisk 2.5 dl flour"), said);
+  assert(!/Källa|källa/.test(said) && / Source: Bbcgoodfood\.$/.test(said), said);
+  assertEquals(r.turns[0].done?.source, "bbcgoodfood.com");
+});
+
+Deno.test("O103 Q4: the web retry note keeps its <domain> placeholder readable", async () => {
+  const { noteText } = await import("../supabase/functions/answer/prompt.ts");
+  assert(noteText('end with "källa: <domain>".').includes("‹domain›"));
+});
+
+Deno.test("O103 tool: the replay has index.ts's language wrapper (an error in English with x-earmind-lang en)", async () => {
+  const r = await runCase({ id: "E1", endpoint: "answer", body: { fragment: "what is the capital of france", mode: "push_to_talk", language: "en", context: {} }, headers: { "x-earmind-lang": "en" } },
+    map({ "E1.t1.c1": { error: { status: 402, message: "Your credit balance is too low" } } }));
+  const msg = String(r.turns[0].error?.message ?? "");
+  assert(msg && !/[åäö]/i.test(msg), msg);
+});
