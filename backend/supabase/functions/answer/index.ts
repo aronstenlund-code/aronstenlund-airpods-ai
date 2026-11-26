@@ -71,6 +71,8 @@ const handler = createHandler({
     demo: demoCapsFromEnv(env),
     ...DEFAULT_CONFIG,
     directModes: env.get("DIRECT_MODES") !== "0",
+    // K123: "1" = wait for the shared rate limit before a code answer and the model's first text (the old way)
+    blockOnSharedLimit: env.get("BLOCK_ON_SHARED_LIMIT") === "1",
     confidenceThreshold: Number(
       env.get("CONFIDENCE_THRESHOLD") ?? DEFAULT_CONFIG.confidenceThreshold,
     ),

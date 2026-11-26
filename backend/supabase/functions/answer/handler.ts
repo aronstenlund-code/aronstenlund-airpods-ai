@@ -260,6 +260,8 @@ export interface HandlerConfig {
   demo?: DemoCaps;
   /** D79: app traffic per network (answers/day) and the first-hour allowance of a new session. */
   appGuard?: AppGuard;
+  /** K123: wait for the shared rate limit before a code answer and before the model's first text (the old way). */
+  blockOnSharedLimit?: boolean;
   /** USD per million tokens, for the cost estimate only (prices as stated in the assignment). */
   priceInPerMTok: number;
   priceOutPerMTok: number;
@@ -598,6 +600,19 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         cfg.appGuard ?? DEFAULT_CONFIG.appGuard!,
       );
       const tBody = now() - t0;
+      // K123 (live 2026-11-26: the shared limit's round trip takes 225-770 ms): an answer the code gives itself costs no
+      // model call, so it never waits for it; the local per-minute limiter (checked at the start) stays the gate and the
+      // shared windows are still counted alongside (so the next model answer sees them). blockOnSharedLimit = as before.
+      const codeLimit = (): ReturnType<typeof enforceLimits> => {
+        const p = enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+        if (cfg.blockOnSharedLimit) return p;
+        const bg = p.then((r) => {
+          if (!r.allowed) console.warn("code_answer_over_limit", JSON.stringify({ retry: r.retryAfterSec }));
+        }, () => {});
+        // deno-lint-ignore no-explicit-any
+        (globalThis as any).EdgeRuntime?.waitUntil?.(bg);
+        return Promise.resolve({ allowed: true, retryAfterSec: 0 } as Awaited<ReturnType<typeof enforceLimits>>);
+      };
       const provider = deps.provider;
       if (!provider) {
         throw new HttpError(503, "provider_unconfigured", PROVIDER_DOWN, {
@@ -611,7 +626,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         !demo && (body.mode === "auto" || body.mode === "push_to_talk" || body.mode === "tutor") &&
         detectReport(body.fragment)
       ) {
-        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+        const rl = await codeLimit();
         if (!rl.allowed) {
           throw new HttpError(429, "rate_limited", "Too many requests", {
             fallback: true,
@@ -894,7 +909,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         : null;
       const memoryFact = memoryOnly ?? (ruleHit ? `Regel: ${ruleHit.rule}` : null);
       if (memoryFact) {
-        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+        const rl = await codeLimit();
         if (!rl.allowed) {
           throw new HttpError(429, "rate_limited", "Too many requests", {
             fallback: true,
@@ -999,7 +1014,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           console.log(JSON.stringify({ event: "saved_check", n: cands.length, top: Number(cands[0].score.toFixed(2)), hit: k !== null }));
         }
         if (pick) {
-          const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+          const rl = await codeLimit();
           if (!rl.allowed) {
             throw new HttpError(429, "rate_limited", "Too many requests", { fallback: true, retryAfterSec: rl.retryAfterSec });
           }
@@ -1145,7 +1160,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
           : null)
         : null;
       if (early) {
-        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+        const rl = await codeLimit();
         if (!rl.allowed) {
           throw new HttpError(429, "rate_limited", "Too many requests", { fallback: true, retryAfterSec: rl.retryAfterSec });
         }
@@ -1268,7 +1283,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const localCalc = computed && !plan ? spokenComputed(computed, tutor) : null;
       if (localCalc) {
         const tLim = now();
-        const rl = await enforceLimits(deps.rateLimiter, "answer", user.id, cfg.limits, 1, appExtra);
+        const rl = await codeLimit();
         const calcLimitsMs = now() - tLim; // K123: what the code answer waits for, in done.breakdown
         if (!rl.allowed) {
           throw new HttpError(429, "rate_limited", "Too many requests", {
@@ -1676,7 +1691,24 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       });
       firstP.catch(() => {}); // handled below, or deliberately dropped when the limiter denies
 
-      const rl = await limitsP;
+      // K123: the model's first text is not held back for the shared limit. The call is already started (and paid for)
+      // by then, so whichever comes first decides: the limit first = as before (a no stops the call); the first text
+      // first = the answer goes out and a no from the limit applies from the next request (logged). blockOnSharedLimit
+      // = always wait as before.
+      const raced = cfg.blockOnSharedLimit ? null : await Promise.race([
+        limitsP.then((r) => ({ limits: r }), (e) => ({ limitsError: e })),
+        firstP.then(() => ({ first: true }), () => ({ first: true })),
+      ]);
+      if (raced && "limitsError" in raced) throw raced.limitsError;
+      let rl: Awaited<typeof limitsP>;
+      if (raced && "first" in raced) {
+        rl = { allowed: true, retryAfterSec: 0 } as Awaited<typeof limitsP>;
+        const bg = limitsP.then((r) => {
+          if (!r.allowed) console.warn("answer_over_limit_after_first", JSON.stringify({ retry: r.retryAfterSec }));
+        }, () => {});
+        // deno-lint-ignore no-explicit-any
+        (globalThis as any).EdgeRuntime?.waitUntil?.(bg);
+      } else rl = raced && "limits" in raced ? raced.limits : await limitsP;
       if (!rl.allowed) {
         ac.abort();
         iterator.return?.()?.catch?.(() => {});

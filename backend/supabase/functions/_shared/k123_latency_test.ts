@@ -46,3 +46,36 @@ Deno.test("K123: /exam reads the credits while the rate limit is checked (one da
   assert(started > 0, "the model was started");
   assert(started < 150, `the model started after ${Math.round(started)} ms (two 80 ms waits one after the other = 160)`);
 });
+
+for (const block of [false, true]) Deno.test(`K123: a code answer and the model's first text ${block ? "wait for the shared limit with blockOnSharedLimit" : "never wait for the shared limit (it is counted alongside)"}`, async () => {
+  const { createHandler, DEFAULT_CONFIG } = await import("../answer/handler.ts");
+  const { MemoryRateLimiter } = await import("./ratelimit.ts");
+  const mem = new MemoryRateLimiter();
+  let counted = 0;
+  const slow = {
+    check: async (k: string, l: number, w: number, c?: number) => (await new Promise((r) => setTimeout(r, 300)), counted++, mem.check(k, l, w, c)),
+    checkMany: async (cs: { key: string; limit: number; windowSec: number }[], c?: number) => (await new Promise((r) => setTimeout(r, 300)), counted++, mem.check(cs[0].key, cs[0].limit, cs[0].windowSec, c)),
+  } as unknown as InstanceType<typeof MemoryRateLimiter>;
+  const h = createHandler({
+    authenticate: () => Promise.resolve({ id: "u-k123b", isAnonymous: false }), rateLimiter: slow, localLimiter: new MemoryRateLimiter(),
+    provider: { name: "f", model: "f", stream: () => (async function* () { yield { type: "text" as const, text: "Oslo är huvudstaden." }; })() },
+    recordUsage: () => {}, config: { ...DEFAULT_CONFIG, blockOnSharedLimit: block },
+  });
+  const ask = async (fragment: string) => {
+    const t0 = performance.now();
+    const r = await h(new Request("http://x/answer", { method: "POST", headers: { "content-type": "application/json", "x-forwarded-for": "198.51.100.8" }, body: JSON.stringify({ fragment, mode: "push_to_talk", language: "sv", context: {} }) }));
+    const said = (await r.text()).match(/event: delta\ndata: (.*)/)?.[1] ?? "";
+    return { ms: performance.now() - t0, said };
+  };
+  const calc = await ask("vad är 23 gånger 19");
+  if (block) {
+    assert(calc.ms >= 290, `waited ${Math.round(calc.ms)} ms`);
+    assert((await ask("vad heter Norges huvudstad")).ms >= 290);
+    return;
+  }
+  assert(calc.ms < 280 && calc.said.includes("fyrahundratrettiosju"), `${Math.round(calc.ms)} ms ${calc.said}`);
+  const model = await ask("vad heter Norges huvudstad");
+  assert(model.ms < 280 && model.said.includes("Oslo"), `${Math.round(model.ms)} ms ${model.said}`);
+  await new Promise((r) => setTimeout(r, 350));
+  assert(counted >= 2, `both still counted in the shared limit (${counted})`);
+});
