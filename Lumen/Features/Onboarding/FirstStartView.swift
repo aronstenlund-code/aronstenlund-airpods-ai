@@ -1,19 +1,19 @@
 import SwiftUI
 import UIKit
 
-/// A94 (Kelly Ke55, `docs/design/forsta-starten.md`): from the download to the first question in the ear, at most
-/// three screens before the camera. Välkommen (the repetition mode's consent: material is sent once to make the
-/// questions and the sound) → Nytt prov, where Fota sidor opens the document camera. Nothing here listens: the modes
-/// that listen are BETA under Fler lägen and ask for the listening consent (`ConsentView`) and the microphone the
-/// first time one is started. Fortsätt never grants the listening consent (CLAUDE.md guardrails).
+/// A166 (D264): from a new install to the first answer on the shortest way, three presses. Välkommen (A94, Kelly
+/// Ke55: the repetition mode's consent, material is sent once to make the questions and the sound) → the listening
+/// consent, whole (`ConsentView`, the same page a listening mode shows), where the one button starts EarMind → iOS's
+/// own question about the microphone → Lyssnar, where the question is asked aloud. Fortsätt on Välkommen never grants
+/// the listening consent, and "Senare" on the consent leaves for Start with nothing listening (CLAUDE.md guardrails).
+/// What can wait is on Start: Nytt prov with its choices, and the question about sharing the history
+/// (`ListeningModel.sharingQuestionIsFree`).
 struct FirstStartView: View {
-    enum Step { case welcome, newDrill }
-
     let container: AppContainer
     /// Finished the old first start: only Välkommen, once (Ke55's consent point 3), then Start.
     var returning = false
     let onDone: () -> Void
-    @State private var step: Step = .welcome
+    @State private var step: FirstStartStep = .welcome
 
     static let doneKey = "design.firstStartDone"
 
@@ -23,14 +23,19 @@ struct FirstStartView: View {
             case .welcome:
                 WelcomeView {
                     container.consent.grantWelcome()
-                    if returning || container.listening.repetition == nil { finish() } else { step = .newDrill }
-                }
-            case .newDrill:
-                if let repetition = container.listening.repetition {
-                    NewDrillView(model: repetition, onLater: { finish() }) { drill in
-                        repetition.openDrill = drill.id // Start opens the new exam's question list
+                    if let next = FirstStartPath.step(after: .welcome, returning: returning,
+                                                      listeningConsented: container.consent.isGranted) {
+                        step = next
+                    } else {
                         finish()
                     }
+                }
+            case .listeningConsent:
+                FirstListeningConsentView {
+                    finish() // Start is under Lyssnar, with the indicator line, from the first moment
+                    Task { await container.listening.firstStartConsentGiven() }
+                } onLater: {
+                    finish()
                 }
             }
         }
@@ -42,6 +47,44 @@ struct FirstStartView: View {
         container.listening.openingSheetShown = true
         UserDefaults.standard.set(true, forKey: Self.doneKey)
         onDone()
+    }
+}
+
+/// A166: the first start's screens, in order.
+enum FirstStartStep: Equatable, Sendable {
+    /// Välkommen: what the app is, and the repetition mode's consent.
+    case welcome
+    /// The listening consent, whole, with the button that starts EarMind.
+    case listeningConsent
+}
+
+/// A166: what comes after a step of the first start. Nil is Start (or Lyssnar, when the consent's button was pressed).
+enum FirstStartPath {
+    static func step(after step: FirstStartStep, returning: Bool, listeningConsented: Bool) -> FirstStartStep? {
+        switch step {
+        case .welcome: return returning || listeningConsented ? nil : .listeningConsent
+        case .listeningConsent: return nil
+        }
+    }
+}
+
+/// A166: the first start's second and last screen. The listening consent as it is everywhere (`ConsentView`): the one
+/// button, "Jag förstår, starta EarMind", gives the consent and starts the listening; iOS then asks about the
+/// microphone. "Senare" is for the one who does not want it to listen now: Start, and nothing listens.
+struct FirstListeningConsentView: View {
+    let onAccept: () -> Void
+    let onLater: () -> Void
+
+    var body: some View {
+        NavigationStack {
+            ConsentView(mode: .onboarding(onAccept: onAccept))
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button(String(localized: "Senare")) { onLater() }
+                            .accessibilityIdentifier("firstStart.later")
+                    }
+                }
+        }
     }
 }
 

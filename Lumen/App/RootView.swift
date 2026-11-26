@@ -8,7 +8,9 @@ struct RootView: View {
 
     private var asksAboutSharing: Binding<Bool> {
         // A94: the history question is about listening; it waits until the listening consent is given.
-        let asking = !container.share.hasAsked && container.consent.isGranted // read here, in `body`
+        // A166: and until the first listening is over, so nothing stands between the consent and the first answer.
+        let asking = !container.share.hasAsked && container.consent.isGranted
+            && container.listening.sharingQuestionIsFree // read here, in `body`
         return Binding(get: { asking }, set: { _ in })
     }
 
@@ -43,7 +45,8 @@ struct RootView: View {
     @ViewBuilder
     private var main: some View {
         if !firstStartDone || !container.consent.isWelcomeGranted {
-            // A94 (Kelly Ke55): Välkommen → Nytt prov. Someone who finished the old first start sees Välkommen once.
+            // A166: Välkommen → the listening consent → Lyssnar. Someone who finished the old first start sees
+            // Välkommen once (A94, Kelly Ke55).
             FirstStartView(container: container, returning: firstStartDone) { firstStartDone = true }
         } else {
             // D86: the indicator line is part of the main screen (above Start; Lyssnar is the indicator itself).

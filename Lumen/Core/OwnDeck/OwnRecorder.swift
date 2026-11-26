@@ -17,12 +17,19 @@ protocol OwnRecording: AnyObject {
     var levelDBFS: Double? { get }
     /// The recording reached its limit and stopped by itself.
     var onLimit: (@MainActor () -> Void)? { get set }
+    /// The kind of file it writes (`m4a`), so the file is named for what is in it.
+    var fileExtension: String { get }
     /// Asks for the microphone the first time, then records to `url`.
     func start(to url: URL) async throws(OwnRecordingError)
     /// Stops and keeps the file. The seconds recorded; nil when nothing was being recorded.
     func stop() -> TimeInterval?
     /// Stops and deletes the file.
     func cancel()
+}
+
+extension OwnRecording {
+    /// The phone's recorder writes AAC in an m4a file; another recorder says its own.
+    var fileExtension: String { "m4a" }
 }
 
 /// The phone's recorder. The AirPods microphone when AirPods are connected, otherwise the phone's own: the session
@@ -35,6 +42,7 @@ final class OwnRecorder: OwnRecording {
     private(set) var elapsed: TimeInterval = 0
     private(set) var levelDBFS: Double?
     @ObservationIgnored var onLimit: (@MainActor () -> Void)?
+    let fileExtension = "m4a"
     @ObservationIgnored private let limit: TimeInterval
     @ObservationIgnored private var recorder: AVAudioRecorder?
     @ObservationIgnored private var ticker: Task<Void, Never>?
@@ -105,3 +113,49 @@ final class OwnRecorder: OwnRecording {
         try? AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
     }
 }
+
+#if LUMEN_TESTMODE
+/// T58 (Toby): a pretend recorder for the Simulator, which has no microphone in CI. `-FakeOwnRecorder 1` at launch:
+/// "recording" writes two seconds of silence at once, without asking for the microphone, and stopping keeps it as
+/// usual, so create → record → practise can be tried. Only in the test builds (Debug and Beta), never in Release.
+@MainActor
+@Observable
+final class PretendOwnRecorder: OwnRecording {
+    static let argument = "FakeOwnRecorder"
+    nonisolated static let seconds: TimeInterval = 2
+
+    static func isRequested(_ defaults: UserDefaults = .standard) -> Bool {
+        defaults.bool(forKey: argument)
+    }
+
+    private(set) var elapsed: TimeInterval = 0
+    private(set) var levelDBFS: Double?
+    @ObservationIgnored var onLimit: (@MainActor () -> Void)?
+    let fileExtension = "wav"
+    @ObservationIgnored private var target: URL?
+
+    func start(to url: URL) async throws(OwnRecordingError) {
+        do {
+            try WAVWriter.write(samples: [Int16](repeating: 0, count: Int(Self.seconds) * 16_000), sampleRate: 16_000, to: url)
+        } catch {
+            throw .failed(String(describing: error))
+        }
+        target = url
+        elapsed = Self.seconds
+        levelDBFS = -30
+    }
+
+    func stop() -> TimeInterval? {
+        guard target != nil else { return nil }
+        target = nil
+        levelDBFS = nil
+        return Self.seconds
+    }
+
+    func cancel() {
+        if let target { try? FileManager.default.removeItem(at: target) }
+        target = nil
+        levelDBFS = nil
+    }
+}
+#endif

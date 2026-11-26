@@ -148,7 +148,7 @@ final class OwnDeckModel {
         if recording != nil { stopRecording() }
         onWillRecord?()
         problem = nil
-        let url = store.newRecordingURL()
+        let url = store.newRecordingURL(fileExtension: recorder.fileExtension)
         do throws(OwnRecordingError) {
             try await recorder.start(to: url)
         } catch {
