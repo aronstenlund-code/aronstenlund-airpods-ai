@@ -40,7 +40,7 @@
      "type": "disabled"
     }
    },
-   "reply_hint": "As the system prompt asks (exam, help and the judge read a JSON object from the reply)."
+   "reply_hint": "Plain text: only the shortened text, as the system prompt says."
   }
  ],
  "turns": [

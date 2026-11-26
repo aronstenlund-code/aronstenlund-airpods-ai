@@ -31,7 +31,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>vilka nummer ska jag ringa vid nödläge och vid sjukdom</fragment>"
+            "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:38 (svensk tid, Europe/Stockholm)</now>\n<fragment>vilka nummer ska jag ringa vid nödläge och vid sjukdom</fragment>"
           }
         ],
         "output_config": {
@@ -41,7 +41,7 @@
           "type": "disabled"
         }
       },
-      "reply_hint": "Direct mode: only the spoken answer text (no JSON line – it would be read aloud)."
+      "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
     }
   ],
   "turns": [
@@ -61,8 +61,8 @@
           "confidence": 1,
           "input_tokens": 3745,
           "output_tokens": 75,
-          "ttft_ms": 284,
-          "total_ms": 294,
+          "ttft_ms": 285,
+          "total_ms": 295,
           "est_cost_usd": 0.000412,
           "status": "ok",
           "category": "övrigt",
@@ -135,16 +135,16 @@
           "data": {
             "answered": true,
             "timing": {
-              "meta_ms": 264,
-              "ttft_ms": 284,
-              "llm_first_token_ms": 261,
-              "total_ms": 293
+              "meta_ms": 265,
+              "ttft_ms": 285,
+              "llm_first_token_ms": 263,
+              "total_ms": 294
             },
             "breakdown": {
               "auth_ms": 0,
-              "body_ms": 166,
-              "limits_ms": 260,
-              "llm_first_chunk_ms": 261,
+              "body_ms": 168,
+              "limits_ms": 262,
+              "llm_first_chunk_ms": 263,
               "direct": true,
               "cold": true,
               "answer_type": "fact",
@@ -181,16 +181,16 @@
       "done": {
         "answered": true,
         "timing": {
-          "meta_ms": 264,
-          "ttft_ms": 284,
-          "llm_first_token_ms": 261,
-          "total_ms": 293
+          "meta_ms": 265,
+          "ttft_ms": 285,
+          "llm_first_token_ms": 263,
+          "total_ms": 294
         },
         "breakdown": {
           "auth_ms": 0,
-          "body_ms": 166,
-          "limits_ms": 260,
-          "llm_first_chunk_ms": 261,
+          "body_ms": 168,
+          "limits_ms": 262,
+          "llm_first_chunk_ms": 263,
           "direct": true,
           "cold": true,
           "answer_type": "fact",

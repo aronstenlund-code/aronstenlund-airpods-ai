@@ -31,7 +31,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>recept på pannkakor</fragment>"
+      "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:38 (svensk tid, Europe/Stockholm)</now>\n<fragment>recept på pannkakor</fragment>"
      }
     ],
     "output_config": {
@@ -56,7 +56,7 @@
      }
     ]
    },
-   "reply_hint": "Direct mode: only the spoken answer text (no JSON line – it would be read aloud). Web tools are on: plain text is read as an answer given without searching; a search needs {\"events\": [...]} with server_tool_use blocks."
+   "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks. Web tools are on: plain text is read as an answer given without searching; a search needs {\"events\": [...]} with server_tool_use blocks."
   }
  ],
  "turns": [
@@ -76,8 +76,8 @@
      "confidence": 1,
      "input_tokens": 3000,
      "output_tokens": 90,
-     "ttft_ms": 353,
-     "total_ms": 354,
+     "ttft_ms": 304,
+     "total_ms": 305,
      "est_cost_usd": 0.000345,
      "status": "ok",
      "category": "webbsökning",
@@ -101,7 +101,7 @@
      "event": "searching",
      "data": {
       "tool": "web_search",
-      "ms": 309
+      "ms": 263
      }
     },
     {
@@ -115,16 +115,16 @@
      "data": {
       "answered": true,
       "timing": {
-       "meta_ms": 309,
-       "ttft_ms": 353,
-       "llm_first_token_ms": 306,
-       "total_ms": 353
+       "meta_ms": 262,
+       "ttft_ms": 304,
+       "llm_first_token_ms": 260,
+       "total_ms": 305
       },
       "breakdown": {
        "auth_ms": 0,
-       "body_ms": 198,
-       "limits_ms": 305,
-       "llm_first_chunk_ms": 306,
+       "body_ms": 169,
+       "limits_ms": 259,
+       "llm_first_chunk_ms": 260,
        "direct": true,
        "cold": true,
        "answer_type": "fact",
@@ -161,16 +161,16 @@
    "done": {
     "answered": true,
     "timing": {
-     "meta_ms": 309,
-     "ttft_ms": 353,
-     "llm_first_token_ms": 306,
-     "total_ms": 353
+     "meta_ms": 262,
+     "ttft_ms": 304,
+     "llm_first_token_ms": 260,
+     "total_ms": 305
     },
     "breakdown": {
      "auth_ms": 0,
-     "body_ms": 198,
-     "limits_ms": 305,
-     "llm_first_chunk_ms": 306,
+     "body_ms": 169,
+     "limits_ms": 259,
+     "llm_first_chunk_ms": 260,
      "direct": true,
      "cold": true,
      "answer_type": "fact",

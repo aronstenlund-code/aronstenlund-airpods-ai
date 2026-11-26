@@ -1,0 +1,88 @@
+{
+  "id": "PG1",
+  "status": "done",
+  "prompts": [
+    {
+      "stem": "PG1.t1.c1",
+      "case": "PG1",
+      "turn": 1,
+      "call": 1,
+      "endpoint": "provlage-eval",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "grade",
+        "judge": "sonnet",
+        "case": {
+          "grade": "Gymnasiet år 1",
+          "subject": "Biologi",
+          "profile": "Förklaringar: korta. Kontrollfrågor: inga.",
+          "context": [],
+          "q": "vad gör mitokondrien",
+          "expect": "cellandning, ATP"
+        },
+        "answer": "Mitokondrien är cellens kraftverk. Där sker cellandningen, som gör ATP av socker och syre. På provet, skriv att mitokondrien bildar ATP genom cellandning."
+      },
+      "anthropic_request": {
+        "model": "claude-sonnet-5-5",
+        "max_tokens": 1200,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You grade one answer from a spoken study assistant for Swedish school students (\"Provläge\"). The student is preparing for an exam and asked something out loud; the answer is read aloud to them. You get <case> (grade, subject, profile, earlier turns, what the student said, and optionally what a good answer should contain) and <answer>.\nScore each criterion 1 (yes) or 0 (no):\n- correct: every fact and every example in the answer is right and it answers what the student most plausibly meant (a misheard or split term read as the right subject term counts as right; a wrong subject is 0; silence when a term was clearly meant is 0).\n- a_level: the level fits the top grade A for exactly that grade and course in Sweden (Skolverket): the concepts and reasoning an A answer needs, not far above and not below.\n- sufficient: a student of that grade would be helped by this answer alone: it gives the core point and the why or how, so they would NOT need to repeat themselves, ask the question again or ask a follow-up to understand what they asked. A follow-up turn (\"och cellandning då?\", \"varför då?\") must be read from the earlier turns. Judge what a student needs to understand the question, not whether every item of \"Bör innehålla\" is there.\n- covers: the answer contains the points listed under \"Bör innehålla\" (1 when nothing is listed).\n- natural: it sounds natural when heard: plain spoken Swedish with correct grammar (gender, word forms), no lists or symbols, no meta talk about the question, the recording, the interpretation or grades, no unanswerable or odd question. For a language subject only the terms and example sentences may be in the target language; an answer in the foreign language or a Swedish word inside a foreign sentence is 0. One short closing sentence that starts with \"På provet\" and says what to write is natural (it is asked for).\nReturn ONLY a JSON object: {\"correct\": 0|1, \"a_level\": 0|1, \"sufficient\": 0|1, \"covers\": 0|1, \"natural\": 0|1, \"note\": \"<at most 25 words on the main problem, or empty>\"}.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<case>\nÅrskurs: Gymnasiet år 1\nÄmne: Biologi\nProfil: Förklaringar: korta. Kontrollfrågor: inga.\nTidigare turer:\n(inga)\nEleven sa: vad gör mitokondrien\nBör innehålla: cellandning, ATP\n</case>\n<answer>Mitokondrien är cellens kraftverk. Där sker cellandningen, som gör ATP av socker och syre. På provet, skriv att mitokondrien bildar ATP genom cellandning.</answer>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        }
+      },
+      "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
+    }
+  ],
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "provlage-eval",
+      "http_status": 200,
+      "usage": [],
+      "credits": [],
+      "json": {
+        "scores": {
+          "correct": 1,
+          "a_level": 0,
+          "sufficient": 1,
+          "covers": 1,
+          "natural": 1,
+          "length_ok": 1,
+          "closing_ok": 1,
+          "level_ok": 1,
+          "lang_ok": 1
+        },
+        "note": "För tunt för A i Biologi 1: saknar att koldioxid och vatten bildas och vad ATP används till i cellen.",
+        "parsed": true,
+        "rubric": 2,
+        "words": 23,
+        "sentences": 3,
+        "empty": 0,
+        "first_answer_suffices": 1,
+        "strict": 1,
+        "judge": "claude-sonnet-5-5",
+        "usage": {
+          "input_tokens": 663,
+          "output_tokens": 53,
+          "est_cost_usd": 0.001856
+        }
+      }
+    }
+  ],
+  "blocked": []
+}

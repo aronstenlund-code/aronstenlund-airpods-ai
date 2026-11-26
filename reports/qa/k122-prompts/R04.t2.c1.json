@@ -34,7 +34,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<recent_qa>\nQ: vad kan jag laga med kyckling och kokosmjölk\nA: Gör en kycklingcurry: stek femhundra gram strimlad kyckling och en hackad gul lök i olja, rör ner en matsked currypulver och häll på fyra deciliter kokosmjölk. Låt sjuda i femton minuter, smaka av med salt och servera med ris.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>vad kan jag laga med kyckling och kokosmjölk</active_topic>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:13 (svensk tid, Europe/Stockholm)</now>\n<fragment>utan curry</fragment>"
+        "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<recent_qa>\nQ: vad kan jag laga med kyckling och kokosmjölk\nA: Gör en kycklingcurry: stek femhundra gram strimlad kyckling och en hackad gul lök i olja, rör ner en matsked currypulver och häll på fyra deciliter kokosmjölk. Låt sjuda i femton minuter, smaka av med salt och servera med ris.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>vad kan jag laga med kyckling och kokosmjölk</active_topic>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:38 (svensk tid, Europe/Stockholm)</now>\n<fragment>utan curry</fragment>"
       }
     ],
     "output_config": {

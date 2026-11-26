@@ -31,7 +31,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<language>en</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>what is photosynthesis</fragment>"
+            "content": "<language>en</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:38 (svensk tid, Europe/Stockholm)</now>\n<fragment>what is photosynthesis</fragment>"
           }
         ],
         "output_config": {
@@ -41,7 +41,7 @@
           "type": "disabled"
         }
       },
-      "reply_hint": "Direct mode: only the spoken answer text (no JSON line – it would be read aloud)."
+      "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
     }
   ],
   "turns": [
@@ -62,7 +62,7 @@
           "input_tokens": null,
           "output_tokens": null,
           "ttft_ms": null,
-          "total_ms": 267,
+          "total_ms": 260,
           "est_cost_usd": null,
           "status": "provider_error",
           "category": "övrigt",
