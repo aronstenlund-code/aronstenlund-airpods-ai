@@ -6,8 +6,15 @@ export function supabaseUsageSink(db: RestDb) {
     const p = db.insert("answer_usage", rec).catch((e) => {
       console.error("usage_insert_failed", e instanceof Error ? e.message : String(e));
     });
+    // K123: on the platform the row is written in the background (waitUntil keeps the isolate alive for it), so no
+    // answer waits for the insert; without EdgeRuntime (local dev) the caller still waits as before
     // deno-lint-ignore no-explicit-any
-    (globalThis as any).EdgeRuntime?.waitUntil?.(p);
+    const wu = (globalThis as any).EdgeRuntime?.waitUntil;
+    if (typeof wu === "function") {
+      // deno-lint-ignore no-explicit-any
+      (globalThis as any).EdgeRuntime.waitUntil(p);
+      return Promise.resolve();
+    }
     return p;
   };
 }

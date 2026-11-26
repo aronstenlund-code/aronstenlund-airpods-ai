@@ -423,6 +423,9 @@ export function createExamHandler(deps: ExamDeps) {
         newUserAgeSec: 0,
         newUserPerHour: 0,
       });
+      // K123: the credits are read while the limit is checked (both are database round trips before the model)
+      const quotaP = (action === "drill" || action === "drill_answers" || action === "read") && deps.quota ? deps.quota(user.id) : null;
+      quotaP?.catch(() => {}); // a refused limit never reads it; the error, if any, is thrown below where it is used
       const rl = await enforceLimits(deps.rateLimiter, "exam", user.id, cfg.limits, drill ? DRILL_WEIGHT[action] ?? 4 : 1, extra);
       if (!rl.allowed) {
         throw new HttpError(429, "rate_limited", "För många försök just nu. Vänta en liten stund och försök igen.", {
@@ -437,8 +440,8 @@ export function createExamHandler(deps: ExamDeps) {
         // K90 (D213): the quota is credits (characters of new audio); none left = say so before any work. The number
         // of questions is not capped by it (what the audio costs is told at save: cost)
         let quota: { unit: "chars"; used: number; limit: number; left: number; remaining: number; per: "month"; resets: string; unlimited?: boolean } | null = null;
-        if ((action === "drill" || action === "drill_answers" || action === "read") && deps.quota) {
-          const q = await deps.quota(user.id);
+        if (quotaP) {
+          const q = await quotaP;
           const left = Math.max(0, q.lim - q.used);
           quota = { unit: "chars", used: q.used, limit: q.lim, left, remaining: left, per: "month", resets: monthResets(Date.now()), ...(q.unlimited ? { unlimited: true } : {}), ...(q.wallet ? (q.wallet as Record<string, unknown>) : {}) };
           if (left <= 0) {
