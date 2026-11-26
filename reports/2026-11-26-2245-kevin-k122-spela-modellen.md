@@ -79,6 +79,23 @@ Allt nedan är **verifierat i test** (`backend/scripts/k122_test.ts` 8/8, hela s
   - Kellys `readOffer` i `site/index.html` läser redan `launch_offer.ends_at`, så inget behöver ändras.
   - Live: **verifierat live 2/2** (kevin-live körning 99, 21:34 UTC). Utan nyckel och med bara Origin earmind.vercel.app blev svaret 200, `access-control-allow-origin: https://earmind.vercel.app` och `{"launch_offer":null}`. Ett annat origin fick inget allow-origin.
 
+## Tobys T24/T28 (kom in 22:55) – förslag, inte gjort
+
+Det här är verifierat i kod:
+- `/exam` hoppar över kostnadsuppskattningen bara för testtrafik från CI (K109): testhuvudet och GitHubs IP-intervall, alltså `fromCi`.
+- Simulatorn kör på en macOS-runner. Untested assumption: GitHub publicerar inte macOS-runnernas IP-adresser i `api.github.com/meta`, så trafiken räknas inte som CI. Ett nytt konto har 1,5k krediter, och tre frågor beräknas kosta 2,0k. Svaret blir därför 402.
+- Vid spara drar `/drill` dessutom krediter också för testljud, som i testläge är tyst och gratis.
+
+Jag har inte släppt testhuvudet ensamt förbi spärren. Vem som helst kan skicka huvudet, och då kan vem som helst göra prov med Sonnet utan krediter. I värsta fall blir det inom provets tak, 8 000 per dygn, cirka 160 USD per dygn (untested assumption).
+
+**Förslag till Deangelo, välj ett:**
+- **(a) Rekommenderas.** En hemlig QA-token, som `VOICE_LAB_REAL_AUDIO_TOKEN`.
+  - Aron lägger samma slumpade värde som Supabase-secret `QA_TOKEN` och GitHub-secret `QA_TOKEN`.
+  - Tobys nattflöde ger värdet till Debug-appen som startvärde (Angela: appen skickar det i `x-earmind-qa`, bara i Debug och UI-tester).
+  - Servern behandlar då anropet som CI-testtrafik. Uppskattningen hoppas över, och spara i testläge kostar 0 krediter eftersom ljudet är tyst.
+  - Ingen annan kan förfalska det.
+- **(b)** Bara testkonton med testhuvud får provets kostnad och spara gratis. Det är snabbt, men går att förfalska enligt ovan.
+
 ## Nästa
 
 - **Oscar:** O102 (efter O101 och omtestet av O100).
