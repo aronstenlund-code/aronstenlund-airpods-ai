@@ -91,16 +91,18 @@ tok, _, _ = signup_plain()
 BODY = {"action": "transcribe"}  # no audio: never reaches Scribe
 rows = {}
 s, j, _ = raw("POST", "/functions/v1/provlage-eval", BODY, {**IPHONE, "authorization": "Bearer " + tok, "x-earmind-test": "oscar-qa"})
-rows["CI + testhuvud"] = [s, code(j)]
+rows["CI + testhuvud"] = [s, code(j) or str(j)[:80]]
 for name, h in (("cf-connecting-ip 203.0.113.7", {"cf-connecting-ip": "203.0.113.7"}),
-                ("x-forwarded-for 203.0.113.7", {"x-forwarded-for": "203.0.113.7"}),
-                ("båda", {"cf-connecting-ip": "203.0.113.7", "x-forwarded-for": "203.0.113.7"})):
+                ("x-real-ip 203.0.113.7", {"x-real-ip": "203.0.113.7"}),
+                ("x-forwarded-for 203.0.113.7", {"x-forwarded-for": "203.0.113.7"})):
     s, j, _ = raw("POST", "/functions/v1/provlage-eval", BODY, {**IPHONE, "authorization": "Bearer " + tok, **h})
-    rows["vanligt anrop, " + name] = [s, code(j)]
-spoof_works = any(v[0] == 403 for k, v in rows.items() if k.startswith("vanligt"))
-check("S1: CI-testtrafik släpps fram (400 utan ljud), aldrig 200; inget anrop når Scribe",
-      rows["CI + testhuvud"][0] == 400 and all(v[0] in (400, 403) for v in rows.values()), rows)
-print(f"     S1 nej live: {'visat (403) – och då går klientens IP-huvud igenom kanten (S10 verkligt)' if spoof_works else 'kunde inte visas härifrån (kanten skriver över IP-huvudena, S10 inte verkligt för dessa huvuden)'}", flush=True)
+    rows["vanligt anrop, " + name] = [s, code(j) or str(j)[:80]]
+# after S1b only the platform's x-forwarded-for counts: spoofed x-real-ip / x-forwarded-for change nothing (still CI,
+# fake transcript 200); a client cf-connecting-ip is refused by Cloudflare itself (403 "error code: 1000")
+cf = rows["vanligt anrop, cf-connecting-ip 203.0.113.7"]
+check("S1b: klientens IP-huvuden ändrar inget (x-real-ip, x-forwarded-for: fortfarande CI); cf-connecting-ip stoppas av Cloudflare (1000)",
+      rows["CI + testhuvud"][0] == 200 and rows["vanligt anrop, x-real-ip 203.0.113.7"][0] == 200
+      and rows["vanligt anrop, x-forwarded-for 203.0.113.7"][0] == 200 and cf[0] == 403 and "1000" in str(cf[1]), rows)
 
 # ---------- S2 ----------
 vtok, vref, vid = signup_plain()
