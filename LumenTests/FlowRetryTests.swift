@@ -24,7 +24,7 @@ import Testing
     private let good: [AnswerEvent] = [.delta("Oslo."), .done(AnswerDone(answered: true))]
 
     private func spoken(_ text: String) -> ActivationRequest {
-        ActivationRequest(query: text, trigger: .auto, language: "sv")
+        ActivationRequest(query: text, trigger: .auto, language: .swedish)
     }
 
     @Test func tryAgainAsksTheQuestionThatFailed() async {
@@ -114,31 +114,31 @@ import Testing
     }
 }
 
+/// FakeHTTP with a slow POST (the usage report).
+final class SlowUsageHTTP: HTTPStreaming, @unchecked Sendable {
+    let inner: FakeHTTP
+    let postDelay: Duration
+    init(_ inner: FakeHTTP, postDelay: Duration) {
+        self.inner = inner
+        self.postDelay = postDelay
+    }
+    func data(for request: URLRequest) async throws -> (HTTPURLResponse, Data) {
+        if request.httpMethod == "POST" { try? await Task.sleep(for: postDelay) }
+        return try await inner.data(for: request)
+    }
+    func lines(for request: URLRequest) async throws -> (HTTPURLResponse, AsyncThrowingStream<String, any Error>) {
+        try await inner.lines(for: request)
+    }
+    func bytes(for request: URLRequest) async throws -> (HTTPURLResponse, AsyncThrowingStream<Data, any Error>) {
+        try await inner.bytes(for: request)
+    }
+}
+
 /// The common flow: every reconnect of the recogniser (new keyterms, the pause setting, a mode, the 20 s session
 /// end) stops the old Scribe session first. Its stop waited for the usage report (auth and a POST), and until it
 /// returned no audio was taken and the badge said "Hör inte, försöker igen". The report is sent alongside now.
 @MainActor
 @Suite struct ScribeStopTests {
-    /// FakeHTTP with a slow POST (the usage report).
-    final class SlowUsageHTTP: HTTPStreaming, @unchecked Sendable {
-        let inner: FakeHTTP
-        let postDelay: Duration
-        init(_ inner: FakeHTTP, postDelay: Duration) {
-            self.inner = inner
-            self.postDelay = postDelay
-        }
-        func data(for request: URLRequest) async throws -> (HTTPURLResponse, Data) {
-            if request.httpMethod == "POST" { try? await Task.sleep(for: postDelay) }
-            return try await inner.data(for: request)
-        }
-        func lines(for request: URLRequest) async throws -> (HTTPURLResponse, AsyncThrowingStream<String, any Error>) {
-            try await inner.lines(for: request)
-        }
-        func bytes(for request: URLRequest) async throws -> (HTTPURLResponse, AsyncThrowingStream<Data, any Error>) {
-            try await inner.bytes(for: request)
-        }
-    }
-
     @Test func stoppingDoesNotWaitForTheUsageReport() async throws {
         let token = "{\"token\":\"t1\",\"expires_in\":900,\"model_id\":\"scribe_v2_realtime\",\"ws_url\":\"wss://example.com/rt\",\"language_code\":\"swe\"}"
         let inner = FakeHTTP([.init(status: 200, body: token), .init(status: 200, body: "{}")])
