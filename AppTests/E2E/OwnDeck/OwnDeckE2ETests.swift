@@ -10,7 +10,7 @@ import Testing
 /// app makes is stopped and written down by a `URLProtocol` in the test process: there must be none. The month's
 /// credits are read from the real `/drill quota` before and after (the gate is open only for that) and must be the
 /// same. `/answer`, `/stt-token` and `/tts` are always closed (no live /answer, D180: 0 ElevenLabs).
-/// The sheet on 402 and `provider_*` is A165 (Angela Fable's views) and comes when it is on main.
+/// Part 2b (A165): the sheet that points here when `/exam` says 402 for credits or 503 `provider_quota`.
 /// Output: `<LUMEN_E2E_OUT>/owndeck.jsonl`. Simulator only: never a verification on a device.
 enum OwnDeckEnvironment {
     static var enabled: Bool { ProcessInfo.processInfo.environment["LUMEN_E2E_OWNDECK"] == "1" }
@@ -24,8 +24,13 @@ final class OwnDeckGate: URLProtocol, @unchecked Sendable {
     nonisolated(unsafe) private static var shut = false
     nonisolated(unsafe) private static var hits: [String] = []
     static let alwaysClosed = ["/functions/v1/answer", "/functions/v1/stt-token", "/functions/v1/tts"]
+    static let exam = "/functions/v1/exam"
+    /// Part 2b: what `/exam` says while set (402 for credits, or 503 `provider_quota`); nil = the gate's usual rule.
+    enum ExamNo: Sendable { case credits, modelDown }
+    nonisolated(unsafe) private static var examNo: ExamNo?
 
     static func setShut(_ value: Bool) { lock.lock(); shut = value; lock.unlock() }
+    static func setExamNo(_ value: ExamNo?) { lock.lock(); examNo = value; lock.unlock() }
 
     static func snapshot() -> [String] {
         lock.lock(); defer { lock.unlock() }
@@ -35,20 +40,27 @@ final class OwnDeckGate: URLProtocol, @unchecked Sendable {
     override class func canInit(with request: URLRequest) -> Bool {
         guard let url = request.url, let scheme = url.scheme, scheme == "http" || scheme == "https" else { return false }
         lock.lock(); defer { lock.unlock() }
-        return shut || alwaysClosed.contains(url.path)
+        return shut || alwaysClosed.contains(url.path) || (examNo != nil && url.path == exam)
     }
 
     override class func canonicalRequest(for request: URLRequest) -> URLRequest { request }
 
     override func startLoading() {
-        guard let url = request.url,
-              let response = HTTPURLResponse(url: url, statusCode: 503, httpVersion: "HTTP/1.1",
-                                             headerFields: ["Content-Type": "application/json"]) else { return }
+        guard let url = request.url else { return }
         Self.lock.lock()
         Self.hits.append("\(request.httpMethod ?? "GET") \(url.host ?? "") \(url.path)")
+        let no = url.path == Self.exam ? Self.examNo : nil
         Self.lock.unlock()
+        let (status, body): (Int, String) = switch no {
+        // K109/K110: the credits do not cover an exam; 1 question fits, 3 is the least.
+        case .credits: (402, #"{"error":{"code":"quota_exceeded","message":"T58: Du har inte krediter nog för ett prov (test)."},"fits":1,"min_questions":3,"per_question":700,"remaining":1500}"#)
+        case .modelDown: (503, #"{"error":{"code":"provider_quota","message":"T58: the model is out of credits (test)","fallback":true}}"#)
+        case nil: (503, #"{"error":{"code":"upstream_unavailable","message":"T58: closed in the test","fallback":true}}"#)
+        }
+        guard let response = HTTPURLResponse(url: url, statusCode: status, httpVersion: "HTTP/1.1",
+                                             headerFields: ["Content-Type": "application/json"]) else { return }
         client?.urlProtocol(self, didReceive: response, cacheStoragePolicy: .notAllowed)
-        client?.urlProtocol(self, didLoad: Data(#"{"error":{"code":"upstream_unavailable","message":"T58: closed in the test","fallback":true}}"#.utf8))
+        client?.urlProtocol(self, didLoad: Data(body.utf8))
         client?.urlProtocolDidFinishLoading(self)
     }
 
@@ -201,6 +213,60 @@ struct OwnDeckE2ETests {
         _ = container
         try write(out)
         #expect(out.verdict == "ok", "\(out.verdict)")
+    }
+
+    /// Part 2b (A165): Nytt prov when `/exam` says 402 for credits or 503 `provider_quota`. The sheet "Slut på
+    /// krediter? …" (credits) or its model-down title comes up once for the occasion, not at the next no; its button
+    /// asks Start to open "Spela in själv". Nothing is made and the credits are the same.
+    @Test(arguments: ["credits", "modelDown"])
+    func theSheetComesOnceWhenTheServerSaysNo(_ reason: String) async throws {
+        var out = Outcome(id: "sheet-\(reason)")
+        let (container, repetition) = try await start(seed: false)
+        out.creditsBefore = await credits(repetition)
+        let drills = repetition.drills.count
+        let expected: OwnDeckOffer.Reason = reason == "credits" ? .credits : .modelDown
+        OwnDeckGate.setExamNo(reason == "credits" ? .credits : .modelDown)
+        let baseline = OwnDeckGate.snapshot().count
+        let material = DrillMaterial(text: "Fotosyntesen gör socker och syre av koldioxid, vatten och ljus. Den sker i kloroplasterna.")
+
+        let first = await makeError(repetition, material)
+        let shownFirst = repetition.ownOffer.showing
+        let title = shownFirst.map { OwnDeckText.offerTitle($0) } ?? "-"
+        out.notes.append("first no: \(first); sheet \(shownFirst.map(\.rawValue) ?? "none"): \"\(title)\" / \"\(OwnDeckText.offerLine)\"")
+        var wrong: [String] = []
+        if shownFirst != expected { wrong.append("the sheet was \(shownFirst.map(\.rawValue) ?? "not shown"), not \(expected.rawValue)") }
+        if reason == "credits" {
+            repetition.ownOffer.close() // Inte nu
+            if repetition.ownOffer.showing != nil { wrong.append("Inte nu did not close the sheet") }
+        } else {
+            repetition.ownOffer.open() // the sheet's button
+            if repetition.ownOffer.showing != nil || !repetition.ownOffer.opensDecks { wrong.append("the button did not ask Start to open Spela in själv") }
+            repetition.ownOffer.opensDecks = false
+        }
+        let second = await makeError(repetition, material)
+        let shownSecond = repetition.ownOffer.showing
+        out.notes.append("second no: \(second); sheet \(shownSecond.map(\.rawValue) ?? "none")")
+        if shownSecond != nil { wrong.append("the sheet came again for the same occasion") }
+        let examCalls = OwnDeckGate.snapshot().dropFirst(baseline).filter { $0.hasSuffix(OwnDeckGate.exam) }.count
+        out.requestsWhilePractising = Array(OwnDeckGate.snapshot().dropFirst(baseline))
+        OwnDeckGate.setExamNo(nil)
+        out.creditsAfter = await credits(repetition)
+        if examCalls < 2 { wrong.append("/exam asked \(examCalls) times, not twice") }
+        if repetition.drills.count != drills { wrong.append("an exam was made") }
+        if out.creditsBefore == nil || out.creditsBefore != out.creditsAfter { wrong.append("credits \(text(out.creditsBefore)) → \(text(out.creditsAfter))") }
+        out.verdict = wrong.isEmpty ? "ok" : wrong.joined(separator: "; ")
+        _ = container
+        try write(out)
+        #expect(out.verdict == "ok", "\(out.verdict)")
+    }
+
+    private func makeError(_ repetition: RepetitionModel, _ material: DrillMaterial) async -> String {
+        do throws(DrillMakingError) {
+            _ = try await repetition.make(material, settings: DrillSettings())
+            return "made (no error)"
+        } catch {
+            return "\(error)".prefix(120).description
+        }
     }
 
     // MARK: Helpers
