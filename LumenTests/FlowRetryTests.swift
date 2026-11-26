@@ -113,3 +113,54 @@ import Testing
         await model.stopListening()
     }
 }
+
+/// The common flow: every reconnect of the recogniser (new keyterms, the pause setting, a mode, the 20 s session
+/// end) stops the old Scribe session first. Its stop waited for the usage report (auth and a POST), and until it
+/// returned no audio was taken and the badge said "Hör inte, försöker igen". The report is sent alongside now.
+@MainActor
+@Suite struct ScribeStopTests {
+    /// FakeHTTP with a slow POST (the usage report).
+    final class SlowUsageHTTP: HTTPStreaming, @unchecked Sendable {
+        let inner: FakeHTTP
+        let postDelay: Duration
+        init(_ inner: FakeHTTP, postDelay: Duration) {
+            self.inner = inner
+            self.postDelay = postDelay
+        }
+        func data(for request: URLRequest) async throws -> (HTTPURLResponse, Data) {
+            if request.httpMethod == "POST" { try? await Task.sleep(for: postDelay) }
+            return try await inner.data(for: request)
+        }
+        func lines(for request: URLRequest) async throws -> (HTTPURLResponse, AsyncThrowingStream<String, any Error>) {
+            try await inner.lines(for: request)
+        }
+        func bytes(for request: URLRequest) async throws -> (HTTPURLResponse, AsyncThrowingStream<Data, any Error>) {
+            try await inner.bytes(for: request)
+        }
+    }
+
+    @Test func stoppingDoesNotWaitForTheUsageReport() async throws {
+        let token = "{\"token\":\"t1\",\"expires_in\":900,\"model_id\":\"scribe_v2_realtime\",\"ws_url\":\"wss://example.com/rt\",\"language_code\":\"swe\"}"
+        let inner = FakeHTTP([.init(status: 200, body: token), .init(status: 200, body: "{}")])
+        let http = SlowUsageHTTP(inner, postDelay: .seconds(2))
+        let socket = FakeScribeSocket()
+        let config = BackendConfig(projectURL: URL(string: "https://example.supabase.co")!, publishableKey: "pk")
+        let session = SupabaseSession(accessToken: "jwt", refreshToken: "r", expiresAt: Date().addingTimeInterval(3_600))
+        let provider = ScribeProvider(locale: Locale(identifier: "sv-SE"), language: .swedish, config: config,
+                                      auth: SupabaseAuth(config: config, store: InMemorySessionStore(session), http: http), http: http,
+                                      makeSocket: { _ in socket })
+        try await provider.prepare()
+        let (audio, feed) = AsyncStream<AudioChunk>.makeStream()
+        try await provider.start(audio: audio)
+        feed.yield(AudioChunk(samples: [Int16](repeating: 1, count: 16_000), hostTime: 0, firstSampleIndex: 0))
+        #expect(await waitUntil { socket.sent.count == 1 })
+
+        let clock = ContinuousClock()
+        let started = clock.now
+        await provider.stop()
+        #expect(clock.now - started < .milliseconds(500), "the next session may start at once")
+        #expect(socket.isClosed)
+        #expect(await waitUntil(timeout: .seconds(5)) { inner.requests.count == 2 }, "the seconds are still reported")
+        #expect(inner.requests.last?.httpBody == Data("{\"seconds\":1}".utf8))
+    }
+}
