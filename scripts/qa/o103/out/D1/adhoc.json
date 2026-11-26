@@ -31,7 +31,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:38 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad är fotosyntes</fragment>"
+            "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<now>fredag 27 november 2026, vecka 48, klockan 00:44 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad är fotosyntes</fragment>"
           }
         ],
         "output_config": {
@@ -62,7 +62,7 @@
           "input_tokens": null,
           "output_tokens": null,
           "ttft_ms": null,
-          "total_ms": 269,
+          "total_ms": 250,
           "est_cost_usd": null,
           "status": "provider_error",
           "category": "naturvetenskap",

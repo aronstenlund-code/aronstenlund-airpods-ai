@@ -31,7 +31,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<language>en</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:38 (svensk tid, Europe/Stockholm)</now>\n<fragment>when did world war two end and how many people died</fragment>"
+      "content": "<language>en</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<now>fredag 27 november 2026, vecka 48, klockan 00:44 (svensk tid, Europe/Stockholm)</now>\n<fragment>when did world war two end and how many people died</fragment>"
      }
     ],
     "output_config": {
@@ -59,11 +59,11 @@
      "model": "claude-haiku-5-5",
      "is_question": true,
      "confidence": 1,
-     "input_tokens": 3744,
+     "input_tokens": 3743,
      "output_tokens": 83,
-     "ttft_ms": 268,
-     "total_ms": 272,
-     "est_cost_usd": 0.0004159,
+     "ttft_ms": 277,
+     "total_ms": 282,
+     "est_cost_usd": 0.0004158,
      "status": "ok",
      "category": "övrigt",
      "persona": "tutor"
@@ -135,29 +135,29 @@
      "data": {
       "answered": true,
       "timing": {
-       "meta_ms": 263,
-       "ttft_ms": 268,
-       "llm_first_token_ms": 261,
-       "total_ms": 272
+       "meta_ms": 272,
+       "ttft_ms": 277,
+       "llm_first_token_ms": 270,
+       "total_ms": 282
       },
       "breakdown": {
        "auth_ms": 0,
-       "body_ms": 166,
-       "limits_ms": 260,
-       "llm_first_chunk_ms": 261,
+       "body_ms": 173,
+       "limits_ms": 269,
+       "llm_first_chunk_ms": 270,
        "direct": true,
        "cold": true,
        "answer_type": "fact",
        "continuation": null
       },
       "usage": {
-       "input_tokens": 3744,
+       "input_tokens": 3743,
        "output_tokens": 83,
        "cache_read_tokens": 0,
        "cache_write_tokens": 0,
        "web_searches": 0,
        "model": "claude-haiku-5-5",
-       "est_cost_usd": 0.0004159
+       "est_cost_usd": 0.0004158
       },
       "summary": "Frågan gällde när andra världskriget tog slut; svaret var 1945 och cirka 70 till 85 miljoner döda.",
       "relation": null,
@@ -181,29 +181,29 @@
    "done": {
     "answered": true,
     "timing": {
-     "meta_ms": 263,
-     "ttft_ms": 268,
-     "llm_first_token_ms": 261,
-     "total_ms": 272
+     "meta_ms": 272,
+     "ttft_ms": 277,
+     "llm_first_token_ms": 270,
+     "total_ms": 282
     },
     "breakdown": {
      "auth_ms": 0,
-     "body_ms": 166,
-     "limits_ms": 260,
-     "llm_first_chunk_ms": 261,
+     "body_ms": 173,
+     "limits_ms": 269,
+     "llm_first_chunk_ms": 270,
      "direct": true,
      "cold": true,
      "answer_type": "fact",
      "continuation": null
     },
     "usage": {
-     "input_tokens": 3744,
+     "input_tokens": 3743,
      "output_tokens": 83,
      "cache_read_tokens": 0,
      "cache_write_tokens": 0,
      "web_searches": 0,
      "model": "claude-haiku-5-5",
-     "est_cost_usd": 0.0004159
+     "est_cost_usd": 0.0004158
     },
     "summary": "Frågan gällde när andra världskriget tog slut; svaret var 1945 och cirka 70 till 85 miljoner döda.",
     "relation": null,
