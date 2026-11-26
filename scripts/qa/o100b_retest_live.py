@@ -18,6 +18,7 @@ import base64, http.client, json, time, urllib.error, urllib.request  # noqa: E4
 sys = _s
 sys.stdout.reconfigure(encoding="utf-8")
 HOST = T.URL.replace("https://", "")
+N_CHUNKS = 3 if "--s5" in sys.argv else 32
 OK = []
 
 
@@ -39,7 +40,7 @@ def raw(method, path, body=None, headers=None, chunked=False, timeout=25):
             c.putheader("transfer-encoding", "chunked")
             c.endheaders()
             chunk = b"a" * 65536
-            for _ in range(32):  # 2 MB
+            for _ in range(N_CHUNKS):  # 32 = 2 MB; the S5 rerun uses 3 (192 KB) so the client is not left blocking on send
                 c.send(b"%x\r\n%s\r\n" % (len(chunk), chunk))
             c.send(b"0\r\n\r\n")
         else:
@@ -77,7 +78,15 @@ def code(j):
     return (j.get("error") or {}).get("code") if isinstance(j, dict) else None
 
 
+ONLY_S5 = "--s5" in sys.argv
 # ---------- S1 ----------
+if ONLY_S5:
+    big = {}
+    for fn in ("purchase", "voice-lab", "drill", "waitlist", "debug-audio", "feedback-admin", "usage-stats"):
+        s, j, sec = raw("POST", "/functions/v1/" + fn, headers={"apikey": T.KEY, "content-type": "application/json", "user-agent": "python-urllib/oscar-qa"}, chunked=True)
+        big[fn] = [s, code(j), sec]
+    check("S5 (192 KB chunked, utan token): svar inom 10 s, aldrig 200/500", all(v[0] not in (-1, 200, 500) and v[2] < 10 for v in big.values()), big)
+    sys.exit(0 if all(OK) else 1)
 tok, _, _ = signup_plain()
 BODY = {"action": "transcribe"}  # no audio: never reaches Scribe
 rows = {}
