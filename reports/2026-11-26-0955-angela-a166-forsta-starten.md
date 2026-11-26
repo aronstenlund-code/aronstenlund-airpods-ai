@@ -70,6 +70,7 @@ Det enda man kan *höra* snabbare i dag är "Säg i AirPods" (3 skärmar, 4 tryc
 - `PretendOwnRecorder` (`Lumen/Core/OwnDeck/OwnRecorder.swift`, bara `LUMEN_TESTMODE`, alltså Debug och Beta): "inspelningen" skriver 2 s tystnad som en WAV-fil direkt, frågar aldrig om mikrofonen, och `stopRecording` sparar den som vanligt.
 - För att filen ska heta rätt har `OwnRecording` fått `fileExtension` (förval `m4a` i en extension, så andras låtsasinspelare påverkas inte) och `OwnDeckStore.newRecordingURL(fileExtension:)`.
 - Typnamnet står i Release-kontrollen i `ios-build.yml`: det ska finnas i Debug och får inte finnas i Release-arkivet.
+- Toby skrev 09:00 att han klarade T58 del 2a utan kroken (testet har en egen låtsasmikrofon genom `OwnRecording`). Kroken finns kvar för prov genom skärmen när A165:s vyer finns: där går det inte att byta inspelare inifrån testet.
 
 ### Kellys scen (kön rad 567): `listeningActivation`
 
@@ -77,11 +78,16 @@ Det enda man kan *höra* snabbare i dag är "Säg i AirPods" (3 skärmar, 4 tryc
 - Orden sparas i inställningarna, så varje annan scen börjar med att ta bort bildens ord igen.
 - Två scener till för A166: `firstConsent` (samtycket i första starten med "Senare") och `firstListening` (Lyssnar som en ny användare möter den: lyssnar, inget frågat).
 
+### Samtyckesskärmen efter bilderna
+
+Den första bildkörningen visade två fel på samtycket, som nu är första startens andra skärm: knappens text ritades liten, och listans text syntes under knappen nere vid hemstrecket. Båda fanns redan i bladet (ingen bild hade tagits av det förut). Rättat i `ConsentView`: knappen står under listan i stället för ovanpå den, och har samma etikett som Välkommens Fortsätt. Texterna är orörda.
+
 ## Teknik
 
 - `Lumen/Features/Onboarding/FirstStartView.swift`: `FirstStartStep`, `FirstStartPath`, `FirstListeningConsentView`; `FirstStartView` använder inte längre `NewDrillView`.
 - `Lumen/Features/Listening/ListeningModel.swift`: `holdsSharingQuestion` (sätts när samtycket ges, släpps i `stopListening()`), `sharingQuestionIsFree`, `firstStartConsentGiven()`.
 - `Lumen/App/RootView.swift`: frågan om delning läser `sharingQuestionIsFree`.
+- `Lumen/Features/Onboarding/ConsentView.swift`: listan och knappen i en `VStack` (inte `safeAreaInset`), knappen `consent.accept`.
 - `Lumen/Features/Design/ScreenshotStage.swift`: scenerna `listeningActivation`, `firstConsent`, `firstListening`; `ActivationDemo`.
 - `Lumen/Core/OwnDeck/{OwnRecorder,OwnDeckStore,OwnDeckModel}.swift`, `Lumen/App/AppContainer.swift`: låtsasinspelaren.
 - `.github/workflows/ios-build.yml`: `PretendOwnRecorder` i Release-kontrollen.
