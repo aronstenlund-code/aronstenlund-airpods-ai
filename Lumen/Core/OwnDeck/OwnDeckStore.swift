@@ -68,9 +68,10 @@ final class OwnDeckStore {
         audioFolder.appending(path: file.name)
     }
 
-    /// Where a new recording goes. AAC in an m4a file: small, and the player opens it like any other file.
-    func newRecordingURL() -> URL {
-        audioFolder.appending(path: "\(UUID().uuidString).m4a")
+    /// Where a new recording goes. AAC in an m4a file from the phone's recorder: small, and the player opens it like
+    /// any other file.
+    func newRecordingURL(fileExtension: String = "m4a") -> URL {
+        audioFolder.appending(path: "\(UUID().uuidString).\(fileExtension)")
     }
 
     func remove(_ file: OwnRecordingFile?) {

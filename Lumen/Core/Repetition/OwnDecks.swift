@@ -116,6 +116,11 @@ enum OwnDeckText {
     static var record: String { String(localized: "Spela in") }
     static var recordAgain: String { String(localized: "Spela in igen") }
     static var notRecorded: String { String(localized: "Inte inspelad") }
+    /// Kelly (2026-11-26): a text that is not read in is read by the phone's voice when practising, and the row
+    /// says so before Öva. Without a text there is nothing to read.
+    static func notRecorded(hasText: Bool) -> String {
+        hasText ? String(localized: "Inte inspelad · läses av telefonen") : notRecorded
+    }
     static var stop: String { String(localized: "Stoppa") }
     static var addCard: String { String(localized: "Lägg till fråga") }
     static var delete: String { String(localized: "Ta bort") }

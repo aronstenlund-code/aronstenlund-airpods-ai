@@ -1,3 +1,6 @@
+import { isOwner } from "../_shared/owner.ts";
+import { currentTest, fromCi, loadCiRanges } from "../_shared/testmode.ts";
+import type { AuthedUser } from "../_shared/auth.ts";
 import { type Authenticator } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
 import { appChecks, enforceLimits, type RateLimiter } from "../_shared/ratelimit.ts";
@@ -92,6 +95,11 @@ export interface EvalDeps {
   /** D88: ElevenLabs key for the batch Scribe comparison (the realtime path uses /stt-token like the app). */
   elevenLabsKey?: string | null;
   fetchImpl?: typeof fetch;
+  /** O100 S1: OWNER_EMAIL; the owner may run the eval by hand */
+  ownerEmails?: string[];
+  /** O100 S1: who may use the eval (models without the user's limits, Scribe); default: the owner, or test traffic
+   *  from GitHub Actions. Tests that exercise the eval itself pass their own. */
+  access?: (req: Request, user: AuthedUser) => boolean;
 }
 
 /** D88: batch transcription of one test clip (WAV, base64, at most 2 MB), for comparison with the realtime path. */
@@ -119,6 +127,13 @@ export function createEvalHandler(deps: EvalDeps) {
     try {
       if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use POST");
       const user = await deps.authenticate(req);
+      // O100 S1 (Oscar, HIGH): Sonnet/Opus and Scribe without the user's limits or credits are for the evals only
+      // a test request does not wait for GitHub's ranges in withTestMode (K100); this check does (cached)
+      if (!deps.access && currentTest()?.test === true) await loadCiRanges().catch(() => {});
+      const allowed = deps.access
+        ? deps.access(req, user)
+        : isOwner(user, deps.ownerEmails ?? []) || (currentTest()?.test === true && fromCi(req));
+      if (!allowed) throw new HttpError(403, "forbidden", "Not available");
       // Oscar O13 del 3: a transcribe body is up to ~2 MB of base64 (it was cut at 64 KB = 1.4 s of audio, 413)
       const b = (await readLimitedJson(req, TRANSCRIBE_LIMITS.maxBase64 + 64 * 1024)) as Record<string, unknown> | null;
       const action = String(b?.action ?? "");

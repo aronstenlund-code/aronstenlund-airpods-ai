@@ -14,6 +14,19 @@ struct ConsentView: View {
     @State private var confirmingWithdrawal = false
 
     var body: some View {
+        // A166: the button stands under the text, not on top of it: the list ends where the button's part begins, so
+        // nothing shows through beside or below it (it did at the home indicator, seen in the first start's pictures).
+        VStack(spacing: 0) {
+            points
+            footer
+        }
+        .background(LumenColor.background.ignoresSafeArea())
+        .foregroundStyle(LumenColor.ink)
+        .navigationTitle(navigationTitle)
+        .navigationBarTitleDisplayMode(.inline)
+    }
+
+    private var points: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
                 VStack(alignment: .leading, spacing: 8) {
@@ -58,11 +71,6 @@ struct ConsentView: View {
             }
             .padding(20)
         }
-        .safeAreaInset(edge: .bottom) { footer }
-        .background(LumenColor.background.ignoresSafeArea())
-        .foregroundStyle(LumenColor.ink)
-        .navigationTitle(navigationTitle)
-        .navigationBarTitleDisplayMode(.inline)
     }
 
     private var navigationTitle: LocalizedStringKey {
@@ -78,8 +86,17 @@ struct ConsentView: View {
         switch mode {
         case .onboarding(let onAccept):
             VStack(spacing: 8) {
-                Button("Jag förstår, starta EarMind", action: onAccept)
-                    .buttonStyle(SystemButton())
+                // A166: the first start's one button, as Välkommen's Fortsätt (the label was drawn small here).
+                Button(action: onAccept) {
+                    FilledButtonLabel {
+                        Text("Jag förstår, starta EarMind")
+                            .font(.headline)
+                            .frame(maxWidth: .infinity)
+                    }
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .accessibilityIdentifier("consent.accept")
                 Text("Genom att fortsätta bekräftar du att du har läst punkterna ovan.")
                     .font(LumenFont.text(14, relativeTo: .footnote))
                     .foregroundStyle(LumenColor.muted)

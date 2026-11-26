@@ -38,8 +38,26 @@ struct ScreenshotStage: View {
         guard name != "intro" else { return }
         // A79–A81 (Kelly Ke49 §7): the repetition mode's scenes (the mock mode, see AppContainer).
         if RepetitionDemo.scenes.contains(name), let repetition = model.repetition { RepetitionDemo.seed(repetition, for: name) }
+        // A166 (Kelly, bild 8 "Say your words"): the activation words stay in the settings, so every other scene
+        // starts without the picture's words.
+        let pictureWords = [ActivationDemo.words(.sv), ActivationDemo.words(.en)]
+        if name != "listeningActivation", pictureWords.contains(model.activation.settings.phrase) {
+            model.activation.settings.setPhrase("")
+        }
+        // A166: Lyssnar as a new user meets it, right after the consent and the microphone: listening, nothing asked.
+        if name == "firstListening" {
+            model.screenshotShows = .standard
+            return
+        }
         // A30: Lyssnar while listening in Provläge, before the first frame (the stage is not observed).
         switch name {
+        case "listeningActivation":
+            // Lyssnar in Standardläget, the words filled in, and a question with its answer in the app's language.
+            let language = AppLanguage.current
+            model.screenshotShows = .standard
+            model.activation.settings.setPhrase(ActivationDemo.words(language))
+            let turn = ActivationDemo.turn(language)
+            model.receiveAnswer(question: turn.question, answer: turn.answer, source: "cloud")
         case "listeningProv": model.screenshotShows = .prov
         case "addExamFirst": model.screenshotShows = .standard // A46: "Säg till exempel", not "Startar …"
         case "practice": model.stagePracticeForScreenshot(PracticeDemo.run, result: nil)
@@ -107,7 +125,9 @@ struct ScreenshotStage: View {
             case "first": FirstQuestionView(model: model, microphoneDenied: false) {}.lumenScreen()
             case "home", "empty": NavigationStack { HomeView(model: model) }
             case "addExam": AddExamView(model: model) {}
-            case "listening": ListeningScreen(model: model) {}
+            case "listening", "listeningActivation", "firstListening": ListeningScreen(model: model) {} // set up in `seed`
+            // A166: the first start's second screen, the listening consent with "Senare".
+            case "firstConsent": FirstListeningConsentView(onAccept: {}, onLater: {})
             case "cannotAnswer": ListeningScreen(model: model) {}.onAppear { model.showProblemForScreenshot(.overloaded) }
             case "switch": ModeSwitchSheet(model: model, current: .prov)
             // A53 (Ke30): Mina svar, the list, the first time, and the editor with Lumen's suggestion.
@@ -178,6 +198,17 @@ struct ScreenshotStage: View {
         }
     }
 }
+/// A166 (Kelly, bild 8): the words in the field, and one question with its answer, in the app's language.
+enum ActivationDemo {
+    static func words(_ language: AppLanguage) -> String { language == .sv ? "Hjälp mig" : "Help me" }
+
+    static func turn(_ language: AppLanguage) -> (question: String, answer: String) {
+        language == .sv
+            ? ("Vad är fotosyntes?", "Fotosyntesen är när växter gör socker av koldioxid och vatten med ljusenergi. Syre blir över.")
+            : ("What is photosynthesis?", "Photosynthesis is how plants make sugar from carbon dioxide and water using light. Oxygen is left over.")
+    }
+}
+
 /// A49: a demo night, 23:10–06:40, two times talking, a little snoring, one restless half hour.
 private enum SleepDemo {
     static var night: SleepNight {

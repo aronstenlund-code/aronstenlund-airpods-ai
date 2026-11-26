@@ -142,7 +142,9 @@ let warming: Promise<unknown> | null = null;
 function warmable(h: (req: Request) => Promise<Response>): (req: Request) => Promise<Response> {
   return async (req) => {
     // K102 (D230, A147): the app sends it with or without a token; it reads nothing of any account either way
-    if (req.method === "POST" && Number(req.headers.get("content-length") ?? "0") < 64) {
+    // O100 S5: only a body that says its length is short (a chunked one has none and was read whole)
+    const len = req.headers.get("content-length");
+    if (req.method === "POST" && len !== null && Number(len) < 64) {
       const action = await req.clone().json().then((b) => (b as { action?: unknown })?.action).catch(() => null);
       if (action === "warm") {
         // Oscar O85: at most WARM_PER_IP_PER_MINUTE per address and minute (429 beyond; nothing breaks without warm)

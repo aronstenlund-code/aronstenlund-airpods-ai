@@ -105,6 +105,9 @@ export function checkUrl(raw: string, ownHosts: string[] = []): URL {
   if (v4(host) && /(^|\.)0\d/.test(host)) throw new BlockedUrl("odd_ip");
   const lit = publicIp(host);
   if (lit === false) throw new BlockedUrl("private_address");
+  // O100 S4 (Oscar, DNS rebinding): the address is checked through DoH and the fetch resolves again; over https the
+  // certificate stops a rebound answer, so plain http is fetched as https (redirects too, checkUrl runs per hop)
+  if (u.protocol === "http:") return new URL(`https://${u.host.replace(/:80$/, "")}${u.pathname}${u.search}${u.hash}`);
   return u;
 }
 

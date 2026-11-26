@@ -367,7 +367,7 @@ jobs:
 
           echo "== No test mode and no test hook (D227)"
           for MARK in 'functions/v1/debug-audio' DebugAudioWriter DebugAudioClient DebugPieceStore LUMEN_TEST_HEADER \
-                      LUMEN_TEST_PRESSES LUMEN_TEST_MATERIAL 'earmind.test.press' LumenScreenshot PretendOnDeviceModel SilentPhoneVoice OwnDeckSeed; do
+                      LUMEN_TEST_PRESSES LUMEN_TEST_MATERIAL 'earmind.test.press' LumenScreenshot PretendOnDeviceModel SilentPhoneVoice OwnDeckSeed PretendOwnRecorder; do
             IN_DEBUG="$({ LC_ALL=C grep -rlaF -e "$MARK" "$DEBUG" || true; } | wc -l | tr -d ' ')"
             IN_RELEASE="$({ LC_ALL=C grep -rlaF -e "$MARK" "$APP" || true; } | wc -l | tr -d ' ')"
             echo "  $MARK: Debug $IN_DEBUG file(s), Release archive $IN_RELEASE"

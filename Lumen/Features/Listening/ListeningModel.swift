@@ -467,8 +467,25 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         asksForListeningConsent = true
     }
 
+    /// A166: the question about sharing the history is not needed before the first answer. It is held from the press
+    /// that gives the listening consent until that listening is over; until it is answered nothing is shared.
+    private(set) var holdsSharingQuestion = false
+
+    /// A166: the sharing question may be shown: nothing holds it, and nothing listens or is about to.
+    var sharingQuestionIsFree: Bool { !holdsSharingQuestion && !isActiveSession && !isStarting }
+
+    /// A166 (D264): "Jag förstår, starta EarMind" in the first start: the consent, and Standardläget listens at once
+    /// (iOS asks about the microphone). One press from the consent to the first question.
+    func firstStartConsentGiven() async {
+        holdsSharingQuestion = true
+        consent.grant()
+        beginFreshPass()
+        await startMode(.standard)
+    }
+
     /// "Jag förstår, starta EarMind" on the consent sheet: the consent, then the start that asked for it.
     func listeningConsentGiven() {
+        holdsSharingQuestion = true // A166
         consent.grant()
         asksForListeningConsent = false
         let start = afterListeningConsent
@@ -617,6 +634,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         speaker.interrupt()
         conversation.cancelAnswer()
         await controller.stop()
+        holdsSharingQuestion = false // A166: the first listening is over
     }
 
     func resume() async {

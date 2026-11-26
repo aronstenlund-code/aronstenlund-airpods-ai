@@ -199,10 +199,13 @@ final class AppContainer {
         let seedsOwnDeck = OwnDeckSeed.isRequested()
         if seedsOwnDeck { OwnDeckSeed.seed(into: ownStore) }
         let ownVoice: any PhoneVoicing = seedsOwnDeck ? SilentPhoneVoice() as any PhoneVoicing : PhoneVoice() as any PhoneVoicing
+        // T58: `-FakeOwnRecorder 1` records two seconds of silence without a microphone (the Simulator has none in CI).
+        let ownRecorder: (any OwnRecording)? = PretendOwnRecorder.isRequested() ? PretendOwnRecorder() : nil
         #else
         let ownVoice: any PhoneVoicing = PhoneVoice()
+        let ownRecorder: (any OwnRecording)? = nil
         #endif
-        let ownDecks = OwnDeckModel(store: ownStore, audio: OwnDeckAudio(store: ownStore, voice: ownVoice))
+        let ownDecks = OwnDeckModel(store: ownStore, audio: OwnDeckAudio(store: ownStore, voice: ownVoice), recorder: ownRecorder)
         ownDecks.onWillRecord = { [weak repetitionModel] in repetitionModel?.end() } // one thing at a time
         repetitionModel.ownDecks = ownDecks
         repetitionModel.publishing = drillCloud as? DrillCloudClient // A83 (K49)
