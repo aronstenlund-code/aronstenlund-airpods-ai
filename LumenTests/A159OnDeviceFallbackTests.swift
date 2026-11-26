@@ -162,7 +162,7 @@ import Testing
         #expect(broken.error == .offline && broken.events.isEmpty)
     }
 
-    #if LUMEN_TESTMODE
+    #if DEBUG // the test target has DEBUG, not LUMEN_TESTMODE (the app it tests is the Debug build, which has both)
     /// T57: Toby's pretend phone model, chosen with a launch argument in the test builds.
     @Test func thePretendModelForTheSimulatorSpeaksWhatTheLaunchAskedFor() async throws {
         let defaults = try #require(UserDefaults(suiteName: "a159.\(UUID().uuidString)"))
