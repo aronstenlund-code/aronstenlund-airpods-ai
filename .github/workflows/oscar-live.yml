@@ -41,6 +41,7 @@ on:
           - o96_k117_crisis_live.py
           - o97_answer_probe.py
           - o98_launch_live.py
+          - o99_credits_back.py
       args:
         description: "Arguments (optional, e.g. --fast)"
         required: false
