@@ -47,6 +47,7 @@ on:
           - k118-live.py
           - o97-live.py
           - k119-live.py
+          - k121-usage.py
           - qa/o86_eval_reproduce.py
           - k93-live.py
           - k94-apple-root.py
@@ -80,8 +81,8 @@ jobs:
         env:
           SCRIPT: ${{ inputs.script }}
           ARGS: ${{ inputs.args }}
-          # K114: only k114-voices.py reads it (voice-lab's listing of the account's voices, no credits)
-          SUPABASE_SERVICE_ROLE_KEY: ${{ inputs.script == 'k114-voices.py' && secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
+          # K114: only k114-voices.py reads it (voice-lab's listing of the account's voices, no credits); K121: k121-usage.py (read-only sums of answer_usage)
+          SUPABASE_SERVICE_ROLE_KEY: ${{ (inputs.script == 'k114-voices.py' || inputs.script == 'k121-usage.py') && secrets.SUPABASE_SERVICE_ROLE_KEY || '' }}
         run: |
           mkdir -p reports/qa/data
           before=$(ls reports/qa/data | sort)
