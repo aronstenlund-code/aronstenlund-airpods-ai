@@ -89,7 +89,7 @@ enum RepetitionDemo {
                                       // and own decks, and without anything), a deck's screen (new, filled in,
                                       // and while it records), and the sheet when the credits are out or the
                                       // model is down
-                                      "repOwnHome", "repOwnHomeEmpty", "repOwnDeck", "repOwnDeckNew", "repOwnRecording",
+                                      "repOwnHome", "repOwnHomeFirst", "repOwnHomeEmpty", "repOwnDeck", "repOwnDeckNew", "repOwnRecording",
                                       "repOwnOffer", "repOwnOfferDown",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
@@ -253,7 +253,7 @@ enum RepetitionDemo {
         if name == "repOwnOfferDown" { model.serverRefused(.modelDown) }
         guard name != "repHomeEmpty", name != "repOwnHomeEmpty", name != "moreModes" else { return }
         // The newest is Start's "Nästa prov": Historia first, so Biologiprovet is on the card.
-        model.store.save(history)
+        if name != "repOwnHomeFirst" { model.store.save(history) } // A165: one quiz, so the way in shows under it
         model.store.save(drill)
         // A99: the month's questions are used up (D175); the server's length classes (D176).
         if name == "repQuotaUsedUp" { model.quota = DrillQuota(used: 15, limit: 15, resets: "2026-12-01", serverLeft: 0, suggest: 0) }
@@ -675,7 +675,7 @@ enum RepetitionDemo {
 
     static func ownDecks(for name: String) -> OwnDeckModel {
         ownShown = ownBiology.id
-        if name == "repOwnHomeEmpty" { return OwnDeckModel() }
+        if name == "repOwnHomeEmpty" || name == "repOwnHomeFirst" { return OwnDeckModel() } // nothing recorded yet
         let decks = OwnDeckModel(decks: [ownBiology, ownGlossary])
         if name == "repOwnDeckNew" { ownShown = OwnDeckTidy.newDeck(in: decks).id }
         if name == "repOwnRecording" { // the second card's answer is being read in
@@ -735,7 +735,7 @@ enum RepetitionDemo {
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
                  "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices", "repSayVoicesUser",
-                 "repOwnHome", "repOwnHomeEmpty", "repOwnOffer", "repOwnOfferDown",
+                 "repOwnHome", "repOwnHomeFirst", "repOwnHomeEmpty", "repOwnOffer", "repOwnOfferDown",
                  "repShopShort", "repShopWeeklyHome", "repShopLaunchOffer", "repSayCompress", "repSayCompressed", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
                  "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced",
                  "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers", "repShopShortKeyboard",

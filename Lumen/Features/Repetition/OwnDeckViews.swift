@@ -194,8 +194,17 @@ struct OwnTakeRow: View {
 
     private var target: OwnDeckModel.Target { OwnDeckModel.Target(deckID: deckID, cardID: card.id, part: part) }
     private var identifier: String { part == .question ? "ownCard.recordQuestion" : "ownCard.recordAnswer" }
+    /// Another part is being read in: this row's buttons wait, and look it (grey, not half blue).
+    private var waits: Bool { decks.recording != nil }
+    private var ink: AnyShapeStyle { waits ? AnyShapeStyle(Color(.tertiaryLabel)) : AnyShapeStyle(.tint) }
 
     var body: some View {
+        // The line above the row begins at the row's edge, as above the text (a row with a symbol sets it in).
+        content.alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+    }
+
+    @ViewBuilder
+    private var content: some View {
         if decks.recording == target {
             Button { decks.stopRecording() } label: {
                 HStack(spacing: 10) {
@@ -218,17 +227,20 @@ struct OwnTakeRow: View {
                 Button {
                     if isPlaying { decks.stopPreview() } else { Task { await decks.preview(part, card: card.id, in: deckID) } }
                 } label: {
-                    Label(OwnDeckText.clock(take.seconds), systemImage: isPlaying ? "stop.fill" : "play.fill").monospacedDigit()
+                    Label(OwnDeckText.clock(take.seconds), systemImage: isPlaying ? "stop.fill" : "play.fill")
+                        .monospacedDigit()
+                        .foregroundStyle(ink)
                 }
                 .buttonStyle(.borderless)
+                .disabled(waits)
                 .accessibilityLabel(isPlaying ? OwnDeckText.stop : OwnDeckText.playLabel(part, seconds: take.seconds))
                 .accessibilityIdentifier(identifier + ".play")
                 Spacer(minLength: 8)
                 Button { start() } label: {
-                    Label(OwnDeckText.recordAgain, systemImage: "arrow.counterclockwise")
+                    Label(OwnDeckText.recordAgain, systemImage: "arrow.counterclockwise").foregroundStyle(ink)
                 }
                 .buttonStyle(.borderless)
-                .disabled(decks.recording != nil)
+                .disabled(waits)
                 .accessibilityLabel(OwnDeckText.recordAgainLabel(part))
                 .accessibilityIdentifier(identifier)
             }
@@ -236,13 +248,14 @@ struct OwnTakeRow: View {
             HStack(spacing: 12) {
                 Button { start() } label: {
                     Label {
-                        Text(verbatim: OwnDeckText.record)
+                        Text(verbatim: OwnDeckText.record).foregroundStyle(ink)
                     } icon: {
-                        Image(systemName: "circle.fill").foregroundStyle(decks.recording == nil ? Color.red : Color(.tertiaryLabel))
+                        // The record sign, at the size of the dot that shows while it records.
+                        Image(systemName: "circle.fill").imageScale(.small).foregroundStyle(waits ? Color(.tertiaryLabel) : Color.red)
                     }
                 }
                 .buttonStyle(.borderless)
-                .disabled(decks.recording != nil)
+                .disabled(waits)
                 .accessibilityLabel(OwnDeckText.recordLabel(part))
                 .accessibilityIdentifier(identifier)
                 Spacer(minLength: 8)
