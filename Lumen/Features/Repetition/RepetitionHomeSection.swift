@@ -17,6 +17,8 @@ struct RepetitionHomeSection: View {
     var onLastNight: () -> Void = {}
     var onSettings: () -> Void = {}
     var onMoreModes: () -> Void = {}
+    /// A166: the listening consent is given (the first start asks for it now). Then "Fler lägen" is shown at once.
+    var listeningConsented = false
 
     @State private var isCreating = false
     @State private var opened: UUID?
@@ -47,7 +49,9 @@ struct RepetitionHomeSection: View {
     /// A100 (Deangelo 2026-11-14, Toby T21 finding 2): "Fler lägen · Beta · använder mikrofonen" is shown only once
     /// the user has started a first exam (the control check before the first Starta prov sets `controlsChecked`).
     /// Before that a new user sees the exam and Starta prov, nothing about BETA or the microphone.
-    private var showsMoreModes: Bool { controlsChecked || textControlsChecked }
+    /// A166 (Angela Schrute): the one who gave the listening consent in the first start has seen the listening, and
+    /// needs the way back to it from Start.
+    private var showsMoreModes: Bool { controlsChecked || textControlsChecked || listeningConsented }
 
     /// A153: the keyboard is up (the bottom row then steps aside).
     @State private var keyboardIsUp = false
