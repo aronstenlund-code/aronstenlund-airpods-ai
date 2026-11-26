@@ -1,9 +1,12 @@
 import SwiftUI
 
-/// Settings → History (D49/D56): read, delete one, delete everything.
+/// Settings → History (D49/D56): read, search, delete one, delete everything. Also from Lyssnar's ⋯ menu (the flow).
 struct HistoryView: View {
     let store: HistoryStore
     @State private var confirmingDeleteAll = false
+    @State private var search = ""
+
+    private var shown: [HistoryEntry] { HistoryEntry.matching(store.entries, search) }
 
     var body: some View {
         List {
@@ -11,8 +14,10 @@ struct HistoryView: View {
                 if store.entries.isEmpty {
                     Text("No history yet. Your questions and EarMind's answers appear here.")
                         .foregroundStyle(.secondary)
+                } else if shown.isEmpty {
+                    ContentUnavailableView.search(text: search) // the system's own words, in the phone's language
                 }
-                ForEach(store.entries) { entry in
+                ForEach(shown) { entry in
                     NavigationLink {
                         HistoryDetailView(store: store, entry: entry)
                     } label: {
@@ -25,7 +30,7 @@ struct HistoryView: View {
                     }
                 }
                 .onDelete { offsets in
-                    let doomed = offsets.map { store.entries[$0] }
+                    let doomed = offsets.map { shown[$0] } // the rows as shown, also while searching
                     for entry in doomed { store.delete(entry) }
                 }
             } footer: {
@@ -43,6 +48,7 @@ struct HistoryView: View {
         .lumenForm()
         .navigationTitle("Historik")
         .navigationBarTitleDisplayMode(.inline)
+        .searchable(text: $search) // the flow: find an answer from last week without scrolling
         .confirmationDialog("Delete all history?", isPresented: $confirmingDeleteAll, titleVisibility: .visible) {
             Button("Delete all history", role: .destructive) { store.deleteAll() }
         } message: {
