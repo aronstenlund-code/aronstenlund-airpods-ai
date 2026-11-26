@@ -79,9 +79,14 @@ export function replyHint(endpoint: string, body: unknown): string {
     const tools = b?.tools?.length ? " Web tools are on: plain text is read as an answer given without searching; a search needs {\"events\": [...]} with server_tool_use blocks." : "";
     return (user.includes("<mode>")
       ? "First line: the JSON meta object the system prompt asks for ({\"is_question\":..., \"reconstructed_question\":..., \"confidence\":...}), newline, then the spoken answer."
-      : "Direct mode: only the spoken answer text (no JSON line – it would be read aloud).") + tools;
+      : "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks.") + tools;
   }
-  return "As the system prompt asks (exam, help and the judge read a JSON object from the reply).";
+  // O102 P11: the system prompt's own "Return ONLY …" decides (compress returns plain text, the rest JSON)
+  const sys = String(JSON.stringify(b?.system ?? ""));
+  if (/Return ONLY the shortened text/i.test(sys)) return "Plain text: only the shortened text, as the system prompt says.";
+  return /Return ONLY (?:a |one )?JSON|Return ONLY a JSON object|JSON object/i.test(sys)
+    ? "A JSON object, exactly as the system prompt's Return line says."
+    : "As the system prompt's Return line says.";
 }
 
 export interface TurnResult {

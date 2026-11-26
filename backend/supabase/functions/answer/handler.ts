@@ -2097,7 +2097,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               const head0 = headBuf.replace(/^\s*\[\[REL [^\]]*\]\]\s*/u, "");
               if (/^\s*\[\[REL/u.test(headBuf) && !headBuf.includes("]]")) return; // the relation tag is not complete yet
               if (/^\s*\[\[(?:V(?:E(?:T(?:\])?)?)?)?$/iu.test(head0)) return; // the [[VET]] marker is not complete yet
-              if (/^\s*\[\[KRIS\]\]/iu.test(head0)) {
+              // O102 P5 (Oscar): [[KRIS]] may come after [[VET]] (two first-line rules): still the whole reply
+              const afterVet = head0.replace(/^\s*\[\[VET\]\]\s*/iu, "");
+              if (afterVet !== head0 && /^\s*\[(?:\[(?:K(?:R(?:I(?:S(?:\])?)?)?)?)?)?$/iu.test(afterVet)) return; // [[KRIS]] not complete yet
+              if (/^\s*\[\[KRIS\]\]/iu.test(afterVet)) {
                 crisisMarked = true; // K23: the model's own safety layer (direct modes)
                 headBuf = null;
                 stop = true;
@@ -2462,8 +2465,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
               // O93: a searched answer whose model named no source: marked (and logged), never given one it did not use
               ...(heldFallback ? { source_fallback: true } : {}),
               ...(markerResult ? { crisis_marker: markerResult } : {}),
-              ...((webSearches > 0 || webUsed) && !post.source && !textOn && !heldFallback
-                ? (console.log("web_answer_no_source", JSON.stringify({ searches: webSearches, words: answerWords })), { source_missing: true })
+              // O102 P4 (Oscar): also a question that had to be searched (forceSearch) but was answered without a search
+              ...((webSearches > 0 || webUsed || forceSearch) && !post.source && !textOn && !heldFallback
+                ? (console.log("web_answer_no_source", JSON.stringify({ searches: webSearches, words: answerWords, forced: forceSearch })), { source_missing: true })
                 : {}),
               memory_add: null,
               ...(webCapTest ? { web_cap_test: true } : {}),

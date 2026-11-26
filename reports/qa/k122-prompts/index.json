@@ -3,14 +3,16 @@
     "id": "F01",
     "cat": "fakta",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "F01.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "F01.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "En spindel har åtta ben, och det skiljer den från insekter, som har sex."
+    ]
   },
   {
     "id": "F02",
@@ -29,14 +31,16 @@
     "id": "F03",
     "cat": "fakta",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "F03.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "F03.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "August Strindberg skrev Röda rummet, som kom ut artonhundrasjuttio nio och brukar räknas som Sveriges första moderna roman."
+    ]
   },
   {
     "id": "F04",
@@ -55,14 +59,17 @@
     "id": "F05",
     "cat": "fakta",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "F05.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
-      "F05.t1.c1"
+      "F05.t1.c1",
+      "F05.t1.c2"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Kebnekaise är ungefär tvåtusen nittiosju meter högt, mätt på nordtoppen. Sydtoppen var länge högst, men dess glaciär har smält så mycket att nordtoppen sedan tvåtusen nitton är Sveriges högsta punkt."
+    ]
   },
   {
     "id": "F06",
@@ -94,14 +101,16 @@
     "id": "F10",
     "cat": "fakta",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "F10.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "F10.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Berlinmuren föll den nionde november nittonhundraåttio nio, när gränsen mellan Östberlin och Västberlin öppnades."
+    ]
   },
   {
     "id": "F11",
@@ -147,14 +156,16 @@
     "id": "F14",
     "cat": "fakta",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "F14.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "F14.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Aristoteles levde från trehundraåttiofyra till trehundratjugotvå före Kristus. Han var elev till Platon och lärare åt Alexander den store."
+    ]
   },
   {
     "id": "F15",
@@ -238,14 +249,16 @@
     "id": "C05",
     "cat": "beräkning",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "C05.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "C05.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Var och en får ungefär tvåhundrafjorton kronor och tjugonio öre."
+    ]
   },
   {
     "id": "C06",
@@ -322,7 +335,7 @@
     "prompts": [],
     "blocked": [],
     "said": [
-      "Just nu är klockan tjugotvå och trettioett i Sverige och sexton och trettioett i New York. New York är sex timmar efter Sverige."
+      "Just nu är klockan tjugotre och tretton i Sverige och sjutton och tretton i New York. New York är sex timmar efter Sverige."
     ]
   },
   {
@@ -342,14 +355,16 @@
     "id": "T03",
     "cat": "tid",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "T03.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "T03.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Sydney ligger tio timmar före Sverige just nu, så där är klockan åtta och trettioett på fredag morgon."
+    ]
   },
   {
     "id": "T04",
@@ -361,7 +376,7 @@
     "prompts": [],
     "blocked": [],
     "said": [
-      "Just nu är klockan tjugotvå och trettioett i Sverige och tjugotre och trettioett i Kapstaden. Kapstaden är en timme före Sverige."
+      "Just nu är klockan tjugotre och tretton i Sverige och noll och tretton i Kapstaden, nästa dag. Kapstaden är en timme före Sverige."
     ]
   },
   {
@@ -485,27 +500,31 @@
     "id": "S01",
     "cat": "tal-fel",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "S01.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "S01.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Gustav Vasa var Sveriges kung från femtonhundratjugotre till femtonhundrasextio och räknas som grundaren av den moderna svenska staten. Han bröt landet loss från Kalmarunionen och införde reformationen."
+    ]
   },
   {
     "id": "S03",
     "cat": "tal-fel",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "S03.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "S03.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Berlin är Tysklands huvudstad."
+    ]
   },
   {
     "id": "S04",
@@ -590,14 +609,20 @@
     "id": "U01",
     "cat": "följdfråga",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "U01.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
-      "U01.t1.c1"
+      "U01.t1.c1",
+      "U01.t2.c1",
+      "U01.t3.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Himlen är blå för att solljuset sprids mot molekylerna i luften, något som kallas Rayleighspridning. Solljuset ser vitt ut men består av alla regnbågens färger. Kortvågigt ljus, alltså blått och violett, sprids mycket mer än rött ljus när det träffar kväve- och syremolekyler. Det blå ljuset studsar därför runt över hela himlen och når våra ögon från alla håll. Violett sprids ännu mer, men solen sänder ut mindre violett och våra ögon är mindre känsliga för det, så vi uppfattar himlen som blå. Vid solnedgång går ljuset en mycket längre väg genom atmosfären, så det mesta blå sprids bort och kvar blir rött och orange.",
+      "Blått ljus sprids mer för att luftens molekyler är mycket mindre än ljusets våglängd, och då ökar spridningen kraftigt ju kortare våglängden är. Ljuset får elektronerna i molekylerna att svänga, och de sänder sedan ut ljus åt alla håll. Kortare våglängd betyder snabbare svängningar, och snabbare svängningar strålar ut mycket mer ljus. Blått ljus har ungefär halva våglängden mot rött och sprids därför runt fem gånger mer. Spridningen ökar nämligen med fjärde potensen av hur kort våglängden är. Därför fylls himlen av blått ljus från alla riktningar, medan det röda mest går rakt fram.",
+      "Luftens molekyler är mycket mindre än ljusets våglängd, och då sprids kort våglängd mycket mer. Blått ljus har ungefär halva våglängden mot rött och sprids därför runt fem gånger mer."
+    ]
   },
   {
     "id": "U02",
@@ -629,14 +654,20 @@
     "id": "U05",
     "cat": "följdfråga",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "U05.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
-      "U05.t1.c1"
+      "U05.t1.c1",
+      "U05.t2.c1",
+      "U05.t3.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Marie Curie var en polskfödd fysiker och kemist i Frankrike som forskade om radioaktivitet och upptäckte grundämnena polonium och radium. Hon var första kvinnan som fick nobelpris och den enda som fått det i både fysik och kemi.",
+      "Marie Curie upptäckte artonhundranittioåtta grundämnena polonium, som hon döpte efter Polen, och radium tillsammans med Pierre Curie. Hon visade också att strålningen kommer inifrån atomerna och myntade ordet radioaktivitet.",
+      "Marie Curie dog nittonhundratrettiofyra i blodsjukdomen aplastisk anemi, som troligen orsakades av att hon under många år utsatts för strålning i sitt arbete. Hon hanterade radioaktiva ämnen utan skydd, och hennes anteckningar är fortfarande radioaktiva."
+    ]
   },
   {
     "id": "U06",
@@ -733,15 +764,18 @@
     "id": "B05",
     "cat": "ämnesbyte",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "B05.t2.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
-      "B05.t2.c1"
+      "B05.t2.c1",
+      "B05.t3.c1"
     ],
     "blocked": [],
     "said": [
-      "Tjugofyra gånger sex är hundrafyrtiofyra."
+      "Tjugofyra gånger sex är hundrafyrtiofyra.",
+      "Hundrafyrtiofyra delat med tre är fyrtioåtta.",
+      "En modern fotboll har ett yttre skal av konstläder, oftast polyuretan, med fodringslager av polyester eller bomull under. Innerst sitter en blåsa av latex eller butylgummi som fylls med luft."
     ]
   },
   {
@@ -774,27 +808,31 @@
     "id": "P03",
     "cat": "praktiskt",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "P03.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "P03.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Drick mycket varmt, till exempel te med honung, vila rösten och suga på halstabletter för att lindra. Ring elva sjuttiosju om du får svårt att svälja eller andas, hög feber eller inte blir bättre efter en vecka."
+    ]
   },
   {
     "id": "P04",
     "cat": "praktiskt",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "P04.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "P04.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Starta om routern genom att dra ur strömmen i trettio sekunder, och sitt närmare den, gärna utan väggar emellan. Blir det inte bättre, mät hastigheten med Bredbandskollen och kontakta din bredbandsleverantör."
+    ]
   },
   {
     "id": "P05",
@@ -826,66 +864,80 @@
     "id": "R01",
     "cat": "recept",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "R01.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
-      "R01.t1.c1"
+      "R01.t1.c1",
+      "R01.t1.c2"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Jag hittade inget recept med en säker källa."
+    ]
   },
   {
     "id": "R02",
     "cat": "recept",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "R02.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
-      "R02.t1.c1"
+      "R02.t1.c1",
+      "R02.t1.c2"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Jag hittade inget recept med en säker källa."
+    ]
   },
   {
     "id": "R04",
     "cat": "recept",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "R04.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
-      "R04.t1.c1"
+      "R04.t1.c1",
+      "R04.t2.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Gör en kycklingcurry: stek femhundra gram strimlad kyckling och en hackad gul lök i olja, rör ner en matsked currypulver och häll på fyra deciliter kokosmjölk. Låt sjuda i femton minuter, smaka av med salt och servera med ris.",
+      "Gör en kokosgryta med vitlök och ingefära i stället: stek femhundra gram strimlad kyckling och en hackad gul lök i olja, tillsätt två pressade vitlöksklyftor och en matsked riven ingefära och häll på fyra deciliter kokosmjölk. Låt sjuda i femton minuter, smaka av med salt och limesaft och servera med ris."
+    ]
   },
   {
     "id": "L01",
     "cat": "språk",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "L01.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "L01.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Ich bin müde."
+    ]
   },
   {
     "id": "L03",
     "cat": "språk",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "L03.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "L03.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "YOLO står för you only live once, alltså man lever bara en gång. Det sägs när någon gör något spontant eller lite vågat, ungefär som kör, man lever bara en gång."
+    ]
   },
   {
     "id": "L04",
@@ -969,15 +1021,16 @@
     "id": "M01",
     "cat": "minne",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "M01.t2.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "M01.t2.c1"
     ],
     "blocked": [],
     "said": [
-      "Okej, det kommer jag ihåg."
+      "Okej, det kommer jag ihåg.",
+      "Välj förpackat godis med tydlig allergimärkning, till exempel vingummi eller lakrits, och läs innehållsförteckningen varje gång eftersom även spår av nötter kan finnas. Undvik lösgodis, där risken för spår är stor."
     ]
   },
   {
@@ -1042,14 +1095,16 @@
     "id": "W01",
     "cat": "webb",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "W01.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "W01.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Erik Thedéen är riksbankschef. Han tillträdde den första januari tvåtusen tjugotre och leder Riksbankens direktion, som bestämmer styrräntan."
+    ]
   },
   {
     "id": "W02",
@@ -1081,14 +1136,16 @@
     "id": "O01",
     "cat": "socialt",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "O01.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "O01.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Tack själv, jag hade jättekul. Vi måste ses snart igen!"
+    ]
   },
   {
     "id": "O02",
@@ -1159,29 +1216,31 @@
     "id": "RZ1",
     "cat": "rizz",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "RZ1.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
-      "RZ1.t1.c1",
-      "RZ1.t1.c2"
+      "RZ1.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      ""
+    ]
   },
   {
     "id": "RZ1s",
     "cat": "socialt-läge",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "RZ1s.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
-      "RZ1s.t1.c1",
-      "RZ1s.t1.c2"
+      "RZ1s.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      ""
+    ]
   },
   {
     "id": "RZ2",
@@ -1439,14 +1498,24 @@
     "id": "I01",
     "cat": "intervju",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "I01.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
-      "I01.t1.c1"
+      "I01.t1.c1",
+      "I01.t2.c1",
+      "I01.t3.c1",
+      "I01.t4.c1",
+      "I01.t5.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Jag är en person som trivs när det är mycket att göra och tempot är högt. Jag är noggrann, så när jag fyller på hyllor eller håller ordning i en avdelning gör jag det ordentligt hela vägen. Jag tycker om att möta människor och vill att varje kund ska känna sig välkommen och få hjälp snabbt. Jag lär mig fort och frågar hellre en gång för mycket än gör fel. Därför ser jag fram emot att jobba i en matbutik i sommar, där service och samarbete i laget är viktigt.",
+      "Jag heter Sam och är tjugo år. Jag gillar att träffa folk, och det är en stor anledning till att jag söker jobb i en matbutik. Förra sommaren jobbade jag på ett kafé, och där mötte jag kunder varje dag. Nu vill jag ta med mig det hit, så att varje kund känner sig välkommen och får hjälp snabbt.",
+      "Jag vill jobba här för att jag gillar att träffa folk, och i en matbutik möter man många olika kunder varje dag. Förra sommaren jobbade jag på ett kafé och märkte hur roligt det är när en kund går därifrån nöjd. Jobbet här blandar kundkontakt i kassan med att fylla på varor och hålla ordning, och jag gillar att ha flera saker att göra. Jag vill vara den som kunderna gärna frågar när de inte hittar något.",
+      "Jag vill ha ett jobb där jag tjänar egna pengar och samtidigt gör något jag tycker om, och det är att träffa folk. I en matbutik möter jag kunder varje dag, precis som på kaféet förra sommaren. Jag tar jobbet på allvar och vill vara någon ni kan räkna med hela sommaren.",
+      "Din största styrka är att du gillar att träffa folk och kan knyta det till kaféjobbet förra sommaren, vilket gör dina svar trovärdiga. Öva på att börja presentationen med vad du bidrar med, inte bara namn och ålder. Öva också på att svara på varför du vill jobba där med vad som lockar i själva jobbet, inte främst att du behöver pengar. Inför den riktiga intervjun, förbered ett konkret exempel från kaféet där du hjälpte en kund."
+    ]
   },
   {
     "id": "I02",
@@ -1478,15 +1547,22 @@
     "id": "E01",
     "cat": "provläge",
     "endpoint": "answer",
-    "status": "needs_reply",
-    "needs": "E01.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "E01.t1.c1",
-      "E01.t1.c2"
+      "E01.t2.c1",
+      "E01.t3.c1",
+      "E01.t4.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Vilket cellorgan sorterar och paketerar proteiner innan de skickas vidare eller ut ur cellen?",
+      "Inte riktigt. Rätt svar är Golgiapparaten, som tar emot proteiner från det endoplasmatiska nätverket, sorterar och paketerar dem och skickar dem vidare i små blåsor. Mitokondrien är cellens kraftverk där cellandningen bildar ATP, men den hanterar inte proteinerna.",
+      "Ribosomerna är cellens proteinfabriker: de läser av budbärar-RNA och fogar ihop aminosyror till proteiner. En del sitter fria i cytoplasman och andra på det kornrika endoplasmatiska nätverket, och därifrån går proteinerna vidare till Golgiapparaten. Ett exempel är insulin, som byggs på ribosomer i bukspottkörtelns celler och sedan skickas ut ur cellen. På provet kan du beskriva vägen från ribosom via endoplasmatiska nätverket och Golgiapparaten ut ur cellen. Finns det ribosomer även i bakterieceller?",
+      "Ja, även bakterier har ribosomer, men de är mindre än i djur- och växtceller, och därför kan vissa antibiotika slå ut just bakteriernas ribosomer. Vilket cellorgan bryter ner utslitna celldelar och avfall med hjälp av enzymer?"
+    ]
   },
   {
     "id": "E02",
@@ -1520,15 +1596,16 @@
     "id": "PE1",
     "cat": "provläge-eval",
     "endpoint": "provlage-eval",
-    "status": "needs_reply",
-    "needs": "PE1.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
-      "PE1.t1.c1",
-      "PE1.t1.c2"
+      "PE1.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      "Mitos ger två genetiskt identiska dotterceller med lika många kromosomer som modercellen, medan meios ger fyra könsceller med halva kromosomantalet som alla är genetiskt olika. Mitos används när kroppen växer och ersätter celler, till exempel i huden. Meios sker bara i könskörtlarna och har två celldelningar efter varandra. Under meiosen byter homologa kromosomer bitar med varandra i överkorsning, och kromosomerna fördelas slumpmässigt, vilket ger variation. Hos människan har en kroppscell fyrtiosex kromosomer och en könscell tjugotre. På provet kan du jämföra antalet dotterceller, kromosomantalet, den genetiska variationen och var delningen sker."
+    ]
   },
   {
     "id": "PE2",
@@ -1547,42 +1624,54 @@
     "id": "PG1",
     "cat": "provläge-domare",
     "endpoint": "provlage-eval",
-    "status": "needs_reply",
-    "needs": "PG1.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "PG1.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      null
+    ]
   },
   {
     "id": "EX1",
     "cat": "prov-drill",
     "endpoint": "exam",
-    "status": "needs_reply",
-    "needs": "EX1.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "EX1.t1.c1",
-      "EX1.t1.c2"
+      "EX1.t1.c2",
+      "EX1.t1.c3",
+      "EX1.t1.c4",
+      "EX1.t1.c5"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      null
+    ]
   },
   {
     "id": "EX2",
     "cat": "prov-drill-en",
     "endpoint": "exam",
-    "status": "needs_reply",
-    "needs": "EX2.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "EX2.t1.c1",
-      "EX2.t1.c2"
+      "EX2.t1.c2",
+      "EX2.t1.c3",
+      "EX2.t1.c4",
+      "EX2.t1.c5"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      null
+    ]
   },
   {
     "id": "EX3",
@@ -1601,66 +1690,80 @@
     "id": "EX4",
     "cat": "prov-rätta",
     "endpoint": "exam",
-    "status": "needs_reply",
-    "needs": "EX4.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "EX4.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      null
+    ]
   },
   {
     "id": "CO1",
     "cat": "komprimera",
     "endpoint": "exam",
-    "status": "needs_reply",
-    "needs": "CO1.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "CO1.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      null
+    ]
   },
   {
     "id": "HE1",
     "cat": "hjälp",
     "endpoint": "help",
-    "status": "needs_reply",
-    "needs": "HE1.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "HE1.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      null
+    ]
   },
   {
     "id": "HE2",
     "cat": "hjälp-utanför",
     "endpoint": "help",
-    "status": "needs_reply",
-    "needs": "HE2.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "HE2.t1.c1"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      null
+    ]
   },
   {
     "id": "HT1",
     "cat": "hjälp-prova",
     "endpoint": "help",
-    "status": "needs_reply",
-    "needs": "HT1.t1.c1",
+    "status": "done",
+    "needs": null,
     "reason": null,
     "prompts": [
       "HT1.t1.c1",
-      "HT1.t1.c2"
+      "HT1.t1.c2",
+      "HT1.t1.c3",
+      "HT1.t1.c4",
+      "HT1.t1.c5",
+      "HT1.t1.c6"
     ],
     "blocked": [],
-    "said": []
+    "said": [
+      null
+    ]
   }
 ]

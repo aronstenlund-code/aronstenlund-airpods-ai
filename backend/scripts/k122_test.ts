@@ -93,3 +93,23 @@ Deno.test("K122: the QA cases and the extra cases load", async () => {
   for (const ep of ["answer", "provlage-eval", "exam", "help"]) assert(cases.some((c) => (c.endpoint ?? "answer") === ep), ep);
   assert(cases.some((c) => c.id === "RZ1"), "Rizz cases as their social body");
 });
+
+Deno.test("O102 P4: a question that must be searched, answered without a search or a source, is marked source_missing", async () => {
+  const r = await runCase({ id: "W1", cat: "webb", turns: [{ q: "sök på nätet vem som är riksbankschef" }] }, map({ "W1.t1.c1": { text: "Erik Thedéen är riksbankschef." } }));
+  assertEquals(r.status, "done");
+  assertEquals(r.turns[0].done?.source_missing, true, JSON.stringify(r.turns[0].done));
+  const plain = await runCase({ id: "F2", cat: "fakta", turns: [{ q: "vad heter Norges huvudstad" }] }, map({ "F2.t1.c1": { text: "Oslo." } }));
+  assertEquals(plain.turns[0].done?.source_missing, undefined, "an ordinary answer is never marked");
+});
+
+Deno.test("O102 P5: the model's [[KRIS]] after a relation tag or [[VET]] is the whole reply: the check, then the crisis answer only", async () => {
+  const ctx = { recent_qa: [{ q: "vad är fotosyntes", a: "Fotosyntes är när växter gör socker av ljus." }] };
+  for (const first of ["[[VET]]\n[[KRIS]]", "[[REL new_topic]]\n[[VET]]\n[[KRIS]]", "[[REL new_topic]]\n[[KRIS]]"]) {
+    const r = await runCase({ id: "K5", endpoint: "answer", body: { fragment: "allt känns meningslöst nu", mode: "push_to_talk", language: "sv", context: ctx } },
+      map({ "K5.t1.c1": { text: first }, "K5.t1.c2": { text: "ja" }, "K5.t1.c3": { text: "ja" } }));
+    assertEquals(r.status, "done", first);
+    assertEquals(r.prompts.length, 2, `${first}: the answer and the check, no second answer call`);
+    assert(JSON.stringify(r.prompts[1].anthropic_request).includes("You check ONE utterance"), first);
+    assertEquals(r.turns[0].said, CRISIS_SELF, first);
+  }
+});

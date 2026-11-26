@@ -41,5 +41,5 @@
       "effort": "low"
     }
   },
-  "reply_hint": "As the system prompt asks (exam, help and the judge read a JSON object from the reply)."
+  "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
 }
