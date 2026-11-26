@@ -1,0 +1,71 @@
+{
+  "id": "adhoc",
+  "status": "done",
+  "prompts": [
+    {
+      "stem": "adhoc.t1.c1",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 1,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "compress",
+        "text": "Fotosyntesen är den process där gröna växter, alger och vissa bakterier omvandlar ljusenergi till kemisk energi. Processen sker främst i bladens kloroplaster, som innehåller det gröna färgämnet klorofyll. Klorofyllet absorberar framför allt rött och blått ljus, medan det gröna ljuset reflekteras, vilket är anledningen till att bladen ser gröna ut. Växten tar upp koldioxid från luften genom små öppningar på bladens undersida som kallas klyvöppningar, och vatten tas upp genom rötterna och transporteras upp genom stammen i vedkärlen. I fotosyntesens första steg, de ljusberoende reaktionerna, används ljusenergin för att spjälka vattenmolekyler. Då frigörs syre som en biprodukt, och energin lagras tillfälligt i molekylerna ATP och NADPH. I det andra steget, Calvincykeln, används ATP och NADPH för att bygga upp glukos av koldioxid. Glukosen kan sedan användas direkt som energi i cellandningen, lagras som stärkelse eller användas för att bygga cellulosa i cellväggarna. Den totala reaktionen kan sammanfattas som att sex molekyler koldioxid och sex molekyler vatten med hjälp av ljus blir en molekyl glukos och sex molekyler syre. Fotosyntesen är grunden för nästan allt liv på jorden, eftersom den både producerar det syre vi andas och den energi som via näringskedjorna når alla andra organismer. Faktorer som påverkar hur snabbt fotosyntesen går är ljusintensitet, koldioxidhalt och temperatur. Om någon av dessa faktorer är låg begränsar den hastigheten, även om de andra är gynnsamma. Detta kallas för begränsande faktorer. I växthus höjer odlare ibland koldioxidhalten för att få växterna att växa snabbare. Under 1700-talet visade forskaren Jan Ingenhousz att växter bara producerar syre i ljus, vilket var ett viktigt steg för att förstå processen.",
+        "lang": "sv"
+      },
+      "anthropic_request": {
+        "model": "claude-haiku-5-5",
+        "max_tokens": 788,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You shorten a text that a student will hear read aloud. You get <text>. Return ONLY the shortened text: about half as long, every fact, name, number and step kept, nothing added, in the same order, written in the same language as the text (never translated), as plain sentences for listening (no headings, lists, markdown or quotes). No comment before or after it.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<text>\nFotosyntesen är den process där gröna växter, alger och vissa bakterier omvandlar ljusenergi till kemisk energi. Processen sker främst i bladens kloroplaster, som innehåller det gröna färgämnet klorofyll. Klorofyllet absorberar framför allt rött och blått ljus, medan det gröna ljuset reflekteras, vilket är anledningen till att bladen ser gröna ut. Växten tar upp koldioxid från luften genom små öppningar på bladens undersida som kallas klyvöppningar, och vatten tas upp genom rötterna och transporteras upp genom stammen i vedkärlen. I fotosyntesens första steg, de ljusberoende reaktionerna, används ljusenergin för att spjälka vattenmolekyler. Då frigörs syre som en biprodukt, och energin lagras tillfälligt i molekylerna ATP och NADPH. I det andra steget, Calvincykeln, används ATP och NADPH för att bygga upp glukos av koldioxid. Glukosen kan sedan användas direkt som energi i cellandningen, lagras som stärkelse eller användas för att bygga cellulosa i cellväggarna. Den totala reaktionen kan sammanfattas som att sex molekyler koldioxid och sex molekyler vatten med hjälp av ljus blir en molekyl glukos och sex molekyler syre. Fotosyntesen är grunden för nästan allt liv på jorden, eftersom den både producerar det syre vi andas och den energi som via näringskedjorna når alla andra organismer. Faktorer som påverkar hur snabbt fotosyntesen går är ljusintensitet, koldioxidhalt och temperatur. Om någon av dessa faktorer är låg begränsar den hastigheten, även om de andra är gynnsamma. Detta kallas för begränsande faktorer. I växthus höjer odlare ibland koldioxidhalten för att få växterna att växa snabbare. Under 1700-talet visade forskaren Jan Ingenhousz att växter bara producerar syre i ljus, vilket var ett viktigt steg för att förstå processen.\n</text>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        },
+        "thinking": {
+          "type": "disabled"
+        }
+      },
+      "reply_hint": "As the system prompt asks (exam, help and the judge read a JSON object from the reply)."
+    }
+  ],
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "exam",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-compress",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 596,
+          "output_tokens": 316,
+          "total_ms": 8,
+          "est_cost_usd": 0.0002176,
+          "status": "ok"
+        }
+      ],
+      "credits": [],
+      "json": {
+        "text": "Fotosyntesen är processen där gröna växter, alger och vissa bakterier gör om ljusenergi till kemisk energi. Den sker främst i bladens kloroplaster, som innehåller klorofyll. Klorofyllet tar upp rött och blått ljus men reflekterar grönt, därför ser bladen gröna ut. Koldioxid tas in genom klyvöppningarna på bladens undersida, och vatten tas upp av rötterna och leds upp i vedkärlen. I de ljusberoende reaktionerna spjälkas vatten med hjälp av ljus; syre frigörs och energin lagras i ATP och NADPH. I Calvincykeln används ATP och NADPH för att bygga glukos av koldioxid. Glukosen används i cellandningen, lagras som stärkelse eller blir cellulosa i cellväggarna. Sammanfattat blir sex koldioxid och sex vatten med ljus en glukos och sex syre. Fotosyntesen är grunden för nästan allt liv, eftersom den ger syret vi andas och energin i näringskedjorna. Hastigheten beror på ljusintensitet, koldioxidhalt och temperatur, och den faktor som är lägst begränsar, så kallade begränsande faktorer. Odlare höjer ibland koldioxidhalten i växthus. På 1700-talet visade Jan Ingenhousz att växter bara ger syre i ljus."
+      }
+    }
+  ],
+  "blocked": []
+}

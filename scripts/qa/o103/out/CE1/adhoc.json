@@ -1,0 +1,71 @@
+{
+  "id": "adhoc",
+  "status": "done",
+  "prompts": [
+    {
+      "stem": "adhoc.t1.c1",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 1,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "compress",
+        "text": "The water cycle describes how water moves continuously between the oceans, the atmosphere and the land. Energy from the Sun heats water in oceans, lakes and rivers, causing it to evaporate and rise into the air as water vapour. Plants also release water vapour through their leaves in a process called transpiration, and together these processes are sometimes called evapotranspiration. As the warm, moist air rises it cools, and the water vapour condenses around tiny particles of dust or salt to form clouds. When the droplets in the clouds collide and grow large enough, they fall back to the ground as precipitation, which can be rain, snow, sleet or hail depending on the temperature. Some of the water that reaches the ground runs off the surface into streams and rivers and eventually returns to the sea. Some soaks into the ground, a process called infiltration, and becomes groundwater that can stay underground for thousands of years before it reaches a spring or a well. Snow and ice can store water for long periods in glaciers and ice caps. About 97 percent of all water on Earth is salt water in the oceans, and only around 3 percent is fresh water, most of which is frozen. Human activity affects the water cycle in many ways, for example through deforestation, which reduces transpiration, and through climate change, which makes evaporation faster and can lead to heavier rainfall in some regions and drought in others.",
+        "lang": "en"
+      },
+      "anthropic_request": {
+        "model": "claude-haiku-5-5",
+        "max_tokens": 679,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You shorten a text that a student will hear read aloud. You get <text>. Return ONLY the shortened text: about half as long, every fact, name, number and step kept, nothing added, in the same order, written in the same language as the text (never translated), as plain sentences for listening (no headings, lists, markdown or quotes). No comment before or after it.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<text>\nThe water cycle describes how water moves continuously between the oceans, the atmosphere and the land. Energy from the Sun heats water in oceans, lakes and rivers, causing it to evaporate and rise into the air as water vapour. Plants also release water vapour through their leaves in a process called transpiration, and together these processes are sometimes called evapotranspiration. As the warm, moist air rises it cools, and the water vapour condenses around tiny particles of dust or salt to form clouds. When the droplets in the clouds collide and grow large enough, they fall back to the ground as precipitation, which can be rain, snow, sleet or hail depending on the temperature. Some of the water that reaches the ground runs off the surface into streams and rivers and eventually returns to the sea. Some soaks into the ground, a process called infiltration, and becomes groundwater that can stay underground for thousands of years before it reaches a spring or a well. Snow and ice can store water for long periods in glaciers and ice caps. About 97 percent of all water on Earth is salt water in the oceans, and only around 3 percent is fresh water, most of which is frozen. Human activity affects the water cycle in many ways, for example through deforestation, which reduces transpiration, and through climate change, which makes evaporation faster and can lead to heavier rainfall in some regions and drought in others.\n</text>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        },
+        "thinking": {
+          "type": "disabled"
+        }
+      },
+      "reply_hint": "As the system prompt asks (exam, help and the judge read a JSON object from the reply)."
+    }
+  ],
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "exam",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-compress",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 514,
+          "output_tokens": 266,
+          "total_ms": 7,
+          "est_cost_usd": 0.0001844,
+          "status": "ok"
+        }
+      ],
+      "credits": [],
+      "json": {
+        "text": "The water cycle is how water moves between the oceans, the atmosphere and the land. The Sun heats water so it evaporates as water vapour, and plants release vapour through transpiration; together this is called evapotranspiration. Rising air cools and the vapour condenses around dust or salt into clouds. When droplets collide and grow, they fall as precipitation: rain, snow, sleet or hail depending on the temperature. Some water runs off into streams and rivers and back to the sea. Some soaks in through infiltration and becomes groundwater, which can stay underground for thousands of years. Glaciers and ice caps store water as snow and ice. About 97 percent of Earth's water is salt water, and only about 3 percent is fresh, mostly frozen. Humans affect the cycle through deforestation, which reduces transpiration, and climate change, which speeds evaporation and brings heavier rain in some regions and drought in others."
+      }
+    }
+  ],
+  "blocked": []
+}

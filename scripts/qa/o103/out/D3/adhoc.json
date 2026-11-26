@@ -1,0 +1,68 @@
+{
+  "id": "adhoc",
+  "status": "done",
+  "prompts": [
+    {
+      "stem": "adhoc.t1.c1",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 1,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "compress",
+        "text": "Fotosyntesen är den process där gröna växter, alger och vissa bakterier omvandlar ljusenergi till kemisk energi. Processen sker främst i bladens kloroplaster, som innehåller det gröna färgämnet klorofyll. Klorofyllet absorberar framför allt rött och blått ljus, medan det gröna ljuset reflekteras, vilket är anledningen till att bladen ser gröna ut. Växten tar upp koldioxid från luften genom små öppningar på bladens undersida som kallas klyvöppningar, och vatten tas upp genom rötterna och transporteras upp genom stammen i vedkärlen. I fotosyntesens första steg, de ljusberoende reaktionerna, anvä",
+        "lang": "en"
+      },
+      "anthropic_request": {
+        "model": "claude-haiku-5-5",
+        "max_tokens": 400,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You shorten a text that a student will hear read aloud. You get <text>. Return ONLY the shortened text: about half as long, every fact, name, number and step kept, nothing added, in the same order, written in the same language as the text (never translated), as plain sentences for listening (no headings, lists, markdown or quotes). No comment before or after it.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<text>\nFotosyntesen är den process där gröna växter, alger och vissa bakterier omvandlar ljusenergi till kemisk energi. Processen sker främst i bladens kloroplaster, som innehåller det gröna färgämnet klorofyll. Klorofyllet absorberar framför allt rött och blått ljus, medan det gröna ljuset reflekteras, vilket är anledningen till att bladen ser gröna ut. Växten tar upp koldioxid från luften genom små öppningar på bladens undersida som kallas klyvöppningar, och vatten tas upp genom rötterna och transporteras upp genom stammen i vedkärlen. I fotosyntesens första steg, de ljusberoende reaktionerna, anvä\n</text>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        },
+        "thinking": {
+          "type": "disabled"
+        }
+      },
+      "reply_hint": "As the system prompt asks (exam, help and the judge read a JSON object from the reply)."
+    }
+  ],
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "exam",
+      "http_status": 502,
+      "usage": [],
+      "credits": [],
+      "json": {
+        "error": {
+          "code": "provider_unavailable",
+          "message": "EarMind är nere en stund. Försök igen senare.",
+          "fallback": true
+        }
+      },
+      "error": {
+        "code": "provider_unavailable",
+        "message": "EarMind är nere en stund. Försök igen senare.",
+        "fallback": true
+      }
+    }
+  ],
+  "blocked": []
+}

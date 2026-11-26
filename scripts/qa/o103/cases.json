@@ -1,0 +1,342 @@
+[
+ {
+  "id": "K1",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "kan någon förklara vad fotosyntes är",
+   "mode": "push_to_talk",
+   "language": "sv",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "K2",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "can anyone tell me what the capital of Australia is",
+   "mode": "push_to_talk",
+   "language": "en",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: en"
+  ]
+ },
+ {
+  "id": "K3",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "och vad hette den där kungen som grundade Stockholm",
+   "mode": "push_to_talk",
+   "language": "sv",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "CS1",
+  "endpoint": "exam",
+  "body": {
+   "action": "compress",
+   "text": "Fotosyntesen är den process där gröna växter, alger och vissa bakterier omvandlar ljusenergi till kemisk energi. Processen sker främst i bladens kloroplaster, som innehåller det gröna färgämnet klorofyll. Klorofyllet absorberar framför allt rött och blått ljus, medan det gröna ljuset reflekteras, vilket är anledningen till att bladen ser gröna ut. Växten tar upp koldioxid från luften genom små öppningar på bladens undersida som kallas klyvöppningar, och vatten tas upp genom rötterna och transporteras upp genom stammen i vedkärlen. I fotosyntesens första steg, de ljusberoende reaktionerna, används ljusenergin för att spjälka vattenmolekyler. Då frigörs syre som en biprodukt, och energin lagras tillfälligt i molekylerna ATP och NADPH. I det andra steget, Calvincykeln, används ATP och NADPH för att bygga upp glukos av koldioxid. Glukosen kan sedan användas direkt som energi i cellandningen, lagras som stärkelse eller användas för att bygga cellulosa i cellväggarna. Den totala reaktionen kan sammanfattas som att sex molekyler koldioxid och sex molekyler vatten med hjälp av ljus blir en molekyl glukos och sex molekyler syre. Fotosyntesen är grunden för nästan allt liv på jorden, eftersom den både producerar det syre vi andas och den energi som via näringskedjorna når alla andra organismer. Faktorer som påverkar hur snabbt fotosyntesen går är ljusintensitet, koldioxidhalt och temperatur. Om någon av dessa faktorer är låg begränsar den hastigheten, även om de andra är gynnsamma. Detta kallas för begränsande faktorer. I växthus höjer odlare ibland koldioxidhalten för att få växterna att växa snabbare. Under 1700-talet visade forskaren Jan Ingenhousz att växter bara producerar syre i ljus, vilket var ett viktigt steg för att förstå processen.",
+   "lang": "sv"
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "CE1",
+  "endpoint": "exam",
+  "body": {
+   "action": "compress",
+   "text": "The water cycle describes how water moves continuously between the oceans, the atmosphere and the land. Energy from the Sun heats water in oceans, lakes and rivers, causing it to evaporate and rise into the air as water vapour. Plants also release water vapour through their leaves in a process called transpiration, and together these processes are sometimes called evapotranspiration. As the warm, moist air rises it cools, and the water vapour condenses around tiny particles of dust or salt to form clouds. When the droplets in the clouds collide and grow large enough, they fall back to the ground as precipitation, which can be rain, snow, sleet or hail depending on the temperature. Some of the water that reaches the ground runs off the surface into streams and rivers and eventually returns to the sea. Some soaks into the ground, a process called infiltration, and becomes groundwater that can stay underground for thousands of years before it reaches a spring or a well. Snow and ice can store water for long periods in glaciers and ice caps. About 97 percent of all water on Earth is salt water in the oceans, and only around 3 percent is fresh water, most of which is frozen. Human activity affects the water cycle in many ways, for example through deforestation, which reduces transpiration, and through climate change, which makes evaporation faster and can lead to heavier rainfall in some regions and drought in others.",
+   "lang": "en"
+  },
+  "headers": [
+   "x-earmind-lang: en"
+  ]
+ },
+ {
+  "id": "CS2",
+  "endpoint": "exam",
+  "body": {
+   "action": "compress",
+   "text": "The water cycle describes how water moves continuously between the oceans, the atmosphere and the land. Energy from the Sun heats water in oceans, lakes and rivers, causing it to evaporate and rise into the air as water vapour. Plants also release water vapour through their leaves in a process called transpiration, and together these processes are sometimes called evapotranspiration. As the warm, moist air rises it cools, and the water vapour condenses around tiny particles of dust or salt to form clouds. When the droplets in the clouds collide and grow large enough, they fall back to the ground as precipitation, which can be rain, snow, sleet or hail depending on the temperature. Some of the water that reaches the ground runs off the surface into streams and rivers and eventually returns to the sea. Some soaks into the ground, a process called infiltration, and becomes groundwater that can stay underground for thousands of years before it reaches a spring or a well. Snow and ice can store water for long periods in glaciers and ice caps. About 97 percent of all water on Earth is salt water in the oceans, and only around 3 percent is fresh water, most of which is frozen. Human activity affects the water cycle in many ways, for example through deforestation, which reduces transpiration, and through climate change, which makes evaporation faster and can lead to heavier rainfall in some regions and drought in others.",
+   "lang": "sv"
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "CX1",
+  "endpoint": "exam",
+  "body": {
+   "action": "compress",
+   "text": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+   "lang": "sv"
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "D1",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "vad är fotosyntes",
+   "mode": "push_to_talk",
+   "language": "sv",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ],
+  "fixed": [
+   {
+    "error": {
+     "status": 400,
+     "message": "Your credit balance is too low to access the Anthropic API."
+    }
+   }
+  ]
+ },
+ {
+  "id": "D2",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "what is photosynthesis",
+   "mode": "push_to_talk",
+   "language": "en",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: en"
+  ],
+  "fixed": [
+   {
+    "error": {
+     "status": 400,
+     "message": "Your credit balance is too low to access the Anthropic API."
+    }
+   }
+  ]
+ },
+ {
+  "id": "D3",
+  "endpoint": "exam",
+  "body": {
+   "action": "compress",
+   "text": "Fotosyntesen är den process där gröna växter, alger och vissa bakterier omvandlar ljusenergi till kemisk energi. Processen sker främst i bladens kloroplaster, som innehåller det gröna färgämnet klorofyll. Klorofyllet absorberar framför allt rött och blått ljus, medan det gröna ljuset reflekteras, vilket är anledningen till att bladen ser gröna ut. Växten tar upp koldioxid från luften genom små öppningar på bladens undersida som kallas klyvöppningar, och vatten tas upp genom rötterna och transporteras upp genom stammen i vedkärlen. I fotosyntesens första steg, de ljusberoende reaktionerna, anvä",
+   "lang": "en"
+  },
+  "headers": [
+   "x-earmind-lang: en"
+  ],
+  "fixed": [
+   {
+    "error": {
+     "status": 529,
+     "message": "Overloaded"
+    }
+   }
+  ]
+ },
+ {
+  "id": "D4",
+  "endpoint": "exam",
+  "body": {
+   "action": "grade",
+   "task": {
+    "no": "1",
+    "text": "Vad behöver växten för fotosyntes?",
+    "points": {
+     "E": 1,
+     "C": 0,
+     "A": 0
+    },
+    "answer": "ljus, vatten och koldioxid",
+    "assessment": ""
+   },
+   "answer": "ljus och vatten",
+   "lang": "sv"
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ],
+  "fixed": [
+   {
+    "error": {
+     "status": 429,
+     "message": "rate limited"
+    }
+   }
+  ]
+ },
+ {
+  "id": "D5",
+  "endpoint": "help",
+  "body": {
+   "question": "hur delar jag ett prov",
+   "lang": "en"
+  },
+  "headers": [
+   "x-earmind-lang: en"
+  ],
+  "fixed": [
+   {
+    "error": {
+     "status": 401,
+     "message": "invalid x-api-key"
+    }
+   }
+  ]
+ },
+ {
+  "id": "D6",
+  "endpoint": "exam",
+  "body": {
+   "action": "drill",
+   "answers": false,
+   "questions": 3,
+   "subject": "Biologi",
+   "pages": [],
+   "text": "Fotosyntesen är den process där gröna växter, alger och vissa bakterier omvandlar ljusenergi till kemisk energi. Processen sker främst i bladens kloroplaster, som innehåller det gröna färgämnet klorofyll. Klorofyllet absorberar framför allt rött och blått ljus, medan det gröna ljuset reflekteras, vilket är anledningen till att bladen ser gröna ut. Växten tar upp koldioxid från luften genom små öppningar på bladens undersida som kallas klyvöppningar, och vatten tas upp genom rötterna och transporteras upp genom stammen i vedkärlen. I fotosyntesens första steg, de ljusberoende reaktionerna, används ljusenergin för att spjälka vattenmolekyler. Då frigörs syre som en biprodukt, och energin lagras tillfälligt i molekylerna ATP och NADPH. I det andra steget, Calvincykeln, används ATP och NADPH för att bygga upp glukos av koldioxid. Glukosen kan sedan användas direkt som energi i cellandningen, lagras som stärkelse eller användas för att bygga cellulosa i cellväggarna. Den totala reaktionen kan sammanfattas som att sex molekyler koldioxid och sex molekyler vatten med hjälp av ljus blir en molekyl glukos och sex molekyler syre. Fotosyntesen är grunden för nästan allt liv på jorden, eftersom den både producerar det syre vi andas och den energi som via näringskedjorna når alla andra organismer. Faktorer som påverkar hur snabbt fotosyntesen går är ljusintensitet, koldioxidhalt och temperatur. Om någon av dessa faktorer är låg begränsar den hastigheten, även om de andra är gynnsamma. Detta kallas för begränsande faktorer. I växthus höjer odlare ibland koldioxidhalten för att få växterna att växa snabbare. Under 1700-talet visade forskaren Jan Ingenhousz att växter bara producerar syre i ljus, vilket var ett viktigt steg för att förstå processen.",
+   "lang": "sv"
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ],
+  "fixed": [
+   {
+    "error": {
+     "status": 400,
+     "message": "Your credit balance is too low to access the Anthropic API."
+    }
+   }
+  ]
+ },
+ {
+  "id": "RQ1",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "recept på pannkakor",
+   "mode": "push_to_talk",
+   "language": "sv",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "RQ2",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "hur byter jag däck på bilen",
+   "mode": "push_to_talk",
+   "language": "sv",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "RQ3",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "how do I make pancakes",
+   "mode": "push_to_talk",
+   "language": "en",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: en"
+  ]
+ },
+ {
+  "id": "N1",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "berätta lite om pi",
+   "mode": "push_to_talk",
+   "language": "sv",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "N2",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "när var slaget vid hastings och hur många dog",
+   "mode": "push_to_talk",
+   "language": "sv",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "N3",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "hur mycket vatten ska man dricka och hur kallt är det på vintern i kiruna",
+   "mode": "push_to_talk",
+   "language": "sv",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "N4",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "hur många bor i sverige och vad är styrräntan",
+   "mode": "push_to_talk",
+   "language": "sv",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "N5",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "vilka nummer ska jag ringa vid nödläge och vid sjukdom",
+   "mode": "push_to_talk",
+   "language": "sv",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "N6",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "when did world war two end and how many people died",
+   "mode": "push_to_talk",
+   "language": "en",
+   "context": {}
+  },
+  "headers": [
+   "x-earmind-lang: en"
+  ]
+ }
+]

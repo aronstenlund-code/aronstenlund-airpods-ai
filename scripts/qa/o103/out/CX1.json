@@ -1,0 +1,27 @@
+{
+ "id": "adhoc",
+ "status": "done",
+ "prompts": [],
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "exam",
+   "http_status": 400,
+   "usage": [],
+   "credits": [],
+   "json": {
+    "error": {
+     "code": "invalid_request",
+     "message": "text: at most 12000 characters",
+     "fallback": false
+    }
+   },
+   "error": {
+    "code": "invalid_request",
+    "message": "text: at most 12000 characters",
+    "fallback": false
+   }
+  }
+ ],
+ "blocked": []
+}
