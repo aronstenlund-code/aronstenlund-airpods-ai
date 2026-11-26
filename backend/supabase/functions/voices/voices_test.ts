@@ -104,7 +104,7 @@ Deno.test("K99 (D223): voices under review are shown only to admin", async () =>
   const mk = (admin: boolean) => createVoicesHandler({
     authenticate: () => Promise.resolve({ id: "u1", isAnonymous: true }),
     rateLimiter: new MemoryRateLimiter(), voices: [], defaultVoiceId: null,
-    catalog: () => Promise.resolve([{ voice_id: "AAAAAAAAAAAA", name: "Sara" }, { voice_id: "BBBBBBBBBBBB", name: "Pirat", review: true }]),
+    catalog: () => Promise.resolve([{ voice_id: "AAAAAAAAAAAA", name: "Sara", preview_url: "https://example.invalid/s.mp3" }, { voice_id: "BBBBBBBBBBBB", name: "Pirat", review: true, preview_url: "https://example.invalid/p.mp3" }]),
     isAdmin: () => Promise.resolve(admin),
   });
   assertEquals((await (await mk(false)(new Request("http://x/voices"))).json()).catalog.map((v: { name: string }) => v.name), ["Sara"]);
@@ -118,4 +118,17 @@ Deno.test("K114 (D252): the library can be searched for native English voices (l
   assertEquals(seen[0].language, "en");
   await h(new Request("http://x/voices?library=1&lang=any", { method: "GET" }));
   assertEquals(seen[1].anyLanguage, true);
+});
+
+Deno.test("K124 (Oscar G2, D267): a catalog voice without a preview is not listed for ordinary users (admin still sees it)", async () => {
+  const cat = [
+    { voice_id: A, name: "Astrid", preview_url: "https://storage.googleapis.com/eleven-public-prod/a.mp3" },
+    { voice_id: E, name: "Elin", preview_url: null },
+    { voice_id: O, name: "Oskar", preview_url: "" },
+    { voice_id: "Http0000000000000004", name: "Http", preview_url: "http://example.com/x.mp3" },
+  ];
+  const j = await (await createVoicesHandler(deps({ catalog: () => Promise.resolve(cat), isAdmin: () => Promise.resolve(false) }))(get())).json();
+  assertEquals(j.catalog.map((v: { name: string }) => v.name), ["Astrid"]);
+  const admin = await (await createVoicesHandler(deps({ catalog: () => Promise.resolve(cat), isAdmin: () => Promise.resolve(true) }))(get())).json();
+  assertEquals(admin.catalog.length, 4, "admin sees every voice, to fix the catalog");
 });

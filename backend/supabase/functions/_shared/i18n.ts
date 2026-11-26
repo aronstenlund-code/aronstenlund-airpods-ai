@@ -67,6 +67,8 @@ const EXACT: Record<string, string> = {
   "Välkomstkrediterna är inte på än.": "The welcome credits are not on yet.",
   "Webbetan har lyssnat mycket i dag. Försök igen i morgon, eller använd appen.": "The web beta has listened a lot today. Try again tomorrow, or use the app.",
   "Webbetan har gjort sitt ljud för i dag. Försök igen i morgon, eller använd appen.": "The web beta has made today's audio. Try again tomorrow, or use the app.",
+  // K124 (D267)
+  "Uppläsningen med rösten är slut för tillfället.": "Reading aloud with the voice is not available right now.",
   "Word-filen är större än 10 MB. Spara den som PDF eller dela upp den.": "The Word file is larger than 10 MB. Save it as a PDF or split it.",
 };
 

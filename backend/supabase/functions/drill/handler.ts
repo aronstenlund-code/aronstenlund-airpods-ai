@@ -164,6 +164,8 @@ export const UNAVAILABLE_RETRY_MS = 10 * 60_000;
  * are back (Starta prov again, or status after UNAVAILABLE_RETRY_MS).
  */
 export const AUDIO_UNAVAILABLE_NOTICE = { code: AUDIO_UNAVAILABLE, message: "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt." };
+/** K124 (D267): the same fixed code as /tts when ElevenLabs is out (the app reads with the phone's own voice). */
+export const TTS_QUOTA_FIELD = { tts: { code: "tts_quota", fallback: true } };
 
 export interface DrillDb {
   drill(id: string): Promise<DrillRow | null>;
@@ -1022,7 +1024,7 @@ export function createDrillHandler(deps: DrillDeps) {
       return json({
         ...(await view(saved, rows, existingAudio)), new_chars: 0, chars_on_start: newChars, generated_questions: 0, cost, unit: "chars",
         ...(picked ? { voice_reason: picked.reason } : {}),
-        ...(out ? { audio_unavailable: true, notice: AUDIO_UNAVAILABLE_NOTICE } : {}),
+        ...(out ? { audio_unavailable: true, notice: AUDIO_UNAVAILABLE_NOTICE, ...TTS_QUOTA_FIELD } : {}),
       });
     }
     // K90 (D213): the credits are characters of new audio (cost above); audio any account already made is free.
@@ -1274,7 +1276,7 @@ export function createDrillHandler(deps: DrillDeps) {
         const unavailable = v.items.some((i) => Object.values(i.audio as unknown as Record<string, { error?: string } | undefined>).some((f) => f?.error === AUDIO_UNAVAILABLE)) ||
           // K78: audio still missing while ElevenLabs is out (a drill kept as text by start) says so too
           (v.audio.done < v.audio.total && await creditsOut());
-        return json({ ...v, ...(unavailable ? { audio_unavailable: true, notice: AUDIO_UNAVAILABLE_NOTICE } : {}), ...(refunded ? { refunded_credits: refunded, refunded_questions: refunded } : {}) });
+        return json({ ...v, ...(unavailable ? { audio_unavailable: true, notice: AUDIO_UNAVAILABLE_NOTICE, ...TTS_QUOTA_FIELD } : {}), ...(refunded ? { refunded_credits: refunded, refunded_questions: refunded } : {}) });
       }
       if (action === "share") {
         const d = await owned(user.id, b?.id);
