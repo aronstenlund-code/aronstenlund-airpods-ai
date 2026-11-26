@@ -1,6 +1,6 @@
 {
   "id": "adhoc",
-  "status": "needs_reply",
+  "status": "done",
   "prompts": [
     {
       "stem": "adhoc.t1.c1",
@@ -89,9 +89,219 @@
         }
       },
       "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
+    },
+    {
+      "stem": "adhoc.t1.c3",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 3,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "drill",
+        "answers": false,
+        "questions": 12,
+        "subject": "Fysik",
+        "pages": [],
+        "text": "Vatten fryser vid 0 grader. Det kokar vid 100 grader vid normalt lufttryck.",
+        "lang": "sv"
+      },
+      "anthropic_request": {
+        "model": "claude-haiku-5-5",
+        "max_tokens": 390,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You check Swedish exam questions that a student will only HEAR (no text in front of them). You get <exam> (subject, grade and what the exam covers) and <questions> (JSON: i and q). Return ONLY a JSON object {\"questions\": [{\"i\": 0, \"q\": \"...\"}]} with ONLY the questions you changed (none = {\"questions\": []}).\n- A question that only makes sense with the material in front of the student is rewritten so that it is clear when heard alone (\"Hur bygger man gymmodellen?\" -> \"Hur ställer man upp en linjär kostnadsmodell?\", \"Skillnad mot past simple?\" -> \"Skillnad mellan present perfect och past simple?\").\n- Symbols, formulas, units and abbreviations are written as they are said (\"3x + 5 = 20\" -> \"tre x plus fem är lika med tjugo\", \"O2\" -> \"syre\", \"dm³\" -> \"kubikdecimeter\").\n- Wrong or clumsy language is fixed (\"Vad jämför man nysvenska och fornsvenska?\" -> \"Hur skiljer sig nysvenska från fornsvenska?\"). The question stays in its language (D182: an English exam's questions stay English); never translate, except: when <language> is given, every question that is not in that language is returned translated into it (K67: a language exam's questions are in the exam's language).\n- Never make a question longer for any other reason. Filler that adds nothing may go (\"i naturen\", \"egentligen\").\n- The question must still ask the same thing: a why-question stays a why-question, the same concept, the same numbers in a calculation.\n- A calculation question keeps its numbers and units, written as words or plain digits as given; never symbols.\n- K97 (O79): with <material>, read it first: two questions are the same when the material gives them the same answer. Two questions whose answers would be the same (the same fact, cause or effect asked in other words: \"Hur påverkar inflation hushållens köpkraft?\" and \"Vad händer med köpkraften när inflationen stiger?\"; \"Varför får personer med fasta inkomster det sämre?\" and \"Varför får pensionärer med fast pension det sämre?\"): return the LATER one as {\"i\": N, \"drop\": true}. Only when a student would give the same answer to both; two questions on one topic that ask different things both stay.\nNo other text.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<exam>Ämne: Fysik. Provet handlar om vid vilka temperaturer vatten fryser och kokar.</exam>\n<questions>[{\"i\":0,\"q\":\"Vid vilken temperatur fryser vatten?\"},{\"i\":1,\"q\":\"Vid vilken temperatur kokar vatten vid normalt lufttryck?\"},{\"i\":2,\"q\":\"Hur skiljer sig temperaturen när vatten fryser från när det kokar?\"}]</questions>\n<material>Vatten fryser vid 0 grader. Det kokar vid 100 grader vid normalt lufttryck.</material>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        },
+        "thinking": {
+          "type": "disabled"
+        }
+      },
+      "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
+    },
+    {
+      "stem": "adhoc.t1.c4",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 4,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "drill",
+        "answers": false,
+        "questions": 12,
+        "subject": "Fysik",
+        "pages": [],
+        "text": "Vatten fryser vid 0 grader. Det kokar vid 100 grader vid normalt lufttryck.",
+        "lang": "sv"
+      },
+      "anthropic_request": {
+        "model": "claude-sonnet-5-5",
+        "max_tokens": 420,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You check the finished list of questions for a spoken practice exam against the material it was made from. You get <material> and <questions> (JSON: i and q). Return ONLY {\"questions\": [...], \"sources\": [...]} with an entry in \"questions\" for each question you change or remove (none = []):\n- Every fact a question takes for granted (who, what, which war, who owed whom, a cause, a result, a date) must be what the material says. When a question takes for granted something the material does not say, or says differently, rewrite it as little as possible so that it assumes only what the material says: {\"i\": N, \"q\": \"...\"}. Example: the material says \"skatten höjdes efter kriget mot Ryssland\" and nothing about why; \"Varför höjdes skatten efter kriget mot Polen?\" is wrong twice (the wrong war, and a cause the material does not give); write \"Vad hände med skatten efter kriget mot Ryssland?\". K110 (Oscar O91 F1): never rewrite into a why-question whose cause the material does not state.\n- A why-question whose cause the material does not give: rewrite it into an understanding question the material does carry, never into a what-, when- or who-question (D230): \"Förklara hur X hänger ihop med Y\", \"Vad blev följden av X?\", \"Jämför X och Y\", \"Hur påverkade X Y?\" (or the same in the exam's language): {\"i\": N, \"q\": \"...\"}. The new question may only ask about a link the material itself makes.\n- At least half of the questions must be understanding questions (why, how, explain, compare, what followed). When fewer are, rewrite plain recall questions (what is, when, who, which) into understanding questions the material carries, the earliest first, until half are.\n- A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {\"i\": N, \"drop\": true, \"same_as\": M}. Two questions on one topic that ask different things both stay.\n- A question the material does not answer (a how or why whose way or cause it never gives): rewrite it into one about the same part that the material answers (D230 forms first). A question that asks two things, of which the material answers one: keep only that one (K106, Oscar).\n- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return \"sources\": [{\"i\": N, \"s\": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer, the sentence that holds the main answer first, and \"a\": the right answer in one short sentence, in the exam's language, said the way the material says it (K109). Two questions answered by the same sentence(s), or with the same answer, ask the same thing for the student, even when worded differently.\n- Never change anything else: same language, same length or shorter, clear when only heard. Return {\"questions\": [...], \"sources\": [{\"i\": N, \"s\": [...], \"a\": \"...\"}, ...]}. No other text.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<material>\n[1] Vatten fryser vid 0 grader.\n[2] Det kokar vid 100 grader vid normalt lufttryck.\n</material>\n<questions>[{\"i\":0,\"q\":\"Vid vilken temperatur fryser vatten?\"},{\"i\":1,\"q\":\"Vid vilken temperatur kokar vatten vid normalt lufttryck?\"}]</questions>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        }
+      },
+      "reply_hint": "As the system prompt's Return line says."
     }
   ],
-  "turns": [],
-  "blocked": [],
-  "needs": "adhoc.t1.c1"
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "exam",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 1551,
+          "output_tokens": 96,
+          "total_ms": 32,
+          "est_cost_usd": 0.00020310000000000003,
+          "status": "ok"
+        },
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 1585,
+          "output_tokens": 26,
+          "total_ms": 32,
+          "est_cost_usd": 0.0001715,
+          "status": "ok"
+        },
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 723,
+          "output_tokens": 5,
+          "total_ms": 32,
+          "est_cost_usd": 0.0000748,
+          "status": "ok"
+        },
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 877,
+          "output_tokens": 48,
+          "total_ms": 32,
+          "est_cost_usd": 0.002234,
+          "status": "ok"
+        }
+      ],
+      "credits": [
+        {
+          "fn": "exam.quota",
+          "n": 0
+        }
+      ],
+      "json": {
+        "summary": {
+          "subject": "Fysik",
+          "grade": "",
+          "covers": "Provet handlar om vid vilka temperaturer vatten fryser och kokar."
+        },
+        "notes": "Vatten fryser vid 0 grader. Vatten kokar vid 100 grader vid normalt lufttryck.",
+        "questions_asked": 12,
+        "questions_possible": 2,
+        "note": "Materialet räckte till 2 frågor.",
+        "items": [
+          {
+            "id": "q1",
+            "question": "Vid vilken temperatur fryser vatten?"
+          },
+          {
+            "id": "q2",
+            "question": "Vid vilken temperatur kokar vatten vid normalt lufttryck?"
+          }
+        ],
+        "long_words": 90,
+        "usage": {
+          "plan": {
+            "model": "claude-haiku-5-5",
+            "input_tokens": 1551,
+            "output_tokens": 96,
+            "est_cost_usd": 0.00020310000000000003,
+            "ms": 5
+          },
+          "notes": {
+            "model": "claude-haiku-5-5",
+            "input_tokens": 1585,
+            "output_tokens": 26,
+            "est_cost_usd": 0.0001715,
+            "ms": 7
+          },
+          "shorten": {
+            "model": "claude-haiku-5-5",
+            "input_tokens": 723,
+            "output_tokens": 5,
+            "est_cost_usd": 0.0000748,
+            "ms": 1
+          },
+          "final_check": {
+            "model": "claude-sonnet-5-5",
+            "input_tokens": 877,
+            "output_tokens": 48,
+            "est_cost_usd": 0.002234,
+            "ms": 1,
+            "fixed": 0,
+            "dropped": 0,
+            "refilled": 0,
+            "understanding": 0,
+            "questions": 2
+          },
+          "est_cost_usd": 0.0026834,
+          "ms": 15
+        },
+        "quota": {
+          "unit": "chars",
+          "used": 0,
+          "limit": 100000,
+          "left": 100000,
+          "remaining": 100000,
+          "per": "month",
+          "resets": "2026-12-01"
+        }
+      }
+    }
+  ],
+  "blocked": []
 }

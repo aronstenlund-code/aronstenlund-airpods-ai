@@ -1,6 +1,6 @@
 {
  "id": "adhoc",
- "status": "needs_reply",
+ "status": "done",
  "prompts": [
   {
    "stem": "adhoc.t1.c1",
@@ -44,95 +44,47 @@
     }
    },
    "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
-  },
-  {
-   "stem": "adhoc.t1.c2",
-   "case": "adhoc",
-   "turn": 1,
-   "call": 2,
-   "endpoint": "exam",
-   "url": "https://k122-replay.invalid/v1/messages",
-   "client_request": {
-    "action": "drill_one",
-    "subject": "Geografi",
-    "notes": "Medeltemperaturen har stigit cirka 1,1 grad sedan slutet av 1800-talet. Huvudorsak: koldioxid från fossila bränslen (kol, olja, gas), som förstärker växthuseffekten. Följder: smältande isar, stigande hav, fler värmeböljor.",
-    "question": "Vad är växthuseffekten?",
-    "id": "q9",
-    "lang": "sv"
-   },
-   "anthropic_request": {
-    "model": "claude-sonnet-5-5",
-    "max_tokens": 688,
-    "stream": true,
-    "system": [
-     {
-      "type": "text",
-      "text": "You write the answers a Swedish student will listen to in their AirPods while revising for an exam. You get <context> (subject and grade), <notes> (the study material), <long_words>, <questions> (JSON: id and question) and maybe <language> and <may_fix>. Return ONLY a JSON object {\"answers\": [{\"id\": \"q1\", \"short\": \"...\", \"rest\": \"...\"}]} with one entry per question, in the same order.\n- Language (D182): write in <language> when it is given (a language exam: the questions are in that language too); else in Swedish.\n- When <may_fix> is given and a question cannot be answered well from the notes, put a better question in \"question\" and answer that one: a question with a claim the notes contradict gets the notes' fact (\"fjärde statsmakten\" -> \"tredje statsmakten\" when the notes say so); a \"Varför ...?\" whose cause the notes do not give becomes a \"Vad ...?\" or \"Hur ...?\" question the notes answer. K111: when you put a new question in \"question\", also return \"original\": {\"short\": \"...\", \"rest\": \"...\"}, your answer to the question exactly as it was asked, from the notes and by the same rules (it is used if the new question turns out to ask what another question asks). Otherwise leave \"question\" and \"original\" out.\n- K97 (O79): never invent a cause, motive or reason the notes do not give (\"bönderna var missnöjda med danskarnas styre\", \"för att göra makten säker för släkten\", \"kriget mot Danmark\" when the notes only say \"efter kriget\"). A why-question whose cause the notes do not state: with <may_fix>, ask a \"Vad ...?\" or \"Hur ...?\" question the notes answer; without it, answer only with what the notes do say about it, and say plainly that the reason is not known from this (\"Varför det blev så är inte känt här, men ...\"; in English \"Why is not explained here, but ...\") rather than guess; never name the notes, a material or what you have (\"the notes do not say\", \"det material jag har\" are wrong). School knowledge may fill out a mechanism the notes name, never supply a cause they leave out.\n- Never answer a why-question by repeating its claim (\"Det beror på att sidorna alltid har just det sambandet\", \"De ansåg att makten skulle komma från folket\"): give the reason, or (with <may_fix>) ask a better question.\n- \"short\": the short answer (D162): ONE sentence, two only when one cannot hold it, at most 25 words, that on its own is a full, correct A-level answer: it states the answer itself (the cause, the mechanism, the fact, the difference), never an introduction that only names the topic. Wrong: \"Fotosyntes är en viktig process i växterna.\" Right: \"Växten använder ljusenergi för att bygga glukos av koldioxid och vatten, och syre blir över.\"\n- \"rest\": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: it builds on the short answer with the concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Never repeat or rephrase the short answer. Short + rest together are about <long_words> words and never more (count them; K110: longer answers are cut in code after the last whole sentence that fits, so put the most important content first). Never pad an answer to reach the number.\n- The grade never lowers the quality; it only decides which concepts are reasonable (no university concepts in åk 7-9).\n- Base the answers on <notes>. K97 (O79): never add a cause, motive, mechanism, consequence, advice or general claim the notes do not give (\"efter blodbadet var han själv i fara\", \"Latin förstod bara de lärda\", \"banker utgår från styrräntan\", \"sänk volymen i hörlurarna\" are wrong when the notes do not say them); when the notes give no reason, say so in a few words instead of explaining. School knowledge only to name or define a concept the notes use, only facts you are certain of (textbook-level), and never contradict the notes; leave out a detail rather than guess it (O55: \"stäppgräs har korta rötter\" was wrong). Every fact must be correct: work every number out before you write it. Never add history, causes or examples the question did not ask for. Never add a general rule about a whole group (\"alla\", \"alltid\", \"aldrig\", \"inga\", \"kan alltså vara\") that the notes do not state (O63: \"Alla föreningar kan alltså vara molekyler\" is wrong: salt is a compound but not molecules).\n- The text is read aloud: plain spoken sentences, no markdown, lists, headings, brackets, abbreviations or symbols. K97 (O79): write numbers, years, dates, decimals and percentages with digits exactly as the notes have them (\"1527\", \"85 decibel\", \"340 meter per sekund\", \"2 procent\", \"den 6 juni 1523\"): the voice turns them into words, and digits are never mixed up. Write formulas and symbols in words (\"koldioxid\", not \"CO2\"; \"pi\", not \"π\"). Never mention the notes, the material, the text, the book, the exam or the grade: the student only hears the answer (\"i materialet\", \"enligt texten\" are wrong).\n- \"display\" (K66): the student also sees the text on screen, where 1850, 3,14, a² + b², CO₂ and 25 % are easier to read than words. When the question, \"short\" or \"rest\" has a number, year, decimal, formula, unit or symbol written as words, also return \"display\": {\"question\": \"...\", \"short\": \"...\", \"rest\": \"...\"} with the same sentences written as a textbook prints them, and only the fields that differ. Every year, date, percent, decimal, measurement and number above twelve gets its digits there (\"den fjortonde juli sjuttonhundraåttionio\" -> \"den 14 juli 1789\", \"fyra procent\" -> \"4 %\", \"eighteen fifty\" -> \"1850\", \"one point two degrees\" -> \"1.2 degrees\"); only small counts in running text stay words (\"två orsaker\"). Division is \"/\" or a fraction on screen (\"s / t\") and \"delat med\" / \"divided by\" in the spoken text. No numbers or formulas: leave \"display\" out.\nNo other text.",
-      "cache_control": {
-       "type": "ephemeral"
-      }
-     }
-    ],
-    "messages": [
-     {
-      "role": "user",
-      "content": "<context>Ämne: Geografi</context>\n<notes>\nMedeltemperaturen har stigit cirka 1,1 grad sedan slutet av 1800-talet. Huvudorsak: koldioxid från fossila bränslen (kol, olja, gas), som förstärker växthuseffekten. Följder: smältande isar, stigande hav, fler värmeböljor.\n</notes>\n<long_words>90</long_words>\n<questions>[{\"id\":\"q9\",\"question\":\"Vad är växthuseffekten?\"}]</questions>"
-     }
-    ],
-    "output_config": {
-     "effort": "low"
-    },
-    "thinking": {
-     "type": "between_tools"
-    }
-   },
-   "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
-  },
-  {
-   "stem": "adhoc.t1.c3",
-   "case": "adhoc",
-   "turn": 1,
-   "call": 3,
-   "endpoint": "exam",
-   "url": "https://k122-replay.invalid/v1/messages",
-   "client_request": {
-    "action": "drill_one",
-    "subject": "Geografi",
-    "notes": "Medeltemperaturen har stigit cirka 1,1 grad sedan slutet av 1800-talet. Huvudorsak: koldioxid från fossila bränslen (kol, olja, gas), som förstärker växthuseffekten. Följder: smältande isar, stigande hav, fler värmeböljor.",
-    "question": "Vad är växthuseffekten?",
-    "id": "q9",
-    "lang": "sv"
-   },
-   "anthropic_request": {
-    "model": "claude-sonnet-5-5",
-    "max_tokens": 688,
-    "stream": true,
-    "system": [
-     {
-      "type": "text",
-      "text": "You write the answers a Swedish student will listen to in their AirPods while revising for an exam. You get <context> (subject and grade), <notes> (the study material), <long_words>, <questions> (JSON: id and question) and maybe <language> and <may_fix>. Return ONLY a JSON object {\"answers\": [{\"id\": \"q1\", \"short\": \"...\", \"rest\": \"...\"}]} with one entry per question, in the same order.\n- Language (D182): write in <language> when it is given (a language exam: the questions are in that language too); else in Swedish.\n- When <may_fix> is given and a question cannot be answered well from the notes, put a better question in \"question\" and answer that one: a question with a claim the notes contradict gets the notes' fact (\"fjärde statsmakten\" -> \"tredje statsmakten\" when the notes say so); a \"Varför ...?\" whose cause the notes do not give becomes a \"Vad ...?\" or \"Hur ...?\" question the notes answer. K111: when you put a new question in \"question\", also return \"original\": {\"short\": \"...\", \"rest\": \"...\"}, your answer to the question exactly as it was asked, from the notes and by the same rules (it is used if the new question turns out to ask what another question asks). Otherwise leave \"question\" and \"original\" out.\n- K97 (O79): never invent a cause, motive or reason the notes do not give (\"bönderna var missnöjda med danskarnas styre\", \"för att göra makten säker för släkten\", \"kriget mot Danmark\" when the notes only say \"efter kriget\"). A why-question whose cause the notes do not state: with <may_fix>, ask a \"Vad ...?\" or \"Hur ...?\" question the notes answer; without it, answer only with what the notes do say about it, and say plainly that the reason is not known from this (\"Varför det blev så är inte känt här, men ...\"; in English \"Why is not explained here, but ...\") rather than guess; never name the notes, a material or what you have (\"the notes do not say\", \"det material jag har\" are wrong). School knowledge may fill out a mechanism the notes name, never supply a cause they leave out.\n- Never answer a why-question by repeating its claim (\"Det beror på att sidorna alltid har just det sambandet\", \"De ansåg att makten skulle komma från folket\"): give the reason, or (with <may_fix>) ask a better question.\n- \"short\": the short answer (D162): ONE sentence, two only when one cannot hold it, at most 25 words, that on its own is a full, correct A-level answer: it states the answer itself (the cause, the mechanism, the fact, the difference), never an introduction that only names the topic. Wrong: \"Fotosyntes är en viktig process i växterna.\" Right: \"Växten använder ljusenergi för att bygga glukos av koldioxid och vatten, och syre blir över.\"\n- \"rest\": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: it builds on the short answer with the concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Never repeat or rephrase the short answer. Short + rest together are about <long_words> words and never more (count them; K110: longer answers are cut in code after the last whole sentence that fits, so put the most important content first). Never pad an answer to reach the number.\n- The grade never lowers the quality; it only decides which concepts are reasonable (no university concepts in åk 7-9).\n- Base the answers on <notes>. K97 (O79): never add a cause, motive, mechanism, consequence, advice or general claim the notes do not give (\"efter blodbadet var han själv i fara\", \"Latin förstod bara de lärda\", \"banker utgår från styrräntan\", \"sänk volymen i hörlurarna\" are wrong when the notes do not say them); when the notes give no reason, say so in a few words instead of explaining. School knowledge only to name or define a concept the notes use, only facts you are certain of (textbook-level), and never contradict the notes; leave out a detail rather than guess it (O55: \"stäppgräs har korta rötter\" was wrong). Every fact must be correct: work every number out before you write it. Never add history, causes or examples the question did not ask for. Never add a general rule about a whole group (\"alla\", \"alltid\", \"aldrig\", \"inga\", \"kan alltså vara\") that the notes do not state (O63: \"Alla föreningar kan alltså vara molekyler\" is wrong: salt is a compound but not molecules).\n- The text is read aloud: plain spoken sentences, no markdown, lists, headings, brackets, abbreviations or symbols. K97 (O79): write numbers, years, dates, decimals and percentages with digits exactly as the notes have them (\"1527\", \"85 decibel\", \"340 meter per sekund\", \"2 procent\", \"den 6 juni 1523\"): the voice turns them into words, and digits are never mixed up. Write formulas and symbols in words (\"koldioxid\", not \"CO2\"; \"pi\", not \"π\"). Never mention the notes, the material, the text, the book, the exam or the grade: the student only hears the answer (\"i materialet\", \"enligt texten\" are wrong).\n- \"display\" (K66): the student also sees the text on screen, where 1850, 3,14, a² + b², CO₂ and 25 % are easier to read than words. When the question, \"short\" or \"rest\" has a number, year, decimal, formula, unit or symbol written as words, also return \"display\": {\"question\": \"...\", \"short\": \"...\", \"rest\": \"...\"} with the same sentences written as a textbook prints them, and only the fields that differ. Every year, date, percent, decimal, measurement and number above twelve gets its digits there (\"den fjortonde juli sjuttonhundraåttionio\" -> \"den 14 juli 1789\", \"fyra procent\" -> \"4 %\", \"eighteen fifty\" -> \"1850\", \"one point two degrees\" -> \"1.2 degrees\"); only small counts in running text stay words (\"två orsaker\"). Division is \"/\" or a fraction on screen (\"s / t\") and \"delat med\" / \"divided by\" in the spoken text. No numbers or formulas: leave \"display\" out.\nNo other text.",
-      "cache_control": {
-       "type": "ephemeral"
-      }
-     }
-    ],
-    "messages": [
-     {
-      "role": "user",
-      "content": "<context>Ämne: Geografi</context>\n<notes>\nMedeltemperaturen har stigit cirka 1,1 grad sedan slutet av 1800-talet. Huvudorsak: koldioxid från fossila bränslen (kol, olja, gas), som förstärker växthuseffekten. Följder: smältande isar, stigande hav, fler värmeböljor.\n</notes>\n<long_words>90</long_words>\n<questions>[{\"id\":\"q9\",\"question\":\"Vad är växthuseffekten?\"}]</questions>"
-     }
-    ],
-    "output_config": {
-     "effort": "low"
-    },
-    "thinking": {
-     "type": "between_tools"
-    }
-   },
-   "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
   }
  ],
- "turns": [],
- "blocked": [],
- "needs": "adhoc.t1.c1"
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "exam",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "exam-drill_one",
+     "provider": "anthropic",
+     "model": "claude-sonnet-5-5",
+     "input_tokens": 1663,
+     "output_tokens": 132,
+     "total_ms": 16,
+     "est_cost_usd": 0.004646,
+     "status": "ok"
+    }
+   ],
+   "credits": [],
+   "json": {
+    "item": {
+     "id": "q9",
+     "question": "Vad är växthuseffekten?",
+     "short": "Växthuseffekten är att gaser i atmosfären, som koldioxid, håller kvar en del av jordens värme så att den inte strålar ut i rymden.",
+     "long": "Växthuseffekten är att gaser i atmosfären, som koldioxid, håller kvar en del av jordens värme så att den inte strålar ut i rymden. Koldioxid från fossila bränslen som kol, olja och gas förstärker växthuseffekten. När mer värme stannar kvar stiger jordens medeltemperatur, som har ökat med cirka 1,1 grad sedan slutet av 1800-talet. Följderna blir bland annat smältande isar, stigande hav och fler värmeböljor."
+    },
+    "long_words": 90,
+    "usage": {
+     "answers": {
+      "model": "claude-sonnet-5-5",
+      "input_tokens": 1663,
+      "output_tokens": 132,
+      "est_cost_usd": 0.004646,
+      "ms": 6
+     },
+     "est_cost_usd": 0.004646
+    }
+   }
+  }
+ ],
+ "blocked": []
 }

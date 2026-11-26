@@ -1,0 +1,1 @@
+{"notes": "Vatten fryser vid 0 grader. Vatten kokar vid 100 grader vid normalt lufttryck."}

@@ -1,6 +1,6 @@
 {
   "id": "adhoc",
-  "status": "needs_reply",
+  "status": "done",
   "prompts": [
     {
       "stem": "adhoc.t1.c1",
@@ -89,9 +89,308 @@
         }
       },
       "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
+    },
+    {
+      "stem": "adhoc.t1.c3",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 3,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "drill",
+        "answers": true,
+        "questions": 4,
+        "subject": "",
+        "pages": [],
+        "text": "The Roman Empire\n\nRome was founded, according to legend, in 753 BC. The Roman Republic was replaced by an empire when Augustus became the first emperor in 27 BC. The empire built roads, aqueducts and a common legal system across Europe. The Western Roman Empire fell in 476 AD, while the Eastern part, called the Byzantine Empire, lasted until 1453.",
+        "lang": "en"
+      },
+      "anthropic_request": {
+        "model": "claude-haiku-5-5",
+        "max_tokens": 660,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You check Swedish exam questions that a student will only HEAR (no text in front of them). You get <exam> (subject, grade and what the exam covers) and <questions> (JSON: i and q). Return ONLY a JSON object {\"questions\": [{\"i\": 0, \"q\": \"...\"}]} with ONLY the questions you changed (none = {\"questions\": []}).\n- A question that only makes sense with the material in front of the student is rewritten so that it is clear when heard alone (\"Hur bygger man gymmodellen?\" -> \"Hur ställer man upp en linjär kostnadsmodell?\", \"Skillnad mot past simple?\" -> \"Skillnad mellan present perfect och past simple?\").\n- Symbols, formulas, units and abbreviations are written as they are said (\"3x + 5 = 20\" -> \"tre x plus fem är lika med tjugo\", \"O2\" -> \"syre\", \"dm³\" -> \"kubikdecimeter\").\n- Wrong or clumsy language is fixed (\"Vad jämför man nysvenska och fornsvenska?\" -> \"Hur skiljer sig nysvenska från fornsvenska?\"). The question stays in its language (D182: an English exam's questions stay English); never translate, except: when <language> is given, every question that is not in that language is returned translated into it (K67: a language exam's questions are in the exam's language).\n- Never make a question longer for any other reason. Filler that adds nothing may go (\"i naturen\", \"egentligen\").\n- The question must still ask the same thing: a why-question stays a why-question, the same concept, the same numbers in a calculation.\n- A calculation question keeps its numbers and units, written as words or plain digits as given; never symbols.\n- K97 (O79): with <material>, read it first: two questions are the same when the material gives them the same answer. Two questions whose answers would be the same (the same fact, cause or effect asked in other words: \"Hur påverkar inflation hushållens köpkraft?\" and \"Vad händer med köpkraften när inflationen stiger?\"; \"Varför får personer med fasta inkomster det sämre?\" and \"Varför får pensionärer med fast pension det sämre?\"): return the LATER one as {\"i\": N, \"drop\": true}. Only when a student would give the same answer to both; two questions on one topic that ask different things both stay.\nNo other text.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<exam>Ämne: Historia. The exam covers the Roman Empire: the legend of Rome's founding, the change from republic to empire under Augustus, what the empire built, and the fall of the Western and Eastern empires.</exam>\n<questions>[{\"i\":0,\"q\":\"When was Rome founded, according to legend?\"},{\"i\":1,\"q\":\"How did the Roman Republic become an empire?\"},{\"i\":2,\"q\":\"Who was the first Roman emperor?\"},{\"i\":3,\"q\":\"What did the Roman Empire build across Europe?\"},{\"i\":4,\"q\":\"How did the fate of the Western Roman Empire differ from the Eastern part?\"},{\"i\":5,\"q\":\"What was the Eastern Roman Empire called?\"}]</questions>\n<material>The Roman Empire\n\nRome was founded, according to legend, in 753 BC. The Roman Republic was replaced by an empire when Augustus became the first emperor in 27 BC. The empire built roads, aqueducts and a common legal system across Europe. The Western Roman Empire fell in 476 AD, while the Eastern part, called the Byzantine Empire, lasted until 1453.</material>\n<language>English</language>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        },
+        "thinking": {
+          "type": "disabled"
+        }
+      },
+      "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
+    },
+    {
+      "stem": "adhoc.t1.c4",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 4,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "drill",
+        "answers": true,
+        "questions": 4,
+        "subject": "",
+        "pages": [],
+        "text": "The Roman Empire\n\nRome was founded, according to legend, in 753 BC. The Roman Republic was replaced by an empire when Augustus became the first emperor in 27 BC. The empire built roads, aqueducts and a common legal system across Europe. The Western Roman Empire fell in 476 AD, while the Eastern part, called the Byzantine Empire, lasted until 1453.",
+        "lang": "en"
+      },
+      "anthropic_request": {
+        "model": "claude-sonnet-5-5",
+        "max_tokens": 640,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You check the finished list of questions for a spoken practice exam against the material it was made from. You get <material> and <questions> (JSON: i and q). Return ONLY {\"questions\": [...], \"sources\": [...]} with an entry in \"questions\" for each question you change or remove (none = []):\n- Every fact a question takes for granted (who, what, which war, who owed whom, a cause, a result, a date) must be what the material says. When a question takes for granted something the material does not say, or says differently, rewrite it as little as possible so that it assumes only what the material says: {\"i\": N, \"q\": \"...\"}. Example: the material says \"skatten höjdes efter kriget mot Ryssland\" and nothing about why; \"Varför höjdes skatten efter kriget mot Polen?\" is wrong twice (the wrong war, and a cause the material does not give); write \"Vad hände med skatten efter kriget mot Ryssland?\". K110 (Oscar O91 F1): never rewrite into a why-question whose cause the material does not state.\n- A why-question whose cause the material does not give: rewrite it into an understanding question the material does carry, never into a what-, when- or who-question (D230): \"Förklara hur X hänger ihop med Y\", \"Vad blev följden av X?\", \"Jämför X och Y\", \"Hur påverkade X Y?\" (or the same in the exam's language): {\"i\": N, \"q\": \"...\"}. The new question may only ask about a link the material itself makes.\n- At least half of the questions must be understanding questions (why, how, explain, compare, what followed). When fewer are, rewrite plain recall questions (what is, when, who, which) into understanding questions the material carries, the earliest first, until half are.\n- A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {\"i\": N, \"drop\": true, \"same_as\": M}. Two questions on one topic that ask different things both stay.\n- A question the material does not answer (a how or why whose way or cause it never gives): rewrite it into one about the same part that the material answers (D230 forms first). A question that asks two things, of which the material answers one: keep only that one (K106, Oscar).\n- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return \"sources\": [{\"i\": N, \"s\": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer, the sentence that holds the main answer first, and \"a\": the right answer in one short sentence, in the exam's language, said the way the material says it (K109). Two questions answered by the same sentence(s), or with the same answer, ask the same thing for the student, even when worded differently.\n- Never change anything else: same language, same length or shorter, clear when only heard. Return {\"questions\": [...], \"sources\": [{\"i\": N, \"s\": [...], \"a\": \"...\"}, ...]}. No other text.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<material>\n[1] The Roman Empire\n[2] Rome was founded, according to legend, in 753 BC.\n[3] The Roman Republic was replaced by an empire when Augustus became the first emperor in 27 BC.\n[4] The empire built roads, aqueducts and a common legal system across Europe.\n[5] The Western Roman Empire fell in 476 AD, while the Eastern part, called the Byzantine Empire, lasted until 1453.\n</material>\n<questions>[{\"i\":0,\"q\":\"When was Rome founded, according to legend?\"},{\"i\":1,\"q\":\"How did the Roman Republic become an empire?\"},{\"i\":2,\"q\":\"What did the Roman Empire build across Europe?\"},{\"i\":3,\"q\":\"How did the fate of the Western Roman Empire differ from the Eastern part?\"}]</questions>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        }
+      },
+      "reply_hint": "As the system prompt's Return line says."
+    },
+    {
+      "stem": "adhoc.t1.c5",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 5,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "drill",
+        "answers": true,
+        "questions": 4,
+        "subject": "",
+        "pages": [],
+        "text": "The Roman Empire\n\nRome was founded, according to legend, in 753 BC. The Roman Republic was replaced by an empire when Augustus became the first emperor in 27 BC. The empire built roads, aqueducts and a common legal system across Europe. The Western Roman Empire fell in 476 AD, while the Eastern part, called the Byzantine Empire, lasted until 1453.",
+        "lang": "en"
+      },
+      "anthropic_request": {
+        "model": "claude-sonnet-5-5",
+        "max_tokens": 1552,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You write the answers a Swedish student will listen to in their AirPods while revising for an exam. You get <context> (subject and grade), <notes> (the study material), <long_words>, <questions> (JSON: id and question) and maybe <language> and <may_fix>. Return ONLY a JSON object {\"answers\": [{\"id\": \"q1\", \"short\": \"...\", \"rest\": \"...\"}]} with one entry per question, in the same order.\n- Language (D182): write in <language> when it is given (a language exam: the questions are in that language too); else in Swedish.\n- When <may_fix> is given and a question cannot be answered well from the notes, put a better question in \"question\" and answer that one: a question with a claim the notes contradict gets the notes' fact (\"fjärde statsmakten\" -> \"tredje statsmakten\" when the notes say so); a \"Varför ...?\" whose cause the notes do not give becomes a \"Vad ...?\" or \"Hur ...?\" question the notes answer. K111: when you put a new question in \"question\", also return \"original\": {\"short\": \"...\", \"rest\": \"...\"}, your answer to the question exactly as it was asked, from the notes and by the same rules (it is used if the new question turns out to ask what another question asks). Otherwise leave \"question\" and \"original\" out.\n- K97 (O79): never invent a cause, motive or reason the notes do not give (\"bönderna var missnöjda med danskarnas styre\", \"för att göra makten säker för släkten\", \"kriget mot Danmark\" when the notes only say \"efter kriget\"). A why-question whose cause the notes do not state: with <may_fix>, ask a \"Vad ...?\" or \"Hur ...?\" question the notes answer; without it, answer only with what the notes do say about it, and say plainly that the reason is not known from this (\"Varför det blev så är inte känt här, men ...\"; in English \"Why is not explained here, but ...\") rather than guess; never name the notes, a material or what you have (\"the notes do not say\", \"det material jag har\" are wrong). School knowledge may fill out a mechanism the notes name, never supply a cause they leave out.\n- Never answer a why-question by repeating its claim (\"Det beror på att sidorna alltid har just det sambandet\", \"De ansåg att makten skulle komma från folket\"): give the reason, or (with <may_fix>) ask a better question.\n- \"short\": the short answer (D162): ONE sentence, two only when one cannot hold it, at most 25 words, that on its own is a full, correct A-level answer: it states the answer itself (the cause, the mechanism, the fact, the difference), never an introduction that only names the topic. Wrong: \"Fotosyntes är en viktig process i växterna.\" Right: \"Växten använder ljusenergi för att bygga glukos av koldioxid och vatten, och syre blir över.\"\n- \"rest\": what follows the short answer so that short + rest together is the long answer, a full A-level exam answer for that grade: it builds on the short answer with the concepts, the explanation, how things connect (cause and effect, compare) and a concrete example when it helps. Never repeat or rephrase the short answer. Short + rest together are about <long_words> words and never more (count them; K110: longer answers are cut in code after the last whole sentence that fits, so put the most important content first). Never pad an answer to reach the number.\n- The grade never lowers the quality; it only decides which concepts are reasonable (no university concepts in åk 7-9).\n- Base the answers on <notes>. K97 (O79): never add a cause, motive, mechanism, consequence, advice or general claim the notes do not give (\"efter blodbadet var han själv i fara\", \"Latin förstod bara de lärda\", \"banker utgår från styrräntan\", \"sänk volymen i hörlurarna\" are wrong when the notes do not say them); when the notes give no reason, say so in a few words instead of explaining. School knowledge only to name or define a concept the notes use, only facts you are certain of (textbook-level), and never contradict the notes; leave out a detail rather than guess it (O55: \"stäppgräs har korta rötter\" was wrong). Every fact must be correct: work every number out before you write it. Never add history, causes or examples the question did not ask for. Never add a general rule about a whole group (\"alla\", \"alltid\", \"aldrig\", \"inga\", \"kan alltså vara\") that the notes do not state (O63: \"Alla föreningar kan alltså vara molekyler\" is wrong: salt is a compound but not molecules).\n- The text is read aloud: plain spoken sentences, no markdown, lists, headings, brackets, abbreviations or symbols. K97 (O79): write numbers, years, dates, decimals and percentages with digits exactly as the notes have them (\"1527\", \"85 decibel\", \"340 meter per sekund\", \"2 procent\", \"den 6 juni 1523\"): the voice turns them into words, and digits are never mixed up. Write formulas and symbols in words (\"koldioxid\", not \"CO2\"; \"pi\", not \"π\"). Never mention the notes, the material, the text, the book, the exam or the grade: the student only hears the answer (\"i materialet\", \"enligt texten\" are wrong).\n- \"display\" (K66): the student also sees the text on screen, where 1850, 3,14, a² + b², CO₂ and 25 % are easier to read than words. When the question, \"short\" or \"rest\" has a number, year, decimal, formula, unit or symbol written as words, also return \"display\": {\"question\": \"...\", \"short\": \"...\", \"rest\": \"...\"} with the same sentences written as a textbook prints them, and only the fields that differ. Every year, date, percent, decimal, measurement and number above twelve gets its digits there (\"den fjortonde juli sjuttonhundraåttionio\" -> \"den 14 juli 1789\", \"fyra procent\" -> \"4 %\", \"eighteen fifty\" -> \"1850\", \"one point two degrees\" -> \"1.2 degrees\"); only small counts in running text stay words (\"två orsaker\"). Division is \"/\" or a fraction on screen (\"s / t\") and \"delat med\" / \"divided by\" in the spoken text. No numbers or formulas: leave \"display\" out.\nNo other text.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<context>Ämne: Historia</context>\n<notes>\nThe Roman Empire. According to legend, Rome was founded in 753 BC. The Roman Republic was replaced by an empire when Augustus became the first emperor in 27 BC. The empire built roads, aqueducts and a common legal system across Europe. The Western Roman Empire fell in 476 AD. The Eastern part, called the Byzantine Empire, lasted until 1453.\n</notes>\n<long_words>90</long_words>\n<language>English</language>\n<may_fix>yes</may_fix>\n<questions>[{\"id\":\"q1\",\"question\":\"When was Rome founded, according to legend?\"},{\"id\":\"q2\",\"question\":\"How did the Roman Republic become an empire?\"},{\"id\":\"q3\",\"question\":\"What did the Roman Empire build across Europe?\"},{\"id\":\"q4\",\"question\":\"How did the fate of the Western Roman Empire differ from the Eastern part?\"}]</questions>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        },
+        "thinking": {
+          "type": "between_tools"
+        }
+      },
+      "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
     }
   ],
-  "turns": [],
-  "blocked": [],
-  "needs": "adhoc.t1.c1"
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "exam",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 1619,
+          "output_tokens": 170,
+          "total_ms": 53,
+          "est_cost_usd": 0.0002469,
+          "status": "ok"
+        },
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 1654,
+          "output_tokens": 102,
+          "total_ms": 53,
+          "est_cost_usd": 0.0002164,
+          "status": "ok"
+        },
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 877,
+          "output_tokens": 18,
+          "total_ms": 53,
+          "est_cost_usd": 0.0000967,
+          "status": "ok"
+        },
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 988,
+          "output_tokens": 130,
+          "total_ms": 53,
+          "est_cost_usd": 0.003276,
+          "status": "ok"
+        },
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 1779,
+          "output_tokens": 395,
+          "total_ms": 53,
+          "est_cost_usd": 0.007508,
+          "status": "ok"
+        }
+      ],
+      "credits": [
+        {
+          "fn": "exam.quota",
+          "n": 0
+        }
+      ],
+      "json": {
+        "summary": {
+          "subject": "Historia",
+          "grade": "",
+          "covers": "The exam covers the Roman Empire: the legend of Rome's founding, the change from republic to empire under Augustus, what the empire built, and the fall of the Western and Eastern empires."
+        },
+        "notes": "The Roman Empire. According to legend, Rome was founded in 753 BC. The Roman Republic was replaced by an empire when Augustus became the first emperor in 27 BC. The empire built roads, aqueducts and a common legal system across Europe. The Western Roman Empire fell in 476 AD. The Eastern part, called the Byzantine Empire, lasted until 1453.",
+        "questions_asked": 4,
+        "questions_possible": 4,
+        "items": [
+          {
+            "id": "q1",
+            "question": "When was Rome founded, according to legend?",
+            "short": "According to legend, Rome was founded in 753 before Christ.",
+            "long": "According to legend, Rome was founded in 753 before Christ. Because the date comes from a legend, it is the traditional founding year that the Romans told about their city, not a proven fact.",
+            "screen": {
+              "short": "According to legend, Rome was founded in 753 BC.",
+              "long": "According to legend, Rome was founded in 753 BC. Because the date comes from a legend, it is the traditional founding year that the Romans told about their city, not a proven fact."
+            }
+          },
+          {
+            "id": "q2",
+            "question": "How did the Roman Republic become an empire?",
+            "short": "The Republic was replaced by an empire when Augustus became the first Roman emperor in 27 before Christ.",
+            "long": "The Republic was replaced by an empire when Augustus became the first Roman emperor in 27 before Christ. From then on Rome was led by an emperor instead of being a republic, and Augustus was the first to hold that position.",
+            "screen": {
+              "short": "The Republic was replaced by an empire when Augustus became the first Roman emperor in 27 BC.",
+              "long": "The Republic was replaced by an empire when Augustus became the first Roman emperor in 27 BC. From then on Rome was led by an emperor instead of being a republic, and Augustus was the first to hold that position."
+            }
+          },
+          {
+            "id": "q3",
+            "question": "What did the Roman Empire build across Europe?",
+            "short": "The Roman Empire built roads, aqueducts and a common legal system across Europe.",
+            "long": "The Roman Empire built roads, aqueducts and a common legal system across Europe. Aqueducts are channels that carry water to towns and cities. The roads and aqueducts were things the Romans built, while the common legal system meant that the same laws were used across the empire."
+          },
+          {
+            "id": "q4",
+            "question": "How did the fate of the Western Roman Empire differ from the Eastern part?",
+            "short": "The Western Roman Empire fell in 476 after Christ, while the Eastern part, the Byzantine Empire, lasted until 1453.",
+            "long": "The Western Roman Empire fell in 476 after Christ, while the Eastern part, the Byzantine Empire, lasted until 1453. So the Eastern part survived for almost a thousand years after the West had fallen.",
+            "screen": {
+              "short": "The Western Roman Empire fell in 476 AD, while the Eastern part, the Byzantine Empire, lasted until 1453.",
+              "long": "The Western Roman Empire fell in 476 AD, while the Eastern part, the Byzantine Empire, lasted until 1453. So the Eastern part survived for almost a thousand years after the West had fallen."
+            }
+          }
+        ],
+        "long_words": 90,
+        "usage": {
+          "plan": {
+            "model": "claude-haiku-5-5",
+            "input_tokens": 1619,
+            "output_tokens": 170,
+            "est_cost_usd": 0.0002469,
+            "ms": 7
+          },
+          "notes": {
+            "model": "claude-haiku-5-5",
+            "input_tokens": 1654,
+            "output_tokens": 102,
+            "est_cost_usd": 0.0002164,
+            "ms": 8
+          },
+          "shorten": {
+            "model": "claude-haiku-5-5",
+            "input_tokens": 877,
+            "output_tokens": 18,
+            "est_cost_usd": 0.0000967,
+            "ms": 1
+          },
+          "answers": {
+            "model": "claude-sonnet-5-5",
+            "input_tokens": 1779,
+            "output_tokens": 395,
+            "est_cost_usd": 0.007508,
+            "ms": 4
+          },
+          "final_check": {
+            "model": "claude-sonnet-5-5",
+            "input_tokens": 988,
+            "output_tokens": 130,
+            "est_cost_usd": 0.003276,
+            "ms": 2,
+            "fixed": 0,
+            "dropped": 0,
+            "refilled": 0,
+            "understanding": 2,
+            "questions": 4
+          },
+          "est_cost_usd": 0.011344,
+          "ms": 34
+        },
+        "quota": {
+          "unit": "chars",
+          "used": 0,
+          "limit": 100000,
+          "left": 100000,
+          "remaining": 100000,
+          "per": "month",
+          "resets": "2026-12-01"
+        }
+      }
+    }
+  ],
+  "blocked": []
 }

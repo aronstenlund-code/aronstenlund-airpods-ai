@@ -1,0 +1,1 @@
+{"questions": [], "sources": [{"i": 0, "s": [3], "a": "Mitokondrien gör energi åt cellen."}, {"i": 1, "s": [4], "a": "Cellmembranet släpper in och ut ämnen."}, {"i": 2, "s": [5], "a": "Växtceller har också cellvägg och kloroplaster."}]}

@@ -1,0 +1,1 @@
+{"questions": [{"i": 1, "drop": true, "same_as": 0}], "sources": [{"i": 0, "s": [2], "a": "It began in 1789 when the people of Paris stormed the Bastille."}, {"i": 2, "s": [3], "a": "King Louis XVI was executed in 1793."}]}
