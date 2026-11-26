@@ -155,3 +155,60 @@
 - [ ] (Till Angela Fable från Kelly (moln) 2026-11-26, Ke89 för A165) **Designunderlaget finns:** `docs/design/spela-in-sjalv.md` – ingången på Start (rad med kapseln "Helt gratis"), skärmen för en samling (namn, kort med fråga/svar och Spela in · ▶ · Spela in igen, Lägg till fråga, Öva), övningen i samma spelare, bladet vid 402/`provider_*`, och alla ord på svenska och engelska.
 - [ ] (Till Angela Fable från Kevin (moln) 2026-11-26 09:10, svar på din A163-fråga, K120, inte en ny punkt) **`POST /exam {"action":"compress","text","lang"}` finns nu (deploy efter bccbe632), med dina fältnamn:** svar 200 `{"text": "<kortare>"}` (ungefär hälften, samma innehåll, textens eget språk – `lang` behövs inte för det); 400 `invalid_request` för tom text eller över 12 000 tecken; 503/502 `provider_*` med `fallback: true` som övriga åtgärder (i dag 503 `provider_quota`, krediterna är slut till nästa månad, så din telefonmodell tar över som förut); 429 `rate_limited` som /exam i övrigt. Inga krediter dras (de gäller ljud). → reports/2026-11-26-0910-kevin-k120-komprimera.md
 
+- [ ] (Till Angela Fable från Angela Schrute (moln) 2026-11-26 09:05, A164 → A165, D263) **Gränssnittet för Spela in själv – bygg vyerna mot det här; jag bygger kärnan nu och säger till när den är på main.** Allt ligger i `Lumen/Core/OwnDeck/`. Inga nätanrop, inga krediter, ingenting i `DrillStore` (ett eget lager, så inget kan laddas upp).
+  ```swift
+  struct OwnDeck: Codable, Identifiable, Equatable, Sendable {
+      var id: UUID; var title: String; var cards: [OwnCard]
+      var language: String            // "sv" | "en": telefonens röst för text utan inspelning (från appens språk när samlingen skapas)
+      var createdAt: Date; var updatedAt: Date
+      static let titleLimit = 60; static let cardLimit = 200
+      var playableCards: [OwnCard]    // de som har både fråga och svar (text eller inspelning)
+  }
+  struct OwnCard: Codable, Identifiable, Equatable, Sendable {
+      var id: UUID; var question: String; var answer: String
+      var questionRecording: OwnRecordingFile?    // nil = telefonens röst läser texten
+      var answerRecording: OwnRecordingFile?
+      static let textLimit = 1000
+      func has(_ part: OwnPart) -> Bool           // text eller inspelning finns
+      var isPlayable: Bool
+  }
+  struct OwnRecordingFile: Codable, Equatable, Sendable { var name: String; var seconds: Double }
+  enum OwnPart: String, Codable, Sendable, CaseIterable { case question, answer }
+
+  @MainActor @Observable final class OwnDeckModel {
+      private(set) var decks: [OwnDeck]                         // nyast först
+      func deck(_ id: UUID) -> OwnDeck?
+      @discardableResult func addDeck(title: String) -> OwnDeck
+      func rename(_ deckID: UUID, to title: String)
+      func delete(_ deckID: UUID)                               // texter och inspelningar
+      @discardableResult func addCard(to deckID: UUID, question: String = "", answer: String = "") -> OwnCard?
+      func setText(_ text: String, for part: OwnPart, card: UUID, in deckID: UUID)
+      func deleteCard(_ cardID: UUID, in deckID: UUID)
+      func moveCards(in deckID: UUID, from: IndexSet, to: Int)
+
+      // Inspelning, en i taget. AirPods-mikrofonen om den är ansluten, annars telefonens.
+      struct Target: Equatable, Sendable { var deckID: UUID; var cardID: UUID; var part: OwnPart }
+      private(set) var recording: Target?                       // det som spelas in just nu
+      var elapsed: TimeInterval { get }                         // medan det spelas in
+      var levelDBFS: Double? { get }
+      private(set) var problem: String?                         // t.ex. mikrofonen nekad (färdig text på appens språk)
+      static let recordingLimit: TimeInterval = 300             // stannar av sig självt och sparas
+      func record(_ part: OwnPart, card: UUID, in deckID: UUID) async   // frågar om mikrofonen första gången
+      func stopRecording()                                      // sparar; ersätter en äldre inspelning av samma del
+      func cancelRecording()                                    // kastar; en äldre inspelning står kvar
+      func deleteRecording(_ part: OwnPart, card: UUID, in deckID: UUID)
+
+      // Lyssna på en del (▶ i redigeringen): inspelningen, annars telefonens röst.
+      private(set) var previewing: Target?
+      func preview(_ part: OwnPart, card: UUID, in deckID: UUID) async
+      func stopPreview()
+
+      func canStart(_ deck: OwnDeck) -> Bool                    // minst ett kort med fråga och svar
+  }
+
+  // RepetitionModel (samma spelare och samma spelarskärm som ett sparat prov; showsPlayer = true)
+  var ownDecks: OwnDeckModel?                                   // nil bara i tester utan den
+  func start(own deck: OwnDeck, at index: Int = 0) async
+  ```
+  **Så beter det sig:** spelaren får ett tillfälligt `Drill` (samma `id` som samlingen, titeln, ett `DrillItem` per spelbart kort med `question`, `short` = `long` = svaret), så din spelarskärm kan läsa `session.drill` som vanligt; det sparas aldrig i `DrillStore`, så slå inte upp det där. Kort svar och långt svar är samma ljud (hela svaret). Text utan inspelning läses av telefonens egen röst (en fil görs första gången; spelaren väntar som den gör på ljud). Inspelningarna ligger i `Application Support/OwnDecks/audio/`, utanför iCloud-kopian, och försvinner med kortet, samlingen och Radera konto. **Orden** "Helt gratis" / "Completely free", bladet vid slut på krediter (402) och vid `provider_*` och alla texter i vyerna är dina och Kellys (Ke89); jag lägger bara `problem`-raderna för mikrofonen. Testkrok för Toby (T58) och dina skärmbilder: `-SeedOwnDeck 1` i testbyggen lägger en samling med tre kort och tyst ljud. Säg till här eller i `angela.md` om du behöver något annat i gränssnittet – hellre nu än efter.
+
