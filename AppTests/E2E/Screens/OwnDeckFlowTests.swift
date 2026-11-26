@@ -165,11 +165,20 @@ final class OwnDeckFlowTests: XCTestCase {
 
     private func type(_ text: String, into field: XCUIElement) -> Bool {
         guard field.waitForExistence(timeout: 5) else { return false }
-        field.tap()
-        pause(0.5)
-        field.typeText(text)
-        log.append("typed '\(text)' into \(field.identifier)")
-        return true
+        // Run 45902890074: the second card's Svar was under the keyboard and the tap gave it no focus. Bring it into
+        // view, tap, and type only when the field has the keyboard.
+        for attempt in 1...4 {
+            if !field.isHittable { keyboardDown(); app.swipeUp(); pause(0.5) }
+            field.tap()
+            pause(0.7)
+            if (field.value(forKey: "hasKeyboardFocus") as? Bool) == true {
+                field.typeText(text)
+                log.append("typed '\(text)' into \(field.identifier)\(attempt > 1 ? " (attempt \(attempt))" : "")")
+                return true
+            }
+        }
+        log.append("MISS: \(field.identifier) never got the keyboard")
+        return false
     }
 
     private func keyboardDown() {
