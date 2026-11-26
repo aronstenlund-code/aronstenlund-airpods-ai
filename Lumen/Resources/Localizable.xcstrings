@@ -1557,6 +1557,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "%lld sekunder": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "%lld seconds"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld sekunder"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "%lld sidor": {
       "extractionState": "manual",
       "localizations": {
@@ -2121,6 +2139,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "1 sak"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "1 sekund": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "1 second"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 sekund"
           }
         }
       },
@@ -12697,6 +12733,42 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Klar, frågan är inspelad": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Done, the question is recorded"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klar, frågan är inspelad"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Klar, svaret är inspelat": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Done, the answer is recorded"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klar, svaret är inspelat"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Klart": {
       "extractionState": "manual",
       "localizations": {
@@ -22238,37 +22310,37 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "Spela upp frågan, %@ sekunder": {
+    "Spela upp frågan, %lld sekunder": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Play the question, %@ seconds"
+            "value": "Play the question, %lld seconds"
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spela upp frågan, %@ sekunder"
+            "value": "Spela upp frågan, %lld sekunder"
           }
         }
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "Spela upp svaret, %@ sekunder": {
+    "Spela upp svaret, %lld sekunder": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Play the answer, %@ seconds"
+            "value": "Play the answer, %lld seconds"
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Spela upp svaret, %@ sekunder"
+            "value": "Spela upp svaret, %lld sekunder"
           }
         }
       },
@@ -22346,6 +22418,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Spelar in frågan": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Recording the question"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spelar in frågan"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Spelar in frågan · %@": {
       "extractionState": "manual",
       "localizations": {
@@ -22359,6 +22449,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Spelar in frågan · %@"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Spelar in svaret": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Recording the answer"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spelar in svaret"
           }
         }
       },
@@ -22983,24 +23091,6 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "Stoppa inspelningen, %@ sekunder": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Stop recording, %@ seconds"
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Stoppa inspelningen, %@ sekunder"
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
     "Stoppa klippet": {
       "extractionState": "manual",
       "localizations": {
@@ -23270,6 +23360,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Svar"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Svar %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Answer %lld"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Svar %lld"
           }
         }
       },

@@ -113,6 +113,10 @@ enum OwnDeckText {
     static func field(_ part: OwnPart) -> String {
         part == .question ? String(localized: "Fråga") : String(localized: "Svar")
     }
+    /// A167, VoiceOver: which card the field belongs to ("Fråga 2").
+    static func field(_ part: OwnPart, number: Int) -> String {
+        part == .question ? String(localized: "Fråga \(number)") : String(localized: "Svar \(number)")
+    }
     static var record: String { String(localized: "Spela in") }
     static var recordAgain: String { String(localized: "Spela in igen") }
     static var notRecorded: String { String(localized: "Inte inspelad") }
@@ -139,9 +143,17 @@ enum OwnDeckText {
         let whole = max(1, Int(seconds.rounded()))
         return part == .question ? String(localized: "Spela upp frågan, \(whole) sekunder") : String(localized: "Spela upp svaret, \(whole) sekunder")
     }
-    static func stopLabel(_ elapsed: TimeInterval) -> String {
+    static var stopRecording: String { String(localized: "Stoppa inspelningen") }
+    static func seconds(_ elapsed: TimeInterval) -> String {
         let whole = max(0, Int(elapsed.rounded()))
-        return String(localized: "Stoppa inspelningen, \(whole) sekunder")
+        return whole == 1 ? String(localized: "1 sekund") : String(localized: "\(whole) sekunder")
+    }
+    /// A167: the recording said, not only shown.
+    static func nowRecording(_ part: OwnPart) -> String {
+        part == .question ? String(localized: "Spelar in frågan") : String(localized: "Spelar in svaret")
+    }
+    static func doneRecording(_ part: OwnPart) -> String {
+        part == .question ? String(localized: "Klar, frågan är inspelad") : String(localized: "Klar, svaret är inspelat")
     }
 
     static func clock(_ seconds: TimeInterval) -> String {

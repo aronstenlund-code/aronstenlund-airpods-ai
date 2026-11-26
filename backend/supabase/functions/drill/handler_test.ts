@@ -1309,3 +1309,15 @@ Deno.test("D239 (Toby T24): with 1 500 credits the quota prices the smallest exa
   const rich = await (await world({ credits: 9000 }).h("u1")(post({ action: "quota", long_words: 90 }))).json();
   assertEquals([rich.exam.long_words, rich.exam.per_question, rich.exam.fitted], [90, 642, undefined], "enough credits: as before");
 });
+
+Deno.test("K124 (D267): drill audio with ElevenLabs out says the same fixed code as /tts (tts_quota, fallback) and charges nothing", async () => {
+  const w = world({ outOfCredits: true });
+  const s = await (await w.h("u1")(post({ action: "save", items: ITEMS }))).json();
+  const st = await (await w.h("u1")(post({ action: "status", id: s.drill.id }))).json();
+  assertEquals(st.tts, { code: "tts_quota", fallback: true });
+  assertEquals(w.quota.get("u1"), 0, "nothing paid");
+  const d = await (await w.h("u2")(post({ action: "save", defer_audio: true, items: ITEMS }))).json();
+  const start = await (await w.h("u2")(post({ action: "start", id: d.drill.id }))).json();
+  assertEquals(start.tts, { code: "tts_quota", fallback: true });
+  assertEquals(w.quota.get("u2") ?? 0, 0);
+});

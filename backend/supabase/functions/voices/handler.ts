@@ -78,8 +78,11 @@ export function createVoicesHandler(deps: VoicesDeps): (req: Request) => Promise
         });
       }
       const all = (deps.catalog ? await deps.catalog().catch(() => [] as CatalogVoice[]) : []).filter((v) => !isRetired(v.voice_id));
-      const admin = all.some((v) => v.review) && deps.isAdmin ? await deps.isAdmin(user.id).catch(() => false) : false;
-      const catalog = all.filter((v) => !v.review || admin);
+      // K124 (Oscar G2, D267): a voice without ElevenLabs' free preview is not offered (the reviewers' "previews are
+      // free" must hold, and no audio is made to give it one); admin still sees it, to fix the catalog
+      const hasPreview = (v: CatalogVoice) => typeof v.preview_url === "string" && /^https:\/\/\S+$/.test(v.preview_url);
+      const admin = all.some((v) => v.review || !hasPreview(v)) && deps.isAdmin ? await deps.isAdmin(user.id).catch(() => false) : false;
+      const catalog = all.filter((v) => admin || (!v.review && hasPreview(v)));
       return new Response(
         JSON.stringify({
           voices: listed.map((v) => ({ name: v.name, id: v.id })),

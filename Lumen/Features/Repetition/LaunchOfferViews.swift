@@ -9,8 +9,21 @@ struct LaunchOfferSheet: View {
     /// "Se paketen": the sheet closes and the credits sheet opens.
     let onSeePacks: () -> Void
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
+        // A167: with the largest text on a small phone the half sheet cut its buttons off. It then takes the whole
+        // height, and what still does not fit scrolls.
+        ViewThatFits(in: .vertical) {
+            content
+            ScrollView { content }
+        }
+        .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium])
+        .presentationDragIndicator(.visible)
+        .accessibilityIdentifier("launchOffer.sheet")
+    }
+
+    private var content: some View {
         VStack(spacing: 14) {
             Spacer(minLength: 4)
             Text(verbatim: LaunchOfferText.badge(offer.percent))
@@ -20,6 +33,7 @@ struct LaunchOfferSheet: View {
                 .lineLimit(1)
             Text(verbatim: LaunchOfferText.title)
                 .font(.title2.weight(.semibold))
+                .multilineTextAlignment(.center)
                 .accessibilityAddTraits(.isHeader)
             Text(verbatim: LaunchOfferText.line(offer.percent, covers: covers))
                 .multilineTextAlignment(.center)
@@ -42,13 +56,10 @@ struct LaunchOfferSheet: View {
             .buttonStyle(.borderedProminent)
             .controlSize(.large)
             Button(LaunchOfferText.notNow) { dismiss() }
-                .padding(.vertical, 6)
+                .frame(minHeight: 44) // A167: the whole of a 44-point row takes the tap
         }
         .padding(.horizontal, 24)
         .padding(.vertical, 20)
-        .presentationDetents([.medium])
-        .presentationDragIndicator(.visible)
-        .accessibilityIdentifier("launchOffer.sheet")
     }
 }
 
@@ -57,10 +68,15 @@ struct LaunchOfferSheet: View {
 struct LaunchOfferRow: View {
     let offer: LaunchOffer
     let shop: CreditShop
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         VStack(alignment: .leading, spacing: 2) {
-            HStack(spacing: 8) {
+            // A167: with the largest text the name and the percent stand under each other ("Lanse-rings-rabatt" was
+            // broken into three pieces beside "-65 %").
+            let layout = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(alignment: .leading, spacing: 2))
+                : AnyLayout(HStackLayout(spacing: 8))
+            layout {
                 Text(verbatim: LaunchOfferText.title).font(.subheadline.weight(.semibold))
                 Text(verbatim: LaunchOfferText.badge(offer.percent))
                     .font(.subheadline.weight(.bold))

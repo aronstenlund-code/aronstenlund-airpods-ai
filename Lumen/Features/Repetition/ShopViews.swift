@@ -95,6 +95,10 @@ struct ShopSections: View {
         .sensoryFeedback(trigger: quota.left) { (old: Int, new: Int) -> SensoryFeedback? in
             new > old ? .success : nil
         }
+        // A167: what happened with a purchase is said, not only shown under the list (VoiceOver is on the button).
+        .onChange(of: shop.note) { _, note in
+            if let note { AccessibilityNotification.Announcement(note).post() }
+        }
         .sensoryFeedback(trigger: shop.note) { (_: String?, new: String?) -> SensoryFeedback? in
             guard let new else { return nil }
             let failed = new == CreditShop.failedLine || new == CreditShop.restoreFailedLine

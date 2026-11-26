@@ -1,7 +1,7 @@
 import { type Authenticator } from "../_shared/auth.ts";
 import { logProviderFailure } from "../_shared/secrets.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
-import { appChecks, enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
+import { appChecks, enforceLimits, type Limits, type RateLimiter, userWindows } from "../_shared/ratelimit.ts";
 import { readLimitedJson } from "../answer/validate.ts";
 import { DEFAULT_DEMO_CAPS, type DemoCaps, enforceDemo, networkKey } from "../_shared/demo.ts";
 import { activeVoiceId, isRetired, type Voice, VOICE_ID_RE } from "./voices.ts";
@@ -130,16 +130,25 @@ export interface TtsDeps {
   warm?: () => void;
   /** D62 demo caps (defaults in _shared/demo.ts). */
   demo?: DemoCaps;
+  /** K124: the clock for the quota pause (tests); default Date.now. */
+  now?: () => number;
 }
+
+/**
+ * K124 (D267): ElevenLabs' plan is about 90 000 characters a month. When it says the quota is out, or that too little
+ * is left for this text ("You have 12 credits remaining, while 40 are required"), /tts answers one fixed code: 503
+ * tts_quota, fallback true. The app then reads with the phone's own voice (AVSpeechSynthesizer). For this long after,
+ * /tts answers the same at once, without asking ElevenLabs (and without counting the user's characters).
+ */
+export const TTS_QUOTA_PAUSE_MS = 10 * 60_000;
+export const TTS_QUOTA_MESSAGE = "Uppläsningen med rösten är slut för tillfället.";
+const ttsQuota = () => new HttpError(503, "tts_quota", TTS_QUOTA_MESSAGE, { fallback: true });
 
 export function classifyElevenLabs(status: number, body: string): HttpError {
   const b = body.toLowerCase();
-  if (status === 401 && (b.includes("quota") || b.includes("exceeded"))) {
-    return new HttpError(503, "provider_quota", "TTS credits exhausted", { fallback: true });
-  }
-  if (status === 402 || b.includes("quota_exceeded") || b.includes("credits")) {
-    return new HttpError(503, "provider_quota", "TTS credits exhausted", { fallback: true });
-  }
+  // K124 (D267): was provider_quota; one fixed code the app reads as "use the phone's own voice"
+  if (status === 401 && (b.includes("quota") || b.includes("exceeded"))) return ttsQuota();
+  if (status === 402 || b.includes("quota_exceeded") || b.includes("credits")) return ttsQuota();
   if (status === 401 || status === 403) {
     return new HttpError(503, "provider_misconfigured", "TTS credentials rejected", {
       fallback: true,
@@ -158,6 +167,8 @@ export function classifyElevenLabs(status: number, body: string): HttpError {
 }
 
 export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Response> {
+  const clock = deps.now ?? Date.now;
+  let quotaUntil = 0; // K124: ElevenLabs said its quota is out; until then nothing is sent there
   const doFetch = deps.fetchImpl ?? fetch;
   return async (req) => {
     if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: CORS_HEADERS });
@@ -235,6 +246,8 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
       if (!deps.apiKey) {
         throw new HttpError(503, "provider_unconfigured", "TTS not configured", { fallback: true });
       }
+      // K124: within the pause after ElevenLabs' quota no: the same answer at once, nothing counted or sent
+      if (clock() < quotaUntil) throw ttsQuota();
 
       // A156 (D249): a spoken answer from the web beta counts against the web's daily credits (the demo has its own)
       if (!demo) {
@@ -271,6 +284,7 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
         newUserAgeSec: 0,
         newUserPerHour: 0,
       });
+      const countedAt = Date.now(); // K124: the windows the characters were counted in (given back on a failure)
       const limitsP = enforceLimits(
         deps.rateLimiter,
         "tts",
@@ -380,6 +394,12 @@ export function createTtsHandler(deps: TtsDeps): (req: Request) => Promise<Respo
         const body = await upstream.text().catch(() => "");
         const err = classifyElevenLabs(upstream.status, body);
         if (err.code === "provider_unavailable") logProviderFailure("elevenlabs", upstream.status, body, deps.apiKey);
+        if (err.code === "tts_quota") {
+          quotaUntil = clock() + TTS_QUOTA_PAUSE_MS;
+          console.warn("tts_quota", JSON.stringify({ status: upstream.status, pause_ms: TTS_QUOTA_PAUSE_MS }));
+        }
+        // K124: no audio was made, so the user's characters are given back (the global window keeps its count)
+        await deps.rateLimiter.release?.(userWindows("tts", user.id), cost, countedAt).catch(() => {});
         await Promise.resolve(deps.recordUsage(rec(err.code))).catch(() => {});
         throw err;
       }
