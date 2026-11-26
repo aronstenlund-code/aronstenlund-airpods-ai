@@ -222,20 +222,35 @@ const registered = new Set<string>();
  * Records a test account once per isolate: a row in public.test_accounts (who, why, first seen) and
  * app_metadata.test = true, so its next JWT says "test" from any network. Best effort, never blocks the answer.
  */
-export function registerTest(info: TestInfo, fn: string, env = Deno.env, fetchFn: typeof fetch = fetch): Promise<void> {
+export function registerTest(info: TestInfo, fn: string, env = Deno.env, fetchFn: typeof fetch = fetch, token?: string | null): Promise<void> {
   if (!info.test || !info.userId || registered.has(info.userId)) return Promise.resolve();
-  registered.add(info.userId);
   const base = (env.get("SUPABASE_URL") ?? "").replace(/\/+$/, "");
   const key = env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "";
-  if (!base || !key) return Promise.resolve();
+  if (!base || !key || !token) return Promise.resolve();
+  registered.add(info.userId);
   const h = { apikey: key, authorization: `Bearer ${key}`, "content-type": "application/json" };
+  // O100 S2 (Oscar): `info.userId` is the token's unverified `sub`; Auth checks the token first, and only its own
+  // account is ever marked (a forged token with someone else's id marks nobody)
+  return fetchFn(`${base}/auth/v1/user`, { headers: { apikey: key, authorization: `Bearer ${token}` }, signal: AbortSignal.timeout(4000) })
+    .then(async (r) => {
+      const who = r.ok ? ((await r.json().catch(() => null)) as { id?: string } | null)?.id : (await r.body?.cancel(), null);
+      if (who !== info.userId) {
+        console.warn("test_register_refused", JSON.stringify({ fn, verified: !!who }));
+        return;
+      }
+      return registerVerified(info, fn, base, h, fetchFn);
+    })
+    .catch((e) => console.warn("test_register_failed", e instanceof Error ? e.message.slice(0, 80) : String(e)));
+}
+
+function registerVerified(info: TestInfo, fn: string, base: string, h: Record<string, string>, fetchFn: typeof fetch): Promise<void> {
   return Promise.all([
     fetchFn(`${base}/rest/v1/test_accounts?on_conflict=user_id`, {
       method: "POST",
       headers: { ...h, prefer: "resolution=ignore-duplicates,return=minimal" },
       body: JSON.stringify({ user_id: info.userId, reason: info.reason, first_fn: fn }),
     }).then((r) => r.body?.cancel()),
-    info.reason === "account" ? Promise.resolve() : fetchFn(`${base}/auth/v1/admin/users/${encodeURIComponent(info.userId)}`, {
+    info.reason === "account" ? Promise.resolve() : fetchFn(`${base}/auth/v1/admin/users/${encodeURIComponent(info.userId ?? "")}`, {
       method: "PUT",
       headers: h,
       body: JSON.stringify({ app_metadata: { test: true } }),
@@ -303,7 +318,7 @@ export function withTestMode(
     if (info.test) {
       console.log("test_request", JSON.stringify({ fn, reason: info.reason, user: info.userId }));
       const rt = (globalThis as { EdgeRuntime?: { waitUntil?: (p: Promise<unknown>) => void } }).EdgeRuntime;
-      const p = registerTest(info, fn);
+      const p = registerTest(info, fn, Deno.env, fetch, /^Bearer\s+(\S+)/i.exec(req.headers.get("authorization") ?? "")?.[1] ?? null);
       rt?.waitUntil ? rt.waitUntil(p) : void p;
       const f = opts.fake ? await opts.fake(req, info) : null;
       if (f) return f;
