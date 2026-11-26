@@ -85,6 +85,12 @@ enum RepetitionDemo {
                                       "repShopLaunch", "repShopLaunchOffer",
                                       // A163 (D259): Komprimera on a text worth shortening, and the field after it
                                       "repSayCompress", "repSayCompressed",
+                                      // A165 (D263, Ke89): "Spela in själv": the way in on Start (with quizzes
+                                      // and own decks, and without anything), a deck's screen (new, filled in,
+                                      // and while it records), and the sheet when the credits are out or the
+                                      // model is down
+                                      "repOwnHome", "repOwnHomeFirst", "repOwnHomeEmpty", "repOwnDeck", "repOwnDeckNew", "repOwnRecording",
+                                      "repOwnOffer", "repOwnOfferDown",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -99,8 +105,15 @@ enum RepetitionDemo {
     }()
 
 
+    /// Ke90 (Kelly, 2026-11-26): the demo data in the app's language, so the English pictures (the App Store page is
+    /// English first) do not show a Swedish quiz. Read once per launch; a launch has one language.
+    static func demo(_ swedish: String, _ english: String) -> String {
+        AppLanguage.current == .en ? english : swedish
+    }
+
     /// A115: a text someone might want to hear over and over before an exam (made up).
-    static let said = "Fotosyntes: koldioxid + vatten + ljus blir socker och syre.\nCellandning: socker + syre blir energi, koldioxid och vatten."
+    static let said = demo("Fotosyntes: koldioxid + vatten + ljus blir socker och syre.\nCellandning: socker + syre blir energi, koldioxid och vatten.",
+                           "Photosynthesis: carbon dioxide + water + light become sugar and oxygen.\nCellular respiration: sugar + oxygen become energy, carbon dioxide and water.")
 
 
     /// A107: Fysikprovet is saved but not started: no sound is asked for yet.
@@ -123,17 +136,23 @@ enum RepetitionDemo {
             item.sentences = sentences
             return item
         }
-        return Drill.text(title: "Biologiprovet", summary: DrillSummary(subject: "Biologi", grade: "åk 9", covers: ""),
+        return Drill.text(title: demo("Biologiprovet", "The biology quiz"),
+                          summary: DrillSummary(subject: demo("Biologi", "Biology"), grade: demo("åk 9", "year 9"), covers: ""),
                           parts: [
-                            part(["Fotosyntesen"], heading: true),
-                            part(["Växter tillverkar sin egen näring genom fotosyntes.", "Det sker i bladens gröna korn, kloroplasterna.",
-                                  "Där fångar klorofyllet energin i solljuset."]),
-                            part(["Växten tar upp koldioxid ur luften och vatten genom rötterna.",
-                                  "Med ljusets energi blir de till socker och syre.",
-                                  "Sockret är växtens mat, och syret släpps ut genom klyvöppningarna."]),
-                            part(["Cellandningen"], heading: true),
-                            part(["I cellandningen bryts sockret ner igen.", "Det sker i mitokondrierna, i alla levande celler.",
-                                  "Energin som frigörs använder cellen för att växa och röra sig."]),
+                            part([demo("Fotosyntesen", "Photosynthesis")], heading: true),
+                            part([demo("Växter tillverkar sin egen näring genom fotosyntes.", "Plants make their own food through photosynthesis."),
+                                  demo("Det sker i bladens gröna korn, kloroplasterna.", "It happens in the green grains of the leaves, the chloroplasts."),
+                                  demo("Där fångar klorofyllet energin i solljuset.", "There the chlorophyll captures the energy in sunlight.")]),
+                            part([demo("Växten tar upp koldioxid ur luften och vatten genom rötterna.",
+                                       "The plant takes in carbon dioxide from the air and water through its roots."),
+                                  demo("Med ljusets energi blir de till socker och syre.", "With the energy of the light they become sugar and oxygen."),
+                                  demo("Sockret är växtens mat, och syret släpps ut genom klyvöppningarna.",
+                                       "The sugar is the plant's food, and the oxygen is let out through the stomata.")]),
+                            part([demo("Cellandningen", "Cellular respiration")], heading: true),
+                            part([demo("I cellandningen bryts sockret ner igen.", "In cellular respiration the sugar is broken down again."),
+                                  demo("Det sker i mitokondrierna, i alla levande celler.", "It happens in the mitochondria, in every living cell."),
+                                  demo("Energin som frigörs använder cellen för att växa och röra sig.",
+                                       "The cell uses the energy that is released to grow and to move.")]),
                           ])
     }()
 
@@ -192,24 +211,37 @@ enum RepetitionDemo {
     }()
 
     static let items: [DrillItem] = [
-        ("Varför behövs klorofyll?", "Klorofyll fångar ljuset som fotosyntesen behöver.",
-         "Utan ljusets energi kan växten inte bygga socker av koldioxid och vatten."),
-        ("Vad bildas vid fotosyntesen?", "Socker och syre bildas av koldioxid och vatten.",
-         "Sockret ger växten energi och byggmaterial, och syret används av djur i cellandningen."),
-        ("Hur hänger fotosyntes och cellandning ihop?", "Fotosyntesen bygger socker och cellandningen bryter ner det.",
-         "Den enas produkter är den andras råvaror, så kol och syre går runt i ett kretslopp."),
-        ("Varför behöver cellen mitokondrier?", "Där sker cellandningen som ger cellen energi.",
-         "Mitokondrierna gör om socker och syre till energi i form av ATP, koldioxid och vatten."),
-        ("Vad är en näringskedja?", "Den visar vem som äter vem i ett ekosystem.",
-         "Energin från solen går från växterna till växtätarna och vidare till rovdjuren, och det mesta blir värme på vägen."),
+        (demo("Varför behövs klorofyll?", "Why is chlorophyll needed?"),
+         demo("Klorofyll fångar ljuset som fotosyntesen behöver.", "Chlorophyll captures the light that photosynthesis needs."),
+         demo("Utan ljusets energi kan växten inte bygga socker av koldioxid och vatten.",
+              "Without the energy of the light the plant cannot build sugar from carbon dioxide and water.")),
+        (demo("Vad bildas vid fotosyntesen?", "What is formed in photosynthesis?"),
+         demo("Socker och syre bildas av koldioxid och vatten.", "Sugar and oxygen are formed from carbon dioxide and water."),
+         demo("Sockret ger växten energi och byggmaterial, och syret används av djur i cellandningen.",
+              "The sugar gives the plant energy and building material, and animals use the oxygen in cellular respiration.")),
+        (demo("Hur hänger fotosyntes och cellandning ihop?", "How are photosynthesis and cellular respiration connected?"),
+         demo("Fotosyntesen bygger socker och cellandningen bryter ner det.", "Photosynthesis builds sugar and cellular respiration breaks it down."),
+         demo("Den enas produkter är den andras råvaror, så kol och syre går runt i ett kretslopp.",
+              "The products of one are the raw materials of the other, so carbon and oxygen go round in a cycle.")),
+        (demo("Varför behöver cellen mitokondrier?", "Why does the cell need mitochondria?"),
+         demo("Där sker cellandningen som ger cellen energi.", "That is where cellular respiration gives the cell its energy."),
+         demo("Mitokondrierna gör om socker och syre till energi i form av ATP, koldioxid och vatten.",
+              "The mitochondria turn sugar and oxygen into energy in the form of ATP, carbon dioxide and water.")),
+        (demo("Vad är en näringskedja?", "What is a food chain?"),
+         demo("Den visar vem som äter vem i ett ekosystem.", "It shows who eats whom in an ecosystem."),
+         demo("Energin från solen går från växterna till växtätarna och vidare till rovdjuren, och det mesta blir värme på vägen.",
+              "The energy from the sun goes from the plants to the plant-eaters and on to the predators, and most of it becomes heat on the way.")),
     ].map { DrillItem(question: $0.0, short: $0.1, long: $0.1 + " " + $0.2) }
 
-    static let drill = Drill(title: "Biologiprovet",
-                             summary: DrillSummary(subject: "Biologi", grade: "åk 9",
-                                                   covers: "Fotosyntes, cellandning, kolets kretslopp och näringskedjor."),
+    static let drill = Drill(title: demo("Biologiprovet", "The biology quiz"),
+                             summary: DrillSummary(subject: demo("Biologi", "Biology"), grade: demo("åk 9", "year 9"),
+                                                   covers: demo("Fotosyntes, cellandning, kolets kretslopp och näringskedjor.",
+                                                                "Photosynthesis, cellular respiration, the carbon cycle and food chains.")),
                              items: items, questionCount: 20)
 
-    static let history = Drill(title: "Historiaprovet", summary: DrillSummary(subject: "Historia", grade: "åk 9", covers: "Industriella revolutionen."),
+    static let history = Drill(title: demo("Historiaprovet", "The history quiz"),
+                               summary: DrillSummary(subject: demo("Historia", "History"), grade: demo("åk 9", "year 9"),
+                                                     covers: demo("Industriella revolutionen.", "The Industrial Revolution.")),
                                items: [
                                    DrillItem(question: "Varför började industrialiseringen i England?",
                                              short: "England hade kol, järn, kapital och kolonier som köpte varorna.",
@@ -237,10 +269,17 @@ enum RepetitionDemo {
         model.mySchool = name == "repSchoolsEmpty" ? nil : DemoPublishing.school
         if name == "repSchoolsEmpty" { model.mySchoolAsked = true }
         // A100: a new user without exams has not started one, so no Fler lägen row (set here, scenes share defaults).
-        if name == "repHomeEmpty" { UserDefaults.standard.set(false, forKey: "repetition.controlsChecked") }
-        guard name != "repHomeEmpty", name != "moreModes" else { return }
+        if name == "repHomeEmpty" || name == "repOwnHomeEmpty" { UserDefaults.standard.set(false, forKey: "repetition.controlsChecked") }
+        // A165 (D263): "Spela in själv" only in its own scenes, with pretend decks (nothing is recorded or played).
+        model.ownOffer.close()
+        model.ownOffer.serverAnswered(.credits)
+        model.ownOffer.serverAnswered(.modelDown)
+        model.ownDecks = ownDecks(for: name) // as in the app: always there (empty outside its own scenes)
+        if name == "repOwnOffer" { model.serverRefused(.credits) }
+        if name == "repOwnOfferDown" { model.serverRefused(.modelDown) }
+        guard name != "repHomeEmpty", name != "repOwnHomeEmpty", name != "moreModes" else { return }
         // The newest is Start's "Nästa prov": Historia first, so Biologiprovet is on the card.
-        model.store.save(history)
+        if name != "repOwnHomeFirst" { model.store.save(history) } // A165: one quiz, so the way in shows under it
         model.store.save(drill)
         // A99: the month's questions are used up (D175); the server's length classes (D176).
         if name == "repQuotaUsedUp" { model.quota = DrillQuota(used: 15, limit: 15, resets: "2026-12-01", serverLeft: 0, suggest: 0) }
@@ -451,8 +490,10 @@ enum RepetitionDemo {
             credits.unit = "chars"
             credits.remaining = 1236
             model.quota = credits
-            let long = "Fotosyntesen är den process där gröna växter använder solens ljus för att göra socker av koldioxid och vatten. "
-                + "Den sker i kloroplasterna, där klorofyllet fångar ljuset. Som restprodukt bildas syre, som djur och människor andas."
+            let long = demo("Fotosyntesen är den process där gröna växter använder solens ljus för att göra socker av koldioxid och vatten. "
+                + "Den sker i kloroplasterna, där klorofyllet fångar ljuset. Som restprodukt bildas syre, som djur och människor andas.",
+                            "Photosynthesis is the process in which green plants use the light of the sun to make sugar from carbon dioxide and water. "
+                + "It happens in the chloroplasts, where the chlorophyll captures the light. Oxygen is formed as a by-product, which animals and people breathe.")
             SayText.stagedForScreenshots = long
             SayText.stagedCompressed = name == "repSayCompressed" ? MockTextShortener.firstHalf(long) : nil
             return
@@ -488,13 +529,13 @@ enum RepetitionDemo {
                 SayVoice(voice_id: "hindi00000000006", name: "Hindi", preview_url: "https://example.com/hindi.mp3", description: "Svenska med indisk brytning", review: true),
             ].filter { name != "repSayVoicesUser" || !$0.isUnderReview }, defaultName: "Astrid")
             if name == "repSayPicked" { // A140 (K99): no voice chosen, a style: the server chose Gustav
-                SayText.stagedPicked = ("gustav000000003", "Mörk och tydlig, passar en lärare.")
+                SayText.stagedPicked = ("gustav000000003", demo("Mörk och tydlig, passar en lärare.", "Deep and clear, right for a teacher."))
             } else {
                 UserDefaults.standard.set("astrid0000000001", forKey: SayText.voiceKey)
                 UserDefaults.standard.set(true, forKey: SayText.inPaceKey)
             }
             SayText.stagedForScreenshots = said
-            SayText.stagedStyle = "Lugnt, som en lärare"
+            SayText.stagedStyle = demo("Lugnt, som en lärare", "Calm, like a teacher")
             SayText.stagedVoicesSheet = name == "repSayVoices" || name == "repSayVoicesUser"
             if name.hasPrefix("repSayKeyboard") { // A153: the keyboard comes up by itself
                 SayText.stagedKeyboard = name == "repSayKeyboardStyle" ? "style" : "text"
@@ -643,6 +684,58 @@ enum RepetitionDemo {
     }
 
     /// A106: Nytt prov with Läs upp texten chosen, or its "Stämmer det här?".
+    // A165 (D263): the user's own decks as the pictures show them: the real core (A164) in a folder of its own,
+    // with a silent voice, silent files for what is "recorded", and a recorder that records nothing.
+    /// The deck whose screen the pictures show.
+    static var ownShown: UUID?
+
+    final class StagedOwnRecorder: OwnRecording {
+        var elapsed: TimeInterval = 4
+        var levelDBFS: Double? = -28
+        var onLimit: (@MainActor () -> Void)?
+        func start(to url: URL) async throws(OwnRecordingError) {}
+        func stop() -> TimeInterval? { nil }
+        func cancel() {}
+    }
+
+    static func ownDecks(for name: String) -> OwnDeckModel {
+        let folder = FileManager.default.temporaryDirectory.appending(path: "screenshot-own-\(UUID().uuidString)", directoryHint: .isDirectory)
+        let store = OwnDeckStore(folder: folder)
+        let decks = OwnDeckModel(store: store, audio: OwnDeckAudio(store: store, voice: SilentPhoneVoice()), recorder: StagedOwnRecorder())
+        ownShown = nil
+        // Nothing recorded yet: the other scenes, and the two that show the way in before the first deck.
+        if !name.hasPrefix("repOwn") || name == "repOwnHomeEmpty" || name == "repOwnHomeFirst" { return decks }
+        // The newest deck is listed first, so the glossary is made before the biology.
+        let glossary = decks.addDeck(title: demo("Engelska glosor", "Spanish vocabulary"))
+        for (question, answer) in [(demo("Vad heter självständig på engelska?", "What is independent in Spanish?"), demo("Independent.", "Independiente.")),
+                                   (demo("Vad heter trots att på engelska?", "What is although in Spanish?"), demo("Although.", "Aunque."))] {
+            guard let card = decks.addCard(to: glossary.id, question: question, answer: answer) else { continue }
+            decks.stageRecorded(.question, card: card.id, in: glossary.id, seconds: 3)
+            decks.stageRecorded(.answer, card: card.id, in: glossary.id, seconds: 2)
+        }
+        let biology = decks.addDeck(title: demo("Biologi kapitel 3", "Biology chapter 3"))
+        ownShown = biology.id
+        let first = decks.addCard(to: biology.id, question: demo("Vad gör mitokondrien?", "What does the mitochondrion do?"),
+                                  answer: demo("Den omvandlar näring till energi som cellen kan använda.", "It turns nutrients into energy the cell can use."))
+        let second = decks.addCard(to: biology.id, question: demo("Vad är fotosyntes?", "What is photosynthesis?"),
+                                   answer: demo("Växter gör socker och syre av koldioxid, vatten och ljus.",
+                                                "Plants make sugar and oxygen from carbon dioxide, water and light."))
+        decks.addCard(to: biology.id, question: demo("Vad är skillnaden mellan DNA och RNA?", "What is the difference between DNA and RNA?"),
+                      answer: demo("DNA lagrar arvet, RNA bär ut det till cellen.", "DNA stores the genes, RNA carries them out to the cell."))
+        if let first {
+            decks.stageRecorded(.question, card: first.id, in: biology.id, seconds: 3)
+            decks.stageRecorded(.answer, card: first.id, in: biology.id, seconds: 6)
+        }
+        if let second {
+            decks.stageRecorded(.question, card: second.id, in: biology.id, seconds: 2)
+            if name == "repOwnRecording" { // the second card's answer is being read in
+                decks.stage(recording: OwnDeckModel.Target(deckID: biology.id, cardID: second.id, part: .answer))
+            }
+        }
+        if name == "repOwnDeckNew" { ownShown = OwnDeckTidy.newDeck(in: decks).id }
+        return decks
+    }
+
     static func readingForm(_ model: RepetitionModel, _ staged: NewDrillView.StagedReading) -> NewDrillView {
         var view = NewDrillView(model: model) { _ in }
         view.stagedReading = staged
@@ -693,11 +786,20 @@ enum RepetitionDemo {
             case "repHome", "repHomeEmpty", "repHomeNew", "repHomeStarted", "repHomeSoundProblem", "repHomeText", "repHomeUnstarted",
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
                  "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices", "repSayVoicesUser",
+                 "repOwnHome", "repOwnHomeFirst", "repOwnHomeEmpty", "repOwnOffer", "repOwnOfferDown",
                  "repShopShort", "repShopWeeklyHome", "repShopLaunchOffer", "repSayCompress", "repSayCompressed", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
                  "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced",
                  "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers", "repShopShortKeyboard",
                  "repShopShortKeyboardStyle":
                 NavigationStack { HomeView(model: listening) }
+            // A165 (D263): Spela in själv, a deck's screen as the sheet it is
+            case "repOwnDeck", "repOwnDeckNew", "repOwnRecording":
+                if let decks = model.ownDecks, let shown = ownShown {
+                    Color(.systemGroupedBackground).ignoresSafeArea()
+                        .sheet(isPresented: .constant(true)) {
+                            NavigationStack { OwnDeckView(decks: decks, deckID: shown) {} }
+                        }
+                }
             case "repMotionFold": // the player as the app shows it: a cover over Start
                 NavigationStack { HomeView(model: listening) }.modifier(RepetitionOverlay(model: model))
             // A106 (Kelly Ke63): Läs upp texten

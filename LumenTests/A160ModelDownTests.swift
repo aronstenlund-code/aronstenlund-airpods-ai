@@ -42,7 +42,7 @@ import Testing
         let graded = try #require(await client(http, grader: grader).grade(task: Self.task, answer: "Det fångar ljuset.", practice: true))
         #expect(graded.by == .phone && !graded.isKeyOnly)
         #expect(graded.points == Self.task.points && graded.max == Self.task.points) // right: all the points
-        #expect(graded.feedback == "Telefonens modell: Rätt. Du fick med att klorofyllet fångar ljuset.")
+        #expect(graded.feedback == "Rättat på telefonen: Rätt. Du fick med att klorofyllet fångar ljuset.")
         #expect(grader.asked.count == 1)
         #expect(grader.asked.first?.question == "Vad gör klorofyllet?" && grader.asked.first?.key == "Det fångar ljusets energi.")
         #expect(grader.asked.first?.answer == "Det fångar ljuset." && grader.asked.first?.language == .swedish)
@@ -56,12 +56,12 @@ import Testing
         var graded = try #require(await client(FakeHTTP([.init(status: 503, body: Self.down)]), grader: grader)
             .grade(task: Self.task, answer: "Det är grönt och fångar ljus.", practice: true))
         #expect(graded.points == ExamTask.Points(E: 1, C: 0, A: 0) && graded.max == Self.task.points)
-        #expect(graded.feedback == "Telefonens modell: Delvis rätt. Energin saknas. Facit: Det fångar ljusets energi.")
+        #expect(graded.feedback == "Rättat på telefonen: Delvis rätt. Energin saknas. Facit: Det fångar ljusets energi.")
         grader.result = LocalGrade(verdict: .wrong, sentence: "Klorofyll är inte en rot.")
         graded = try #require(await client(FakeHTTP([.init(status: 502, body: Self.down.replacingOccurrences(of: "provider_quota", with: "provider_unavailable"))]),
                                            grader: grader).grade(task: Self.task, answer: "Det är en rot.", practice: true))
         #expect(graded.by == .phone && graded.points == .zero)
-        #expect(graded.feedback == "Telefonens modell: Inte rätt. Klorofyll är inte en rot. Facit: Det fångar ljusets energi.")
+        #expect(graded.feedback == "Rättat på telefonen: Inte rätt. Klorofyll är inte en rot. Facit: Det fångar ljusets energi.")
     }
 
     @Test func theGradeIsInTheLanguageThatIsSpoken() async throws {
@@ -69,7 +69,7 @@ import Testing
         grader.result = LocalGrade(verdict: .right, sentence: "You named the light.")
         let graded = try #require(await client(FakeHTTP([.init(status: 503, body: Self.down)]), grader: grader)
             .grade(task: Self.task, answer: "It captures light.", practice: true, language: .english))
-        #expect(graded.feedback == "The phone's model: Right. You named the light.")
+        #expect(graded.feedback == "Checked on your phone: Right. You named the light.")
         #expect(grader.asked.first?.language == .english)
     }
 

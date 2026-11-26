@@ -611,6 +611,10 @@
   "Växter gör socker och syre av ljus, vatten och koldioxid.": "the seeded deck of the test builds (T58): the deck's own content, in the deck's language, never in Release",
   "en": "a language code"
  },
+ "Lumen/Core/OwnDeck/OwnDeckStandIn.swift": {
+  "\\(target.cardID)-\\(target.part.rawValue).m4a": "a file name (stand-in for the core, only on the branch)",
+  "en": "a language code"
+ },
  "Lumen/Core/Prep/GoalsStore.swift": {
   "Nyckelord: ": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen"
  },
@@ -781,6 +785,9 @@
   "tryck": "language data: words looked for in the answer (both languages, see HelpService.guess)",
   "väd": "a word looked for in the question (the mock help)"
  },
+ "Lumen/Core/Repetition/OwnDecks.swift": {
+  "Mina frågor": "the name a deck is born with, compared with what is stored (both languages)"
+ },
  "Lumen/Core/Repetition/Publishing.swift": {
   "Annat": "a school subject as the server stores and searches it",
   "Biologi": "a school subject as the server stores and searches it",
@@ -869,7 +876,7 @@
   "Fråga: \\(question)\\nFacit: \\(key)\\nElevens svar: \\(answer)": "a prompt to the phone's model",
   "Inte rätt.": "spoken: follows the language listened for, not the texts' language",
   "Rätt.": "spoken: follows the language listened for, not the texts' language",
-  "Telefonens modell:": "spoken: follows the language listened for, not the texts' language",
+  "Rättat på telefonen:": "spoken: follows the language listened for, not the texts' language",
   "en": "a prompt to the phone's model, or a word read from its reply",
   "fel": "a prompt to the phone's model, or a word read from its reply",
   "rätt": "a prompt to the phone's model, or a word read from its reply"
@@ -1441,9 +1448,11 @@
   "Bladen är gröna för att klorofyllet tar upp rött och blått ljus men kastar tillbaka det gröna.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Cellandning är när cellerna bryter ner socker med syre och får energi. Koldioxid och vatten blir kvar.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Cellandningen": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "DNA lagrar arvet, RNA bär ut det till cellen.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Den enas produkter är den andras råvaror, så kol och syre går runt i ett kretslopp.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Den gav kraft till fabriker, tåg och båtar oberoende av vatten och vind.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Den gav kraft till fabriker, tåg och båtar oberoende av vatten och vind. Därför kunde fabrikerna ligga nära städerna.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Den omvandlar näring till energi som cellen kan använda.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Den sker i kloroplasterna, där klorofyllet fångar ljuset. Som restprodukt bildas syre, som djur och människor andas.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Den visar vem som äter vem i ett ekosystem.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Det gick inte att publicera just nu. Försök igen om en stund.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
@@ -1459,6 +1468,7 @@
   "En kraft är något som kan ändra ett föremåls rörelse eller form. Den mäts i newton.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Energin från solen går från växterna till växtätarna och vidare till rovdjuren, och det mesta blir värme på vägen.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Energin som frigörs använder cellen för att växa och röra sig.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Engelska glosor": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "England hade kol, järn, kapital och kolonier som köpte varorna.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "England hade kol, järn, kapital och kolonier som köpte varorna. Dessutom fanns många arbetare som flyttat från landsbygden.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Ett föremål fortsätter som förut om ingen kraft verkar på det.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
@@ -1524,6 +1534,9 @@
   "Vad bildas vid fotosyntesen?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Vad gjorde ångmaskinen viktig?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Vad gör klorofyllet?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Vad gör mitokondrien?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Vad heter självständig på engelska?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Vad heter trots att på engelska?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Vad säger Newtons första lag?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Vad säger Pythagoras sats?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Vad är cellandning?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
@@ -1532,6 +1545,7 @@
   "Vad är en näringskedja?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Vad är en syra?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Vad är fotosyntes?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Vad är skillnaden mellan DNA och RNA?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Var sker fotosyntesen?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Varför behöver cellen mitokondrier?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Varför behöver växter ljus?": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
@@ -1542,6 +1556,7 @@
   "Växten tar upp koldioxid ur luften och vatten genom rötterna.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Växter behöver ljus för fotosyntesen, där de gör socker av koldioxid och vatten. Ljuset ger energin, och sockret blir växtens mat.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Växter gör socker av ljus, vatten och koldioxid.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Växter gör socker och syre av koldioxid, vatten och ljus.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Växter tillverkar sin egen näring genom fotosyntes.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "a i kvadrat plus b i kvadrat är c i kvadrat.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "a i kvadrat plus b i kvadrat är c i kvadrat. Det gäller i en rätvinklig triangel.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
