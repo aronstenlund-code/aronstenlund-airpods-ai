@@ -57,7 +57,7 @@ ett långsamt nät) frågas om som förut. Gäller bara telefoner utan egen mode
 
 ## 5. Test
 
-- **A164:** 22 tester i `LumenTests/A164OwnDeckTests.swift`: samlingen sparas mellan starter; nyast först; texter
+- **A164:** 21 tester i `LumenTests/A164OwnDeckTests.swift`: samlingen sparas mellan starter; nyast först; texter
   kortas; full samling; flytta kort; ljudet utanför säkerhetskopian; inspelning sparas för sin del; ny inspelning
   ersätter den gamla; avbryt behåller den gamla; gränsen sparar; för kort inspelning sparas inte; nekad mikrofon
   säger det; en i taget; borttagning tar filerna; inspelningen spelas och telefonens röst läser resten; röst som
