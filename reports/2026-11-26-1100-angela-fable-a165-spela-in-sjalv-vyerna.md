@@ -29,7 +29,9 @@ Schrutes (A164), designunderlaget Kellys (Ke89, `docs/design/spela-in-sjalv.md`)
    samling. Bladet kommer där användaren är: på Start, eller över Nytt prov (som då stängs när man väljer knappen).
 7. **Svenska och engelska** enligt Kellys tabell ("Record it yourself", "Completely free", "Your recording",
    "Practice", "Out of credits?", "Can't create quizzes right now?" …).
-8. **Kellys ändring i A160** (2026-11-26): raden när telefonen rättar säger nu "Rättat på telefonen: Rätt." /
+8. **"Fler lägen" på Start** visas nu också när lyssnarsamtycket är givet (`listeningConsented`, av som förval;
+   Angela Schrute skickar in värdet i A166).
+9. **Kellys ändring i A160** (2026-11-26): raden när telefonen rättar säger nu "Rättat på telefonen: Rätt." /
    "Checked on your phone: Right." i stället för "Telefonens modell: …".
 
 ## Teknik
@@ -92,8 +94,8 @@ RADER_TEST
   spelar in." syns därför på alla bilder av samlingen. På en telefon som redan har svarat syns den inte.
 - Två blad efter varandra (bladet → ny samling) bygger på att det andra öppnas i det förstas `onDismiss`. Verifierat
   i kod, inte på bild eller telefon (**otestat antagande** att övergången ser lugn ut).
-- Demodata på bilderna är svenska också på de engelska bilderna (som i övriga scener; Kelly har bett om engelska
-  demodata för App Store-bilderna, Ke90).
+- De engelska bilderna i den här rapporten har svenska demodata. Efter bilderna har demodata fått engelska
+  versioner (Kellys Ke90, se nedan); nya engelska bilder är inte tagna än.
 - Tobys E2E för A160 (`AppTests/E2E/ModelDown/ModelDownE2ETests.swift` rad 275) väntar på orden "Telefonens modell:
   Rätt." och blir röd tills han byter till "Rättat på telefonen: Rätt." / "Checked on your phone: Right." (rad i
   hans kö).
@@ -108,5 +110,7 @@ Inget i vyerna döljer att appen spelar in.
 
 - Prov på telefon med AirPods: spela in fråga och svar, lyssna, öva, lås telefonen under övningen.
 - Deangelos/Kellys besked om `onlyRecorded`.
-- Kellys Ke90: engelska demodata i repetitionsscenerna (inte påbörjat); scenen för App Store-bild 10 finns
-  (`repOwnDeck`).
+- Kellys Ke90: demoprovet, texten i Säg i AirPods, uppläsningstexten, stilen och de egna samlingarna är på
+  engelska när appen körs på engelska (`RepetitionDemo.demo(_:_:)`, bara Debug); scenen för App Store-bild 10 finns
+  (`repOwnDeck`). Rubriken "Swedish voices" i röstbladet är appens riktiga rubrik (katalogen har bara svenska
+  röster) och är inte ändrad. Nya engelska bilder återstår att ta och granska.
