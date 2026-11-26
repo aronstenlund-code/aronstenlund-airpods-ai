@@ -59,7 +59,11 @@ Mer live finns inte att mäta utan modellanrop.
 
 Den delade gränsen (RPC `check_rate_limits`, som gör en upsert per fönster) är alltså nästan allt ett kodsvar väntar på. På modellvägen hölls också modellens första text tills gränsen hade svarat.
 
-**Efter K123b:** LIVE_EFTER
+**Efter K123b:** **verifierat live** (körning 106 efter deploy 385, samma åtta räkningar): servern **p50 2 ms** (förut cirka 600 ms) och klientens första byte **p50 75 ms** (förut 737 ms i körning 105). `limits_ms` är 0–1 ms.
+
+Undantaget är det första, kalla anropet: inloggningen tog 407 ms och servern totalt 652 ms. Det är kallstart och nycklar, inte gränsen.
+
+Modellsvarens första text väntar inte heller på gränsen längre. Det går inte att mäta live utan modellanrop, så det är verifierat i test.
 
 ### Ändrat
 
