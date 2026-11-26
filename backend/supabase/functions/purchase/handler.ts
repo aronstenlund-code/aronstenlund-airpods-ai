@@ -1,3 +1,4 @@
+import { readLimitedJson } from "../answer/validate.ts";
 /**
  * K94 (D218, D214): App Store purchases on the server.
  *   POST /purchase {"action":"verify","jws":"<StoreKit 2 signed transaction>"}  (signed in)
@@ -221,9 +222,8 @@ export function createPurchaseHandler(deps: PurchaseDeps) {
         }), { status: 200, headers: { "content-type": "application/json", "cache-control": "public, max-age=60", ...CORS_HEADERS } });
       }
       if (req.method !== "POST") throw new HttpError(405, "method_not_allowed", "Use GET or POST");
-      const raw = await req.text();
-      if (raw.length > 64 * 1024) throw new HttpError(413, "payload_too_large", "too large");
-      const b = (raw ? JSON.parse(raw) : null) as Record<string, unknown> | null;
+      // O100 S5: read with a limit as it streams (a chunked body has no content-length); never more than 64 KB
+      const b = (req.body ? await readLimitedJson(req, 64 * 1024) : null) as Record<string, unknown> | null;
       if (b && "signedPayload" in b) return await notify(b.signedPayload);
       const user = await deps.authenticate(req);
       // ---------- K98 (D224): welcome credits and invitations ----------
