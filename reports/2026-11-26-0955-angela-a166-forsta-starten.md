@@ -97,9 +97,9 @@ Den första bildkörningen visade två fel på samtycket, som nu är första sta
 
 ## Testresultat
 
-- **iOS build 45794809838 grön** på `claude/fervent-fermi-34hrer` (0802c28f, main inmergad): enhetsbygge med varningar som fel, hela testsviten (1 173 gröna testrader, 0 röda), Release-arkivet och kontrollen att testläget och testkrokarna inte finns i Release. *Verified in CI.* De två bygg­ena före (45786309577, 45791153736) avbröts av nästa push och säger ingenting.
+- **main-bygget 45898579246 grönt** (3f2c9041, A166 på main). **iOS build 45794809838 grön** på `claude/fervent-fermi-34hrer` (0802c28f, main inmergad): enhetsbygge med varningar som fel, hela testsviten (1 173 gröna testrader, 0 röda), Release-arkivet och kontrollen att testläget och testkrokarna inte finns i Release. *Verified in CI.* De två bygg­ena före (45786309577, 45791153736) avbröts av nästa push och säger ingenting.
 - Alla 8 testerna i `A166FirstStartTests` är gröna i den körningen.
-- **Ett fel i mina egna tester, hittat nu:** tester som står inom `#if LUMEN_TESTMODE` i testmålet körs inte – flaggan sätts bara för appmålet. Det gäller det nya testet för låtsasinspelaren, och två äldre: A164:s test av `-SeedOwnDeck` och A159:s test av `-OnDeviceMock`. De har alltså aldrig körts, fast rapporterna för A159 och A164 räknade dem. Koden de prövar används av Tobys körningar (skärmturen med `-SeedOwnDeck 1` är grön), men testerna själva är *untested*. Rättas i nästa push (`#if DEBUG`, som testmålet har) med eget bygge; resultatet skrivs in här.
+- **Ett fel i mina egna tester, hittat nu:** tester som står inom `#if LUMEN_TESTMODE` i testmålet körs inte – flaggan sätts bara för appmålet. Det gäller det nya testet för låtsasinspelaren, och två äldre: A164:s test av `-SeedOwnDeck` och A159:s test av `-OnDeviceMock`. De har alltså aldrig körts, fast rapporterna för A159 och A164 räknade dem. Koden de prövar används av Tobys körningar (skärmturen med `-SeedOwnDeck 1` är grön), men testerna själva är *untested*. **Rättat:** testerna står nu inom `#if DEBUG`, som testmålet har. **iOS build 45898652229 grön** (391a0688): alla tre kördes och är gröna, 1 176 gröna testrader, 0 röda. *Verified in CI.* Rättningen är på main.
 
 - `LumenTests/A166FirstStartTests.swift` (8 tester): stegen i ordning för en ny installation; samtycket hoppas aldrig över; den som redan använder appen ser bara Välkommen; knappen ger samtycket och startar Standardläget; ingenting lyssnar utan samtycket; frågan om delning väntar tills det första lyssnandet är över (från första starten och från bladet); ett senare pass håller inte tillbaka den i onödan.
 - `LumenTests/A164OwnDeckTests.swift`: ett nytt test för låtsasinspelaren (2 s, `.wav`, ingen mikrofon, filen går in i spåret).
@@ -131,7 +131,6 @@ Den första bildkörningen visade två fel på samtycket, som nu är första sta
 
 ## Återstår
 
-- Testerna bakom `#if LUMEN_TESTMODE` (se Testresultat): eget bygge, sedan main.
 - Kelly: Välkommens ord när första starten leder till lyssnandet; samtyckets punkt om Claude.
 - Toby: `NewUserRepetitionTests` och skärmturens bilder av första starten.
 - Arons prov på telefon (stegen nedan).
@@ -148,5 +147,4 @@ Den första bildkörningen visade två fel på samtycket, som nu är första sta
 
 ## Nästa session
 
-- Se att bygget med de tre testerna som inte kördes är grönt, och skriv in det här.
 - A149 väntar fortfarande på Arons prov och Deangelos ord.
