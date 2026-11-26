@@ -1,0 +1,1 @@
+{"questions": [{"i": 2, "drop": true, "same_as": 1}], "sources": [{"i": 0, "s": [2], "a": "Växten tar upp koldioxid genom klyvöppningarna och vatten genom rötterna."}, {"i": 1, "s": [4, 3], "a": "Energin används för att bygga glukos av koldioxid och vatten, och syre bildas som en restprodukt."}]}

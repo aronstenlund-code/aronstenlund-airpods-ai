@@ -1,0 +1,1 @@
+{"points": {"E": 1, "C": 1, "A": 0}, "feedback": "Du fick E-poängen för rätt metod, att räkna noll komma femton gånger 840, och C-poängen för rätt svar, 126 kronor. Bra, inget saknas här."}

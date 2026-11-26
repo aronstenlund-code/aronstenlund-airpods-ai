@@ -1,0 +1,1 @@
+{"in_scope": true, "answer": "1. Tryck Nytt prov på startsidan. 2. Lägg till dina anteckningar med Fota sidor, Välj bilder, Skriv text eller Lägg till dokument. 3. Ge provet ett namn och välj Antal frågor. 4. Tryck Skapa frågor. 5. Kolla ämne och årskurs under Stämmer det här? och tryck Ser rätt ut."}

@@ -1,0 +1,1 @@
+{"questions": ["What happens when the droplets in clouds join and become heavy?", "Explain how the weight of the droplets is linked to precipitation.", "Which forms can precipitation take when the droplets fall?"]}

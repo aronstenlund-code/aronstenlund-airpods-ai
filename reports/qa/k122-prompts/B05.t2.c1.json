@@ -34,7 +34,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<recent_qa>\nQ: 24 gånger 6\nA: Tjugofyra gånger sex är hundrafyrtiofyra.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>24 gånger 6</active_topic>\n<now>torsdag 26 november 2026, vecka 48, klockan 22:31 (svensk tid, Europe/Stockholm)</now>\n<fragment>delat med tre</fragment>"
+        "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<recent_qa>\nQ: 24 gånger 6\nA: Tjugofyra gånger sex är hundrafyrtiofyra.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>24 gånger 6</active_topic>\n<now>torsdag 26 november 2026, vecka 48, klockan 22:39 (svensk tid, Europe/Stockholm)</now>\n<fragment>delat med tre</fragment>"
       }
     ],
     "output_config": {

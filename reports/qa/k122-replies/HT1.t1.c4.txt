@@ -1,0 +1,1 @@
+{"questions": [], "sources": [{"i": 0, "s": [1], "a": "Ett ekosystem består av levande organismer och den miljö de lever i."}, {"i": 1, "s": [2], "a": "Producenter, som växter, gör sin egen näring med fotosyntes."}, {"i": 2, "s": [3, 2], "a": "Konsumenter äter andra organismer, medan producenter gör sin egen näring med fotosyntes."}]}

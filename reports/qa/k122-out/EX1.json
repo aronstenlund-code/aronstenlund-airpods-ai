@@ -1,6 +1,6 @@
 {
   "id": "EX1",
-  "status": "needs_reply",
+  "status": "done",
   "prompts": [
     {
       "stem": "EX1.t1.c1",
@@ -170,9 +170,189 @@
         }
       },
       "reply_hint": "As the system prompt asks (exam, help and the judge read a JSON object from the reply)."
+    },
+    {
+      "stem": "EX1.t1.c5",
+      "case": "EX1",
+      "turn": 1,
+      "call": 5,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "drill",
+        "answers": false,
+        "questions": 3,
+        "subject": "Biologi",
+        "pages": [],
+        "text": "Fotosyntes\n\nVäxter tar upp koldioxid genom klyvöppningarna och vatten genom rötterna. I kloroplasterna fångar klorofyllet solljusets energi. Energin används för att bygga glukos av koldioxid och vatten, och syre bildas som en restprodukt. Glukosen används i cellandningen eller lagras som stärkelse. Fotosyntesen är grunden för nästan all mat på jorden."
+      },
+      "anthropic_request": {
+        "model": "claude-sonnet-5-5",
+        "max_tokens": 390,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You write extra questions for a spoken practice exam. You get <material>, <kept> (the questions the exam already has) and <count>. Return ONLY {\"questions\": [\"...\", ...]} with exactly <count> new questions:\n- Each is an understanding question the material carries (why, how, explain how X is linked to Y, what followed, compare), answered by the material itself. Never assume a fact, cause or link the material does not state.\n- Never ask what a kept question asks, in any words: a question whose answer would be the same as, or part of, a kept question's answer is wrong.\n- Spread them over parts of the material that the kept questions touch least. The language of the material; short and clear when only heard. No other text.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<material>\n[1] Fotosyntes\n[2] Växter tar upp koldioxid genom klyvöppningarna och vatten genom rötterna.\n[3] I kloroplasterna fångar klorofyllet solljusets energi.\n[4] Energin används för att bygga glukos av koldioxid och vatten, och syre bildas som en restprodukt.\n[5] Glukosen används i cellandningen eller lagras som stärkelse.\n[6] Fotosyntesen är grunden för nästan all mat på jorden.\n</material>\n<used_sentences>2, 3, 4</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n<kept>[\"Hur tar växten upp koldioxid och vatten?\",\"Hur används solljusets energi när växten bygger glukos?\"]</kept>\n<count>3</count>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        }
+      },
+      "reply_hint": "As the system prompt asks (exam, help and the judge read a JSON object from the reply)."
     }
   ],
-  "turns": [],
-  "blocked": [],
-  "needs": "EX1.t1.c4"
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "exam",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-EX1",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 1621,
+          "output_tokens": 162,
+          "total_ms": 41,
+          "est_cost_usd": 0.00024310000000000003,
+          "status": "ok"
+        },
+        {
+          "user_id": "k122-EX1",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 1656,
+          "output_tokens": 104,
+          "total_ms": 41,
+          "est_cost_usd": 0.00021760000000000003,
+          "status": "ok"
+        },
+        {
+          "user_id": "k122-EX1",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 864,
+          "output_tokens": 5,
+          "total_ms": 41,
+          "est_cost_usd": 0.0000889,
+          "status": "ok"
+        },
+        {
+          "user_id": "k122-EX1",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 964,
+          "output_tokens": 85,
+          "total_ms": 41,
+          "est_cost_usd": 0.002778,
+          "status": "ok"
+        },
+        {
+          "user_id": "k122-EX1",
+          "endpoint": "exam-drill",
+          "provider": "anthropic",
+          "model": "claude-sonnet-5-5",
+          "input_tokens": 414,
+          "output_tokens": 49,
+          "total_ms": 41,
+          "est_cost_usd": 0.001318,
+          "status": "ok"
+        }
+      ],
+      "credits": [
+        {
+          "fn": "exam.quota",
+          "n": 0
+        }
+      ],
+      "json": {
+        "summary": {
+          "subject": "Biologi",
+          "grade": "",
+          "covers": "Provet handlar om fotosyntesen: hur växten tar upp koldioxid och vatten, hur klorofyllet fångar solljusets energi och bygger glukos, och vad som händer med glukosen och syret."
+        },
+        "notes": "Fotosyntes. Växter tar upp koldioxid genom klyvöppningarna och vatten genom rötterna. I kloroplasterna fångar klorofyllet solljusets energi. Energin används för att bygga glukos av koldioxid och vatten. Syre bildas som en restprodukt. Glukosen används i cellandningen eller lagras som stärkelse. Fotosyntesen är grunden för nästan all mat på jorden.",
+        "questions_asked": 3,
+        "questions_possible": 3,
+        "items": [
+          {
+            "id": "q1",
+            "question": "Vad händer med glukosen som växten bildar?"
+          },
+          {
+            "id": "q2",
+            "question": "Hur tar växten upp koldioxid och vatten?"
+          },
+          {
+            "id": "q3",
+            "question": "Hur används solljusets energi när växten bygger glukos?"
+          }
+        ],
+        "long_words": 90,
+        "usage": {
+          "plan": {
+            "model": "claude-haiku-5-5",
+            "input_tokens": 1621,
+            "output_tokens": 162,
+            "est_cost_usd": 0.00024310000000000003,
+            "ms": 9
+          },
+          "notes": {
+            "model": "claude-haiku-5-5",
+            "input_tokens": 1656,
+            "output_tokens": 104,
+            "est_cost_usd": 0.00021760000000000003,
+            "ms": 12
+          },
+          "shorten": {
+            "model": "claude-haiku-5-5",
+            "input_tokens": 864,
+            "output_tokens": 5,
+            "est_cost_usd": 0.0000889,
+            "ms": 1
+          },
+          "final_check": {
+            "model": "claude-sonnet-5-5",
+            "input_tokens": 964,
+            "output_tokens": 85,
+            "est_cost_usd": 0.002778,
+            "ms": 1,
+            "fixed": 0,
+            "dropped": 1,
+            "refilled": 1,
+            "refill_ms": 1,
+            "understanding": 3,
+            "questions": 3
+          },
+          "est_cost_usd": 0.0046456,
+          "ms": 23
+        },
+        "quota": {
+          "unit": "chars",
+          "used": 0,
+          "limit": 100000,
+          "left": 100000,
+          "remaining": 100000,
+          "per": "month",
+          "resets": "2026-12-01"
+        }
+      }
+    }
+  ],
+  "blocked": []
 }

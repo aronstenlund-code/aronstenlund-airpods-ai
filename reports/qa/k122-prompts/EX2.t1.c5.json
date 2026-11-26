@@ -1,0 +1,40 @@
+{
+  "stem": "EX2.t1.c5",
+  "case": "EX2",
+  "turn": 1,
+  "call": 5,
+  "endpoint": "exam",
+  "url": "https://k122-replay.invalid/v1/messages",
+  "client_request": {
+    "action": "drill",
+    "answers": false,
+    "questions": 3,
+    "subject": "",
+    "pages": [],
+    "text": "The Water Cycle\n\nWater moves between the oceans, the air and the land in a cycle. The sun heats the oceans and water evaporates into the air as water vapour. As the vapour rises it cools and condenses into tiny droplets that form clouds. When the droplets join and become heavy they fall as precipitation: rain, snow or hail."
+  },
+  "anthropic_request": {
+    "model": "claude-sonnet-5-5",
+    "max_tokens": 390,
+    "stream": true,
+    "system": [
+      {
+        "type": "text",
+        "text": "You write extra questions for a spoken practice exam. You get <material>, <kept> (the questions the exam already has) and <count>. Return ONLY {\"questions\": [\"...\", ...]} with exactly <count> new questions:\n- Each is an understanding question the material carries (why, how, explain how X is linked to Y, what followed, compare), answered by the material itself. Never assume a fact, cause or link the material does not state.\n- Never ask what a kept question asks, in any words: a question whose answer would be the same as, or part of, a kept question's answer is wrong.\n- Spread them over parts of the material that the kept questions touch least. The language of the material; short and clear when only heard. No other text.",
+        "cache_control": {
+          "type": "ephemeral"
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content": "<material>\n[1] The Water Cycle\n[2] Water moves between the oceans, the air and the land in a cycle.\n[3] The sun heats the oceans and water evaporates into the air as water vapour.\n[4] As the vapour rises it cools and condenses into tiny droplets that form clouds.\n[5] When the droplets join and become heavy they fall as precipitation: rain, snow or hail.\n</material>\n<used_sentences>2, 3, 4</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n<kept>[\"How does water move between the oceans, the air and the land?\",\"How do clouds form from water vapour?\"]</kept>\n<count>3</count>"
+      }
+    ],
+    "output_config": {
+      "effort": "low"
+    }
+  },
+  "reply_hint": "As the system prompt asks (exam, help and the judge read a JSON object from the reply)."
+}

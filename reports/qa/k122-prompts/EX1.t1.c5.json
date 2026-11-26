@@ -1,0 +1,40 @@
+{
+  "stem": "EX1.t1.c5",
+  "case": "EX1",
+  "turn": 1,
+  "call": 5,
+  "endpoint": "exam",
+  "url": "https://k122-replay.invalid/v1/messages",
+  "client_request": {
+    "action": "drill",
+    "answers": false,
+    "questions": 3,
+    "subject": "Biologi",
+    "pages": [],
+    "text": "Fotosyntes\n\nVäxter tar upp koldioxid genom klyvöppningarna och vatten genom rötterna. I kloroplasterna fångar klorofyllet solljusets energi. Energin används för att bygga glukos av koldioxid och vatten, och syre bildas som en restprodukt. Glukosen används i cellandningen eller lagras som stärkelse. Fotosyntesen är grunden för nästan all mat på jorden."
+  },
+  "anthropic_request": {
+    "model": "claude-sonnet-5-5",
+    "max_tokens": 390,
+    "stream": true,
+    "system": [
+      {
+        "type": "text",
+        "text": "You write extra questions for a spoken practice exam. You get <material>, <kept> (the questions the exam already has) and <count>. Return ONLY {\"questions\": [\"...\", ...]} with exactly <count> new questions:\n- Each is an understanding question the material carries (why, how, explain how X is linked to Y, what followed, compare), answered by the material itself. Never assume a fact, cause or link the material does not state.\n- Never ask what a kept question asks, in any words: a question whose answer would be the same as, or part of, a kept question's answer is wrong.\n- Spread them over parts of the material that the kept questions touch least. The language of the material; short and clear when only heard. No other text.",
+        "cache_control": {
+          "type": "ephemeral"
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content": "<material>\n[1] Fotosyntes\n[2] Växter tar upp koldioxid genom klyvöppningarna och vatten genom rötterna.\n[3] I kloroplasterna fångar klorofyllet solljusets energi.\n[4] Energin används för att bygga glukos av koldioxid och vatten, och syre bildas som en restprodukt.\n[5] Glukosen används i cellandningen eller lagras som stärkelse.\n[6] Fotosyntesen är grunden för nästan all mat på jorden.\n</material>\n<used_sentences>2, 3, 4</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n<kept>[\"Hur tar växten upp koldioxid och vatten?\",\"Hur används solljusets energi när växten bygger glukos?\"]</kept>\n<count>3</count>"
+      }
+    ],
+    "output_config": {
+      "effort": "low"
+    }
+  },
+  "reply_hint": "As the system prompt asks (exam, help and the judge read a JSON object from the reply)."
+}

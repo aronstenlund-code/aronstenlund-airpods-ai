@@ -1,0 +1,1 @@
+{"questions": [], "sources": [{"i": 0, "s": [2], "a": "Water moves between the oceans, the air and the land in a cycle."}, {"i": 1, "s": [3], "a": "The sun heats the oceans, so the water evaporates into the air as water vapour."}, {"i": 2, "s": [4], "a": "As the vapour rises it cools and condenses into tiny droplets that form clouds."}]}

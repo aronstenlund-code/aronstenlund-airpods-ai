@@ -1,0 +1,2 @@
+[[VET]] Starta om routern genom att dra ur strömmen i 30 sekunder, och sitt närmare den, gärna utan väggar emellan. Blir det inte bättre, mät hastigheten med Bredbandskollen och kontakta din bredbandsleverantör.
+[[SAMMANFATTNING]] Användaren har segt wifi och fick råd om att starta om routern, sitta närmare den, mäta hastigheten och kontakta leverantören.

@@ -1,0 +1,3 @@
+[[REL continues]]
+[[VET]] Luftens molekyler är mycket mindre än ljusets våglängd, och då sprids kort våglängd mycket mer. Blått ljus har ungefär halva våglängden mot rött och sprids därför runt 5 gånger mer.
+[[SAMMANFATTNING]] Användaren ville ha en kortare förklaring av varför blått ljus sprids mer. Svaret var att små molekyler sprider kort våglängd mest, så blått sprids ungefär 5 gånger mer än rött.
