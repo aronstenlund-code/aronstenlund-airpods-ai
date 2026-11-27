@@ -25,7 +25,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<material>\n[1] Ekosystem består av levande organismer och den miljö de lever i.\n[2] Producenter, som växter, gör sin egen näring med fotosyntes.\n[3] Konsumenter äter andra organismer, och nedbrytare bryter ner döda organismer så att näringen kommer tillbaka till marken.\n</material>\n<questions>[{\"i\":0,\"q\":\"Vad består ett ekosystem av?\"},{\"i\":1,\"q\":\"Hur får producenter sin näring?\"},{\"i\":2,\"q\":\"Hur skiljer sig konsumenter från producenter?\"}]</questions>"
+        "content": "<material>\n[1] Ekosystem består av levande organismer och den miljö de lever i.\n[2] Producenter, som växter, gör sin egen näring med fotosyntes.\n[3] Konsumenter äter andra organismer, och nedbrytare bryter ner döda organismer så att näringen kommer tillbaka till marken.\n</material>\n<questions>[{\"i\":0,\"q\":\"Vad består ett ekosystem av?\"},{\"i\":1,\"q\":\"Hur får producenter sin näring?\"},{\"i\":2,\"q\":\"Varför är nedbrytare viktiga i ett ekosystem?\"}]</questions>"
       }
     ],
     "output_config": {
