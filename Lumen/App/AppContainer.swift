@@ -179,7 +179,13 @@ final class AppContainer {
             : DrillClient(config: .lumen, auth: auth, http: http) as any DrillMaking
         let drillAudio: any DrillAudioProviding
         if let drillCloud {
-            drillAudio = CloudDrillAudio(cloud: drillCloud, store: drillStore)
+            let cloudAudio = CloudDrillAudio(cloud: drillCloud, store: drillStore)
+            // K124 (D270): while the voice service is out, the phone's own voice reads the exam (no credits, no call).
+            let phoneFolder = (try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask,
+                                                            appropriateFor: nil, create: true))?
+                .appendingPathComponent("drill_audio_phone", isDirectory: true)
+            cloudAudio.phoneVoice = { language in DeviceVoiceDrillAudio(folder: phoneFolder, language: language) }
+            drillAudio = cloudAudio
         } else {
             #if DEBUG
             let makesSound = ScreenshotStage.requested == nil // the screenshots write their own silent files

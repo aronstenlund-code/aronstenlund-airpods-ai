@@ -1584,5 +1584,6 @@
  "✓ Tillåtet": "✓ Allowed",
  "Fråga högt": "Ask out loud",
  "Svaret kommer i örat. Nästa skärm frågar först.": "The answer comes in your ear. The next screen asks first.",
- "Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. Kan servern inte svara, svarar telefonens egen modell där den finns, och då stannar texten på telefonen.": "The text is sent through EarMind's server to Claude from Anthropic, which produces the answer. If the server can't answer, the phone's own model answers where it's available, and then the text stays on your phone."
+ "Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. Kan servern inte svara, svarar telefonens egen modell där den finns, och då stannar texten på telefonen.": "The text is sent through EarMind's server to Claude from Anthropic, which produces the answer. If the server can't answer, the phone's own model answers where it's available, and then the text stays on your phone.",
+ "Telefonens röst läser just nu.": "The phone's voice is reading for now."
 }
