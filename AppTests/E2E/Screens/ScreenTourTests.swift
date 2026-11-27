@@ -35,6 +35,10 @@ final class ScreenTourTests: XCTestCase {
         springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         // Swedish UI, as the users see it. Apple's recogniser instead of Scribe: no paid realtime session from CI.
         app.launchArguments += ["-AppleLanguages", "(sv)", "-AppleLocale", "sv_SE", "-stt.useCloud", "NO"]
+        // Run 45931536109 (pro-dark-storsta-text): "fold Avancerat out again" tapped an open section shut, and the
+        // diagnostics rows were never there. The app keeps `settings.showsAdvanced`; the tour starts with it open and
+        // never taps the row (the first screen of Inställningar is shot before the advanced sections, which come last).
+        app.launchArguments += ["-settings.showsAdvanced", "YES"]
         // D180: every request is test traffic with fake audio (x-earmind-test); the tour never plays anything.
         app.launchEnvironment["LUMEN_TEST_HEADER"] = "1"
         started = Date()
@@ -315,18 +319,13 @@ final class ScreenTourTests: XCTestCase {
 
     /// Folds out "Avancerat" in Settings (once per sheet) and shoots the first screen of it.
     private func expandAdvanced() {
-        // Already folded out (`settings.showsAdvanced` is kept by the app): a tap would fold it in.
-        let inside = app.descendants(matching: .any).matching(NSPredicate(format: "identifier IN %@", ["settings.diagnostics", "settings.rawTranscript"])).firstMatch
-        if inside.exists {
-            record("note: Avancerat is already folded out")
-            return
-        }
+        // Avancerat is open from the launch (`-settings.showsAdvanced YES`): the row is only found and the open section
+        // shot. A tap would fold it in (run 45931536109).
         guard let row = scrollTo(["Avancerat*", "Advanced*", "#settings.advanced"], buttonsOnly: true) else {
             miss("settings row Avancerat not found")
             return
         }
-        row.tap()
-        pause(1)
+        record("note: Avancerat is open from the launch: \(row.label)")
         app.swipeUp()
         shoot("installningar-avancerat", note: "Settings › Avancerat folded out")
         app.swipeUp()
