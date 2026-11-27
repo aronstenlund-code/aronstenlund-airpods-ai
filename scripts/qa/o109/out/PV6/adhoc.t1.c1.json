@@ -35,7 +35,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: prov; natt</situation>\n<goals>\nBiologi 1 på gymnasiet: cellen och genetik.\n</goals>\n<recent_qa>\nQ: vad är DNA\nA: DNA är den molekyl som bär arvsanlagen. Den består av två strängar som är vridna till en dubbelspiral, och ordningen på baserna avgör vilka proteiner cellen kan bygga.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>vad är DNA</active_topic>\n<now>fredag 27 november 2026, vecka 48, klockan 05:48 (svensk tid, Europe/Stockholm)</now>\n<fragment>kortare</fragment>"
+        "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: prov; natt</situation>\n<goals>\nBiologi 1 på gymnasiet: cellen och genetik.\n</goals>\n<recent_qa>\nQ: vad är DNA\nA: DNA är den molekyl som bär arvsanlagen. Den består av två strängar som är vridna till en dubbelspiral, och ordningen på baserna avgör vilka proteiner cellen kan bygga.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>vad är DNA</active_topic>\n<now>fredag 27 november 2026, vecka 48, klockan 05:52 (svensk tid, Europe/Stockholm)</now>\n<fragment>kortare</fragment>"
       }
     ],
     "output_config": {

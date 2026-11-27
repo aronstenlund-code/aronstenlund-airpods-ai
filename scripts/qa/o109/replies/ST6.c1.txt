@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"Sätt en timer på tio minuter.","confidence":0.9}
+Timern är satt på 10 minuter.
+[[SAMMANFATTNING]] Användaren bad om en timer. Svaret bekräftade en timer på tio minuter.
