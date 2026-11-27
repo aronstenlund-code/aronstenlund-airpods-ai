@@ -9,6 +9,8 @@ struct SettingsView: View {
     @AppStorage("debug.latencyOverlay") private var showsLatencyOverlay = false
     /// A13.1: the technical settings are folded away; the choice is remembered.
     @AppStorage("settings.showsAdvanced") private var showsAdvanced = false
+    /// Deangelo 2026-11-27: the credits row opens the credits sheet.
+    @State private var showsCredits = false
     /// A84 (D151, D152): the repetition's tempo, on the phone, no new calls.
     @AppStorage(RepetitionModel.tempoKey) private var repetitionTempo: Double = 1
     /// A89 (D162): the long answers' length, only here.
@@ -38,92 +40,37 @@ struct SettingsView: View {
 
     var body: some View {
         Form {
+            // Deangelo 2026-11-27: the most important first – language, activation words, voice, credits – then what
+            // must always be found, and the rest under Avancerat. Every row says what it does (`SettingsRow`).
             appLanguageSection // D253: first, so it is found whatever language the app is showing
-            // Vanliga
+            activationWordsSection
             voiceSection
-            answerSection
-            // A110 (D198): one section "Påminnelser": the repetition flow's reminder (A109, D194, Angela Fable) and
-            // the study plan's older one after it. Nothing is removed.
-            if let repetition = model.repetition {
-                PracticeReminderSection(model: repetition,
-                                        mergedFooter: String(localized: "Varje påminnelse kommer högst en gång om dagen, och inte de dagar du redan har pluggat.")) {
-                    studyReminderRows(merged: true)
-                }
-            } else {
-                Section {
-                    studyReminderRows(merged: false)
-                } header: {
-                    Text("Påminnelser")
-                } footer: {
-                    Text("En gång om dagen: dagar kvar till provet och 5 snabba frågor. Ingen påminnelse de dagar du redan har övat.")
-                }
-            }
+            creditsSection
             Section {
-                NavigationLink("Röstkommandon") { VoiceCommandsView(store: model.phrases, music: model.music, voice: model.speaker.settings, tips: model.tips) }
-                    .accessibilityIdentifier("settings.voiceCommands") // T3 (Toby): a row is found by this, whatever the language
-                NavigationLink("Minne") { MemoryView(store: model.memory, commands: model.commands, preferences: model.preferences, paces: model.paces) }
-                    .accessibilityIdentifier("settings.memory") // T3 (Toby): a row is found by this, whatever the language
-            }
-            studyProfileSection
-            myAnswersSection
-            #if LUMEN_TESTMODE
-            spotifySection // Ke91: a pilot for testers (A59); not in the App Store build
-            #endif
-            testModeSection
-            appearanceSection
-            languageSection
-            Section {
-                NavigationLink("Integritet och samtycke") {
+                NavigationLink { HistoryView(store: model.history, listening: model) } label: { SettingsRowLabel(row: .history) }
+                    .accessibilityIdentifier("settings.history") // T3 (Toby): a row is found by this, whatever the language
+                NavigationLink {
                     ConsentView(mode: .review(grantedAt: model.consent.record?.grantedAt) {
                         model.isShowingSettings = false
                         Task { await model.withdrawConsent() }
                     })
+                } label: {
+                    SettingsRowLabel(row: .privacy)
                 }
                 .accessibilityIdentifier("settings.privacy")
             }
             if let deletion = model.accountDeletion {
                 AccountSection(model: deletion) // A145 (Ke78, K101)
             }
-            Section("Mer") {
-                if model.canSaveNote {
-                    Button("Spara samtalet som anteckning") { model.saveNote() }
-                }
-                NavigationLink("Anteckningar") { NotesView(store: model.notes) }
-                    .accessibilityIdentifier("settings.notes") // T3 (Toby): a row is found by this, whatever the language
-                NavigationLink("Historik") { HistoryView(store: model.history, listening: model) }
-                    .accessibilityIdentifier("settings.history") // T3 (Toby): a row is found by this, whatever the language
-                if let cards = model.studyCards {
-                    NavigationLink("Studiekort") { StudyCardsView(store: cards) }
-                        .accessibilityIdentifier("settings.studyCards") // T3 (Toby): a row is found by this, whatever the language
-                }
-                NavigationLink("Förberedelser") { PrepView(store: model.prep, goals: model.goals, model: model) }
-                    .accessibilityIdentifier("settings.preparations") // T3 (Toby): a row is found by this, whatever the language
-                NavigationLink("Egna kommandon") { CommandsView(store: model.commands) }
-                    .accessibilityIdentifier("settings.customCommands") // T3 (Toby): a row is found by this, whatever the language
-                Button("Provfrågor") {
-                    model.isShowingSettings = false
-                    model.isShowingExamSetup = true
-                }
+            Section {
                 if let repetition = model.repetition, repetition.help != nil {
                     // A92 (D166): the help AI; "Öppna Inställningar" in an answer is where the user already is.
-                    NavigationLink("Fråga om EarMind") { HelpChatView(model: repetition) }
+                    NavigationLink { HelpChatView(model: repetition) } label: { SettingsRowLabel(row: .help) }
                 }
-                NavigationLink("Feedback och förslag") { FeedbackView(model: model) }
+                NavigationLink { FeedbackView(model: model) } label: { SettingsRowLabel(row: .feedback) }
                     .accessibilityIdentifier("settings.feedback") // T3 (Toby): a row is found by this, whatever the language
-                NavigationLink("Om appen") { AboutView() }
+                NavigationLink { AboutView() } label: { SettingsRowLabel(row: .about) }
                     .accessibilityIdentifier("settings.about") // T3 (Toby): a row is found by this, whatever the language
-            }
-            if model.repetition != nil {
-                Section { // A84
-                    Picker("Tempo", selection: $repetitionTempo) {
-                        ForEach(RepetitionModel.tempos, id: \.self) { Text(RepetitionModel.tempoLabel($0)).tag($0) }
-                    }
-                    .font(.body) // A87: the repetition's settings in the system's text style, as its screens
-                } header: { Text("Starta prov") } footer: {
-                    Text(repetitionTempo < RepetitionPlayer.lowestVoiceRate
-                         ? "Rösten läser i 0,70 och resten av tiden blir pauser."
-                         : "Hur fort frågor och svar läses upp. Gäller nästa gång du startar ett prov.")
-                }
             }
             // Avancerat
             Section {
@@ -138,10 +85,78 @@ struct SettingsView: View {
                 }
                 .accessibilityIdentifier("settings.advanced")
             } footer: {
-                Text("Mikrofon, pauser, känslighet, taligenkänning, röstprofil, kalibrering och diagnostik.")
+                Text("Påminnelser, svarslängd, röstkommandon, minne, utseende, mikrofon och taligenkänning.")
             }
             if showsAdvanced {
+                // A110 (D198): one section "Påminnelser": the repetition flow's reminder (A109, D194, Angela Fable) and
+                // the study plan's older one after it. Nothing is removed.
+                if let repetition = model.repetition {
+                    PracticeReminderSection(model: repetition,
+                                            mergedFooter: String(localized: "Varje påminnelse kommer högst en gång om dagen, och inte de dagar du redan har pluggat.")) {
+                        studyReminderRows(merged: true)
+                    }
+                } else {
+                    Section {
+                        studyReminderRows(merged: false)
+                    } header: {
+                        Text("Påminnelser")
+                    } footer: {
+                        Text("En gång om dagen: dagar kvar till provet och 5 snabba frågor. Ingen påminnelse de dagar du redan har övat.")
+                    }
+                }
+                answerSection
+                Section {
+                    NavigationLink {
+                        VoiceCommandsView(store: model.phrases, music: model.music, voice: model.speaker.settings, tips: model.tips)
+                    } label: {
+                        SettingsRowLabel(row: .voiceCommands)
+                    }
+                    .accessibilityIdentifier("settings.voiceCommands") // T3 (Toby): a row is found by this, whatever the language
+                    NavigationLink {
+                        MemoryView(store: model.memory, commands: model.commands, preferences: model.preferences, paces: model.paces)
+                    } label: {
+                        SettingsRowLabel(row: .memory)
+                    }
+                    .accessibilityIdentifier("settings.memory") // T3 (Toby): a row is found by this, whatever the language
+                    if model.canSaveNote {
+                        Button("Spara samtalet som anteckning") { model.saveNote() }
+                    }
+                    NavigationLink { NotesView(store: model.notes) } label: { SettingsRowLabel(row: .notes) }
+                        .accessibilityIdentifier("settings.notes") // T3 (Toby): a row is found by this, whatever the language
+                    if let cards = model.studyCards {
+                        NavigationLink { StudyCardsView(store: cards) } label: { SettingsRowLabel(row: .studyCards) }
+                            .accessibilityIdentifier("settings.studyCards") // T3 (Toby): a row is found by this, whatever the language
+                    }
+                    NavigationLink { PrepView(store: model.prep, goals: model.goals, model: model) } label: { SettingsRowLabel(row: .preparations) }
+                        .accessibilityIdentifier("settings.preparations") // T3 (Toby): a row is found by this, whatever the language
+                    NavigationLink { CommandsView(store: model.commands) } label: { SettingsRowLabel(row: .customCommands) }
+                        .accessibilityIdentifier("settings.customCommands") // T3 (Toby): a row is found by this, whatever the language
+                    Button {
+                        model.isShowingSettings = false
+                        model.isShowingExamSetup = true
+                    } label: {
+                        SettingsRowLabel(row: .practiceQuestions)
+                    }
+                    .foregroundStyle(LumenColor.ink)
+                }
+                appearanceSection
+                languageSection
+                myAnswersSection
+                testModeSection
+                #if LUMEN_TESTMODE
+                spotifySection // Ke91: a pilot for testers (A59); not in the App Store build
+                #endif
                 if model.repetition != nil {
+                    Section { // A84
+                        Picker("Tempo", selection: $repetitionTempo) {
+                            ForEach(RepetitionModel.tempos, id: \.self) { Text(RepetitionModel.tempoLabel($0)).tag($0) }
+                        }
+                        .font(.body) // A87: the repetition's settings in the system's text style, as its screens
+                    } header: { Text("Starta prov") } footer: {
+                        Text(repetitionTempo < RepetitionPlayer.lowestVoiceRate
+                             ? "Rösten läser i 0,70 och resten av tiden blir pauser."
+                             : "Hur fort frågor och svar läses upp. Gäller nästa gång du startar ett prov.")
+                    }
                     Section { // A89 (D162)
                         Picker("Längd på långa svar", selection: $longAnswerLength) {
                             ForEach(DrillSettings.Length.allCases, id: \.self) { Text($0.label).tag($0.rawValue) }
@@ -194,6 +209,34 @@ struct SettingsView: View {
         .task { await model.spotifyConnection?.refresh() } // A59: is Spotify available, is it connected
     }
 
+    /// Deangelo 2026-11-27: the activation words at the top (A162, Kelly Ke93's layout), with what they do.
+    private var activationWordsSection: some View {
+        Section {
+            ActivationWordsField(settings: model.activation.settings)
+        } header: {
+            Text(verbatim: SettingsRow.activationWords.title)
+        } footer: {
+            Text(verbatim: SettingsRow.activationWords.detail + " " + String(localized: "Ett tomt fält stänger av det."))
+        }
+    }
+
+    /// Deangelo 2026-11-27: the credits, with what is left; the row opens the same sheet as Start's capsule.
+    @ViewBuilder
+    private var creditsSection: some View {
+        if let repetition = model.repetition {
+            Section {
+                Button {
+                    showsCredits = true
+                } label: {
+                    SettingsRowLabel(row: .credits, value: repetition.quota.map { CreditsText.capsule($0) })
+                }
+                .foregroundStyle(LumenColor.ink)
+                .accessibilityIdentifier("settings.credits")
+            }
+            .sheet(isPresented: $showsCredits) { CreditsSheet(model: repetition) }
+        }
+    }
+
     /// D86: light, dark or as the iPhone; handwriting for the user's questions.
     /// A19/A38: the study plan's reminder (the listening modes). `merged` (A110): it shares the section with the
     /// repetition flow's reminder, so the rows say which one they are.
@@ -240,9 +283,9 @@ struct SettingsView: View {
                 .pickerStyle(.segmented)
                 .accessibilityIdentifier("settings.appLanguage")
             } header: {
-                Text("Språk")
+                Text(verbatim: SettingsRow.language.title)
             } footer: {
-                Text("Gäller appens texter och EarMinds svar.")
+                Text(verbatim: SettingsRow.language.detail)
             }
         }
     }
@@ -518,10 +561,6 @@ struct SettingsView: View {
                 .font(.footnote)
                 .foregroundStyle(.secondary)
         }
-        // A162 (D259): the user's own activation words; an empty field is off.
-        Section {
-            ActivationWordsField(settings: settings)
-        }
     }
 
     @ViewBuilder
@@ -615,7 +654,7 @@ struct SettingsView: View {
     @ViewBuilder
     private var voiceSection: some View {
         @Bindable var voice = model.speaker.settings
-        Section("Röst") {
+        Section {
             Toggle("Läs upp svaren", isOn: $voice.speakAnswers)
             if !voice.speakAnswers {
                 Text("Tyst läge: svaren visas men läses inte upp.")
@@ -632,6 +671,10 @@ struct SettingsView: View {
             if let notice = model.speaker.notice {
                 Text(notice).font(.footnote).foregroundStyle(.orange)
             }
+        } header: {
+            Text(verbatim: SettingsRow.voice.title)
+        } footer: {
+            Text(verbatim: SettingsRow.voice.detail)
         }
     }
 }
