@@ -2535,6 +2535,24 @@
         }
       }
     },
+    "AirPods anslutna": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "AirPods connected"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AirPods anslutna"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "AirPods disconnected. Put them back in and tap Resume.": {
       "extractionState": "manual",
       "localizations": {
@@ -11424,6 +11442,24 @@
           }
         }
       }
+    },
+    "Inga AirPods – svaren hörs i högtalaren": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "No AirPods – answers play on the speaker"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inga AirPods – svaren hörs i högtalaren"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
     "Inga AirPods – svaren spelas i högtalaren.": {
       "extractionState": "manual",
@@ -25084,6 +25120,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Telefonen stannar i fickan."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Telefonens modell redo": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "The phone's model is ready"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Telefonens modell redo"
           }
         }
       },

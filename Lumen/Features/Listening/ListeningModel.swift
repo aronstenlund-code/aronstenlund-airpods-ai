@@ -314,6 +314,20 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var screenshotCondition: ListeningCondition?
     #endif
 
+    /// Deangelo 2026-11-27 05:52: Start's line – the AirPods, the credits, the phone's model. Read from the route as it is
+    /// now (nothing is activated), the credits as Start's capsule says them, and the phone's model for the language.
+    var startStatus: StartStatus {
+        _ = conditionsTick // a route change or a refresh
+        let outputs = controller.session.currentOutputs
+        let code = language == .swedish ? "sv" : "en"
+        return StartStatus(airPods: outputs.contains(where: \.isExternalOutput),
+                           credits: repetition?.quota.map { CreditsText.capsule($0) },
+                           phoneModel: (answers.offline as? OnDeviceAnswerProvider)?.isAvailable(for: code) ?? false)
+    }
+
+    /// Start appeared or the app came back: read the route again.
+    func refreshStartStatus() { conditionsTick += 1 }
+
     /// Historik: the row whose answer is being read again, while it is read (its button shows ■).
     private(set) var readingAgain: UUID?
     @ObservationIgnored private var readingAgainTask: Task<Void, Never>?
@@ -465,6 +479,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         controller.keepsListeningWhenOutputLost = { [weak self] in !(self?.microphone.pauseWhenAirPodsLost ?? true) }
         controller.onOutputLost = { [weak self] in self?.report(problem: .airPodsDisconnected) }
+        controller.onRouteChanged = { [weak self] in self?.conditionsTick += 1 } // Start's line follows the AirPods
         controller.onOutputRestored = { [weak self] in
             if self?.problem == .airPodsDisconnected || self?.problem == .airPodsLostPaused { self?.problem = nil }
             self?.conditionsTick += 1 // the AirPods are back: "Inga AirPods" goes

@@ -209,6 +209,12 @@ struct ScreenshotStage: View {
                 }
                 .lumenScreen()
             case "settings": NavigationStack { SettingsView(model: model, diagnostics: container.diagnostics) }
+            // Deangelo 2026-11-27 05:52: Start's main button with its line, as Start would show it at the top.
+            case "startCard":
+                NavigationStack {
+                    List { Section { StartListeningCard(model: model) {} } }
+                        .navigationTitle(String(localized: "Prov"))
+                }
             case "voice": NavigationStack { VoicePageView(model: model) } // A26 R5
             // A30 (Kelly Ke20): Lyssnar in Provläge while listening, the practice exam on Lyssnar (with its badge), its
             // result, and the first start's exam step.

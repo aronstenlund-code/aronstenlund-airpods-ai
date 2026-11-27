@@ -53,6 +53,8 @@ final class SessionController {
     /// D86: the AirPods went while listening went on, or came back.
     var onOutputLost: (@MainActor () -> Void)?
     var onOutputRestored: (@MainActor () -> Void)?
+    /// Deangelo 2026-11-27: any change of the route (AirPods in or out), also while nothing listens: Start's line.
+    var onRouteChanged: (@MainActor () -> Void)?
 
     var snapshot: SessionSnapshot? { session.snapshot }
     var banner: String { session.snapshot?.banner ?? "No active session" }
@@ -239,6 +241,7 @@ final class SessionController {
             Task { await apply(.interruptionEnded(shouldResume: shouldResume)) }
         case .routeChanged(let reason, let outputLost, let snapshot):
             log("Route change \(reason) → \(snapshot.banner)")
+            onRouteChanged?()
             if !outputLost { Task { await reevaluateVoiceProcessing(snapshot) } }
             if outputLost {
                 UINotificationFeedbackGenerator().notificationOccurred(.warning)

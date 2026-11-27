@@ -1616,5 +1616,8 @@
  "✓ Tillåtet": "✓ Allowed",
  "Sätt i dem igen, eller tryck Lyssna igen för att lyssna vidare i högtalaren.": "Put them back in, or tap Listen again to keep listening on the speaker.",
  "Inga AirPods – svaren spelas i högtalaren.": "No AirPods – answers play on the speaker.",
- "Inget nät – telefonens egen modell svarar.": "No network – the phone's own model answers."
+ "Inget nät – telefonens egen modell svarar.": "No network – the phone's own model answers.",
+ "AirPods anslutna": "AirPods connected",
+ "Inga AirPods – svaren hörs i högtalaren": "No AirPods – answers play on the speaker",
+ "Telefonens modell redo": "The phone's model is ready"
 }

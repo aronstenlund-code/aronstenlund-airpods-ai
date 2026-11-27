@@ -27,12 +27,20 @@ protocol AudioSessionManaging: AnyObject {
     func reactivate() throws(AudioError)
     func deactivate()
     func refreshSnapshot(engineInputFormat: String?) -> SessionSnapshot
+    /// Deangelo 2026-11-27 (Start's line): where sound goes now, read without activating anything.
+    var currentOutputs: [PortInfo] { get }
+}
+
+extension AudioSessionManaging {
+    /// Fakes: the last snapshot's outputs.
+    var currentOutputs: [PortInfo] { snapshot?.outputs ?? [] }
 }
 
 @MainActor
 @Observable
 final class AudioSessionManager: AudioSessionManaging {
     private(set) var snapshot: SessionSnapshot?
+    var currentOutputs: [PortInfo] { AVAudioSession.sharedInstance().currentRoute.outputs.map { PortInfo(port: $0) } }
     private(set) var activeConfig: CaptureConfig?
     var eventHandler: (@MainActor (AudioSessionEvent) -> Void)?
 
