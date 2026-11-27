@@ -264,7 +264,7 @@ import Testing
     @Test func theWordsAreInBothLanguages() {
         func english(_ key: String) -> String { AppLanguage.en.bundle.localizedString(forKey: key, value: "(missing)", table: nil) }
         #expect(english("Lanseringsrabatt") == "Launch offer")
-        #expect(String(format: english("-%lld %%"), 65) == "-65%")
+        #expect(String(format: english("−%lld %%"), 65) == "−65%") // Ke93: a minus sign
         #expect(String(format: english("%lld %% rabatt på alla kreditpaket den här veckan."), 65) == "65% off all credit packs this week.")
         #expect(english("Se paketen") == "See the packs" && english("Inte nu") == "Not now")
         #expect(String(format: english("%lld %% rabatt på allt den här veckan."), 65) == "65% off everything this week.")

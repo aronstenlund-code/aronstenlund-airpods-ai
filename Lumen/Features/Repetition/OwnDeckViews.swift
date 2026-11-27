@@ -40,7 +40,10 @@ struct OwnDeckEntryRow: View {
                         Text(verbatim: OwnDeckText.title).foregroundStyle(Color.primary)
                         OwnFreeCapsule()
                     }
-                    Text(verbatim: OwnDeckText.entryLine).font(.subheadline).foregroundStyle(LumenColor.secondaryText)
+                    Text(verbatim: OwnDeckText.entryLine)
+                        .font(.subheadline)
+                        .foregroundStyle(LumenColor.secondaryText)
+                        .multilineTextAlignment(.leading) // under the empty Start the lines were centred
                 }
                 Spacer(minLength: 0)
                 Image(systemName: "chevron.right")
