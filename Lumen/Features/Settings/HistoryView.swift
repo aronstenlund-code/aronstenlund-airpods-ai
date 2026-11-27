@@ -74,14 +74,20 @@ struct HistoryView: View {
         Text("Saved only on this iPhone and deleted automatically after 2 years. Other people's speech is not saved.")
     }
 
+    /// Kelly Ke95 (1): a grey "Svar" before the answer when there is no question (one text, so it wraps as one).
+    static func answerHeading(_ answer: String) -> AttributedString {
+        var label = AttributedString(String(localized: "Svar") + " ")
+        label.foregroundColor = .secondary
+        return label + AttributedString(answer)
+    }
+
     private func row(_ entry: HistoryEntry) -> some View {
         let lines = entry.rowLines
         return HStack(alignment: .center, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
                 // Kelly Ke95 (1): the question is the heading, the answer grey under it (also in the search).
                 if lines.answerIsHeading {
-                    (Text(String(localized: "Svar") + " ").foregroundStyle(.secondary) + Text(verbatim: lines.heading))
-                        .lineLimit(2)
+                    Text(Self.answerHeading(lines.heading)).lineLimit(2)
                 } else {
                     Text(verbatim: lines.heading).lineLimit(2)
                 }
