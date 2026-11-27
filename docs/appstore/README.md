@@ -154,7 +154,7 @@ URL:er, kategori och åldersgräns som på engelska.
 1. **Ke78 publicerad** (integritet och villkor), annars fungerar inte länkarna. Arons ja (TILL-ARON #30).
 2. **Produkterna** (tre paket och veckokortet) finns i App Store Connect och skickas med bygget; annars ser granskaren
    bara "Paketen kunde inte hämtas …". (TILL-ARON #27)
-3. **Byggnummer** på bilderna: se `kelly/appstore-shots-ke90`/RUN.txt (körning och commit). Ändras en skärm före
+3. **Byggnummer** på bilderna: se `kelly/appstore-shots-ke95`/RUN.txt (körning och commit). Ändras en skärm före
    inskickning: kör flödet igen och `appstore.py`.
 4. **Telefonens egen modell** (D258): Aron har provat den på sin iPhone; annars stryks stycket "WHEN OUR SERVER CAN'T
    ANSWER" / "NÄR VÅR SERVER INTE KAN SVARA" och punkt 9 i granskningsanteckningarna.
