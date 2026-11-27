@@ -80,14 +80,21 @@ final class ScreenTourTests: XCTestCase {
         shoot("valkommen-slut", note: "Välkommen, scrolled")
         guard tap(["Fortsätt"], step: "Välkommen → Fortsätt") else { return }
         dismissSystemAlerts()
-        if waitFor(["Senare"], timeout: 10) != nil {
-            shoot("forsta-nytt-prov", note: "Nytt prov right after Välkommen (A94)")
+        // A166 (Angela Schrute 2026-11-26 22:40): after Fortsätt comes the listening consent ("Innan du börjar",
+        // "Jag förstår, starta EarMind" = `consent.accept`) with Senare (`firstStart.later`), not Nytt prov. The tour
+        // shoots it and goes on with Senare: nothing listens and iOS does not ask about the microphone.
+        if waitFor(["Jag förstår, starta EarMind", "#consent.accept", "#firstStart.later"], timeout: 10) != nil {
+            shoot("forsta-samtycke", note: "The listening consent right after Välkommen (A166)")
             app.swipeUp()
-            shoot("forsta-nytt-prov-slut", note: "Nytt prov after Välkommen, scrolled")
-            tap(["Senare"], step: "first Nytt prov → Senare")
+            shoot("forsta-samtycke-slut", note: "The listening consent, scrolled (A166)")
+            tap(["#firstStart.later", "Senare", "Later"], step: "first consent → Senare (A166)")
+            pause(1)
+        } else if waitFor(["Senare"], timeout: 3) != nil {
+            record("note: Senare without the consent screen (before A166)")
+            tap(["Senare"], step: "first start → Senare")
             pause(1)
         } else {
-            miss("Nytt prov did not open after Fortsätt (A94)")
+            miss("the listening consent did not open after Fortsätt (A166)")
         }
         dismissSystemAlerts()
         if waitFor(["Inställningar"], timeout: 15) == nil { miss("Start not shown after the first start") }
