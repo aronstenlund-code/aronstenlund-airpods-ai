@@ -186,6 +186,15 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             2>&1 | tee build-logs/xcodebuild-test.log | xcbeautify --renderer github-actions
 
+      # Deangelo 2026-11-27: the time from launch to the first screen, measured by the test host (the app itself, on the
+      # Simulator) in StartupTests. xcbeautify drops plain output, so it is read from the raw log here.
+      - name: Launch time to the first screen (Simulator)
+        if: always()
+        run: |
+          line="$(grep -ao 'LAUNCH_FIRST_SCREEN_MS [0-9-]*' build-logs/xcodebuild-test.log | head -1 || true)"
+          echo "${line:-LAUNCH_FIRST_SCREEN_MS not found}"
+          echo "Launch to first screen (Simulator, test host): ${line#LAUNCH_FIRST_SCREEN_MS } ms" >> "$GITHUB_STEP_SUMMARY"
+
       # A142 (D218 point 4, D227): the App Store build (Release) must compile and must not contain the test mode, which
       # sends the microphone's audio to us (D140). The test mode is compiled only with LUMEN_TESTMODE (Debug and Beta).
       # The Debug build from the step above is the control: the same search must find the test mode there, or the

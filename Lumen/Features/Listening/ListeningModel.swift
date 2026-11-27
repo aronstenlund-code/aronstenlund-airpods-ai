@@ -459,6 +459,12 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             self?.recordFailure(source: "tts", detail: detail)
             self?.noteFallback(what: "the voice")
         }
+        // Toby T59 (1), K124: the voice service's quota is out: the line says the phone's own voice reads, not A45's
+        // "hör och pratar lite sämre" (Kevin's words; Kelly may change them).
+        speaker.onQuotaOut = { [weak self] in
+            self?.fallbackNotedThisSession = true
+            self?.fallbackNotice = CloudDrillAudio.phoneLine
+        }
         transcription.onFallback = { [weak self] reason in
             self?.recordFailure(source: "stt", detail: reason)
             self?.noteFallback(what: "speech recognition")

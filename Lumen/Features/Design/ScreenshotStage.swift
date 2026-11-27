@@ -50,6 +50,10 @@ struct ScreenshotStage: View {
             for entry in HistoryDemo.entries(AppLanguage.current) { model.history.record(entry) }
             return
         }
+        // Deangelo 2026-11-27 04:10: Inställningar as it opens, and with Avancerat open.
+        if name == "settings" || name == "settingsAdvanced" {
+            UserDefaults.standard.set(name == "settingsAdvanced", forKey: "settings.showsAdvanced")
+        }
         // Deangelo 2026-11-27: Lyssnar when something is not as it should be, one line each, and the AirPods card.
         if let condition = ConditionDemo.scenes[name] {
             model.screenshotShows = .standard
@@ -208,7 +212,7 @@ struct ScreenshotStage: View {
                     .padding(20)
                 }
                 .lumenScreen()
-            case "settings": NavigationStack { SettingsView(model: model, diagnostics: container.diagnostics) }
+            case "settings", "settingsAdvanced": NavigationStack { SettingsView(model: model, diagnostics: container.diagnostics) }
             case "voice": NavigationStack { VoicePageView(model: model) } // A26 R5
             // A30 (Kelly Ke20): Lyssnar in Provläge while listening, the practice exam on Lyssnar (with its badge), its
             // result, and the first start's exam step.

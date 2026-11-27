@@ -832,13 +832,16 @@ final class CloudDrillAudio: DrillAudioProviding {
         self.folder = base
         self.pollInterval = pollInterval
         self.maxPolls = maxPolls
-        removeUnused()
+        // Deangelo 2026-11-27 (a fast start): the clean-up of unused files is not done here, before the first screen,
+        // but after it (`AppContainer.startAfterFirstFrame`).
     }
 
     /// A103 (D186): the limit is the exams themselves. Files no saved exam uses (a deleted exam, a changed text) are
-    /// removed at launch; every file an exam here uses stays, however long since it was played.
+    /// removed at launch; every file an exam here uses stays, however long since it was played. `olderThan`: only
+    /// files from before then (the launch), so a file a download has just written, before its exam is saved with its
+    /// name, is never taken.
     @discardableResult
-    func removeUnused() -> Int {
+    func removeUnused(olderThan cutoff: Date? = nil) -> Int {
         // Only sound files, and never in the temporary folder (the fallback when Application Support is missing).
         guard folder.standardizedFileURL != FileManager.default.temporaryDirectory.standardizedFileURL,
               let names = try? FileManager.default.contentsOfDirectory(atPath: folder.path) else { return 0 }
@@ -846,6 +849,10 @@ final class CloudDrillAudio: DrillAudioProviding {
         let sound: Set<String> = ["mp3", "m4a", "aac", "wav", "caf"]
         var removed = 0
         for name in names where !used.contains(name) && sound.contains((name as NSString).pathExtension.lowercased()) {
+            if let cutoff {
+                let modified = (try? FileManager.default.attributesOfItem(atPath: fileURL(name).path))?[.modificationDate] as? Date
+                guard let modified, modified < cutoff else { continue }
+            }
             if (try? FileManager.default.removeItem(at: fileURL(name))) != nil { removed += 1 }
         }
         if removed > 0 { Log.repetition.info("Drill audio: \(removed, privacy: .public) unused files removed") }

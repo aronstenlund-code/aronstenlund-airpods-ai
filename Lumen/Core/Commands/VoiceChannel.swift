@@ -130,6 +130,12 @@ enum VoiceChannel {
     private static let namedPauseAliases: Set<String> = ["paus", "pausa dig"]
 
     /// A turn without the name has no intent and is unchanged. The name alone is neither.
+    /// Toby T59 (4): the quiz phrase was said in English ("quiz me", "test me", "ask me").
+    static func isEnglishQuizPhrase(_ words: String) -> Bool {
+        let lowered = words.lowercased()
+        return ["quiz me", "test me", "ask me"].contains { lowered.hasPrefix($0) }
+    }
+
     static func parse(_ text: String) -> VoiceUtterance {
         guard let name = wakeWord(in: text), isAddress(text, nameAt: name) else {
             let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -174,9 +180,11 @@ enum VoiceChannel {
         }
         let prefixed = table.prefix(in: words)
         if let prefixed, prefixed.action == .quizMe {
-            // "testa mig på fotosyntes" (a user phrase) reaches the tutor as "förhör mig på fotosyntes".
+            // "testa mig på fotosyntes" (a user phrase) reaches the tutor as "förhör mig på fotosyntes". Toby T59 (4):
+            // in English it stays English ("quiz me on photosynthesis"), so the fragment is in the language spoken.
             let rest = prefixed.rest.isEmpty ? "" : " " + prefixed.rest
-            return .instruction(String(("förhör mig" + rest).prefix(instructionLimit)))
+            let lead = Self.isEnglishQuizPhrase(words) ? "quiz me" : "förhör mig"
+            return .instruction(String((lead + rest).prefix(instructionLimit)))
         }
         let target = prefixed?.action == .switchMode ? prefixed?.rest ?? words : words
         let compact = target.replacingOccurrences(of: " ", with: "")

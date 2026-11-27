@@ -332,7 +332,9 @@ import Testing
         for name in ["keep-q.mp3", "keep-l.mp3", "cue.mp3", "old.mp3", "notes.txt"] {
             try Data("x".utf8).write(to: folder.appendingPathComponent(name))
         }
-        _ = CloudDrillAudio(cloud: MockCloud(), store: store, folder: folder)
+        let audio = CloudDrillAudio(cloud: MockCloud(), store: store, folder: folder)
+        // Deangelo 2026-11-27 (a fast start): done after the first screen (`AppContainer.startAfterFirstFrame`), not in init.
+        audio.removeUnused()
         let left = Set(try FileManager.default.contentsOfDirectory(atPath: folder.path))
         #expect(left.isSuperset(of: ["keep-q.mp3", "keep-l.mp3", "cue.mp3", "notes.txt", "drills.json"]))
         #expect(!left.contains("old.mp3"))

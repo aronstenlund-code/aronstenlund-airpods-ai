@@ -113,6 +113,8 @@ final class Speaker {
 
     /// A5: the chosen voice failed (the sentence was read with Apple's voice), or worked again.
     var onVoiceFallback: (@MainActor (String) -> Void)?
+    /// K124: the voice service's quota is out; the phone's own voice reads for now.
+    var onQuotaOut: (@MainActor () -> Void)?
     var onVoiceRecovered: (@MainActor () -> Void)?
 
     /// D80: fetches the voice for `text` now, to play it the moment it is queued. Premium voice only.
@@ -229,7 +231,10 @@ final class Speaker {
             if Task.isCancelled || error == .cancelled { return }
             Log.playback.error("\(provider.name, privacy: .public) failed: \(error.localizedDescription, privacy: .public)")
             if error.wantsFallback, provider.name != apple.name {
-                if Self.isQuotaOut(error) { premiumPausedUntil = now().addingTimeInterval(Self.quotaPause) } // K124
+                if Self.isQuotaOut(error) {
+                    premiumPausedUntil = now().addingTimeInterval(Self.quotaPause) // K124
+                    onQuotaOut?() // Toby T59 (1): the screen says the phone's voice reads
+                }
                 fallbackCount += 1
                 notice = "Premium voice unavailable — using Apple's voice (\(error.localizedDescription))"
                 onVoiceFallback?(error.localizedDescription)

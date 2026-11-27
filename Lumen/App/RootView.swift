@@ -33,6 +33,11 @@ struct RootView: View {
         .tint(LumenColor.blue)
         .onOpenURL { url in _ = container.listening.music.spotify?.handle(url) } // A6.3: back from Spotify
         .modifier(RepetitionOverlay(model: container.listening.repetition)) // A78–A81 (D142)
+        .task {
+            // Deangelo 2026-11-27: after the first frame, what could wait (and the launch's time in Diagnostik).
+            await Task.yield()
+            container.startAfterFirstFrame()
+        }
     }
 
     /// A94: the listening consent is asked when a mode that listens is started (never in the first start).
