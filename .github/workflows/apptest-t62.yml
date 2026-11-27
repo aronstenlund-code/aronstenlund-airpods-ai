@@ -1,4 +1,4 @@
-name: Apptest launch time (T62)
+name: Apptest launch time and settings (T62, T63)
 
 # T62 (Toby): the app's start time in the Simulator, before and after the fast start. The tests come from this
 # branch; the app from `app_ref` (empty = this branch). One macOS machine (D217). Simulator only.
@@ -9,6 +9,10 @@ on:
         description: "Branch or commit whose app code to time (empty = this branch)"
         required: false
         default: ""
+      test:
+        description: "The UI test class: LaunchTimeTests (T62) or SettingsLayoutFlowTests (T63)"
+        required: false
+        default: "LaunchTimeTests"
       label:
         description: "Name of the measurement (before/after)"
         required: false
@@ -19,7 +23,7 @@ permissions:
 
 jobs:
   t62:
-    name: T62 launch time ${{ inputs.label }} (Simulator)
+    name: ${{ inputs.test }} ${{ inputs.label }} (Simulator)
     runs-on: macos-26
     timeout-minutes: 45
     steps:
@@ -43,7 +47,16 @@ jobs:
           echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
       - name: Install XcodeGen
         run: brew install xcodegen
-      - name: Launch time
+      - name: UI test
         env:
           LABEL: ${{ inputs.label }}
+          TEST: ${{ inputs.test }}
         run: bash scripts/apptest/t62.sh
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-t62-${{ inputs.test }}-${{ inputs.label }}
+          path: |
+            apptest-out/t62
+            !apptest-out/t62/logs/*.xcresult
