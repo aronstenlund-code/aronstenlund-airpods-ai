@@ -134,3 +134,21 @@ import Testing
         #expect(en("Lägg i fältet") == "Put in the field")
     }
 }
+
+/// A169 (Deangelo 2026-11-27): a light touch only at the moments that matter.
+@MainActor
+@Suite struct A169FeelTests {
+    @Test func aRecordingIsFeltWhenItStartsAndWhenItStops() {
+        #expect(Feel.recording(from: Optional<Int>.none, to: 1) == .start)
+        #expect(Feel.recording(from: 1, to: Optional<Int>.none) == .stop)
+        #expect(Feel.recording(from: 1, to: 2) == nil, "from one part to another: no extra touch")
+        #expect(Feel.recording(from: Optional<Int>.none, to: Optional<Int>.none) == nil)
+        #expect(Feel.quizDone == .success)
+    }
+
+    @Test func theNewWordsAreInBothLanguages() {
+        func en(_ key: String) -> String { AppLanguage.en.bundle.localizedString(forKey: key, value: "(missing)", table: nil) }
+        #expect(en("Hämta igen") == "Check again")
+        #expect(en("Hämtar proven") == "Loading the quizzes")
+    }
+}

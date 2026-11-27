@@ -184,6 +184,8 @@ struct OwnDeckView: View {
             decks.stopRecording()
             decks.stopPreview()
         }
+        // A169: a light touch when the microphone starts and stops, with the red dot.
+        .sensoryFeedback(trigger: decks.recording) { old, new in Feel.recording(from: old, to: new) }
         // What the microphone does is said as well as shown.
         .onChange(of: decks.recording) { old, new in
             // A167: what is being read in is said, and when it is done ("Spelar in frågan", "Klar, frågan är inspelad").

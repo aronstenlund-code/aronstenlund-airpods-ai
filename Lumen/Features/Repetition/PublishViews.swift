@@ -298,16 +298,27 @@ struct SchoolExamsView: View {
                             Button("Visa alla") { self.subject = nil }
                         }
                     } else {
-                        ContentUnavailableView("Inga prov här än", systemImage: "books.vertical",
-                                               description: Text("Publicera ditt nästa prov, så kan klasskompisarna plugga på samma frågor."))
+                        // A169: an empty state says what can be done and has a button: someone may publish soon.
+                        ContentUnavailableView {
+                            Label("Inga prov här än", systemImage: "books.vertical")
+                        } description: {
+                            Text("Publicera ditt nästa prov, så kan klasskompisarna plugga på samma frågor.")
+                        } actions: {
+                            Button(String(localized: "Hämta igen")) { Task { await load() } }
+                        }
                     }
                 }
                 .listRowBackground(Color.clear)
             }
+            if loading, results.isEmpty, problem == nil {
+                // A169: while the school's quizzes come, calm rows in their place instead of a spinner over nothing.
+                Section { ForEach(0..<3, id: \.self) { _ in PlaceholderRow() } }
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(String(localized: "Hämtar proven"))
+            }
             if !upcoming.isEmpty { Section("Kommande prov") { ForEach(upcoming) { row($0) } } }
             if !earlier.isEmpty { Section("Tidigare") { ForEach(earlier) { row($0) } } }
         }
-        .overlay { if loading && results.isEmpty { ProgressView() } }
         .navigationTitle("Prov från din skola")
         .navigationBarTitleDisplayMode(typeSize.isAccessibilitySize ? .inline : .automatic)
         .refreshable { await load() }

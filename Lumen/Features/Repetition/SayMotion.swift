@@ -100,3 +100,30 @@ extension ButtonStyle where Self == PressFeedbackStyle {
     /// A round symbol button: dims and shrinks a little while pressed.
     static var pressFeedbackRound: PressFeedbackStyle { PressFeedbackStyle(scale: 0.94) }
 }
+
+/// A169 (Deangelo 2026-11-27): a row that is coming, as the system draws it while it loads: grey bars in the shape of
+/// a title and a line under it, still (no shimmer), so the screen is never empty and nothing spins.
+struct PlaceholderRow: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(verbatim: "Xxxxxxxxxxxxxxxxx").fontWeight(.semibold)
+            Text(verbatim: "Xxxxxxx · xx xxxxxxx").font(.subheadline)
+        }
+        .redacted(reason: .placeholder)
+        .accessibilityHidden(true)
+    }
+}
+
+/// A169: a light touch only at the moments that matter, in the same frame as what is seen: a recording starts or
+/// stops, a quiz is done. Nothing for ordinary taps (the system's own controls have their own).
+enum Feel {
+    /// A recording of one's own voice: `.start` when one begins, `.stop` when it ends.
+    static func recording<T: Equatable>(from old: T?, to new: T?) -> SensoryFeedback? {
+        if old == nil, new != nil { return .start }
+        if old != nil, new == nil { return .stop }
+        return nil
+    }
+
+    /// A quiz is done (its summary is shown).
+    static let quizDone: SensoryFeedback = .success
+}

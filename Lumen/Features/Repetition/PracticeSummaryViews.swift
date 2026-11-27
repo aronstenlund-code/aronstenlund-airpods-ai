@@ -8,6 +8,8 @@ struct PracticeSummarySheet: View {
     let onPractise: () -> Void
     let onDone: () -> Void
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// A169: the quiz is done; felt once as the sheet comes.
+    @State private var shown = false
 
     /// At most this many questions are listed; the rest are counted.
     static let listed = 4
@@ -20,6 +22,8 @@ struct PracticeSummarySheet: View {
         .presentationDetents(typeSize.isAccessibilitySize ? [.large] : [.medium, .large])
         .presentationDragIndicator(.visible)
         .accessibilityIdentifier("practiceSummary.sheet")
+        .sensoryFeedback(Feel.quizDone, trigger: shown)
+        .onAppear { shown = true }
     }
 
     private var content: some View {

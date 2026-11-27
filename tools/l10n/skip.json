@@ -1896,6 +1896,10 @@
   "<frågan>": "the prompt's own example line, compared with what was pasted",
   "A": "a voice's letter, not a text"
  },
+ "Lumen/Features/Repetition/SayMotion.swift": {
+  "Xxxxxxx · xx xxxxxxx": "placeholder shapes, drawn as grey bars (redacted), never read",
+  "Xxxxxxxxxxxxxxxxx": "placeholder shapes, drawn as grey bars (redacted), never read"
+ },
  "Lumen/Features/Repetition/SayViews.swift": {
   "knapp \\(button) · tangentbord \\(keyboard.keyboardTop.map { String(Int($0)) } ?? \"-\") · \\(hidden ? \"skymd\" : \"syns\")": "debug numbers for the keyboard pictures",
   "krediter": "compared with the server's refusal, see SayViews (both languages)",
