@@ -1312,7 +1312,9 @@ export async function handleDrill(
     // wait for them. Only the questions decide when "Stämmer det här?" can show.
     // K114 (D251, live 2026-11-21: an English text got Swedish questions from the prompt's rule alone): the language
     // is decided here from the text and given as <language>, as for a language exam (photos alone: the prompt's rule)
-    const planLang = examLanguage(subjectIn) ? "" : materialLanguage("", text);
+    // O104 E6 (Oscar): photos alone have no text to read the language from: the app's language (x-earmind-lang) then
+    // decides for an English user, so the notes and questions get <language> as a text exam's do
+    const planLang = examLanguage(subjectIn) ? "" : materialLanguage("", text) || (!text && String(b._ui_lang ?? "") === "en" ? "English" : "");
     const planUser = (part: string) => [
       (subjectIn || gradeIn) && `<context>${sanitizeTagged(contextLine(subjectIn, gradeIn))}</context>`,
       correction && `<correction>${sanitizeTagged(correction)}</correction>`,
@@ -1462,7 +1464,10 @@ export async function handleDrill(
         if (rf.usage) steps.push(rf.usage);
         if (rf.questions.length) {
           const at = parts.length > 1 ? placeQuestions(rf.questions, parts) : rf.questions.map(() => 0);
-          const all = [...qs.map((q, i) => ({ q, part: qParts[i] ?? -1, i })), ...rf.questions.map((q, k) => ({ q, part: at[k], i: qs.length + k }))];
+          // O104 E4 (Oscar): the kept questions are placed in their parts too (an unplaced one, -1, was sorted after every
+          // refilled one), so the refilled questions take their place in the material's order, never all first
+          const kept = qs.map((q, i) => (qParts[i] ?? -1) >= 0 ? qParts[i] : parts.length > 1 ? placeQuestions([q], parts)[0] : 0);
+          const all = [...qs.map((q, i) => ({ q, part: kept[i], i })), ...rf.questions.map((q, k) => ({ q, part: at[k], i: qs.length + k }))];
           all.sort((x, y) => ((x.part < 0 ? 1e9 : x.part) - (y.part < 0 ? 1e9 : y.part)) || x.i - y.i);
           qs = all.map((x) => x.q);
           qParts = all.map((x) => x.part);

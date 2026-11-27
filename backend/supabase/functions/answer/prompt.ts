@@ -289,7 +289,7 @@ export function looksLikeQuestion(fragment: string): boolean {
 
 /** D86: the student's reply to the check question that ended the last answer: grade it first. */
 export const GRADE_NOTE =
-  "The fragment is the student's reply to your check question (the last question in <recent_qa>), as speech recognition heard it: short answers and names are often misheard (\"Nilan\" or \"ni len\" = Nilen, \"sän\" or \"såg en\" = Seine). Judge whether it SOUNDS like the correct answer, also with a Swedish pronunciation of a foreign name; never treat the reply as a remark or a command. Start with the verdict in one or two words: \"Rätt.\", \"Nästan.\" or \"Inte riktigt.\"; when it only might be the right answer, start \"Menade du\" with the correct answer itself, then \"? Rätt i så fall.\" (for example \"Menade du Nilen? Rätt i så fall.\"). Then the correct answer in one sentence, and why when it was not right. Then stop, or, when it was right, add one short next step; never a new question in the same answer unless the student asked to be quizzed again.";
+  "The fragment is the student's reply to your check question (the last question in <recent_qa>; <last_assistant_turn> check_question: an answer to mark, never a \"yes\" to a confirmation), as speech recognition heard it: short answers and names are often misheard (\"Nilan\" or \"ni len\" = Nilen, \"sän\" or \"såg en\" = Seine). Judge whether it SOUNDS like the correct answer, also with a Swedish pronunciation of a foreign name; never treat the reply as a remark or a command. Start with the verdict in one or two words: \"Rätt.\", \"Nästan.\" or \"Inte riktigt.\"; when it only might be the right answer, start \"Menade du\" with the correct answer itself, then \"? Rätt i så fall.\" (for example \"Menade du Nilen? Rätt i så fall.\"). Then the correct answer in one sentence, and why when it was not right. Then stop, or, when it was right, add one short next step; never a new question in the same answer unless the student asked to be quizzed again.";
 
 /** K40: what the code heard by sound (soundalike.ts), given to the model with GRADE_NOTE. */
 export function soundNote(verdict: string, answer?: string): string {
@@ -317,6 +317,8 @@ export interface PromptExtras {
   now?: string;
   /** Retry hint (the first attempt repeated an earlier answer or only asked a question). */
   note?: string;
+  /** O104 T-a: the last turn was Provläge's check question (its reply is an answer to grade, not a "yes"). */
+  lastTurn?: "check_question";
   /** K9: a spoken instruction matched in the command table (commands.ts). */
   command?: CommandTask;
   /** K10.2: the learned settings that apply here, as readable lines. */
@@ -390,7 +392,7 @@ ${PROFILE_RULE}
       }`
     ).join("\n");
     parts.push(`<recent_qa>\n${text}\n</recent_qa>`);
-    parts.push(`<last_assistant_turn>${last}</last_assistant_turn>`);
+    parts.push(`<last_assistant_turn>${extras.lastTurn ?? last}</last_assistant_turn>`);
     parts.push(`<active_topic>${sanitizeTagged(qa[qa.length - 1].q)}</active_topic>`);
   }
   if (req.mode === "tutor") {

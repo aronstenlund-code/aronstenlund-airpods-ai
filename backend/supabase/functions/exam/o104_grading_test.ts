@@ -24,3 +24,24 @@ Deno.test("O104 G-b: 'Visa hur du räknar' only for a calculation task, never fo
   assertEquals(isCalculationTask(t("Hur mycket kostar fem pennor om tre kostar 27 kr?")), true);
   assertEquals(isCalculationTask(t("Ange svaret.", "+E korrekt metod, +C korrekt svar")), true);
 });
+
+Deno.test("O104 G-c/G-d: an English task is graded and hinted in English; the practice rule says it replaces the feedback rule", async () => {
+  const { createExamHandler, PRACTICE_GRADE_RULE, SYSTEM_PROMPT_EXAM_GRADE } = await import("./handler.ts");
+  const { MemoryRateLimiter } = await import("../_shared/ratelimit.ts");
+  const seen: { system: string; user: string }[] = [];
+  const h = createExamHandler({
+    authenticate: () => Promise.resolve({ id: "u-o104", isAnonymous: true }), rateLimiter: new MemoryRateLimiter(),
+    provider: { name: "f", model: "f", stream: (r) => (seen.push(r), (async function* () { yield { type: "text" as const, text: '{"points":{"E":1,"C":0,"A":0},"feedback":"Good."}' }; })()) },
+  });
+  const post = (b: unknown) => h(new Request("http://x/exam", { method: "POST", headers: { "content-type": "application/json", "x-forwarded-for": "198.51.100.5" }, body: JSON.stringify(b) }));
+  const en = { no: "1", text: "Explain why the Enlightenment ideas spread so quickly in Europe.", points: { E: 1, C: 0, A: 0 }, answer: "Printing and coffee houses spread the ideas.", assessment: "+E names one reason" };
+  await post({ action: "grade", task: en, answer: "because of printing presses" });
+  assertEquals(seen[0].user.includes("<language>en</language>"), true, seen[0].user);
+  await post({ action: "hint", task: en, level: 1 });
+  assertEquals(seen[1].user.includes("<language>en</language>"), true);
+  const sv = { ...en, text: "Förklara varför upplysningens idéer spreds så snabbt i Europa.", answer: "Boktryckarkonsten och kaffehusen." };
+  await post({ action: "grade", task: sv, answer: "på grund av boktryckarkonsten" });
+  assertEquals(seen[2].user.includes("<language>"), false, "Swedish: as before");
+  assertEquals(/language of <language>/.test(SYSTEM_PROMPT_EXAM_GRADE), true);
+  assertEquals(/replaces the feedback rule/.test(PRACTICE_GRADE_RULE), true);
+});
