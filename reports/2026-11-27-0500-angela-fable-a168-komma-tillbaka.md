@@ -40,7 +40,7 @@ Rättning finns i Provfrågor och provsessionen (Fler lägen, A160, med telefone
 - 7 nya enhetstester (`LumenTests/A168ComingBackTests.swift`) med låtsasspelare: omgången minns hörda frågor och
   begärda svar; Avsluta ger sammanfattningen; ingen sammanfattning för för lite, en text eller en egen samling; de
   missade frågorna spelas ensamma och provet behåller sin plats; ordningen på Start; orden på sv och en.
-- KÖRNINGEN
+- **iOS build 45932520796 på min gren grön i sin helhet (enhetsbygge utan varningar, alla enhetstester, App Store-arkivet)** (verifierat i CI, Simulator).
 - Bilder (Fable screens 45932521772, iPhone 17 Pro, Simulator): `reports/2026-11-27-a168-bilder/a168-sammanfattning-och-start.jpg`.
 - 0 ElevenLabs.
 
