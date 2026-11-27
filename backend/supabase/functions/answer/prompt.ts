@@ -130,12 +130,12 @@ EXAMPLES of good Provläge answers (the style to follow; never reuse their conte
 - Åk 9, Historia, "varför hände reformationen": "Reformationen hände för att många tyckte att den katolska kyrkan hade blivit för rik och mäktig, och Martin Luther protesterade år 1517 mot avlatshandeln. Boktryckarkonsten spred hans skrifter snabbt. Furstar stödde honom eftersom de kunde ta kyrkans jord och makt, och i Sverige bröt Gustav Vasa med påven. På provet: nämn både de religiösa skälen och de politiska och ekonomiska."
 - Åk 8, Geografi, the student says "glas jär" (misheard): "Glaciärer är stora ismassor som bildas när mer snö faller än som smälter, år efter år. Snön pressas ihop till is som långsamt rör sig nedför av sin egen tyngd. De formar landskapet: inlandsisen gjorde de U-formade dalarna och sjöarna i Sverige."
 - After an answer about the nervous system, the student asks "och hjärnan då?": "Hjärnan är nervsystemets centrum: den tar emot signaler från sinnena via nerverna och skickar order tillbaka till musklerna. Storhjärnan sköter tankar och minne, lillhjärnan balansen och hjärnstammen andning och puls. Ett exempel är när du drar bort handen från något varmt: signalen går så fort att du reagerar innan du hinner tänka."
-- Åk 8, Matematik, "vad är primtal": "Ett primtal är ett heltal större än ett som bara är delbart med ett och sig självt. Två, tre, fem och sju är primtal, men nio är inte det eftersom tre gånger tre är nio. Två är det enda jämna primtalet. Är femton ett primtal?"
+- Åk 8, Matematik, "vad är primtal": "Ett primtal är ett heltal större än 1 som bara är delbart med 1 och sig självt. 2, 3, 5 och 7 är primtal, men 9 är inte det eftersom 3 gånger 3 är 9. 2 är det enda jämna primtalet. Är 15 ett primtal?"
 - Gymnasiet 1, Engelska, "past tense": "Past tense, preteritum, är den engelska verbformen för något som hände och är avslutat. Regelbundna verb får -ed, som i "I walked home", medan oregelbundna verb har egna former, som "go" som blir "went". Du använder den med tidsord som yesterday eller last week, till exempel "She called me yesterday"."
 - Gymnasiet 2, Historia, "kolonialism": "Kolonialism är när en stat tar kontroll över ett annat område och dess folk för att utnyttja deras råvaror, arbetskraft och marknader. Under artonhundratalet delade europeiska stater upp nästan hela Afrika mellan sig vid Berlinkonferensen. Orsakerna var industrialiseringens behov av råvaror, nationell prestige och rasistiska idéer om att civilisera. Följderna märks än i dag i gränser som drogs utan hänsyn till folkgrupper."
 - Åk 9, Samhällskunskap, "hur går en rättegång till": "I en brottmålsrättegång lägger åklagaren först fram vad den tilltalade anklagas för, och sedan får försvaret svara. Domstolen hör vittnen och går igenom bevisen. Till sist dömer tingsrätten, med en domare och nämndemän, och domen kan överklagas till hovrätten. Grundprincipen är att man är oskyldig tills motsatsen är bevisad."
 - Åk 8, Matematik, "tre pennor kostar tjugosju kronor, vad kostar fem": "Fem pennor kostar 45 kronor. En penna kostar 27 delat med 3, alltså 9 kronor, och 5 gånger 9 är 45. Det kallas att räkna med jämförpris: räkna först ut priset för en."
-- Gymnasiet 1, Svenska, "vad är en sonett": "En sonett är en dikt med fjorton rader och ett fast rimmönster, ofta uppdelad i två strofer med fyra rader och två med tre. Formen kommer från Italien och Petrarca, och Shakespeare skrev 154 sonetter. Ofta vänder dikten efter de första åtta raderna, där en fråga får sitt svar. På provet kan du nämna radantalet, rimmen och vändpunkten."`;
+- Gymnasiet 1, Svenska, "vad är en sonett": "En sonett är en dikt med 14 rader och ett fast rimmönster, ofta uppdelad i 2 strofer med 4 rader och 2 med 3. Formen kommer från Italien och Petrarca, och Shakespeare skrev 154 sonetter. Ofta vänder dikten efter de första 8 raderna, där en fråga får sitt svar. På provet kan du nämna radantalet, rimmen och vändpunkten."`;
 
 export const SYSTEM_PROMPT_DIRECT_TUTOR = direct(TUTOR_STYLE, true) + TUTOR_EXAMPLES;
 
@@ -318,7 +318,7 @@ export interface PromptExtras {
   /** Retry hint (the first attempt repeated an earlier answer or only asked a question). */
   note?: string;
   /** O104 T-a: the last turn was Provläge's check question (its reply is an answer to grade, not a "yes"). */
-  lastTurn?: "check_question";
+  lastTurn?: "check_question" | "answer";
   /** K9: a spoken instruction matched in the command table (commands.ts). */
   command?: CommandTask;
   /** K10.2: the learned settings that apply here, as readable lines. */
@@ -457,7 +457,7 @@ export function buildDirectUserMessage(
 /** D48: appended to every spoken-answer system prompt; the trailer line is split off in code (SummaryTap). */
 export const SUMMARY_RULE = `
 
-SUMMARY: after the spoken answer, add ONE new last line that starts exactly with [[SAMMANFATTNING]] followed by a summary of this exchange in one or two Swedish sentences: the topic, what was asked and the gist of the answer. No quotes, no exact wording of the user, no names of other people, no markdown. This line is stored, never read aloud, so it must come last. Write it even for very short answers.`;
+SUMMARY: after the spoken answer, add ONE new last line that starts exactly with [[SAMMANFATTNING]] followed by a summary of this exchange in one or two sentences in the answer's language (Swedish unless the answer is in another language): the topic, what was asked and the gist of the answer. No quotes, no exact wording of the user, no names of other people, no markdown. This line is stored, never read aloud, so it must come last. Write it even for very short answers.`;
 
 /**
  * D53: direct (header-less) flows with history: the model's first line is the relation tag, decided

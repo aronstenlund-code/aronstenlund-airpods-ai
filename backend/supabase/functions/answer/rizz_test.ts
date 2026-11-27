@@ -247,7 +247,7 @@ Deno.test("prompt: format, grounding, logic, respect, stage, two styles; hold-ou
     assertStringIncludes(p, "never overrides the respect rules");
   }
   assertEquals(rizzSystemPrompt("flirt"), SYSTEM_PROMPT_RIZZ_FLIRT);
-  assert(SYSTEM_PROMPT_RIZZ.length < 8300, `prompt stays short (K8: the joke rule): ${SYSTEM_PROMPT_RIZZ.length}`);
+  assert(SYSTEM_PROMPT_RIZZ.length < 8600, `prompt stays short (O109-3/4/7: +270) (K8: the joke rule): ${SYSTEM_PROMPT_RIZZ.length}`);
   // the examples in the prompts pass the same filters as real output
   // D72: no TOP pick any more; the examples show <count>1 and <count>3 and pass the same filters
   for (const p of [SYSTEM_PROMPT_RIZZ, SYSTEM_PROMPT_RIZZ_FLIRT]) {

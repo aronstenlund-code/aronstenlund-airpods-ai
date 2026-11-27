@@ -197,10 +197,12 @@ function speakKnownNumbers(text: string, ctx: string): string {
   swap(/(?<![\d.,:\-+/])112(?![\d]|[.,]\d)/g, "ett ett två", SOS_CUE);
   swap(/(?<![\d.,:\-+/])90 ?101(?![\d]|[.,]\d)/g, "nittio ett noll ett", SUPPORT_CUE);
   swap(/(?<![\d.,:\-+/])116 ?111(?![\d]|[.,]\d)/g, "ett ett sex ett ett ett", SUPPORT_CUE);
+  // O109-5 (Oscar): the web address is always the service ("1177.se", "1177 punkt se"); "Hitta vård" is a cue
+  out = out.replace(/(?<![\d.,:\-+/])1177(?:\.se|\s+punkt\s+se)(?![\p{L}\d/])/giu, "elva sjuttiosju punkt se");
   swap(
     /(?<![\d.,:\-+/])1177(?![\d]|[.,]\d)/g,
     "elva sjuttiosju",
-    /(?:ring|nummer|vårdguiden|sjukvård|rådgivning|1177)/i,
+    /(?:ring|nummer|vård|rådgivning|1177)/i,
   );
   swap(
     /(?<![\d.,:\-+/])114 14(?![\d])/g,

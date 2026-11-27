@@ -1670,7 +1670,9 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             note: extras.note ?? echoNote ??
               (quiz ? QUIZ_NOTE : gradeReply ? [GRADE_NOTE, soundVerdict ? soundNote(soundVerdict.verdict, soundVerdict.answer) : ""].filter(Boolean).join(" ") : freeInstruction ? FREE_INSTRUCTION_NOTE : undefined),
             // O104 T-a (Oscar): the reply to a check question is not a "yes" to a confirmation
-            ...(gradeReply ? { lastTurn: "check_question" as const } : {}),
+            // O109-6: Provläge never asks a confirmation question (D75), so a question of the student's own after a
+            // check question follows an answer, not a confirmation to say yes to
+            ...(gradeReply ? { lastTurn: "check_question" as const } : tutor && looksLikeQuestion(body.fragment) ? { lastTurn: "answer" as const } : {}),
           })
           : buildUserMessage(b, cfg.confidenceThreshold, answerType, continuation, {
             ...extras,
