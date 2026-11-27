@@ -33,6 +33,9 @@ python3 scripts/qa/o105/run.py $DENO --only <ID,ID>
 | Hjälpen (`help`, `docs/HJALP.md` / `shared/hjalp.ts`) | o105: HL1–HL5 · bank: HE1 HE2 HT1 |
 | Säg i AirPods: stil och röstval (`drill/style.ts`) | o105: ST1–ST5 VO1–VO5 |
 | Lyssnarläget (auto, frågegrinden, `isClearQuestion`, `isCutOff`, direktvägen) | o106: A01–A34 (`python3 scripts/qa/o106/run.py $DENO`; för tydliga frågor är c1 grinden ja/nej och c2 svaret) |
+| Provläge från foto (`parse`, talad uppgiftstext, rättning med siffror) | o107: P1–P6 PT1 PT2 D1 D2 G1–G8 H1 H2 (`python3 scripts/qa/o107/run.py $DENO`) |
+| Minnet, studieprofilen, studieplanen | `(cd backend && $DENO run --no-lock --no-check --allow-read --allow-env ../scripts/qa/o107/memory_plan.ts)` |
+| Delning och publicering (live) | `o107_share_live.py` i oscar-live.yml |
 | Socialt, Rizz, intervju | bank: O01 RZ1 RZ1s I01 |
 
 Livetester som inte går genom K122:

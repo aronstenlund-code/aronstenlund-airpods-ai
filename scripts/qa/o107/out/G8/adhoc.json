@@ -1,6 +1,6 @@
 {
   "id": "adhoc",
-  "status": "needs_reply",
+  "status": "done",
   "prompts": [
     {
       "stem": "adhoc.t1.c1",
@@ -55,7 +55,46 @@
       "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
     }
   ],
-  "turns": [],
-  "blocked": [],
-  "needs": "adhoc.t1.c1"
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "exam",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-grade",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 589,
+          "output_tokens": 63,
+          "total_ms": 15,
+          "est_cost_usd": 0.0000904,
+          "status": "ok"
+        }
+      ],
+      "credits": [],
+      "json": {
+        "points": {
+          "E": 0,
+          "C": 1,
+          "A": 0
+        },
+        "max": {
+          "E": 0,
+          "C": 1,
+          "A": 0
+        },
+        "total": 1,
+        "numeric": null,
+        "feedback": "Rätt. Svavelsyra har formeln H2SO4 med fyra syreatomer, och du motiverade det med antalet syre. H2SO3 med tre syreatomer är svavelsyrlighet, en annan och svagare syra.",
+        "usage": {
+          "input_tokens": 589,
+          "output_tokens": 63,
+          "est_cost_usd": 0.0000904
+        }
+      }
+    }
+  ],
+  "blocked": []
 }

@@ -1,6 +1,6 @@
 {
  "id": "adhoc",
- "status": "needs_reply",
+ "status": "done",
  "prompts": [
   {
    "stem": "adhoc.t1.c1",
@@ -55,7 +55,34 @@
    "reply_hint": "As the system prompt's Return line says."
   }
  ],
- "turns": [],
- "blocked": [],
- "needs": "adhoc.t1.c1"
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "exam",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "exam-hint",
+     "provider": "anthropic",
+     "model": "claude-haiku-5-5",
+     "input_tokens": 282,
+     "output_tokens": 45,
+     "total_ms": 9,
+     "est_cost_usd": 5.0700000000000006e-05,
+     "status": "ok"
+    }
+   ],
+   "credits": [],
+   "json": {
+    "hint": "Läs av hur många miljoner som bor i Sverige och hur många som bor i Norge i tabellen, och räkna sedan ut skillnaden genom att dra Norges antal från Sveriges.",
+    "usage": {
+     "input_tokens": 282,
+     "output_tokens": 45,
+     "est_cost_usd": 5.0700000000000006e-05
+    }
+   }
+  }
+ ],
+ "blocked": []
 }

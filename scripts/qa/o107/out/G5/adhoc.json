@@ -1,6 +1,6 @@
 {
   "id": "adhoc",
-  "status": "needs_reply",
+  "status": "done",
   "prompts": [
     {
       "stem": "adhoc.t1.c1",
@@ -54,7 +54,50 @@
       "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
     }
   ],
-  "turns": [],
-  "blocked": [],
-  "needs": "adhoc.t1.c1"
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "exam",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-grade",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 505,
+          "output_tokens": 58,
+          "total_ms": 13,
+          "est_cost_usd": 0.0000795,
+          "status": "ok"
+        }
+      ],
+      "credits": [],
+      "json": {
+        "points": {
+          "E": 0,
+          "C": 0,
+          "A": 0
+        },
+        "max": {
+          "E": 0,
+          "C": 1,
+          "A": 1
+        },
+        "total": 0,
+        "numeric": {
+          "expected": 4,
+          "given": 4,
+          "equal": true
+        },
+        "feedback": "Att kvadraten har fyra hörn räcker inte, eftersom alla fyrhörningar har det. Det som saknas är att både rektangeln och kvadraten har fyra räta vinklar.",
+        "usage": {
+          "input_tokens": 505,
+          "output_tokens": 58,
+          "est_cost_usd": 0.0000795
+        }
+      }
+    }
+  ],
+  "blocked": []
 }

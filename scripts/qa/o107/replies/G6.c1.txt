@@ -1,0 +1,1 @@
+{"points": {"E": 1, "C": 0, "A": 0}, "feedback": "Rätt, du räknade roten ur 49 till 7 och en halv gånger 6 till 3, och 7 plus 3 blir 10. Det ger full poäng."}

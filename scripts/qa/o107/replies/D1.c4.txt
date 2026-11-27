@@ -1,0 +1,1 @@
+{"questions": [{"i": 1, "q": "Vilket språk har Sverige och Finland gemensamt?"}], "sources": [{"i": 0, "s": [2], "a": "Sveriges huvudstad är Stockholm."}, {"i": 1, "s": [2, 3], "a": "Svenska talas både i Sverige och i Finland."}, {"i": 2, "s": [3, 2, 4], "a": "I Finland talar man två språk, finska och svenska, medan man i Sverige talar svenska och på Island isländska."}]}

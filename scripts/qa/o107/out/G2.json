@@ -1,6 +1,6 @@
 {
  "id": "adhoc",
- "status": "needs_reply",
+ "status": "done",
  "prompts": [
   {
    "stem": "adhoc.t1.c1",
@@ -54,7 +54,50 @@
    "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
   }
  ],
- "turns": [],
- "blocked": [],
- "needs": "adhoc.t1.c1"
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "exam",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "exam-grade",
+     "provider": "anthropic",
+     "model": "claude-haiku-5-5",
+     "input_tokens": 494,
+     "output_tokens": 66,
+     "total_ms": 13,
+     "est_cost_usd": 8.240000000000001e-05,
+     "status": "ok"
+    }
+   ],
+   "credits": [],
+   "json": {
+    "points": {
+     "E": 1,
+     "C": 0,
+     "A": 0
+    },
+    "max": {
+     "E": 1,
+     "C": 1,
+     "A": 0
+    },
+    "total": 1,
+    "numeric": {
+     "expected": 50.3,
+     "given": 50,
+     "equal": false
+    },
+    "feedback": "Du använde rätt metod, pi gånger radien i kvadrat, och det ger en E-poäng. För C-poängen behöver du ge ett mer exakt svar, avrunda till en decimal i stället för till hela tiotal.",
+    "usage": {
+     "input_tokens": 494,
+     "output_tokens": 66,
+     "est_cost_usd": 8.240000000000001e-05
+    }
+   }
+  }
+ ],
+ "blocked": []
 }

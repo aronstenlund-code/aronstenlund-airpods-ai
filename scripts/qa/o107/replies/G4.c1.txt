@@ -1,0 +1,1 @@
+{"points": {"E": 0, "C": 0, "A": 0}, "feedback": "Ditt svar fem miljoner stämmer inte med det rätta svaret, och du visade inte hur du läste av tabellen. Skriv ut hur många som bor i Sverige och i Norge och räkna sedan skillnaden."}
