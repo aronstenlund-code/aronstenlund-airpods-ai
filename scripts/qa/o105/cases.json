@@ -1,0 +1,69 @@
+[
+ {
+  "id": "HL1",
+  "endpoint": "help",
+  "body": {
+   "question": "hur byter jag röst på det som läses upp",
+   "lang": "sv"
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "HL2",
+  "endpoint": "help",
+  "body": {
+   "question": "how do I share a quiz with my class",
+   "lang": "en"
+  },
+  "headers": [
+   "x-earmind-lang: en"
+  ]
+ },
+ {
+  "id": "HL3",
+  "endpoint": "help",
+  "body": {
+   "question": "vad är huvudstaden i frankrike",
+   "lang": "sv"
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "HL4",
+  "endpoint": "help",
+  "body": {
+   "question": "kostar det krediter att spela in själv",
+   "lang": "sv"
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "HL5",
+  "endpoint": "help",
+  "body": {
+   "question": "varför spelas inget när skärmen är låst",
+   "lang": "sv"
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "CO2",
+  "endpoint": "exam",
+  "body": {
+   "action": "compress",
+   "text": "Mitokondrien kallas cellens kraftverk. Där sker cellandningen, när socker och syre blir energi i form av ATP. Det bildas också koldioxid och vatten.",
+   "lang": "sv"
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ }
+]

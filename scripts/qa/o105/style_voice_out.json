@@ -1,0 +1,130 @@
+{
+ "prompts": {
+  "style": "You add ElevenLabs Eleven v3 audio tags to a text that will be read aloud.\nThe t",
+  "voice": "You choose the voice that best fits how a listener wants a Swedish text to sound"
+ },
+ "out": [
+  {
+   "id": "ST1",
+   "kind": "stil",
+   "style": "lugnt och tydligt, som en lärare",
+   "reply": "[calm] Fotosyntesen sker i bladen. [pause] Växten gör socker av ljus, vatten och koldioxid. [pause] Syre släpps ut.",
+   "result": "[calm] Fotosyntesen sker i bladen. [pause] Växten gör socker av ljus, vatten och koldioxid. [pause] Syre släpps ut.",
+   "user": "<style>lugnt och tydligt, som en lärare</style>\n<text>\nFotosyntesen sker i bladen. Växten gör socker av ljus, vatten och koldioxid. Syre släpps ut.\n</text>"
+  },
+  {
+   "id": "ST2",
+   "kind": "stil",
+   "style": "glatt",
+   "reply": "[cheerful] Fotosyntesen sker i löven. Växten gör socker av ljus, vatten och koldioxid. Syre släpps ut.",
+   "result": "[cheerful] Fotosyntesen sker i bladen. Växten gör socker av ljus, vatten och koldioxid. Syre släpps ut.",
+   "user": "<style>glatt</style>\n<text>\nFotosyntesen sker i bladen. Växten gör socker av ljus, vatten och koldioxid. Syre släpps ut.\n</text>"
+  },
+  {
+   "id": "ST3",
+   "kind": "stil",
+   "style": "slow, with pauses so I can write",
+   "reply": "[slowly] Photosynthesis happens in the leaves. [long pause] The plant makes sugar from light, water and carbon dioxide.",
+   "result": "[slowly] Photosynthesis happens in the leaves. [long pause] The plant makes sugar from light, water and carbon dioxide.",
+   "user": "<style>slow, with pauses so I can write</style>\n<text>\nPhotosynthesis happens in the leaves. The plant makes sugar from light, water and carbon dioxide.\n</text>"
+  },
+  {
+   "id": "ST4",
+   "kind": "stil",
+   "style": "viska lite",
+   "reply": "fel: Provider refused the request",
+   "result": "[whispers] Fotosyntesen sker i bladen. Växten gör socker av ljus, vatten och koldioxid. Syre släpps ut.",
+   "user": "<style>viska lite</style>\n<text>\nFotosyntesen sker i bladen. Växten gör socker av ljus, vatten och koldioxid. Syre släpps ut.\n</text>"
+  },
+  {
+   "id": "ST5",
+   "kind": "stil",
+   "style": "med pauser så jag hinner skriva",
+   "reply": "[pause] Glosor: [pause] hund dog, [pause] katt cat, [pause] häst horse. [pause]",
+   "result": "[pause] Glosor: [pause] hund dog, [pause] katt cat, [pause] häst horse. [pause]",
+   "user": "<style>med pauser så jag hinner skriva</style>\n<text>\nGlosor: hund dog, katt cat, häst horse.\n</text>"
+  },
+  {
+   "id": "VO1",
+   "kind": "röstval",
+   "style": "lugnt, som en lärare",
+   "reply": "{\"voice_id\": \"v_jonas\", \"reason\": \"Jonas är lugn och tydlig, som en lärare.\"}",
+   "result": {
+    "voice_id": "v_jonas",
+    "reason": "Jonas är lugn och tydlig, som en lärare."
+   }
+  },
+  {
+   "id": "VO2",
+   "kind": "röstval",
+   "style": "med kinesisk brytning",
+   "reply": "{\"voice_id\": \"v_jonas\", \"reason\": \"Ingen röst med kinesisk brytning finns ännu, så en lugn och tydlig röst.\"}",
+   "result": {
+    "voice_id": "v_jonas",
+    "reason": "Ingen röst med kinesisk brytning finns ännu, så en lugn och tydlig röst."
+   }
+  },
+  {
+   "id": "VO3",
+   "kind": "röstval",
+   "style": "på skånska",
+   "reply": "{\"voice_id\": \"v_bertil\", \"reason\": \"Bertil talar skånska och berättar lugnt.\"}",
+   "result": {
+    "voice_id": "v_bertil",
+    "reason": "Bertil talar skånska och berättar lugnt."
+   }
+  },
+  {
+   "id": "VO4",
+   "kind": "röstval",
+   "style": "glatt",
+   "reply": "{\"voice_id\": \"v_lisa\", \"reason\": \"Lisa är glad.\"}",
+   "result": null
+  },
+  {
+   "id": "VO5",
+   "kind": "röstval",
+   "style": "on English, friendly",
+   "reply": "{\"voice_id\": \"v_alyssa\", \"reason\": \"Alyssa talar tydlig amerikansk engelska och låter vänlig.\"}",
+   "result": {
+    "voice_id": "v_alyssa",
+    "reason": "Alyssa talar tydlig amerikansk engelska och låter vänlig."
+   }
+  },
+  {
+   "id": "TT1",
+   "kind": "talformat",
+   "in": "Mötet är kl. 14.30 den 3 maj, t.ex. i sal 2B. Ta med ca 50 kr.",
+   "lang": "sv",
+   "rules4": "Mötet är klockan fjorton och trettio den tredje maj, till exempel i sal två B. Ta med cirka femtio kronor."
+  },
+  {
+   "id": "TT2",
+   "kind": "talformat",
+   "in": "Vattnet kokar vid 100 °C och fryser vid 0 °C. Skolan har 1 250 elever, 12 % fler än 2019.",
+   "lang": "sv",
+   "rules4": "Vattnet kokar vid hundra grader celsius och fryser vid noll grader celsius. Skolan har tolvhundrafemtio elever, tolv procent fler än tvåtusen nitton."
+  },
+  {
+   "id": "TT3",
+   "kind": "talformat",
+   "in": "Läs s. 45–47 och kap. 3. pH 7 är neutralt, H2O är vatten och CO2 koldioxid.",
+   "lang": "sv",
+   "rules4": "Läs sidan fyrtiofem till fyrtiosju och kapitel tre. pH sju är neutralt, vatten är vatten och koldioxid koldioxid."
+  },
+  {
+   "id": "TT4",
+   "kind": "talformat",
+   "in": "The meeting is at 2.30 pm on 3 May, e.g. in room 2B. Bring about $5.",
+   "lang": "en",
+   "rules4": "The meeting is at 2.30 pm on 3 May, e.g. in room 2B. Bring about $5."
+  },
+  {
+   "id": "TT5",
+   "kind": "talformat",
+   "in": "Ring 112 vid nödläge, 1177 för vård. Karl XII dog 1718, och Gustav II Adolf 1632.",
+   "lang": "sv",
+   "rules4": "Ring ett ett två vid nödläge, elva sjuttiosju för vård. Karl den tolfte dog sjuttonhundraarton, och Gustav den andre Adolf sextonhundratrettiotvå."
+  }
+ ]
+}

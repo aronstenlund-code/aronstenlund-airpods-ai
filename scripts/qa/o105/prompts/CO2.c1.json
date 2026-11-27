@@ -1,0 +1,40 @@
+{
+ "stem": "adhoc.t1.c1",
+ "case": "adhoc",
+ "turn": 1,
+ "call": 1,
+ "endpoint": "exam",
+ "url": "https://k122-replay.invalid/v1/messages",
+ "client_request": {
+  "action": "compress",
+  "text": "Mitokondrien kallas cellens kraftverk. Där sker cellandningen, när socker och syre blir energi i form av ATP. Det bildas också koldioxid och vatten.",
+  "lang": "sv"
+ },
+ "anthropic_request": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 250,
+  "stream": true,
+  "system": [
+   {
+    "type": "text",
+    "text": "You shorten a text that a student will hear read aloud. You get <text>. Return ONLY the shortened text: about half as long, every fact, name, number and step kept, nothing added, in the same order, written in the same language as the text (never translated), as plain sentences for listening (no headings, lists, markdown or quotes). No comment before or after it.",
+    "cache_control": {
+     "type": "ephemeral"
+    }
+   }
+  ],
+  "messages": [
+   {
+    "role": "user",
+    "content": "<text>\nMitokondrien kallas cellens kraftverk. Där sker cellandningen, när socker och syre blir energi i form av ATP. Det bildas också koldioxid och vatten.\n</text>"
+   }
+  ],
+  "output_config": {
+   "effort": "low"
+  },
+  "thinking": {
+   "type": "disabled"
+  }
+ },
+ "reply_hint": "Plain text: only the shortened text, as the system prompt says."
+}
