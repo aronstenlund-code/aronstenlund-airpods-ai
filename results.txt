@@ -1,0 +1,54 @@
+run: 45942350917  time: 2026-11-27T04:51:30Z  url: https://earmind.vercel.app
+== page
+status=200 bytes=42464 type=text/html; charset=utf-8 time=0.206355
+body (first 300 bytes): <!doctype html> <html lang="en"> <head> <script>   const APP_NAME = "EarMind"; // pages.yml kontrollerar att namnet står här (Ke28). </script> <meta charset="utf-8"> <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"> <title>EarMind: study by listening in your Ai
+HTTP/2 200 
+server: Vercel
+x-vercel-id: cle1::4bksp-1795755091259-17ac2d04d767
+title: EarMind: study by listening in your AirPods
+h1: Learn it by listening.
+canonical: https://earmind.vercel.app/
+og:image: https://earmind.vercel.app/og-earmind-v2.png
+Ke74/Ke82-steget (Skriv det du vill höra): 0
+Ke82 krediter (Gratis att börja): 0
+Ke86 engelska (Try the beta): 3
+sv status=200 bytes=89430
+Ke86 svenska (Prova betan): 1
+beta status=200
+support /support status=200 bytes=13325
+  placeholder/mailto: 0
+support /sv/support status=200 bytes=13344
+  placeholder/mailto: 0
+support /start status=200 bytes=9793
+  placeholder/mailto: 0
+support /sv/start status=200 bytes=9768
+  placeholder/mailto: 0
+beta app.js bytes=92392 md5=873bcabc90c4 O97-raden=1
+Earmind (litet m) i sidan: 0
+== og image
+status=200 bytes=105234 type=image/png
+og.png: PNG image data, 1200 x 630, 8-bit colormap, non-interlaced
+== total size of local files the page loads
+MISSING 308 /
+MISSING 308 /beta
+MISSING 308 /start
+MISSING 308 /support
+MISSING 308 /sv
+MISSING 308 /sv/start
+all local refs (incl. lazy images): 304660 bytes
+== cache header on an image
+HTTP/2 200 
+cache-control: public, max-age=86400, stale-while-revalidate=604800
+== sitemap and robots
+sitemap status=200
+robots status=200
+== waitlist CORS preflight (Origin: https://earmind.vercel.app)
+HTTP/2 204 
+access-control-allow-origin: https://earmind.vercel.app
+393px /: status=200 innerWidth=393 scrollWidth=393 ok
+393px /sv: status=200 innerWidth=393 scrollWidth=393 ok
+393px /beta: status=200 innerWidth=393 scrollWidth=393 ok
+393px /support: status=200 innerWidth=393 scrollWidth=393 ok
+393px /sv/support: status=200 innerWidth=393 scrollWidth=393 ok
+393px /start: status=200 innerWidth=393 scrollWidth=393 ok
+393px /sv/start: status=200 innerWidth=393 scrollWidth=393 ok
