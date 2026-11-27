@@ -249,7 +249,10 @@ export function lastNumber(text: string): number | null {
 export function numericCheck(correct: string, answer: string): { expected: number; given: number | null; equal: boolean } | null {
   // an algebraic answer ("8 − x") is not a number: no numeric check, the scoring rules decide
   if (/[+\-−*/^]\s*\(?[a-zåäö]\)?\s*$|^\s*[a-zåäö]\s*[+\-−*/^]/i.test(correct.trim())) return null;
-  const expected = finalNumber(correct);
+  // O104 G-a (Oscar): in a worded facit ("När en syra och en bas blandas …") "en"/"ett" is an article, not the number
+  // 1; only a short facit that is the number itself ("Svaret är ett") keeps it
+  const worded = !/\d/.test(correct) && correct.trim().split(/\s+/).length > 4;
+  const expected = finalNumber(worded ? correct.replace(/(?<![\p{L}])(?:en|ett)(?![\p{L}])/giu, " ") : correct);
   if (expected === null) return null;
   const tol = Number.isInteger(expected) ? 1e-9 : Math.max(0.005, Math.abs(expected) * 0.0005);
   // K15 (live: "trehundrasjuttiofem kronor, för tjugofem procent av trehundra är sjuttiofem" was read as 75): a
@@ -261,6 +264,17 @@ export function numericCheck(correct: string, answer: string): { expected: numbe
   const given = finalNumber(answer);
   if (given === null) return { expected, given: null, equal: false };
   return { expected, given, equal: Math.abs(given - expected) <= tol };
+}
+
+/**
+ * O104 G-b (Oscar): is this a task with a calculation (where a bare number shows no method)? A year or a fact asked
+ * for ("Vilket år …", "Hur många ben …") is not: its feedback is the model's correction, never "Visa hur du räknar".
+ */
+export function isCalculationTask(task: ExamTask): boolean {
+  if (/\b(?:metod|uträkning|beräkning|räknar|räkning|lösning)\b/i.test(task.assessment ?? "")) return true;
+  const t = task.text ?? "";
+  if (/(?<![\p{L}])(?:vilket år|vilka år|när|årtal|what year|when)(?![\p{L}])/iu.test(t)) return false;
+  return /(?<![\p{L}])(?:beräkna|räkna|lös|förenkla|derivera|bestäm|hur mycket|procent|calculate|solve|how much)(?![\p{L}])|%|\d\s*[+\-−×*/^=]\s*[\dx(]|[=]/iu.test(t);
 }
 
 /** The level the scoring rules give for the correct answer itself ("+C för korrekt svar"), or null. */
@@ -676,7 +690,7 @@ export function createExamHandler(deps: ExamDeps) {
       const points = correctPoints(task!, answerText, p, numeric);
       // K1.7 (Oscar: "du har räknat ut summan rätt, eftersom 66 ingår" for "ungefär 16"): a bare wrong number
       // shows no work, so the feedback never praises a method; it says so in code
-      if (numeric && !numeric.equal && isBareNumber(answerText)) {
+      if (numeric && !numeric.equal && isBareNumber(answerText) && isCalculationTask(task!)) { // O104 G-b: calculations only
         feedback = "Svaret stämmer inte, och utan uträkning finns ingen metod att ge poäng för. Visa hur du räknar, steg för steg.";
       }
       return json({ points, max, total: points.E + points.C + points.A, numeric, feedback, usage });

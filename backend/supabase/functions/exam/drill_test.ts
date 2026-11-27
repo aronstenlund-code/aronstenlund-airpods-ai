@@ -83,9 +83,10 @@ Deno.test("K45/D176 parsePlan: questions cleaned, no word limit, no duplicates, 
   assertEquals(p.summary.subject, "Biologi");
   assertEquals(parsePlan("inget json", 20).questions, []);
   assertEquals(cleanQuestion("  - \"varför regnar det.\" "), "Varför regnar det?");
-  // recall questions go before longer understanding questions when there are too many
+  // recall questions go before longer understanding questions when there are too many; O104 E1: the only definition
+  // and the only why-question stay (a definition is not plain recall)
   const many = JSON.stringify({ questions: ["Vad är klorofyll?", "Varför försvinner energi i varje steg?", "Hur bildas en näringsväv?", "Vilka är producenter?"] });
-  assertEquals(parsePlan(many, 2).questions, ["Varför försvinner energi i varje steg?", "Hur bildas en näringsväv?"]);
+  assertEquals(parsePlan(many, 2).questions, ["Vad är klorofyll?", "Varför försvinner energi i varje steg?"]);
 });
 
 Deno.test("K45 D145: the long answer starts with the short answer word for word, never twice", () => {
