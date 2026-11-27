@@ -63,7 +63,12 @@ BYGGRAD
   - `angela/t59-test-rod`: raden vid `tts_quota` och engelska "quiz me".
   - `angela/start-test-rod`: att `CloudDrillAudio` inte rensar i `init`, och att sömnläget inte tar bort nätter i `init`.
   - Inställningarnas ordning kunde inte köras röd: den bygger på nytt API.
-- **Tiden till första skärmen** läses av i testkörningen, där testvärden är appen själv (simulatorn i CI): MÄTNING. Det finns ingen "före"-siffra att jämföra med, eftersom main inte mätte. Toby kan mäta före och efter med `XCTApplicationLaunchMetric`; rad till honom.
+- **Tiden till första skärmen i CI: 37 168 ms** (iOS build 45938548567, steget "Launch time to the first screen").
+  - Det är testvärdens start i CI:s simulator: första kalla starten efter installationen, med testpaketet inladdat. Det är **inte** en användares start, och siffran kan inte jämföras med en telefon.
+  - Testet kontrollerar därför bara att tiden mäts. Mitt första test hade en övre gräns på 20 s, och den var fel.
+  - Det finns ingen "före"-siffra, eftersom main inte mätte.
+  - Den riktiga siffran är telefonens egen, i Diagnostik.
+  - Toby kan mäta före och efter med `XCTApplicationLaunchMetric`; rad till honom.
 
 BILDRAD
 
