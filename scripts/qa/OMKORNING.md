@@ -18,7 +18,7 @@ python3 scripts/qa/o105/run.py $DENO --only <ID,ID>
 
 
 ## Hela sviten i CI (O108)
-`python3 scripts/qa/k122_regression.py --deno $DENO` kör om alla 188 fall: bank, o103–o107 och de två harnessarna, med fast klocka (`K122_NOW`, standard 2026-11-27T08:00:00Z). Utfallet jämförs med `scripts/qa/k122_baseline.json`.
+`python3 scripts/qa/k122_regression.py --deno $DENO` kör om alla fall: bank, o103–o107 och de två harnessarna, med fast klocka (`K122_NOW`, standard 2026-11-27T08:00:00Z). Utfallet jämförs med `scripts/qa/k122_baseline.json`.
 - **I CI:** `.github/workflows/oscar-k122-regression.yml` körs efter varje lyckad "Deploy backend" och för hand. Den blir röd när ett fall har ändrats, och rapporten står i jobbets sammanfattning.
 - **Efter en avsiktlig ändring:** granska rapporten och kör `--update`. Skriv ett nytt svar där en prompt har ändrats så att modellen borde svara annorlunda.
 
@@ -42,6 +42,7 @@ python3 scripts/qa/o105/run.py $DENO --only <ID,ID>
 | Provläge från foto (`parse`, talad uppgiftstext, rättning med siffror) | o107: P1–P6 PT1 PT2 D1 D2 G1–G8 H1 H2 (`python3 scripts/qa/o107/run.py $DENO`) |
 | Minnet, studieprofilen, studieplanen | `(cd backend && $DENO run --no-lock --no-check --allow-read --allow-env ../scripts/qa/o107/memory_plan.ts)` |
 | Delning och publicering (live) | `o107_share_live.py` i oscar-live.yml |
+| Alla lägen under Fler lägen (Standard, Provläge, Intervju, Socialt, Rizz; Sömn har ingen serverdel) | o109: ST1–ST8 PV1–PV8 IN1–IN8 SO1–SO8 RZ1–RZ8 (`python3 scripts/qa/o109/run.py $DENO`) |
 | Socialt, Rizz, intervju | bank: O01 RZ1 RZ1s I01 |
 
 Livetester som inte går genom K122:

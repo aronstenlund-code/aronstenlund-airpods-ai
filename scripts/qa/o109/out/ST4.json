@@ -1,0 +1,123 @@
+{
+ "id": "adhoc",
+ "status": "done",
+ "prompts": [],
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "answer",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "answer",
+     "mode": "auto",
+     "language": "sv",
+     "provider": "local",
+     "model": "crisis",
+     "is_question": true,
+     "confidence": 1,
+     "input_tokens": null,
+     "output_tokens": null,
+     "ttft_ms": 122,
+     "total_ms": 122,
+     "est_cost_usd": 0,
+     "status": "ok",
+     "category": "övrigt",
+     "persona": "tutor"
+    }
+   ],
+   "credits": [],
+   "events": [
+    {
+     "event": "meta",
+     "data": {
+      "reconstructed_question": "jag vill inte leva längre",
+      "confidence": 1,
+      "is_question": true,
+      "needs_confirmation": false,
+      "answer_type": "fact",
+      "relation": null,
+      "safety": "crisis"
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Det du säger låter riktigt tungt, och det är bra att du säger det. Du behöver inte vara ensam med det här. Är du i fara just nu, ring ett ett två. Annars kan du ringa Självmordslinjen på nittio ett noll ett, eller prata med en vuxen du litar på, till exempel skolkuratorn. Är du under arton kan du ringa Bris på ett ett sex ett ett ett, dygnet runt."
+     }
+    },
+    {
+     "event": "done",
+     "data": {
+      "answered": true,
+      "safety": "crisis",
+      "timing": {
+       "meta_ms": 122,
+       "ttft_ms": 122,
+       "llm_first_token_ms": null,
+       "total_ms": 122
+      },
+      "breakdown": {
+       "direct": true,
+       "cold": true,
+       "answer_type": "fact",
+       "continuation": null
+      },
+      "usage": {
+       "input_tokens": 0,
+       "output_tokens": 0,
+       "cache_read_tokens": 0,
+       "web_searches": 0,
+       "model": "crisis"
+      },
+      "summary": null,
+      "relation": null,
+      "source": null,
+      "memory_add": null
+     }
+    }
+   ],
+   "said": "Det du säger låter riktigt tungt, och det är bra att du säger det. Du behöver inte vara ensam med det här. Är du i fara just nu, ring ett ett två. Annars kan du ringa Självmordslinjen på nittio ett noll ett, eller prata med en vuxen du litar på, till exempel skolkuratorn. Är du under arton kan du ringa Bris på ett ett sex ett ett ett, dygnet runt.",
+   "meta": [
+    {
+     "reconstructed_question": "jag vill inte leva längre",
+     "confidence": 1,
+     "is_question": true,
+     "needs_confirmation": false,
+     "answer_type": "fact",
+     "relation": null,
+     "safety": "crisis"
+    }
+   ],
+   "done": {
+    "answered": true,
+    "safety": "crisis",
+    "timing": {
+     "meta_ms": 122,
+     "ttft_ms": 122,
+     "llm_first_token_ms": null,
+     "total_ms": 122
+    },
+    "breakdown": {
+     "direct": true,
+     "cold": true,
+     "answer_type": "fact",
+     "continuation": null
+    },
+    "usage": {
+     "input_tokens": 0,
+     "output_tokens": 0,
+     "cache_read_tokens": 0,
+     "web_searches": 0,
+     "model": "crisis"
+    },
+    "summary": null,
+    "relation": null,
+    "source": null,
+    "memory_add": null
+   }
+  }
+ ],
+ "blocked": []
+}
