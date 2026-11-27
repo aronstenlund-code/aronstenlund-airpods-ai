@@ -1,0 +1,3 @@
+[[REL new_topic]]
+Morgondagens prognos för din ort finns hos SMHI, i SMHI:s app eller på smhi punkt se, där du ser temperatur, nederbörd och vind timme för timme.
+[[SAMMANFATTNING]] Eleven frågade om vädret i morgon mitt i ett förhör på cellen. Svaret hänvisade till SMHI:s prognos för den egna orten.

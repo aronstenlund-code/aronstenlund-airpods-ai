@@ -6156,6 +6156,1186 @@
      "suggestions": null
     }
    ]
+  },
+  "o109/IN1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Intervjuträning för ett sommarjobb som butiksbiträde i en matbutik, frågan var att berätta om sig själv. Svaret lyfte fram serviceanda, noggrannhet och viljan att lära sig snabbt."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Jag är en positiv och ansvarsfull person som trivs när det är fart och mycket att göra. Jag tycker om att möta människor, så att hjälpa en kund hitta rätt vara eller svara på en fråga i kassan är något jag ser fram emot. Jag är noggrann och vill att saker ska bli rätt, till exempel att hyllorna är påfyllda och att varorna med kortast datum står längst fram. Jag lär mig snabbt, tar gärna instruktioner och frågar hellre en gång för mycket än gör fel. Därför tror jag att jag skulle passa bra som butiksbiträde hos er i sommar.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/IN2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Intervjuträning för ett sommarjobb i en matbutik, där användarens svar om sig själv och tidigare caféjobb förbättrades. Det förbättrade svaret kopplade caféerfarenheten till service och tempo i butiken."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Jag heter Alex och har jobbat på ett café i två somrar. Där har jag varit van vid att ge service till många kunder samtidigt och att hålla ordning även när det är mycket att göra. Det är just det som lockar mig med att jobba i er butik, att få möta kunder varje dag och se till att allt fungerar smidigt. Jag är ansvarsfull och trivs med att ha ett högt tempo, så jag tror att jag snabbt skulle komma in i jobbet hos er.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/IN3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Intervjuträning på engelska för ett sommarjobb i en bokhandel, frågan gällde varför användaren vill jobba där. Svaret byggde på intresset för böcker, att hjälpa kunder och att vara ordningsam."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "I have always loved books, and a bookshop is a place where I would genuinely enjoy every part of the day. I like talking to people and helping them find something they will enjoy, whether it is a gift or their next favourite read. I am organised and careful, so keeping shelves tidy, finding the right title quickly and handling the till calmly suits me well. A summer job here would let me combine something I care about with learning how a shop really works, and I would put real energy into it.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/IN4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Intervjuträning för ett sommarjobb i en matbutik, där intervjuaren ställde en privat fråga om graviditet och barnplaner. Svaret avböjde vänligt att svara och styrde tillbaka till vad användaren kan bidra med i jobbet."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Det är en privat fråga som jag helst inte går in på. Det jag gärna berättar om är varför jag vill ha det här sommarjobbet och hur jag skulle bidra i butiken. Jag är ansvarsfull, tycker om att möta kunder och vill göra ett bra jobb hela sommaren.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/IN5": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Intervjuträning för ett sommarjobb i en matbutik, frågan gällde löneanspråk. Svaret hänvisade till handelns kollektivavtal och visade öppenhet för arbetsgivarens vanliga lön."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Jag utgår från den lön som gäller enligt kollektivavtalet för butiksanställda inom handeln. Det viktigaste för mig är att få jobbet och göra ett bra jobb hos er, så jag är öppen för det ni brukar erbjuda för den här typen av sommartjänst.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/IN6": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "safety": "crisis",
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Det personen säger är allvarligt, ta det på allvar. Fråga lugnt hur hen mår och lyssna, utan att döma. Är någon i fara just nu, ring ett ett två. Självmordslinjen nås på nittio ett noll ett, och den som är under arton kan ringa Bris på ett ett sex ett ett ett.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/IN7": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Intervjuträning för ett sommarjobb i en matbutik, frågan gällde ett misstag användaren gjort. Svaret beskrev hur användaren hanterar misstag genom att säga till direkt, rätta till det och lära sig av det."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "När jag märker att jag har gjort ett misstag säger jag till direkt i stället för att hoppas att ingen ska märka det. Sedan ser jag till att rätta till det så snabbt som möjligt, till exempel genom att ställa tillbaka en vara på rätt plats eller be en kollega om hjälp om jag inte kan lösa det själv. Efteråt tänker jag igenom vad som gick fel så att det inte händer igen. Jag ser misstag som ett sätt att lära mig jobbet snabbare.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/IN8": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Intervjuträning för ett sommarjobb i en matbutik, där intervjuaren avslutade intervjun. Svaret var ett kort och artigt tack med förväntan om att höra av arbetsgivaren."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Tack själv, det var roligt att få berätta om mig själv och höra mer om jobbet. Jag ser fram emot att höra av er.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/PV1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "quiz_key": {
+       "alternatives": [
+        "Kloroplasten",
+        "Ribosomen",
+        "Cellkärnan",
+        "Golgiapparaten"
+       ],
+       "answer": "Mitokondrien"
+      },
+      "relation": null,
+      "source": null,
+      "summary": "Eleven bad om förhör på cellen inför provet i Biologi 1. En kontrollfråga ställdes om vilken organell som bildar ATP genom cellandning."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Vilken organell i cellen bildar det mesta av cellens ATP genom cellandning?",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/PV2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "quiz_sound": {
+       "answer": "mitokondrien",
+       "verdict": "correct"
+      },
+      "relation": "continues",
+      "source": null,
+      "summary": "Förhör på cellen, eleven svarade på frågan om vilket cellorgan som ger cellen energi. Svaret mitokondrien var rätt och förklarades med cellandningen och ATP."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Rätt. Mitokondrien är cellens kraftverk, där cellandningen bryter ner glukos med hjälp av syre och bildar ATP som cellen använder som energi. Nästa steg är att kunna formeln för cellandning: glukos plus syre ger koldioxid, vatten och energi.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/PV3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "quiz_sound": {
+       "verdict": "none"
+      },
+      "relation": "continues",
+      "source": null,
+      "summary": "Förhör på cellen, eleven visste inte vilket cellorgan som ger cellen energi. Svaret mitokondrien förklarades med cellandningen och ATP."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Inte riktigt. Svaret är mitokondrien, cellens kraftverk, där cellandningen bryter ner glukos med syre och bildar ATP som cellen använder som energi. Tänk på att celler med stort energibehov, som muskelceller, har särskilt många mitokondrier.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/PV4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "quiz_key": {
+       "alternatives": [
+        "The nucleus",
+        "The chloroplast",
+        "The ribosomes",
+        "The cell membrane"
+       ],
+       "answer": "The mitochondria"
+      },
+      "relation": null,
+      "source": null,
+      "summary": "Eleven bad om förhör på cellen i biologi årskurs 9. En kontrollfråga ställdes om vilken del av cellen som frigör energi vid cellandning."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Which part of the cell releases energy from glucose in respiration?",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/PV5": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "safety": "crisis",
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Det du säger låter riktigt tungt, och det är bra att du säger det. Du behöver inte vara ensam med det här. Är du i fara just nu, ring ett ett två. Annars kan du ringa Självmordslinjen på nittio ett noll ett, eller prata med en vuxen du litar på, till exempel skolkuratorn. Är du under arton kan du ringa Bris på ett ett sex ett ett ett, dygnet runt.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/PV6": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "continues",
+      "source": null,
+      "summary": "Eleven ville ha en kortare förklaring av DNA. Svaret sammanfattade DNA som arvsanlagens molekyl, en dubbelspiral där basordningen styr proteinerna."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "DNA är molekylen som bär arvsanlagen, en dubbelspiral där basernas ordning styr vilka proteiner cellen bygger.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/PV7": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "new_topic",
+      "source": null,
+      "source_missing": true,
+      "summary": "Eleven frågade om vädret i morgon mitt i ett förhör på cellen. Svaret hänvisade till SMHI:s prognos för den egna orten."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Morgondagens prognos för din ort finns hos SMHI, i SMHI:s app eller på smhi punkt se, där du ser temperatur, nederbörd och vind timme för timme.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/PV8": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "quiz_key": {
+       "alternatives": [
+        "Golgiapparaten",
+        "Mitokondrien",
+        "Cellkärnan",
+        "Endoplasmatiska nätverket"
+       ],
+       "answer": "Ribosomen"
+      },
+      "relation": "continues",
+      "source": null,
+      "summary": "Förhör på cellen, eleven hoppade över frågan om cellkärnan och fick svaret. En ny kontrollfråga ställdes om vilket cellorgan som bygger proteiner."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Svaret på förra frågan var cellkärnan, som innehåller DNA och styr cellens arbete. Vilket cellorgan bygger proteiner efter instruktionerna från DNA?",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/RZ1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Okej, då har vi redan en gemensam låt."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/RZ2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Honestly, I'm more curious what keeps bringing you here."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/RZ3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Helt okej, tack för att du sa det rakt ut."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/RZ4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Okej, då håller vi det här helt vänskapligt."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/RZ5": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "safety": "crisis",
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Det personen säger är allvarligt, ta det på allvar. Fråga lugnt hur hen mår och lyssna, utan att döma. Är någon i fara just nu, ring ett ett två. Självmordslinjen nås på nittio ett noll ett, och den som är under arton kan ringa Bris på ett ett sex ett ett ett."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/RZ6": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Då bjuder jag på ett glas vatten, deal?"
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/RZ7": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Förlåt, det var inte meningen. Jag lämnar dig ifred."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/RZ8": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Jag bestämde mig för att säga hej innan modet försvann."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/SO1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Regn i stugan är ju bara perfekt Alfapet-väder."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/SO2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "You clearly know everyone here, so give me the tour."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/SO3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "safety": "crisis",
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Det personen säger är allvarligt, ta det på allvar. Fråga lugnt hur hen mår och lyssna, utan att döma. Är någon i fara just nu, ring ett ett två. Självmordslinjen nås på nittio ett noll ett, och den som är under arton kan ringa Bris på ett ett sex ett ett ett."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/SO4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Ingenting alls, men jag fattar ingenting med stil."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/SO5": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Klart, ge mig din telefon så knappar jag in det."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/SO6": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Åh, vad tråkigt, jag beklagar verkligen. Hur mår du?"
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/SO7": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Ja, om vi lovar att plugga mer än vi fikar."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/SO8": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Kanske bio är ju helgens mest ärliga plan."
+      ]
+     ]
+    }
+   ]
+  },
+  "o109/ST1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Eleven frågade om skillnaden mellan mitos och meios. Svaret förklarade att mitos ger två identiska kroppsceller medan meios ger fyra könsceller med halverat kromosomantal och genetisk variation."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Mitos och meios är två sorters celldelning med helt olika syften. Vid mitos delar sig en kroppscell till två identiska dotterceller med samma antal kromosomer, vilket behövs för tillväxt och reparation. Vid meios sker två delningar i rad som ger fyra könsceller med halva kromosomantalet och ny genetisk blandning, så att befruktningen återställer det fulla antalet.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/ST2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/ST3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Eleven frågade om ljusets hastighet. Svaret gav cirka 300 000 kilometer per sekund i vakuum."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Light travels at about 300 000 kilometres per second in a vacuum, exactly 299 792 458 metres per second.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/ST4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "safety": "crisis",
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Det du säger låter riktigt tungt, och det är bra att du säger det. Du behöver inte vara ensam med det här. Är du i fara just nu, ring ett ett två. Annars kan du ringa Självmordslinjen på nittio ett noll ett, eller prata med en vuxen du litar på, till exempel skolkuratorn. Är du under arton kan du ringa Bris på ett ett sex ett ett ett, dygnet runt.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/ST5": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Användaren frågade efter telefonnumret till en tandläkare på en viss gata. Svaret hänvisade till mottagningens webbplats och Hitta vård på 1177."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Numret finns på tandläkarmottagningens webbplats eller under Hitta vård på elvahundrasjuttiosju punkt se, sök på mottagningens namn och Storgatan.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/ST6": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null,
+      "tool_pending": true
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/ST7": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Användaren, som är nötallergiker, frågade vilket godis som går att köpa till bion. Svaret rådde till förpackat godis med tydlig allergimärkning, att läsa etiketten varje gång och att undvika lösgodis."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Välj förpackat godis med tydlig allergimärkning, till exempel vingummi eller lakrits, och läs ingrediensförteckningen varje gång eftersom nötter kan finnas som spår. Undvik lösgodis och plockgodis på bion, där spår av nötter är svåra att utesluta.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o109/ST8": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Användaren frågade vem som är Sveriges statsminister. Svaret angav Ulf Kristersson som senast kända statsminister med reservation för att valet 2026 kan ha ändrat det."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Senast jag vet var Ulf Kristersson statsminister, sedan tvåtusen tjugotvå, men efter valet i september tvåtusen tjugosex kan det ha ändrats.",
+     "suggestions": null
+    }
+   ]
   }
  },
  "now": "2026-11-27T08:00:00Z"

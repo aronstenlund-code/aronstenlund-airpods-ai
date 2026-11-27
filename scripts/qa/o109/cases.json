@@ -90,9 +90,9 @@
     "transcript": "",
     "recent_qa": []
    },
-   "toolsAvailable": [
-    "timer",
-    "alarm"
+   "tools_available": [
+    "timer_start",
+    "alarm_set"
    ]
   },
   "headers": [

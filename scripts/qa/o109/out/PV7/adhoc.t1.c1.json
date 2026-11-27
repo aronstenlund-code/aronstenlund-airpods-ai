@@ -35,7 +35,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: prov; natt</situation>\n<goals>\nBiologi 1 på gymnasiet: cellen och genetik.\n</goals>\n<recent_qa>\nQ: förhör mig på cellen\nA: Vilket cellorgan gör energi åt cellen?\n</recent_qa>\n<last_assistant_turn>confirmation</last_assistant_turn>\n<active_topic>förhör mig på cellen</active_topic>\n<already_asked count=\"1\">\n- Vilket cellorgan gör energi åt cellen?\n</already_asked>\n<now>fredag 27 november 2026, vecka 48, klockan 05:48 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad blir det för väder imorgon</fragment>"
+        "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: prov; natt</situation>\n<goals>\nBiologi 1 på gymnasiet: cellen och genetik.\n</goals>\n<recent_qa>\nQ: förhör mig på cellen\nA: Vilket cellorgan gör energi åt cellen?\n</recent_qa>\n<last_assistant_turn>confirmation</last_assistant_turn>\n<active_topic>förhör mig på cellen</active_topic>\n<already_asked count=\"1\">\n- Vilket cellorgan gör energi åt cellen?\n</already_asked>\n<now>fredag 27 november 2026, vecka 48, klockan 05:52 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad blir det för väder imorgon</fragment>"
       }
     ],
     "output_config": {
