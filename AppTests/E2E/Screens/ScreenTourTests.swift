@@ -166,7 +166,8 @@ final class ScreenTourTests: XCTestCase {
 
     /// The other rows of Start: Hitta prov från din skola and Klistra in en länk (A116), each opened and closed.
     private func startRows() {
-        for (labels, name) in [(["Hitta prov från din skola"], "hitta-prov"), (["Klistra in en länk", "Öppna länk"], "klistra-in-lank")] {
+        // Ke93 (Angela Fable 2026-11-27): the rows are "Prov från din skola" and "Öppna länk" now.
+        for (labels, name) in [(["Prov från din skola", "Hitta prov från din skola", "School exams*"], "hitta-prov"), (["Öppna länk", "Klistra in en länk", "Open link"], "klistra-in-lank")] {
             guard tap(labels, step: "Start → \(labels[0])") else { continue }
             pause(2)
             shoot(name, note: labels[0])
