@@ -30,6 +30,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -51,6 +52,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -182,6 +184,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -252,6 +255,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -283,6 +287,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -304,6 +309,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -334,6 +340,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -509,6 +516,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -536,6 +544,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -563,6 +572,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -590,6 +600,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -617,6 +628,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -741,6 +753,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -762,6 +775,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -783,6 +797,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -804,6 +819,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -825,6 +841,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -852,6 +869,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -879,6 +897,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -924,6 +943,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -951,6 +971,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -978,6 +999,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1005,6 +1027,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1032,6 +1055,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1095,6 +1119,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1123,6 +1148,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1151,6 +1177,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1172,6 +1199,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1199,6 +1227,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1230,6 +1259,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1261,6 +1291,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1288,6 +1319,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1367,6 +1399,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1420,6 +1453,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1441,6 +1475,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1462,6 +1497,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1489,6 +1525,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1510,6 +1547,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1531,6 +1569,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1558,6 +1597,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1789,6 +1829,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1816,6 +1857,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1843,6 +1885,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1870,6 +1913,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1897,6 +1941,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1924,6 +1969,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1951,6 +1997,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -1978,6 +2025,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -2005,6 +2053,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -2032,6 +2081,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -2059,6 +2109,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -2087,6 +2138,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -2927,6 +2979,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -2963,6 +3016,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -2990,6 +3044,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -3017,6 +3072,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -3292,6 +3348,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3319,6 +3376,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -3346,6 +3404,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3373,6 +3432,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3425,6 +3485,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3452,6 +3513,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3479,6 +3541,7 @@
       "answered": false,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3506,6 +3569,7 @@
       "answered": false,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3532,7 +3596,8 @@
      "done": {
       "answered": false,
       "breakdown": {
-       "answer_type": "study",
+       "answer_type": "fact",
+       "answer_type_model": "study",
        "continuation": null,
        "direct": false
       },
@@ -3560,6 +3625,7 @@
       "answered": false,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3612,6 +3678,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3639,6 +3706,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3666,6 +3734,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": "study",
        "continuation": null,
        "direct": false
       },
@@ -3693,6 +3762,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -3720,6 +3790,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3747,6 +3818,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3774,6 +3846,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3801,6 +3874,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3828,6 +3902,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3855,6 +3930,7 @@
       "answered": false,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3882,6 +3958,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3909,6 +3986,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -3936,6 +4014,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -4088,6 +4167,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -4140,6 +4220,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -4167,6 +4248,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6167,6 +6249,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6194,6 +6277,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6221,6 +6305,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6248,6 +6333,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6275,6 +6361,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6329,6 +6416,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6356,6 +6444,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6383,6 +6472,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6419,6 +6509,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6450,6 +6541,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6480,6 +6572,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6543,6 +6636,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6570,6 +6664,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6598,6 +6693,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6634,6 +6730,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6665,6 +6762,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6696,6 +6794,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6727,6 +6826,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6789,6 +6889,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6820,6 +6921,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6851,6 +6953,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6882,6 +6985,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6913,6 +7017,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -6975,6 +7080,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -7006,6 +7112,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -7037,6 +7144,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -7068,6 +7176,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -7099,6 +7208,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -7130,6 +7240,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "study",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -7157,6 +7268,7 @@
       "answered": false,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": "fact",
        "continuation": null,
        "direct": false
       },
@@ -7184,6 +7296,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -7238,6 +7351,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -7265,6 +7379,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -7293,6 +7408,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },
@@ -7320,6 +7436,7 @@
       "answered": true,
       "breakdown": {
        "answer_type": "fact",
+       "answer_type_model": null,
        "continuation": null,
        "direct": true
       },

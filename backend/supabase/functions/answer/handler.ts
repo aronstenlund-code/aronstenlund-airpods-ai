@@ -2540,6 +2540,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
                 direct,
                 cold,
                 answer_type: answerType,
+                answer_type_model: direct ? null : parser.meta?.answer_type ?? null, // O106 L4: the model's own (none in direct mode), next to the server's hint
                 continuation,
               },
               usage: {

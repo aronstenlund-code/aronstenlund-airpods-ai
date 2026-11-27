@@ -122,5 +122,10 @@ export function classifyAnswerType(
   if (opts.tutor) return "study";
   if (length === "short") return "fact";
   if (continuation || opts.commands || length === "long") return "study";
+  if (RHETORICAL_WHY.test(fragment)) return "fact"; // O106 L4 (A10): "varför händer alltid sånt här mig"
   return STUDY_CUES.test(fragment) ? "study" : "fact";
 }
+
+/** O106 L4: a "why me" sigh (why + I/me + always/just/never) is no topic to study; a real why still is. */
+const RHETORICAL_WHY =
+  /^\s*(?:men\s+|asså\s+|alltså\s+)?(?:varför|why)(?![\p{L}])(?=.*(?<![\p{L}])(?:mig|jag|me|i)(?![\p{L}]))(?=.*(?<![\p{L}])(?:alltid|jämt|just|aldrig|always|never)(?![\p{L}]))/iu;
