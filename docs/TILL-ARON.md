@@ -113,3 +113,11 @@ lanseringsveckan.
 Erbjudandet gäller bara den som inte har haft veckokortet förut (Apples regel för introduktionserbjudanden); veckan
 efter kostar det ordinarie 79 kr tills man säger upp det, och det ska stå vid köpknappen (A161).
 Inget här kostar något förrän någon köper.
+
+## #38 Support-mejladress före inskickningen (Ke94), 2026-11-27
+App Store kräver en support-URL, och Apple vill att man kan nå oss därifrån. Hjälpsidan finns nu:
+**earmind.vercel.app/support** (engelska) och **/sv/support** (svenska). Den har vanliga frågor och svar, men **ingen
+kontaktadress** än. I dag hänvisar den bara till Inställningar › Feedback och förslag i appen.
+**Det som bara du kan göra:** välj en mejladress för support, till exempel en ny adress för EarMind, och skriv den i
+chatten **före inskickningen**. Kelly lägger in den på sidan, på engelska och svenska, och i App Store-texterna. Din
+privata adress står i dag bara i väntelistans text på sajten; säg om den ska bytas där också.

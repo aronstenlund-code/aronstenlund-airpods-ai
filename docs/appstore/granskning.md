@@ -257,7 +257,7 @@ Models, stryk punkten och stycket i beskrivningen om Arons prov inte går igenom
 |---|---|---|
 | Åldersgräns | **13+** (Apples skala 2025), se `README.md` §4: Rizz-läget (milda flirtförslag, beta) och AI-innehåll; svara ärligt i formuläret | förslag, Aron |
 | Kategori | Utbildning (primär), Produktivitet (sekundär) | förslag |
-| Support-URL | earmind.vercel.app (har kontaktadress) | [V] sidan finns (Ke70) |
+| Support-URL | earmind.vercel.app/support (Ke94; /sv/support på svenska) | [V] sidan finns; **kontaktadress saknas** (TILL-ARON #38) |
 | Marknadsförings-URL | earmind.vercel.app | [V] |
 | Villkor (EULA) | Apples standard-EULA räcker, länk i köpdelen | förslag |
 | Exportregler (kryptering) | Bara HTTPS från systemet → "nej" på egen kryptering | [V] ingen egen kryptokod hittad |

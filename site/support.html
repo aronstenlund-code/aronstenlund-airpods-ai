@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Kelly Ke94: genererad av scripts/site/support-page.py. Ändra skriptet, inte filen. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EarMind help and support</title>
+<meta name="description" content="How to get started with EarMind, use your AirPods, credits, Record it yourself and privacy.">
+<link rel="canonical" href="https://earmind.vercel.app/support">
+<link rel="alternate" hreflang="en" href="https://earmind.vercel.app/support">
+<link rel="alternate" hreflang="sv" href="https://earmind.vercel.app/sv/support">
+<link rel="alternate" hreflang="x-default" href="https://earmind.vercel.app/support">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F1218">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --surface: #F4F6FA;
+    --raised: #FFFFFF;
+    --soft: #EAF0FF;
+    --ink: #141A2E;
+    --mut: #5E6779;
+    --line: #E4E8EF;
+    --chip: #F4F6FA;
+    --seg-on: #FFFFFF;
+    --shadow: 0 1px 2px rgba(16,24,40,.06), 0 6px 20px rgba(16,24,40,.07);
+    --blue: #2346C8;
+    --on-blue: #FFFFFF;
+    --red: #D9342B;
+    --on-red: #FFFFFF;
+    --bad: #B8261E;          /* röd text på papper: mörkare än knappen för läsbarhet */
+    --ease-out: cubic-bezier(.23, 1, .32, 1);
+    --gut: 20px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F1218;
+      --surface: #181C26;
+      --raised: #1D2230;
+      --soft: #1E2A4F;
+      --ink: #EEF1F7;
+      --mut: #9AA3B5;
+      --line: #272D3B;
+      --chip: #181C26;
+      --seg-on: #2B3245;
+      --shadow: none;
+      --blue: #7F9BFF;
+      --on-blue: #0E1630;
+      --red: #FF6F61;
+      --on-red: #2A0B07;
+      --bad: #FF8A7E;
+      color-scheme: dark;
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    background: var(--bg);
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1.0625rem/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  h1, h2, h3, p, ul, ol, figure { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  a { color: inherit; text-underline-offset: .18em; }
+  button, input { font: inherit; color: inherit; }
+  button {
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+  [hidden] { display: none !important; }
+  .sr {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+  /* Ke13: frågor i vanlig text (halvfet), kort i stället för rutpapper. Klassnamnen finns kvar. */
+  .hand { font-weight: 600; }
+  .paper {
+    background: var(--raised);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+  }
+  @media (prefers-color-scheme: dark) { .paper { border-color: transparent; } }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--gut); }
+
+  /* ---------- Huvud ---------- */
+  .top { padding-top: calc(14px + env(safe-area-inset-top)); }
+  .name {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-weight: 700;
+    font-size: 1.375rem;
+    letter-spacing: -.02em;
+    text-decoration: none;
+  }
+  .name img { width: 32px; height: 32px; border-radius: 7px; flex: none; }
+
+  .fine { color: var(--mut); font-size: .9375rem; line-height: 1.45; max-width: 60ch; margin-top: 28px; }
+  .fine + .fine { margin-top: 10px; }
+  .fine a { color: var(--blue); }
+  .fine a, .mini-fine a { display: inline-block; padding: 12px 0; margin: -12px 0; }
+    .top { padding-top: 24px; }
+  .top { display: flex; align-items: center; justify-content: space-between; }
+  .langsw { display: inline-flex; border-radius: 999px; background: var(--line, rgba(127,127,127,.18)); padding: 3px; gap: 2px; }
+  .langsw a { padding: 5px 12px; border-radius: 999px; font-size: .875rem; color: inherit; text-decoration: none; }
+  .langsw a[aria-current="true"] { background: Canvas; color: CanvasText; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+  .help { padding-top: 28px; padding-bottom: calc(56px + env(safe-area-inset-bottom)); max-width: 760px; }
+  .help h1 { font-weight: 700; font-size: clamp(2.25rem, 10vw, 3.25rem); line-height: 1.04; letter-spacing: -.035em; }
+  .help .lead { margin-top: 10px; color: var(--mut); font-size: 1.0625rem; line-height: 1.5; }
+  .toc { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .toc a { display: inline-block; padding: 8px 14px; border-radius: 999px; background: var(--surface); border: 1px solid var(--line);
+           text-decoration: none; font-size: .9375rem; font-weight: 600; }
+  .topic { margin-top: 28px; padding: 20px; scroll-margin-top: 16px; }
+  .topic h2 { font-weight: 700; font-size: 1.375rem; line-height: 1.2; letter-spacing: -.01em; }
+  .topic dl { margin: 0; }
+  .topic dt { font-weight: 600; margin-top: 16px; }
+  .topic dd { margin: 4px 0 0; color: var(--mut); }
+  .topic ol { list-style: decimal; padding-left: 1.3em; margin-top: 4px; }
+  .topic ol li + li { margin-top: 2px; }
+  .topic b { color: var(--ink); font-weight: 600; }
+  .back { display: inline-block; margin-top: 28px; color: var(--blue); }
+  .top.narrow { max-width: 760px; }
+
+</style>
+</head>
+<body>
+<header class="top wrap narrow">
+  <a class="name" href="/"><img src="/img/ikon-64.webp" width="32" height="32" alt=""> <span>EarMind</span></a>
+  <nav class="langsw" aria-label="Language"><a href="/support" hreflang="en" lang="en" data-lang="en" aria-label="English" aria-current="true">EN</a><a href="/sv/support" hreflang="sv" lang="sv" data-lang="sv" aria-label="Svenska">SV</a></nav>
+</header>
+<main class="help wrap">
+  <h1>Help and support</h1>
+  <p class="lead">Short answers to common questions about EarMind. The app is in English and Swedish.</p>
+  <nav class="toc" aria-label="Help and support"><a href="#start">Getting started</a><a href="#airpods">AirPods</a><a href="#words">Your activation words</a><a href="#record">Record it yourself – completely free</a><a href="#credits">Credits and the launch offer</a><a href="#server">When our server can&#x27;t answer</a><a href="#privacy">Privacy</a></nav>
+  <section class="topic paper" id="start" aria-labelledby="start-h"><h2 id="start-h">Getting started</h2><dl><dt>What is EarMind?</dt><dd>EarMind helps you study by listening in your AirPods. Snap your textbook and EarMind creates quiz questions with answers and reads them in your ear. Or type any text in <b>Say in AirPods</b> and hear it again and again.</dd><dt>How do I make my first quiz?</dt><dd><ol><li>Tap <b>New quiz</b>.</li><li>Add material: <b>Take photos</b>, <b>Choose photos</b>, <b>Add document</b> (PDF, Word or text) or <b>Type text</b>.</li><li>Tap <b>Create questions</b>. You can leave the app while it works.</li><li>Check <b>Is this right?</b> and tap <b>Looks right</b>, or write a correction.</li><li>Tap <b>Start quiz</b>.</li></ol></dd><dt>How does Say in AirPods work?</dt><dd>Type or paste a text and tap <b>Play for 10 min</b>. It repeats until the time is up, from 10 minutes up to an hour. Write how it should sound under <b>How should it sound?</b>, or pick a voice and preview it for free. Long text? Tap <b>Compress</b> for a shorter one with the same content.</dd></dl></section><section class="topic paper" id="airpods" aria-labelledby="airpods-h"><h2 id="airpods-h">AirPods</h2><dl><dt>How do I hear the answers?</dt><dd>While a question plays or right after it: press once for the long answer, twice for the short answer and three times to pause. Press again to continue. The answers are only read when you press.</dd><dt>Do I need AirPods?</dt><dd>No. Without AirPods the app plays through the phone's speaker.</dd><dt>Older AirPods with a double tap on each earbud</dt><dd>Set the left earbud to <b>Next Track</b> (short answer) and the right to <b>Play/Pause</b> (long answer and pause) in iPhone Settings › Bluetooth › ⓘ next to your AirPods.</dd><dt>A press doesn&#x27;t get through</dt><dd>Check that both AirPods are in your ears and connected. If another app is playing music, the presses go to that app: start EarMind again and they come back. You can try the presses first under <b>Control with your AirPods</b>.</dd></dl></section><section class="topic paper" id="words" aria-labelledby="words-h"><h2 id="words-h">Your activation words</h2><dl><dt>What are activation words?</dt><dd>In More modes (beta) the app says: <b>“Question you're not prepared for? Say [ … ] so our AI activates.”</b> Type one or more words of your own in the field. When EarMind hears them while it listens, it answers the question that was just asked.</dd><dt>When does it listen?</dt><dd>Only in More modes, after you have said yes and started it. You always see “● Listening” at the top, and you stop it with one tap. Start quiz and Say in AirPods never use the microphone.</dd></dl></section><section class="topic paper" id="record" aria-labelledby="record-h"><h2 id="record-h">Record it yourself – completely free</h2><dl><dt>What is it?</dt><dd>Write your own questions and answers, record them in your own voice and practice them in your AirPods, just like a quiz.</dd><dt>Does it cost anything?</dt><dd>No. It uses no credits. Anything you haven't recorded is read by the phone's own voice.</dd><dt>Where does the sound go?</dt><dd>Nowhere. Your recordings stay on your phone and are never sent to us.</dd></dl></section><section class="topic paper" id="credits" aria-labelledby="credits-h"><h2 id="credits-h">Credits and the launch offer</h2><dl><dt>How do credits work?</dt><dd>1 credit is 1 character of new audio. You get 1,500 credits every month, and they refill on the 1st. Repeats, audio that already exists, quizzes others have shared, Compress, voice previews and Record it yourself are free.</dd><dt>What if I run out?</dt><dd>The app shows what something costs before anything is made, and nothing is taken if you don't have enough. Tap <b>Top up</b> for credit packs or the <b>Weekly pass</b>. Prices are shown in the app, and you pay with your Apple account. The weekly pass renews every week until you cancel in iPhone Settings › your name › Subscriptions.</dd><dt>Is there a launch offer?</dt><dd>During launch week, everything is 65% off. The app and this website show it while the week lasts.</dd></dl></section><section class="topic paper" id="server" aria-labelledby="server-h"><h2 id="server-h">When our server can&#x27;t answer</h2><dl><dt>Reading aloud</dt><dd>If the voice can't read right now, the phone's own voice reads instead, and the app tells you. No credits are used for it.</dd><dt>Answers and grading</dt><dd>On iPhones with Apple Intelligence, the phone's own model answers in More modes and grades your answers, and the app says so. No credits are used for it.</dd><dt>Compress and new quizzes</dt><dd>If the server can't shorten your text, the phone's model does it where it's available. If a new quiz can't be made right now, try again in a moment, or use Record it yourself.</dd></dl></section><section class="topic paper" id="privacy" aria-labelledby="privacy-h"><h2 id="privacy-h">Privacy</h2><dl><dt>Is my material saved?</dt><dd>No. Photos, documents and text are sent once to make the questions and are then deleted.</dd><dt>Is any sound saved?</dt><dd>EarMind never saves what the microphone hears. In More modes the sound is sent to ElevenLabs to be turned into text, and EarMind keeps only the text. Your own recordings in Record it yourself stay on your phone.</dd><dt>What is saved?</dt><dd>Your quizzes, with questions, answers and audio, are saved with your account so they're there on a new phone. You don't need to sign up with an email.</dd><dt>Can I delete everything?</dt><dd>Yes. In the app: <b>Settings › Account › Delete account</b> deletes the account and everything on our server.</dd></dl></section>
+  <p class="fine">Something not working? In the app, go to <b>Settings › Feedback and suggestions</b> and tell us what happened.</p>
+  <a class="back" href="/">Back to EarMind</a>
+</main>
+<script>
+// Samma språkval som sajten och betan (Ke87): valet sparas och följer med.
+(function(){var k="earmind.beta.lang";try{document.querySelectorAll(".langsw a").forEach(function(a){a.addEventListener("click",function(){try{localStorage.setItem(k,a.dataset.lang)}catch(e){}})});
+if(location.pathname==="/support"&&localStorage.getItem(k)==="sv")location.replace("/sv/support");}catch(e){}})();
+</script>
+</body>
+</html>

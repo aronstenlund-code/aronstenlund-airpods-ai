@@ -42,7 +42,7 @@ jobs:
           while IFS= read -r ref; do
             case "$ref" in
               http:*|https:*|data:*|mailto:*|\#*) continue ;;
-              /|/sv|/beta) continue ;;   # Ke87: sidans egna vägar på earmind.vercel.app (Vercel); Pages-adressen är den gamla
+              /|/sv|/beta|/support|/sv/support) continue ;;   # Ke87: sidans egna vägar på earmind.vercel.app (Vercel); Pages-adressen är den gamla
               /*) echo "::error::Absolute path $ref breaks under the project path; use a relative path"; missing=1; continue ;;
             esac
             [ -e "$ref" ] || { echo "::error::index.html refers to $ref, which is not in site/"; missing=1; }

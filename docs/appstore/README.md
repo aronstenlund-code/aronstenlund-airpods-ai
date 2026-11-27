@@ -38,7 +38,7 @@ bara svenska röster), och priserna i kr kommer från simulatorns butik.
 | Promotional text | 170 | Type what you want to hear, or snap your textbook. EarMind reads it in your earbuds, again and again, or turns it into quiz questions. | 134 |
 | Promotional text, launch week only | 170 | Launch week: 65% off everything in EarMind. Ends soon. *(kan bytas utan ny granskning; byt tillbaka när veckan slutar, D259)* | 54 |
 | Keywords | 100 | `study,exam,quiz,flashcards,read aloud,revision,homework,vocabulary,school,audio,learn,record,voice` | 98 |
-| Support URL | – | https://earmind.vercel.app | – |
+| Support URL | – | https://earmind.vercel.app/support (Ke94; svenska lokaliseringen: /sv/support). **Kontaktadress saknas** – Aron väljer en (TILL-ARON #38) | – |
 | Marketing URL | – | https://earmind.vercel.app | – |
 | Privacy Policy URL | – | https://earmind.vercel.app/integritet (**Ke78, inte publicerad**: Arons ja först) | – |
 | Terms (EULA) | – | Apples standard-EULA, och länken https://earmind.vercel.app/villkor i beskrivningen (3.1.2; **inte publicerad**) | – |
