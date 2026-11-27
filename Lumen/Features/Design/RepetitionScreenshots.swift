@@ -91,6 +91,9 @@ enum RepetitionDemo {
                                       // model is down
                                       "repOwnHome", "repOwnHomeFirst", "repOwnHomeEmpty", "repOwnDeck", "repOwnDeckNew", "repOwnRecording",
                                       "repOwnOffer", "repOwnOfferDown",
+                                      // A168: after Avsluta (missed questions, and none asked for), and Start with
+                                      // the quiz played last at the top
+                                      "repSummary", "repSummaryNone", "repHomeLastPlayed",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -301,6 +304,19 @@ enum RepetitionDemo {
         if name == "repSoundProblemNone", let audio = model.audio as? DeviceVoiceDrillAudio {
             model.store.save(chemistry) // no files at all
             audio.stagedProblems[chemistry.id] = CloudDrillAudio.unavailableLine
+        }
+        // A168: the quiz played last is first on Start only in its own scene (one place is remembered at a time).
+        model.practiceSummary = nil
+        if name == "repHomeLastPlayed" {
+            RepetitionProgress(drillID: history.id, index: 1, savedAt: Date()).save()
+        } else if name != "repHomeStarted", name != "repHomeSoundProblem",
+                  RepetitionProgress.load()?.drillID == history.id {
+            RepetitionProgress.clear()
+        }
+        if name == "repSummary" || name == "repSummaryNone" {
+            let asked = name == "repSummary" ? [1, 3, 4] : []
+            model.practiceSummary = PracticeSummary(.init(drill: drill, heard: drill.items.count, laps: 2, asked: asked),
+                                                    origin: nil, inStore: { _ in true })
         }
         // A100: Fler lägen shows only after the first exam was started (the control check).
         if name == "repHomeNew" { UserDefaults.standard.set(false, forKey: "repetition.controlsChecked") }
@@ -787,6 +803,7 @@ enum RepetitionDemo {
                  "repSayText", "repSayRefused", "repHomeCredits", "repSayCredits", "repSayCreditsShort",
                  "repHomeSaid", "repHomeSaidOnly", "repSayOnCard", "repSayUnlimited", "repSayStyle", "repSayVoices", "repSayVoicesUser",
                  "repOwnHome", "repOwnHomeFirst", "repOwnHomeEmpty", "repOwnOffer", "repOwnOfferDown",
+                 "repSummary", "repSummaryNone", "repHomeLastPlayed",
                  "repShopShort", "repShopWeeklyHome", "repShopLaunchOffer", "repSayCompress", "repSayCompressed", "repSayPicked", "repSaySlow", "repSayNoNet", "repSayBig", "repHomeSaidMarks",
                  "repSayWaiting", "repShopRefused", "repSayOnCardWaiting", "repMotion", "repMotionReduced",
                  "repSayKeyboard", "repSayKeyboardStyle", "repSayKeyboardShort", "repSayKeyboardNumbers", "repShopShortKeyboard",

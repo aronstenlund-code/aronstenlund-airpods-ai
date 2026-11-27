@@ -250,7 +250,19 @@ final class RepetitionModel {
     var drills: [Drill] { store.drills }
 
     /// A132 (D215, Aron's screenshot 13:48): the exams on Start. A text from "Säg i AirPods" is not one of them.
-    var examDrills: [Drill] { store.drills.filter { !$0.isSaid } }
+    var examDrills: [Drill] {
+        Self.lastPlayedFirst(store.drills.filter { !$0.isSaid }, progress: session.lastProgress)
+    }
+
+    /// A168 (Deangelo 2026-11-27): Start shows what one was doing last at the top ("Fortsätt där du var"): the quiz
+    /// played last comes first, unless a quiz was made after it was played (then the new one is first, as before).
+    nonisolated static func lastPlayedFirst(_ exams: [Drill], progress: RepetitionProgress?) -> [Drill] {
+        guard let progress, let at = exams.firstIndex(where: { $0.id == progress.drillID }), at > 0 else { return exams }
+        guard !exams.contains(where: { $0.id != progress.drillID && $0.createdAt > progress.savedAt }) else { return exams }
+        var ordered = exams
+        ordered.insert(ordered.remove(at: at), at: 0)
+        return ordered
+    }
     /// A132: the texts from "Säg i AirPods", for "Senaste" under the field.
     var saidDrills: [Drill] { store.drills.filter(\.isSaid) }
     /// A132: the said text that is exactly this text (the same lines), if there is one. The same text is never saved
@@ -1257,6 +1269,42 @@ final class RepetitionModel {
     func end() {
         session.stop()
         showsPlayer = false
+        practiceSummary = PracticeSummary(session.lastRun, origin: missedRun, inStore: { [store] in store.drill($0) != nil })
+        missedRun = nil
+    }
+
+    // MARK: After Avsluta (A168)
+
+    /// The summary on Start after a run of a quiz was ended: how much was heard, and the questions whose answer was
+    /// asked for, to practise again. Nil when there is nothing worth saying (a text, a said text, an own deck, or
+    /// fewer than three questions heard).
+    var practiceSummary: PracticeSummary?
+
+    /// While the missed questions play: the quiz they come from and their places in it.
+    private var missedRun: (id: UUID, origin: UUID, places: [Int])?
+
+    /// "Öva de 3 igen": only those questions, in the same player and with the same sound (on the phone already, so
+    /// nothing is asked of the server and nothing is counted). The quiz's own place ("Fortsätt") is kept.
+    func practiseMissed(_ summary: PracticeSummary) async {
+        guard let original = store.drill(summary.originID), !summary.places.isEmpty else { return }
+        let places = summary.places.filter { original.items.indices.contains($0) }
+        guard !places.isEmpty else { return }
+        await stopListening?()
+        var subset = original
+        subset.id = UUID()
+        subset.items = places.map { original.items[$0] }
+        let audio = self.audio
+        let store = self.store
+        let originID = original.id
+        missedRun = (subset.id, originID, places)
+        session.start(subset, count: places.count, at: 0,
+                      onePressPausesAnswer: ControlCheck.usesEarbudLayout(defaults),
+                      firstLap: false, cue: nil, tempo: tempo,
+                      pauseMusic: pauseMusicEnabled ? pauseMusic : nil, remembersPlace: false) { i in
+            guard places.indices.contains(i) else { return nil }
+            return audio.track(for: store.drill(originID) ?? original, at: places[i])
+        }
+        showsPlayer = true
     }
 
     // MARK: Sharing (A81)
@@ -1447,5 +1495,42 @@ final class ControlCheck {
             guard !Task.isCancelled else { return }
             self?.timedOut()
         }
+    }
+}
+
+/// A168 (Deangelo 2026-11-27): what Start says after a run of a quiz has been ended. The player cannot know right or
+/// wrong (the AirPods only ask for the answer), so it says what it knows: how many questions were heard, and which
+/// answers the user asked for. Those are offered again.
+struct PracticeSummary: Identifiable, Equatable, Sendable {
+    let id = UUID()
+    var title: String
+    var heard: Int
+    var laps: Int
+    /// The questions whose answer was asked for, in the quiz's order.
+    var missed: [String]
+    /// The quiz they belong to, and their places in it.
+    var originID: UUID
+    var places: [Int]
+
+    /// The fewest questions heard for a summary to be said.
+    static let fewest = 3
+
+    init?(_ run: RepetitionSession.RunSummary?, origin: (id: UUID, origin: UUID, places: [Int])?,
+          inStore: (UUID) -> Bool) {
+        guard let run, run.heard >= Self.fewest, !run.drill.isText, !run.drill.isSaid else { return nil }
+        let asked = run.asked.filter { run.drill.items.indices.contains($0) }
+        if let origin, origin.id == run.drill.id {
+            // The missed questions were played again: their places are those in the quiz they came from.
+            originID = origin.origin
+            places = asked.compactMap { origin.places.indices.contains($0) ? origin.places[$0] : nil }
+        } else {
+            guard inStore(run.drill.id) else { return nil } // an own deck is not a quiz in the store
+            originID = run.drill.id
+            places = asked
+        }
+        title = run.drill.title
+        heard = run.heard
+        laps = run.laps
+        missed = asked.map { run.drill.items[$0].question }
     }
 }

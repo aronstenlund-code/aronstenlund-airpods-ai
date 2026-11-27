@@ -164,7 +164,7 @@ final class RepetitionSession {
     /// order); a question without sound yet is waited for.
     func start(_ drill: Drill, count: Int, at index: Int = 0, onePressPausesAnswer: Bool = false,
                firstLap: Bool = false, cue: URL? = nil, tempo: Double = 1,
-               pauseMusic: (any RepetitionPauseMusic)? = nil,
+               pauseMusic: (any RepetitionPauseMusic)? = nil, remembersPlace: Bool = true,
                track: @escaping @MainActor (Int) -> RepetitionTrack?) {
         stop()
         guard count > 0 else { return }
@@ -179,7 +179,10 @@ final class RepetitionSession {
         player.cue = firstLap ? cue : nil
         let defaults = self.defaults
         let id = drill.id
-        player.onProgress = { next in RepetitionProgress(drillID: id, index: next, savedAt: Date()).save(defaults) }
+        // A168: a run of the missed questions only does not take the place of the quiz's own "Fortsätt".
+        if remembersPlace {
+            player.onProgress = { next in RepetitionProgress(drillID: id, index: next, savedAt: Date()).save(defaults) }
+        }
         player.onStep = { [weak self] line in self?.record(line) }
         player.onQuestionPlayed = { [weak self] _ in self?.onQuestionPlayed?(id) } // A108
         player.onLapDone = { [weak self] _ in self?.onFinished?(id) }
@@ -191,7 +194,7 @@ final class RepetitionSession {
         }
         if activatesAudioSession { installObservers() }
         player.start()
-        RepetitionProgress(drillID: id, index: player.index, savedAt: Date()).save(defaults)
+        if remembersPlace { RepetitionProgress(drillID: id, index: player.index, savedAt: Date()).save(defaults) }
         updateNowPlaying()
     }
 
@@ -231,8 +234,29 @@ final class RepetitionSession {
         return max(0, Double(minutes) * 60 - now().timeIntervalSince(repeatStarted))
     }
 
+    /// A168: what a run of questions heard, kept when it stops (Avsluta), for the summary on Start.
+    struct RunSummary: Equatable, Sendable {
+        var drill: Drill
+        /// Questions played to their end (each once, whatever the laps).
+        var heard: Int
+        var laps: Int
+        /// The questions whose answer was asked for, by their place in `drill.items`.
+        var asked: [Int]
+    }
+
+    private(set) var lastRun: RunSummary?
+
+    /// A168: the quiz played last and when (one is remembered, for "Fortsätt" and for the order on Start).
+    var lastProgress: RepetitionProgress? { RepetitionProgress.load(defaults) }
+
     func stop() {
         guard player != nil || reader != nil else { return }
+        if let player, let drill, reader == nil {
+            lastRun = RunSummary(drill: drill, heard: player.heardQuestions.count, laps: player.lap,
+                                 asked: player.askedAnswers.sorted())
+        } else {
+            lastRun = nil
+        }
         saying = nil
         repeatStarted = nil
         readingLap = 1
