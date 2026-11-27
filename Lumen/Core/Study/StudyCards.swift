@@ -179,16 +179,18 @@ struct MiniTest: Equatable, Sendable {
         index += 1
     }
 
-    /// "Lumen, minitest", "Lumen, testa mig", "Lumen, quiz me". ("förhör mig" is one check question since D86.)
+    /// "Lumen, minitest", "Lumen, testa mig", "Lumen, mini quiz". ("förhör mig" is one check question since D86.)
     static func isStartCommand(_ text: String) -> Bool {
         let key = AheadAnswer.key(text)
-        return ["minitest", "mini test", "testa mig", "quiz me", "test me"].contains { key.hasPrefix($0) || key == $0 }
+        return ["minitest", "mini test", "mini quiz", "testa mig", "test me"].contains { key.hasPrefix($0) || key == $0 }
     }
 
     /// D86: "Lumen, förhör mig" in Provläge: one check question on what was just studied (or the exam).
+    /// Ke91: "quiz me" is the same, as the button "Förhör mig" is "Quiz me" in English.
     static func isCheckQuestionRequest(_ text: String) -> Bool {
         let key = AheadAnswer.key(text)
-        return ["förhör mig", "forhor mig", "ställ en kontrollfråga", "kontrollfråga", "fråga mig något"].contains { key.hasPrefix($0) }
+        return ["förhör mig", "forhor mig", "ställ en kontrollfråga", "kontrollfråga", "fråga mig något", "quiz me",
+                "ask me a question"].contains { key.hasPrefix($0) }
     }
 
     static func checkQuestionQuery(swedish: Bool) -> String {

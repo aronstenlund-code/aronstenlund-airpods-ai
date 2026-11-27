@@ -30,7 +30,8 @@ struct WelcomeView: View {
                 VStack(alignment: .leading, spacing: isLarge ? 20 : 26) {
                     row("camera", String(localized: "Fota materialet"), String(localized: "EarMind gör provfrågor med A-svar."))
                     row("waveform", String(localized: "Lyssna i dina AirPods"), String(localized: "Frågorna läses upp. Tryck för svaret."))
-                    row("book.closed", String(localized: "Plugga utan mobilen"), String(localized: "Telefonen kan ligga i fickan."))
+                    // Kelly (A166/Ke90): the first start goes on to the listening consent, so the row says what comes.
+                    row("mic", String(localized: "Fråga högt"), String(localized: "Svaret kommer i örat. Nästa skärm frågar först."))
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.top, isLarge ? 16 : 36)
