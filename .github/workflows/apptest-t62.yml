@@ -1,0 +1,49 @@
+name: Apptest launch time (T62)
+
+# T62 (Toby): the app's start time in the Simulator, before and after the fast start. The tests come from this
+# branch; the app from `app_ref` (empty = this branch). One macOS machine (D217). Simulator only.
+on:
+  workflow_dispatch:
+    inputs:
+      app_ref:
+        description: "Branch or commit whose app code to time (empty = this branch)"
+        required: false
+        default: ""
+      label:
+        description: "Name of the measurement (before/after)"
+        required: false
+        default: "app"
+
+permissions:
+  contents: read
+
+jobs:
+  t62:
+    name: T62 launch time ${{ inputs.label }} (Simulator)
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+      - name: App from app_ref, tests from this branch
+        if: inputs.app_ref != ''
+        run: |
+          set -euo pipefail
+          T="$(git rev-parse HEAD)"
+          git fetch -q origin "${{ inputs.app_ref }}"
+          git checkout -q FETCH_HEAD
+          git checkout -q "$T" -- AppTests/E2E scripts/apptest
+          echo "App from ${{ inputs.app_ref }} ($(git rev-parse --short HEAD)), tests from $(git rev-parse --short $T)"
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Launch time
+        env:
+          LABEL: ${{ inputs.label }}
+        run: bash scripts/apptest/t62.sh
