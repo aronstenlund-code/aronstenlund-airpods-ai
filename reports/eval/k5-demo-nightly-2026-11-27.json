@@ -1,0 +1,143 @@
+{
+ "summary": {
+  "n": 10,
+  "answered": 0,
+  "correct": 0,
+  "natural": 0,
+  "slips": 0,
+  "cost_mean_usd": 0.0,
+  "first_ms_p50": null
+ },
+ "rows": [
+  {
+   "q": "vad är fotosyntes",
+   "status": 503,
+   "answer": "",
+   "model": null,
+   "correct": null,
+   "natural": null,
+   "lang_ok": null,
+   "slip": false,
+   "note": "",
+   "cost": null,
+   "ms": 890
+  },
+  {
+   "q": "varför är himlen blå",
+   "status": 503,
+   "answer": "",
+   "model": null,
+   "correct": null,
+   "natural": null,
+   "lang_ok": null,
+   "slip": false,
+   "note": "",
+   "cost": null,
+   "ms": 1417
+  },
+  {
+   "q": "hur fungerar en vaccin",
+   "status": 503,
+   "answer": "",
+   "model": null,
+   "correct": null,
+   "natural": null,
+   "lang_ok": null,
+   "slip": false,
+   "note": "",
+   "cost": null,
+   "ms": 911
+  },
+  {
+   "q": "vem var Gustav Vasa",
+   "status": 503,
+   "answer": "",
+   "model": null,
+   "correct": null,
+   "natural": null,
+   "lang_ok": null,
+   "slip": false,
+   "note": "",
+   "cost": null,
+   "ms": 827
+  },
+  {
+   "q": "vad är skillnaden mellan väder och klimat",
+   "status": 503,
+   "answer": "",
+   "model": null,
+   "correct": null,
+   "natural": null,
+   "lang_ok": null,
+   "slip": false,
+   "note": "",
+   "cost": null,
+   "ms": 839
+  },
+  {
+   "q": "hur räknar man ut procent",
+   "status": 503,
+   "answer": "",
+   "model": null,
+   "correct": null,
+   "natural": null,
+   "lang_ok": null,
+   "slip": false,
+   "note": "",
+   "cost": null,
+   "ms": 1767
+  },
+  {
+   "q": "varför har vi skottår",
+   "status": 503,
+   "answer": "",
+   "model": null,
+   "correct": null,
+   "natural": null,
+   "lang_ok": null,
+   "slip": false,
+   "note": "",
+   "cost": null,
+   "ms": 931
+  },
+  {
+   "q": "vad är en atom",
+   "status": 503,
+   "answer": "",
+   "model": null,
+   "correct": null,
+   "natural": null,
+   "lang_ok": null,
+   "slip": false,
+   "note": "",
+   "cost": null,
+   "ms": 858
+  },
+  {
+   "q": "hur uppstår regnbågar",
+   "status": 503,
+   "answer": "",
+   "model": null,
+   "correct": null,
+   "natural": null,
+   "lang_ok": null,
+   "slip": false,
+   "note": "",
+   "cost": null,
+   "ms": 919
+  },
+  {
+   "q": "vad betyder demokrati",
+   "status": 503,
+   "answer": "",
+   "model": null,
+   "correct": null,
+   "natural": null,
+   "lang_ok": null,
+   "slip": false,
+   "note": "",
+   "cost": null,
+   "ms": 835
+  }
+ ]
+}
