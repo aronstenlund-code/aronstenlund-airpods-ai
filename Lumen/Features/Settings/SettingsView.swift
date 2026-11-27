@@ -90,7 +90,7 @@ struct SettingsView: View {
                 }
                 NavigationLink("Anteckningar") { NotesView(store: model.notes) }
                     .accessibilityIdentifier("settings.notes") // T3 (Toby): a row is found by this, whatever the language
-                NavigationLink("Historik") { HistoryView(store: model.history) }
+                NavigationLink("Historik") { HistoryView(store: model.history, listening: model) }
                     .accessibilityIdentifier("settings.history") // T3 (Toby): a row is found by this, whatever the language
                 if let cards = model.studyCards {
                     NavigationLink("Studiekort") { StudyCardsView(store: cards) }

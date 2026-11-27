@@ -1,40 +1,54 @@
 import SwiftUI
 
 /// Settings → History (D49/D56): read, search, delete one, delete everything. Also from Lyssnar's ⋯ menu (the flow).
+/// Deangelo 2026-11-27: easy to find an answer again – the newest first under its day, search, and ▶ on every row
+/// reads the answer again in the AirPods. All of it is on the phone, so it works without a network and credits.
 struct HistoryView: View {
     let store: HistoryStore
+    /// Reads an answer again; nil where nothing can play (a picture).
+    var listening: ListeningModel?
     @State private var confirmingDeleteAll = false
-    @State private var search = ""
+    @State private var search: String
+
+    init(store: HistoryStore, listening: ListeningModel? = nil, search: String = "") {
+        self.store = store
+        self.listening = listening
+        _search = State(initialValue: search)
+    }
 
     private var shown: [HistoryEntry] { HistoryEntry.matching(store.entries, search) }
 
     var body: some View {
         List {
-            Section {
-                if store.entries.isEmpty {
+            if store.entries.isEmpty {
+                Section {
                     Text("No history yet. Your questions and EarMind's answers appear here.")
                         .foregroundStyle(.secondary)
-                } else if shown.isEmpty {
-                    ContentUnavailableView.search(text: search) // the system's own words, in the phone's language
+                } footer: {
+                    footer
                 }
-                ForEach(shown) { entry in
-                    NavigationLink {
-                        HistoryDetailView(store: store, entry: entry)
-                    } label: {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(entry.title).lineLimit(2)
-                            Text(entry.createdAt.formatted(date: .abbreviated, time: .shortened))
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+            } else if shown.isEmpty {
+                ContentUnavailableView.search(text: search) // the system's own words, in the phone's language
+            }
+            let days = HistoryEntry.days(shown)
+            ForEach(days) { day in
+                Section {
+                    ForEach(day.entries) { entry in
+                        NavigationLink {
+                            HistoryDetailView(store: store, entry: entry, listening: listening)
+                        } label: {
+                            row(entry)
                         }
                     }
+                    .onDelete { offsets in
+                        let doomed = offsets.map { day.entries[$0] } // the rows as shown, also while searching
+                        for entry in doomed { store.delete(entry) }
+                    }
+                } header: {
+                    Text(verbatim: day.title)
+                } footer: {
+                    if day.id == days.last?.id { footer }
                 }
-                .onDelete { offsets in
-                    let doomed = offsets.map { shown[$0] } // the rows as shown, also while searching
-                    for entry in doomed { store.delete(entry) }
-                }
-            } footer: {
-                Text("Saved only on this iPhone and deleted automatically after 2 years. Other people's speech is not saved.")
             }
             if !store.entries.isEmpty {
                 Section {
@@ -55,15 +69,67 @@ struct HistoryView: View {
             Text("This cannot be undone.")
         }
     }
+
+    private var footer: some View {
+        Text("Saved only on this iPhone and deleted automatically after 2 years. Other people's speech is not saved.")
+    }
+
+    private func row(_ entry: HistoryEntry) -> some View {
+        HStack(alignment: .center, spacing: 12) {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(entry.title).lineLimit(2)
+                Text(entry.createdAt.formatted(date: .omitted, time: .shortened))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer(minLength: 0)
+            if let listening, !entry.answer.isEmpty {
+                ReadAgainButton(listening: listening, entry: entry, compact: true)
+            }
+        }
+    }
+}
+
+/// ▶ / ■ for one history row: reads the answer again in the AirPods, or stops it.
+struct ReadAgainButton: View {
+    let listening: ListeningModel
+    let entry: HistoryEntry
+    var compact = false
+
+    private var isReading: Bool { listening.readingAgain == entry.id }
+
+    var body: some View {
+        Button {
+            if isReading { listening.stopReadingAgain() } else { listening.readAgain(entry) }
+        } label: {
+            if compact {
+                Image(systemName: isReading ? "stop.circle.fill" : "play.circle.fill")
+                    .font(.title2)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            } else {
+                Label(isReading ? String(localized: "Stoppa") : String(localized: "Spela upp i AirPods"),
+                      systemImage: isReading ? "stop.fill" : "play.fill")
+            }
+        }
+        .buttonStyle(.borderless) // in a row: the button, not the row's link
+        .foregroundStyle(.tint)
+        .accessibilityLabel(isReading ? String(localized: "Stoppa") : String(localized: "Spela upp igen"))
+        .accessibilityIdentifier(compact ? "history.play" : "history.detail.play")
+    }
 }
 
 struct HistoryDetailView: View {
     let store: HistoryStore
     let entry: HistoryEntry
+    var listening: ListeningModel?
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         List {
+            if let listening, !entry.answer.isEmpty {
+                Section { ReadAgainButton(listening: listening, entry: entry) } // Deangelo 2026-11-27: one tap
+            }
             if let question = entry.question {
                 Section("You") { Text(question).textSelection(.enabled) }
             }

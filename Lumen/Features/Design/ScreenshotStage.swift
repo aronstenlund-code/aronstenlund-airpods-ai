@@ -44,6 +44,12 @@ struct ScreenshotStage: View {
         if name != "listeningActivation", pictureWords.contains(model.activation.settings.phrase) {
             model.activation.settings.setPhrase("")
         }
+        // Historik (Deangelo 2026-11-27): a day of answers and one from yesterday, in the app's language.
+        if name.hasPrefix("history") {
+            model.history.deleteAll()
+            for entry in HistoryDemo.entries(AppLanguage.current) { model.history.record(entry) }
+            return
+        }
         // A166: Lyssnar as a new user meets it, right after the consent and the microphone: listening, nothing asked.
         if name == "firstListening" {
             model.screenshotShows = .standard
@@ -126,6 +132,16 @@ struct ScreenshotStage: View {
             case "home", "empty": NavigationStack { HomeView(model: model) }
             case "addExam": AddExamView(model: model) {}
             case "listening", "listeningActivation", "firstListening": ListeningScreen(model: model) {} // set up in `seed`
+            // Historik: the days, a search, and an answer with "Spela upp i AirPods".
+            case "history": NavigationStack { HistoryView(store: model.history, listening: model) }
+            case "historySearch":
+                NavigationStack { HistoryView(store: model.history, listening: model, search: HistoryDemo.search(AppLanguage.current)) }
+            case "historyDetail":
+                NavigationStack {
+                    if let entry = model.history.entries.first {
+                        HistoryDetailView(store: model.history, entry: entry, listening: model)
+                    }
+                }
             // A166: the first start's second screen, the listening consent with "Senare".
             case "firstConsent": FirstListeningConsentView(onAccept: {}, onLater: {})
             case "cannotAnswer": ListeningScreen(model: model) {}.onAppear { model.showProblemForScreenshot(.overloaded) }
@@ -198,6 +214,28 @@ struct ScreenshotStage: View {
         }
     }
 }
+/// Historik's pictures: three answers today and one yesterday (the answers saved without the question, D56, and one
+/// asked with "Lumen" that has it).
+enum HistoryDemo {
+    static func search(_ language: AppLanguage) -> String { language == .sv ? "fotosyntes" : "photosynthesis" }
+
+    static func entries(_ language: AppLanguage, now: Date = Date()) -> [HistoryEntry] {
+        let sv = language == .sv
+        let rows: [(TimeInterval, String?, String)] = sv ? [
+            (-86_400 - 3_600, nil, "Mitokondrierna är cellens kraftverk. Där sker cellandningen som ger energi."),
+            (-5_400, nil, "Fotosyntesen är när växter gör socker av koldioxid och vatten med ljusenergi. Syre blir över."),
+            (-2_400, "Vad är skillnaden mellan fotosyntes och cellandning?", "Fotosyntesen bygger upp socker och lagrar energi. Cellandningen bryter ner sockret och frigör energin."),
+            (-600, nil, "Klorofyll är det gröna ämnet i bladen som fångar ljuset."),
+        ] : [
+            (-86_400 - 3_600, nil, "Mitochondria are the cell's power stations. Cellular respiration happens there and gives energy."),
+            (-5_400, nil, "Photosynthesis is how plants make sugar from carbon dioxide and water using light. Oxygen is left over."),
+            (-2_400, "What is the difference between photosynthesis and respiration?", "Photosynthesis builds sugar and stores energy. Respiration breaks the sugar down and releases the energy."),
+            (-600, nil, "Chlorophyll is the green substance in leaves that captures light."),
+        ]
+        return rows.map { HistoryEntry(createdAt: now.addingTimeInterval($0.0), question: $0.1, answer: $0.2, summary: nil) }
+    }
+}
+
 /// A166 (Kelly, bild 8): the words in the field, and one question with its answer, in the app's language.
 enum ActivationDemo {
     static func words(_ language: AppLanguage) -> String { language == .sv ? "Hjälp mig" : "Help me" }

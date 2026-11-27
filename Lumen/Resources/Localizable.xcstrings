@@ -11151,6 +11151,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "I går": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Yesterday"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I går"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "I morgon": {
       "extractionState": "manual",
       "localizations": {
@@ -22377,6 +22395,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Spela upp frågan, %lld sekunder"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Spela upp i AirPods": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Play in AirPods"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spela upp i AirPods"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Spela upp igen": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Play again"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spela upp igen"
           }
         }
       },
