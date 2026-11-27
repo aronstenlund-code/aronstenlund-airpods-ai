@@ -59,3 +59,18 @@ Deno.test("O106 L1: a failing gate answers as before; addressed questions (push_
   const named = await world("nej").ask("Lumen, vilket år började första världskriget?");
   assertEquals(named.gates.length, 0);
 });
+
+Deno.test("O106 N1 (Oscar): only the gate's first word counts ('nej, det är en fråga till kompisen' = nej; 'Ja.' = ja)", async () => {
+  for (const reply of ["nej, det är en fråga till kompisen", "Nej.", "NEJ", "no, that is for a friend"]) {
+    assertEquals((await world(reply).ask("Vad gör du sen?")).said, "", reply);
+  }
+  for (const reply of ["ja", "Ja.", "ja, en kunskapsfråga", "yes"]) {
+    assert((await world(reply).ask("Vilket år började första världskriget?")).said.length > 0, reply);
+  }
+});
+
+Deno.test("O106 N1: the gate's examples are not Oscar's test cases word for word (they must measure something else)", () => {
+  for (const c of ["Vad ska vi äta ikväll?", "Hur mår din mamma nu?", "Var lade du mina nycklar?", "Vilket år började första världskriget?", "Vad heter grundämnet med beteckningen Fe?", "What year did the Berlin Wall fall?"]) {
+    assert(!LISTEN_GATE_PROMPT.includes(c), c);
+  }
+});
