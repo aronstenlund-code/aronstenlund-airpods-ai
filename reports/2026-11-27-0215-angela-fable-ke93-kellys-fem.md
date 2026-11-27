@@ -20,7 +20,7 @@ Angela Fable (moln), 2026-11-27. Kellys rad 02:03 i min kö (fable/screens-first
 ## Test
 
 - A161:s test väntar nu "−65 %" (minustecken).
-- KÖRNINGEN
+- **iOS build 45923414441 på min gren grön i sin helhet (enhetsbygge utan varningar, alla enhetstester, App Store-arkivet)** (verifierat i CI, Simulator). Det första bygget (45921708072) föll på ett test som väntade bindestrecket i den engelska etiketten; rättat.
 - Bilder (Fable screens 45921715117, iPhone 17 Pro, Simulator): `reports/2026-11-27-ke93-bilder/ke93-tom-start-bladet.jpg` – tomma Start ljust och mörkt (raderna i ett kort, ingen rad om låst telefon), lanseringsbladet och Start med prov på engelska. Bilderna togs före rättningen av undertextens radbrytning i Spela in själv-raden (den centrerades på andra raden).
 - 0 ElevenLabs.
 
