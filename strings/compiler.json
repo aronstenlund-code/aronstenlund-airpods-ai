@@ -1,0 +1,10832 @@
+{
+"Lumen": {
+"AppShortcuts": [
+{
+"comment": null,
+"file": "ExtractedAppShortcutsMetadata",
+"key": "Starta ${applicationName}"
+},
+{
+"comment": null,
+"file": "ExtractedAppShortcutsMetadata",
+"key": "Fråga ${applicationName}"
+},
+{
+"comment": null,
+"file": "ExtractedAppShortcutsMetadata",
+"key": "Starta provläge med ${applicationName}"
+},
+{
+"comment": null,
+"file": "ExtractedAppShortcutsMetadata",
+"key": "Pausa ${applicationName}"
+}
+],
+"Localizable": [
+{
+"comment": "",
+"file": "AboutView",
+"key": "Om appen"
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "EarMind lyssnar bara när du har startat den, och du ser alltid när den lyssnar. Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon."
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Frågor och svar går via EarMinds server till en AI-modell. Röstprofilen och dina inställningar ligger bara på den här telefonen."
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "EarMind lyssnar bara när du har startat den, och du ser alltid när den lyssnar. "
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Dina frågor och EarMinds svar skickas till oss så att vi kan göra EarMind bättre. "
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon. "
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Texten raderas när vi har läst den. På telefonen sparas de i Historik i högst två år, och du kan radera dem där."
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Licenser"
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Tjänst"
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Taligenkänning i molnet. Ljudet skickas för att skrivas ut och sparas inte."
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Röstdetektor i telefonen: bara tal skickas till Scribe."
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Kör röstdetektorn och röstavtrycket i telefonen."
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Röstprofilen (din röst känns igen). Ändrad Core ML-konvertering av Fluid Inference."
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Delar upp tal per talare för röstprofilen."
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Länkas av FluidAudio."
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Delar upp hörd text i meningar (ändrad)."
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Styr Spotify när du säger \"nästa låt\" (bara när du kopplat Spotify)."
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Licenser"
+},
+{
+"comment": "",
+"file": "AboutView",
+"key": "Delar från andra"
+},
+{
+"comment": "",
+"file": "AccountDeletion",
+"key": "Det gick inte att radera kontot, för telefonen har inget nät. Inget är raderat. Försök igen när du är uppkopplad."
+},
+{
+"comment": "",
+"file": "AccountDeletion",
+"key": "För många försök. Vänta en minut och försök igen."
+},
+{
+"comment": "",
+"file": "AccountDeletion",
+"key": "Det gick inte att radera kontot just nu. Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "AccountDeletion",
+"key": "Radera kontot?"
+},
+{
+"comment": "",
+"file": "AccountDeletion",
+"key": "Allt du har gjort raderas, både på telefonen och hos oss: prov, texter, ljud, krediter, historik och inställningar. Det går inte att ångra."
+},
+{
+"comment": "",
+"file": "AccountDeletion",
+"key": "Har du veckokortet? Det avslutas inte när kontot raderas. Säg upp det i Inställningar › ditt namn › Prenumerationer."
+},
+{
+"comment": "",
+"file": "AccountDeletion",
+"key": "Kontot är raderat"
+},
+{
+"comment": "",
+"file": "AccountDeletion",
+"key": "EarMind börjar om som ny på den här telefonen."
+},
+{
+"comment": "",
+"file": "AccountSection",
+"key": "Hantera prenumerationer"
+},
+{
+"comment": "",
+"file": "AccountSection",
+"key": "Raderar kontot …"
+},
+{
+"comment": "",
+"file": "AccountSection",
+"key": "Radera konto"
+},
+{
+"comment": "",
+"file": "AccountSection",
+"key": "Radera konto"
+},
+{
+"comment": "",
+"file": "AccountSection",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "AccountSection",
+"key": "Konto"
+},
+{
+"comment": "",
+"file": "ActivationWordsField",
+"key": "Aktiveringsord"
+},
+{
+"comment": "",
+"file": "ActivationWordsField",
+"key": "Fråga du inte är beredd på? Säg"
+},
+{
+"comment": "",
+"file": "ActivationWordsField",
+"key": "…"
+},
+{
+"comment": "",
+"file": "ActivationWordsField",
+"key": "så aktiveras vår AI."
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Åk 6"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Åk 7"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Åk 8"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Åk 9"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Gy 1"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Gy 2"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Gy 3"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Högskola"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Skriv i stället"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Säg det, så förhör EarMind dig inför provet."
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Har du prov snart?"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Lägg till prov"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Jag har prov i biologi på fredag"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Säg till exempel"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Startar …"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Säg det i stället"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Spara prov"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Inte nu"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Välj ämne"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Vilket ämne?"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "T.ex. Teknik eller Filosofi"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Vad handlar provet om? (valfritt)"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "T.ex. cellandning och fotosyntes"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Datum"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Årskurs"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Årskurs"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Välj"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Spara prov"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Hoppa över"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Då pratar EarMind på din nivå, hör dina ämnesord rätt och vet vad du ska öva på."
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Lägg till prov"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Stäng"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Berätta med rösten"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Jag har prov i biologi på fredag, om fotosyntes"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Lyssnar, säg det nu"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Eller säg det"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Årskurs"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Kurs"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "T.ex. Biologi 1 eller Matematik 1c"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Ämne"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Vilket ämne?"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "T.ex. Teknik eller Filosofi"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Datum"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Imorgon"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Välj datum"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Välj datum"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Vad kommer på provet?"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Valfritt. Kapitel, områden eller begrepp."
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "T.ex. fotosyntes, cellandning, kapitel 4"
+},
+{
+"comment": "",
+"file": "AddExamView",
+"key": "Vad kommer på provet?"
+},
+{
+"comment": "",
+"file": "AnswerRecorder",
+"key": "EarMind får inte använda taligenkänningen. Tillåt den i Inställningar."
+},
+{
+"comment": "",
+"file": "AnswerRecorder",
+"key": "EarMind får inte använda mikrofonen. Tillåt den i Inställningar."
+},
+{
+"comment": "",
+"file": "AnswerRecorder",
+"key": "Inspelningen kunde inte starta."
+},
+{
+"comment": "",
+"file": "AnswerRecorder",
+"key": "EarMind kunde inte höra något svar i inspelningen."
+},
+{
+"comment": "",
+"file": "BuildInfo",
+"key": "Version %@ (körning %@ · %@)"
+},
+{
+"comment": "",
+"file": "BuildInfo",
+"key": "Version %@ (%@)"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Förhör"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Svar på frågor"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Mina svar"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Dina egna svar på provfrågor, i örat"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "I Provläget"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Kalender"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Påminnelser"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Timer"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Larm"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Anteckningar"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Träning"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Spotify"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Ring"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Öppna musik"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Öppnar Spotify med sökningen"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Intervju"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Färdiga svar på intervjufrågor"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Byt läge"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Sömn"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Tryck Sov på kvällen. Morgonrapport när du vaknar"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Öppnar Spotify med sökningen"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Byt läge"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Byt läge"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Inget att ställa in"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Kommer snart"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "✓ Tillåtet"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Behöver tillgång till %@"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Avstängt i Inställningar"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Vad kan EarMind?"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Vad kan EarMind?"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Som Siri, fast den förstår vad du frågar och svarar direkt i dina AirPods."
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Säg ”Lumen” och sedan vad du vill. Det som behöver ställas in står på raden."
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Tillåt"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Tillåt %@"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Visa allt EarMind kan"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "EarMind kan mer än svara"
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Säg ”Lumen” och vad du vill, när du vill."
+},
+{
+"comment": "",
+"file": "CapabilitiesView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Ett svar utan fråga före."
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Rubrik eller formatering, inte en del av svaret."
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Frågan saknade Fråga:."
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Raden börjar inte med Fråga: eller Svar:."
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Rad %lld: %@ – %@"
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Rad %lld: %@"
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Rad %lld: %@"
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Exemplet ur prompten, inte ett svar."
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Svaret har %lld tecken, långt att lyssna på."
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Frågan finns redan."
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Svaret är för långt (högst 4 000 tecken)."
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Högst %lld frågor."
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Frågan har inget svar."
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Prov"
+},
+{
+"comment": "",
+"file": "ChatGPTImport",
+"key": "Prov"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Gör med ChatGPT"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "ChatGPT gör frågor och svar av dina filer. Sedan läser EarMind upp dem."
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Kopiera prompten"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Den säger åt ChatGPT exakt vad som ska göras."
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Klistra in i ChatGPT"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Bifoga dina filer, till exempel foton av sidorna eller en PDF, och skicka."
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Klistra in svaret här"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Kopiera hela svaret från ChatGPT."
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Kopierad"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Kopiera prompten"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Öppna ChatGPT"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Det du bifogar i ChatGPT hanteras av ChatGPT, inte av EarMind. ChatGPT är en tjänst från OpenAI."
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Steg %lld, klart"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Steg %lld"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Det här är prompten, inte svaret. Kopiera svaret i ChatGPT först."
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Det finns ingen text att klistra in. Kopiera svaret i ChatGPT först."
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Hittade %@ med svar"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Det korta svaret är första meningen i varje svar."
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "och %@ till"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Fråga %lld. %@ %@"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Frågor"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "1 rad kunde inte läsas och togs inte med."
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "%lld rader kunde inte läsas och togs inte med."
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "1 anmärkning"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "%lld anmärkningar"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Spara frågorna"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Ljudet görs som vanligt när frågorna är sparade."
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Svaret har inte rätt form"
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Kopiera hela svaret från ChatGPT, från första ”Fråga:” till sista svaret, och försök igen."
+},
+{
+"comment": "",
+"file": "ChatGPTImportView",
+"key": "Du kan också klistra in texten under Skriv text i Nytt prov."
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Pausa Lumen och spela musik"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Tillbaka till Lumen"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Nästa låt"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Förra låten"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Pausa musiken"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Byt läge (följs av lägets namn)"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Avsluta"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Det där var fel"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Upprepa senaste svaret"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Viska (tystare röst)"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Högre röst"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Kortare svar resten av passet"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Längre svar resten av passet"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Spara svaret i Anteckningar"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Vilket prov har jag härnäst?"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Förhör mig (på …)"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Utveckla svaret"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Förklara enklare"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Ge ett exempel"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Sammanfatta det viktigaste"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Förklaring på A-nivå"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Ställ en svår fråga"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Snabbförhör (5 frågor)"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Testa mina svagaste områden"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Var säker (starkare modell)"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Vad missade jag?"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Hjälp mig diskret (en mening)"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Svara som jag brukar"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Intervju: hjälp mig svara"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Intervju: bättre svar"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Intervju: mer självsäkert"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Intervju: motfråga"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Intervju: jag fastnar"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Vad ska jag svara?"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Roligare"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Mer naturligt"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Byt ämne"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Smart följdfråga"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Vad menade personen?"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Ge mig lite rizz"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Mer självsäker"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Flirtigare"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Mer subtil"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Kaxigare"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Rädda mig"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Mindre cringe"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Tre alternativ"
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Skriv en fras."
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Högst %lld tecken."
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Används redan för \"%@\"."
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Består av vanliga ord. Den kan sägas av misstag mitt i en fråga."
+},
+{
+"comment": "",
+"file": "CommandRegistry",
+"key": "Låter som början på en fråga. Säg \"Lumen\" före om den krockar."
+},
+{
+"comment": "",
+"file": "CommandTips",
+"key": "Säg ”"
+},
+{
+"comment": "",
+"file": "CommandTips",
+"key": "Säg "
+},
+{
+"comment": "",
+"file": "CommandTips",
+"key": " eller "
+},
+{
+"comment": "",
+"file": "CommandTips",
+"key": "Säg "
+},
+{
+"comment": "",
+"file": "CommandsView",
+"key": "Egna kommandon"
+},
+{
+"comment": "",
+"file": "CommandsView",
+"key": "Sparade kommandon"
+},
+{
+"comment": "",
+"file": "CommandsView",
+"key": "Ord (det du säger)"
+},
+{
+"comment": "",
+"file": "CommandsView",
+"key": "Instruktion (det EarMind ska göra)"
+},
+{
+"comment": "",
+"file": "CommandsView",
+"key": "Ersätt kommandot"
+},
+{
+"comment": "",
+"file": "CommandsView",
+"key": "Lägg till kommando"
+},
+{
+"comment": "",
+"file": "CommandsView",
+"key": "Nytt kommando"
+},
+{
+"comment": "",
+"file": "CommandsView",
+"key": "Säg ordet i en fråga, så följer EarMind instruktionen i det svaret. Du kan också säga: ”spara kommando fission: förklara fission och jämför med fusion”."
+},
+{
+"comment": "",
+"file": "CommandsView",
+"key": "Inga kommandon än."
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Ta tillbaka samtycket"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Ta tillbaka samtycket?"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Integritet och samtycke"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Läs mer"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": ""
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Samtycke givet %@"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Innan du börjar"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "EarMind är en pluggkompis som lyssnar genom dina AirPods och svarar på det du frågar. Så här gör den med ljud och text."
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Lyssnar bara när du har startat den"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Du startar och stoppar själv. När mikrofonen är på syns en blå lyssnarbricka i appen, och iOS visar sin egen mikrofonsymbol."
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Talet skrivs ut av ElevenLabs"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Medan EarMind lyssnar skickas ljudet till ElevenLabs, som skriver ut det. Svaren läses också upp med en röst från ElevenLabs. Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon."
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Svaren kommer från Claude"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. Kan servern inte svara, svarar telefonens egen modell där den finns, och då stannar texten på telefonen."
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Frågor och svar skickas till oss"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Dina frågor och EarMinds svar skickas till oss så att vi kan göra EarMind bättre. Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon. Texten raderas när vi har läst den."
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Andras ord kan också komma med"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "I Standardläge svarar EarMind också på frågor som någon annan ställer, till exempel läraren. Då skrivs deras ord ut och skickas på samma sätt. Berätta för dem runt dig att du använder Lumen, och använd den inte där inspelning inte är tillåten, till exempel på prov."
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Historik på telefonen"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Dina frågor och svar sparas också i Historik på den här telefonen i högst två år. Du kan radera dem i Inställningar när du vill."
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Du kan sluta när du vill"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Ett tryck stoppar mikrofonen. Du kan ta tillbaka samtycket under Integritet och samtycke, och då visas den här sidan igen."
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Genom att fortsätta bekräftar du att du har läst punkterna ovan."
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Jag förstår, starta EarMind"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Sluta lyssna och ta tillbaka"
+},
+{
+"comment": "",
+"file": "ConsentView",
+"key": "Lyssningen stoppas, passets text raderas och samtyckessidan visas igen."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Styr med dina AirPods"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Öppna Inställningar"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Allt fungerar"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Dina AirPods har dubbeltryck per lur"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Trycken kom inte fram"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Början av texten"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Frågan"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "%@. %@ spelas en gång så att trycken kommer fram."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Knapparna på skärmen och på låsskärmen gör samma sak."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Under paus fortsätter vilket tryck som helst. Knapparna på låsskärmen gör samma sak."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Ställ in Vänster på Nästa spår och Höger på Spela/pausa, så fungerar alla tre. "
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Inställningar › Bluetooth › ⓘ vid dina AirPods › Dubbeltryck."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Kolla att båda AirPods sitter i öronen och är anslutna. Knapparna på låsskärmen fungerar alltid."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Fråga om EarMind"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Hur fungerar trycken?"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Medan texten läses:"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Medan frågan spelas:"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Tryck 1 gång för att pausa eller fortsätta."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "tryck 1 gång för frågans A-svar."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Tryck 2 gånger för nästa mening."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Tryck 2 gånger för ett kort A-svar på en till två meningar."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Tryck 3 gånger för förra meningen."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Tryck 3 gånger för att pausa. Tryck igen för att fortsätta."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Väntar på ditt tryck"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Kom fram"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Hoppades över"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Kom inte fram"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Hoppa över"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Avsluta på telefonen."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Avsluta på telefonen. Annars börjar listan om."
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Prova igen"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Starta ändå"
+},
+{
+"comment": "",
+"file": "ControlCheckView",
+"key": "Starta prov"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Obegränsat"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Veckokort"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "%@ kvar"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "kredit kvar"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "krediter kvar"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "%@ den här månaden"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "fråga kvar den här månaden"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "frågor kvar den här månaden"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Vanlig fråga"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Lite längre fråga"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Mycket lång fråga"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "En fråga"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Läs upp eller Säg i AirPods"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "1 per %lld tecken"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Upprepa samma text"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Fylls på den %lld %@."
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Fylls på den 1 %@."
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Visar vad som kostar vad"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Krediter"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Frågor kvar"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Obegränsat"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Det här kontot har ingen gräns"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Så räknas det"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Vad det kostar"
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "%@ Prov som andra har delat eller publicerat kostar inget."
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "%@ Prov som andra har delat eller publicerat kostar inget."
+},
+{
+"comment": "",
+"file": "CreditsViews",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "DebugAudio",
+"key": "Testläget är på: ljudet skickas till oss och sparas i 14 dagar. Sömnläget sparar klippen bara på din telefon."
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Microphone comparison"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Microphone"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Speaker"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Done, next sentence"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Start reading"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "AirPods"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "iPhone"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Own voice"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Other person at 1.5 m"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Jämför taligenkänning (2 min)"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Lyssna i det läge du vill testa, tryck Spela in och prata som vanligt. Skicka sedan båda filerna till oss."
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Stoppa inspelningen"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Spela in 2 minuter"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "iPhone-igenkänningen arbetar…"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Kör iPhone-igenkänning på inspelningen"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Dela WAV + transkript"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Diagnostik"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Capture"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Route (§3.11)"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Playback (through AirPods while capturing)"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Speaker-distance test"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Mic-source sanity check"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Speech locales"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Results"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Event log (newest first)"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Config"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "State"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Chunks"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Stop capture"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Start capture"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Tap to resume"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "No session yet. Start capture (or play a tone) to configure the session."
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Inputs"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Outputs"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Category / mode"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Options"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Sample rate"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "IO buffer"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Channels in / out"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Latency in / out"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "HQ"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "setPreferredInput"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Engine input"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Region / OS"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Speaking…"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Play → first buffer"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Play test tone"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Speak 🇸🇪"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Speak 🇬🇧"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Stop playback"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Clear latency"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "no measurements"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Another person reads a paragraph from testdata/scripts/sv-paragraphs.md at the chosen distance. Run every config × 1/2/4 m × quiet/noisy. Also record the wearer reading, whispering and speaking quietly (Track D1)."
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Last file: %@"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Distance"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Noise"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Speaker"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Stop run and save"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Start run"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Export last 60 s as WAV"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "1 m"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "2 m"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "4 m"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Listening for taps (5 s)…"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Run mic-source check"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Checking…"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Check SpeechTranscriber locales"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Copied %@"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "Copy results as Markdown"
+},
+{
+"comment": "",
+"file": "DiagnosticsView",
+"key": "%@  %@"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Text"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Lite längre än vanligt"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Mycket lång"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Frågan och svaret är lite längre än vanligt."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Frågan och svaret är mycket långa. Korta svaret om du vill."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "1 fråga"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "%lld frågor"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "1 sak"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "%lld saker"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Tydligt"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Lugnt"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Glatt"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Viskande"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Du har inga frågor kvar den här månaden."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Det gick inte att spela just nu. Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Du har inga krediter kvar. Nya krediter kommer den 1 %@."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 %@."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Inga krediter kvar."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Inga frågor kvar den här månaden."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "%@k"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "1 kredit"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "%@ krediter"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "1 kredit"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "%@ krediter"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "1 kredit"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "%@ krediter"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "%@ kvar"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Kostar inget. Ljudet finns redan."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Kostar %@. Upprepningar kostar inget."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Kostar inget"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Kostar %@"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Krediterna räcker till %@."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Ett prov med %@ kostar cirka %@. Du har %@."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Det här kostar %@. Du har %@ kvar."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": " Nya krediter den %@."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "1 tecken nytt ljud"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "1 kredit"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Ljud som redan finns"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Upprepa samma text"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "Prov som andra har delat eller publicerat"
+},
+{
+"comment": "",
+"file": "Drill",
+"key": "En text på 764 tecken kostar 764 krediter. Du får %@ varje månad."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": " Oanvända krediter sparas inte."
+},
+{
+"comment": "",
+"file": "Drill",
+"key": " Nya krediter den %@."
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "%@ kvar"
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "%@ av %@ krediter kvar den här månaden"
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "%lld av %lld frågor kvar den här månaden"
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "Ingen kontakt med EarMind just nu. Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "Provet finns inte."
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "EarMind kunde inte spara just nu. Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "Ljudet gick inte att hämta."
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "Prov"
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "Telefonens röst läser just nu."
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "Uppläsningen är tillfälligt avstängd. Texten fungerar som vanligt."
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "Telefonen har inte plats för ljudet. Frigör lite lagring, så laddas resten ner."
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "Ljudet dröjer. Provet kan starta när första frågan är klar."
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "Ingen internetanslutning. Resten av ljudet laddas ner när du är uppkopplad igen."
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "Dagens gräns för nytt ljud är nådd. Resten görs i morgon. Frågorna som har ljud kan du plugga på redan nu."
+},
+{
+"comment": "",
+"file": "DrillCloud",
+"key": "Ljudet för %@ kunde inte göras. EarMind försöker igen av sig själv."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Sidan gick inte att läsa. Kopiera texten och klistra in den i stället."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "%lld av %lld bilder kom inte fram. Försök igen."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Text"
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Kan inte skapa prov just nu"
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Sparade prov går att öva. Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Lägg till material först."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "EarMind hittade för lite att göra frågor av. Lägg till fler sidor eller mer text."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "EarMind hittade ingen text att läsa upp. Lägg till fler sidor eller mer text."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Det gick inte att skapa frågorna. Försök igen."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Varför behövs klorofyll?"
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Klorofyll fångar solljuset som växten behöver för fotosyntesen."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Utan ljusenergin kan växten inte bygga socker av koldioxid och vatten, så klorofyllet är startpunkten för hela näringskedjan."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Vad bildas vid fotosyntesen?"
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Socker och syre bildas av koldioxid och vatten med hjälp av ljus."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Sockret ger växten energi och byggmaterial, och syret släpps ut och används av djur och människor i cellandningen."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Hur hänger fotosyntes och cellandning ihop?"
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Fotosyntesen bygger socker och cellandningen bryter ner det igen."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Det ena processens produkter är den andras råvaror, så kol och syre går i ett kretslopp mellan växter och djur."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Exempel (testläge): %@."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Materialet"
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Biologi"
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "åk 8"
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Ett kort svar på %@"
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": ". Och ett längre svar med förklaring och exempel."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Fotosyntes\nVäxter gör socker av koldioxid och vatten. De behöver ljus för det. Syre blir över."
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Exempeltext (testläge)"
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "Biologi"
+},
+{
+"comment": "",
+"file": "DrillServices",
+"key": "åk 8"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Det gick inte att dela"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ta bort %@?"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Provet finns inte längre"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Prov"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Plugga %@ med mig i EarMind"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Okej"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "provet"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ta bort provet"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Texten och ljudet försvinner från alla dina enheter. Kopior som du har delat finns kvar hos de andra."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Frågorna, svaren och ljudet försvinner från alla dina enheter. Kopior som du har delat finns kvar hos de andra."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Gör en länk"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Dela"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Börja om från början"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Börja om från fråga 1"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Publicera prov"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ändra ordning"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Gör med ChatGPT"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ta bort provet"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Mer"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Sammanfattning"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Text · %@ · cirka %lld min"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ingen internetanslutning. Dela och Publicera fungerar när du är uppkopplad."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Hämta andras prov"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ändrar frågan"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Fråga %lld"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Lägg till fråga"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Frågor"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Dra för att ändra ordning. Ordningen är den du hör."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Tryck på en fråga för att ändra frågan eller svaret."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Tryck på en fråga för att ändra frågan eller svaret."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Delas när ljudet är klart."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Delas när ljudet är klart (%lld av %lld)."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Delar du provet får kompisarna samma frågor, svar och ljud. De behöver ett gratis EarMind-konto."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Starta provet först så kan du dela det."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Starta prov"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Gör ljudet …"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Starta prov"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ljudet görs. Du kan starta när första frågan är klar."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Texten räknas som %@"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Provet har %@"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "%@ och du har %lld kvar den här månaden. "
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Vänta"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ta bort frågor eller vänta"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "%@ till den 1 %@."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Räknas som %lld av dina %lld frågor kvar."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Du var på fråga %lld av %lld."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Spelas i dina AirPods. Mikrofonen används inte."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ingen internetanslutning. Dela och Publicera fungerar när du är uppkopplad."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Hämta andras prov"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Starta prov läser upp texten."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Tryck på en mening för att börja där."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Starta prov"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Gör ljudet …"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Starta prov"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ljudet görs. Du kan starta när första stycket är klart."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Du var på mening %lld av %lld."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Spelas i dina AirPods. Mikrofonen används inte."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 %@."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Krediterna räcker inte till det här provet."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "%@ · ljud klart"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Gör ljudet …"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ljudet görs när du startar provet."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ljudet hämtas när du startar provet."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ljud: %lld av %lld klara. Resten görs den 1 %@, när du har frågor kvar."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ljud: %lld av %lld klara"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": " · Görs i spelordning"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Fråga"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Fråga · %lld ord"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Svar"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Svar · %lld ord"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Första meningen blir det korta svaret (2 tryck). Hela svaret är det långa (1 tryck)."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Kort svar (2 tryck): %@"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Skriver svaret …"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Låt EarMind skriva svaret"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Nytt förslag"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ljudet görs när du startar provet. Ändra så mycket du vill först."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Sparar du en ändring görs nytt ljud bara för den här frågan."
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Fråga %lld"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Ny fråga"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "Spara"
+},
+{
+"comment": "",
+"file": "DrillView",
+"key": "EarMind kunde inte skriva svaret just nu. Skriv det själv eller försök igen."
+},
+{
+"comment": "",
+"file": "DrillVoiceChoice",
+"key": "Stoppa röst %@"
+},
+{
+"comment": "",
+"file": "DrillVoiceChoice",
+"key": "Lyssna på röst %@"
+},
+{
+"comment": "",
+"file": "DrillVoiceChoice",
+"key": "Röst %@"
+},
+{
+"comment": "",
+"file": "DrillVoiceChoice",
+"key": "Röst"
+},
+{
+"comment": "",
+"file": "DrillVoiceChoice",
+"key": "Rösten går inte att byta efteråt, eftersom ljudet görs med den."
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "EarMind hör dig inte"
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "Ingen internetanslutning"
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "AirPods kopplades bort"
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "EarMind kan inte svara just nu"
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "Rösten fungerar inte just nu"
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "Jag hör inte just nu"
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "Mikrofonen är avstängd. Slå på den i Inställningar för att fortsätta."
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "EarMind behöver internet för att svara. Den fortsätter lyssna och svarar igen när du är uppkopplad."
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "Svaren hörs nu i telefonens högtalare."
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "Svaren läses med iPhonens röst tills den fungerar igen."
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "Taligenkänningen gick ner. EarMind försöker igen av sig själv."
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "Öppna Inställningar"
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "Försök igen"
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "Pausa"
+},
+{
+"comment": "",
+"file": "ErrorCard",
+"key": "Försök igen"
+},
+{
+"comment": "",
+"file": "ExamMaterials",
+"key": "Läser frågorna …"
+},
+{
+"comment": "",
+"file": "ExamMaterials",
+"key": "%lld frågor."
+},
+{
+"comment": "",
+"file": "ExamMaterials",
+"key": "Kunde inte läsa texten. Försök igen med internet."
+},
+{
+"comment": "",
+"file": "ExamMaterials",
+"key": "Läser %@ …"
+},
+{
+"comment": "",
+"file": "ExamMaterials",
+"key": "%lld uppgifter"
+},
+{
+"comment": "",
+"file": "ExamMaterials",
+"key": ", betygsgränser hittade."
+},
+{
+"comment": "",
+"file": "ExamMaterials",
+"key": "Förbereder %@ …"
+},
+{
+"comment": "",
+"file": "ExamMaterials",
+"key": "Läser sida %lld–%lld av %lld …"
+},
+{
+"comment": "",
+"file": "ExamMaterials",
+"key": "Kunde inte läsa sidorna (%lld. omgången). Försök igen med internet."
+},
+{
+"comment": "",
+"file": "ExamMaterials",
+"key": "%lld uppgifter"
+},
+{
+"comment": "",
+"file": "ExamMaterials",
+"key": ", betygsgränser hittade."
+},
+{
+"comment": "",
+"file": "ExamMaterials",
+"key": "Inga sidor kunde läsas ur filerna."
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "Matte"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "NO"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "SO"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "Språk"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "Praktiskt"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "Annat"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "Matteprovet"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "Provet i %@"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "%@provet"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "Provet"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "Inget datum"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "har varit"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "idag"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "imorgon"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "om %lld dagar"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "Idag"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "1 dag kvar"
+},
+{
+"comment": "",
+"file": "ExamPlans",
+"key": "%lld dagar kvar"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Provfrågor"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Frågor (%lld)"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Förhör mig på provet"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "EarMind läser upp en fråga i taget, du svarar högt och EarMind rättar och förklarar. Säg nästa, förra, fråga sju, hoppa över, upprepa eller avsluta."
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Fråga %@"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "EarMinds svar"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Facit saknas, EarMind har skrivit svaret"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Byt prov: PDF eller bilder"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Lägg till prov: PDF eller bilder"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Eller klistra in frågorna här"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Läs in texten"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Provet skickas till EarMinds server för att läsas en gång, och bara frågorna sparas, på den här telefonen. Saknas facit skriver EarMind egna svar och säger det."
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Starta provsession med provtid"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Rensa provet"
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Provsessionen är som på riktigt: EarMind svarar bara på ”Lumen, …”: uppgift sju, ledtråd, rätta jag fick …, nästa, starta provtid nittio minuter, hur gick det, avsluta provet."
+},
+{
+"comment": "",
+"file": "ExamSetupView",
+"key": "Stäng"
+},
+{
+"comment": "",
+"file": "ExamWidgetSnapshot",
+"key": "I dag"
+},
+{
+"comment": "",
+"file": "ExamWidgetSnapshot",
+"key": "I morgon"
+},
+{
+"comment": "",
+"file": "ExamWidgetSnapshot",
+"key": "%lld dagar kvar"
+},
+{
+"comment": "",
+"file": "ExamWidgetSnapshot",
+"key": "Förhör mig"
+},
+{
+"comment": "",
+"file": "FeedbackView",
+"key": "Feedback och förslag"
+},
+{
+"comment": "",
+"file": "FeedbackView",
+"key": "Type"
+},
+{
+"comment": "",
+"file": "FeedbackView",
+"key": "Send"
+},
+{
+"comment": "",
+"file": "FeedbackView",
+"key": "About the app"
+},
+{
+"comment": "",
+"file": "FeedbackView",
+"key": "Suggestion"
+},
+{
+"comment": "",
+"file": "FeedbackView",
+"key": "Sent"
+},
+{
+"comment": "",
+"file": "FeedbackView",
+"key": "Could not send. Try again later."
+},
+{
+"comment": "",
+"file": "FeedbackView",
+"key": "Tell the developers"
+},
+{
+"comment": "",
+"file": "FeedbackView",
+"key": "Share history to improve the app"
+},
+{
+"comment": "",
+"file": "FeedbackView",
+"key": "Help improve EarMind?"
+},
+{
+"comment": "",
+"file": "FeedbackView",
+"key": "Don't share"
+},
+{
+"comment": "",
+"file": "FeedbackView",
+"key": "Share history"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Senare"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Fråga högt. Få svaret i örat."
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Telefonen stannar i fickan."
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "EarMind"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Inget konto. Testa nu betyder att du godkänner punkterna ovan."
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Testa nu"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Godkänner punkterna ovan och startar mikrofonen"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Lyssnar bara när du har startat den"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Du ser alltid när den lyssnar"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon."
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Frågor och svar skickas till oss"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Läs mer"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Fråga vad som helst"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Sätt i AirPods och säg en fråga högt. Utan AirPods hörs svaret i telefonen."
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "iOS frågar om mikrofonen första gången. Ljudet blir text och sparas inte av EarMind. Sömnläget sparar klippen bara på din telefon."
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Hoppa över"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Lyssnar"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Pausad"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Startar …"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Säg till exempel: ”Vad är fotosyntes?”"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Till exempel: Vad är fotosyntes?"
+},
+{
+"comment": "",
+"file": "FirstStartView",
+"key": "Lyssna igen"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Svar: %@"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Fråga: %@"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Visar frågan igen"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Vänder kortet och visar svaret"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Stäng"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": ""
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Kort %@"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Vändkort"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Svar"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Fråga"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Tryck för att se frågan"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Tryck för att vända"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Vänd kortet"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Kunde inte"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Kunde"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Klart"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Alla satt. Det räknas in i din plan."
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Det räknas in i din plan. De du inte kunde kommer tidigare nästa gång."
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "det"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "de %lld"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Öva på %@ igen"
+},
+{
+"comment": "",
+"file": "FlipCardsView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "FlipDeck",
+"key": "%lld av %lld"
+},
+{
+"comment": "",
+"file": "FlipDeck",
+"key": "Du kunde %lld av %lld."
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "åk 6"
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "åk 7"
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "åk 8"
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "åk 9"
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "Gy 1"
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "Gy 2"
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "Gy 3"
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "Högskola"
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "Annan"
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "Vilken årskurs?"
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "Hoppa över"
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "EarMind läser nivån ur materialet."
+},
+{
+"comment": "",
+"file": "GradeChoice",
+"key": "Frågorna och svaren passar årskursen."
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Hur fungerar trycken?"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Hur delar jag ett prov?"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Varför blev det färre frågor?"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Fråga om EarMind"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Förslag"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Prova"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Fråga hur något i EarMind fungerar. Svaren handlar bara om appen."
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Prova på en kort text"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "EarMind gör 3 frågor med svar. Räknas mot dina frågor."
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Du: %@"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "EarMind: %@"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "EarMind skriver"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Försök igen"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Fråga om EarMind"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Skicka"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Prova på en kort text"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Frågor"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Text"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Klistra in eller skriv några meningar. Räknas som 3 av dina frågor."
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Gör om"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Gör frågor"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Spara som prov"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "Nytt prov"
+},
+{
+"comment": "",
+"file": "HelpChatView",
+"key": "%@provet"
+},
+{
+"comment": "",
+"file": "HelpService",
+"key": "Öppna Styr med dina AirPods"
+},
+{
+"comment": "",
+"file": "HelpService",
+"key": "Öppna Nytt prov"
+},
+{
+"comment": "",
+"file": "HelpService",
+"key": "Öppna Dela"
+},
+{
+"comment": "",
+"file": "HelpService",
+"key": "Öppna Publicera prov"
+},
+{
+"comment": "",
+"file": "HelpService",
+"key": "Öppna Inställningar"
+},
+{
+"comment": "",
+"file": "HelpService",
+"key": "Det gick inte att svara just nu. Försök igen."
+},
+{
+"comment": "",
+"file": "HelpService",
+"key": "Medan frågan spelas: tryck 1 gång för frågans A-svar. Tryck 2 gånger för ett kort A-svar på en till två meningar. Tryck 3 gånger för att pausa. Tryck igen för att fortsätta."
+},
+{
+"comment": "",
+"file": "HelpService",
+"key": "1. Tryck Nytt prov.\n2. Tryck Fota sidor och fota alla sidor i följd.\n3. Tryck Skapa frågor.\n4. Kolla sammanfattningen och tryck Ser rätt ut."
+},
+{
+"comment": "",
+"file": "HelpService",
+"key": "Det kan jag inte svara på."
+},
+{
+"comment": "",
+"file": "HelpService",
+"key": "Jag svarar bara på hur EarMind fungerar, till exempel hur du gör ett nytt prov."
+},
+{
+"comment": "",
+"file": "HelpService",
+"key": "Det vet jag inte. Skriv till oss under Inställningar › Om EarMind."
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "Historik"
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "Delete all history?"
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "No history yet. Your questions and EarMind's answers appear here."
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "Saved only on this iPhone and deleted automatically after 2 years. Other people's speech is not saved."
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "Delete all history"
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "Delete all history"
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "This cannot be undone."
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "You"
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "EarMind"
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "Länk"
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "Suggestions"
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "Summary"
+},
+{
+"comment": "",
+"file": "HistoryView",
+"key": "Delete"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Fler lägen"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Testläget är på. Öppna inställningar"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Inställningar"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "EarMind"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Testläge"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Lyssnande lägen använder mikrofonen. Starta prov gör det aldrig."
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "EarMind kom inte igång. Tryck igen om en stund."
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Visar Lyssnar"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "EarMind börjar lyssna i %@"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Stäng"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Här startar du EarMind"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Sen lyssnar den tills du trycker Avsluta. Du ser alltid när den lyssnar."
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Tillbaka till EarMind"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Starta EarMind"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Läge: %@. Byt läge"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "·"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Byt"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "I natt"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Nästa prov"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "%lld procent redo"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Visar vad du kan och vad du ska öva på"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Ändra"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Ändra %@"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Påminn mig kl. %@"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Öva mer på"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Startar förhöret inför %@"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Mina svar, inga sparade"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Mina svar, %lld sparade"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Bestäm själv vad EarMind säger på provfrågor"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "EarMind läser sidan och förhör dig på den"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Frågan på ett kort, tryck för svaret, utan ljud"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Minitest, 5 frågor"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Förhör med rösten (BETA)"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "EarMind frågar ut dig och svarar på dina frågor"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Mina svar"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Lägg till"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "%lld sparade"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Stäng"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Fota sidan du pluggar"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Öva med %lld vändkort"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Andra prov"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Plugga till %@, %@"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Ändra provet"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Ta bort provet"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Lägg till prov"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Har du prov snart?"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Säg det, så förhör EarMind dig inför provet."
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Lägg till prov"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Eller säg"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "”Lumen, jag har prov i engelska på onsdag”"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Svit: 1 dag"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Svit: %lld dagar i rad"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Dagens fråga är gjord"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Gör en förhörsfråga i dag, annars börjar sviten om"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "%lld"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "EarMind kan allt. Säg Lumen och vad du vill, till exempel: "
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Allt EarMind kan"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "EarMind kan allt"
+},
+{
+"comment": "",
+"file": "HomeView",
+"key": "Säg ”Lumen” och vad du vill."
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "Lanseringsrabatt"
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "Se paketen"
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "Inte nu"
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "−%lld %%"
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "%lld %% rabatt på allt den här veckan."
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "%lld %% rabatt på första veckan med veckokortet."
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "%lld %% rabatt på alla kreditpaket den här veckan."
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "%lld tim"
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "%lld min"
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "1 dag"
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "%lld dagar"
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "under en minut"
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "Slutar om %@"
+},
+{
+"comment": "",
+"file": "LaunchOfferText",
+"key": "Köp %@ för %@, ordinarie pris %@"
+},
+{
+"comment": "",
+"file": "ListeningActivity",
+"key": "Avsluta EarMind"
+},
+{
+"comment": "",
+"file": "ListeningActivity",
+"key": "Start EarMind"
+},
+{
+"comment": "",
+"file": "ListeningActivity",
+"key": "Next suggestion"
+},
+{
+"comment": "",
+"file": "ListeningActivity",
+"key": "Pause or resume EarMind"
+},
+{
+"comment": "",
+"file": "ListeningIndicatorBar",
+"key": "Lyssnar · Testläge, ljud skickas"
+},
+{
+"comment": "",
+"file": "ListeningIndicatorBar",
+"key": "Lyssnar"
+},
+{
+"comment": "",
+"file": "ListeningIndicatorBar",
+"key": "Avsluta"
+},
+{
+"comment": "",
+"file": "ListeningIndicatorBar",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "ListeningIndicatorBar",
+"key": "Pausad"
+},
+{
+"comment": "",
+"file": "ListeningIndicatorBar",
+"key": "Pausad, tryck Fortsätt för att lyssna igen"
+},
+{
+"comment": "",
+"file": "ListeningIndicatorBar",
+"key": "Pausad, AirPods kopplades bort"
+},
+{
+"comment": "",
+"file": "ListeningIndicatorBar",
+"key": "Pausad, ljudet startades om"
+},
+{
+"comment": "",
+"file": "ListeningIndicatorBar",
+"key": ""
+},
+{
+"comment": "",
+"file": "ListeningIndicatorBar",
+"key": "Öppnar lyssnarskärmen"
+},
+{
+"comment": "",
+"file": "ListeningModel",
+"key": "Rizzläge"
+},
+{
+"comment": "",
+"file": "ListeningModel",
+"key": "Socialt läge"
+},
+{
+"comment": "",
+"file": "ListeningModel",
+"key": "%@: %lld förslag."
+},
+{
+"comment": "",
+"file": "ListeningModel",
+"key": "EarMind hör och pratar lite sämre just nu"
+},
+{
+"comment": "",
+"file": "ListeningModel",
+"key": " och "
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Fel svar?"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Vad var fel? (valfritt)"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Skicka"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Din fråga och svaret skickas ordagrant till utvecklarna."
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Testläge · ljud skickas"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Tillbaka till start"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Mer"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Byt läge"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Kommandon"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Historik"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Förhör mig på provet"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Svarar"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Lyssnar"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Hör inte, försöker igen"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Pausad"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Startar …"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Pausad"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Provfrågor, "
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": ". Svara högt, eller säg nästa."
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Tyst förhör, fråga %lld av %lld. Nicka för ja, skaka för nej."
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Tryck Lyssna igen eller säg ”Lumen, fortsätt”"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "EarMind ger ett förslag i pausen"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Eller säg ja eller nej."
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Nej"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Ja"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Förslag"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Nästa förslag"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Ditt svar"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Ditt sparade svar"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Fråga: %@"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Tänker …"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Ändra svaret"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Fel svar, skicka till utvecklarna"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Fråga om det du pluggar, eller bli förhörd."
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Eller säg ”Lumen, förhör mig”."
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Tyst förhör: svara genom att nicka"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Förhör mig"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Fråga vad du vill."
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Svaret kommer i örat och här."
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Bytte till %@"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Säg ja för mer"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Kommandon"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Visar de fem viktigaste röstkommandona"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Pausa"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Lyssna igen"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Avsluta"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Kommandon"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Fler kommandon och egna fraser finns i Inställningar › Röstkommandon."
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Alla lägen här lyssnar och är i BETA. "
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "EarMind lyssnar vidare när du byter. Du kan också säga ”Lumen, byt till socialt”."
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Valet gäller Starta EarMind. Starta prov använder aldrig mikrofonen."
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Byt läge"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Välj läge"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Fler lägen"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Förhör med rösten"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Sov"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Prat i sömnen och snarkning, bara på telefonen"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Ämnesord: "
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "%lld av %lld rättade"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Rättar …"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": " poäng"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Fråga %@"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "ÖVNINGSPROVET"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "%lld rätt av %lld"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Stäng"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Rätt"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Delvis"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Fel"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Hoppade över"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Att öva på"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "%lld"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": "Öppnas i Safari"
+},
+{
+"comment": "",
+"file": "ListeningScreen",
+"key": ", kan kräva skolkonto"
+},
+{
+"comment": "",
+"file": "ListeningView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "ListeningView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "ListeningView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "ListeningView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "ListeningView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "ListeningView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "LivePhoneTools",
+"key": "Stopp"
+},
+{
+"comment": "",
+"file": "LivePhoneTools",
+"key": "Timer"
+},
+{
+"comment": "",
+"file": "LivePhoneTools",
+"key": "Larm"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Klotet"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Den gröna formen"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Den orange ringen"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Glasklotet"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Glasringen"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Glasvågen"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Tack för din röst"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Så här har %lld personer röstat hittills."
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Vi visar hur alla har röstat när fler har hunnit rösta."
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Rösten kom inte fram. Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Hjälp oss välja logga"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Vilken tycker du bäst om? Tryck på en."
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Logga %@, %@"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Senare"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "Rösta"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "%@: %lld procent"
+},
+{
+"comment": "",
+"file": "LogoVoteView",
+"key": "%lld %%"
+},
+{
+"comment": "",
+"file": "LumenApp",
+"key": "Hantera prenumerationer"
+},
+{
+"comment": "",
+"file": "LumenApp",
+"key": "Okej"
+},
+{
+"comment": "",
+"file": "LumenShortcuts",
+"key": "Ask EarMind"
+},
+{
+"comment": "",
+"file": "LumenShortcuts",
+"key": "Start Provläge"
+},
+{
+"comment": "",
+"file": "LumenShortcuts",
+"key": "Pause EarMind"
+},
+{
+"comment": "",
+"file": "LumenShortcuts",
+"key": "Start EarMind"
+},
+{
+"comment": "",
+"file": "LumenShortcuts",
+"key": "Ask EarMind"
+},
+{
+"comment": "",
+"file": "LumenShortcuts",
+"key": "Start Provläge"
+},
+{
+"comment": "",
+"file": "LumenShortcuts",
+"key": "Pause EarMind"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Minne"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Edit memory"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Delete all memories?"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Regler"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Om dig"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Egna kommandon"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Något EarMind ska komma ihåg"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Lägg till"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Säg ”Lumen, kom ihåg …”, ”Lumen, glöm …” eller ”Lumen, regel: …”. Efter varje tur sparar EarMind också viktiga saker du säger om dig själv, med datum. Känsliga uppgifter (hälsa, tro, politik och liknande) sparas aldrig av sig själva. Allt ligger på den här iPhonen, skickas med dina frågor och går ut efter 2 år."
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Inget inlärt än. Säg till exempel \"kortare\" eller \"mer exempel\" direkt efter ett svar."
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Ta bort"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Ta bort"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Överallt"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Inlärda inställningar"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "EarMind lär sig av dina rättelser och gäller dem där du gav dem. Svep för att ta bort eller låta en gälla överallt."
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Inga regler. Säg till exempel ”Lumen, regel: svara alltid kort”."
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Inget sparat ännu."
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Inga kommandon. Säg ”spara kommando ord: instruktion”."
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Delete all memories"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Memory"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Save"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Cancel"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "Delete all memories"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "This cannot be undone."
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "skrivet"
+},
+{
+"comment": "",
+"file": "MemoryView",
+"key": "hittat av EarMind"
+},
+{
+"comment": "",
+"file": "MicrophoneDeniedView",
+"key": "EarMind hör dig inte"
+},
+{
+"comment": "",
+"file": "MicrophoneDeniedView",
+"key": "Mikrofonen är avstängd för EarMind. Slå på den, så kan du fråga direkt."
+},
+{
+"comment": "",
+"file": "MicrophoneDeniedView",
+"key": "Tryck Öppna Inställningar"
+},
+{
+"comment": "",
+"file": "MicrophoneDeniedView",
+"key": "Slå på Mikrofon"
+},
+{
+"comment": "",
+"file": "MicrophoneDeniedView",
+"key": "Kom tillbaka hit"
+},
+{
+"comment": "",
+"file": "MicrophoneDeniedView",
+"key": "Öppna Inställningar"
+},
+{
+"comment": "",
+"file": "MicrophoneDeniedView",
+"key": "Hoppa över"
+},
+{
+"comment": "",
+"file": "MicrophoneDeniedView",
+"key": "%lld."
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": ""
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Intervjuläge"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Till för träning: en kompis ställer frågan och du hör ett färdigt svar. Använd det inte i en riktig intervju utan att den andra vet om det."
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Klistra in annonsen eller skriv rollen"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Roll eller jobbannons"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "CV"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Läses på telefonen och sparas bara här. Högst 2 000 tecken skickas, utan e-post, telefonnummer, personnummer och adress."
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Lägg till CV (PDF eller text)"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "CV inläst"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Byt CV"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Ta bort CV"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Starta övningsintervju"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Förbered frågor och svar"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Ingen text hittades i filen (en inskannad PDF går inte att läsa). Klistra in texten i stället."
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "%lld tecken inlästa."
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Rizz är för 18 år och äldre"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Frågan ställs en gång och sparas bara på den här telefonen."
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Jag är 18 år eller äldre"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": ""
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Ett förslag visas på låsskärmen och läses upp i en paus. Säg ”nästa” för ett nytt, ”%@, mer skämt” för att styra tonen och ”%@, ge mig tre” för fler."
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Rizzläge"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Socialt läge"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Prova med en kompis och berätta att appen lyssnar. Det ni båda säger går till ElevenLabs och Anthropic för att göra förslag. Orden glöms när sessionen slutar."
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Om dig"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Valfritt. Förslagen kan bygga på det."
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Intressen, med komma emellan"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Intressen"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Profil eller bio"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "Profil eller bio"
+},
+{
+"comment": "",
+"file": "ModeSetupView",
+"key": "De vet att appen lyssnar. Starta"
+},
+{
+"comment": "",
+"file": "MusicRemote",
+"key": "Inte kopplad"
+},
+{
+"comment": "",
+"file": "MusicRemote",
+"key": "Öppnar Spotify …"
+},
+{
+"comment": "",
+"file": "MusicRemote",
+"key": "Kopplad (i cirka en timme)"
+},
+{
+"comment": "",
+"file": "MusicRemote",
+"key": "Kopplingen misslyckades: "
+},
+{
+"comment": "",
+"file": "MusicRemote",
+"key": "okänt fel"
+},
+{
+"comment": "",
+"file": "MusicRemote",
+"key": "Kopplad"
+},
+{
+"comment": "",
+"file": "MusicRemote",
+"key": "Spotify svarar inte. Spelar musiken?"
+},
+{
+"comment": "",
+"file": "MusicRemote",
+"key": "Frånkopplad"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Spela in"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Avsluta EarMind för att spela in."
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Skriv frågan"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Välj ur provet"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "1. Fråga"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Mikrofonen startar när du trycker Spela in svaret."
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Spela in igen"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "2. Svar"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "EarMind gör inget med ljudet förrän du trycker Klar. Ljudet stannar på telefonen och raderas sedan; bara texten skickas."
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Gör ett svar …"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Spela in svaret"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Välj eller skriv frågan först."
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Spelar in frågan · %@"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Stoppa"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Skriver ut frågan …"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Spela in frågan"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Välj ur provet"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "EarMind gör ett svar …"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Tiden är slut"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Spelar in"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "av %@"
+},
+{
+"comment": "",
+"file": "MyAnswerRecordView",
+"key": "Svaret är inspelat"
+},
+{
+"comment": "",
+"file": "MyAnswerRecording",
+"key": "EarMind kunde inte göra ett svar just nu. Försök igen."
+},
+{
+"comment": "",
+"file": "MyAnswerRecording",
+"key": "EarMind hörde inget svar i inspelningen."
+},
+{
+"comment": "",
+"file": "MyAnswers",
+"key": "Din"
+},
+{
+"comment": "",
+"file": "MyAnswers",
+"key": "EarMinds förslag"
+},
+{
+"comment": "",
+"file": "MyAnswers",
+"key": "Från inspelning"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Mina svar"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Bestäm själv vad EarMind säger"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Skriv en provfråga och hur du vill svara. När frågan kommer i Provläget säger EarMind ditt svar, ordagrant."
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Skriv en fråga"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "”Säg mina svar” är av i Inställningar. EarMind svarar själv tills du sätter på det."
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Inspelat"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Radera"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "När frågan kommer i Provläget säger EarMind ditt svar, ordagrant."
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Skriv en fråga"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Spela in ett svar"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Avsluta EarMind för att spela in."
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Avsluta EarMind för att spela in."
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Spela in ett svar"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Nytt svar"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Ny fråga"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Ändra svar"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Radera svaret?"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Stavfel rättas när du sparar."
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Rättat: %@"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Fråga"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Från din inspelning · %@"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "EarMinds förslag"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Ditt svar · det här säger EarMind"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Skriv provfrågan"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Använd förslaget igen"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "EarMind skriver ett förslag …"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Skriv hur du vill svara"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Mer"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Tidigare versioner"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Radera svaret"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Spara"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Radera svaret"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Frågan och alla versioner försvinner från telefonen."
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Tidigare versioner"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Återställ"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Nu"
+},
+{
+"comment": "",
+"file": "MyAnswersView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "NetworkStatus",
+"key": "Ingen internetanslutning. Försök igen när du är uppkopplad."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Klistra in länk"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Stämmer det här?"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Nytt prov"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Senare"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Fråga om EarMind"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Vad kan jag fota?"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%@ gick inte att öppna."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%@ gick inte att läsa. Spara det som PDF och lägg till det i stället."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%@ har ingen text som går att läsa. Fota sidorna i stället."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%@ har ingen text som går att läsa. Fota sidorna i stället."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "https://"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Lägg till"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Det ser inte ut som en länk."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "EarMind läser sidans text. Den skickas en gång och sparas inte."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Försök igen"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Ingen internetanslutning. Du kan lägga till material nu och skapa frågorna när du är uppkopplad."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "EarMind får inte använda kameran. Tillåt den i Inställningar, eller välj bilder ur bildbiblioteket."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Öppna Inställningar"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Provets namn"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Provets namn"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Gör"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Frågor"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Läs upp texten"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Gör"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "EarMind läser upp materialet som en löpande text, utan frågor. Du pausar och hoppar mellan meningar med AirPods."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Texten räknas som en fråga per påbörjade 800 tecken, ungefär en tredjedel av en boksida."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Text"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%lld ord"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Skannad PDF"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%lld sidor"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Fota sidor"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Välj bilder"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Skriv text"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Lägg till dokument"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Klistra in länk"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Gör med ChatGPT"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Låt ChatGPT göra frågorna av dina filer"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Dokument"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Läser dokumentet …"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Material"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Börja med materialet till ditt nästa prov."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Material"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "iOS frågar om kameran första gången. Fotona sparas inte."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Foton, dokument och text skickas en gång för att göra frågorna och sparas inte."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Provets namn (valfritt)"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Provets namn, valfritt"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Vilken årskurs?"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Hoppa över"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Prov"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Skapa uppläsning"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Skapa %@"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Skapa frågor"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Krediterna räcker inte till ett prov."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Skapa uppläsning kräver internet."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Skapa frågor kräver internet."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Lägg till minst en sida, bild eller text."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Biologiprovet"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Fotosyntesen. Växter tillverkar sin egen näring genom fotosyntes."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Fotosyntes. Växter gör socker av koldioxid och vatten med ljusets energi."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Fotosyntes. Växter gör socker av koldioxid och vatten med ljusets energi."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Varje fråga får ett kort och ett långt svar."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Antal frågor"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "1 foto"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%lld foton"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "1 dokument"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%lld dokument"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "1 text"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": " och "
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Sida %lld"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Ta bort sida %lld"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Ta bort %@"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Skriv text"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Skriv eller klistra in text ur ditt material."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Text"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Länk"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Läser sidorna"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Tar reda på ämne och årskurs"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Gör frågor"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Skriver svar"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Läser sidorna"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Tar reda på ämne och årskurs"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Gör texten klar för uppläsning"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Det tar ungefär en minut. Du kan lämna appen."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Läser ditt material"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "klart"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "pågår"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Ämne"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Årskurs"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "1 stycke"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%lld stycken"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Texten börjar"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Rubriker"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Cirka %lld min. Sidnummer och sidhuvuden är borttagna."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Materialet var för långt. EarMind läser upp de första cirka %lld sidorna. Gör ett prov till av resten."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Ser rätt ut"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Texten räknas som %@, och du har %lld kvar den här månaden. "
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Ta bort några sidor, eller vänta till den 1 %@."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%@ %lld kvar sedan."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "EarMind kunde inte skriva svaren just nu. Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Provet handlar om"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Ämne"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Årskurs"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Till exempel ”Det är åk 8” eller ”Ta inte med cellandning”"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Rättelse"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Gör om med rättelsen"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Något fel? Skriv det"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "och %lld till"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Frågor"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%@. Du kan ändra, ta bort och lägga till efteråt."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%@ fick inget svar."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Gör om"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Försök igen"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Skriver svar …"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Ser rätt ut"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Krediterna räcker inte till provet."
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "Nytt prov"
+},
+{
+"comment": "",
+"file": "NewDrillView",
+"key": "%@provet"
+},
+{
+"comment": "",
+"file": "NotesStore",
+"key": "Anteckning"
+},
+{
+"comment": "",
+"file": "NotesView",
+"key": "Anteckningar"
+},
+{
+"comment": "",
+"file": "NotesView",
+"key": "No notes yet. Save a session from the Listening screen."
+},
+{
+"comment": "",
+"file": "NotesView",
+"key": "%@, %lld svar"
+},
+{
+"comment": "",
+"file": "NotesView",
+"key": "Share"
+},
+{
+"comment": "",
+"file": "NotesView",
+"key": "Delete"
+},
+{
+"comment": "",
+"file": "OwnDeck",
+"key": "Mina frågor"
+},
+{
+"comment": "",
+"file": "OwnDeckModel",
+"key": "EarMind får inte använda mikrofonen. Slå på den i Inställningar › EarMind › Mikrofon."
+},
+{
+"comment": "",
+"file": "OwnDeckModel",
+"key": "Det gick inte att spela in just nu. Försök igen."
+},
+{
+"comment": "",
+"file": "OwnDeckViews",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Mina frågor"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spela in själv"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Helt gratis"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spela in själv – helt gratis"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Skriv frågor och svar och läs in dem med din röst."
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Egen inspelning · %@"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Egen inspelning"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Namn"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "T.ex. Glosor vecka 12"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Fråga"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Svar"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Fråga %lld"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Svar %lld"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spela in"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spela in igen"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Inte inspelad"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Inte inspelad · läses av telefonen"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Stoppa"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Lägg till fråga"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Ta bort"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Öva"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Helt gratis. Ljudet stannar på din telefon."
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Mikrofonen används bara medan du spelar in."
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Skriv frågan och svaret. Tryck Spela in och läs upp dem. Tryck sedan Öva."
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spela in frågan"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spela in svaret"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spela in frågan igen"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spela in svaret igen"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spela upp frågan, %lld sekunder"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spela upp svaret, %lld sekunder"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Stoppa inspelningen"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "1 sekund"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "%lld sekunder"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spelar in frågan"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spelar in svaret"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Klar, frågan är inspelad"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Klar, svaret är inspelat"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Slut på krediter?"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Kan inte skapa prov just nu?"
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Spela in dina egna frågor och svar – helt gratis."
+},
+{
+"comment": "",
+"file": "OwnDecks",
+"key": "Inte nu"
+},
+{
+"comment": "",
+"file": "PagePhotoController",
+"key": "Läser sidan …"
+},
+{
+"comment": "",
+"file": "PagePhotoController",
+"key": "Gör övningsfrågor av sidan …"
+},
+{
+"comment": "",
+"file": "PagePhotoController",
+"key": "Jag kunde inte läsa sidan. Fota den rakt uppifrån, i bra ljus."
+},
+{
+"comment": "",
+"file": "PracticeRun",
+"key": "Fråga %lld av %lld"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "kortare svar"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "längre, utförligare svar"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "enklare förklaringar"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "fler exempel"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "extra noggrann kontroll av fakta"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "faktasvar"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "förklaringar"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "matte"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "Provläge"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "Standardläge"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "Intervju"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "Socialt"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": "Rizz"
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": " i "
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": " i "
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": " inför "
+},
+{
+"comment": "",
+"file": "Preferences",
+"key": " i "
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Förberedelser"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Material"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Active terms"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Provfrågor"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "%lld frågor"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Lägg till"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Ett prov (PDF, foto eller text) som EarMind läser upp fråga för fråga i Provläge och rättar."
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Title (optional)"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Add text"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Import PDF or text file"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Add material"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Key terms are extracted on this iPhone and help speech recognition and answers. The text itself never leaves the phone; only the terms (max 30) are sent with a question."
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "No material yet."
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "%lld termer, %lld tecken"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "%lld tecken, skickas kort (%lld characters): %@"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Use the goals in answers"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Save goals"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Clear"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Import"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Course goals"
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "Paste the course's goals (målbeskrivning). A compact version is sent with each question so answers match the course level."
+},
+{
+"comment": "",
+"file": "PrepView",
+"key": "None"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Publicera prov"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Ämne"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Provdatum"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Skola"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Välj skola"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Välj ämne"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Provdatum"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Välj datum"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Alla som söker på skolan kan lägga till provet och plugga på det. **Frågor, svar och ljud** publiceras. Aldrig foton, dokument eller ditt namn."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Visa ett användarnamn"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Användarnamn"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Syns för alla som hittar provet. Skriv inte ditt riktiga namn."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Av: provet visas utan namn."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Publicerar …"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Spara ändringarna"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Publicera prov"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Publiceras när ljudet är klart (%lld av %lld)."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Välj skola"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Det gick inte att publicera just nu. Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Sök skola eller ort"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Då visas prov från din skola först. Det sparas bara på telefonen."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Skriv minst två bokstäver."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Sök på orten i stället."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Ingen skola heter så"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Ingen internetanslutning"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Skolorna går inte att hämta"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Försök igen"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Hittar du inte skolan? Sök på orten."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Hoppa över"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Skolorna går att söka när du är uppkopplad."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Prov från din skola"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Kommande prov"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Tidigare"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Prov från din skola"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Ämne"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Byt"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Alla skolor"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Alla"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Ingen internetanslutning"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Proven går inte att hämta"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Försök igen"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Proven från din skola hämtas när du är uppkopplad."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Publicera ditt nästa prov, så kan klasskompisarna plugga på samma frågor."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Inga prov här än"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Inga prov i %@ här än"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Visa alla"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Välj skola"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Vilken skola går du på?"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Tillagt"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Tillagt"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Lägg till"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Lägg till %@"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "%@ · %@"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "%@ · %@ · %@"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Frågor"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Tack. Vi tittar på det."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Rapportera provet"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Rapportera"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Starta prov"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "%@ är tillagt. Ljudet är redan klart."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Öppna"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Du har redan lagt till provet."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Lägger till …"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Lägg till i mina prov"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Stäng"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "och %@ till"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Fråga %lld. %@ %@"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Stoppa"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Lyssna på första frågan"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Provet finns inte längre."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Rapportera provet"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Vad är fel?"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Skicka"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Du har redan rapporterat provet. Tack."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Något gick fel. Försök igen."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Ta bort publiceringen?"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Publicerat"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Ändra"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Ta bort publiceringen"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Ta bort publiceringen"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Något gick fel. Försök igen."
+},
+{
+"comment": "",
+"file": "PublishViews",
+"key": "Provet försvinner från listan för %@. Ditt eget prov finns kvar."
+},
+{
+"comment": "",
+"file": "Publishing",
+"key": "Fel i frågor eller svar"
+},
+{
+"comment": "",
+"file": "Publishing",
+"key": "Kränkande innehåll"
+},
+{
+"comment": "",
+"file": "Publishing",
+"key": "Någon annans material"
+},
+{
+"comment": "",
+"file": "Publishing",
+"key": "Något annat"
+},
+{
+"comment": "",
+"file": "Publishing",
+"key": "som %@"
+},
+{
+"comment": "",
+"file": "Publishing",
+"key": "utan namn"
+},
+{
+"comment": "",
+"file": "Publishing",
+"key": "skola"
+},
+{
+"comment": "",
+"file": "Publishing",
+"key": "ämne"
+},
+{
+"comment": "",
+"file": "Publishing",
+"key": "provdatum"
+},
+{
+"comment": "",
+"file": "Publishing",
+"key": "Saknas: "
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Köpet gick inte igenom. Inget har dragits."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Det fanns inga köp att hämta."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Köpet är gjort. Krediterna kommer när EarMind har kontakt igen."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Köpet väntar på godkännande. Krediterna kommer när det är godkänt."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Det gick inte att hämta köpen just nu. Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Plugga med EarMind. Du får 5 000 krediter att börja med."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Bäst värde"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Paketen kunde inte hämtas från App Store just nu."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Försök igen"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Ett prov ≈ 6 000 krediter."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Veckokort"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Få 2 000 krediter"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "när en kompis har spelat sin första text"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Du har bjudit in 10 i månaden. Fler ger krediter nästa månad."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "välkomstkrediter"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "+%@ krediter för en inbjudan."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Bjud in"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Fyll på"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Ingår"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Veckans tak är nått"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Hantera veckokortet"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "%@ krediter"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "%@ i veckan · cirka %lld prov"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "%@ i veckan"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Första veckan %@, sedan %@ i veckan"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Första veckan kostar %@. Sedan kostar veckokortet %@ i veckan och förnyas automatiskt tills du säger upp det, senast 24 timmar före nästa vecka. "
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Säg upp i Inställningar › ditt namn › Prenumerationer."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Veckokortet kostar %@ i veckan och förnyas automatiskt tills du säger upp det, senast 24 timmar före nästa vecka. "
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Säg upp i Inställningar › ditt namn › Prenumerationer."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "till %@"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "%@ av %@ tecken kvar i veckan"
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Förnyas automatiskt den %@ för %@."
+},
+{
+"comment": "",
+"file": "Purchases",
+"key": "Förnyas automatiskt den %@."
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Rå transkription"
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Skriv en fråga"
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Transkription"
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Svar"
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Fel (A5)"
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Fördröjning"
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Fråga"
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Skicka"
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Inget än."
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "avbrutet"
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Inga fel sedan appen startade."
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "röst p50 %lld ms, p95 %lld ms, n=%lld"
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Röst, senaste svaret: %@"
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Röst, totalt: %@"
+},
+{
+"comment": "",
+"file": "RawTranscriptView",
+"key": "Taligenkänning: %@"
+},
+{
+"comment": "",
+"file": "ReadinessView",
+"key": "%lld procent redo"
+},
+{
+"comment": "",
+"file": "ReadinessView",
+"key": "%lld %%"
+},
+{
+"comment": "",
+"file": "ReadinessView",
+"key": "Så redo är du"
+},
+{
+"comment": "",
+"file": "ReadinessView",
+"key": "Öva på"
+},
+{
+"comment": "",
+"file": "ReadinessView",
+"key": "Det här kan du"
+},
+{
+"comment": "",
+"file": "ReadinessView",
+"key": "Dagens pass"
+},
+{
+"comment": "",
+"file": "ReadinessView",
+"key": "Förhör mig"
+},
+{
+"comment": "",
+"file": "ReadinessView",
+"key": "EarMind börjar med det du behöver öva på"
+},
+{
+"comment": "",
+"file": "ReadinessView",
+"key": "Stäng"
+},
+{
+"comment": "",
+"file": "ReadinessView",
+"key": "redo för %@"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "1 mening"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "%lld meningar"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Texten räknas som %@."
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Nästa mening"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Förra meningen"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Mening %lld av %lld"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Spelar i AirPods"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Klart"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Pausad"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Spelar inte"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Varv %lld · %@ kvar av %@"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Varv %lld · sista varvet"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Avsluta"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Avslutar uppläsningen. Du fortsätter från samma mening nästa gång."
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Tillbaka till Start"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Texten spelas vidare."
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Till meningen"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Slut på texten"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Du har lyssnat igenom hela %@."
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Börja om"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Pausad. Fortsätter från början av meningen."
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Ingen internetanslutning. Resten av texten kommer när du är uppkopplad."
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Gör ljudet …"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Förra meningen"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Pausa"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Nästa mening"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Förra meningen"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Nästa mening"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Börja om"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Paus"
+},
+{
+"comment": "",
+"file": "ReadingViews",
+"key": "Nästa mening"
+},
+{
+"comment": "",
+"file": "ReminderViews",
+"key": "Vill du ha en påminnelse?"
+},
+{
+"comment": "",
+"file": "ReminderViews",
+"key": "EarMind kan påminna dig klockan %@ de dagar du inte har pluggat. Högst en gång om dagen."
+},
+{
+"comment": "",
+"file": "ReminderViews",
+"key": "Du kan ändra tiden eller stänga av det i Inställningar."
+},
+{
+"comment": "",
+"file": "ReminderViews",
+"key": "Inte nu"
+},
+{
+"comment": "",
+"file": "ReminderViews",
+"key": "Påminn mig"
+},
+{
+"comment": "",
+"file": "ReminderViews",
+"key": "Påminn mig att plugga"
+},
+{
+"comment": "",
+"file": "ReminderViews",
+"key": "Tid"
+},
+{
+"comment": "",
+"file": "ReminderViews",
+"key": "Öppna Inställningar"
+},
+{
+"comment": "",
+"file": "ReminderViews",
+"key": "Påminnelser"
+},
+{
+"comment": "",
+"file": "ReminderViews",
+"key": "Notiser är avstängda för EarMind."
+},
+{
+"comment": "",
+"file": "ReminderViews",
+"key": "Högst en gång om dagen, och bara de dagar du inte har pluggat."
+},
+{
+"comment": "",
+"file": "RemoteCommandHub",
+"key": "EarMind lyssnar"
+},
+{
+"comment": "",
+"file": "RemoteCommandHub",
+"key": "EarMind är pausad"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Prov"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Öppna ett delat prov"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Länk eller kod"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Öppna"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Det ser inte ut som en länk till ett prov."
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Klistra in länken du fick, så läggs provet till hos dig med samma ljud."
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Testläge"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Testläget är på. Öppna inställningar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Inställningar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Öppna länk"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Mer"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Fler lägen"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Beta. Lägen som lyssnar på vad du säger"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Öppna länk"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Öppnar ett prov som någon har delat med dig"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Fler lägen · Beta"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Nytt prov"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Kom förberedd till provet"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Fota ditt material. EarMind gör frågor och svar, eller läser upp texten, i dina AirPods."
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Nytt prov"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Prov från din skola"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Öppna länk"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Öppnar ett prov som någon har delat med dig"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "I natt"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Starta prov"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Texten"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Frågor och svar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "1 dag i rad"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "%lld dagar i rad"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Prov från din skola"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "I natt"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Fler lägen"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Beta · använder mikrofonen"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Fler lägen"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Beta. Lägen som lyssnar på vad du säger"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Text · cirka %lld min"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "%@ · ljud klart"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "%@ · Ljudet hämtas när du startar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Andra prov"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Läser upp texten i dina AirPods. EarMind använder inte mikrofonen."
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Spelar frågorna i dina AirPods. EarMind använder inte mikrofonen."
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Nästa prov"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Text"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": " · Ljudet hämtas när du startar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Du var på mening %lld av %lld"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Text · %@"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Text · Ljudet görs när du startar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Text · Räknas som %lld av dina %lld när du startar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Text · Ljudet görs när du startar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Text · cirka %lld min"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Text · Ljud: %lld av %lld klara"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Du var på fråga %lld av %lld"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "%@ · Ljudet görs när du startar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "%@ · Räknas som %lld av dina %lld när du startar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "%@ · Ljudet görs när du startar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "%@ · cirka %lld min per varv"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "%@ · Ljud: %lld av %lld klara"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Text · %@"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Text · Ljudet görs när du startar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "%@ · Ljudet görs när du startar"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Ljud: %lld av %lld klara"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Öppnar provet"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Starta %@"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Öppnar samlingen"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Starta %@"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "De här lägena lyssnar på vad du säger. De är i BETA och blir bättre hela tiden."
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Fler lägen"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "BETA"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Beta, under utveckling"
+},
+{
+"comment": "",
+"file": "RepetitionHomeSection",
+"key": "Okej"
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Kortare"
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Normal"
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Längre"
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Delas när ljudet är klart (%lld av %lld)."
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Delning kommer snart."
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Fylls på den %lld %@."
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Du har inga frågor kvar den här månaden. Andras prov är gratis."
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Normal"
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Publiceras när ljudet är klart."
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Prov från din skola går inte att öppna än."
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "%@ är tillagt."
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Delade prov går inte att öppna än."
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Tryck en gång nu"
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Tryck två gånger nu"
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Tryck tre gånger nu"
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "på skaftet, som när du pausar musik"
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "på skaftet, som när du byter låt"
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "på skaftet, som när du går tillbaka en låt"
+},
+{
+"comment": "",
+"file": "RepetitionModel",
+"key": "Styr med dina AirPods"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Fråga %lld av %lld"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": " · Varv %lld"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Sparat på fråga %lld."
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Provet är avslutat."
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Tryck på AirPods för att fortsätta"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Tryck på AirPods för svaret"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Gör ljudet …"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Långt svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Kort svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Långt svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Kort svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Långt svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Kort svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Avslutar provet. Du kan fortsätta där du var nästa gång."
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Förra frågan"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Nästa fråga"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Avsluta"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": " · Pausad"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Långt svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Kort svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Paus"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Kort svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Långt svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "%@: %@"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Pausad"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Tryck på AirPods för att fortsätta"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Fortsätter från början av meningen"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Tryck på AirPods för svaret"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Tänk"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "%lld av %lld klara"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Gör ljudet …"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "%@ · %lld s"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Betänketid"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Långt svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Kort svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Paus"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "%@, %lld tryck på AirPods"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Långt svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Kort svar"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "Paus"
+},
+{
+"comment": "",
+"file": "RepetitionPlayerView",
+"key": "%@: %lld tryck."
+},
+{
+"comment": "",
+"file": "RepetitionScreenshots",
+"key": "Okänd skärm: %@"
+},
+{
+"comment": "",
+"file": "RepetitionScreenshots",
+"key": "Inget repetitionsläge"
+},
+{
+"comment": "",
+"file": "RepetitionScreenshots",
+"key": "Stämmer det här?"
+},
+{
+"comment": "",
+"file": "RepetitionScreenshots",
+"key": "Inställningar"
+},
+{
+"comment": "",
+"file": "RepetitionSession",
+"key": "EarMind · %@ · %lld av %lld"
+},
+{
+"comment": "",
+"file": "RepetitionSession",
+"key": "EarMind · %@ · mening %lld av %lld"
+},
+{
+"comment": "",
+"file": "RepetitionSession",
+"key": "EarMind · Säg i AirPods"
+},
+{
+"comment": "",
+"file": "RepetitionSession",
+"key": "%@ · varv %lld"
+},
+{
+"comment": "",
+"file": "RootView",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "SayCompress",
+"key": "Det gick inte att komprimera just nu."
+},
+{
+"comment": "",
+"file": "SayCompress",
+"key": "Texten blev inte kortare."
+},
+{
+"comment": "",
+"file": "SayCompress",
+"key": "Kortad av telefonens modell från %lld till %lld tecken. Ändra om du vill."
+},
+{
+"comment": "",
+"file": "SayCompress",
+"key": "Kortad från %lld till %lld tecken. Ändra om du vill."
+},
+{
+"comment": "",
+"file": "SayCompress",
+"key": "Komprimera"
+},
+{
+"comment": "",
+"file": "SayCompress",
+"key": "Komprimerar …"
+},
+{
+"comment": "",
+"file": "SayCompress",
+"key": "Ångra"
+},
+{
+"comment": "",
+"file": "SayCompress",
+"key": "Gör texten kortare med samma innehåll. Inget spelas förrän du trycker Spela."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "1 timme"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "%lld min"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Du kan låsa telefonen. Det hörs i AirPods ändå."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Det tar längre tid än vanligt."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Ljudet kunde inte hämtas. Kolla nätet."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Ljudet kunde inte hämtas."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Hur ska det låta?"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Skriv i takt"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "I takt"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Röst"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Blandat"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Vald efter stilen."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Vald efter stilen · %@"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Spelar i AirPods · %@"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Spelar i AirPods"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Spela i %@"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "%@ · du har %@"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Kostar %@"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Tempo, normal"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": " gånger"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Tempo, %@"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "under en minut kvar"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "1 minut kvar"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "%lld minuter kvar"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Spelar i AirPods"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": ", pausad"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": " med %@"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Texten räknas som %@, och du har %lld kvar. "
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Korta texten eller vänta till den 1 %@."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Räknas som %@. Upprepningar kostar inget."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Klistra in länk"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Fotosyntes: koldioxid + vatten + ljus blir socker och syre."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Försök igen"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "%@, krediterna räcker inte"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Senaste"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Lägger tillbaka texten i fältet"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Ta bort"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Öppnar spelaren med meningarna"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Gör ljudet"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Gör ljudet …"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Pausa"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "%@ kvar"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": " · pausad"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Stoppa"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "%@ gick inte att öppna."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "%@ har ingen text som går att läsa. Fota sidorna i stället."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "%@ har ingen text som går att läsa. Fota sidorna i stället."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "https://"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Lägg till"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Avbryt"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Det ser inte ut som en länk."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "EarMind läser sidans text och lägger den i fältet."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": ""
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Skriv här"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Skriv eller klistra in det du vill höra"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Säg i AirPods"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Läser materialet …"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Röst, %@"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": ""
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "%@. %@"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Lägg till material"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "1 timme"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "%lld minuter"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Hur länge, %@"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Tempo, %@"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Fota sidor"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Välj bilder"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Lägg till fil"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Klistra in länk"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "EarMind får inte använda kameran. Tillåt den i Inställningar, eller välj bilder ur bildbiblioteket."
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Spela i"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Tempo"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Klistra in"
+},
+{
+"comment": "",
+"file": "SayViews",
+"key": "Försök igen"
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Provlyssning kostar inget. En ny röst blir nytt ljud."
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Blanda röster"
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Varje stycke får en egen röst, samma varje gång."
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Att provlyssna"
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Kan bara provlyssnas"
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Sök bland alla röster"
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Röst"
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Röster"
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Inga röster hittades."
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Det gick inte att söka just nu."
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Söker …"
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Pausa %@"
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Provlyssna %@"
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Vald"
+},
+{
+"comment": "",
+"file": "SayVoiceViews",
+"key": "Vald"
+},
+{
+"comment": "",
+"file": "ScreenshotStage",
+"key": "Okänd skärm: %@"
+},
+{
+"comment": "",
+"file": "ScreenshotStage",
+"key": "Inställningar"
+},
+{
+"comment": "",
+"file": "ServerTrouble",
+"key": "EarMind kan inte svara just nu. Försök igen om en stund."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Inställningar"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Varje påminnelse kommer högst en gång om dagen, och inte de dagar du redan har pluggat."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Mer"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Diagnostik"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Debug"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Röst"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Svarslängd"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Tid"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Påminnelser"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "En gång om dagen: dagar kvar till provet och 5 snabba frågor. Ingen påminnelse de dagar du redan har övat."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Röstkommandon"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Minne"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Språk du pratar"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Integritet och samtycke"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Spara samtalet som anteckning"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Anteckningar"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Historik"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Studiekort"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Förberedelser"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Egna kommandon"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Provfrågor"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Fråga om EarMind"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Feedback och förslag"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Om appen"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Tempo"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Starta prov"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Rösten läser i 0,70 och resten av tiden blir pauser."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Hur fort frågor och svar läses upp. Gäller nästa gång du startar ett prov."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Avancerat"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Mikrofon, pauser, känslighet, taligenkänning, röstprofil, kalibrering och diagnostik."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Längd på långa svar"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Gäller nya prov. Varje fråga får alltid ett kort och ett långt svar. Normal är cirka 90 ord."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Microphone"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Questions"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Taligenkänning"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Provläge"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Rizzläge and Socialt läge"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Rå transkription och svar"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Diagnostik"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Mock answers (debug, no network)"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Latency overlay"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Påminn mig varje dag"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Studieplan i Fler lägen"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Dagar kvar till provet och 5 snabba frågor"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Utseende"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Utseende"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Som standard följer EarMind iPhonens ljusa eller mörka läge."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Språk"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Språk"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Gäller appens texter och EarMinds svar."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Språk du pratar"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Använder iPhonens taligenkänning: %@"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "On: audio goes to ElevenLabs for the best recognition. Off: everything stays on this iPhone, with weaker recognition."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Andra som pratar i rummet hörs svagare i AirPods. Deras tal skickas inte, så din fråga blir klar när du tystnar."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Cloud speech recognition (Scribe)"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Lokal röstdetektor före Scribe"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Bara min röst i Provläge och Standardläge"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Hämtar röstdetektorn (Silero, några MB, en gång)…"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Bara tal skickas till Scribe; tystnad och brus stannar på telefonen."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Röstdetektorn kunde inte laddas (%@). Allt ljud går till Scribe."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Laddas när du börjar lyssna."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Standardläge"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Intervju"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Socialt"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Rizz"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Testläge: skicka ljud för felsökning"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Testläge"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Servern tar inte emot testljud från det här kontot ännu. Inget ljud sparas eller skickas."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": " Brickan visar ”Testläge · ljud skickas” så länge ljud skickas."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Av. Slå bara på det om du testar EarMind åt oss: då skickas allt ljud medan EarMind lyssnar, så att vi kan höra om frågan urskildes rätt."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Koppla bort Spotify"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Koppla Spotify"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Spotify"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Kräver Premium"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Kopplat"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Spotify (för testare)"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Kräver Spotify Premium. Då kan du säga ”Lumen, spela spellistan Plugg”, ”pausa” eller ”nästa”. Spotify måste ha varit öppet på telefonen."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Säg mina svar"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Mina svar"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "%lld sparade"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Mina svar"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "När en fråga du har sparat kommer i Provläget säger EarMind ditt svar, ordagrant. Av betyder att EarMind svarar själv; inget raderas."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Kontrollfrågor"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Förklaringar"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Spara i minnet"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Automatiskt"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Automatiskt"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Förhör och förklaringar"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Provet, datumet och årskursen ändrar du på provkortet på Start. "
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Ja–nej-frågor kan besvaras med en nick eller en skakning med huvudet. Du kan också säga ”Lumen, korta förklaringar” eller ”Lumen, provet är på fredag”."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Dina AirPods stöder inte huvudrörelser just nu: svara på ja–nej-frågor med rösten. Du kan också säga ”Lumen, korta förklaringar” eller ”Lumen, provet är på fredag”."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "AirPods hear your own voice best, but answers play in call quality. iPhone hears other people better and keeps music quality in the AirPods; put it on the table."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Av: EarMind lyssnar vidare och svaren hörs i telefonens högtalare."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "När ljudet går ut i iPhonens egen högtalare hör mikrofonen annars EarMind. Med AirPods eller hörlurar används den aldrig, så mikrofonen behåller sin kvalitet."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Ekoreducering i iPhonens högtalare"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Pausa när AirPods kopplas bort"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Questions"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Provläge"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Intervjuläge"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Rizzläge"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Socialt läge"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "AirPods"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "iPhone"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Every mode is hands-free: EarMind listens for questions in the room. Higher sensitivity answers more, and more often by mistake. The text field is the fallback."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Sensitivity"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Low"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Medium"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "High"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Adaptive: one or two sentences for a fact, a developed spoken answer for a topic to understand."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Answer length"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Short"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Adaptive"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Detailed"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Paus innan EarMind svarar"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Hur länge du ska vara tyst innan svaret läses upp. EarMind börjar arbeta på svaret redan när meningen är hörd, så kortare paus ger snabbare svar men fler avbrutna försök."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Hands-free: speak, pause, get a tutor-style answer, continue. Talking while it speaks interrupts it. Tuned on device."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Auto-end after silence: never"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Auto-end after %lld min of silence"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "EarMind tells you from the other person by input level. Tuned on device."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Your voice is louder than"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "%lld dB"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Inget ännu"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Rizzläge"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Socialt läge"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Återställ"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Kalibrering"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Under en session: säg \"%@, lite mindre kaxig\" eller \"%@, mer skämt\". EarMind kommer ihåg det här på telefonen och skickar det med varje förslag. \"%@, ge mig tre\" ger fler förslag en gång."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Tyst läge: svaren visas men läses inte upp."
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Läs upp svaren"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Röst"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Lugn"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Normal"
+},
+{
+"comment": "",
+"file": "SettingsView",
+"key": "Snabb"
+},
+{
+"comment": "",
+"file": "ShopViews",
+"key": "Fyll på"
+},
+{
+"comment": "",
+"file": "ShopViews",
+"key": "Fyll på"
+},
+{
+"comment": "",
+"file": "ShopViews",
+"key": "Varje vecka"
+},
+{
+"comment": "",
+"file": "ShopViews",
+"key": "Bjud in"
+},
+{
+"comment": "",
+"file": "ShopViews",
+"key": "Köp %@ för %@"
+},
+{
+"comment": "",
+"file": "ShopViews",
+"key": "Återställ köp"
+},
+{
+"comment": "",
+"file": "ShopViews",
+"key": "Villkor"
+},
+{
+"comment": "",
+"file": "ShopViews",
+"key": "Integritet"
+},
+{
+"comment": "",
+"file": "ShopViews",
+"key": "Återställ köp"
+},
+{
+"comment": "",
+"file": "SleepController",
+"key": "Sömnläget kunde inte starta mikrofonen."
+},
+{
+"comment": "",
+"file": "SleepNight",
+"key": "Du pratade inte i sömnen"
+},
+{
+"comment": "",
+"file": "SleepNight",
+"key": "Du pratade 1 gång i sömnen"
+},
+{
+"comment": "",
+"file": "SleepNight",
+"key": "Du pratade %lld gånger i sömnen"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Sov gott"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "EarMind lyssnar på telefonen i natt: om du pratar i sömnen, snarkar eller sover oroligt."
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Vakna"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Lägg telefonen nära sängen, med laddaren i."
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Inget skickas. Klippen sparas bara på telefonen och raderas efter 30 dagar."
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Delar du rum kan även den andras prat spelas in. Säg till dem."
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "I natt"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Radera natten"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Ingen snarkning"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Snarkade %lld min"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "lugn natt"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "1 orolig period"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "%lld oroliga perioder"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Det du sa"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Klar"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Natten"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Prat"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Snarkning"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Oroligt"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Lugnt"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Stoppa klippet"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Spela klippet"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Gick inte att höra vad du sa"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "”%@”"
+},
+{
+"comment": "",
+"file": "SleepViews",
+"key": "Gick inte att höra vad du sa"
+},
+{
+"comment": "",
+"file": "SpeechPace",
+"key": "Långsammare tal"
+},
+{
+"comment": "",
+"file": "SpeechPace",
+"key": "Lite långsammare tal"
+},
+{
+"comment": "",
+"file": "SpeechPace",
+"key": " i "
+},
+{
+"comment": "",
+"file": "SpeechPace",
+"key": " i "
+},
+{
+"comment": "",
+"file": "SpeechRecording",
+"key": "Börja lyssna först."
+},
+{
+"comment": "",
+"file": "SpeechRecording",
+"key": "Sparat: %@ och %@"
+},
+{
+"comment": "",
+"file": "SpeechRecording",
+"key": "Kunde inte spara: %@"
+},
+{
+"comment": "",
+"file": "SpeechRecording",
+"key": "iPhone-igenkänningen gick inte: %@"
+},
+{
+"comment": "",
+"file": "SpotifyConnection",
+"key": "Det gick inte att koppla Spotify just nu."
+},
+{
+"comment": "",
+"file": "SpotifyConnection",
+"key": "Kopplat, men Spotify spelar bara upp med Premium."
+},
+{
+"comment": "",
+"file": "SpotifyConnection",
+"key": "Du sa nej i Spotify. Inget kopplades."
+},
+{
+"comment": "",
+"file": "SpotifyConnection",
+"key": "Det gick inte att koppla Spotify just nu."
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Provläge"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "När har du ditt prov?"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Vilken årskurs går du i?"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Vilket ämne?"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Kontrollfrågor?"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Hur långa förklaringar?"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Idag"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Imorgon"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Inom en vecka"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Senare"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Datum"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Välj datumet"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Inget prov just nu"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Kurs (valfritt), t.ex. Matematik 1c"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Nästa"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Annat ämne"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Hoppa över allt"
+},
+{
+"comment": "",
+"file": "StudyOnboardingView",
+"key": "Hoppa över"
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": "I dag är det %@. Lycka till!"
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": "I morgon är det %@"
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": "%lld dagar kvar till %@"
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": "I dag: %lld min %@"
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": "5 snabba frågor på %@. Det tar två minuter."
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": "5 snabba frågor. Det tar två minuter."
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": "Det tar två minuter och håller din svit vid liv."
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": "5 snabba frågor"
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": "Från %@"
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": ", kan kräva skolkonto."
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": " Tryck för att öppna."
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": "Dags att plugga"
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": "%@ väntar. Ett varv tar bara några minuter."
+},
+{
+"comment": "",
+"file": "StudyPlan",
+"key": "Ett varv tar bara några minuter."
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Åk 6"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Åk 7"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Åk 8"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Åk 9"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Gymnasiet 1"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Gymnasiet 2"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Gymnasiet 3"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Högskola"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Annat"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Inga kontrollfrågor"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Ja–nej-frågor (svara med rösten eller nicka)"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Korta frågor"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Svåra frågor"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Korta förklaringar"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Mellanlånga förklaringar"
+},
+{
+"comment": "",
+"file": "StudyProfile",
+"key": "Utförliga förklaringar"
+},
+{
+"comment": "",
+"file": "StudyRecording",
+"key": "Mikrofonen kunde inte starta."
+},
+{
+"comment": "",
+"file": "StudyRecording",
+"key": "Sparat: %@, .txt och .json"
+},
+{
+"comment": "",
+"file": "StudyRecording",
+"key": "Kunde inte spara: %@"
+},
+{
+"comment": "",
+"file": "StudyRecording",
+"key": "Spela in plugg-session (10 min)"
+},
+{
+"comment": "",
+"file": "StudyRecording",
+"key": "Starta Provläget (eller tryck Spela in, så startar det), plugga som vanligt i upp till 10 minuter och tryck Stoppa. Exportera sedan alla tre filerna: ljud, transkript med svar och tider, och samma data som JSON."
+},
+{
+"comment": "",
+"file": "StudyRecording",
+"key": "Stoppa inspelningen"
+},
+{
+"comment": "",
+"file": "StudyRecording",
+"key": "Spela in plugg-session"
+},
+{
+"comment": "",
+"file": "StudyRecording",
+"key": "Exportera WAV, transkript och JSON"
+},
+{
+"comment": "",
+"file": "TestModeSheet",
+"key": "Testläget är på"
+},
+{
+"comment": "",
+"file": "TestModeSheet",
+"key": "Slå på testläget?"
+},
+{
+"comment": "",
+"file": "TestModeSheet",
+"key": "Allt ljud medan EarMind lyssnar skickas till oss, också andras röster och bakgrundsljud. Det hjälper oss att höra om frågan uppfattades rätt."
+},
+{
+"comment": "",
+"file": "TestModeSheet",
+"key": "Ljudet sparas i 14 dagar och raderas sedan."
+},
+{
+"comment": "",
+"file": "TestModeSheet",
+"key": "Så länge ljud skickas står det ”Testläge · ljud skickas” där EarMind visar att den lyssnar."
+},
+{
+"comment": "",
+"file": "TestModeSheet",
+"key": "Slå bara på det där de som hörs vet om det."
+},
+{
+"comment": "",
+"file": "TestModeSheet",
+"key": "Du stänger av det när du vill i Inställningar › Testläge."
+},
+{
+"comment": "",
+"file": "TestModeSheet",
+"key": "Inte nu"
+},
+{
+"comment": "",
+"file": "TestModeSheet",
+"key": "Okej"
+},
+{
+"comment": "",
+"file": "TestModeSheet",
+"key": "Slå på testläget"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "Standardläge"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "Intervju"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "Socialt"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "Rizz"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "Provläge"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "Svarar när någon frågar"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "Färdiga svar på intervjufrågor"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "Ett förslag i pausen"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "Flörtig wingman"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "För dina prov"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "Som iPhonen"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "Ljust"
+},
+{
+"comment": "",
+"file": "Theme",
+"key": "Mörkt"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Sök kommando"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Röstkommandon"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "De viktigaste"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Börja med ”Lumen”, till exempel ”Lumen, förhör mig”. Du kan lägga till egna fraser."
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Alla kommandon"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Alla kommandon"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Säg frasen som hela meningen. Med ”Lumen” först fungerar alla, utan ”Lumen” bara musik och ”det där var fel”."
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "\"Upprepa\", \"viska\", \"högre\", \"kortare\", \"snabbare\" och \"utveckla\" som hela meningen."
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Tips om kommandon (högst ett om dagen)"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Ton när du kan säga \"ja\" för mer"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Ljud när EarMind börjar och slutar lyssna"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Korta ord utan ”Lumen” i Provläge och Standardläge"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "standard"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Ta bort"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Ny fras (följs av fler ord)"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Ny fras"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Lägg till"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Återställ"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "När musiken spelar hör EarMind inget. Säg ”Hej Siri, starta EarMind” eller använd kontrollen på låsskärmen."
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Spotify: inte aktiverat i den här versionen (Client ID saknas)."
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Koppla Spotify (öppnar Spotify)"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Apple Music kan styras"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Tillåt styrning av Apple Music"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Spotify"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "Musik"
+},
+{
+"comment": "",
+"file": "VoiceCommandsView",
+"key": "\"Nästa låt\" och \"förra låten\" byter låt i Spotify när den är kopplad, annars i Apple Music. Annars: tryck två gånger på AirPods."
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Röst"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Välj röst"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Hämtar fler röster …"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Fler röster kunde inte hämtas just nu. iPhonens röst fungerar alltid."
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Talhastighet"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Talhastighet"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Tryck ▶ för att höra rösten."
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "iPhonens röst"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Fungerar utan nät"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "iPhonens röst, fungerar utan nät"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Svensk röst"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Stoppa"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Lyssna på %@"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Lugn berättarröst"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Svensk, tydlig"
+},
+{
+"comment": "",
+"file": "VoicePageView",
+"key": "Svensk röst"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Hej Lumen. Det här är min röst. Jag läser den här texten i lugn takt så att du kan känna igen mig. Solen gick upp över sjön, och fåglarna började sjunga i träden. Nu vet du hur jag låter."
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Radera röstprofilen?"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Röstmodellen laddas ner (en gång, cirka 30 MB)."
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Röstmodellen kunde inte laddas: %@. EarMind använder ljudnivån i stället."
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Lär dig min röst (10 s)"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Röstprofil"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Lär dig min röst igen"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Radera röstprofilen"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Visa vem som pratar (Du / Talare 1, 2)"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Läs högt i vanlig samtalsröst (%lld s kvar):"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Sparad (%lld s tal). EarMind känner igen din röst nu."
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "För lite tal hördes. Försök igen och läs hela texten högt."
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Röstmodellen kunde inte laddas. Försök igen med internet."
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Mikrofonen kunde inte starta."
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Din röst"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Röstprofilen är ett tal-avtryck av din röst, inte en inspelning. Den sparas bara på den här telefonen (inte i iCloud) och skickas aldrig. Med den svarar Intervjuläge bara intervjuaren, Rizzläge vet vem som pratar, minnet sparar bara det du själv sa, och bara din röst kan avbryta EarMind. Utan profil avgör ljudnivån som förut. Talare 1, 2 … är bara en etikett för sessionen; ingen identifieras. Licenser finns under Om appen."
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Radera"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Röstprofilen är raderad."
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Studiekort"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Inga studiekort än. Frågorna du ställer i Provläge blir kort, med svaret i korthet, fram till provet."
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "Radera alla studiekort"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "prov %@"
+},
+{
+"comment": "",
+"file": "VoiceProfileSection",
+"key": "%lld rätt, %lld fel"
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Välkommen till EarMind"
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Fota materialet"
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "EarMind gör provfrågor med A-svar."
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Lyssna i dina AirPods"
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Frågorna läses upp. Tryck för svaret."
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Fråga högt"
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Svaret kommer i örat. Nästa skärm frågar först."
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov använder aldrig mikrofonen."
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Godkänner att materialet skickas för att göra frågorna."
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Läs mer"
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Data och integritet"
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Det här skickas"
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Det här sparas"
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Foton, dokument och text du lägger till skickas en gång till vår server och vår AI-leverantör för att göra frågorna. De sparas inte."
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Frågorna och svaren skickas till vår röstleverantör för att bli ljud."
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Använder du Gör med ChatGPT skickar du filerna till ChatGPT själv."
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Dina prov, med frågor, svar och ljud, sparas hos EarMind tills du tar bort dem."
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Starta prov använder aldrig mikrofonen. Lägena som lyssnar finns under Fler lägen och frågar först."
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Mikrofonen"
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Du behöver inte skapa något konto. Du kan ta bort allt under Inställningar."
+},
+{
+"comment": "",
+"file": "WelcomeView",
+"key": "Klar"
+}
+]
+},
+"LumenControls": {
+"Localizable": [
+{
+"comment": "",
+"file": "ExamWidget",
+"key": "Nästa prov"
+},
+{
+"comment": "",
+"file": "ExamWidget",
+"key": "Dagar kvar, din svit och Förhör mig."
+},
+{
+"comment": "",
+"file": "ExamWidget",
+"key": "Biologiprovet"
+},
+{
+"comment": "",
+"file": "ExamWidget",
+"key": "Svit: 1 dag"
+},
+{
+"comment": "",
+"file": "ExamWidget",
+"key": "Svit: %lld dagar i rad"
+},
+{
+"comment": "",
+"file": "ExamWidget",
+"key": "%lld procent redo"
+},
+{
+"comment": "",
+"file": "ExamWidget",
+"key": "NÄSTA PROV"
+},
+{
+"comment": "",
+"file": "ExamWidget",
+"key": "redo"
+},
+{
+"comment": "",
+"file": "ExamWidget",
+"key": "Har du prov snart?"
+},
+{
+"comment": "",
+"file": "ExamWidget",
+"key": "Lägg till det i EarMind."
+},
+{
+"comment": "",
+"file": "ExamWidget",
+"key": "Förhör mig"
+},
+{
+"comment": "",
+"file": "ExamWidgetSnapshot",
+"key": "I dag"
+},
+{
+"comment": "",
+"file": "ExamWidgetSnapshot",
+"key": "I morgon"
+},
+{
+"comment": "",
+"file": "ExamWidgetSnapshot",
+"key": "%lld dagar kvar"
+},
+{
+"comment": "",
+"file": "ExamWidgetSnapshot",
+"key": "Förhör mig"
+},
+{
+"comment": "",
+"file": "ListeningActivity",
+"key": "Avsluta EarMind"
+},
+{
+"comment": "",
+"file": "ListeningActivity",
+"key": "Start EarMind"
+},
+{
+"comment": "",
+"file": "ListeningActivity",
+"key": "Next suggestion"
+},
+{
+"comment": "",
+"file": "ListeningActivity",
+"key": "Pause or resume EarMind"
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Start EarMind"
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Opens EarMind and starts listening."
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Start EarMind"
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Pausad"
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Lyssnar"
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "EarMind listening"
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Pause listening to play music, resume with one tap."
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Pause or resume"
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Pausad"
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Lyssnar"
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Nästa"
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Fortsätt"
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Pausa"
+},
+{
+"comment": "",
+"file": "LumenControls",
+"key": "Avsluta"
+}
+]
+}
+}
