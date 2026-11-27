@@ -1,0 +1,1 @@
+{"questions": ["Vilka följder får klimatförändringarna?", "Vad händer med isarna när jordens medeltemperatur stiger?", "Hur påverkas havsnivåerna av den stigande medeltemperaturen?", "Hur påverkar klimatförändringarna antalet värmeböljor?"]}

@@ -99,7 +99,13 @@ final class FullFlowTests: XCTestCase {
         guard wait(["Välkommen till EarMind"], 20) != nil else { return miss("Välkommen not shown") }
         screen("valkommen", "Välkommen")
         guard tap(["Fortsätt"], "Fortsätt") else { return false }
-        guard wait(["Fota sidor"], 10) != nil else { return miss("Nytt prov not shown after Fortsätt") }
+        // A166 (Angela Schrute 2026-11-26): Fortsätt leads to the listening consent, and Senare to Start; Nytt prov
+        // is no longer opened by itself. The way to the first exam is Start → Nytt prov (one tap more).
+        if wait(["Fota sidor"], 4) == nil {
+            guard tap(["Senare"], "Senare (A166 consent)") else { return miss("neither Nytt prov nor the consent's Senare after Fortsätt") }
+            guard tap(["Nytt prov"], "Start → Nytt prov") else { return false }
+        }
+        guard wait(["Fota sidor"], 10) != nil else { return miss("Nytt prov not shown") }
         screen("nytt-prov", "Nytt prov, first time")
         // Nightly 43839516709, runs 43975990247 and earlier: in the Simulator Fota sidor opens the photo library (there is no
         // camera), and that library often stayed open over Nytt prov. The camera is only real on a device, so the step is

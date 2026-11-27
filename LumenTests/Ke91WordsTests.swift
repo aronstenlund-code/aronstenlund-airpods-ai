@@ -2,41 +2,56 @@ import Foundation
 import Testing
 @testable import Lumen
 
-/// Ke91 (Kelly 2026-11-26, `docs/design/ordlista-app.md`): one word per thing in the English app, as on the site and
-/// the App Store page. The repetition views' part (Angela Fable). The Swedish stays as it was.
-@Suite struct Ke91WordsTests {
-    private func text(_ key: String, _ language: AppLanguage) -> String {
-        language.bundle.localizedString(forKey: key, value: "(missing)", table: nil)
+/// Ke91 (Kelly's word list): the English app shows English command words ("say next", "Lumen, continue",
+/// "Lumen, quiz me"), so the commands must understand them too. Swedish keeps working.
+@Suite(.serialized) struct Ke91WordsTests {
+    private let nos = ["1", "2", "3", "4", "5", "6", "7"]
+
+    @Test func thePracticeRunUnderstandsEnglish() {
+        #expect(PracticeNav.decide("Next.", current: 2, nos: nos) == .next(3))
+        #expect(PracticeNav.decide("next question please", current: 2, nos: nos) == .next(3))
+        #expect(PracticeNav.decide("Previous", current: 2, nos: nos) == .previous(1))
+        #expect(PracticeNav.decide("go back", current: 2, nos: nos) == .previous(1))
+        #expect(PracticeNav.decide("Skip this one.", current: 2, nos: nos) == .skip(3))
+        #expect(PracticeNav.decide("Repeat the question", current: 2, nos: nos) == .repeatQuestion(2))
+        #expect(PracticeNav.decide("Say that again.", current: 2, nos: nos) == .repeatQuestion(2))
+        #expect(PracticeNav.decide("I'm done.", current: 2, nos: nos) == .stop)
+        #expect(PracticeNav.decide("How did I do?", current: 2, nos: nos) == .results)
+        #expect(PracticeNav.decide("Question seven", current: 0, nos: nos) == .go(6))
+        #expect(PracticeNav.decide("question 4", current: 0, nos: nos) == .go(3))
     }
 
-    @Test func theEnglishSaysAudioCreatePracticeAndSpeed() {
-        let english = ["Gör ljudet …": "Creating audio …", "Gör": "Create", "Gör frågor": "Create questions",
-                       "Gör med ChatGPT": "Create with ChatGPT", "Tempo": "Speed", "Tempo, normal": "Speed, normal",
-                       "Röster": "Voices", "Att provlyssna": "Under review", "Att öva på": "To practice",
-                       "Kom förberedd till provet": "Be ready for your quiz", "Något fel? Skriv det": "Something wrong? Tell us",
-                       "Öppnar samlingen": "Opens the quiz", "Visar vad som kostar vad": "Shows what things cost",
-                       "Provlyssning kostar inget. En ny röst blir nytt ljud.": "Previews are free. A new voice means new audio.",
-                       "1 tecken nytt ljud": "1 character of new audio", "BETA": "Beta",
-                       "Ljudet görs när du startar provet.": "The audio is created when you start the quiz."]
-        for (key, value) in english {
-            #expect(text(key, .en) == value, "\(key)")
-            #expect(text(key, .sv) == key, "the Swedish stays: \(key)")
-        }
+    @Test func thePracticeRunStillUnderstandsSwedishAndAnswers() {
+        #expect(PracticeNav.decide("nästa", current: 2, nos: nos) == .next(3))
+        #expect(PracticeNav.decide("fråga sju", current: 0, nos: nos) == .go(6))
+        #expect(PracticeNav.decide("avsluta provet", current: 0, nos: nos) == .stop)
+        #expect(PracticeNav.decide("Plants make sugar from light.", current: 0, nos: nos) == .answer)
+        #expect(PracticeNav.decide("The next step is respiration.", current: 0, nos: nos) == .answer, "a sentence is an answer")
     }
 
-    @Test func theOwnRecordingStillSaysSound() {
-        // Kelly: your own voice is not created audio, so it stays "sound".
-        #expect(text("Helt gratis. Ljudet stannar på din telefon.", .en) == "Completely free. The sound stays on your phone.")
+    @Test func lumenContinueResumesInBothLanguages() {
+        #expect(VoiceChannel.parse("Lumen, continue").intent == .music(.backToLumen))
+        #expect(VoiceChannel.parse("Lumen, fortsätt").intent == .music(.backToLumen), "what the paused screen says")
+        #expect(VoiceChannel.parse("Lumen, back to EarMind").intent == .music(.backToLumen))
+        #expect(VoiceChannel.parse("Lumen, tillbaka till Lumen").intent == .music(.backToLumen))
+        #expect(VoiceChannel.parse("continue").intent != .music(.backToLumen), "only after the name")
+        #expect(VoiceChannel.parse("fortsätt").intent != .music(.backToLumen))
     }
-}
 
-/// Ke91 point 5: an account that counts credits hears about credits when it has run out, never about questions.
-@MainActor
-@Suite struct Ke91CreditWordsTests {
-    @Test func runningOutSaysCreditsOnACreditAccount() {
-        #expect(CreditText.usedUpShort(credits: true) == "Inga krediter kvar.")
-        #expect(CreditText.usedUpShort(credits: false) == "Inga frågor kvar den här månaden.")
-        #expect(CreditText.usedUp(credits: true).hasPrefix("Du har inga krediter kvar. Nya krediter kommer den 1 "))
-        #expect(CreditText.usedUp(credits: false).hasPrefix("Du har inga frågor kvar den här månaden."))
+    @Test func quizMeIsOneCheckQuestionAsTheButton() {
+        // "Förhör mig" is "Quiz me" on the button: one check question in both languages.
+        #expect(MiniTest.isCheckQuestionRequest("quiz me"))
+        #expect(MiniTest.isCheckQuestionRequest("Quiz me on photosynthesis"))
+        #expect(MiniTest.isCheckQuestionRequest("förhör mig"))
+        #expect(!MiniTest.isStartCommand("quiz me"))
+        #expect(MiniTest.isStartCommand("mini quiz"))
+        #expect(MiniTest.isStartCommand("minitest"))
+        #expect(MiniTest.isStartCommand("test me"))
+    }
+
+    @Test func yesAndNoAreUnderstoodWhereTheScreenSaysThem() {
+        // "Or say “yes” or “no”" (a question before a phone action) and "Say “yes” for more" (the Mer window).
+        #expect(MoreOffer.verdict("yes") == true)
+        #expect(MoreOffer.verdict("no") == false)
     }
 }

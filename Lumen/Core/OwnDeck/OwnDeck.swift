@@ -70,9 +70,10 @@ struct OwnDeck: Codable, Identifiable, Equatable, Sendable {
         return String(oneLine.trimmingCharacters(in: .whitespaces).prefix(titleLimit))
     }
 
-    /// The name that is shown and that the lock screen gets: the user's, or "Egen inspelning" when there is none.
+    /// The name that is shown and that the lock screen gets: the user's, or "Mina frågor" when there is none (Kelly,
+    /// the same as Angela Fable's view).
     var shownTitle: String {
-        title.isEmpty ? String(localized: "Egen inspelning") : title
+        title.isEmpty ? String(localized: "Mina frågor") : title
     }
 
     /// The cards that can be practised, in order. `onlyRecorded` (Kelly, Ke89 §2): only those whose question the

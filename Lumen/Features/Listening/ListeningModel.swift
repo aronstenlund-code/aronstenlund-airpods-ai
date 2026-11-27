@@ -265,6 +265,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     private(set) var noteSavedAt: Date?
     var isShowingPrivacy = false
     var isShowingSettings = false
+    /// The flow: Historik straight from Lyssnar's ⋯ menu (it was Tillbaka → Inställningar → a long scroll).
+    var isShowingHistory = false
+    /// Kelly B2: the page with the listening modes ("Fler lägen") is open on Start. Here and not in the view, so
+    /// Avsluta on Lyssnar comes back to the page with Starta EarMind, where the listening was started.
+    var showsMoreModes = false
     var isShowingNotes = false
     var isShowingPrep = false
     var isShowingCommands = false
@@ -481,6 +486,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         consent.grant()
         beginFreshPass()
         await startMode(.standard)
+        // The flow: after Avsluta (or without the microphone), the page where EarMind starts again. Set after the
+        // start, so Start does not first push the page under Lyssnar.
+        showsMoreModes = true
     }
 
     /// "Jag förstår, starta EarMind" on the consent sheet: the consent, then the start that asked for it.
@@ -644,10 +652,15 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     /// One tap to switch to music and back (D33): screen button, Live Activity and Control. Never starts a
     /// session: the microphone is only switched on from the app.
-    func togglePause() async {
+    /// `fromScreen`: the Pausa button on Lyssnar, which says what it does. An AirPods press during the "Mer?" window
+    /// means "mer" (A15); the button on the screen pauses, and the window closes.
+    func togglePause(fromScreen: Bool = false) async {
         if isOfferingMore {
-            standardMode.more.take(by: "AirPods press") // A15: the press means "mer" while the window is open
-            return
+            if !fromScreen {
+                standardMode.more.take(by: "AirPods press") // A15: the press means "mer" while the window is open
+                return
+            }
+            standardMode.more.close(why: "pause")
         }
         if isListening {
             cue(.stop) // A34
@@ -2178,6 +2191,13 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     /// hears it once; it clears when recognition runs again. Short gaps (a reconnect) say nothing.
     private var hearingTask: Task<Void, Never>?
 
+    /// Toby T8b finding 4: Starta was pressed and nothing started, and nothing on the screen says why (no problem
+    /// card, no sheet that asks something first: the listening consent, the age, a mode's own start screen).
+    var startDidNotTake: Bool {
+        !isActiveSession && problem == nil && !asksForListeningConsent && !isShowingAgeGate && !isShowingLiveStart
+            && !isShowingInterviewSetup && !isShowingAddExam && !isShowingStudyOnboarding
+    }
+
     var isHearing: Bool {
         switch transcription.status {
         case .running, .preparing, .probing: true
@@ -2240,15 +2260,23 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             self.problem = nil
         case .voiceUnavailable:
             self.problem = nil
-        case .overloaded:
+        case .overloaded, .offline:
             self.problem = nil
-            if let question = conversation.answers.last?.question ?? pendingQuestion?.query, !question.isEmpty {
-                activated(ActivationRequest(query: question, trigger: pendingQuestion?.trigger ?? .text, language: language),
-                          persona: mode == .prov ? tutorPersona() : nil)
-            }
-        case .offline, .cannotHear:
+            askFailedQuestionAgain()
+        case .cannotHear:
             self.problem = nil
         }
+    }
+
+    /// The card's "Försök igen": the question whose answer failed, asked again. It is the one asked last
+    /// (`pendingQuestion`); an earlier, answered question is never asked again in its place.
+    private func askFailedQuestionAgain() {
+        let failed = pendingQuestion
+        guard let question = failed?.query ?? conversation.answers.last?.question,
+              !question.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
+        repeatGuard.forget(question) // it was never answered (A74 is about answered questions)
+        activated(ActivationRequest(query: question, trigger: failed?.trigger ?? .text, language: failed?.language ?? language),
+                  persona: mode == .prov ? tutorPersona() : nil)
     }
 
     /// The short notices under the answers, in Swedish.
@@ -3208,6 +3236,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             return
         }
         if ahead?.delivered == true { ahead = nil }
+        // The flow: a question that got no answer is not a repeat when it is asked again (A74 counts answered ones).
+        if let failed = pendingQuestion { repeatGuard.forget(failed.query) }
         liveMode.requestEnded() // D199 step 2: no suggestions are being made any more
         latency.end()
         conversation.cancelAnswer()

@@ -1,0 +1,1 @@
+{"points": {"E": 1, "C": 0, "A": 0}, "feedback": "Du får E-poängen för att neutralisation är när syra och bas blandas. Det som saknas är vad som bildas när de reagerar med varandra."}

@@ -1,0 +1,1 @@
+{"points": {"E": 0, "C": 0, "A": 0}, "feedback": "Ingen poäng den här gången eftersom du inte gav något svar. Tänk på vad cellen behöver för att orka arbeta, och vilken del av cellen som ger den det."}

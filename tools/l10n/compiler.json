@@ -1266,7 +1266,7 @@
 {
 "comment": "",
 "file": "ConsentView",
-"key": "Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. Utan nät blir det inga svar."
+"key": "Texten skickas via EarMinds server till Claude från Anthropic, som tar fram svaret. Kan servern inte svara, svarar telefonens egen modell där den finns, och då stannar texten på telefonen."
 },
 {
 "comment": "",
@@ -10141,12 +10141,12 @@
 {
 "comment": "",
 "file": "WelcomeView",
-"key": "Plugga utan mobilen"
+"key": "Fråga högt"
 },
 {
 "comment": "",
 "file": "WelcomeView",
-"key": "Telefonen kan ligga i fickan."
+"key": "Svaret kommer i örat. Nästa skärm frågar först."
 },
 {
 "comment": "",

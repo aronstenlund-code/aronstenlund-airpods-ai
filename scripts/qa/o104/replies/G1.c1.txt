@@ -1,0 +1,1 @@
+{"points": {"E": 1, "C": 1, "A": 0}, "feedback": "Du får båda poängen: du säger att han tog kyrkans pengar och mark, och du kopplar det till att han bröt med påven. Nämn gärna reformationen också, så blir sambandet ännu tydligare."}

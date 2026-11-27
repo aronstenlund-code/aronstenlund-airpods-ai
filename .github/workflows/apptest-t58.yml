@@ -9,6 +9,8 @@ on:
     paths:
       - "AppTests/E2E/OwnDeck/**"
       - "scripts/apptest/t58.sh"
+      - "scripts/apptest/t58ui.sh"
+      - "AppTests/E2E/Screens/OwnDeckFlowTests.swift"
       - ".github/workflows/apptest-t58.yml"
 
 permissions:
@@ -22,7 +24,7 @@ jobs:
   t58:
     name: T58 own deck (Simulator)
     runs-on: macos-26
-    timeout-minutes: 45
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v5
 
@@ -37,12 +39,29 @@ jobs:
       - name: Install XcodeGen
         run: brew install xcodegen
 
-      - name: Own deck
+      - name: Own deck (in the test process)
+        id: inproc
+        continue-on-error: true
         run: |
           bash scripts/apptest/t58.sh
           STATUS=$?
           cat apptest-out/t58/summary.md >> "$GITHUB_STEP_SUMMARY" || true
           exit $STATUS
+
+      # T58 part 2 (Deangelo 2026-11-26 22:41): the same through Angela Fable's views (A165), the network off.
+      - name: Own deck through the views
+        id: views
+        continue-on-error: true
+        run: |
+          bash scripts/apptest/t58ui.sh
+          STATUS=$?
+          cat apptest-out/t58ui/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Result
+        run: |
+          echo "in-process: ${{ steps.inproc.outcome }}, views: ${{ steps.views.outcome }}"
+          [ "${{ steps.inproc.outcome }}" = success ] && [ "${{ steps.views.outcome }}" = success ]
 
       - name: Upload results
         if: always()
@@ -51,4 +70,6 @@ jobs:
           name: apptest-t58
           path: |
             apptest-out/t58
+            apptest-out/t58ui
             !apptest-out/t58/logs/*.xcresult
+            !apptest-out/t58ui/logs/*.xcresult

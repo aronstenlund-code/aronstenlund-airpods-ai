@@ -1,6 +1,6 @@
 {
  "id": "adhoc",
- "status": "needs_reply",
+ "status": "done",
  "prompts": [
   {
    "stem": "adhoc.t1.c1",
@@ -54,7 +54,46 @@
    "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
   }
  ],
- "turns": [],
- "blocked": [],
- "needs": "adhoc.t1.c1"
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "exam",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "exam-grade",
+     "provider": "anthropic",
+     "model": "claude-haiku-5-5",
+     "input_tokens": 442,
+     "output_tokens": 58,
+     "total_ms": 14,
+     "est_cost_usd": 7.32e-05,
+     "status": "ok"
+    }
+   ],
+   "credits": [],
+   "json": {
+    "points": {
+     "E": 0,
+     "C": 0,
+     "A": 0
+    },
+    "max": {
+     "E": 1,
+     "C": 0,
+     "A": 0
+    },
+    "total": 0,
+    "numeric": null,
+    "feedback": "Ingen poäng den här gången eftersom du inte gav något svar. Tänk på vad cellen behöver för att orka arbeta, och vilken del av cellen som ger den det.",
+    "usage": {
+     "input_tokens": 442,
+     "output_tokens": 58,
+     "est_cost_usd": 7.32e-05
+    }
+   }
+  }
+ ],
+ "blocked": []
 }

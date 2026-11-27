@@ -1,0 +1,1 @@
+{"questions": [], "sources": [{"i": 0, "s": [1], "a": "Vatten fryser vid 0 grader."}, {"i": 1, "s": [2], "a": "Vatten kokar vid 100 grader vid normalt lufttryck."}]}

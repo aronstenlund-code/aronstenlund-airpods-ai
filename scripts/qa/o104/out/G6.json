@@ -1,6 +1,6 @@
 {
  "id": "adhoc",
- "status": "needs_reply",
+ "status": "done",
  "prompts": [
   {
    "stem": "adhoc.t1.c1",
@@ -55,7 +55,50 @@
    "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
   }
  ],
- "turns": [],
- "blocked": [],
- "needs": "adhoc.t1.c1"
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "exam",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "exam-grade",
+     "provider": "anthropic",
+     "model": "claude-haiku-5-5",
+     "input_tokens": 527,
+     "output_tokens": 69,
+     "total_ms": 11,
+     "est_cost_usd": 8.72e-05,
+     "status": "ok"
+    }
+   ],
+   "credits": [],
+   "json": {
+    "points": {
+     "E": 1,
+     "C": 0,
+     "A": 0
+    },
+    "max": {
+     "E": 1,
+     "C": 1,
+     "A": 0
+    },
+    "total": 1,
+    "numeric": {
+     "expected": 90,
+     "given": 80,
+     "equal": false
+    },
+    "feedback": "Delvis rätt. Du får metodpoängen för att du räknar 0,2 gånger 450, men svaret blev fel. Rätt svar är 90 kronor, eftersom 10 procent av 450 är 45 kronor och 20 procent är dubbelt så mycket.",
+    "usage": {
+     "input_tokens": 527,
+     "output_tokens": 69,
+     "est_cost_usd": 8.72e-05
+    }
+   }
+  }
+ ],
+ "blocked": []
 }

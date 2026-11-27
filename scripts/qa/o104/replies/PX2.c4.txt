@@ -1,0 +1,1 @@
+{"questions": [], "sources": [{"i": 0, "s": [3, 2], "a": "En lösning med pH under 7 är sur, pH 7 är neutralt och över 7 är basisk."}, {"i": 1, "s": [4, 3], "a": "Saltsyra har ett pH runt 1 och är sur, medan natronlut kan ha pH 14 och är basisk."}, {"i": 2, "s": [5], "a": "Det bildas vatten och ett salt, och det kallas neutralisation."}]}

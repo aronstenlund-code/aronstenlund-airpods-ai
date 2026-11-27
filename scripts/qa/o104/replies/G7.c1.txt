@@ -1,0 +1,1 @@
+{"points": {"E": 1, "C": 1, "A": 0}, "feedback": "Rätt. Du får båda poängen: växterna gör socker med hjälp av solljus av koldioxid och vatten, och syre bildas. Sockret heter glukos, och det sker i kloroplasterna där klorofyllet fångar ljuset."}

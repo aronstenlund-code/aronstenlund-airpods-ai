@@ -1,0 +1,1 @@
+{"summary": {"subject": "Fysik", "grade": "", "covers": "Provet handlar om vid vilka temperaturer vatten fryser och kokar."}, "questions_possible": 2, "questions": ["Vid vilken temperatur fryser vatten?", "Vid vilken temperatur kokar vatten vid normalt lufttryck?", "Hur skiljer sig temperaturen när vatten fryser från när det kokar?"]}

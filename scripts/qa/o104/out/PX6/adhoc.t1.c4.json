@@ -1,0 +1,41 @@
+{
+  "stem": "adhoc.t1.c4",
+  "case": "adhoc",
+  "turn": 1,
+  "call": 4,
+  "endpoint": "exam",
+  "url": "https://k122-replay.invalid/v1/messages",
+  "client_request": {
+    "action": "drill",
+    "answers": false,
+    "questions": 3,
+    "subject": "Geografi",
+    "pages": [],
+    "text": "Klimatförändringar\n\nJordens medeltemperatur har stigit med ungefär 1,1 grad sedan slutet av 1800-talet. Den främsta orsaken är utsläpp av koldioxid från fossila bränslen som kol, olja och gas. Koldioxiden förstärker växthuseffekten. Följderna är bland annat smältande isar, stigande havsnivåer och fler värmeböljor.",
+    "lang": "sv"
+  },
+  "anthropic_request": {
+    "model": "claude-sonnet-5-5",
+    "max_tokens": 530,
+    "stream": true,
+    "system": [
+      {
+        "type": "text",
+        "text": "You check the finished list of questions for a spoken practice exam against the material it was made from. You get <material> and <questions> (JSON: i and q). Return ONLY {\"questions\": [...], \"sources\": [...]} with an entry in \"questions\" for each question you change or remove (none = []):\n- Every fact a question takes for granted (who, what, which war, who owed whom, a cause, a result, a date) must be what the material says. When a question takes for granted something the material does not say, or says differently, rewrite it as little as possible so that it assumes only what the material says: {\"i\": N, \"q\": \"...\"}. Example: the material says \"skatten höjdes efter kriget mot Ryssland\" and nothing about why; \"Varför höjdes skatten efter kriget mot Polen?\" is wrong twice (the wrong war, and a cause the material does not give); write \"Vad hände med skatten efter kriget mot Ryssland?\". K110 (Oscar O91 F1): never rewrite into a why-question whose cause the material does not state.\n- A why-question whose cause the material does not give: rewrite it into an understanding question the material does carry, never into a what-, when- or who-question (D230): \"Förklara hur X hänger ihop med Y\", \"Vad blev följden av X?\", \"Jämför X och Y\", \"Hur påverkade X Y?\" (or the same in the exam's language): {\"i\": N, \"q\": \"...\"}. The new question may only ask about a link the material itself makes.\n- At least half of the questions must be understanding questions (why, how, explain, compare, what followed). When fewer are, rewrite plain recall questions (what is, when, who, which) into understanding questions the material carries, the earliest first, until half are.\n- A question whose right answer would be the same as, or part of, the answer to an EARLIER question in the list (the same fact, cause or effect asked in other words): {\"i\": N, \"drop\": true, \"same_as\": M}. Two questions on one topic that ask different things both stay.\n- A question the material does not answer (a how or why whose way or cause it never gives): rewrite it into one about the same part that the material answers (D230 forms first). A question that asks two things, of which the material answers one: keep only that one (K106, Oscar).\n- K107 (Oscar's F3/F5): the material comes as numbered sentences ([1], [2] …). Also return \"sources\": [{\"i\": N, \"s\": [k, …]}] for EVERY question (after your changes): the numbers of the one to three sentences whose content is the question's right answer, the sentence that holds the main answer first, and \"a\": the right answer in one short sentence, in the exam's language, said the way the material says it (K109). Two questions answered by the same sentence(s), or with the same answer, ask the same thing for the student, even when worded differently.\n- Never change anything else: same language, same length or shorter, clear when only heard. Return {\"questions\": [...], \"sources\": [{\"i\": N, \"s\": [...], \"a\": \"...\"}, ...]}. No other text.",
+        "cache_control": {
+          "type": "ephemeral"
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content": "<material>\n[1] Klimatförändringar\n[2] Jordens medeltemperatur har stigit med ungefär 1,1 grad sedan slutet av 1800-talet.\n[3] Den främsta orsaken är utsläpp av koldioxid från fossila bränslen som kol, olja och gas.\n[4] Koldioxiden förstärker växthuseffekten.\n[5] Följderna är bland annat smältande isar, stigande havsnivåer och fler värmeböljor.\n</material>\n<questions>[{\"i\":0,\"q\":\"Hur mycket har jordens medeltemperatur stigit sedan slutet av 1800-talet?\"},{\"i\":1,\"q\":\"Varför har jordens medeltemperatur stigit?\"},{\"i\":2,\"q\":\"Hur påverkar koldioxiden växthuseffekten?\"}]</questions>"
+      }
+    ],
+    "output_config": {
+      "effort": "low"
+    }
+  },
+  "reply_hint": "As the system prompt's Return line says."
+}

@@ -1,0 +1,54 @@
+name: Apptest flow (T59)
+
+# T59 (Toby): D269 Försök igen and Pausa, Ke91 English commands, K124 the phone voice on tts_quota. Pretend server.
+# One macOS machine (D217). Simulator only: never a device test.
+on:
+  workflow_dispatch:
+  push:
+    branches: ["toby/t59*"]
+    paths:
+      - "AppTests/E2E/Flow/**"
+      - "scripts/apptest/t59.sh"
+      - ".github/workflows/apptest-t59.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: apptest-t59-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  t58:
+    name: T59 flow (Simulator)
+    runs-on: macos-26
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Select Xcode 26
+        run: |
+          set -euo pipefail
+          XCODE_APP="$(ls -d /Applications/Xcode_26*.app | sort -V | tail -n 1)"
+          sudo xcode-select -s "$XCODE_APP"
+          echo "DEVELOPER_DIR=$XCODE_APP/Contents/Developer" >> "$GITHUB_ENV"
+          xcodebuild -version
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Flow
+        run: |
+          bash scripts/apptest/t59.sh
+          STATUS=$?
+          cat apptest-out/t59/summary.md >> "$GITHUB_STEP_SUMMARY" || true
+          exit $STATUS
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: apptest-t59
+          path: |
+            apptest-out/t59
+            !apptest-out/t59/logs/*.xcresult

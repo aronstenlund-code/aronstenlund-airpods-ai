@@ -1,0 +1,1 @@
+{"questions": [{"i": 0, "q": "Förklara hur zorbiernas städer under marken hänger ihop med ytan på Zorbia."}], "sources": [{"i": 0, "s": [5], "a": "Zorbierna bor i städer under marken eftersom ytan är för kall."}, {"i": 1, "s": [4], "a": "Ett år på Zorbia är 412 dagar långt."}, {"i": 2, "s": [5], "a": "Zorbierna andas kväve i stället för syre."}]}

@@ -129,7 +129,7 @@ Deno.test("GET x-warm:1 -> 204 and triggers warm-up without auth", async () => {
 Deno.test("ElevenLabs quota / auth / rate errors map to fallback errors", async () => {
   assertEquals(
     classifyElevenLabs(401, '{"detail":{"status":"quota_exceeded"}}').code,
-    "provider_quota",
+    "tts_quota", // K124 (D267): was provider_quota
   );
   assertEquals(
     classifyElevenLabs(401, '{"detail":{"status":"invalid_api_key"}}').code,
@@ -143,7 +143,7 @@ Deno.test("ElevenLabs quota / auth / rate errors map to fallback errors", async 
   );
   const res = await handler(post({ text: "a" }));
   assertEquals(res.status, 503);
-  assertEquals((await res.json()).error.code, "provider_quota");
+  assertEquals((await res.json()).error.code, "tts_quota"); // K124 (D267)
 });
 
 const V1 = "Astrid00000000000001", V2 = "Elin0000000000000002", V3 = "Oskar000000000000003";

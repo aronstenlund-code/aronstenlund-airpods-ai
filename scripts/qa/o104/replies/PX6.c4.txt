@@ -1,0 +1,1 @@
+{"questions": [], "sources": [{"i": 0, "s": [2], "a": "Den har stigit med ungefär 1,1 grad sedan slutet av 1800-talet."}, {"i": 1, "s": [3, 4], "a": "Den främsta orsaken är utsläpp av koldioxid från fossila bränslen som kol, olja och gas, och koldioxiden förstärker växthuseffekten."}, {"i": 2, "s": [4], "a": "Koldioxiden förstärker växthuseffekten."}]}

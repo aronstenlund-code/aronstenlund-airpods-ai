@@ -116,7 +116,7 @@ import Testing
         #expect(new.language == "en")
         let card = try #require(rig.model.addCard(to: new.id, question: String(repeating: "q", count: 5_000)))
         #expect(card.question.count == OwnCard.textLimit)
-        #expect(OwnDeck(title: "", language: "sv").shownTitle == "Egen inspelning", "a deck without a name still has one to show")
+        #expect(OwnDeck(title: "", language: "sv").shownTitle == "Mina frågor", "a deck without a name still has one to show")
     }
 
     @Test func aDeckIsFullAtItsLimit() throws {
