@@ -18,7 +18,7 @@ var.
 
 - 1 nytt enhetstest (raden på sv och en).
 - KÖRNINGEN
-- Bilder: BILDERNA
+- Bilder (Fable screens 45913118325, iPhone 17 Pro, Simulator): `reports/2026-11-27-forsta-gangen-bilder/forsta-gangen-och-ke91.jpg` – tomma Start med kortet som bara har + och Spela, en ny samling med raden överst, och två engelska bilder med Kellys ord ("Audio: 4 of 6 ready", "Voices").
 
 ## Kända brister
 
