@@ -3,6 +3,7 @@ import Foundation
 import MediaPlayer
 import Observation
 import UIKit
+import WidgetKit
 
 /// Settings for a new exam (D146): number of questions and the long answers' length.
 struct DrillSettings: Equatable, Sendable {
@@ -1269,6 +1270,7 @@ final class RepetitionModel {
     func end() {
         session.stop()
         showsPlayer = false
+        updatePracticeWidget() // A170
         practiceSummary = PracticeSummary(session.lastRun, origin: missedRun, inStore: { [store] in store.drill($0) != nil })
         missedRun = nil
     }
@@ -1318,6 +1320,12 @@ final class RepetitionModel {
     }
 
     func handle(_ url: URL) -> Bool {
+        // A170: the widget "Fortsätt öva". The quiz's own screen (Fortsätt is there), or Start with Säg i AirPods.
+        if let id = PracticeWidgetSnapshot.drillID(in: url) {
+            if store.drill(id) != nil { openDrill = id } // a quiz deleted since then: the app opens on Start
+            return true
+        }
+        if PracticeWidgetSnapshot.isSayLink(url) { return true } // Start is where the field is
         if shop?.handle(url) == true { return true } // A141 (K98): an invitation, `earmind://invite/<code>`
         guard let code = DrillShareClient.code(in: url) else { return false }
         open(code: code)
@@ -1532,5 +1540,53 @@ struct PracticeSummary: Identifiable, Equatable, Sendable {
         heard = run.heard
         laps = run.laps
         missed = asked.map { run.drill.items[$0].question }
+    }
+}
+
+// MARK: The widget "Fortsätt öva" (A170)
+
+extension RepetitionModel {
+    /// What one was doing last: the quiz or text played last (its saved place), or the latest said text, whichever
+    /// is newest; without any of them the newest quiz, not started. Nil when there is nothing at all.
+    nonisolated static func practiceSnapshot(exams: [Drill], said: Drill?, progress: RepetitionProgress?,
+                                             reading: (UUID) -> ReadingProgress?, now: Date) -> PracticeWidgetSnapshot? {
+        var best: (date: Date, snapshot: PracticeWidgetSnapshot)?
+        func consider(_ date: Date, _ snapshot: PracticeWidgetSnapshot) {
+            if best == nil || date > best!.date { best = (date, snapshot) }
+        }
+        if let progress, let drill = exams.first(where: { $0.id == progress.drillID }), !drill.isText, !drill.items.isEmpty {
+            let place = min(max(progress.index, 0), drill.items.count - 1) + 1
+            consider(progress.savedAt, PracticeWidgetSnapshot(what: .quiz, title: drill.title, place: place, total: drill.items.count,
+                                                              drillID: drill.id, updatedAt: now))
+        }
+        for drill in exams where drill.isText {
+            guard let read = reading(drill.id), drill.sentenceCount > 0 else { continue }
+            let place = min(max(read.sentence, 0), drill.sentenceCount - 1) + 1
+            consider(read.savedAt, PracticeWidgetSnapshot(what: .text, title: drill.title, place: place, total: drill.sentenceCount,
+                                                          drillID: drill.id, updatedAt: now))
+        }
+        if let said {
+            consider(said.createdAt, PracticeWidgetSnapshot(what: .said, title: "", place: nil, total: nil, drillID: nil, updatedAt: now))
+        }
+        if let best { return best.snapshot }
+        guard let newest = exams.first else { return nil }
+        return PracticeWidgetSnapshot(what: newest.isText ? .text : .quiz, title: newest.title, place: nil, total: nil,
+                                      drillID: newest.id, updatedAt: now)
+    }
+
+    /// Writes the snapshot for the widget, and reloads it only when what it shows has changed.
+    func updatePracticeWidget(now: Date = Date(), into shared: UserDefaults? = UserDefaults(suiteName: ExamWidgetSnapshot.appGroup)) {
+        let exams = store.drills.filter { !$0.isSaid } // the store's order: the newest first
+        let snapshot = Self.practiceSnapshot(exams: exams, said: recentSaid.first, progress: session.lastProgress,
+                                             reading: { [session] in session.readingProgress($0) }, now: now)
+        let old = PracticeWidgetSnapshot.load(shared)
+        if let snapshot {
+            guard !snapshot.sameContent(as: old) else { return }
+            snapshot.save(shared)
+        } else {
+            guard old != nil else { return }
+            PracticeWidgetSnapshot.clear(shared)
+        }
+        WidgetCenter.shared.reloadTimelines(ofKind: PracticeWidgetSnapshot.kind)
     }
 }

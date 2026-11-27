@@ -186,8 +186,10 @@ struct RepetitionHomeSection: View {
         .task { await model.refreshQuota() } // A117: the capsule's number
         // A161 (D259): during the launch week the offer is said once when the app is opened (once a day at most).
         .task { await offerLaunchWeek() }
+        .task { model.updatePracticeWidget() } // A170: what the widget shows is what Start shows
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { Task { await offerLaunchWeek() } }
+            if phase == .background { model.updatePracticeWidget() } // A170: the latest, as the app goes
         }
         .sheet(isPresented: $showsLaunchOffer, onDismiss: { if opensShopAfterOffer { opensShopAfterOffer = false; showsShop = true } }) {
             if let offer = model.shop?.activeOffer() {

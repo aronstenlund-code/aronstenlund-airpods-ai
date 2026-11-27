@@ -49,6 +49,9 @@ final class RepetitionSession {
 
     var isActive: Bool { player?.isRunning == true || reader?.isRunning == true }
 
+    /// A170: where a text was left and when, for the widget.
+    func readingProgress(_ drillID: UUID) -> ReadingProgress? { ReadingProgress.load(drillID, defaults) }
+
     /// A105 (D185, Ke63 §5): the sentence a text was left at, if any ("Fortsätt"); nil after the end.
     func savedSentence(for drill: Drill) -> Int? {
         guard let saved = ReadingProgress.load(drill.id, defaults), saved.sentence > 0,

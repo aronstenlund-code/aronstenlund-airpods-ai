@@ -11,6 +11,7 @@ struct LumenControlsBundle: WidgetBundle {
         ListeningControl()
         StartListeningControl()
         ExamWidget() // A44
+        PracticeWidget() // A170
     }
 }
 

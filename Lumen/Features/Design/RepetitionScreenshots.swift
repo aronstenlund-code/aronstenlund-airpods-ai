@@ -94,6 +94,8 @@ enum RepetitionDemo {
                                       // A168: after Avsluta (missed questions, and none asked for), and Start with
                                       // the quiz played last at the top
                                       "repSummary", "repSummaryNone", "repHomeLastPlayed",
+                                      // A170: the widget "Fortsätt öva", small and medium (a quiz, a said text, empty)
+                                      "widgetPractice",
                                       // A117 (D205, Ke69): the month's questions, visible
                                       "repCredits", "repHomeCredits"]
 
@@ -810,6 +812,7 @@ enum RepetitionDemo {
                  "repShopShortKeyboardStyle":
                 NavigationStack { HomeView(model: listening) }
             // A165 (D263): Spela in själv, a deck's screen as the sheet it is
+            case "widgetPractice": WidgetPracticeStage()
             case "repOwnDeck", "repOwnDeckNew", "repOwnRecording":
                 if let decks = model.ownDecks, let shown = ownShown {
                     Color(.systemGroupedBackground).ignoresSafeArea()
@@ -955,5 +958,35 @@ final class DemoPublishing: DrillPublishingService {
     }
     func report(publicationID: String, reason: DrillReportReason) async throws(DrillCloudError) {}
     func played(drillID: String) async {}
+}
+/// A170: the widget's faces as the home screen shows them (iPhone 17 Pro sizes), in the app's light or dark look.
+struct WidgetPracticeStage: View {
+    private let quiz = PracticeWidgetSnapshot(what: .quiz, title: RepetitionDemo.drill.title, place: 3, total: 12,
+                                              drillID: nil, updatedAt: Date())
+    private let said = PracticeWidgetSnapshot(what: .said, title: "", place: nil, total: nil, drillID: nil, updatedAt: Date())
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 20) {
+                HStack(spacing: 20) {
+                    face(quiz, medium: false)
+                    face(nil, medium: false)
+                }
+                face(quiz, medium: true)
+                face(said, medium: true)
+            }
+            .padding(.vertical, 40)
+            .frame(maxWidth: .infinity)
+        }
+        .background(Color(.systemGroupedBackground))
+    }
+
+    private func face(_ snapshot: PracticeWidgetSnapshot?, medium: Bool) -> some View {
+        PracticeWidgetView(snapshot: snapshot, isMedium: medium)
+            .padding(16)
+            .frame(width: medium ? 364 : 170, height: 170)
+            .background(LumenColor.background, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+            .shadow(color: .black.opacity(0.12), radius: 12, y: 4)
+    }
 }
 #endif
