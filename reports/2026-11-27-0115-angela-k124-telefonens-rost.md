@@ -35,7 +35,9 @@ Angela Schrute (moln, Opus 5.5), 2026-11-27. Uppdrag: Kevins rad i min kö (K124
 
 ## Testresultat
 
-BYGGRAD
+- **iOS build 45915606546 grön** på `claude/fervent-fermi-34hrer` (059e8619): enhetsbygge med varningar som fel, hela sviten (1 208 gröna testrader, 0 röda), Release-arkivet och Release-kontrollen. `K124PhoneVoiceTests` (7), `SpeakerTests` och `A112ReadingAloudOffTests` gröna. *Verified in CI.*
+- **Röd först:** min första röda körning (45915621246) kompilerade inte (testet saknade `@MainActor`). Rättat och körs om på `angela/k124-test-rod`; resultatet skrivs in här.
+- Main-bygget skrivs in i STATUS.
 
 - `LumenTests/K124PhoneVoiceTests.swift`, 7 tester:
   - Speaker: efter `tts_quota` frågas ElevenLabs en gång, och nästa mening går direkt till telefonen. Efter 10 minuter frågas ElevenLabs igen. Ett vanligt nätfel pausar inte.
