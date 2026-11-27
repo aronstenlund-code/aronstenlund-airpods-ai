@@ -9,7 +9,7 @@ Connect och lägg till *Swedish* som lokalisering med texterna i §2b. Integrite
 Rubrik ovanför en oförändrad skärmbild ur appen (Apple-stil, D160): grå bakgrund, mörk ram, ingen skugga. Skärmbilderna
 är tagna i **full storlek** på iPhone 17 Pro Max med Kellys bildflöde `kelly-appstore-shots.yml` på engelska
 (`en/`) och svenska (`sv/`), ljust läge, med `say.hasPlayed` så att raden om låst skärm inte syns. Rådata: grenen
-`kelly/appstore-shots-ke90`. Rubrikerna är satta i Inter Display (molnet); byt till SF Pro Display på en Mac om Aron vill.
+`kelly/appstore-shots-ke95` (körning 45932431120, main `4aed5848`, alla tio scener i en körning). Rubrikerna är satta i Inter Display (molnet); byt till SF Pro Display på en Mac om Aron vill.
 
 | # | Scen | English | Svenska |
 |---|---|---|---|
@@ -27,8 +27,7 @@ Rubrik ovanför en oförändrad skärmbild ur appen (Apple-stil, D160): grå bak
 Bild 1–3 syns i sökresultatet och berättar idén. Bild 8 visar lyssnarvyn med "● Listening" och orden ifyllda (scenen `listeningActivation`, Angela Schrute A166), så att det syns att mikrofonen används. Bild 10 är Spela in själv (A165). Telefonens egen modell (D258) syns
 inte på någon bild: den finns ingen scen för, och det riktiga provet på telefon är inte gjort; den står bara i texten
 (§2, med villkor i §5). Inget om låst skärm (D209) och inget som antyder dold användning: varje bild visar appen öppen.
-"Swedish voices" i bild 4 är appens riktiga rubrik (katalogen har
-bara svenska röster), och priserna i kr kommer från simulatorns butik.
+Bild 4 heter nu "Voices" / "Röster" (Ke91), och priserna i kr kommer från simulatorns butik.
 
 ## 2. Texter, English (primärt språk; tecken räknade med Python)
 | Field | Limit | Text | Chars |
@@ -194,9 +193,8 @@ Mot `granskning.md` §1 och dagens main. [V] i koden eller beslut, [S] sett i Si
 
 ## Göra om bilderna
 ```
-gh workflow run kelly-appstore-shots.yml --ref main -f branch=kelly/appstore-shots-ke90 -f languages="en sv" -f screens="repSayCredits repSayOnCard repSayPicked repSayVoicesUser repSayCompressed repTextNew repPlayAnswer repShop repOwnDeck"
-gh workflow run kelly-appstore-shots.yml --ref main -f branch=kelly/appstore-shots-ke90b -f languages="en sv" -f screens="listeningActivation"
-python3 -I docs/appstore/_src/appstore.py <mapp med bilderna från båda grenarna> en
+gh workflow run kelly-appstore-shots.yml --ref main -f branch=kelly/appstore-shots-ke95 -f languages="en sv" -f screens="repSayCredits repSayOnCard repSayPicked repSayVoicesUser repSayCompressed repTextNew repPlayAnswer listeningActivation repShop repOwnDeck"
+python3 -I docs/appstore/_src/appstore.py <mapp med bilderna> en
 python3 -I docs/appstore/_src/appstore.py <mapp med bilderna> sv
 ```
 Utan fontargument används Inter Display (finns i molnet). Äldre bilder (Ke56–Ke80, `69-*.jpg`) finns i git-historiken.
