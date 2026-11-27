@@ -17,7 +17,7 @@ var.
 ## Test
 
 - 1 nytt enhetstest (raden på sv och en).
-- KÖRNINGEN
+- **iOS build 45917720523 på min gren grön i sin helhet (enhetsbygge utan varningar, alla enhetstester, App Store-arkivet)** (verifierat i CI, Simulator). Bygget har båda punkterna.
 - Bilder (Fable screens 45913118325, iPhone 17 Pro, Simulator): `reports/2026-11-27-forsta-gangen-bilder/forsta-gangen-och-ke91.jpg` – tomma Start med kortet som bara har + och Spela, en ny samling med raden överst, och två engelska bilder med Kellys ord ("Audio: 4 of 6 ready", "Voices").
 
 ## Kända brister

@@ -193,7 +193,18 @@ export function leansOnMaterial(q: string): boolean {
 
 /** A question that asks only for a fact or a definition (R3 wants at least 70 % understanding questions). */
 export function isRecall(q: string): boolean {
-  return /^(?:vad (?:är|var|heter|betyder|kallas|står)|vilk(?:a|en|et) |när |vem |vilket år|enhet för|nämn )/i.test(q.trim());
+  // O104 E1 (Oscar): a definition ("Vad är cellkärnan?") is not plain recall; English recall words count too
+  const t = q.trim();
+  if (isDefinition(t)) return false;
+  return /^(?:vad (?:var|heter|står)|vilk(?:a|en|et) |när |vem |vilket år|enhet för|nämn |when |who |which |what year|in what year|name |list )/i.test(t);
+}
+/** O104 E1: a definition question (what a concept is). */
+export function isDefinition(q: string): boolean {
+  return /^(?:vad (?:är|betyder|menas med|kallas|innebär)|förklara (?:begreppet|vad)|what (?:is|are|does)|define |explain what )/i.test(q.trim());
+}
+/** O104 E1: a cause or explanation question. */
+export function isCause(q: string): boolean {
+  return /^(?:varför|hur kommer det sig|vad beror|vad orsakade|vilka orsaker|why|what caused|what causes|how does|how did|hur påverkar|hur påverkade)/i.test(q.trim());
 }
 
 /** Step 1 reply: the summary, the notes and at most `count` questions within the word limit (R3), no duplicates. */
@@ -230,12 +241,17 @@ export function parsePlan(
 export function trimQuestions(list: string[], count: number): string[] {
   const questions = [...list];
   // D176: no word limit; the weakest go (leaning on the material, then plain recall), the last of equals first
-  const score = (q: string) => (leansOnMaterial(q) ? 200 : 0) + (isRecall(q) ? 100 : 0);
+  // O104 E1: a bare time or person ("När …", "Who …") is the plainest recall and goes before "Vilka …"/"Which …"
+  const plain = (q: string) => /^(?:när |vem |vilket år|when |who |what year|in what year)/i.test(q.trim());
+  const score = (q: string) => (leansOnMaterial(q) ? 200 : 0) + (isRecall(q) ? (plain(q) ? 100 : 90) : 0);
+  // O104 E1 (Oscar): the only cause question and the only definition are never the ones taken out
+  const protectedQ = (q: string, list: string[]) =>
+    !leansOnMaterial(q) && ((isCause(q) && list.filter(isCause).length === 1) || (isDefinition(q) && list.filter(isDefinition).length === 1));
   while (questions.length > count) {
-    let worst = 0;
-    questions.forEach((q, i) => {
-      if (score(q) >= score(questions[worst])) worst = i;
-    });
+    const free = questions.map((q, i) => i).filter((i) => !protectedQ(questions[i], questions));
+    const pool = free.length ? free : questions.map((_, i) => i);
+    let worst = pool[0];
+    for (const i of pool) if (score(questions[i]) >= score(questions[worst])) worst = i;
     questions.splice(worst, 1);
   }
   return questions;
@@ -343,13 +359,30 @@ export function oneAsk(q: string): string {
  * Vasas uppror hänger ihop med att han blev kung." got the same answer): a later question that asks what an earlier
  * one asks goes; every part keeps at least one question (the refill makes up the count).
  */
+/** O104 E3: what kind of thing a question asks for (a cause, an amount, a time, a person, a definition), or null. */
+export function askKind(q: string): string | null {
+  const t = q.trim().toLowerCase();
+  if (/^(?:varför|why|vad beror|hur kommer det sig)/.test(t)) return "cause";
+  if (/^(?:hur (?:mycket|många|stor|lång|länge|ofta)|how (?:much|many|big|long|often))/.test(t)) return "amount";
+  if (/^(?:när|vilket år|when|what year|in what year)/.test(t)) return "time";
+  if (/^(?:vem|vilka personer|who)/.test(t)) return "person";
+  if (/^(?:hur |how )/.test(t)) return "how";
+  if (isDefinition(t)) return "definition";
+  return null;
+}
+
 export function dropNearSame(qs: string[], parts: number[]): { questions: string[]; parts: number[]; dropped: number } {
   const left = new Map<number, number>();
   for (const p of parts) left.set(p, (left.get(p) ?? 0) + 1);
   const keep: number[] = [];
+  // O104 E3 (Oscar): "Varför har X stigit?" and "Hur mycket har X stigit?" share their words but ask different things
+  const differentAsk = (a: string, b: string) => {
+    const ka = askKind(a), kb = askKind(b);
+    return !!ka && !!kb && ka !== kb;
+  };
   for (let i = 0; i < qs.length; i++) {
     const p = parts[i] ?? -1;
-    if (keep.some((j) => nearDuplicate(qs[j], qs[i])) && (p < 0 || (left.get(p) ?? 0) > 1)) {
+    if (keep.some((j) => nearDuplicate(qs[j], qs[i]) && !differentAsk(qs[j], qs[i])) && (p < 0 || (left.get(p) ?? 0) > 1)) {
       left.set(p, (left.get(p) ?? 0) - 1);
       continue;
     }
@@ -509,7 +542,11 @@ export async function finalCheck(
         continue;
       }
       const q = cleanQuestion(x?.q);
-      if (!q || words(q) < 2 || words(q) > words(out[i]) + 4 || leansOnMaterial(q) || out.some((o, k) => k !== i && o.toLowerCase() === q.toLowerCase())) continue;
+      if (!q || words(q) < 2 || words(q) > words(out[i]) + 4 || leansOnMaterial(q) || out.some((o, k) => k !== i && o.toLowerCase() === q.toLowerCase())) {
+        // O104 E2 (Oscar): the rejected rewrite's sources and answer were for the rewrite, never for the old question
+        if (q && q !== out[i]) (src.delete(i), ans.delete(i));
+        continue;
+      }
       if (q !== out[i]) (out[i] = q, fixed++);
     }
     // K107: the same answer sentences as an earlier question that stays = the same question (the later one goes)
@@ -1275,7 +1312,9 @@ export async function handleDrill(
     // wait for them. Only the questions decide when "Stämmer det här?" can show.
     // K114 (D251, live 2026-11-21: an English text got Swedish questions from the prompt's rule alone): the language
     // is decided here from the text and given as <language>, as for a language exam (photos alone: the prompt's rule)
-    const planLang = examLanguage(subjectIn) ? "" : materialLanguage("", text);
+    // O104 E6 (Oscar): photos alone have no text to read the language from: the app's language (x-earmind-lang) then
+    // decides for an English user, so the notes and questions get <language> as a text exam's do
+    const planLang = examLanguage(subjectIn) ? "" : materialLanguage("", text) || (!text && String(b._ui_lang ?? "") === "en" ? "English" : "");
     const planUser = (part: string) => [
       (subjectIn || gradeIn) && `<context>${sanitizeTagged(contextLine(subjectIn, gradeIn))}</context>`,
       correction && `<correction>${sanitizeTagged(correction)}</correction>`,
@@ -1425,7 +1464,10 @@ export async function handleDrill(
         if (rf.usage) steps.push(rf.usage);
         if (rf.questions.length) {
           const at = parts.length > 1 ? placeQuestions(rf.questions, parts) : rf.questions.map(() => 0);
-          const all = [...qs.map((q, i) => ({ q, part: qParts[i] ?? -1, i })), ...rf.questions.map((q, k) => ({ q, part: at[k], i: qs.length + k }))];
+          // O104 E4 (Oscar): the kept questions are placed in their parts too (an unplaced one, -1, was sorted after every
+          // refilled one), so the refilled questions take their place in the material's order, never all first
+          const kept = qs.map((q, i) => (qParts[i] ?? -1) >= 0 ? qParts[i] : parts.length > 1 ? placeQuestions([q], parts)[0] : 0);
+          const all = [...qs.map((q, i) => ({ q, part: kept[i], i })), ...rf.questions.map((q, k) => ({ q, part: at[k], i: qs.length + k }))];
           all.sort((x, y) => ((x.part < 0 ? 1e9 : x.part) - (y.part < 0 ? 1e9 : y.part)) || x.i - y.i);
           qs = all.map((x) => x.q);
           qParts = all.map((x) => x.part);

@@ -1627,6 +1627,8 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             ...(command ? { command } : {}),
             note: extras.note ?? echoNote ??
               (quiz ? QUIZ_NOTE : gradeReply ? [GRADE_NOTE, soundVerdict ? soundNote(soundVerdict.verdict, soundVerdict.answer) : ""].filter(Boolean).join(" ") : freeInstruction ? FREE_INSTRUCTION_NOTE : undefined),
+            // O104 T-a (Oscar): the reply to a check question is not a "yes" to a confirmation
+            ...(gradeReply ? { lastTurn: "check_question" as const } : {}),
           })
           : buildUserMessage(b, cfg.confidenceThreshold, answerType, continuation, {
             ...extras,

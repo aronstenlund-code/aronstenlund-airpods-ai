@@ -142,3 +142,22 @@ Deno.test("O103 tool: the replay has index.ts's language wrapper (an error in En
   const msg = String(r.turns[0].error?.message ?? "");
   assert(msg && !/[åäö]/i.test(msg), msg);
 });
+
+Deno.test("O104 E6: a photo-only exam from an English app gets <language>English</language> in its plan calls", async () => {
+  const png = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+  const body = { action: "drill", answers: false, questions: 3, subject: "", pages: [{ media_type: "image/png", data: png }] };
+  const en = await runCase({ id: "PE", endpoint: "exam", body, headers: { "x-earmind-lang": "en" } }, () => null);
+  assert(en.prompts.length > 0, JSON.stringify(en.turns));
+  const userOf = (r: typeof en) => JSON.stringify((r.prompts[0].anthropic_request as { messages: unknown }).messages);
+  assert(userOf(en).includes("<language>English</language>"), userOf(en).slice(0, 300));
+  const sv = await runCase({ id: "PS", endpoint: "exam", body }, () => null);
+  assert(!userOf(sv).includes("<language>"), "a Swedish app: the prompt's own rule as before");
+});
+
+Deno.test("O104 T-a: the answer to Provläge's check question is sent as check_question, never as a confirmation to take as yes", async () => {
+  const body = { fragment: "mitokondrien", mode: "tutor", language: "sv", goals: "Biologi 1", context: { recent_qa: [{ q: "förhör mig på cellen", a: "Vilken del av cellen gör energi?" }] } };
+  const r = await runCase({ id: "TA", endpoint: "answer", body }, () => null);
+  const user = JSON.stringify((r.prompts[0].anthropic_request as { messages: unknown }).messages);
+  assert(user.includes("<last_assistant_turn>check_question</last_assistant_turn>"), user.slice(0, 600));
+  assert(user.includes("check_question: an answer to mark"), "the note says what it means");
+});

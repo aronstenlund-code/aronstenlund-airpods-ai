@@ -7,7 +7,7 @@ import { sanitizeTagged } from "../answer/prompt.ts";
 import { finalNumber, isBareNumber } from "./spoken.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
 import { practiceNav, spokenTask } from "./practice.ts";
-import { DEFAULT_DRILL_CONFIG, docxText, DRILL_LIMITS, DRILL_WEIGHT, type DrillConfig, drillConfigForTest, estimateDrillCost, fitLongWords, handleDrill, intIn, type MaterialStore, uploadUrls } from "./drill.ts";
+import { DEFAULT_DRILL_CONFIG, docxText, DRILL_LIMITS, DRILL_WEIGHT, type DrillConfig, drillConfigForTest, estimateDrillCost, fitLongWords, handleDrill, intIn, type MaterialStore, textLanguage, uploadUrls } from "./drill.ts";
 import { testModelPick } from "../_shared/testmode.ts";
 import { handleRead } from "./read.ts";
 
@@ -160,7 +160,7 @@ export const SYSTEM_PROMPT_EXAM_SOLVE =
 No markdown, no other text.`;
 
 export const SYSTEM_PROMPT_EXAM_HINT =
-  `You help a student during an exam practice session in Sweden. You get <task> (text, points, the correct answer and the scoring rules), <level> (1, 2 or 3) and <tried> (optional: what the student has tried). Reply with plain spoken Swedish, never the final answer:
+  `You help a student during an exam practice session in Sweden. You get <task> (text, points, the correct answer and the scoring rules), <level> (1, 2 or 3) and <tried> (optional: what the student has tried). Reply with plain spoken Swedish (in English when <language> is en), never the final answer:
 - level 1: a nudge in one sentence: what the task is really asking or which idea to start from.
 - level 2: the method in one or two sentences: the formula, concept or first step, without doing the calculation.
 - level 3: a worked first step in two or three sentences, stopping before the final answer.
@@ -170,11 +170,11 @@ export const SYSTEM_PROMPT_EXAM_GRADE =
   `You mark a student's answer to one exam task, strictly by the scoring rules. You get <task> (text, points per level E/C/A, the correct answer and the scoring rules), <numeric_check> (computed by code: whether the student's final number equals the correct one; trust it) and <answer> (the student's answer, from speech, so it may contain recognition errors in words but not in meaning).
 Return ONLY a JSON object: {"points": {"E": 0, "C": 0, "A": 0}, "feedback": "..."}.
 - Give each point exactly as the scoring rules say, never more than the task's points per level. When <numeric_check> says the final number is wrong, no point that requires the correct answer is given; when it says it is right, the point for the correct answer is given. A bare number without any method shown never earns a method point. When a task asks for several results (for example area and perimeter) and the student gives them without working, each correct result earns its answer point, as when the national exam says "Endast svar krävs" (area and perimeter both right = 2 E points, when the task has them). Never claim the student wrote something that is not in <answer>.
-- feedback: one or two spoken Swedish sentences: what earned points and the single most useful thing that was missing. Never the full solution.`;
+- feedback: one or two spoken sentences in the language of <language> (Swedish when there is no <language>): what earned points and the single most useful thing that was missing. Never the full solution (a PRACTICE RUN below says otherwise).`;
 
 /** K15: in a practice run the student also hears why (the exam itself never gives the solution). */
 export const PRACTICE_GRADE_RULE = `
-- PRACTICE RUN: this is practice, not the exam. After the points, the feedback also says the correct answer and why in two or three short spoken sentences (the method or the key concept), so the student learns it now. Start with "Rätt.", "Delvis rätt." or "Inte riktigt.".`;
+- PRACTICE RUN: this is practice, not the exam, and this rule replaces the feedback rule above (O104 G-d): the feedback is two or three short spoken sentences that also say the correct answer and why (the method or the key concept), so the student learns it now. Start with "Rätt.", "Delvis rätt." or "Inte riktigt." (with <language> en: "Correct.", "Partly correct." or "Not quite.").`;
 
 function clean(s: unknown, max: number): string {
   if (typeof s !== "string") return "";
@@ -249,7 +249,10 @@ export function lastNumber(text: string): number | null {
 export function numericCheck(correct: string, answer: string): { expected: number; given: number | null; equal: boolean } | null {
   // an algebraic answer ("8 − x") is not a number: no numeric check, the scoring rules decide
   if (/[+\-−*/^]\s*\(?[a-zåäö]\)?\s*$|^\s*[a-zåäö]\s*[+\-−*/^]/i.test(correct.trim())) return null;
-  const expected = finalNumber(correct);
+  // O104 G-a (Oscar): in a worded facit ("När en syra och en bas blandas …") "en"/"ett" is an article, not the number
+  // 1; only a short facit that is the number itself ("Svaret är ett") keeps it
+  const worded = !/\d/.test(correct) && correct.trim().split(/\s+/).length > 4;
+  const expected = finalNumber(worded ? correct.replace(/(?<![\p{L}])(?:en|ett)(?![\p{L}])/giu, " ") : correct);
   if (expected === null) return null;
   const tol = Number.isInteger(expected) ? 1e-9 : Math.max(0.005, Math.abs(expected) * 0.0005);
   // K15 (live: "trehundrasjuttiofem kronor, för tjugofem procent av trehundra är sjuttiofem" was read as 75): a
@@ -261,6 +264,24 @@ export function numericCheck(correct: string, answer: string): { expected: numbe
   const given = finalNumber(answer);
   if (given === null) return { expected, given: null, equal: false };
   return { expected, given, equal: Math.abs(given - expected) <= tol };
+}
+
+/**
+ * O104 G-b (Oscar): is this a task with a calculation (where a bare number shows no method)? A year or a fact asked
+ * for ("Vilket år …", "Hur många ben …") is not: its feedback is the model's correction, never "Visa hur du räknar".
+ */
+export function isCalculationTask(task: ExamTask): boolean {
+  if (/\b(?:metod|uträkning|beräkning|räknar|räkning|lösning)\b/i.test(task.assessment ?? "")) return true;
+  const t = task.text ?? "";
+  if (/(?<![\p{L}])(?:vilket år|vilka år|när|årtal|what year|when)(?![\p{L}])/iu.test(t)) return false;
+  return /(?<![\p{L}])(?:beräkna|räkna|lös|förenkla|derivera|bestäm|hur mycket|procent|calculate|solve|how much)(?![\p{L}])|%|\d\s*[+\-−×*/^=]\s*[\dx(]|[=]/iu.test(t);
+}
+
+/** O104 G-c (Oscar): an English task (asked so, or written in English) gets <language>en</language>; Swedish = no tag. */
+function taskLang(task: ExamTask, b: Record<string, unknown> | null, req: Request): string {
+  const asked = String(b?.lang ?? b?.language ?? req.headers.get("x-earmind-lang") ?? "").toLowerCase();
+  const en = asked === "en" || (asked !== "sv" && textLanguage(`${task.text} ${task.answer ?? ""}`) === "en");
+  return en ? "\n<language>en</language>" : "";
 }
 
 /** The level the scoring rules give for the correct answer itself ("+C för korrekt svar"), or null. */
@@ -437,6 +458,8 @@ export function createExamHandler(deps: ExamDeps) {
         // K61 (D175): never more questions than the month has left; none left = say so before any work
         const req0 = { ...((b ?? {}) as Record<string, unknown>) };
         delete req0._max_questions;
+        // O104 E6: the app's language, for photos alone (the material has no text to read it from)
+        req0._ui_lang = (req.headers.get("x-earmind-lang") ?? "").toLowerCase().slice(0, 2);
         // K90 (D213): the quota is credits (characters of new audio); none left = say so before any work. The number
         // of questions is not capped by it (what the audio costs is told at save: cost)
         let quota: { unit: "chars"; used: number; limit: number; left: number; remaining: number; per: "month"; resets: string; unlimited?: boolean } | null = null;
@@ -555,7 +578,7 @@ export function createExamHandler(deps: ExamDeps) {
         const level = [1, 2, 3].includes(Number(b?.level)) ? Number(b?.level) : 1;
         llm = {
           system: SYSTEM_PROMPT_EXAM_HINT,
-          user: `${taskTag(task)}\n<level>${level}</level>\n<tried>${sanitizeTagged(clean(b?.tried, 1000))}</tried>`,
+          user: `${taskTag(task)}\n<level>${level}</level>\n<tried>${sanitizeTagged(clean(b?.tried, 1000))}</tried>${taskLang(task, b, req)}`,
           maxTokens: 200,
           cacheSystem: true,
           signal: req.signal,
@@ -574,7 +597,7 @@ export function createExamHandler(deps: ExamDeps) {
           : "No numeric answer to check.";
         llm = {
           system: SYSTEM_PROMPT_EXAM_GRADE + (b?.practice === true ? PRACTICE_GRADE_RULE : ""),
-          user: `${taskTag(task)}\n<numeric_check>${nc}</numeric_check>\n<answer>${sanitizeTagged(answer)}</answer>`,
+          user: `${taskTag(task)}\n<numeric_check>${nc}</numeric_check>\n<answer>${sanitizeTagged(answer)}</answer>${taskLang(task, b, req)}`,
           maxTokens: 300,
           cacheSystem: true,
           signal: req.signal,
@@ -676,7 +699,7 @@ export function createExamHandler(deps: ExamDeps) {
       const points = correctPoints(task!, answerText, p, numeric);
       // K1.7 (Oscar: "du har räknat ut summan rätt, eftersom 66 ingår" for "ungefär 16"): a bare wrong number
       // shows no work, so the feedback never praises a method; it says so in code
-      if (numeric && !numeric.equal && isBareNumber(answerText)) {
+      if (numeric && !numeric.equal && isBareNumber(answerText) && isCalculationTask(task!)) { // O104 G-b: calculations only
         feedback = "Svaret stämmer inte, och utan uträkning finns ingen metod att ge poäng för. Visa hur du räknar, steg för steg.";
       }
       return json({ points, max, total: points.E + points.C + points.A, numeric, feedback, usage });

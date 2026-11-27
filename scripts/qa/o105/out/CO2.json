@@ -1,0 +1,71 @@
+{
+ "id": "adhoc",
+ "status": "done",
+ "prompts": [
+  {
+   "stem": "adhoc.t1.c1",
+   "case": "adhoc",
+   "turn": 1,
+   "call": 1,
+   "endpoint": "exam",
+   "url": "https://k122-replay.invalid/v1/messages",
+   "client_request": {
+    "action": "compress",
+    "text": "Mitokondrien kallas cellens kraftverk. Där sker cellandningen, när socker och syre blir energi i form av ATP. Det bildas också koldioxid och vatten.",
+    "lang": "sv"
+   },
+   "anthropic_request": {
+    "model": "claude-haiku-5-5",
+    "max_tokens": 250,
+    "stream": true,
+    "system": [
+     {
+      "type": "text",
+      "text": "You shorten a text that a student will hear read aloud. You get <text>. Return ONLY the shortened text: about half as long, every fact, name, number and step kept, nothing added, in the same order, written in the same language as the text (never translated), as plain sentences for listening (no headings, lists, markdown or quotes). No comment before or after it.",
+      "cache_control": {
+       "type": "ephemeral"
+      }
+     }
+    ],
+    "messages": [
+     {
+      "role": "user",
+      "content": "<text>\nMitokondrien kallas cellens kraftverk. Där sker cellandningen, när socker och syre blir energi i form av ATP. Det bildas också koldioxid och vatten.\n</text>"
+     }
+    ],
+    "output_config": {
+     "effort": "low"
+    },
+    "thinking": {
+     "type": "disabled"
+    }
+   },
+   "reply_hint": "Plain text: only the shortened text, as the system prompt says."
+  }
+ ],
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "exam",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "exam-compress",
+     "provider": "anthropic",
+     "model": "claude-haiku-5-5",
+     "input_tokens": 192,
+     "output_tokens": 39,
+     "total_ms": 8,
+     "est_cost_usd": 3.8700000000000006e-05,
+     "status": "ok"
+    }
+   ],
+   "credits": [],
+   "json": {
+    "text": "Mitokondrien kallas cellens kraftverk, där cellandningen gör socker och syre till energi i form av ATP, och koldioxid och vatten bildas."
+   }
+  }
+ ],
+ "blocked": []
+}

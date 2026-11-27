@@ -30,6 +30,20 @@ final class Speaker {
 
     private let apple: any TTSProvider
     private let premium: (any TTSProvider)?
+    /// K124 (D267): the server said the voice service's quota is out (`tts_quota`). It answers so for 10 minutes
+    /// without trying, so the phone's own voice reads until then without asking it for every sentence.
+    private(set) var premiumPausedUntil: Date?
+    static let quotaPause: TimeInterval = 10 * 60
+    /// Tests move the clock.
+    var now: @MainActor () -> Date = { Date() }
+
+    var isPremiumPaused: Bool { premiumPausedUntil.map { now() < $0 } ?? false }
+
+    /// K124: the voice service's own "the quota is out", not a dropped connection.
+    nonisolated static func isQuotaOut(_ error: TTSError) -> Bool {
+        if case .network(.backend(_, let failure)) = error { return failure.code == "tts_quota" }
+        return false
+    }
     private let playback: any PlaybackServicing
     private var queue: [Request] = []
     private var drainTask: Task<Void, Never>?
@@ -96,7 +110,7 @@ final class Speaker {
     func prepare(_ text: String, language: TranscriptionLanguage) -> Bool {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
         let voice = settings.voice
-        guard settings.speakAnswers, voice.kind == .elevenLabs, let premium, !trimmed.isEmpty, prepared[trimmed] == nil else {
+        guard settings.speakAnswers, voice.kind == .elevenLabs, let premium, !isPremiumPaused, !trimmed.isEmpty, prepared[trimmed] == nil else {
             return false
         }
         prepared[trimmed] = Task { try? await premium.synthesize(trimmed, language: language, voice: voice) }
@@ -176,7 +190,7 @@ final class Speaker {
 
     private func speak(_ request: Request) async {
         onSpeak?(request.text)
-        let provider: any TTSProvider = (request.voice.kind == .elevenLabs ? premium : nil) ?? apple
+        let provider: any TTSProvider = (request.voice.kind == .elevenLabs && !isPremiumPaused ? premium : nil) ?? apple
         if let task = prepared.removeValue(forKey: request.text), let audio = await task.value, !audio.samples.isEmpty {
             // Fetched while the user was still pausing (D80): it plays at once.
             status = .speaking(provider: provider.name)
@@ -205,6 +219,7 @@ final class Speaker {
             if Task.isCancelled || error == .cancelled { return }
             Log.playback.error("\(provider.name, privacy: .public) failed: \(error.localizedDescription, privacy: .public)")
             if error.wantsFallback, provider.name != apple.name {
+                if Self.isQuotaOut(error) { premiumPausedUntil = now().addingTimeInterval(Self.quotaPause) } // K124
                 fallbackCount += 1
                 notice = "Premium voice unavailable — using Apple's voice (\(error.localizedDescription))"
                 onVoiceFallback?(error.localizedDescription)

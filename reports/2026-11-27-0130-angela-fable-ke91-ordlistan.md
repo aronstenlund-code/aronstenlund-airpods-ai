@@ -42,7 +42,7 @@ Angela Fable (moln), 2026-11-27. Beställt av Deangelo 00:10 ("Kellys tio ordfö
 
 - 2 nya enhetstester (`LumenTests/Ke91WordsTests.swift`): de engelska orden, att svenskan är oförändrad, och att den
   egna inspelningen fortfarande säger "sound".
-- KÖRNINGEN
+- **iOS build 45917720523 på min gren grön i sin helhet (enhetsbygge utan varningar, alla enhetstester, App Store-arkivet)** (verifierat i CI, Simulator). Bygget har båda punkterna.
 - 0 ElevenLabs.
 
 ## Samordning med Angela Schrute
