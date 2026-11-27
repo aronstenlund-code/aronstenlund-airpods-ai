@@ -1,4 +1,5 @@
 import Foundation
+import NaturalLanguage
 import Observation
 import UIKit
 import UserNotifications
@@ -267,6 +268,9 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var isShowingSettings = false
     /// The flow: Historik straight from Lyssnar's ⋯ menu (it was Tillbaka → Inställningar → a long scroll).
     var isShowingHistory = false
+    /// Historik: the row whose answer is being read again, while it is read (its button shows ■).
+    private(set) var readingAgain: UUID?
+    @ObservationIgnored private var readingAgainTask: Task<Void, Never>?
     /// Kelly B2: the page with the listening modes ("Fler lägen") is open on Start. Here and not in the view, so
     /// Avsluta on Lyssnar comes back to the page with Starta EarMind, where the listening was started.
     var showsMoreModes = false
@@ -773,6 +777,41 @@ final class ListeningModel: TranscriptSink, AnswerSink {
 
     func previewVoice() {
         speaker.preview(speaker.settings.voice, language: language)
+    }
+
+    /// Historik (Deangelo 2026-11-27): one tap reads an answer again in the AirPods, in its own language, with the
+    /// chosen voice or the phone's own (no network, no credits). Nothing is sent but the voice's request.
+    func readAgain(_ entry: HistoryEntry) {
+        readingAgainTask?.cancel()
+        readingAgain = entry.id
+        speaker.readAgain(entry.answer, language: Self.spokenLanguage(of: entry.answer, otherwise: language))
+        let id = entry.id
+        readingAgainTask = Task { [weak self] in
+            try? await Task.sleep(for: .milliseconds(300)) // the voice has begun
+            while let self, !Task.isCancelled, self.readingAgain == id, self.speaker.isSpeaking {
+                try? await Task.sleep(for: .milliseconds(200))
+            }
+            guard let self, !Task.isCancelled, self.readingAgain == id else { return }
+            self.readingAgain = nil
+        }
+    }
+
+    func stopReadingAgain() {
+        readingAgainTask?.cancel()
+        readingAgain = nil
+        speaker.interrupt()
+    }
+
+    /// The language an answer is written in (Swedish or English), else the one EarMind listens in.
+    nonisolated static func spokenLanguage(of text: String, otherwise fallback: TranscriptionLanguage) -> TranscriptionLanguage {
+        let recognizer = NLLanguageRecognizer()
+        recognizer.languageConstraints = [.swedish, .english]
+        recognizer.processString(text)
+        switch recognizer.dominantLanguage {
+        case .english?: return .english
+        case .swedish?: return .swedish
+        default: return fallback
+        }
     }
 
     /// A26 R5: ▶ on a voice's row plays that voice without choosing it.

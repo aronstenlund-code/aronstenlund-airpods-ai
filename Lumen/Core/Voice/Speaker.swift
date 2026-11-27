@@ -77,6 +77,16 @@ final class Speaker {
         startDrainingIfNeeded()
     }
 
+    /// Historik: an answer read again on the user's own tap, with the chosen voice (the phone's own when that cannot:
+    /// no network, no credits). Whatever is being said stops first. Also in silent mode: the tap asks for it.
+    func readAgain(_ text: String, language: TranscriptionLanguage) {
+        interrupt()
+        let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        queue.append(Request(text: trimmed, language: language, voice: settings.voice))
+        startDrainingIfNeeded()
+    }
+
     /// A5: a short message from the app itself, always in Apple's voice: it must be heard when ElevenLabs is the
     /// thing that failed. Ignored in silent mode (it is on the screen anyway).
     func announce(_ text: String, language: TranscriptionLanguage) {

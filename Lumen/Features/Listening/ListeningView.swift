@@ -86,7 +86,7 @@ struct ListeningView: View {
         .sheet(isPresented: $model.isShowingHistory) {
             // The flow: from Lyssnar's ⋯ menu; the listening goes on underneath.
             NavigationStack {
-                HistoryView(store: model.history)
+                HistoryView(store: model.history, listening: model)
                     .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Klar") { model.isShowingHistory = false } } }
             }
         }

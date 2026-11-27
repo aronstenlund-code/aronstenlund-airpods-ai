@@ -49,6 +49,36 @@ struct HistoryEntry: Identifiable, Codable, Equatable, Sendable {
         entries.filter { $0.matches(search) }
     }
 
+    /// Historik: the rows under their day, the newest first ("I dag", "I går", then the date).
+    struct Day: Identifiable, Equatable {
+        var id: Date { start }
+        var start: Date
+        var title: String
+        var entries: [HistoryEntry]
+    }
+
+    static func days(_ entries: [HistoryEntry], now: Date = Date(), calendar: Calendar = .current) -> [Day] {
+        let sorted = entries.sorted { $0.createdAt > $1.createdAt }
+        var days: [Day] = []
+        for entry in sorted {
+            let start = calendar.startOfDay(for: entry.createdAt)
+            if days.last?.start == start {
+                days[days.count - 1].entries.append(entry)
+            } else {
+                days.append(Day(start: start, title: dayTitle(start, now: now, calendar: calendar), entries: [entry]))
+            }
+        }
+        return days
+    }
+
+    static func dayTitle(_ day: Date, now: Date, calendar: Calendar) -> String {
+        if calendar.isDate(day, inSameDayAs: now) { return String(localized: "I dag") }
+        if let yesterday = calendar.date(byAdding: .day, value: -1, to: now), calendar.isDate(day, inSameDayAs: yesterday) {
+            return String(localized: "I går")
+        }
+        return day.formatted(.dateTime.weekday(.wide).day().month(.wide))
+    }
+
     private static func folded(_ text: String) -> String {
         text.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
     }
