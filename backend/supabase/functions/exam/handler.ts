@@ -246,7 +246,26 @@ export function lastNumber(text: string): number | null {
 }
 
 /** "beräkningar i kod": the student's final number against the correct one. Exact for whole numbers, two decimals otherwise. */
+/**
+ * O107 F1 (Oscar): a digit with a scale word is one number ("5 miljoner" = 5 000 000, "2,5 miljarder"), and "minus 4"
+ * is −4, before the spoken numbers are read.
+ */
+const SCALE: Record<string, number> = { tusen: 1e3, thousand: 1e3, miljon: 1e6, miljoner: 1e6, million: 1e6, millions: 1e6, miljard: 1e9, miljarder: 1e9, billion: 1e9, billions: 1e9 };
+export function numericText(t: string): string {
+  return t
+    .replace(/(\d+(?:[.,]\d+)?)\s*(tusen|thousand|miljon(?:er)?|millions?|miljard(?:er)?|billions?)(?![\p{L}])/giu, (_m, n: string, w: string) => {
+      const v = Number(n.replace(",", ".")) * SCALE[w.toLowerCase()];
+      return Number.isFinite(v) ? String(Math.round(v * 1000) / 1000) : _m;
+    })
+    .replace(/(?<![\p{L}])minus\s+(?=\d)/giu, "-")
+    .replace(/(\d)\.(?=\s|$)/gu, "$1"); // a number at the end of a sentence ("… med 5000000.")
+}
+
 export function numericCheck(correct: string, answer: string): { expected: number; given: number | null; equal: boolean } | null {
+  // O107 F1: several roots or values ("x = 2 eller x = −4", "x₁ = 3, x₂ = -1") are no single number: the scoring rules decide
+  if ((correct.match(/(?<![\p{L}])[a-zA-Z][₀-₉\d]?\s*=\s*[-−]?\d/gu) ?? []).length >= 2) return null;
+  correct = numericText(correct);
+  answer = numericText(answer);
   // an algebraic answer ("8 − x") is not a number: no numeric check, the scoring rules decide
   if (/[+\-−*/^]\s*\(?[a-zåäö]\)?\s*$|^\s*[a-zåäö]\s*[+\-−*/^]/i.test(correct.trim())) return null;
   // O104 G-a (Oscar): in a worded facit ("När en syra och en bas blandas …") "en"/"ett" is an article, not the number
