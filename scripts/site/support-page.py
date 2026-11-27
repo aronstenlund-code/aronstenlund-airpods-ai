@@ -43,6 +43,7 @@ CSS = rules(".top {", ".langsw", ".fine") + """
   .topic ol li + li { margin-top: 2px; }
   .topic b { color: var(--ink); font-weight: 600; }
   .back { display: inline-block; margin-top: 28px; color: var(--blue); }
+  .lead a { color: var(--blue); }
   .top.narrow { max-width: 760px; }
 """
 
@@ -53,6 +54,7 @@ T = {
         "desc": "How to get started with EarMind, use your AirPods, credits, Record it yourself and privacy.",
         "h1": "Help and support",
         "lead": "Short answers to common questions about EarMind. The app is in English and Swedish.",
+        "start": 'New to EarMind? <a href="/start">Get started in five steps</a>.',
         "back": "Back to EarMind",
         "contact": "Something not working? In the app, go to <b>Settings › Feedback and suggestions</b> and tell us what happened.",
         "topics": [
@@ -100,6 +102,7 @@ T = {
         "desc": "Så kommer du igång med EarMind, använder dina AirPods, krediter, Spela in själv och integritet.",
         "h1": "Hjälp och support",
         "lead": "Korta svar på vanliga frågor om EarMind. Appen finns på svenska och engelska.",
+        "start": 'Ny i EarMind? <a href="/sv/start">Kom igång i fem steg</a>.',
         "back": "Tillbaka till EarMind",
         "contact": "Fungerar något inte? Gå till <b>Inställningar › Feedback och förslag</b> i appen och berätta vad som hände.",
         "topics": [
@@ -182,6 +185,7 @@ def page(t):
 <main class="help wrap">
   <h1>{html.escape(t['h1'])}</h1>
   <p class="lead">{html.escape(t['lead'])}</p>
+  <p class="lead">{t['start']}</p>
   <nav class="toc" aria-label="{html.escape(t['h1'])}">{toc}</nav>
   {''.join(secs)}
   <p class="fine">{t['contact']}</p>
