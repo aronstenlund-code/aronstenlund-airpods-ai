@@ -48,7 +48,7 @@ bara svenska röster), och priserna i kr kommer från simulatorns butik.
 "AirPods" står inte i namnet, undertiteln eller nyckelorden (D122, Apples varumärkesregler), bara i beskrivningen.
 Ke78-sidorna är på svenska; en engelsk version behövs innan den engelska sidan skickas in (förslag, Arons ja först).
 
-**Description** (2 406 av 4 000 tecken):
+**Description** (2 508 av 4 000 tecken):
 
 > Type what you want to hear, or snap your textbook. EarMind reads it in your earbuds, again and again.
 >
@@ -84,6 +84,7 @@ Ke78-sidorna är på svenska; en engelsk version behövs innan den engelska sida
 > MORE MODES (BETA)
 > EarMind also has modes that listen to what you say and answer in your ear, like a spoken quiz. They ask for permission and for the microphone before they start, and always show that they're listening.
 > • Question you're not prepared for? Say your own words, and EarMind answers the question that was just asked.
+> • Questions and answers are saved in History on your phone, where you can search and play them again.
 >
 > WHEN OUR SERVER CAN'T ANSWER
 > On iPhones with Apple Intelligence, EarMind can answer and grade with the phone's own model instead, and tells you when it does. No credits are used for that.
@@ -104,7 +105,7 @@ Ke78-sidorna är på svenska; en engelsk version behövs innan den engelska sida
 
 URL:er, kategori och åldersgräns som på engelska.
 
-**Beskrivning** (2 383 av 4 000 tecken):
+**Beskrivning** (2 473 av 4 000 tecken):
 
 > Skriv det du vill höra, eller fota boken. EarMind läser upp det i dina hörlurar, om och om igen.
 >
@@ -140,6 +141,7 @@ URL:er, kategori och åldersgräns som på engelska.
 > FLER LÄGEN (BETA)
 > EarMind har också lägen som lyssnar på vad du säger och svarar i örat, till exempel förhör med rösten. De frågar om lov och om mikrofonen innan de startar, och visar hela tiden att de lyssnar.
 > • Fråga du inte är beredd på? Säg dina egna ord, så svarar EarMind på frågan som just ställdes.
+> • Frågor och svar sparas i Historik på telefonen, där du kan söka och spela upp dem igen.
 >
 > NÄR VÅR SERVER INTE KAN SVARA
 > På iPhone med Apple Intelligence kan EarMind svara och rätta med telefonens egen modell i stället, och säger till när den gör det. Det kostar inga krediter.
@@ -187,6 +189,7 @@ Mot `granskning.md` §1 och dagens main. [V] i koden eller beslut, [S] sett i Si
 | Egna ord aktiverar svaret på frågan som just ställdes (Ke90) | [V] A162; att orden hörs i riktigt tal **[O]** |
 | Telefonens egen modell svarar och rättar, säger till, inga krediter (Ke90) | [V] A159/A160 med låtsasmodell i CI; **[O]** på telefon, se §3 punkt 4 |
 | Spela in själv, gratis, ljudet stannar på telefonen (Ke90) | [V] A164/A165 (`OwnDeckStore` på telefonen, `PhoneVoice` = `AVSpeechSynthesizer` för det som inte är inspelat); [S] A165. Inspelning på telefon **[O]** |
+| Historik: söka och spela upp igen, på telefonen (Ke95) | [V] D269/D271; [S] `fable/screens-historik` (sök, ▶, "Saved only on this iPhone") |
 | **Står inte i texten:** låst skärm (D209), "andra hörlurar", att ljudet fungerar utan nät | medvetet utelämnat |
 
 ## Göra om bilderna
