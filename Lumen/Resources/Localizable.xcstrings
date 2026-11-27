@@ -8342,19 +8342,19 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov använder aldrig mikrofonen.": {
+    "Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov och Säg i AirPods använder aldrig mikrofonen. Att fråga högt gör det, när du har sagt ja på nästa skärm.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "The photos and the text are sent once to make the questions and aren't saved. Start quiz never uses the microphone."
+            "value": "The photos and the text are sent once to make the questions and aren't saved. Start quiz and Say in AirPods never use the microphone. Asking out loud does, after you say yes on the next screen."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov använder aldrig mikrofonen."
+            "value": "Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov och Säg i AirPods använder aldrig mikrofonen. Att fråga högt gör det, när du har sagt ja på nästa skärm."
           }
         }
       },
@@ -8540,19 +8540,19 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "Fråga du inte är beredd på? Säg": {
+    "Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "Question you're not prepared for? Say"
+            "value": "Question you're not prepared for? Say [ … ] so our AI activates."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fråga du inte är beredd på? Säg"
+            "value": "Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI."
           }
         }
       },
@@ -11045,6 +11045,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hör inte, försöker igen"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Hör: %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Hearing: %@"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hör: %@"
           }
         }
       },
@@ -27965,6 +27983,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Vår server är upptagen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Our server is busy."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vår server är upptagen."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "What was wrong? (optional)": {
       "extractionState": "manual",
       "localizations": {
@@ -28976,19 +29012,19 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "så aktiveras vår AI.": {
+    "t.ex. Hjälp mig": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "so our AI activates."
+            "value": "e.g. Help me"
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "så aktiveras vår AI."
+            "value": "t.ex. Hjälp mig"
           }
         }
       },

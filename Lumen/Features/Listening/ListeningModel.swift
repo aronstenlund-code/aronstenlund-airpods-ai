@@ -268,6 +268,22 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     var isShowingSettings = false
     /// The flow: Historik straight from Lyssnar's ⋯ menu (it was Tillbaka → Inställningar → a long scroll).
     var isShowingHistory = false
+    /// Kelly Ke93 (2): the activation words' row on Lyssnar once there has been an answer (this pass or ever), or
+    /// when words are set. The very first listening shows only "Fråga vad du vill."
+    var showsActivationWords: Bool {
+        !activation.settings.phrase.isEmpty || !conversation.answers.isEmpty || !history.entries.isEmpty
+    }
+
+    /// Kelly (D269 a): what is heard right now, in grey under the badge, so one sees one is heard. Not Lumen's own
+    /// voice; the end of it when it is long (two lines). Gone when the words are final (the answer comes).
+    var heardLine: String? {
+        guard let partial = conversation.partial, !partial.overlapsPlayback else { return nil }
+        let text = partial.text.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !text.isEmpty else { return nil }
+        return text.count > Self.heardLineLimit ? "…" + String(text.suffix(Self.heardLineLimit)) : text
+    }
+    static let heardLineLimit = 120
+
     /// Historik: the row whose answer is being read again, while it is read (its button shows ■).
     private(set) var readingAgain: UUID?
     @ObservationIgnored private var readingAgainTask: Task<Void, Never>?

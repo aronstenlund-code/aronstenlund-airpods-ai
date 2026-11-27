@@ -47,7 +47,8 @@ struct ListeningScreen: View {
                         ErrorCard(problem: problem) { model.act(on: problem) }
                     }
                     // A162 (D259): the user's own activation words, where answers come (not in Socialt and Rizz).
-                    if !mode.isLive { ActivationWordsField(settings: model.activation.settings) }
+                    // Kelly Ke93 (2): not before the first answer.
+                    if !mode.isLive, model.showsActivationWords { ActivationWordsField(settings: model.activation.settings) }
                     latest
                     previous
                     notices
@@ -123,7 +124,20 @@ struct ListeningScreen: View {
                     .foregroundStyle(LumenColor.muted)
                     .multilineTextAlignment(.center)
             }
+            if let heard = model.heardLine {
+                // Kelly (D269 a): what is heard, grey, at most two lines (the end shows), gone when the answer comes.
+                Text(verbatim: heard)
+                    .font(LumenFont.text(15, relativeTo: .subheadline))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .truncationMode(.head)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .accessibilityLabel(Text(String(localized: "Hör: \(heard)")))
+                    .transition(.opacity)
+            }
         }
+        .animation(.easeOut(duration: 0.15), value: model.heardLine == nil)
         .padding(.horizontal, 12)
         .padding(.top, 4)
         .padding(.bottom, 12)

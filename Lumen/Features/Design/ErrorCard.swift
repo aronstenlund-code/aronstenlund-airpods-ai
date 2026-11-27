@@ -30,7 +30,7 @@ enum LumenProblem: Equatable, Sendable {
         case .microphoneDenied: String(localized: "Mikrofonen är avstängd. Slå på den i Inställningar för att fortsätta.")
         case .offline: String(localized: "EarMind behöver internet för att svara. Den fortsätter lyssna och svarar igen när du är uppkopplad.")
         case .airPodsDisconnected: String(localized: "Svaren hörs nu i telefonens högtalare.")
-        case .overloaded: String(localized: "Försök igen om en stund.")
+        case .overloaded: String(localized: "Vår server är upptagen.") // Kelly Ke93 (4): the button says Försök igen
         case .voiceUnavailable: String(localized: "Svaren läses med iPhonens röst tills den fungerar igen.")
         case .cannotHear: String(localized: "Taligenkänningen gick ner. EarMind försöker igen av sig själv.")
         }

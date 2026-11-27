@@ -358,6 +358,7 @@
  "Foton, dokument och text du lägger till skickas en gång till vår server och vår AI-leverantör för att göra frågorna. De sparas inte.": "Photos, documents and text you add are sent once to our server and our AI provider to make the questions. They aren't saved.",
  "Foton, dokument och text skickas en gång för att göra frågorna och sparas inte.": "Photos, documents and text are sent once to make the questions and aren't saved.",
  "Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov använder aldrig mikrofonen.": "The photos and the text are sent once to make the questions and aren't saved. Start quiz never uses the microphone.",
+ "Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov och Säg i AirPods använder aldrig mikrofonen. Att fråga högt gör det, när du har sagt ja på nästa skärm.": "The photos and the text are sent once to make the questions and aren't saved. Start quiz and Say in AirPods never use the microphone. Asking out loud does, after you say yes on the next screen.",
  "Fotosyntes. Växter gör socker av koldioxid och vatten med ljusets energi.": "Photosynthesis. Plants make sugar from carbon dioxide and water with the energy of light.",
  "Fotosyntes: koldioxid + vatten + ljus blir socker och syre.": "Photosynthesis: carbon dioxide + water + light become sugar and oxygen.",
  "Fotosyntes\\nVäxter gör socker av koldioxid och vatten. De behöver ljus för det. Syre blir över.": "Photosynthesis\\nPlants make sugar from carbon dioxide and water. They need light for it. Oxygen is left over.",
@@ -371,6 +372,7 @@
  "Fråga \\(player.index + 1) av \\(player.count)": "Question \\(player.index + 1) of \\(player.count)",
  "Fråga \\(task.no)": "Question \\(task.no)",
  "Fråga du inte är beredd på? Säg": "Question you're not prepared for? Say",
+ "Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI.": "Question you're not prepared for? Say [ … ] so our AI activates.",
  "Fråga hur något i EarMind fungerar. Svaren handlar bara om appen.": "Ask how something in EarMind works. The answers are only about the app.",
  "Fråga högt": "Ask out loud",
  "Fråga högt. Få svaret i örat.": "Ask out loud. Get the answer in your ear.",
@@ -1397,6 +1399,7 @@
  "Vändkort": "Flip cards",
  "Vänta": "Wait",
  "Väntar på ditt tryck": "Waiting for your press",
+ "Vår server är upptagen.": "Our server is busy.",
  "\\\"Nästa låt\\\" och \\\"förra låten\\\" byter låt i Spotify när den är kopplad, annars i Apple Music. Annars: tryck två gånger på AirPods.": "\\\"Nästa låt\\\" and \\\"förra låten\\\" change song in Spotify when it is connected, otherwise in Apple Music. Otherwise: press twice on your AirPods.",
  "\\\"Upprepa\\\", \\\"viska\\\", \\\"högre\\\", \\\"kortare\\\", \\\"snabbare\\\" och \\\"utveckla\\\" som hela meningen.": "\\\"Upprepa\\\", \\\"viska\\\", \\\"högre\\\", \\\"kortare\\\", \\\"snabbare\\\" and \\\"utveckla\\\" as the whole sentence.",
  "\\($0.title): \\($0.dots) tryck.": "\\($0.title), presses: \\($0.dots).",
@@ -1535,6 +1538,7 @@
  "som \\($0)": "as \\($0)",
  "standard": "default",
  "så aktiveras vår AI.": "so our AI activates.",
+ "t.ex. Hjälp mig": "e.g. Help me",
  "till \\(day)": "until \\(day)",
  "tryck 1 gång för frågans A-svar.": "press once for the question's top-grade answer.",
  "under en minut": "under a minute",
@@ -1592,5 +1596,6 @@
  "åk 9": "Year 9",
  "”Lumen, jag har prov i engelska på onsdag”": "”Lumen, jag har prov i engelska på onsdag”",
  "”Säg mina svar” är av i Inställningar. EarMind svarar själv tills du sätter på det.": "“Say my answers” is off in Settings. EarMind answers by itself until you turn it on.",
- "✓ Tillåtet": "✓ Allowed"
+ "✓ Tillåtet": "✓ Allowed",
+ "Hör: \\(heard)": "Hearing: \\(heard)"
 }

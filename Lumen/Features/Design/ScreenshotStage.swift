@@ -78,13 +78,18 @@ struct ScreenshotStage: View {
         }
         let today = Calendar.current.startOfDay(for: Date())
         func day(_ n: Int) -> Date { Calendar.current.date(byAdding: .day, value: n, to: today) ?? today }
-        if model.examPlans?.plans.isEmpty == true {
-            model.examPlans?.save(ExamPlan(grade: .y9, area: .no, subject: "Biologi", date: day(5), topics: "fotosyntes, cellandning"))
-            model.examPlans?.save(ExamPlan(grade: .y9, area: .sprak, subject: "Engelska", date: day(10)))
-            model.examPlans?.save(ExamPlan(grade: .y9, area: .so, subject: "Historia", date: day(16)))
+        // Kelly Ke93 (5): the demo in the app's language, as in `listeningActivation`.
+        let english = AppLanguage.current == .en
+        // The simulator keeps the plans between launches: the language of this launch decides them.
+        if model.examPlans?.plans.contains(where: { $0.subject == (english ? "Biology" : "Biologi") }) != true {
+            for plan in model.examPlans?.plans ?? [] { model.examPlans?.delete(plan.id) }
+            model.examPlans?.save(ExamPlan(grade: .y9, area: .no, subject: english ? "Biology" : "Biologi", date: day(5),
+                                           topics: english ? "photosynthesis, respiration" : "fotosyntes, cellandning"))
+            model.examPlans?.save(ExamPlan(grade: .y9, area: .sprak, subject: english ? "English" : "Engelska", date: day(10)))
+            model.examPlans?.save(ExamPlan(grade: .y9, area: .so, subject: english ? "History" : "Historia", date: day(16)))
         }
         var profile = model.studyProfile.profile
-        profile.subject = "Biologi"
+        profile.subject = english ? "Biology" : "Biologi"
         profile.grade = .y9
         profile.examDate = day(5)
         profile.onboarded = true
@@ -101,10 +106,17 @@ struct ScreenshotStage: View {
             for card in FlipDemo.cards { model.studyCards?.add(question: card.question, answer: card.answer, profile: profile) }
         }
         if model.conversation.answers.isEmpty {
-            model.receiveAnswer(question: "Vad är klorofyll?", answer: "Klorofyll är det gröna ämnet i bladen som fångar ljuset.", source: "cloud")
-            model.receiveAnswer(question: "Vad är fotosyntes?",
-                                answer: "Fotosyntesen är när växter använder ljusenergi för att göra socker av koldioxid och vatten. Syre bildas som en restprodukt.",
-                                source: "cloud")
+            if english {
+                model.receiveAnswer(question: "What is chlorophyll?", answer: "Chlorophyll is the green substance in leaves that captures light.", source: "cloud")
+                model.receiveAnswer(question: "What is photosynthesis?",
+                                    answer: "Photosynthesis is how plants use light energy to make sugar from carbon dioxide and water. Oxygen is left over.",
+                                    source: "cloud")
+            } else {
+                model.receiveAnswer(question: "Vad är klorofyll?", answer: "Klorofyll är det gröna ämnet i bladen som fångar ljuset.", source: "cloud")
+                model.receiveAnswer(question: "Vad är fotosyntes?",
+                                    answer: "Fotosyntesen är när växter använder ljusenergi för att göra socker av koldioxid och vatten. Syre bildas som en restprodukt.",
+                                    source: "cloud")
+            }
         }
         // A53: three of the student's own answers for the nearest exam (one recorded); none for "myAnswersEmpty".
         if let store = model.myAnswers, let nearest = model.examPlans?.upcoming().first {
