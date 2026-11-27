@@ -1820,24 +1820,6 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "-%lld %%": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "-%lld%%"
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "-%lld %%"
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
     ". Och ett längre svar med förklaring och exempel.": {
       "extractionState": "manual",
       "localizations": {
@@ -10564,24 +10546,6 @@
         }
       }
     },
-    "Hitta prov från din skola": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Find quizzes from your school"
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Hitta prov från din skola"
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
     "Hittade %@ med svar": {
       "extractionState": "manual",
       "localizations": {
@@ -11200,24 +11164,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "I natt"
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
-    "I natt: %@": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Last night: %@"
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "I natt: %@"
           }
         }
       },
@@ -12872,24 +12818,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Klistra in eller skriv några meningar. Räknas som 3 av dina frågor."
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
-    "Klistra in en länk": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Paste a link"
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Klistra in en länk"
           }
         }
       },
@@ -29925,6 +29853,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "”Säg mina svar” är av i Inställningar. EarMind svarar själv tills du sätter på det."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "−%lld %%": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "−%lld%%"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "−%lld %%"
           }
         }
       },

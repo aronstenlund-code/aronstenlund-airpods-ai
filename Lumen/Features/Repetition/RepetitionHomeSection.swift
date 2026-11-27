@@ -283,42 +283,61 @@ struct RepetitionHomeSection: View {
             }
             .scrollBounceBehavior(.basedOnSize)
         }
+        // Ke93: the same grey ground as Start with quizzes, so the card of rows stands out as it does there.
+        .background(Color(.systemGroupedBackground))
     }
 
     private var emptyContent: some View {
-        ContentUnavailableView {
-            Label("Kom förberedd till provet", systemImage: "book.closed") // A86 (Aron 22:19)
-        } description: {
-            // Kelly Ke67: the reading mode is named too, in the same words as the demo page.
-            Text("Fota ditt material. EarMind gör frågor och svar, eller läser upp texten, i dina AirPods.")
-        } actions: {
-            Button {
-                isCreating = true
-            } label: {
-                FilledButtonLabel { Text("Nytt prov").font(.headline).frame(minWidth: 200) } // A95
+        VStack(spacing: 8) {
+            ContentUnavailableView {
+                Label("Kom förberedd till provet", systemImage: "book.closed") // A86 (Aron 22:19)
+            } description: {
+                // Kelly Ke67: the reading mode is named too, in the same words as the demo page.
+                Text("Fota ditt material. EarMind gör frågor och svar, eller läser upp texten, i dina AirPods.")
+            } actions: {
+                Button {
+                    isCreating = true
+                } label: {
+                    FilledButtonLabel { Text("Nytt prov").font(.headline).frame(minWidth: 200) } // A95
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
             }
-            .buttonStyle(.borderedProminent)
-            .controlSize(.large)
-            if model.ownDecks != nil { // A165 (D263): the free way, right under Nytt prov
-                Button { newOwnDeck() } label: { Self.textButton(OwnDeckText.entry) }
-                    .accessibilityIdentifier("home.ownDecks")
-            }
-            if model.canPublish { // A83 (Ke52 "Hem")
-                Button { showsSchool = true } label: { Self.textButton(String(localized: "Hitta prov från din skola")) }
-            }
-            Button { askingCode = true } label: { Self.textButton(String(localized: "Klistra in en länk")) }
-            if let lastNight {
-                Button(action: onLastNight) { Text(verbatim: String(localized: "I natt: \(lastNight)")) }
-            }
+            emptyRows
         }
     }
 
-    /// A95 (audit: hit area 18 pt high): a text button's whole 44 pt row can be tapped.
-    private static func textButton(_ title: String) -> some View {
-        Text(verbatim: title)
-            .padding(.horizontal, 16)
-            .frame(minHeight: 44)
-            .contentShape(Rectangle())
+    /// Kelly Ke93 (2026-11-27): the other ways in as rows in one card with ›, as on Start with quizzes, instead of
+    /// loose blue links with gaps between them. The first time then looks like the rest of the app.
+    @ViewBuilder
+    private var emptyRows: some View {
+        VStack(spacing: 0) {
+            if model.ownDecks != nil { // A165 (D263): the free way first
+                OwnDeckEntryRow { newOwnDeck() }
+                    .padding(.vertical, 11)
+                    .padding(.horizontal, 16)
+                Divider().padding(.leading, 16)
+            }
+            if model.canPublish { // A83 (Ke52 "Hem")
+                navigationRow(String(localized: "Prov från din skola"), detail: nil) { showsSchool = true }
+                    .padding(.vertical, 11)
+                    .padding(.horizontal, 16)
+                Divider().padding(.leading, 16)
+            }
+            navigationRow(String(localized: "Öppna länk"), detail: nil) { askingCode = true }
+                .accessibilityHint("Öppnar ett prov som någon har delat med dig")
+                .padding(.vertical, 11)
+                .padding(.horizontal, 16)
+            if let lastNight {
+                Divider().padding(.leading, 16)
+                navigationRow(String(localized: "I natt"), detail: lastNight, action: onLastNight)
+                    .padding(.vertical, 11)
+                    .padding(.horizontal, 16)
+            }
+        }
+        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .padding(.horizontal, 16)
+        .padding(.bottom, 16)
     }
 
     // MARK: With exams

@@ -89,6 +89,9 @@ enum SayText {
     /// (background audio) and is steered from the Lock Screen and the AirPods.
     /// A132 (D215.2, Kelly Ke72): shorter, and only until Spela has been pressed once.
     nonisolated static var lockLine: String { String(localized: "Du kan låsa telefonen. Det hörs i AirPods ändå.") }
+    /// Kelly Ke93 (2026-11-27), D209: the line is not tried on a phone yet (TILL-ARON #29), so it is not said. Set to
+    /// true once Aron has heard a text go on with the phone locked.
+    nonisolated static let saysLockLine = false
     static let hasPlayedKey = "say.hasPlayed"
 
     /// A144 (D225, after Toby's T50 and Kevin's times: saving and starting a new text takes 9–10 s today). While
@@ -844,7 +847,7 @@ struct SayInAirPodsField: View {
             Group { compressRow(compressor) }.transition(SayMotion.appear)
         }
         if !isEmpty { Group { styleRow }.transition(SayMotion.appear) }
-        if !hasPlayed { // D215.2: said until Spela has been pressed once, then never
+        if !hasPlayed, SayText.saysLockLine { // D215.2: said until Spela has been pressed once, then never
             Text(verbatim: SayText.lockLine)
                 .font(.footnote)
                 .opacity(0.7)

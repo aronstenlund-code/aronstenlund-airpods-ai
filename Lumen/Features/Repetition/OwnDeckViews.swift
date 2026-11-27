@@ -69,6 +69,7 @@ struct OwnDeckView: View {
     @State private var name: String
     @FocusState private var focus: Field?
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     enum Field: Hashable {
         case name
@@ -137,7 +138,11 @@ struct OwnDeckView: View {
                 .listRowBackground(Color.clear)
                 .accessibilityIdentifier("ownDeck.addCard")
             } footer: {
-                if microphoneNotAskedYet { Text(verbatim: OwnDeckText.micNote).foregroundStyle(LumenColor.secondaryText) }
+                VStack(alignment: .leading, spacing: 6) {
+                    if microphoneNotAskedYet { Text(verbatim: OwnDeckText.micNote) }
+                    if typeSize.isAccessibilitySize { Text(verbatim: OwnDeckText.staysOnPhone) }
+                }
+                .foregroundStyle(LumenColor.secondaryText)
             }
         }
         .listStyle(.insetGrouped)
@@ -151,7 +156,10 @@ struct OwnDeckView: View {
             }
         }
         .safeAreaInset(edge: .bottom) {
-            MainActionBar(title: OwnDeckText.practise, systemImage: "play.fill", note: OwnDeckText.staysOnPhone,
+            // Kelly Ke93: with the largest text the fixed foot took a third of a small screen; the line about it being
+            // free then scrolls with the list (last below the cards), and only Öva stays fixed.
+            MainActionBar(title: OwnDeckText.practise, systemImage: "play.fill",
+                          note: typeSize.isAccessibilitySize ? nil : OwnDeckText.staysOnPhone,
                           isDisabled: !(deck.map { decks.canStart($0) } ?? false) || decks.recording != nil) {
                 focus = nil
                 onPractise()

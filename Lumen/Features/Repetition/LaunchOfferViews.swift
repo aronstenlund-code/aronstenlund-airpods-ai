@@ -26,11 +26,11 @@ struct LaunchOfferSheet: View {
     private var content: some View {
         VStack(spacing: 14) {
             Spacer(minLength: 4)
-            Text(verbatim: LaunchOfferText.badge(offer.percent))
-                .font(.system(size: 60, weight: .bold, design: .rounded))
+            // Kelly Ke93: the discount is said once, in the line under the title (not also as "−65 %" above it).
+            Image(systemName: "tag")
+                .font(.system(size: 44, weight: .regular))
                 .foregroundStyle(.tint)
-                .minimumScaleFactor(0.5)
-                .lineLimit(1)
+                .accessibilityHidden(true)
             Text(verbatim: LaunchOfferText.title)
                 .font(.title2.weight(.semibold))
                 .multilineTextAlignment(.center)

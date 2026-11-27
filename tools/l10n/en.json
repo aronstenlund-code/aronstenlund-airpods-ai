@@ -20,7 +20,6 @@
  ", kan kräva skolkonto": ", may require a school account",
  ", kan kräva skolkonto.": ", may require a school account.",
  ", pausad": ", paused",
- "-\\(percent) %": "-\\(percent)%",
  ". Och ett längre svar med förklaring och exempel.": ". And a longer answer with explanation and examples.",
  ". Svara högt, eller säg nästa.": ". Answer out loud, or say “next”.",
  "1 anmärkning": "1 note",
@@ -1589,5 +1588,6 @@
  "åk 9": "Year 9",
  "”Lumen, jag har prov i engelska på onsdag”": "”Lumen, jag har prov i engelska på onsdag”",
  "”Säg mina svar” är av i Inställningar. EarMind svarar själv tills du sätter på det.": "“Say my answers” is off in Settings. EarMind answers by itself until you turn it on.",
+ "−\\(percent) %": "−\\(percent)%",
  "✓ Tillåtet": "✓ Allowed"
 }

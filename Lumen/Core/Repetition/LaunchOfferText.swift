@@ -7,8 +7,8 @@ enum LaunchOfferText {
     static var seePacks: String { String(localized: "Se paketen") }
     static var notNow: String { String(localized: "Inte nu") }
 
-    /// "-65 %".
-    static func badge(_ percent: Int) -> String { String(localized: "-\(percent) %") }
+    /// "−65 %", with a minus sign (Kelly Ke93: not a hyphen).
+    static func badge(_ percent: Int) -> String { String(localized: "−\(percent) %") }
 
     /// What the week's offer is on: the credit packs (their launch twins), the weekly pass (its first week), or both.
     struct Covers: Equatable, Sendable {

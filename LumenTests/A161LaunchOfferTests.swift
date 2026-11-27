@@ -246,7 +246,7 @@ import Testing
     // MARK: The words
 
     @Test func theWordsSayThePercentAndHowLongIsLeft() {
-        #expect(LaunchOfferText.badge(65) == "-65 %")
+        #expect(LaunchOfferText.badge(65) == "−65 %") // Ke93: a minus sign
         #expect(LaunchOfferText.left(seconds: 2 * 86_400 + 4 * 3600 + 30 * 60) == "Slutar om 2 dagar 4 tim")
         #expect(LaunchOfferText.left(seconds: 86_400 + 60) == "Slutar om 1 dag 0 tim")
         #expect(LaunchOfferText.left(seconds: 4 * 3600 + 12 * 60 + 59) == "Slutar om 4 tim 12 min")
