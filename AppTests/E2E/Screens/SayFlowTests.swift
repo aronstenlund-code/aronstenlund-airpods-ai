@@ -383,13 +383,27 @@ final class SayFlowTests: XCTestCase {
         guard !capsules.isEmpty else { return miss("no capsule for the text in Senaste") }
         clearField()
         log.append("T46 field before the capsule: \((field.value as? String)?.prefix(40) ?? "-")")
-        guard tap([capsules[0]], "the capsule in Senaste") else { return false }
-        pause(2)
+        // A168 (Angela Fable 2026-11-27 04:57): one tap on a capsule plays the text again at once (its sound is on the
+        // phone); "Lägg i fältet" is in the long press.
+        guard tap([capsules[0]], "the capsule in Senaste (plays, A168)") else { return false }
+        var plays = false
+        let end = Date().addingTimeInterval(10)
+        repeat { plays = text(starting: "Spelar i AirPods") != nil || timeLeft() != nil; if !plays { pause(0.5) } } while !plays && Date() < end
+        log.append("A168 a tap on the capsule plays: \(plays)")
+        screen("senaste-spelar", "A tap on a text in Senaste plays it (A168)")
+        if !plays { ok = miss("a tap on the capsule did not play the text (A168)") }
+        stopOnCard()
+        clearField()
+        guard let again = recentCapsules().first, let capsule = find([again]) else { return miss("no capsule after Stoppa") }
+        capsule.press(forDuration: 1.2)
+        pause(1)
+        guard tap(["Lägg i fältet", "Put in the field*"], "long press → Lägg i fältet (A168)") else { return false }
+        pause(1.5)
         let value = (field.value as? String) ?? ""
-        log.append("T46 field after the capsule: \(value.prefix(60))")
-        if !value.contains("Klorofyllet i bladen fångar ljuset") { ok = miss("the capsule did not put the text back in the field") }
-        if text(starting: "Spelar i AirPods") != nil || timeLeft() != nil { ok = miss("a tap on the capsule started playing (it should only put the text back)") }
-        screen("senaste-tillbaka", "The text back in the field from Senaste")
+        log.append("A168 field after Lägg i fältet: \(value.prefix(60))")
+        if !value.contains("Klorofyllet i bladen fångar ljuset") { ok = miss("Lägg i fältet did not put the text back in the field") }
+        if text(starting: "Spelar i AirPods") != nil || timeLeft() != nil { ok = miss("Lägg i fältet started playing (it should only put the text back)") }
+        screen("senaste-tillbaka", "The text back in the field from Senaste (long press)")
         return ok
     }
 
@@ -404,10 +418,9 @@ final class SayFlowTests: XCTestCase {
         var ok = true
         clearField()
         guard let capsule = recentCapsules().first else { return miss("no capsule in Senaste to play offline") }
-        guard tap([capsule], "the capsule in Senaste (offline)") else { return false }
-        pause(1)
+        // A168: one tap on the capsule plays it (the sound is on the phone, so also offline).
         let t0 = Date()
-        guard tap(Self.playLabels, "Spela i … (offline, a played text)") else { return false }
+        guard tap([capsule], "the capsule in Senaste (offline, plays, A168)") else { return false }
         var plays = false
         let end = Date().addingTimeInterval(15)
         repeat { plays = text(starting: "Spelar i AirPods") != nil || timeLeft() != nil; if !plays { pause(0.5) } } while !plays && Date() < end
