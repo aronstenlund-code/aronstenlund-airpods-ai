@@ -1,4 +1,5 @@
 import Foundation
+import NaturalLanguage
 import Observation
 
 // MARK: - K46/K47: `POST /drill`
@@ -778,6 +779,42 @@ final class CloudDrillAudio: DrillAudioProviding {
     @ObservationIgnored private let pollInterval: Duration
     @ObservationIgnored private let maxPolls: Int
 
+    /// K124 (D270): the phone's own voice for an exam while the voice service is out (the server said
+    /// `audio_unavailable`, or 503 `tts_quota`). Given a spoken language ("sv-SE" or "en-US"). Nil: the exam stays
+    /// text, as in A112. What the server already made is played as it is; only what is missing is read by the phone.
+    @ObservationIgnored var phoneVoice: (@MainActor (_ language: String) -> DeviceVoiceDrillAudio)?
+    @ObservationIgnored private var phoneVoices: [String: DeviceVoiceDrillAudio] = [:]
+
+    /// K124: said on the exam's screen while the phone reads (Kevin's words).
+    nonisolated static var phoneLine: String { String(localized: "Telefonens röst läser just nu.") }
+
+    /// K124: the phone's voice for this exam, when the voice service is out for it and the phone may read.
+    func phone(for drill: Drill) -> DeviceVoiceDrillAudio? {
+        guard problems[drill.id] == Self.unavailableLine, let phoneVoice else { return nil }
+        let language = Self.spokenLanguage(drill)
+        if let made = phoneVoices[language] { return made }
+        let made = phoneVoice(language)
+        phoneVoices[language] = made
+        return made
+    }
+
+    /// K124: the language the exam is written in, for the phone's voice: Swedish or English.
+    nonisolated static func spokenLanguage(_ drill: Drill) -> String {
+        let text = drill.items.prefix(6).map { "\($0.question) \($0.long)" }.joined(separator: " ")
+        let recognizer = NLLanguageRecognizer()
+        recognizer.languageConstraints = [.swedish, .english]
+        recognizer.processString(text)
+        return recognizer.dominantLanguage == .english ? "en-US" : "sv-SE"
+    }
+
+    /// K124: the phone makes the exam's missing sound (the questions in play order).
+    private func readWithPhone(_ drill: Drill) async {
+        let latest = store.drill(drill.id) ?? drill
+        guard let phone = phone(for: latest) else { return }
+        Log.repetition.info("Drill audio: the voice service is out; the phone's own voice reads (K124)")
+        await phone.prepare(latest)
+    }
+
     init(cloud: any DrillCloudSyncing, store: DrillStore, folder: URL? = nil,
          pollInterval: Duration = .seconds(3), maxPolls: Int = 400) {
         self.cloud = cloud
@@ -889,6 +926,7 @@ final class CloudDrillAudio: DrillAudioProviding {
 
     func progress(for drill: Drill) -> (ready: Int, total: Int) {
         _ = made
+        if let phone = phone(for: drill) { return phone.progress(for: drill) } // K124
         let ready = drill.items.reduce(0) { $0 + (exists($1.questionAudio) ? 1 : 0) + (exists($1.longAudio) ? 1 : 0) }
         return (ready, drill.audioFileCount)
     }
@@ -897,7 +935,9 @@ final class CloudDrillAudio: DrillAudioProviding {
         _ = made
         guard drill.items.indices.contains(index) else { return nil }
         let item = drill.items[index]
-        guard let q = item.questionAudio, let l = item.longAudio, exists(q), exists(l) else { return nil }
+        guard let q = item.questionAudio, let l = item.longAudio, exists(q), exists(l) else {
+            return phone(for: drill)?.track(for: drill, at: index) // K124: the phone reads what the server could not
+        }
         let short: RepetitionTrack.Short = item.shortEndMs.map { .prefix(ofLongUntil: Double($0) / 1000) }
             ?? .prefix(ofLongUntil: .infinity)
         return RepetitionTrack(question: fileURL(q), long: fileURL(l), short: short)
@@ -908,7 +948,7 @@ final class CloudDrillAudio: DrillAudioProviding {
         return all.count == drill.items.count && !all.isEmpty ? all : nil
     }
 
-    func problem(for drill: Drill) -> String? { problems[drill.id] }
+    func problem(for drill: Drill) -> String? { phone(for: drill) != nil ? Self.phoneLine : problems[drill.id] }
 
     /// K62 (Kelly): the voice service cannot make sound now (its credits ran out), said instead of a counter that
     /// never moves.
@@ -922,7 +962,7 @@ final class CloudDrillAudio: DrillAudioProviding {
     func isReadingAloudOff(_ drill: Drill) -> Bool { problems[drill.id] == Self.unavailableLine }
     /// The codes that mean the sound cannot be made now (K62; the app accepts these until Kevin's code is final).
     static let unavailableCodes: Set<String> = ["audio_unavailable", "tts_unavailable", "voice_unavailable",
-                                                "tts_quota_exceeded", "voice_quota_exceeded"]
+                                                "tts_quota_exceeded", "voice_quota_exceeded", "tts_quota"] // K124
 
     /// What the exam's card says when the server said no to saving or starting it.
     static func problemLine(for error: DrillCloudError) -> String {
@@ -947,6 +987,11 @@ final class CloudDrillAudio: DrillAudioProviding {
 
     /// Sends what changed, then follows the server's queue and downloads every done file. Safe to call again.
     func prepare(_ drill: Drill) async {
+        await prepareFromServer(drill)
+        await readWithPhone(drill) // K124: only when the voice service is out and the phone may read
+    }
+
+    private func prepareFromServer(_ drill: Drill) async {
         guard !preparing.contains(drill.id) else { return }
         preparing.insert(drill.id)
         defer { preparing.remove(drill.id) }
@@ -1211,6 +1256,10 @@ final class CloudDrillAudio: DrillAudioProviding {
                 store.save(latest)
                 problems[drill.id] = Self.unavailableLine
                 Log.repetition.info("Drill audio not started: the voice service is out (audio_unavailable)")
+                if phone(for: latest) != nil { // K124: the phone reads instead; nothing was counted
+                    Task { await self.readWithPhone(latest) }
+                    return true
+                }
                 return false
             }
             latest = Drill.from(view, merging: latest)
@@ -1221,6 +1270,12 @@ final class CloudDrillAudio: DrillAudioProviding {
         } catch {
             if case .refused(_, let code, _) = error, code == "quota_exceeded" { quotaExceeded.insert(drill.id) }
             problems[drill.id] = error.userMessage
+            // K124 (Kevin, D267): 503 `tts_quota` is the voice service's quota, the same as `audio_unavailable`.
+            if case .refused(_, let code, _) = error, code == "tts_quota" { problems[drill.id] = Self.unavailableLine }
+            if let latest = store.drill(drill.id), phone(for: latest) != nil {
+                Task { await self.readWithPhone(latest) }
+                return true
+            }
             return false
         }
         let started = store.drill(drill.id) ?? drill
@@ -1234,7 +1289,9 @@ final class CloudDrillAudio: DrillAudioProviding {
         _ = made
         guard drill.items.indices.contains(index) else { return nil }
         let item = drill.items[index]
-        guard let name = item.longAudio, exists(name) else { return nil }
+        guard let name = item.longAudio, exists(name) else {
+            return phone(for: drill)?.reading(for: drill, part: index) // K124
+        }
         return ReadingAudio(url: fileURL(name), times: item.sentenceTimes ?? [], words: item.wordTimes ?? [])
     }
 }
