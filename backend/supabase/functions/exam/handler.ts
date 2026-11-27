@@ -6,7 +6,7 @@ import { readLimitedJson } from "../answer/validate.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
 import { finalNumber, isBareNumber } from "./spoken.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
-import { practiceNav, spokenTask } from "./practice.ts";
+import { practiceNav, spokenTask, taskLanguage } from "./practice.ts";
 import { DEFAULT_DRILL_CONFIG, docxText, DRILL_LIMITS, DRILL_WEIGHT, type DrillConfig, drillConfigForTest, estimateDrillCost, fitLongWords, handleDrill, intIn, type MaterialStore, textLanguage, uploadUrls } from "./drill.ts";
 import { testModelPick } from "../_shared/testmode.ts";
 import { handleRead } from "./read.ts";
@@ -696,10 +696,12 @@ export function createExamHandler(deps: ExamDeps) {
             }
           } catch { /* malformed: the tasks stay without an answer */ }
         }
+        // O107 F2: the frame's language for the whole exam (all its tasks together, or the app asking for English)
+        const examLang = taskLanguage(out.tasks.map((t) => t.text).join(" "));
         const tasks = out.tasks.map((t) => ({
           ...t,
           ...(t.answer && !t.answer_source ? { answer_source: "facit" as const } : {}),
-          spoken: spokenTask(t.no, t.text, t.points),
+          spoken: spokenTask(t.no, t.text, t.points, examLang),
         }));
         return json({ ...out, tasks, usage: { ...usage, est_cost_usd: usage.est_cost_usd + solveCost } });
       }

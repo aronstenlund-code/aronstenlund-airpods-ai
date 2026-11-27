@@ -5,7 +5,6 @@
  */
 import { numbersToSpeech } from "../answer/svnum.ts";
 import { spelledFormula } from "../drill/voicerules.ts";
-import { textLanguage } from "./drill.ts";
 
 export type NavAction = "next" | "prev" | "goto" | "skip" | "repeat" | "stop" | "results" | "answer";
 export interface Nav {
@@ -86,12 +85,25 @@ export function mathWords(t: string, en: boolean): string {
     .replace(/(?<![\p{L}])bl\.\s?a\./giu, "bland annat");
 }
 
+/** O107 F2: the language of an exam's task texts (short imperatives: "Name the gas …", "Förklara varför …"). */
+const TASK_EN = new Set("the and is of to in that it for with are as this which or an be name explain describe why what how write which give list calculate solve show find compare use who when where does do your".split(" "));
+const TASK_SV = new Set("och att det är som en ett på av för med den till inte har när där eller nämn förklara beskriv varför vad hur skriv vilken vilket vilka ge räkna beräkna lös visa jämför använd vem var gör din ditt".split(" "));
+export function taskLanguage(text: string): "sv" | "en" {
+  let en = 0, sv = (text.match(/[åäö]/gi) ?? []).length / 3;
+  for (const x of text.toLowerCase().match(/\p{L}+/gu) ?? []) {
+    if (TASK_EN.has(x)) en++;
+    if (TASK_SV.has(x)) sv++;
+  }
+  return en >= 2 && en > sv * 1.5 ? "en" : "sv";
+}
+
 const EN_NUM = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
 /** The task as Lumen reads it aloud: its number, the text with numbers in words, and the points (O107: per level). */
-export function spokenTask(no: string, text: string, points: { E: number; C: number; A: number }): string {
+export function spokenTask(no: string, text: string, points: { E: number; C: number; A: number }, lang?: "sv" | "en"): string {
   const total = points.E + points.C + points.A;
-  // O107 F2 (Oscar): an English exam gets an English frame (the English voice reads the digits itself)
-  const en = textLanguage(text) === "en";
+  // O107 F2 (Oscar): an English exam gets an English frame (the English voice reads the digits itself); the caller
+  // decides for the whole exam (a short task alone is too short to tell)
+  const en = (lang ?? taskLanguage(text)) === "en";
   const n = (k: number) => en ? (EN_NUM[k] ?? String(k)) : k === 1 ? "en" : numbersToSpeech(String(k));
   const said = mathWords(text.replace(/\s*\n\s*/g, ". "), en).replace(/\[([^\]]+)\]/g, (_m, inner: string) =>
     // a table or a figure with its own name is said as it is; anything else is what the picture shows

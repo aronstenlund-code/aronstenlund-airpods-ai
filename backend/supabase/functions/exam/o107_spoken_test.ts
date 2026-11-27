@@ -30,3 +30,8 @@ Deno.test("O107 F2: an English exam gets an English frame; the answer writer and
   assert(!/in Swedish:/.test(SYSTEM_PROMPT_EXAM_SOLVE) && /language of the tasks/.test(SYSTEM_PROMPT_EXAM_SOLVE));
   assert(/in the exam's language/.test(SYSTEM_PROMPT_EXAM_PARSE));
 });
+
+Deno.test("O107 F2: the frame's language is decided for the whole exam (a short English task is still English)", () => {
+  assertStringIncludes(spokenTask("2", "Write a sentence using 'although'.", p(1), "en"), "Question two. Write a sentence");
+  assertStringIncludes(spokenTask("2", "Write a sentence using 'although'.", p(1), "en"), "It gives one point.");
+});
