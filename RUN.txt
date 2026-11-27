@@ -1,0 +1,15 @@
+run: 45919279852
+commit: 0b9be227bc38fac7ebca0011f8803286d5d049cb
+device: iPhone 17 Pro Max
+cannotAnswer.png: 1320 2868 
+en-cannotAnswer.png: 1320 2868 
+en-firstConsent.png: 1320 2868 
+en-firstListening.png: 1320 2868 
+en-fsWelcome.png: 1320 2868 
+en-listening.png: 1320 2868 
+en-listeningActivation.png: 1320 2868 
+firstConsent.png: 1320 2868 
+firstListening.png: 1320 2868 
+fsWelcome.png: 1320 2868 
+listening.png: 1320 2868 
+listeningActivation.png: 1320 2868 
