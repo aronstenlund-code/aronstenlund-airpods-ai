@@ -18,9 +18,10 @@ final class SleepController {
 
     var isSleeping: Bool { night != nil }
 
+    /// Deangelo 2026-11-27 (a fast start): old nights are removed after the first screen
+    /// (`AppContainer.startAfterFirstFrame` calls `store.removeOld()`), not here.
     init(store: SleepStore = SleepStore()) {
         self.store = store
-        store.removeOld()
     }
 
     func start() {

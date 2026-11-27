@@ -24,6 +24,10 @@ final class AppContainer {
     let prep: PrepStore
     let listening: ListeningModel
     let diagnostics: DiagnosticsModel
+    /// The exams' downloaded sound, for the clean-up after the first screen (nil in the mock mode).
+    private var cloudDrillAudio: CloudDrillAudio?
+    /// `startAfterFirstFrame` has run.
+    private(set) var startedAfterFirstFrame = false
     /// D86: light/dark/follow the iPhone, handwriting for questions.
     let appearance = AppearanceSettings()
     /// D142 (A78): the shared AirPods buttons; the repetition takes them over while it plays.
@@ -187,6 +191,7 @@ final class AppContainer {
                 .appendingPathComponent("drill_audio_phone", isDirectory: true)
             cloudAudio.phoneVoice = { language in DeviceVoiceDrillAudio(folder: phoneFolder, language: language) }
             drillAudio = cloudAudio
+            cloudDrillAudio = cloudAudio
         } else {
             #if DEBUG
             let makesSound = ScreenshotStage.requested == nil // the screenshots write their own silent files
@@ -259,5 +264,18 @@ final class AppContainer {
         if let shot = ScreenshotStage.requested { ScreenshotStage.seed(self, for: shot) } // A2: demo data, Simulator only
         testPresses = TestPresses(session: repetitionSession)
         #endif
+    }
+
+    /// Deangelo 2026-11-27 (a fast start): what can wait until the first screen is shown runs here, once: the clean-up
+    /// of exam sound no exam uses (A103; only files from before the launch), the removal of old nights (A49), and the
+    /// launch's time to the first screen in Diagnostik.
+    func startAfterFirstFrame() {
+        guard !startedAfterFirstFrame else { return }
+        startedAfterFirstFrame = true
+        if LaunchTiming.firstScreenShown(), let ms = LaunchTiming.firstScreenMs {
+            sessionController.log(LaunchTiming.line(ms))
+        }
+        cloudDrillAudio?.removeUnused(olderThan: LaunchTiming.processStart)
+        listening.sleep.store.removeOld()
     }
 }

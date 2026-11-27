@@ -121,7 +121,12 @@ final class MemoryStore {
         persist()
     }
 
+    /// As `HistoryStore.purgedAt`: once an hour is enough.
+    private(set) var purgedAt: Date?
+
     func purgeExpired(now: Date = Date()) {
+        if let purgedAt, now.timeIntervalSince(purgedAt) < 3_600, now >= purgedAt { return }
+        purgedAt = now
         let kept = items.filter { !Retention.isExpired($0.confirmedAt, at: now) }
         guard kept.count != items.count else { return }
         items = kept

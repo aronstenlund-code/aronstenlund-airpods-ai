@@ -88,7 +88,10 @@ struct HistoryEntry: Identifiable, Codable, Equatable, Sendable {
 enum Retention {
     static let years = 2
 
-    static func expiry(from date: Date, calendar: Calendar = Calendar(identifier: .gregorian)) -> Date {
+    /// One calendar for every entry (a fast start: it was built anew for each row of the history at every launch).
+    static let gregorian = Calendar(identifier: .gregorian)
+
+    static func expiry(from date: Date, calendar: Calendar = gregorian) -> Date {
         calendar.date(byAdding: .year, value: years, to: date) ?? date
     }
 
@@ -142,7 +145,13 @@ final class HistoryStore {
     }
 
     /// Automatic deletion after two years.
+    /// When the history was last gone through; a second time within the hour is skipped (the launch did it, and
+    /// `prepareBackend` asked again right after).
+    private(set) var purgedAt: Date?
+
     func purgeExpired(now: Date = Date()) {
+        if let purgedAt, now.timeIntervalSince(purgedAt) < 3_600, now >= purgedAt { return }
+        purgedAt = now
         let kept = entries.filter { !Retention.isExpired($0.createdAt, at: now) }
         guard kept.count != entries.count else { return }
         entries = kept
