@@ -1,0 +1,1 @@
+{"answers": [{"no": "1", "answer": "Jämför invånarantalen i tabellen: Sverige 10,5 miljoner, Danmark 5,9 miljoner och Norge 5,5 miljoner. Sverige har flest invånare."}, {"no": "2", "answer": "Räkna skillnaden mellan Sveriges och Norges invånarantal: 10,5 − 5,5 = 5,0 miljoner. Svar: Det bor 5 miljoner fler i Sverige än i Norge."}]}

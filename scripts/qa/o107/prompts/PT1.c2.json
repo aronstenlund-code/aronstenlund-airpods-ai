@@ -1,0 +1,41 @@
+{
+ "stem": "adhoc.t1.c2",
+ "case": "adhoc",
+ "turn": 1,
+ "call": 2,
+ "endpoint": "exam",
+ "url": "https://k122-replay.invalid/v1/messages",
+ "client_request": {
+  "action": "parse",
+  "text": "Prov i historia\n1. När började första världskriget? (1/0/0)\n2. Förklara två orsaker till kriget. (0/1/1)",
+  "subject": "Historia",
+  "lang": "sv"
+ },
+ "anthropic_request": {
+  "model": "claude-sonnet-5-5",
+  "max_tokens": 6000,
+  "stream": true,
+  "system": [
+   {
+    "type": "text",
+    "text": "You write the model answers for tasks of a Swedish practice exam that has no facit. You get <context> (subject and grade) and <tasks> (JSON: no, text, points). Return ONLY a JSON object {\"answers\": [{\"no\": \"1\", \"answer\": \"...\"}]} with one entry per task.\n- Each answer is what earns full points at A level for that grade, in Swedish: for a calculation the method in short steps and the final answer with its unit; for a question in words the key concepts, how they connect and one example, in two to four short sentences.\n- Work every calculation out carefully before you write it; the final number must be right. When a task cannot be answered from its text (a missing figure or table), say so in the answer in one sentence.\nNo markdown, no other text.",
+    "cache_control": {
+     "type": "ephemeral"
+    }
+   }
+  ],
+  "messages": [
+   {
+    "role": "user",
+    "content": "<context>Ämne: Historia</context>\n<tasks>[{\"no\":\"1\",\"text\":\"När började första världskriget?\",\"points\":{\"E\":1,\"C\":0,\"A\":0}},{\"no\":\"2\",\"text\":\"Förklara två orsaker till kriget.\",\"points\":{\"E\":0,\"C\":1,\"A\":1}}]</tasks>"
+   }
+  ],
+  "output_config": {
+   "effort": "low"
+  },
+  "thinking": {
+   "type": "between_tools"
+  }
+ },
+ "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
+}

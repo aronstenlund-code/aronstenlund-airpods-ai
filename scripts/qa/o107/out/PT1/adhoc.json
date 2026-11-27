@@ -1,0 +1,148 @@
+{
+  "id": "adhoc",
+  "status": "done",
+  "prompts": [
+    {
+      "stem": "adhoc.t1.c1",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 1,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "parse",
+        "text": "Prov i historia\n1. När började första världskriget? (1/0/0)\n2. Förklara två orsaker till kriget. (0/1/1)",
+        "subject": "Historia",
+        "lang": "sv"
+      },
+      "anthropic_request": {
+        "model": "claude-haiku-5-5",
+        "max_tokens": 8000,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You read a Swedish exam or practice exam (often a national exam, \"nationellt prov\", or a teacher's \"övningsprov\" or \"instuderingsfrågor\") and/or its assessment instructions (\"bedömningsanvisningar\"), given as page images or as text. Return ONLY a JSON object:\n{\"tasks\": [{\"no\": \"1a\", \"text\": \"...\", \"points\": {\"E\": 1, \"C\": 0, \"A\": 0}, \"answer\": \"...\", \"assessment\": \"...\", \"topic\": \"...\"}], \"boundaries\": [{\"grade\": \"E\", \"total\": 15, \"min_ca\": 0, \"min_a\": 0}]}\n- tasks: every task you can see, in order. \"no\" as printed (\"1\", \"3b\"). \"text\": the full task text, word for word, including every value of a table (row by row, \"Måndag: 12, Tisdag: 18, …\") and a one-sentence description of a figure in square brackets. \"points\": the points per level as printed, e.g. (1/1/0) = E 1, C 1, A 0; 0 when not printed. \"answer\": the correct answer or model solution from the instructions (\"\" when not on these pages). \"assessment\": the scoring rules for the task from the instructions, word for word in substance (\"\" when not on these pages).\n- boundaries: the grade limits (\"provbetygsgränser\") when they are on these pages: total points for E, D, C, B, A and the extra conditions (min_ca = points on at least C level, min_a = A points); [] otherwise.\n- \"topic\": the concept the task tests, in one to three Swedish words (\"procent\", \"linjära ekvationer\", \"franska revolutionen\").\n- A list of numbered questions without points: each question is a task, its points 0. Questions that are not numbered: number them 1, 2, 3 in order.\n- Copy numbers exactly. Never invent a task, an answer or a limit; leave a field empty when it is not in the material. No other text.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<context>Ämne: Historia</context>\n<material>\nProv i historia\n1. När började första världskriget? (1/0/0)\n2. Förklara två orsaker till kriget. (0/1/1)\n</material>\nRead this material."
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        },
+        "thinking": {
+          "type": "disabled"
+        }
+      },
+      "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
+    },
+    {
+      "stem": "adhoc.t1.c2",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 2,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "parse",
+        "text": "Prov i historia\n1. När började första världskriget? (1/0/0)\n2. Förklara två orsaker till kriget. (0/1/1)",
+        "subject": "Historia",
+        "lang": "sv"
+      },
+      "anthropic_request": {
+        "model": "claude-sonnet-5-5",
+        "max_tokens": 6000,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You write the model answers for tasks of a Swedish practice exam that has no facit. You get <context> (subject and grade) and <tasks> (JSON: no, text, points). Return ONLY a JSON object {\"answers\": [{\"no\": \"1\", \"answer\": \"...\"}]} with one entry per task.\n- Each answer is what earns full points at A level for that grade, in Swedish: for a calculation the method in short steps and the final answer with its unit; for a question in words the key concepts, how they connect and one example, in two to four short sentences.\n- Work every calculation out carefully before you write it; the final number must be right. When a task cannot be answered from its text (a missing figure or table), say so in the answer in one sentence.\nNo markdown, no other text.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<context>Ämne: Historia</context>\n<tasks>[{\"no\":\"1\",\"text\":\"När började första världskriget?\",\"points\":{\"E\":1,\"C\":0,\"A\":0}},{\"no\":\"2\",\"text\":\"Förklara två orsaker till kriget.\",\"points\":{\"E\":0,\"C\":1,\"A\":1}}]</tasks>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        },
+        "thinking": {
+          "type": "between_tools"
+        }
+      },
+      "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
+    }
+  ],
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "exam",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-parse",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 541,
+          "output_tokens": 98,
+          "total_ms": 10,
+          "est_cost_usd": 0.0001031,
+          "status": "ok"
+        }
+      ],
+      "credits": [],
+      "json": {
+        "tasks": [
+          {
+            "no": "1",
+            "text": "När började första världskriget?",
+            "points": {
+              "E": 1,
+              "C": 0,
+              "A": 0
+            },
+            "answer": "Första världskriget började 1914, sommaren 1914 efter skotten i Sarajevo den 28 juni 1914.",
+            "assessment": "",
+            "topic": "första världskriget",
+            "answer_source": "eget svar",
+            "spoken": "Fråga ett. När började första världskriget? Den ger en poäng."
+          },
+          {
+            "no": "2",
+            "text": "Förklara två orsaker till kriget.",
+            "points": {
+              "E": 0,
+              "C": 1,
+              "A": 1
+            },
+            "answer": "En orsak var allianssystemet: stormakterna var bundna till varandra genom förbund, så när Österrike-Ungern förklarade Serbien krig efter mordet på Franz Ferdinand drogs Ryssland, Tyskland, Frankrike och Storbritannien in. En annan orsak var nationalismen och kapprustningen, där stormakterna tävlade om makt, kolonier och den starkaste armén och flottan, till exempel Tysklands och Storbritanniens kapprustning till sjöss. Tillsammans gjorde de att en lokal konflikt snabbt blev ett världskrig.",
+            "assessment": "",
+            "topic": "krigets orsaker",
+            "answer_source": "eget svar",
+            "spoken": "Fråga två. Förklara två orsaker till kriget. Den ger två poäng."
+          }
+        ],
+        "boundaries": [],
+        "usage": {
+          "input_tokens": 541,
+          "output_tokens": 98,
+          "est_cost_usd": 0.0025931
+        }
+      }
+    }
+  ],
+  "blocked": []
+}
