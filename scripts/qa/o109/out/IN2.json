@@ -1,6 +1,6 @@
 {
  "id": "adhoc",
- "status": "needs_reply",
+ "status": "done",
  "prompts": [
   {
    "stem": "adhoc.t1.c1",
@@ -54,7 +54,150 @@
    "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
   }
  ],
- "turns": [],
- "blocked": [],
- "needs": "adhoc.t1.c1"
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "answer",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "answer",
+     "mode": "push_to_talk",
+     "language": "sv",
+     "provider": "anthropic",
+     "model": "claude-haiku-5-5",
+     "is_question": true,
+     "confidence": 1,
+     "input_tokens": 2464,
+     "output_tokens": 183,
+     "ttft_ms": 231,
+     "total_ms": 244,
+     "est_cost_usd": 0.0003379,
+     "status": "ok",
+     "category": "intervju",
+     "persona": "interview"
+    }
+   ],
+   "credits": [],
+   "events": [
+    {
+     "event": "meta",
+     "data": {
+      "reconstructed_question": "jag heter Alex och har jobbat på ett café i två somrar",
+      "confidence": 1,
+      "is_question": true,
+      "needs_confirmation": false,
+      "answer_type": "study",
+      "relation": null
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Jag heter Alex och har jobbat på ett café i två somrar. "
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Där har jag varit van vid att ge service till många kunder samtidigt och att hålla ordning även när det är mycket att göra. "
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Det är just det som lockar mig med att jobba i er butik, att få möta kunder varje dag och se till att allt fungerar smidigt. "
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Jag är ansvarsfull och trivs med att ha ett högt tempo, så jag tror att jag snabbt skulle komma in i jobbet hos er."
+     }
+    },
+    {
+     "event": "done",
+     "data": {
+      "answered": true,
+      "timing": {
+       "meta_ms": 196,
+       "ttft_ms": 231,
+       "llm_first_token_ms": 192,
+       "total_ms": 244
+      },
+      "breakdown": {
+       "auth_ms": 0,
+       "body_ms": 163,
+       "limits_ms": 192,
+       "llm_first_chunk_ms": 192,
+       "direct": true,
+       "cold": true,
+       "answer_type": "study",
+       "continuation": null
+      },
+      "usage": {
+       "input_tokens": 2464,
+       "output_tokens": 183,
+       "cache_read_tokens": 0,
+       "cache_write_tokens": 0,
+       "web_searches": 0,
+       "model": "claude-haiku-5-5",
+       "est_cost_usd": 0.0003379
+      },
+      "summary": "Intervjuträning för ett sommarjobb i en matbutik, där användarens svar om sig själv och tidigare caféjobb förbättrades. Det förbättrade svaret kopplade caféerfarenheten till service och tempo i butiken.",
+      "relation": null,
+      "source": null,
+      "memory_add": null,
+      "calibration": null
+     }
+    }
+   ],
+   "said": "Jag heter Alex och har jobbat på ett café i två somrar. Där har jag varit van vid att ge service till många kunder samtidigt och att hålla ordning även när det är mycket att göra. Det är just det som lockar mig med att jobba i er butik, att få möta kunder varje dag och se till att allt fungerar smidigt. Jag är ansvarsfull och trivs med att ha ett högt tempo, så jag tror att jag snabbt skulle komma in i jobbet hos er.",
+   "meta": [
+    {
+     "reconstructed_question": "jag heter Alex och har jobbat på ett café i två somrar",
+     "confidence": 1,
+     "is_question": true,
+     "needs_confirmation": false,
+     "answer_type": "study",
+     "relation": null
+    }
+   ],
+   "done": {
+    "answered": true,
+    "timing": {
+     "meta_ms": 196,
+     "ttft_ms": 231,
+     "llm_first_token_ms": 192,
+     "total_ms": 244
+    },
+    "breakdown": {
+     "auth_ms": 0,
+     "body_ms": 163,
+     "limits_ms": 192,
+     "llm_first_chunk_ms": 192,
+     "direct": true,
+     "cold": true,
+     "answer_type": "study",
+     "continuation": null
+    },
+    "usage": {
+     "input_tokens": 2464,
+     "output_tokens": 183,
+     "cache_read_tokens": 0,
+     "cache_write_tokens": 0,
+     "web_searches": 0,
+     "model": "claude-haiku-5-5",
+     "est_cost_usd": 0.0003379
+    },
+    "summary": "Intervjuträning för ett sommarjobb i en matbutik, där användarens svar om sig själv och tidigare caféjobb förbättrades. Det förbättrade svaret kopplade caféerfarenheten till service och tempo i butiken.",
+    "relation": null,
+    "source": null,
+    "memory_add": null,
+    "calibration": null
+   }
+  }
+ ],
+ "blocked": []
 }

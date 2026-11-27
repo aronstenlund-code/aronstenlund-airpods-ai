@@ -1,6 +1,6 @@
 {
  "id": "adhoc",
- "status": "needs_reply",
+ "status": "done",
  "prompts": [
   {
    "stem": "adhoc.t1.c1",
@@ -34,7 +34,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<now>fredag 27 november 2026, vecka 48, klockan 05:48 (svensk tid, Europe/Stockholm)</now>\n<fragment>Lumen, vilket nummer har tandläkaren på Storgatan?</fragment>"
+      "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<now>fredag 27 november 2026, vecka 48, klockan 05:50 (svensk tid, Europe/Stockholm)</now>\n<fragment>Lumen, vilket nummer har tandläkaren på Storgatan?</fragment>"
      }
     ],
     "output_config": {
@@ -47,7 +47,132 @@
    "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
   }
  ],
- "turns": [],
- "blocked": [],
- "needs": "adhoc.t1.c1"
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "answer",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "answer",
+     "mode": "auto",
+     "language": "sv",
+     "provider": "anthropic",
+     "model": "claude-haiku-5-5",
+     "is_question": true,
+     "confidence": 1,
+     "input_tokens": 3542,
+     "output_tokens": 84,
+     "ttft_ms": 290,
+     "total_ms": 291,
+     "est_cost_usd": 0.00039620000000000004,
+     "status": "ok",
+     "category": "övrigt",
+     "persona": "tutor"
+    }
+   ],
+   "credits": [],
+   "events": [
+    {
+     "event": "meta",
+     "data": {
+      "reconstructed_question": "Lumen, vilket nummer har tandläkaren på Storgatan?",
+      "confidence": 1,
+      "is_question": true,
+      "needs_confirmation": false,
+      "answer_type": "fact",
+      "relation": null
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Numret finns på tandläkarmottagningens webbplats eller under Hitta vård på elvahundrasjuttiosju punkt se, sök på mottagningens namn och Storgatan."
+     }
+    },
+    {
+     "event": "done",
+     "data": {
+      "answered": true,
+      "timing": {
+       "meta_ms": 290,
+       "ttft_ms": 290,
+       "llm_first_token_ms": 238,
+       "total_ms": 290
+      },
+      "breakdown": {
+       "auth_ms": 0,
+       "body_ms": 166,
+       "limits_ms": 237,
+       "llm_first_chunk_ms": 238,
+       "direct": true,
+       "cold": true,
+       "answer_type": "fact",
+       "continuation": null
+      },
+      "usage": {
+       "input_tokens": 3542,
+       "output_tokens": 84,
+       "cache_read_tokens": 0,
+       "cache_write_tokens": 0,
+       "web_searches": 0,
+       "model": "claude-haiku-5-5",
+       "est_cost_usd": 0.00039620000000000004
+      },
+      "summary": "Användaren frågade efter telefonnumret till en tandläkare på en viss gata. Svaret hänvisade till mottagningens webbplats och Hitta vård på 1177.",
+      "relation": null,
+      "source": null,
+      "memory_add": null,
+      "calibration": null
+     }
+    }
+   ],
+   "said": "Numret finns på tandläkarmottagningens webbplats eller under Hitta vård på elvahundrasjuttiosju punkt se, sök på mottagningens namn och Storgatan.",
+   "meta": [
+    {
+     "reconstructed_question": "Lumen, vilket nummer har tandläkaren på Storgatan?",
+     "confidence": 1,
+     "is_question": true,
+     "needs_confirmation": false,
+     "answer_type": "fact",
+     "relation": null
+    }
+   ],
+   "done": {
+    "answered": true,
+    "timing": {
+     "meta_ms": 290,
+     "ttft_ms": 290,
+     "llm_first_token_ms": 238,
+     "total_ms": 290
+    },
+    "breakdown": {
+     "auth_ms": 0,
+     "body_ms": 166,
+     "limits_ms": 237,
+     "llm_first_chunk_ms": 238,
+     "direct": true,
+     "cold": true,
+     "answer_type": "fact",
+     "continuation": null
+    },
+    "usage": {
+     "input_tokens": 3542,
+     "output_tokens": 84,
+     "cache_read_tokens": 0,
+     "cache_write_tokens": 0,
+     "web_searches": 0,
+     "model": "claude-haiku-5-5",
+     "est_cost_usd": 0.00039620000000000004
+    },
+    "summary": "Användaren frågade efter telefonnumret till en tandläkare på en viss gata. Svaret hänvisade till mottagningens webbplats och Hitta vård på 1177.",
+    "relation": null,
+    "source": null,
+    "memory_add": null,
+    "calibration": null
+   }
+  }
+ ],
+ "blocked": []
 }

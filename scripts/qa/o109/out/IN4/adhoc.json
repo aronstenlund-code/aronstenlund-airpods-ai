@@ -1,6 +1,6 @@
 {
   "id": "adhoc",
-  "status": "needs_reply",
+  "status": "done",
   "prompts": [
     {
       "stem": "adhoc.t1.c1",
@@ -49,7 +49,144 @@
       "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
     }
   ],
-  "turns": [],
-  "blocked": [],
-  "needs": "adhoc.t1.c1"
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "answer",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "answer",
+          "mode": "push_to_talk",
+          "language": "sv",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "is_question": true,
+          "confidence": 1,
+          "input_tokens": 2406,
+          "output_tokens": 138,
+          "ttft_ms": 249,
+          "total_ms": 264,
+          "est_cost_usd": 0.00030960000000000004,
+          "status": "ok",
+          "category": "intervju",
+          "persona": "interview"
+        }
+      ],
+      "credits": [],
+      "events": [
+        {
+          "event": "meta",
+          "data": {
+            "reconstructed_question": "är du gravid eller planerar du barn?",
+            "confidence": 1,
+            "is_question": true,
+            "needs_confirmation": false,
+            "answer_type": "study",
+            "relation": null
+          }
+        },
+        {
+          "event": "delta",
+          "data": {
+            "text": "Det är en privat fråga som jag helst inte går in på. "
+          }
+        },
+        {
+          "event": "delta",
+          "data": {
+            "text": "Det jag gärna berättar om är varför jag vill ha det här sommarjobbet och hur jag skulle bidra i butiken. "
+          }
+        },
+        {
+          "event": "delta",
+          "data": {
+            "text": "Jag är ansvarsfull, tycker om att möta kunder och vill göra ett bra jobb hela sommaren."
+          }
+        },
+        {
+          "event": "done",
+          "data": {
+            "answered": true,
+            "timing": {
+              "meta_ms": 219,
+              "ttft_ms": 249,
+              "llm_first_token_ms": 214,
+              "total_ms": 264
+            },
+            "breakdown": {
+              "auth_ms": 0,
+              "body_ms": 176,
+              "limits_ms": 213,
+              "llm_first_chunk_ms": 214,
+              "direct": true,
+              "cold": true,
+              "answer_type": "study",
+              "continuation": null
+            },
+            "usage": {
+              "input_tokens": 2406,
+              "output_tokens": 138,
+              "cache_read_tokens": 0,
+              "cache_write_tokens": 0,
+              "web_searches": 0,
+              "model": "claude-haiku-5-5",
+              "est_cost_usd": 0.00030960000000000004
+            },
+            "summary": "Intervjuträning för ett sommarjobb i en matbutik, där intervjuaren ställde en privat fråga om graviditet och barnplaner. Svaret avböjde vänligt att svara och styrde tillbaka till vad användaren kan bidra med i jobbet.",
+            "relation": null,
+            "source": null,
+            "memory_add": null,
+            "calibration": null
+          }
+        }
+      ],
+      "said": "Det är en privat fråga som jag helst inte går in på. Det jag gärna berättar om är varför jag vill ha det här sommarjobbet och hur jag skulle bidra i butiken. Jag är ansvarsfull, tycker om att möta kunder och vill göra ett bra jobb hela sommaren.",
+      "meta": [
+        {
+          "reconstructed_question": "är du gravid eller planerar du barn?",
+          "confidence": 1,
+          "is_question": true,
+          "needs_confirmation": false,
+          "answer_type": "study",
+          "relation": null
+        }
+      ],
+      "done": {
+        "answered": true,
+        "timing": {
+          "meta_ms": 219,
+          "ttft_ms": 249,
+          "llm_first_token_ms": 214,
+          "total_ms": 264
+        },
+        "breakdown": {
+          "auth_ms": 0,
+          "body_ms": 176,
+          "limits_ms": 213,
+          "llm_first_chunk_ms": 214,
+          "direct": true,
+          "cold": true,
+          "answer_type": "study",
+          "continuation": null
+        },
+        "usage": {
+          "input_tokens": 2406,
+          "output_tokens": 138,
+          "cache_read_tokens": 0,
+          "cache_write_tokens": 0,
+          "web_searches": 0,
+          "model": "claude-haiku-5-5",
+          "est_cost_usd": 0.00030960000000000004
+        },
+        "summary": "Intervjuträning för ett sommarjobb i en matbutik, där intervjuaren ställde en privat fråga om graviditet och barnplaner. Svaret avböjde vänligt att svara och styrde tillbaka till vad användaren kan bidra med i jobbet.",
+        "relation": null,
+        "source": null,
+        "memory_add": null,
+        "calibration": null
+      }
+    }
+  ],
+  "blocked": []
 }

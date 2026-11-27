@@ -1,6 +1,6 @@
 {
   "id": "adhoc",
-  "status": "needs_reply",
+  "status": "done",
   "prompts": [
     {
       "stem": "adhoc.t1.c1",
@@ -49,7 +49,150 @@
       "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
     }
   ],
-  "turns": [],
-  "blocked": [],
-  "needs": "adhoc.t1.c1"
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "answer",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "answer",
+          "mode": "push_to_talk",
+          "language": "en",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "is_question": true,
+          "confidence": 1,
+          "input_tokens": 2399,
+          "output_tokens": 203,
+          "ttft_ms": 242,
+          "total_ms": 253,
+          "est_cost_usd": 0.0003414,
+          "status": "ok",
+          "category": "intervju",
+          "persona": "interview"
+        }
+      ],
+      "credits": [],
+      "events": [
+        {
+          "event": "meta",
+          "data": {
+            "reconstructed_question": "why do you want to work here",
+            "confidence": 1,
+            "is_question": true,
+            "needs_confirmation": false,
+            "answer_type": "study",
+            "relation": null
+          }
+        },
+        {
+          "event": "delta",
+          "data": {
+            "text": "I have always loved books, and a bookshop is a place where I would genuinely enjoy every part of the day. "
+          }
+        },
+        {
+          "event": "delta",
+          "data": {
+            "text": "I like talking to people and helping them find something they will enjoy, whether it is a gift or their next favourite read. "
+          }
+        },
+        {
+          "event": "delta",
+          "data": {
+            "text": "I am organised and careful, so keeping shelves tidy, finding the right title quickly and handling the till calmly suits me well. "
+          }
+        },
+        {
+          "event": "delta",
+          "data": {
+            "text": "A summer job here would let me combine something I care about with learning how a shop really works, and I would put real energy into it."
+          }
+        },
+        {
+          "event": "done",
+          "data": {
+            "answered": true,
+            "timing": {
+              "meta_ms": 225,
+              "ttft_ms": 242,
+              "llm_first_token_ms": 222,
+              "total_ms": 252
+            },
+            "breakdown": {
+              "auth_ms": 0,
+              "body_ms": 187,
+              "limits_ms": 221,
+              "llm_first_chunk_ms": 222,
+              "direct": true,
+              "cold": true,
+              "answer_type": "study",
+              "continuation": null
+            },
+            "usage": {
+              "input_tokens": 2399,
+              "output_tokens": 203,
+              "cache_read_tokens": 0,
+              "cache_write_tokens": 0,
+              "web_searches": 0,
+              "model": "claude-haiku-5-5",
+              "est_cost_usd": 0.0003414
+            },
+            "summary": "Intervjuträning på engelska för ett sommarjobb i en bokhandel, frågan gällde varför användaren vill jobba där. Svaret byggde på intresset för böcker, att hjälpa kunder och att vara ordningsam.",
+            "relation": null,
+            "source": null,
+            "memory_add": null,
+            "calibration": null
+          }
+        }
+      ],
+      "said": "I have always loved books, and a bookshop is a place where I would genuinely enjoy every part of the day. I like talking to people and helping them find something they will enjoy, whether it is a gift or their next favourite read. I am organised and careful, so keeping shelves tidy, finding the right title quickly and handling the till calmly suits me well. A summer job here would let me combine something I care about with learning how a shop really works, and I would put real energy into it.",
+      "meta": [
+        {
+          "reconstructed_question": "why do you want to work here",
+          "confidence": 1,
+          "is_question": true,
+          "needs_confirmation": false,
+          "answer_type": "study",
+          "relation": null
+        }
+      ],
+      "done": {
+        "answered": true,
+        "timing": {
+          "meta_ms": 225,
+          "ttft_ms": 242,
+          "llm_first_token_ms": 222,
+          "total_ms": 252
+        },
+        "breakdown": {
+          "auth_ms": 0,
+          "body_ms": 187,
+          "limits_ms": 221,
+          "llm_first_chunk_ms": 222,
+          "direct": true,
+          "cold": true,
+          "answer_type": "study",
+          "continuation": null
+        },
+        "usage": {
+          "input_tokens": 2399,
+          "output_tokens": 203,
+          "cache_read_tokens": 0,
+          "cache_write_tokens": 0,
+          "web_searches": 0,
+          "model": "claude-haiku-5-5",
+          "est_cost_usd": 0.0003414
+        },
+        "summary": "Intervjuträning på engelska för ett sommarjobb i en bokhandel, frågan gällde varför användaren vill jobba där. Svaret byggde på intresset för böcker, att hjälpa kunder och att vara ordningsam.",
+        "relation": null,
+        "source": null,
+        "memory_add": null,
+        "calibration": null
+      }
+    }
+  ],
+  "blocked": []
 }

@@ -1,6 +1,6 @@
 {
   "id": "adhoc",
-  "status": "needs_reply",
+  "status": "done",
   "prompts": [
     {
       "stem": "adhoc.t1.c1",
@@ -78,7 +78,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<preferences note=\"learned from this user's own corrections: follow them in this answer\">\n- Andra pratar runt användaren: at most three short sentences, the core only, nothing the others need to hear\n</preferences>\n<transcript>\nLäraren: Idag pratar vi om celldelning.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 05:48 (svensk tid, Europe/Stockholm)</now>\n<fragment>Vad är skillnaden mellan mitos och meios?</fragment>"
+            "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<preferences note=\"learned from this user's own corrections: follow them in this answer\">\n- Andra pratar runt användaren: at most three short sentences, the core only, nothing the others need to hear\n</preferences>\n<transcript>\nLäraren: Idag pratar vi om celldelning.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 05:50 (svensk tid, Europe/Stockholm)</now>\n<fragment>Vad är skillnaden mellan mitos och meios?</fragment>"
           }
         ],
         "output_config": {
@@ -91,7 +91,144 @@
       "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
     }
   ],
-  "turns": [],
-  "blocked": [],
-  "needs": "adhoc.t1.c1"
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "answer",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "answer",
+          "mode": "auto",
+          "language": "sv",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "is_question": true,
+          "confidence": 1,
+          "input_tokens": 3598,
+          "output_tokens": 164,
+          "ttft_ms": 279,
+          "total_ms": 300,
+          "est_cost_usd": 0.0004418,
+          "status": "ok",
+          "category": "övrigt",
+          "persona": "tutor"
+        }
+      ],
+      "credits": [],
+      "events": [
+        {
+          "event": "meta",
+          "data": {
+            "reconstructed_question": "Vad är skillnaden mellan mitos och meios?",
+            "confidence": 1,
+            "is_question": true,
+            "needs_confirmation": false,
+            "answer_type": "study",
+            "relation": null
+          }
+        },
+        {
+          "event": "delta",
+          "data": {
+            "text": "Mitos och meios är två sorters celldelning med helt olika syften. "
+          }
+        },
+        {
+          "event": "delta",
+          "data": {
+            "text": "Vid mitos delar sig en kroppscell till två identiska dotterceller med samma antal kromosomer, vilket behövs för tillväxt och reparation. "
+          }
+        },
+        {
+          "event": "delta",
+          "data": {
+            "text": "Vid meios sker två delningar i rad som ger fyra könsceller med halva kromosomantalet och ny genetisk blandning, så att befruktningen återställer det fulla antalet."
+          }
+        },
+        {
+          "event": "done",
+          "data": {
+            "answered": true,
+            "timing": {
+              "meta_ms": 279,
+              "ttft_ms": 279,
+              "llm_first_token_ms": 240,
+              "total_ms": 299
+            },
+            "breakdown": {
+              "auth_ms": 0,
+              "body_ms": 169,
+              "limits_ms": 239,
+              "llm_first_chunk_ms": 240,
+              "direct": true,
+              "cold": true,
+              "answer_type": "study",
+              "continuation": null
+            },
+            "usage": {
+              "input_tokens": 3598,
+              "output_tokens": 164,
+              "cache_read_tokens": 0,
+              "cache_write_tokens": 0,
+              "web_searches": 0,
+              "model": "claude-haiku-5-5",
+              "est_cost_usd": 0.0004418
+            },
+            "summary": "Eleven frågade om skillnaden mellan mitos och meios. Svaret förklarade att mitos ger två identiska kroppsceller medan meios ger fyra könsceller med halverat kromosomantal och genetisk variation.",
+            "relation": null,
+            "source": null,
+            "memory_add": null,
+            "calibration": null
+          }
+        }
+      ],
+      "said": "Mitos och meios är två sorters celldelning med helt olika syften. Vid mitos delar sig en kroppscell till två identiska dotterceller med samma antal kromosomer, vilket behövs för tillväxt och reparation. Vid meios sker två delningar i rad som ger fyra könsceller med halva kromosomantalet och ny genetisk blandning, så att befruktningen återställer det fulla antalet.",
+      "meta": [
+        {
+          "reconstructed_question": "Vad är skillnaden mellan mitos och meios?",
+          "confidence": 1,
+          "is_question": true,
+          "needs_confirmation": false,
+          "answer_type": "study",
+          "relation": null
+        }
+      ],
+      "done": {
+        "answered": true,
+        "timing": {
+          "meta_ms": 279,
+          "ttft_ms": 279,
+          "llm_first_token_ms": 240,
+          "total_ms": 299
+        },
+        "breakdown": {
+          "auth_ms": 0,
+          "body_ms": 169,
+          "limits_ms": 239,
+          "llm_first_chunk_ms": 240,
+          "direct": true,
+          "cold": true,
+          "answer_type": "study",
+          "continuation": null
+        },
+        "usage": {
+          "input_tokens": 3598,
+          "output_tokens": 164,
+          "cache_read_tokens": 0,
+          "cache_write_tokens": 0,
+          "web_searches": 0,
+          "model": "claude-haiku-5-5",
+          "est_cost_usd": 0.0004418
+        },
+        "summary": "Eleven frågade om skillnaden mellan mitos och meios. Svaret förklarade att mitos ger två identiska kroppsceller medan meios ger fyra könsceller med halverat kromosomantal och genetisk variation.",
+        "relation": null,
+        "source": null,
+        "memory_add": null,
+        "calibration": null
+      }
+    }
+  ],
+  "blocked": []
 }

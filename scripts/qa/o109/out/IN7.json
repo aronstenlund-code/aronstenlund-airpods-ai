@@ -1,6 +1,6 @@
 {
  "id": "adhoc",
- "status": "needs_reply",
+ "status": "done",
  "prompts": [
   {
    "stem": "adhoc.t1.c1",
@@ -49,7 +49,150 @@
    "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
   }
  ],
- "turns": [],
- "blocked": [],
- "needs": "adhoc.t1.c1"
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "answer",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "answer",
+     "mode": "push_to_talk",
+     "language": "sv",
+     "provider": "anthropic",
+     "model": "claude-haiku-5-5",
+     "is_question": true,
+     "confidence": 1,
+     "input_tokens": 2404,
+     "output_tokens": 187,
+     "ttft_ms": 287,
+     "total_ms": 307,
+     "est_cost_usd": 0.0003339,
+     "status": "ok",
+     "category": "intervju",
+     "persona": "interview"
+    }
+   ],
+   "credits": [],
+   "events": [
+    {
+     "event": "meta",
+     "data": {
+      "reconstructed_question": "berätta om ett misstag du gjort",
+      "confidence": 1,
+      "is_question": true,
+      "needs_confirmation": false,
+      "answer_type": "study",
+      "relation": null
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "När jag märker att jag har gjort ett misstag säger jag till direkt i stället för att hoppas att ingen ska märka det. "
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Sedan ser jag till att rätta till det så snabbt som möjligt, till exempel genom att ställa tillbaka en vara på rätt plats eller be en kollega om hjälp om jag inte kan lösa det själv. "
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Efteråt tänker jag igenom vad som gick fel så att det inte händer igen. "
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Jag ser misstag som ett sätt att lära mig jobbet snabbare."
+     }
+    },
+    {
+     "event": "done",
+     "data": {
+      "answered": true,
+      "timing": {
+       "meta_ms": 241,
+       "ttft_ms": 287,
+       "llm_first_token_ms": 236,
+       "total_ms": 306
+      },
+      "breakdown": {
+       "auth_ms": 0,
+       "body_ms": 180,
+       "limits_ms": 235,
+       "llm_first_chunk_ms": 236,
+       "direct": true,
+       "cold": true,
+       "answer_type": "study",
+       "continuation": null
+      },
+      "usage": {
+       "input_tokens": 2404,
+       "output_tokens": 187,
+       "cache_read_tokens": 0,
+       "cache_write_tokens": 0,
+       "web_searches": 0,
+       "model": "claude-haiku-5-5",
+       "est_cost_usd": 0.0003339
+      },
+      "summary": "Intervjuträning för ett sommarjobb i en matbutik, frågan gällde ett misstag användaren gjort. Svaret beskrev hur användaren hanterar misstag genom att säga till direkt, rätta till det och lära sig av det.",
+      "relation": null,
+      "source": null,
+      "memory_add": null,
+      "calibration": null
+     }
+    }
+   ],
+   "said": "När jag märker att jag har gjort ett misstag säger jag till direkt i stället för att hoppas att ingen ska märka det. Sedan ser jag till att rätta till det så snabbt som möjligt, till exempel genom att ställa tillbaka en vara på rätt plats eller be en kollega om hjälp om jag inte kan lösa det själv. Efteråt tänker jag igenom vad som gick fel så att det inte händer igen. Jag ser misstag som ett sätt att lära mig jobbet snabbare.",
+   "meta": [
+    {
+     "reconstructed_question": "berätta om ett misstag du gjort",
+     "confidence": 1,
+     "is_question": true,
+     "needs_confirmation": false,
+     "answer_type": "study",
+     "relation": null
+    }
+   ],
+   "done": {
+    "answered": true,
+    "timing": {
+     "meta_ms": 241,
+     "ttft_ms": 287,
+     "llm_first_token_ms": 236,
+     "total_ms": 306
+    },
+    "breakdown": {
+     "auth_ms": 0,
+     "body_ms": 180,
+     "limits_ms": 235,
+     "llm_first_chunk_ms": 236,
+     "direct": true,
+     "cold": true,
+     "answer_type": "study",
+     "continuation": null
+    },
+    "usage": {
+     "input_tokens": 2404,
+     "output_tokens": 187,
+     "cache_read_tokens": 0,
+     "cache_write_tokens": 0,
+     "web_searches": 0,
+     "model": "claude-haiku-5-5",
+     "est_cost_usd": 0.0003339
+    },
+    "summary": "Intervjuträning för ett sommarjobb i en matbutik, frågan gällde ett misstag användaren gjort. Svaret beskrev hur användaren hanterar misstag genom att säga till direkt, rätta till det och lära sig av det.",
+    "relation": null,
+    "source": null,
+    "memory_add": null,
+    "calibration": null
+   }
+  }
+ ],
+ "blocked": []
 }

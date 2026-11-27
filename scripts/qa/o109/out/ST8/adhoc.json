@@ -1,6 +1,6 @@
 {
   "id": "adhoc",
-  "status": "needs_reply",
+  "status": "done",
   "prompts": [
     {
       "stem": "adhoc.t1.c1",
@@ -34,7 +34,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<now>fredag 27 november 2026, vecka 48, klockan 05:48 (svensk tid, Europe/Stockholm)</now>\n<fragment>Lumen, vad heter Sveriges statsminister?</fragment>"
+            "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<now>fredag 27 november 2026, vecka 48, klockan 05:50 (svensk tid, Europe/Stockholm)</now>\n<fragment>Lumen, vad heter Sveriges statsminister?</fragment>"
           }
         ],
         "output_config": {
@@ -47,7 +47,132 @@
       "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
     }
   ],
-  "turns": [],
-  "blocked": [],
-  "needs": "adhoc.t1.c1"
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "answer",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "answer",
+          "mode": "auto",
+          "language": "sv",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "is_question": true,
+          "confidence": 1,
+          "input_tokens": 3540,
+          "output_tokens": 86,
+          "ttft_ms": 333,
+          "total_ms": 334,
+          "est_cost_usd": 0.000397,
+          "status": "ok",
+          "category": "övrigt",
+          "persona": "tutor"
+        }
+      ],
+      "credits": [],
+      "events": [
+        {
+          "event": "meta",
+          "data": {
+            "reconstructed_question": "Lumen, vad heter Sveriges statsminister?",
+            "confidence": 1,
+            "is_question": true,
+            "needs_confirmation": false,
+            "answer_type": "fact",
+            "relation": null
+          }
+        },
+        {
+          "event": "delta",
+          "data": {
+            "text": "Senast jag vet var Ulf Kristersson statsminister, sedan tvåtusen tjugotvå, men efter valet i september tvåtusen tjugosex kan det ha ändrats."
+          }
+        },
+        {
+          "event": "done",
+          "data": {
+            "answered": true,
+            "timing": {
+              "meta_ms": 333,
+              "ttft_ms": 333,
+              "llm_first_token_ms": 260,
+              "total_ms": 334
+            },
+            "breakdown": {
+              "auth_ms": 0,
+              "body_ms": 178,
+              "limits_ms": 259,
+              "llm_first_chunk_ms": 260,
+              "direct": true,
+              "cold": true,
+              "answer_type": "fact",
+              "continuation": null
+            },
+            "usage": {
+              "input_tokens": 3540,
+              "output_tokens": 86,
+              "cache_read_tokens": 0,
+              "cache_write_tokens": 0,
+              "web_searches": 0,
+              "model": "claude-haiku-5-5",
+              "est_cost_usd": 0.000397
+            },
+            "summary": "Användaren frågade vem som är Sveriges statsminister. Svaret angav Ulf Kristersson som senast kända statsminister med reservation för att valet 2026 kan ha ändrat det.",
+            "relation": null,
+            "source": null,
+            "memory_add": null,
+            "calibration": null
+          }
+        }
+      ],
+      "said": "Senast jag vet var Ulf Kristersson statsminister, sedan tvåtusen tjugotvå, men efter valet i september tvåtusen tjugosex kan det ha ändrats.",
+      "meta": [
+        {
+          "reconstructed_question": "Lumen, vad heter Sveriges statsminister?",
+          "confidence": 1,
+          "is_question": true,
+          "needs_confirmation": false,
+          "answer_type": "fact",
+          "relation": null
+        }
+      ],
+      "done": {
+        "answered": true,
+        "timing": {
+          "meta_ms": 333,
+          "ttft_ms": 333,
+          "llm_first_token_ms": 260,
+          "total_ms": 334
+        },
+        "breakdown": {
+          "auth_ms": 0,
+          "body_ms": 178,
+          "limits_ms": 259,
+          "llm_first_chunk_ms": 260,
+          "direct": true,
+          "cold": true,
+          "answer_type": "fact",
+          "continuation": null
+        },
+        "usage": {
+          "input_tokens": 3540,
+          "output_tokens": 86,
+          "cache_read_tokens": 0,
+          "cache_write_tokens": 0,
+          "web_searches": 0,
+          "model": "claude-haiku-5-5",
+          "est_cost_usd": 0.000397
+        },
+        "summary": "Användaren frågade vem som är Sveriges statsminister. Svaret angav Ulf Kristersson som senast kända statsminister med reservation för att valet 2026 kan ha ändrat det.",
+        "relation": null,
+        "source": null,
+        "memory_add": null,
+        "calibration": null
+      }
+    }
+  ],
+  "blocked": []
 }

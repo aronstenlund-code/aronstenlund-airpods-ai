@@ -1,6 +1,6 @@
 {
  "id": "adhoc",
- "status": "needs_reply",
+ "status": "done",
  "prompts": [
   {
    "stem": "adhoc.t1.c1",
@@ -49,7 +49,156 @@
    "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
   }
  ],
- "turns": [],
- "blocked": [],
- "needs": "adhoc.t1.c1"
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "answer",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "answer",
+     "mode": "push_to_talk",
+     "language": "sv",
+     "provider": "anthropic",
+     "model": "claude-haiku-5-5",
+     "is_question": true,
+     "confidence": 1,
+     "input_tokens": 2402,
+     "output_tokens": 208,
+     "ttft_ms": 313,
+     "total_ms": 328,
+     "est_cost_usd": 0.00034420000000000007,
+     "status": "ok",
+     "category": "intervju",
+     "persona": "interview"
+    }
+   ],
+   "credits": [],
+   "events": [
+    {
+     "event": "meta",
+     "data": {
+      "reconstructed_question": "berätta om dig själv",
+      "confidence": 1,
+      "is_question": true,
+      "needs_confirmation": false,
+      "answer_type": "study",
+      "relation": null
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Jag är en positiv och ansvarsfull person som trivs när det är fart och mycket att göra. "
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Jag tycker om att möta människor, så att hjälpa en kund hitta rätt vara eller svara på en fråga i kassan är något jag ser fram emot. "
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Jag är noggrann och vill att saker ska bli rätt, till exempel att hyllorna är påfyllda och att varorna med kortast datum står längst fram. "
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Jag lär mig snabbt, tar gärna instruktioner och frågar hellre en gång för mycket än gör fel. "
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Därför tror jag att jag skulle passa bra som butiksbiträde hos er i sommar."
+     }
+    },
+    {
+     "event": "done",
+     "data": {
+      "answered": true,
+      "timing": {
+       "meta_ms": 274,
+       "ttft_ms": 313,
+       "llm_first_token_ms": 270,
+       "total_ms": 328
+      },
+      "breakdown": {
+       "auth_ms": 0,
+       "body_ms": 231,
+       "limits_ms": 269,
+       "llm_first_chunk_ms": 270,
+       "direct": true,
+       "cold": true,
+       "answer_type": "study",
+       "continuation": null
+      },
+      "usage": {
+       "input_tokens": 2402,
+       "output_tokens": 208,
+       "cache_read_tokens": 0,
+       "cache_write_tokens": 0,
+       "web_searches": 0,
+       "model": "claude-haiku-5-5",
+       "est_cost_usd": 0.00034420000000000007
+      },
+      "summary": "Intervjuträning för ett sommarjobb som butiksbiträde i en matbutik, frågan var att berätta om sig själv. Svaret lyfte fram serviceanda, noggrannhet och viljan att lära sig snabbt.",
+      "relation": null,
+      "source": null,
+      "memory_add": null,
+      "calibration": null
+     }
+    }
+   ],
+   "said": "Jag är en positiv och ansvarsfull person som trivs när det är fart och mycket att göra. Jag tycker om att möta människor, så att hjälpa en kund hitta rätt vara eller svara på en fråga i kassan är något jag ser fram emot. Jag är noggrann och vill att saker ska bli rätt, till exempel att hyllorna är påfyllda och att varorna med kortast datum står längst fram. Jag lär mig snabbt, tar gärna instruktioner och frågar hellre en gång för mycket än gör fel. Därför tror jag att jag skulle passa bra som butiksbiträde hos er i sommar.",
+   "meta": [
+    {
+     "reconstructed_question": "berätta om dig själv",
+     "confidence": 1,
+     "is_question": true,
+     "needs_confirmation": false,
+     "answer_type": "study",
+     "relation": null
+    }
+   ],
+   "done": {
+    "answered": true,
+    "timing": {
+     "meta_ms": 274,
+     "ttft_ms": 313,
+     "llm_first_token_ms": 270,
+     "total_ms": 328
+    },
+    "breakdown": {
+     "auth_ms": 0,
+     "body_ms": 231,
+     "limits_ms": 269,
+     "llm_first_chunk_ms": 270,
+     "direct": true,
+     "cold": true,
+     "answer_type": "study",
+     "continuation": null
+    },
+    "usage": {
+     "input_tokens": 2402,
+     "output_tokens": 208,
+     "cache_read_tokens": 0,
+     "cache_write_tokens": 0,
+     "web_searches": 0,
+     "model": "claude-haiku-5-5",
+     "est_cost_usd": 0.00034420000000000007
+    },
+    "summary": "Intervjuträning för ett sommarjobb som butiksbiträde i en matbutik, frågan var att berätta om sig själv. Svaret lyfte fram serviceanda, noggrannhet och viljan att lära sig snabbt.",
+    "relation": null,
+    "source": null,
+    "memory_add": null,
+    "calibration": null
+   }
+  }
+ ],
+ "blocked": []
 }

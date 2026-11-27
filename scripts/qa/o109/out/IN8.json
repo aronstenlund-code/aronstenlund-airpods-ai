@@ -1,6 +1,6 @@
 {
  "id": "adhoc",
- "status": "needs_reply",
+ "status": "done",
  "prompts": [
   {
    "stem": "adhoc.t1.c1",
@@ -49,7 +49,138 @@
    "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
   }
  ],
- "turns": [],
- "blocked": [],
- "needs": "adhoc.t1.c1"
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "answer",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "answer",
+     "mode": "push_to_talk",
+     "language": "sv",
+     "provider": "anthropic",
+     "model": "claude-haiku-5-5",
+     "is_question": true,
+     "confidence": 1,
+     "input_tokens": 2405,
+     "output_tokens": 86,
+     "ttft_ms": 260,
+     "total_ms": 274,
+     "est_cost_usd": 0.0002835,
+     "status": "ok",
+     "category": "intervju",
+     "persona": "interview"
+    }
+   ],
+   "credits": [],
+   "events": [
+    {
+     "event": "meta",
+     "data": {
+      "reconstructed_question": "Okej, det var allt. Tack för idag.",
+      "confidence": 1,
+      "is_question": true,
+      "needs_confirmation": false,
+      "answer_type": "study",
+      "relation": null
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Tack själv, det var roligt att få berätta om mig själv och höra mer om jobbet. "
+     }
+    },
+    {
+     "event": "delta",
+     "data": {
+      "text": "Jag ser fram emot att höra av er."
+     }
+    },
+    {
+     "event": "done",
+     "data": {
+      "answered": true,
+      "timing": {
+       "meta_ms": 225,
+       "ttft_ms": 260,
+       "llm_first_token_ms": 221,
+       "total_ms": 273
+      },
+      "breakdown": {
+       "auth_ms": 0,
+       "body_ms": 176,
+       "limits_ms": 221,
+       "llm_first_chunk_ms": 221,
+       "direct": true,
+       "cold": true,
+       "answer_type": "study",
+       "continuation": null
+      },
+      "usage": {
+       "input_tokens": 2405,
+       "output_tokens": 86,
+       "cache_read_tokens": 0,
+       "cache_write_tokens": 0,
+       "web_searches": 0,
+       "model": "claude-haiku-5-5",
+       "est_cost_usd": 0.0002835
+      },
+      "summary": "Intervjuträning för ett sommarjobb i en matbutik, där intervjuaren avslutade intervjun. Svaret var ett kort och artigt tack med förväntan om att höra av arbetsgivaren.",
+      "relation": null,
+      "source": null,
+      "memory_add": null,
+      "calibration": null
+     }
+    }
+   ],
+   "said": "Tack själv, det var roligt att få berätta om mig själv och höra mer om jobbet. Jag ser fram emot att höra av er.",
+   "meta": [
+    {
+     "reconstructed_question": "Okej, det var allt. Tack för idag.",
+     "confidence": 1,
+     "is_question": true,
+     "needs_confirmation": false,
+     "answer_type": "study",
+     "relation": null
+    }
+   ],
+   "done": {
+    "answered": true,
+    "timing": {
+     "meta_ms": 225,
+     "ttft_ms": 260,
+     "llm_first_token_ms": 221,
+     "total_ms": 273
+    },
+    "breakdown": {
+     "auth_ms": 0,
+     "body_ms": 176,
+     "limits_ms": 221,
+     "llm_first_chunk_ms": 221,
+     "direct": true,
+     "cold": true,
+     "answer_type": "study",
+     "continuation": null
+    },
+    "usage": {
+     "input_tokens": 2405,
+     "output_tokens": 86,
+     "cache_read_tokens": 0,
+     "cache_write_tokens": 0,
+     "web_searches": 0,
+     "model": "claude-haiku-5-5",
+     "est_cost_usd": 0.0002835
+    },
+    "summary": "Intervjuträning för ett sommarjobb i en matbutik, där intervjuaren avslutade intervjun. Svaret var ett kort och artigt tack med förväntan om att höra av arbetsgivaren.",
+    "relation": null,
+    "source": null,
+    "memory_add": null,
+    "calibration": null
+   }
+  }
+ ],
+ "blocked": []
 }
