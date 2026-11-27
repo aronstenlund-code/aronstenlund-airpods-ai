@@ -147,6 +147,19 @@ export function validateMemoryRequest(raw: unknown): { q: string; a: string; mem
   return { q, a, memories: memories as string[], language: b?.language === "en" ? "en" : "sv" };
 }
 
+/**
+ * O107 M-4 (Oscar): "provet i kemi är flyttat till nästa onsdag" has no "jag/min", yet changes a remembered exam: a
+ * sentence with a change word and a word of its own (not "prov", "läxa" …) that a memory has reaches the model too.
+ */
+const CHANGE = /(?<![\p{L}])(?:flyttat|flyttad|flyttas|framflyttat|uppskjutet|skjutits upp|ändrat|ändrad|ändras|inställt|inställd|ställts in|ställs in|nytt datum|i stället|istället|blir (?:på|i)|är nu|moved|changed|cancelled|canceled|postponed)(?![\p{L}])/iu;
+const GENERIC = new Set("prov provet proven läxa läxan läxor test testet uppgift uppgiften har hade är var blir det den detta som och eller till från med för på nästa vecka veckan dag dagen".split(" "));
+const words = (t: string) => new Set((t.toLowerCase().match(/\p{L}{3,}/gu) ?? []).map((w) => w.replace(/(?:et|en|n)$/u, "")).filter((w) => w.length >= 3 && !GENERIC.has(w)));
+export function changesMemory(q: string, memories: string[]): boolean {
+  if (!memories.length || !CHANGE.test(q)) return false;
+  const own = words(q);
+  return memories.some((m) => [...words(m)].some((w) => own.has(w)));
+}
+
 /** Parses the model's JSON; drops anything malformed, too long, sensitive, duplicate or not in memory. */
 export function parseMemoryReply(text: string, memories: string[]): MemoryResult {
   const out: MemoryResult = { add: [], update: [], remove: [] };
@@ -273,7 +286,7 @@ export function createMemoryHandler(deps: MemoryDeps) {
         });
       }
       const body = validateMemoryRequest(raw);
-      if (!SELF.test(body.q)) {
+      if (!SELF.test(body.q) && !changesMemory(body.q, body.memories)) {
         // nothing about the wearer: no model call, no cost
         return json({ add: [], update: [], remove: [], skipped: "no_self_reference" });
       }
