@@ -208,8 +208,8 @@ struct TroubleE2ETests {
         _ = await waitFor(20) { model.history.entries.contains { $0.answer.contains("Photosynthesis makes sugar") } }
         await model.endSession()
         let entries = model.history.entries
-        let found = HistoryStore.matching(entries, "fotosyntes")
-        let days = HistoryStore.days(entries)
+        let found = HistoryEntry.matching(entries, "fotosyntes")
+        let days = HistoryEntry.days(entries)
         out.notes.append("recorded \(recorded), \(entries.count) rows, search 'fotosyntes' → \(found.count), first day '\(days.first?.title ?? "-")'")
         if !recorded { wrong.append("the answer is not in Historik") }
         if found.isEmpty { wrong.append("the search did not find it") }
