@@ -34,7 +34,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>study</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: oj, du tappade mobilen igen.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>varför händer alltid sånt här mig</fragment>"
+      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>study</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: oj, du tappade mobilen igen.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>varför händer alltid sånt här mig</fragment>"
      }
     ],
     "output_config": {
@@ -65,7 +65,7 @@
      "input_tokens": 4492,
      "output_tokens": 1,
      "ttft_ms": null,
-     "total_ms": 296,
+     "total_ms": 265,
      "est_cost_usd": 0.00044970000000000003,
      "status": "not_question",
      "category": "övrigt",
@@ -90,16 +90,16 @@
      "data": {
       "answered": false,
       "timing": {
-       "meta_ms": 274,
+       "meta_ms": 243,
        "ttft_ms": null,
-       "llm_first_token_ms": 270,
-       "total_ms": 296
+       "llm_first_token_ms": 239,
+       "total_ms": 264
       },
       "breakdown": {
        "auth_ms": 0,
-       "body_ms": 201,
-       "limits_ms": 269,
-       "llm_first_chunk_ms": 270,
+       "body_ms": 172,
+       "limits_ms": 238,
+       "llm_first_chunk_ms": 239,
        "direct": false,
        "cold": true,
        "answer_type": "study",
@@ -136,16 +136,16 @@
    "done": {
     "answered": false,
     "timing": {
-     "meta_ms": 274,
+     "meta_ms": 243,
      "ttft_ms": null,
-     "llm_first_token_ms": 270,
-     "total_ms": 296
+     "llm_first_token_ms": 239,
+     "total_ms": 264
     },
     "breakdown": {
      "auth_ms": 0,
-     "body_ms": 201,
-     "limits_ms": 269,
-     "llm_first_chunk_ms": 270,
+     "body_ms": 172,
+     "limits_ms": 238,
+     "llm_first_chunk_ms": 239,
      "direct": false,
      "cold": true,
      "answer_type": "study",

@@ -39,7 +39,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<recent_qa>\nQ: vilken är världens högsta berg\nA: Mount Everest är världens högsta berg, 8 849 meter.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>vilken är världens högsta berg</active_topic>\n<transcript>\nKompis: vi pluggar geografi.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>men hur högt är det i fot då</fragment>"
+      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<recent_qa>\nQ: vilken är världens högsta berg\nA: Mount Everest är världens högsta berg, 8 849 meter.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>vilken är världens högsta berg</active_topic>\n<transcript>\nKompis: vi pluggar geografi.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>men hur högt är det i fot då</fragment>"
      }
     ],
     "output_config": {
@@ -69,8 +69,8 @@
      "confidence": 0.92,
      "input_tokens": 4546,
      "output_tokens": 93,
-     "ttft_ms": 302,
-     "total_ms": 303,
+     "ttft_ms": 288,
+     "total_ms": 288,
      "est_cost_usd": 0.0005011,
      "status": "ok",
      "category": "övrigt",
@@ -101,16 +101,16 @@
      "data": {
       "answered": true,
       "timing": {
-       "meta_ms": 301,
-       "ttft_ms": 302,
-       "llm_first_token_ms": 243,
-       "total_ms": 302
+       "meta_ms": 288,
+       "ttft_ms": 288,
+       "llm_first_token_ms": 239,
+       "total_ms": 288
       },
       "breakdown": {
        "auth_ms": 0,
-       "body_ms": 169,
-       "limits_ms": 242,
-       "llm_first_chunk_ms": 243,
+       "body_ms": 166,
+       "limits_ms": 239,
+       "llm_first_chunk_ms": 239,
        "direct": false,
        "cold": true,
        "answer_type": "fact",
@@ -147,16 +147,16 @@
    "done": {
     "answered": true,
     "timing": {
-     "meta_ms": 301,
-     "ttft_ms": 302,
-     "llm_first_token_ms": 243,
-     "total_ms": 302
+     "meta_ms": 288,
+     "ttft_ms": 288,
+     "llm_first_token_ms": 239,
+     "total_ms": 288
     },
     "breakdown": {
      "auth_ms": 0,
-     "body_ms": 169,
-     "limits_ms": 242,
-     "llm_first_chunk_ms": 243,
+     "body_ms": 166,
+     "limits_ms": 239,
+     "llm_first_chunk_ms": 239,
      "direct": false,
      "cold": true,
      "answer_type": "fact",

@@ -461,5 +461,101 @@
   "headers": [
    "x-earmind-lang: sv"
   ]
+ },
+ {
+  "id": "A29",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Vad gör du sen?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: jag är ledig efter lunch.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A30",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Var är min mobil?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: du hade den nyss.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A31",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Vad är ATP, vet du?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: vi har bioprov på fredag.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A32",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Hur gammal är du nu?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: grattis på födelsedagen!",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A33",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Vad heter Frankrikes huvudstad?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: vi ska till Frankrike.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A34",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Vem skrev Hamlet, kommer du ihåg?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Läraren: Vi börjar med Shakespeare.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
  }
 ]

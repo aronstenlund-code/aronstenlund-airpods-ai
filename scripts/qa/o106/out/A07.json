@@ -39,7 +39,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<recent_qa>\nQ: vad är fotosyntes\nA: Fotosyntesen är när växter gör socker av ljus, vatten och koldioxid och släpper ut syre.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>vad är fotosyntes</active_topic>\n<transcript>\nLäraren: Okej, sätt er ner. Idag fortsätter vi med växterna. Ni har läst kapitel fyra.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>och cellandning då</fragment>"
+      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<recent_qa>\nQ: vad är fotosyntes\nA: Fotosyntesen är när växter gör socker av ljus, vatten och koldioxid och släpper ut syre.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>vad är fotosyntes</active_topic>\n<transcript>\nLäraren: Okej, sätt er ner. Idag fortsätter vi med växterna. Ni har läst kapitel fyra.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>och cellandning då</fragment>"
      }
     ],
     "output_config": {
@@ -69,8 +69,8 @@
      "confidence": 0.9,
      "input_tokens": 4561,
      "output_tokens": 148,
-     "ttft_ms": 334,
-     "total_ms": 353,
+     "ttft_ms": 316,
+     "total_ms": 329,
      "est_cost_usd": 0.0005301,
      "status": "ok",
      "category": "övrigt",
@@ -107,16 +107,16 @@
      "data": {
       "answered": true,
       "timing": {
-       "meta_ms": 334,
-       "ttft_ms": 334,
-       "llm_first_token_ms": 282,
-       "total_ms": 352
+       "meta_ms": 316,
+       "ttft_ms": 316,
+       "llm_first_token_ms": 277,
+       "total_ms": 329
       },
       "breakdown": {
        "auth_ms": 0,
-       "body_ms": 192,
-       "limits_ms": 280,
-       "llm_first_chunk_ms": 282,
+       "body_ms": 198,
+       "limits_ms": 276,
+       "llm_first_chunk_ms": 277,
        "direct": false,
        "cold": true,
        "answer_type": "fact",
@@ -153,16 +153,16 @@
    "done": {
     "answered": true,
     "timing": {
-     "meta_ms": 334,
-     "ttft_ms": 334,
-     "llm_first_token_ms": 282,
-     "total_ms": 352
+     "meta_ms": 316,
+     "ttft_ms": 316,
+     "llm_first_token_ms": 277,
+     "total_ms": 329
     },
     "breakdown": {
      "auth_ms": 0,
-     "body_ms": 192,
-     "limits_ms": 280,
-     "llm_first_chunk_ms": 282,
+     "body_ms": 198,
+     "limits_ms": 276,
+     "llm_first_chunk_ms": 277,
      "direct": false,
      "cold": true,
      "answer_type": "fact",

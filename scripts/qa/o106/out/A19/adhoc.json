@@ -34,7 +34,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>study</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: asså vi ska åka till Kanada i sommar med familjen.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad är klockan i New York och hur lång tid tar det att flyga dit</fragment>"
+            "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>study</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: asså vi ska åka till Kanada i sommar med familjen.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad är klockan i New York och hur lång tid tar det att flyga dit</fragment>"
           }
         ],
         "output_config": {
@@ -64,8 +64,8 @@
           "confidence": 0.9,
           "input_tokens": 4505,
           "output_tokens": 140,
-          "ttft_ms": 274,
-          "total_ms": 287,
+          "ttft_ms": 294,
+          "total_ms": 307,
           "est_cost_usd": 0.0005205,
           "status": "ok",
           "category": "övrigt",
@@ -102,16 +102,16 @@
           "data": {
             "answered": true,
             "timing": {
-              "meta_ms": 274,
-              "ttft_ms": 274,
-              "llm_first_token_ms": 233,
-              "total_ms": 286
+              "meta_ms": 294,
+              "ttft_ms": 294,
+              "llm_first_token_ms": 252,
+              "total_ms": 306
             },
             "breakdown": {
               "auth_ms": 0,
-              "body_ms": 171,
-              "limits_ms": 232,
-              "llm_first_chunk_ms": 233,
+              "body_ms": 187,
+              "limits_ms": 251,
+              "llm_first_chunk_ms": 252,
               "direct": false,
               "cold": true,
               "answer_type": "study",
@@ -148,16 +148,16 @@
       "done": {
         "answered": true,
         "timing": {
-          "meta_ms": 274,
-          "ttft_ms": 274,
-          "llm_first_token_ms": 233,
-          "total_ms": 286
+          "meta_ms": 294,
+          "ttft_ms": 294,
+          "llm_first_token_ms": 252,
+          "total_ms": 306
         },
         "breakdown": {
           "auth_ms": 0,
-          "body_ms": 171,
-          "limits_ms": 232,
-          "llm_first_chunk_ms": 233,
+          "body_ms": 187,
+          "limits_ms": 251,
+          "llm_first_chunk_ms": 252,
           "direct": false,
           "cold": true,
           "answer_type": "study",

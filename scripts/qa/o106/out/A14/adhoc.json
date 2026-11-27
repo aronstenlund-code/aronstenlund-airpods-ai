@@ -34,7 +34,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nLäraren: Slå upp de nya orden i glosboken.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad betyder ubiquitous på svenska</fragment>"
+            "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nLäraren: Slå upp de nya orden i glosboken.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad betyder ubiquitous på svenska</fragment>"
           }
         ],
         "output_config": {
@@ -64,8 +64,8 @@
           "confidence": 0.95,
           "input_tokens": 4493,
           "output_tokens": 98,
-          "ttft_ms": 294,
-          "total_ms": 294,
+          "ttft_ms": 289,
+          "total_ms": 290,
           "est_cost_usd": 0.0004983,
           "status": "ok",
           "category": "språk",
@@ -96,16 +96,16 @@
           "data": {
             "answered": true,
             "timing": {
-              "meta_ms": 293,
-              "ttft_ms": 294,
-              "llm_first_token_ms": 251,
-              "total_ms": 294
+              "meta_ms": 289,
+              "ttft_ms": 289,
+              "llm_first_token_ms": 246,
+              "total_ms": 290
             },
             "breakdown": {
               "auth_ms": 0,
-              "body_ms": 183,
-              "limits_ms": 250,
-              "llm_first_chunk_ms": 251,
+              "body_ms": 175,
+              "limits_ms": 245,
+              "llm_first_chunk_ms": 246,
               "direct": false,
               "cold": true,
               "answer_type": "fact",
@@ -142,16 +142,16 @@
       "done": {
         "answered": true,
         "timing": {
-          "meta_ms": 293,
-          "ttft_ms": 294,
-          "llm_first_token_ms": 251,
-          "total_ms": 294
+          "meta_ms": 289,
+          "ttft_ms": 289,
+          "llm_first_token_ms": 246,
+          "total_ms": 290
         },
         "breakdown": {
           "auth_ms": 0,
-          "body_ms": 183,
-          "limits_ms": 250,
-          "llm_first_chunk_ms": 251,
+          "body_ms": 175,
+          "limits_ms": 245,
+          "llm_first_chunk_ms": 246,
           "direct": false,
           "cold": true,
           "answer_type": "fact",

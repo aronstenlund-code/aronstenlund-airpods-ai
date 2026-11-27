@@ -20,6 +20,50 @@
    },
    "anthropic_request": {
     "model": "claude-haiku-5-5",
+    "max_tokens": 5,
+    "stream": true,
+    "system": [
+     {
+      "type": "text",
+      "text": "A study assistant listens in a room through the student's earphones and answers questions out loud. You get ONE utterance the microphone picked up. Is it a question someone would want the assistant to answer: a fact, school, language or general-knowledge question that has one answer anyone can give (\"Vilket år började första världskriget?\", \"Vad heter grundämnet med beteckningen Fe?\", \"What year did the Berlin Wall fall?\")? Answer \"nej\" when people are talking to each other: questions about each other, their plans, feelings, things or what someone said or thinks (\"Vad ska vi äta ikväll?\", \"Hur mår din mamma nu?\", \"Var lade du mina nycklar?\", \"Elin, har du tagit med dig boken?\", \"vad sa du?\", \"vad tror du?\"). Reply with one word: ja or nej.",
+      "cache_control": {
+       "type": "ephemeral"
+      }
+     }
+    ],
+    "messages": [
+     {
+      "role": "user",
+      "content": "<utterance>vad sa du?</utterance>"
+     }
+    ],
+    "output_config": {
+     "effort": "low"
+    },
+    "thinking": {
+     "type": "disabled"
+    }
+   },
+   "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
+  },
+  {
+   "stem": "adhoc.t1.c2",
+   "case": "adhoc",
+   "turn": 1,
+   "call": 2,
+   "endpoint": "answer",
+   "url": "https://k122-replay.invalid/v1/messages",
+   "client_request": {
+    "fragment": "vad sa du?",
+    "mode": "auto",
+    "language": "sv",
+    "context": {
+     "transcript": "Kompis: [otydligt]",
+     "recent_qa": []
+    }
+   },
+   "anthropic_request": {
+    "model": "claude-haiku-5-5",
     "max_tokens": 336,
     "stream": true,
     "system": [
@@ -34,7 +78,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: [otydligt]\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad sa du?</fragment>"
+      "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: [otydligt]\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad sa du?</fragment>"
      }
     ],
     "output_config": {
@@ -52,37 +96,17 @@
    "turn": 1,
    "endpoint": "answer",
    "http_status": 200,
-   "usage": [
-    {
-     "user_id": "k122-adhoc",
-     "endpoint": "answer",
-     "mode": "auto",
-     "language": "sv",
-     "provider": "anthropic",
-     "model": "claude-haiku-5-5",
-     "is_question": false,
-     "confidence": 1,
-     "input_tokens": 3545,
-     "output_tokens": 57,
-     "ttft_ms": null,
-     "total_ms": 278,
-     "est_cost_usd": 0.000383,
-     "status": "not_question",
-     "category": "övrigt",
-     "persona": "tutor"
-    }
-   ],
+   "usage": [],
    "credits": [],
    "events": [
     {
      "event": "meta",
      "data": {
       "reconstructed_question": "vad sa du?",
-      "confidence": 1,
+      "confidence": 0.2,
       "is_question": false,
       "needs_confirmation": false,
-      "answer_type": "fact",
-      "relation": null
+      "answer_type": "fact"
      }
     },
     {
@@ -90,35 +114,27 @@
      "data": {
       "answered": false,
       "timing": {
-       "meta_ms": 277,
+       "meta_ms": 303,
        "ttft_ms": null,
-       "llm_first_token_ms": 249,
-       "total_ms": 277
+       "llm_first_token_ms": null,
+       "total_ms": 303
       },
       "breakdown": {
-       "auth_ms": 0,
-       "body_ms": 176,
-       "limits_ms": 247,
-       "llm_first_chunk_ms": 249,
        "direct": true,
        "cold": true,
        "answer_type": "fact",
        "continuation": null
       },
       "usage": {
-       "input_tokens": 3545,
-       "output_tokens": 57,
+       "input_tokens": 0,
+       "output_tokens": 0,
        "cache_read_tokens": 0,
-       "cache_write_tokens": 0,
        "web_searches": 0,
-       "model": "claude-haiku-5-5",
-       "est_cost_usd": 0.000383
+       "model": "listen_gate"
       },
       "summary": null,
-      "relation": null,
-      "source": null,
       "memory_add": null,
-      "calibration": null
+      "not_for_assistant": true
      }
     }
    ],
@@ -126,45 +142,36 @@
    "meta": [
     {
      "reconstructed_question": "vad sa du?",
-     "confidence": 1,
+     "confidence": 0.2,
      "is_question": false,
      "needs_confirmation": false,
-     "answer_type": "fact",
-     "relation": null
+     "answer_type": "fact"
     }
    ],
    "done": {
     "answered": false,
     "timing": {
-     "meta_ms": 277,
+     "meta_ms": 303,
      "ttft_ms": null,
-     "llm_first_token_ms": 249,
-     "total_ms": 277
+     "llm_first_token_ms": null,
+     "total_ms": 303
     },
     "breakdown": {
-     "auth_ms": 0,
-     "body_ms": 176,
-     "limits_ms": 247,
-     "llm_first_chunk_ms": 249,
      "direct": true,
      "cold": true,
      "answer_type": "fact",
      "continuation": null
     },
     "usage": {
-     "input_tokens": 3545,
-     "output_tokens": 57,
+     "input_tokens": 0,
+     "output_tokens": 0,
      "cache_read_tokens": 0,
-     "cache_write_tokens": 0,
      "web_searches": 0,
-     "model": "claude-haiku-5-5",
-     "est_cost_usd": 0.000383
+     "model": "listen_gate"
     },
     "summary": null,
-    "relation": null,
-    "source": null,
     "memory_add": null,
-    "calibration": null
+    "not_for_assistant": true
    }
   }
  ],

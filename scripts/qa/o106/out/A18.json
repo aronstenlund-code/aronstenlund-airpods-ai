@@ -34,7 +34,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: min penna är slut.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>vem uppfann kulspetspennan</fragment>"
+      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: min penna är slut.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>vem uppfann kulspetspennan</fragment>"
      }
     ],
     "output_config": {
@@ -64,8 +64,8 @@
      "confidence": 0.95,
      "input_tokens": 4488,
      "output_tokens": 108,
-     "ttft_ms": 277,
-     "total_ms": 293,
+     "ttft_ms": 294,
+     "total_ms": 311,
      "est_cost_usd": 0.0005028,
      "status": "ok",
      "category": "övrigt",
@@ -102,16 +102,16 @@
      "data": {
       "answered": true,
       "timing": {
-       "meta_ms": 277,
-       "ttft_ms": 277,
-       "llm_first_token_ms": 240,
-       "total_ms": 293
+       "meta_ms": 294,
+       "ttft_ms": 294,
+       "llm_first_token_ms": 257,
+       "total_ms": 311
       },
       "breakdown": {
        "auth_ms": 0,
-       "body_ms": 174,
-       "limits_ms": 240,
-       "llm_first_chunk_ms": 240,
+       "body_ms": 190,
+       "limits_ms": 256,
+       "llm_first_chunk_ms": 257,
        "direct": false,
        "cold": true,
        "answer_type": "fact",
@@ -148,16 +148,16 @@
    "done": {
     "answered": true,
     "timing": {
-     "meta_ms": 277,
-     "ttft_ms": 277,
-     "llm_first_token_ms": 240,
-     "total_ms": 293
+     "meta_ms": 294,
+     "ttft_ms": 294,
+     "llm_first_token_ms": 257,
+     "total_ms": 311
     },
     "breakdown": {
      "auth_ms": 0,
-     "body_ms": 174,
-     "limits_ms": 240,
-     "llm_first_chunk_ms": 240,
+     "body_ms": 190,
+     "limits_ms": 256,
+     "llm_first_chunk_ms": 257,
      "direct": false,
      "cold": true,
      "answer_type": "fact",

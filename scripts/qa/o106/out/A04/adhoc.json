@@ -34,7 +34,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nLäraren: Okej, sätt er ner. Idag fortsätter vi med växterna. Ni har läst kapitel fyra.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad är ATP och var bildas det</fragment>"
+            "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nLäraren: Okej, sätt er ner. Idag fortsätter vi med växterna. Ni har läst kapitel fyra.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad är ATP och var bildas det</fragment>"
           }
         ],
         "output_config": {
@@ -64,8 +64,8 @@
           "confidence": 0.95,
           "input_tokens": 4503,
           "output_tokens": 141,
-          "ttft_ms": 298,
-          "total_ms": 312,
+          "ttft_ms": 267,
+          "total_ms": 279,
           "est_cost_usd": 0.0005208,
           "status": "ok",
           "category": "övrigt",
@@ -102,16 +102,16 @@
           "data": {
             "answered": true,
             "timing": {
-              "meta_ms": 298,
-              "ttft_ms": 298,
-              "llm_first_token_ms": 257,
-              "total_ms": 311
+              "meta_ms": 267,
+              "ttft_ms": 267,
+              "llm_first_token_ms": 230,
+              "total_ms": 279
             },
             "breakdown": {
               "auth_ms": 0,
-              "body_ms": 188,
-              "limits_ms": 256,
-              "llm_first_chunk_ms": 257,
+              "body_ms": 163,
+              "limits_ms": 229,
+              "llm_first_chunk_ms": 230,
               "direct": false,
               "cold": true,
               "answer_type": "fact",
@@ -148,16 +148,16 @@
       "done": {
         "answered": true,
         "timing": {
-          "meta_ms": 298,
-          "ttft_ms": 298,
-          "llm_first_token_ms": 257,
-          "total_ms": 311
+          "meta_ms": 267,
+          "ttft_ms": 267,
+          "llm_first_token_ms": 230,
+          "total_ms": 279
         },
         "breakdown": {
           "auth_ms": 0,
-          "body_ms": 188,
-          "limits_ms": 256,
-          "llm_first_chunk_ms": 257,
+          "body_ms": 163,
+          "limits_ms": 229,
+          "llm_first_chunk_ms": 230,
           "direct": false,
           "cold": true,
           "answer_type": "fact",
