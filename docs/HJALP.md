@@ -17,15 +17,15 @@ EarMind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
 - **Rösten:** se Ljud och röst.
 
 ## Nytt prov
-1. Tryck **Nytt prov** på startsidan.
+1. Tryck **Nytt prov** (New quiz) på startsidan.
 2. Lägg till material:
-   - **Fota sidor**: flera i följd.
-   - **Välj bilder**: ur bildbiblioteket.
-   - **Skriv text**: eller klistra in.
-   - **Lägg till dokument**: PDF, Word eller text.
+   - **Fota sidor** (Take photos): flera i följd.
+   - **Välj bilder** (Choose photos): ur bildbiblioteket.
+   - **Skriv text** (Type text): eller klistra in.
+   - **Lägg till dokument** (Add document): PDF, Word eller text.
 3. Ge provet ett namn, välj **Antal frågor** och gärna **Vilken årskurs?**.
-4. Tryck **Skapa frågor**. EarMind läser materialet, tar reda på ämne och årskurs, gör frågor och skriver svar. Du kan lämna appen under tiden.
-5. Under **Stämmer det här?** ser du ämne, årskurs och vad provet handlar om. Är något fel skriver du det i rutan, till exempel ”Det är åk 8”, och trycker **Gör om med rättelsen**. Stämmer det trycker du **Ser rätt ut**.
+4. Tryck **Skapa frågor** (Create questions). EarMind läser materialet, tar reda på ämne och årskurs, gör frågor och skriver svar. Du kan lämna appen under tiden.
+5. Under **Stämmer det här?** (Is this right?) ser du ämne, årskurs och vad provet handlar om. Är något fel skriver du det i rutan, till exempel ”Det är åk 8”, och trycker **Gör om med rättelsen** (Redo with the correction). Stämmer det trycker du **Ser rätt ut** (Looks right).
 
 - **Hur många bilder:** upp till 40 bilder i ett prov.
 - **Bra foton:** fota rakt ovanifrån i bra ljus. Går texten inte att läsa säger EarMind det. Fota då igen, eller klistra in texten.
@@ -38,10 +38,10 @@ EarMind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
 - **Två svar per fråga:** varje fråga får ett kort svar och ett långt svar. Det korta svaret är första meningen i det långa och är ett fullgott svar i sig. Det långa svaret förklarar mer, med begrepp, samband och exempel.
 - **Ändra en fråga eller ett svar:** öppna provet och tryck på frågan.
 - **Ta bort en fråga:** svep frågan åt vänster i listan och tryck **Radera**. Det går också under **Ändra ordning**, med den röda knappen framför frågan. Inne i en fråga finns ingen knapp för att ta bort den.
-- **Ändra ordning:** tryck på menyn med tre punkter uppe till höger i provet, välj **Ändra ordning**, dra frågorna och tryck **Klar**.
+- **Ändra ordning:** tryck på menyn med tre punkter uppe till höger i provet, välj **Ändra ordning** (Change order), dra frågorna och tryck **Klar** (Done).
 - **Menyn med tre punkter** i provet har bland annat **Ändra ordning**, **Publicera prov** och **Ta bort provet**. Där finns inget val för att ändra ämne eller årskurs.
 - **Fel ämne eller årskurs:** det rättar du under **Stämmer det här?** innan du trycker **Ser rätt ut**. Skriv rättelsen i rutan, till exempel ”Det är åk 9”, och tryck **Gör om med rättelsen**.
-- **Ny fråga:** tryck **Lägg till fråga** sist i listan. **Låt EarMind skriva svaret** skriver svar till den nya frågan.
+- **Ny fråga:** tryck **Lägg till fråga** (Add question) sist i listan. **Låt EarMind skriva svaret** (Let EarMind write the answer) skriver svar till den nya frågan.
 - **Ljudet efter en ändring:** när du sparar en ändring görs nytt ljud bara för den frågan.
 - **Svarens längd:** du ändrar den under Inställningar › Avancerat. Båda svaren görs alltid.
 
@@ -53,13 +53,13 @@ EarMind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
 - **Utan mikrofon:** repetitionsläget använder aldrig mikrofonen.
 
 ## Starta prov och styr med AirPods
-Tryck **Starta prov**. EarMind läser en fråga, väntar en stund så att du kan tänka efter, och går sedan till nästa. Väntetiden är cirka 6 sekunder, och kortare i långa prov. När listan är slut börjar den om i samma ordning.
+Tryck **Starta prov** (Start quiz). EarMind läser en fråga, väntar en stund så att du kan tänka efter, och går sedan till nästa. Väntetiden är cirka 6 sekunder, och kortare i långa prov. När listan är slut börjar den om i samma ordning.
 
 **Trycken** (ordagrant): ”Medan frågan spelas: 1 tryck = det långa A-svaret. 2 tryck = det korta A-svaret, en till två meningar. 3 tryck = paus. Tryck igen för att fortsätta.”
 - **Långa och korta svaret:** det långa A-svaret får du med 1 tryck. Det korta A-svaret, en till två meningar, får du med 2 tryck. Trycken fungerar både medan frågan spelas och under betänketiden efter den. Svaren läses bara upp när du trycker, aldrig av sig själva. Trycker du inte går EarMind vidare till nästa fråga.
 
 - **Under paus:** vilket tryck som helst fortsätter från början av meningen där du slutade. Du behöver inte telefonen.
-- **Avsluta:** provet tar slut först när du trycker **Avsluta** på telefonen. Annars börjar listan om.
+- **Avsluta:** provet tar slut först när du trycker **Avsluta** (End) på telefonen. Annars börjar listan om.
 - **Låsskärmen:** knapparna på låsskärmen gör samma sak som trycken.
 - **Kontrollskärmen Styr med dina AirPods:** där provar du trycken innan du börjar. Den visar vilka tryck som kommer fram.
 - **AirPods med dubbeltryck per lur:** gäller äldre AirPods. Ställ in vänster lur på Nästa spår (kort svar) och höger på Spela/pausa (långt svar och paus), under Inställningar › Bluetooth › ⓘ vid dina AirPods.
@@ -75,18 +75,18 @@ Tryck **Starta prov**. EarMind läser en fråga, väntar en stund så att du kan
 - **Lanseringsrabatt:** under lanseringsveckan är det 65 % rabatt på allt. Det syns i appen så länge veckan pågår.
 
 ## Dela ett prov
-- Tryck på **Dela** (symbolen med pilen uppåt) uppe till höger i provet och skicka länken med till exempel Meddelanden.
+- Tryck på **Dela** (Share), symbolen med pilen uppåt, uppe till höger i provet och skicka länken med till exempel Meddelanden.
 - Dela går först när allt ljud är klart, så att din vän inte behöver göra samma ljud igen. Innan dess står det ”Delas när ljudet är klart”.
 - Din vän får en egen kopia med samma frågor, svar och ljud. Det räknas inte mot din väns frågor.
 - Ändrar din vän något i sin kopia påverkas inte ditt prov.
 - Foton och dokument delas aldrig, bara frågor, svar och ljud.
 
 ## Publicera prov
-- Med **Publicera prov** kan alla som söker på din skola plugga på ditt prov.
+- Med **Publicera prov** (Publish quiz) kan alla som söker på din skola plugga på ditt prov.
 - Du väljer skola, ämne och provdatum. Skolan väljer du ur en lista, och ljudet måste vara klart.
-- Ditt användarnamn visas bara om du slår på **Visa ett användarnamn**. Skriv inte ditt riktiga namn.
-- Du hittar andras prov under **Prov från din skola**. Prov från din egen skola visas först. Tryck **Lägg till i mina prov** för att få en egen kopia.
-- Är något fel med ett publicerat prov trycker du **Rapportera** längst ner i provet. Efter tre rapporter döljs provet tills det har granskats.
+- Ditt användarnamn visas bara om du slår på **Visa ett användarnamn** (Show a username). Skriv inte ditt riktiga namn.
+- Du hittar andras prov under **Prov från din skola** (Quizzes from your school). Prov från din egen skola visas först. Tryck **Lägg till i mina prov** (Add to my quizzes) för att få en egen kopia.
+- Är något fel med ett publicerat prov trycker du **Rapportera** (Report) längst ner i provet. Efter tre rapporter döljs provet tills det har granskats.
 - Du kan när som helst ta bort din publicering. De som redan har lagt till provet behåller sin kopia.
 
 ## Spela in själv – helt gratis

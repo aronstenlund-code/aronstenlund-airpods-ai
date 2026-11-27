@@ -47,3 +47,9 @@ Deno.test("O105-2: Swedish (asked so, or no language and a Swedish question) is 
   const n = world('{"in_scope": false, "answer": ""}');
   assertEquals((await n.ask("vad är huvudstaden i frankrike")).answer, OUT_OF_SCOPE, "no language, Swedish words: Swedish");
 });
+
+Deno.test("O105 omtest (Oscar): Dela and Publicera prov have their English names in brackets, as the other buttons", () => {
+  for (const pair of ["**Dela** (Share)", "**Publicera prov** (Publish quiz)", "**Nytt prov** (New quiz)", "**Skapa frågor** (Create questions)", "**Starta prov** (Start quiz)", "**Prov från din skola** (Quizzes from your school)"]) {
+    assert(HJALP.includes(pair), pair);
+  }
+});

@@ -132,6 +132,15 @@ export function isClearQuestion(text: string): boolean {
   return /\?\s*$/u.test(t) && t.split(/\s+/).filter((w) => /\p{L}/u.test(w)).length >= 3 &&
     /^(?:(?:och|men|så|okej|ok)[,]?\s+)?(?:vad|vem|vems|vilk(?:en|et|a)|hur|när|var|varför|vart|varifrån|what|who|whose|which|how|when|where|why)(?![\p{L}])/iu.test(t);
 }
+/**
+ * D272 (Oscar O106 L1): in the listening mode a question that only LOOKS clear (K68: question word + "?") is checked by
+ * this gate in parallel with the direct answer: people asking each other ("Vad ska vi äta ikväll?", "Hur mår din
+ * mamma?", "Var lade du mina nycklar?") are not for the assistant. One word back: ja or nej.
+ */
+export const LISTEN_GATE_PROMPT =
+  `A study assistant listens in a room through the student's earphones and answers questions out loud. You get ONE utterance the microphone picked up. Is it a question someone would want the assistant to answer: a fact, school, language or general-knowledge question that has one answer anyone can give ("Vilket år började första världskriget?", "Vad heter grundämnet med beteckningen Fe?", "What year did the Berlin Wall fall?")? Answer "nej" when people are talking to each other: questions about each other, their plans, feelings, things or what someone said or thinks ("Vad ska vi äta ikväll?", "Hur mår din mamma nu?", "Var lade du mina nycklar?", "Elin, har du tagit med dig boken?", "vad sa du?", "vad tror du?"). Reply with one word: ja or nej.`;
+export const LISTEN_GATE_MS = 2500;
+
 /** K44: "vad kan du (göra)?", "vad kan EarMind?", "vad mer kan du?" */
 const WHAT_CAN = /^(?:(?:hej|okej|ok)\s+)?(?:(?:lumen|earmind),?\s+)?(?:vad (?:mer )?kan (?:du|earmind|lumen|appen)(?: göra| hjälpa (?:mig )?med)?(?: mer)?|vad (?:gör|är) du bra på|vad kan jag (?:be dig om|fråga dig om|använda dig till)|vilka funktioner (?:har|finns)\b.*)\s*[?.!]?$/iu;
 /** K44: a concrete request ("… en timer på tio minuter", "… ringa mamma") with the wake word and the tool on the phone. */
@@ -1246,6 +1255,29 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const clearQuestion = !demo && body.mode === "auto" && !body.social && (body.persona ?? "tutor") === "tutor" &&
         isClearQuestion(body.fragment);
       const direct = !!funCmd || (cfg.directModes && (body.mode !== "auto" || autoAction || namedQuestion || clearQuestion)) || !!personaPlan(body);
+      // D272 (Oscar O106 L1): the only question that takes the direct path in the listening mode without being addressed
+      // to the app (the name, an action, the activation words = push_to_talk) is K68's clear question: it goes through
+      // the gate, started now so it runs alongside the answer; nothing is said before it says yes. A failing or slow
+      // gate answers as before (K68), so a real question is never lost.
+      const gated = direct && clearQuestion && !autoAction && !namedQuestion && !funCmd && !personaPlan(body) && !!provider0;
+      const gateP: Promise<boolean> | null = gated
+        ? (async () => {
+          let reply = "";
+          try {
+            for await (const c of provider0!.stream({
+              system: LISTEN_GATE_PROMPT,
+              user: `<utterance>${sanitizeTagged(body.fragment.slice(0, 400))}</utterance>`,
+              maxTokens: 5, cacheSystem: true, noThinking: true, signal: AbortSignal.timeout(LISTEN_GATE_MS),
+            })) if (c.type === "text") reply += c.text;
+          } catch (e) {
+            console.warn("listen_gate_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
+            return true;
+          }
+          const no = /^\s*(?:nej|no)[.!]?\s*$/iu.test(reply);
+          console.log(JSON.stringify({ event: "listen_gate", verdict: no ? "nej" : "ja", reply: reply.trim().slice(0, 10) }));
+          return !no;
+        })()
+        : null;
       // 'mer' / 'fortsätt' / 'förklara enklare' continue the last answer (needs history).
       const plan = funCmd ? null : personaPlan(body); // D42 persona / interview prep (null = ordinary flows)
       const continuation = !plan && body.context.recent_qa.length
@@ -1711,6 +1743,25 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         // deno-lint-ignore no-explicit-any
         (globalThis as any).EdgeRuntime?.waitUntil?.(bg);
       } else rl = raced && "limits" in raced ? raced.limits : await limitsP;
+      // D272: the listening mode's gate (running since the path was chosen) decides before anything is said
+      if (gateP && !(await gateP)) {
+        ac.abort();
+        iterator.return?.()?.catch?.(() => {});
+        const totalMs = Math.round(now() - t0);
+        const frames = [
+          sseFrame("meta", { reconstructed_question: body.fragment, confidence: 0.2, is_question: false, needs_confirmation: false, answer_type: "fact" }),
+          sseFrame("done", {
+            answered: false,
+            timing: { meta_ms: totalMs, ttft_ms: null, llm_first_token_ms: null, total_ms: totalMs },
+            breakdown: { direct: true, cold, answer_type: "fact", continuation: null },
+            usage: { input_tokens: 0, output_tokens: 0, cache_read_tokens: 0, web_searches: 0, model: "listen_gate" },
+            summary: null,
+            memory_add: null,
+            not_for_assistant: true,
+          }),
+        ];
+        return new Response(new ReadableStream<Uint8Array>({ start(c) { for (const f of frames) c.enqueue(f); c.close(); } }), { status: 200, headers: { ...SSE_HEADERS, ...CORS_HEADERS } });
+      }
       if (!rl.allowed) {
         ac.abort();
         iterator.return?.()?.catch?.(() => {});
