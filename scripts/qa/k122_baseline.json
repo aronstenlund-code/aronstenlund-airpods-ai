@@ -4392,9 +4392,7 @@
    },
    "said": "min mejl är elev at example dot com",
    "saved": {
-    "add": [
-     "Mejl elev at example dot com."
-    ],
+    "add": [],
     "remove": [],
     "update": []
    },
@@ -4460,9 +4458,7 @@
    },
    "said": "my number is 07012 34567 and I live at 5 Baker Street",
    "saved": {
-    "add": [
-     "Telefon 07012 34567."
-    ],
+    "add": [],
     "remove": [],
     "update": []
    },
@@ -4521,9 +4517,7 @@
    },
    "said": "min kompis Elias är arbetslös",
    "saved": {
-    "add": [
-     "Elias är arbetslös."
-    ],
+    "add": [],
     "remove": [],
     "update": []
    },

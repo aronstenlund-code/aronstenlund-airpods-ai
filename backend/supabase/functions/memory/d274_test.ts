@@ -44,3 +44,32 @@ Deno.test("D274: the prompt says the same rule", () => {
   assert(/other people[^.]*name and relation/.test(SYSTEM_PROMPT_MEMORY));
   assert(/never their health, work, money, relationships or other private circumstances/.test(SYSTEM_PROMPT_MEMORY));
 });
+
+// Oscar D274 retest (2026-11-27 05:10): D1 spoken e-mail, D2 a 5+5 phone number, D3 a friend named without a relation.
+Deno.test("D274 D1/D2: an e-mail address said aloud and a phone number grouped 5+5 are not kept", () => {
+  for (const t of [
+    "Mejl elev at example dot com", "Mejladress elev snabel-a example punkt com", "E-post anna punkt berg snabel a gmail punkt se",
+    "Email student at school dot org", "Telefon 07012 34567.", "Nummer 07012 34567", "Mobil 0701-23 45 67.",
+  ]) assertEquals(isSensitiveMemory(t), true, t);
+  for (const t of ["Har prov i kemi fredag 4 december 2026.", "Tåget går klockan 17.40.", "Läser kapitel 3 at home", "Har 12 345 kronor sparade."]) {
+    assertEquals(isSensitiveMemory(t), false, t);
+  }
+  assertEquals(kept('{"add":["Telefon 07012 34567.","Bor på 5 Baker Street."],"update":[],"remove":[]}'), [], "M21");
+  assertEquals(kept('{"add":["Mejl elev at example dot com."],"update":[],"remove":[]}'), [], "M19");
+});
+
+Deno.test("D274 D3: a person the wearer named with a relation is held to name and relation, even when the memory uses only the name", () => {
+  const q = "min kompis Elias är arbetslös";
+  assertEquals(parseMemoryReply('{"add":["Elias är arbetslös."],"update":[],"remove":[]}', [], q).add, [], "M24");
+  assertEquals(parseMemoryReply('{"add":["Elias jobbar på ICA."],"update":[],"remove":[]}', [], "min bror heter Elias och jobbar på ICA").add, []);
+  assertEquals(parseMemoryReply('{"add":["Sara har gjort slut med Leo."],"update":[],"remove":[]}', [], "my best friend Sara broke up with Leo").add, []);
+  // Name and relation are kept; so is the wearer's own memory that mentions the friend.
+  assertEquals(parseMemoryReply('{"add":["Kompisen heter Elias."],"update":[],"remove":[]}', [], q).add, ["Kompisen heter Elias."]);
+  assertEquals(parseMemoryReply('{"add":["Elias är bästa kompisen."],"update":[],"remove":[]}', [], "min bästa kompis heter Elias").add, ["Elias är bästa kompisen."]);
+  assertEquals(
+    parseMemoryReply('{"add":["Pluggar med Elias på tisdagar."],"update":[],"remove":[]}', [], "jag pluggar med min kompis Elias på tisdagar").add,
+    ["Pluggar med Elias på tisdagar."],
+  );
+  // Without a turn (old callers) nothing changes.
+  assertEquals(parseMemoryReply('{"add":["Pluggar med Elias."],"update":[],"remove":[]}', []).add, ["Pluggar med Elias."]);
+});

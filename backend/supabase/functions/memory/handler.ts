@@ -1,4 +1,4 @@
-import { isContactDetail, isPrivateAboutOthers } from "./private.ts";
+import { isContactDetail, isPrivateAboutOthers, namesOfOthers } from "./private.ts";
 import { type Authenticator } from "../_shared/auth.ts";
 import { CORS_HEADERS, errorResponse, HttpError, toHttpError } from "../_shared/errors.ts";
 import { appChecks, enforceLimits, type Limits, type RateLimiter } from "../_shared/ratelimit.ts";
@@ -165,7 +165,8 @@ export function changesMemory(q: string, memories: string[]): boolean {
 }
 
 /** Parses the model's JSON; drops anything malformed, too long, sensitive, duplicate or not in memory. */
-export function parseMemoryReply(text: string, memories: string[]): MemoryResult {
+/** `q` (the turn) lets the check know which names belong to other people (D274 D3). */
+export function parseMemoryReply(text: string, memories: string[], q = ""): MemoryResult {
   const out: MemoryResult = { add: [], update: [], remove: [] };
   const m = /\{[\s\S]*\}/.exec(text);
   if (!m) return out;
@@ -176,9 +177,10 @@ export function parseMemoryReply(text: string, memories: string[]): MemoryResult
     return out;
   }
   const known = new Set(memories.map((x) => x.toLowerCase()));
+  const names = q ? namesOfOthers(q) : [];
   const ok = (s: unknown) => {
     const t = clean(s, 160);
-    return t && !SENSITIVE.test(t) ? t : null;
+    return t && !SENSITIVE.test(t) && !(names.length && isPrivateAboutOthers(t, names)) ? t : null;
   };
   let n = 0;
   for (const s of Array.isArray(j.add) ? j.add : []) {
@@ -331,7 +333,7 @@ export function createMemoryHandler(deps: MemoryDeps) {
           outTok = c.outputTokens ?? outTok;
         }
       }
-      const result = parseMemoryReply(text, body.memories);
+      const result = parseMemoryReply(text, body.memories, body.q);
       const cost = (inTok * cfg.priceInPerMTok + outTok * cfg.priceOutPerMTok) / 1e6;
       try {
         await deps.recordUsage?.({

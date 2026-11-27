@@ -13,12 +13,15 @@ const CONTACT_WORDS =
   /mobilnummer\p{L}*|mobilnr|telefonnummer\p{L}*|telefonnr|phone number|mobile number|cell number|e-?postadress\p{L}*|mejladress\p{L}*|mailadress\p{L}*|e-?mail address|hemadress\p{L}*|gatuadress\p{L}*|postadress\p{L}*|(?<![\p{L}])adress(?:en)?\s*:|home address|street address|postnummer|zip code|postcode|postal code/iu;
 
 const EMAIL = /[\p{L}\d._%+-]+@[\p{L}\d-]+(?:\.[\p{L}\d-]+)+/u;
+/** Oscar D274 D1: the memory comes from speech, so an address is said aloud ("elev at example dot com", "snabel-a … punkt"). */
+const SPOKEN_EMAIL =
+  /[\p{L}\d._-]+(?:\s+(?:punkt|dot)\s+[\p{L}\d_-]+)*\s+(?:at|snabel[- ]?a)\s+[\p{L}\d-]+(?:\s+(?:punkt|dot)\s+[\p{L}\d-]+)+/iu;
 
 const PHONE = [
   /\+\d{1,3}[\s-]?\(?\d{1,4}\)?(?:[\s-]?\d){5,10}(?!\d)/, // +46 70 123 45 67, +1 555 123 4567
-  /(?<![\d\p{L}.,:])0\d{1,3}[\s-]?\d(?:[\s-]?\d){4,8}(?![\d.,:])/u, // 070-123 45 67, 08-123 456 78, 0701234567
+  /(?<![\d\p{L}.,:])0\d{1,3}[\s-]?\d(?:[\s-]?\d){4,8}(?!\d|[.,:]\d)/u, // 07012 34567 (D2), 070-123 45 67, 08-123 456 78, 0701234567
   /\(\d{2,4}\)[\s-]?\d{3}[\s-]?\d{4}(?!\d)/, // (555) 123-4567
-  /(?<![\d.,:])\d{3}[\s.-]\d{3}[\s.-]\d{4}(?![\d.,:])/, // 555-123-4567
+  /(?<![\d.,:])\d{3}[\s.-]\d{3}[\s.-]\d{4}(?!\d|[.,:]\d)/, // 555-123-4567
 ];
 
 const STREET_SV =
@@ -29,7 +32,7 @@ const STREET_EN =
 const POSTCODE_CITY = /(?<![\d.,:])\d{3}\s?\d{2}\s+\p{Lu}\p{Ll}+/u;
 
 export function isContactDetail(t: string): boolean {
-  return CONTACT_WORDS.test(t) || EMAIL.test(t) || PHONE.some((r) => r.test(t)) || STREET_SV.test(t) || LIVES_AT.test(t) ||
+  return CONTACT_WORDS.test(t) || EMAIL.test(t) || SPOKEN_EMAIL.test(t) || PHONE.some((r) => r.test(t)) || STREET_SV.test(t) || LIVES_AT.test(t) ||
     STREET_EN.test(t) || POSTCODE_CITY.test(t);
 }
 
@@ -58,14 +61,40 @@ function sentences(t: string): string[] {
   return t.split(/[.!?;](?:\s|$)/u).map((s) => s.trim()).filter(Boolean);
 }
 
-export function isPrivateAboutOthers(t: string): boolean {
+/** "Elias är bästa kompisen", "Sara is my sister": a named person's relation, nothing else. */
+const NAMED_RELATION = new RegExp(`^${NAME}\\s+(?:är|is)\\s+(?:(?:${[...LEAD].join("|")})\\s+)*(?:${CLOSE})\\s*\\.?$`, "iu");
+
+/**
+ * Oscar D274 D3: names the wearer tied to a relation in the turn ("min kompis Elias", "min bror heter Elias",
+ * "Elias är min kompis"). A memory about that name is then held to the same rule as one about the relation.
+ */
+export function namesOfOthers(q: string): string[] {
+  const tokens = q.split(/[^\p{L}\d'-]+/u).filter(Boolean);
+  const lower = tokens.map((x) => x.toLowerCase());
+  const isName = (x: string | undefined) => !!x && /^\p{Lu}\p{Ll}/u.test(x) && !LEAD.has(x.toLowerCase()) && !REL_SET.has(x.toLowerCase());
+  const out = new Set<string>();
+  for (let k = 0; k < tokens.length; k++) {
+    if (!REL_SET.has(lower[k])) continue;
+    let j = k + 1;
+    while (j < tokens.length && j <= k + 3 && ["som", "heter", "is", "called", "named", "who", "är"].includes(lower[j])) j++;
+    if (isName(tokens[j])) out.add(tokens[j].toLowerCase());
+    let b = k - 1;
+    while (b >= 0 && LEAD.has(lower[b])) b--;
+    if (b >= 1 && (lower[b] === "är" || lower[b] === "is") && isName(tokens[b - 1])) out.add(tokens[b - 1].toLowerCase());
+  }
+  return [...out];
+}
+
+export function isPrivateAboutOthers(t: string, names: string[] = []): boolean {
+  const named = new Set(names.map((n) => n.toLowerCase()));
   for (const s of sentences(t)) {
     const tokens = s.toLowerCase().split(/[^\p{L}\d'-]+/u).filter(Boolean);
     let i = 0;
     while (i < tokens.length && LEAD.has(tokens[i])) i++;
     if (i < tokens.length && CLOSE_SET.has(tokens[i]) && !NAME_ONLY.test(s)) return true;
+    if (i === 0 && named.has(tokens[0]) && !NAMED_RELATION.test(s)) return true;
     for (let k = 0; k < tokens.length; k++) {
-      if (REL_SET.has(tokens[k]) && PRIVATE_CUE.test(tokens.slice(k + 1, k + 9).join(" "))) return true;
+      if ((REL_SET.has(tokens[k]) || named.has(tokens[k])) && PRIVATE_CUE.test(tokens.slice(k + 1, k + 9).join(" "))) return true;
     }
   }
   return false;
