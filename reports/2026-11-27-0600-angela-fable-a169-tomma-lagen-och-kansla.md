@@ -26,7 +26,7 @@ Angela Fable (moln), 2026-11-27. Beställt av Deangelo 05:16. Inget nytt flöde,
 
 - 2 nya enhetstester (`A169FeelTests` i `LumenTests/A168ComingBackTests.swift`): när haptiken ges, och de nya orden på
   sv och en.
-- KÖRNINGEN
+- **iOS build 45938790413 på min gren grön i sin helhet (enhetsbygge utan varningar, alla enhetstester, App Store-arkivet)** (verifierat i CI, Simulator).
 - Bilder (Fable screens 45938789982, iPhone 17 Pro, Simulator; "före" från A104:s körning, samma vy):
   `reports/2026-11-27-a169-bilder/a169-skolans-prov-fore-efter.jpg` – det tomma läget före och efter (sv, en mörkt),
   och felet med Försök igen som förut. Platshållarraderna medan listan laddas syns inte på en stillbild (demo-listan
