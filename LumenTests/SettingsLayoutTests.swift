@@ -33,11 +33,15 @@ import Testing
     }
 
     @Test func nothingTechnicalOnTheRows() {
-        let words = ["Scribe", "VAD", "dB", "API", "latens", "diagnostik", "transkription", "kalibrering"]
+        // Whole words, as written ("dB" is not the "db" in "Feedback", "VAD" not the Swedish "Vad").
+        let names: Set<String> = ["Scribe", "VAD", "dB", "API"]
+        let stems = ["latens", "diagnostik", "transkription", "kalibrering"]
         for row in SettingsRow.allCases {
-            for word in words {
-                #expect(!row.title.localizedCaseInsensitiveContains(word) && !row.detail.localizedCaseInsensitiveContains(word),
-                        "\(row) says \(word)")
+            let text = row.title + " " + row.detail
+            let words = Set(text.split { !$0.isLetter }.map(String.init))
+            #expect(words.isDisjoint(with: names), "\(row): \(words.intersection(names))")
+            for stem in stems {
+                #expect(!text.lowercased().contains(stem), "\(row) says \(stem)")
             }
         }
     }
