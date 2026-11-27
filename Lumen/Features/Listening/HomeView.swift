@@ -15,8 +15,6 @@ struct HomeView: View {
     @State private var pickedMode: ConversationMode?
     /// A52 (Ke29 S1): "Allt Lumen kan ›" pushes "Vad kan Lumen?".
     @State private var showsCapabilities = false
-    /// Kelly B2 (D142): the listening modes behind "Fler lägen [BETA] ›".
-    @State private var showsMoreModes = false
     /// A52: the sheet after the first answer, once.
     @State private var showsCapabilitiesIntro = false
     @AppStorage(CapabilitiesIntroSheet.shownKey) private var capabilitiesIntroShown = false
@@ -63,7 +61,7 @@ struct HomeView: View {
                                       lastNight: lastNightLine,
                                       onLastNight: { model.sleep.report = model.sleep.store.latest },
                                       onSettings: { model.isShowingSettings = true },
-                                      onMoreModes: { showsMoreModes = true },
+                                      onMoreModes: { model.showsMoreModes = true },
                                       // A166: the one who listened in the first start finds the way back from Start.
                                       listeningConsented: model.consent.isGranted)
             } else {
@@ -102,7 +100,8 @@ struct HomeView: View {
         }
         .task { await model.refreshStudyPlan() } // A19: today's pass and the reminders
         .navigationDestination(isPresented: $showsCapabilities) { CapabilitiesView() }
-        .navigationDestination(isPresented: $showsMoreModes) { moreModesPage } // Kelly B2
+        // Kelly B2. The flow: the page is the model's, so Avsluta on Lyssnar comes back to it, not to the exams.
+        .navigationDestination(isPresented: $model.showsMoreModes) { moreModesPage }
         .task { await showSheetOnOpen() }
         .onChange(of: scenePhase) { _, phase in
             if phase == .background { model.openingSheetShown = false } // A66: the next opening may have its sheet
@@ -311,8 +310,8 @@ struct HomeView: View {
                     Task {
                         await model.startSelectedMode()
                         // Toby T8b finding 4: a start that did not take says so (the microphone card says it itself).
-                        startFailed = !model.isActiveSession && model.problem == nil && !model.isShowingAgeGate
-                            && !model.isShowingLiveStart && !model.isShowingInterviewSetup && !model.isShowingAddExam && !model.isShowingStudyOnboarding
+                        // The flow: not while the consent sheet asks (it stood red behind it).
+                        startFailed = model.startDidNotTake
                     }
                 }
             } label: {

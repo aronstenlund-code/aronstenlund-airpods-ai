@@ -35,6 +35,23 @@ struct HistoryEntry: Identifiable, Codable, Equatable, Sendable {
         let trimmed = source.trimmingCharacters(in: .whitespacesAndNewlines)
         return trimmed.count > 90 ? String(trimmed.prefix(87)) + "…" : trimmed
     }
+
+    /// The flow: Historik's search. Every word that is typed is in the question, the answer, the summary or a
+    /// suggestion; case and accents do not matter ("fotosyntes" finds "Fotosyntesen", "ar" finds "är").
+    func matches(_ search: String) -> Bool {
+        let words = search.split(whereSeparator: \.isWhitespace).map { Self.folded(String($0)) }
+        guard !words.isEmpty else { return true }
+        let text = Self.folded(([question, answer, summary].compactMap { $0 } + suggestions).joined(separator: " "))
+        return words.allSatisfy { text.contains($0) }
+    }
+
+    static func matching(_ entries: [HistoryEntry], _ search: String) -> [HistoryEntry] {
+        entries.filter { $0.matches(search) }
+    }
+
+    private static func folded(_ text: String) -> String {
+        text.folding(options: [.caseInsensitive, .diacriticInsensitive], locale: nil)
+    }
 }
 
 /// How long history and memories live (D49).

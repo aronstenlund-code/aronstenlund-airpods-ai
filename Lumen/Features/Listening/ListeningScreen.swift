@@ -99,6 +99,7 @@ struct ListeningScreen: View {
                     Menu {
                         Button("Byt läge") { isSwitching = true }
                         Button("Kommandon") { isShowingCommands = true }
+                        Button("Historik") { model.isShowingHistory = true } // the flow: earlier answers in one tap
                         if mode == .prov, model.practice == nil, model.examMaterials?.isReady == true {
                             Button("Förhör mig på provet") { Task { await model.startPracticeExam() } } // A16, A83 (Ke52: never "övningsprov")
                         }
@@ -353,7 +354,7 @@ struct ListeningScreen: View {
             let buttonRow = typeSize.isAccessibilitySize ? AnyLayout(VStackLayout(spacing: 10)) : AnyLayout(HStackLayout(spacing: 10))
             buttonRow {
                 Button {
-                    Task { await model.togglePause() }
+                    Task { await model.togglePause(fromScreen: true) } // the flow: Pausa pauses, also in the "Mer?" window
                 } label: {
                     Text(listening ? "Pausa" : "Lyssna igen")
                 }

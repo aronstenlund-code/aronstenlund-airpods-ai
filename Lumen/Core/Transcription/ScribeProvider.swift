@@ -311,7 +311,10 @@ final class ScribeProvider: STTProvider {
         resultsContinuation.finish()
         let seconds = streamedFrames / Int(LumenAudioFormat.sampleRate)
         streamedFrames = 0
-        if seconds > 0 { await reportUsage(seconds: seconds) }
+        // The flow: every reconnect (keyterms, the pause, a mode, the session's end) stops this session first, and
+        // until `stop` returns no audio is taken and the badge says "Hör inte". The report goes alongside; the task
+        // keeps the provider until it is sent (D47: losing one report is harmless).
+        if seconds > 0 { Task { await self.reportUsage(seconds: seconds) } }
     }
 
     func setContextualStrings(_ strings: [String]) {

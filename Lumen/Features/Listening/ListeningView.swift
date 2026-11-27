@@ -83,6 +83,13 @@ struct ListeningView: View {
                     .toolbar { ToolbarItem(placement: .topBarLeading) { Button("Klar") { model.isShowingPrep = false } } }
             }
         }
+        .sheet(isPresented: $model.isShowingHistory) {
+            // The flow: from Lyssnar's ⋯ menu; the listening goes on underneath.
+            NavigationStack {
+                HistoryView(store: model.history)
+                    .toolbar { ToolbarItem(placement: .topBarTrailing) { Button("Klar") { model.isShowingHistory = false } } }
+            }
+        }
         .sheet(isPresented: $model.isShowingSettings) {
             NavigationStack {
                 SettingsView(model: model, diagnostics: diagnostics)

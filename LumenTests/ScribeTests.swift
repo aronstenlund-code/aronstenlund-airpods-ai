@@ -184,7 +184,7 @@ final class FakeScribeSocket: ScribeSocket, @unchecked Sendable {
 
         await provider.stop()
         #expect(socket.isClosed)
-        #expect(http.requests.count == 2)
+        #expect(await waitUntil { http.requests.count == 2 }, "the report goes alongside the stop (the flow)")
         #expect(http.requests[1].httpMethod == "POST")
         #expect(http.requests[1].httpBody == Data("{\"seconds\":1}".utf8))
     }

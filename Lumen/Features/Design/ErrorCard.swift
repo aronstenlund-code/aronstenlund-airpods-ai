@@ -40,7 +40,7 @@ enum LumenProblem: Equatable, Sendable {
     var actionTitle: String? {
         switch self {
         case .microphoneDenied: String(localized: "Öppna Inställningar")
-        case .offline: nil
+        case .offline: String(localized: "Försök igen") // the flow: the question that got no answer, asked again
         case .airPodsDisconnected: String(localized: "Pausa")
         case .overloaded: String(localized: "Försök igen")
         case .voiceUnavailable: nil
