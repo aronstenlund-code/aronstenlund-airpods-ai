@@ -272,7 +272,8 @@ struct ModelDownE2ETests {
             #expect(feedback.contains(swedish ? "Facit: Den gör socker" : "Answer: It makes sugar"))
         } else {
             #expect(graded?.by == .phone)
-            #expect(feedback.contains(swedish ? "Telefonens modell: Rätt." : "The phone's model: Right."))
+            // Kelly 2026-11-26 (A165 report): "Telefonens modell" became where it was checked.
+            #expect(feedback.contains(swedish ? "Rättat på telefonen: Rätt." : "Checked on your phone: Right."))
             #expect(feedback.contains(swedish ? PretendOnDeviceModel.swedish : PretendOnDeviceModel.english))
         }
         try append("grade-\(mock)-\(language.rawValue)", ["by": by, "examCalls": "\(examCalls)", "feedback": feedback,
