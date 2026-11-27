@@ -281,23 +281,32 @@ final class ScreenTourTests: XCTestCase {
         if !(top.exists && top.isHittable) { record("note: the top of Settings (settings.appLanguage) not seen") }
         // Run 45396745804: in the order they stand on the screen where it is known (tree of run 44862440315:
         // Integritet, Anteckningar, Historik, Studiekort, Förberedelser), so the search mostly goes forward.
-        let pages: [(name: String, labels: [String])] = [
-            ("integritet", ["Integritet och samtycke", "Privacy and consent", "Privacy & consent", "#settings.privacy"]),
-            ("anteckningar", ["Anteckningar", "Notes", "#settings.notes"]),
+        // Deangelo 2026-11-27 04:10 (Angela Schrute's short Inställningar): Historik, Integritet, Feedback and Om appen are
+        // always visible; Anteckningar, Studiekort, Förberedelser, Egna kommandon, Minne and Röstkommandon are under
+        // Avancerat. In the order they stand on the screen, so the search mostly goes forward; the rows that may be under
+        // Avancerat are opened after it is folded out (before the short Inställningar they are found either way).
+        let always: [(name: String, labels: [String])] = [
             ("historik", ["Historik", "History", "#settings.history"]),
+            ("integritet", ["Integritet och samtycke", "Privacy and consent", "Privacy & consent", "#settings.privacy"]),
+            ("feedback", ["Feedback och förslag", "Feedback and suggestions", "Feedback & förslag", "Feedback & suggestions", "#settings.feedback"]),
+            ("om-appen", ["Om appen", "About the app", "#settings.about"]),
+        ]
+        let underAdvanced: [(name: String, labels: [String])] = [
+            ("rostkommandon", ["Röstkommandon", "Voice commands", "#settings.voiceCommands"]),
+            ("minne", ["Minne", "Memory", "#settings.memory"]),
+            ("anteckningar", ["Anteckningar", "Notes", "#settings.notes"]),
             ("studiekort", ["Studiekort", "Study cards", "#settings.studyCards"]),
             ("forberedelser", ["Förberedelser", "Preparations", "#settings.preparations"]),
             ("egna-kommandon", ["Egna kommandon", "Your own commands", "#settings.customCommands"]),
-            ("minne", ["Minne", "Memory", "#settings.memory"]),
-            ("feedback", ["Feedback och förslag", "Feedback and suggestions", "Feedback & förslag", "Feedback & suggestions", "#settings.feedback"]),
-            ("rostkommandon", ["Röstkommandon", "Voice commands", "#settings.voiceCommands"]),
-            ("om-appen", ["Om appen", "About the app", "#settings.about"]),
         ]
-        for page in pages {
+        for page in always {
             openFromSettings(page.labels, name: page.name)
         }
         // A13: "Avancerat" folds out its sections in place (not a page); the diagnostics rows are inside it.
         expandAdvanced()
+        for page in underAdvanced {
+            openFromSettings(page.labels, name: page.name, advanced: true)
+        }
         openFromSettings(["Rå transkription och svar", "Raw transcription and answers", "#settings.rawTranscript"], name: "ra-transkription", advanced: true)
         openFromSettings(["Diagnostik", "Diagnostics", "#settings.diagnostics"], name: "diagnostik", advanced: true)
         tap(["Klar"], step: "settings → Klar")
@@ -306,6 +315,12 @@ final class ScreenTourTests: XCTestCase {
 
     /// Folds out "Avancerat" in Settings (once per sheet) and shoots the first screen of it.
     private func expandAdvanced() {
+        // Already folded out (`settings.showsAdvanced` is kept by the app): a tap would fold it in.
+        let inside = app.descendants(matching: .any).matching(NSPredicate(format: "identifier IN %@", ["settings.diagnostics", "settings.rawTranscript"])).firstMatch
+        if inside.exists {
+            record("note: Avancerat is already folded out")
+            return
+        }
         guard let row = scrollTo(["Avancerat*", "Advanced*", "#settings.advanced"], buttonsOnly: true) else {
             miss("settings row Avancerat not found")
             return
