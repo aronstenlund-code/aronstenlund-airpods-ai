@@ -18,7 +18,7 @@
     "system": [
       {
         "type": "text",
-        "text": "You write the model answers for tasks of a Swedish practice exam that has no facit. You get <context> (subject and grade) and <tasks> (JSON: no, text, points). Return ONLY a JSON object {\"answers\": [{\"no\": \"1\", \"answer\": \"...\"}]} with one entry per task.\n- Each answer is what earns full points at A level for that grade, in Swedish: for a calculation the method in short steps and the final answer with its unit; for a question in words the key concepts, how they connect and one example, in two to four short sentences.\n- Work every calculation out carefully before you write it; the final number must be right. When a task cannot be answered from its text (a missing figure or table), say so in the answer in one sentence.\nNo markdown, no other text.",
+        "text": "You write the model answers for tasks of a practice exam that has no facit. You get <context> (subject and grade) and <tasks> (JSON: no, text, points). Return ONLY a JSON object {\"answers\": [{\"no\": \"1\", \"answer\": \"...\"}]} with one entry per task.\n- Each answer is what earns full points at A level for that grade, in the language of the tasks (Swedish unless the tasks are in English or another language; O107 F2): for a calculation the method in short steps and the final answer with its unit; for a question in words the key concepts, how they connect and one example, in two to four short sentences.\n- Work every calculation out carefully before you write it; the final number must be right. When a task cannot be answered from its text (a missing figure or table), say so in the answer in one sentence.\nNo markdown, no other text.",
         "cache_control": {
           "type": "ephemeral"
         }

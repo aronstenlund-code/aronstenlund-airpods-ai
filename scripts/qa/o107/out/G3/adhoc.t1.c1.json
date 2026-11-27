@@ -37,7 +37,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<task>\nUppgift 1: Lös x² + 2x − 8 = 0.\nPoäng: E 1, C 1, A 0\nRätt svar: x = 2 eller x = −4\nBedömning: +E en rätt rot, +C båda rötterna\n</task>\n<numeric_check>The final number is wrong: expected -4, the student gave 2.</numeric_check>\n<answer>x är 2</answer>"
+        "content": "<task>\nUppgift 1: Lös x² + 2x − 8 = 0.\nPoäng: E 1, C 1, A 0\nRätt svar: x = 2 eller x = −4\nBedömning: +E en rätt rot, +C båda rötterna\n</task>\n<numeric_check>No numeric answer to check.</numeric_check>\n<answer>x är 2</answer>"
       }
     ],
     "output_config": {

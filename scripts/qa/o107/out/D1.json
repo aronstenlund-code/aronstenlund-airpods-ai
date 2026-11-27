@@ -330,7 +330,7 @@
      "model": "claude-haiku-5-5",
      "input_tokens": 12290,
      "output_tokens": 140,
-     "total_ms": 49,
+     "total_ms": 73,
      "est_cost_usd": 0.001299,
      "status": "ok"
     },
@@ -341,7 +341,7 @@
      "model": "claude-haiku-5-5",
      "input_tokens": 12324,
      "output_tokens": 55,
-     "total_ms": 49,
+     "total_ms": 73,
      "est_cost_usd": 0.0012599,
      "status": "ok"
     },
@@ -352,7 +352,7 @@
      "model": "claude-haiku-5-5",
      "input_tokens": 754,
      "output_tokens": 5,
-     "total_ms": 49,
+     "total_ms": 73,
      "est_cost_usd": 7.790000000000001e-05,
      "status": "ok"
     },
@@ -363,7 +363,7 @@
      "model": "claude-sonnet-5-5",
      "input_tokens": 921,
      "output_tokens": 107,
-     "total_ms": 49,
+     "total_ms": 73,
      "est_cost_usd": 0.002912,
      "status": "ok"
     },
@@ -374,7 +374,7 @@
      "model": "claude-sonnet-5-5",
      "input_tokens": 370,
      "output_tokens": 19,
-     "total_ms": 49,
+     "total_ms": 73,
      "est_cost_usd": 0.00093,
      "status": "ok"
     },
@@ -385,7 +385,7 @@
      "model": "claude-sonnet-5-5",
      "input_tokens": 1707,
      "output_tokens": 141,
-     "total_ms": 49,
+     "total_ms": 73,
      "est_cost_usd": 0.004824,
      "status": "ok"
     }
@@ -432,7 +432,7 @@
       "input_tokens": 12290,
       "output_tokens": 140,
       "est_cost_usd": 0.001299,
-      "ms": 6
+      "ms": 8
      },
      "notes": {
       "model": "claude-haiku-5-5",
@@ -446,7 +446,7 @@
       "input_tokens": 754,
       "output_tokens": 5,
       "est_cost_usd": 7.790000000000001e-05,
-      "ms": 1
+      "ms": 0
      },
      "answers": {
       "model": "claude-sonnet-5-5",
@@ -460,11 +460,11 @@
       "input_tokens": 921,
       "output_tokens": 107,
       "est_cost_usd": 0.002912,
-      "ms": 2,
+      "ms": 1,
       "fixed": 1,
       "dropped": 1,
       "refilled": 1,
-      "refill_ms": 2,
+      "refill_ms": 1,
       "understanding": 2,
       "questions": 3
      },

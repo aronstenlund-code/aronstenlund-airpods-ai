@@ -68,7 +68,7 @@
           "model": "claude-haiku-5-5",
           "input_tokens": 272,
           "output_tokens": 41,
-          "total_ms": 8,
+          "total_ms": 10,
           "est_cost_usd": 0.0000477,
           "status": "ok"
         }

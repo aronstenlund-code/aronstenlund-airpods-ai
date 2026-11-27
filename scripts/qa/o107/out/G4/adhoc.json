@@ -41,7 +41,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<task>\nUppgift 2: Hur många fler bor i Sverige än i Norge? (tabell: Sverige 10,5 milj., Norge 5,5 milj.)\nPoäng: E 1, C 1, A 0\nRätt svar: 5 miljoner fler\nBedömning: +E läser tabellen, +C korrekt svar\n</task>\n<numeric_check>The final number is wrong: expected 1000000, the student gave 5000000.</numeric_check>\n<answer>fem miljoner</answer>"
+            "content": "<task>\nUppgift 2: Hur många fler bor i Sverige än i Norge? (tabell: Sverige 10,5 milj., Norge 5,5 milj.)\nPoäng: E 1, C 1, A 0\nRätt svar: 5 miljoner fler\nBedömning: +E läser tabellen, +C korrekt svar\n</task>\n<numeric_check>The final number is correct (5000000).</numeric_check>\n<answer>fem miljoner</answer>"
           }
         ],
         "output_config": {
@@ -65,18 +65,18 @@
           "endpoint": "exam-grade",
           "provider": "anthropic",
           "model": "claude-haiku-5-5",
-          "input_tokens": 499,
-          "output_tokens": 66,
-          "total_ms": 11,
-          "est_cost_usd": 0.00008290000000000001,
+          "input_tokens": 491,
+          "output_tokens": 43,
+          "total_ms": 15,
+          "est_cost_usd": 0.0000706,
           "status": "ok"
         }
       ],
       "credits": [],
       "json": {
         "points": {
-          "E": 0,
-          "C": 0,
+          "E": 1,
+          "C": 1,
           "A": 0
         },
         "max": {
@@ -84,17 +84,17 @@
           "C": 1,
           "A": 0
         },
-        "total": 0,
+        "total": 2,
         "numeric": {
-          "expected": 1000000,
+          "expected": 5000000,
           "given": 5000000,
-          "equal": false
+          "equal": true
         },
-        "feedback": "Ditt svar fem miljoner stämmer inte med det rätta svaret, och du visade inte hur du läste av tabellen. Skriv ut hur många som bor i Sverige och i Norge och räkna sedan skillnaden.",
+        "feedback": "Rätt, fem miljoner fler: du läste av tabellen och räknade 10,5 minus 5,5. Skriv gärna uträkningen också.",
         "usage": {
-          "input_tokens": 499,
-          "output_tokens": 66,
-          "est_cost_usd": 0.00008290000000000001
+          "input_tokens": 491,
+          "output_tokens": 43,
+          "est_cost_usd": 0.0000706
         }
       }
     }

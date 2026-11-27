@@ -376,7 +376,7 @@
           "model": "claude-haiku-5-5",
           "input_tokens": 7514,
           "output_tokens": 143,
-          "total_ms": 62,
+          "total_ms": 58,
           "est_cost_usd": 0.0008229000000000001,
           "status": "ok"
         },
@@ -387,7 +387,7 @@
           "model": "claude-haiku-5-5",
           "input_tokens": 7549,
           "output_tokens": 60,
-          "total_ms": 62,
+          "total_ms": 58,
           "est_cost_usd": 0.0007849,
           "status": "ok"
         },
@@ -398,7 +398,7 @@
           "model": "claude-haiku-5-5",
           "input_tokens": 752,
           "output_tokens": 5,
-          "total_ms": 62,
+          "total_ms": 58,
           "est_cost_usd": 0.0000777,
           "status": "ok"
         },
@@ -409,7 +409,7 @@
           "model": "claude-sonnet-5-5",
           "input_tokens": 919,
           "output_tokens": 143,
-          "total_ms": 62,
+          "total_ms": 58,
           "est_cost_usd": 0.003268,
           "status": "ok"
         },
@@ -420,7 +420,7 @@
           "model": "claude-sonnet-5-5",
           "input_tokens": 784,
           "output_tokens": 35,
-          "total_ms": 62,
+          "total_ms": 58,
           "est_cost_usd": 0.001918,
           "status": "ok"
         },
@@ -431,7 +431,7 @@
           "model": "claude-sonnet-5-5",
           "input_tokens": 1685,
           "output_tokens": 311,
-          "total_ms": 62,
+          "total_ms": 58,
           "est_cost_usd": 0.00648,
           "status": "ok"
         }
@@ -487,7 +487,7 @@
             "input_tokens": 7549,
             "output_tokens": 60,
             "est_cost_usd": 0.0007849,
-            "ms": 8
+            "ms": 7
           },
           "shorten": {
             "model": "claude-haiku-5-5",
@@ -501,7 +501,7 @@
             "input_tokens": 1685,
             "output_tokens": 311,
             "est_cost_usd": 0.00648,
-            "ms": 13
+            "ms": 6
           },
           "final_check": {
             "model": "claude-sonnet-5-5",
@@ -517,7 +517,7 @@
             "questions": 2
           },
           "est_cost_usd": 0.0133515,
-          "ms": 44
+          "ms": 40
         },
         "quota": {
           "unit": "chars",

@@ -41,7 +41,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<task>\nUppgift 1: Lös x² + 2x − 8 = 0.\nPoäng: E 1, C 1, A 0\nRätt svar: x = 2 eller x = −4\nBedömning: +E en rätt rot, +C båda rötterna\n</task>\n<numeric_check>The final number is wrong: expected -4, the student gave 2.</numeric_check>\n<answer>x är 2</answer>"
+      "content": "<task>\nUppgift 1: Lös x² + 2x − 8 = 0.\nPoäng: E 1, C 1, A 0\nRätt svar: x = 2 eller x = −4\nBedömning: +E en rätt rot, +C båda rötterna\n</task>\n<numeric_check>No numeric answer to check.</numeric_check>\n<answer>x är 2</answer>"
      }
     ],
     "output_config": {
@@ -65,17 +65,17 @@
      "endpoint": "exam-grade",
      "provider": "anthropic",
      "model": "claude-haiku-5-5",
-     "input_tokens": 478,
+     "input_tokens": 470,
      "output_tokens": 54,
-     "total_ms": 11,
-     "est_cost_usd": 7.480000000000002e-05,
+     "total_ms": 10,
+     "est_cost_usd": 7.4e-05,
      "status": "ok"
     }
    ],
    "credits": [],
    "json": {
     "points": {
-     "E": 0,
+     "E": 1,
      "C": 0,
      "A": 0
     },
@@ -84,17 +84,13 @@
      "C": 1,
      "A": 0
     },
-    "total": 0,
-    "numeric": {
-     "expected": -4,
-     "given": 2,
-     "equal": false
-    },
-    "feedback": "Svaret stämmer inte, och utan uträkning finns ingen metod att ge poäng för. Visa hur du räknar, steg för steg.",
+    "total": 1,
+    "numeric": null,
+    "feedback": "x lika med 2 är en rätt rot och ger en E-poäng. Ekvationen har två lösningar, så leta också efter den andra roten för att få C-poängen.",
     "usage": {
-     "input_tokens": 478,
+     "input_tokens": 470,
      "output_tokens": 54,
-     "est_cost_usd": 7.480000000000002e-05
+     "est_cost_usd": 7.4e-05
     }
    }
   }

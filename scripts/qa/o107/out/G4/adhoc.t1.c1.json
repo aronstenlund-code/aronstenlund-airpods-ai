@@ -37,7 +37,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<task>\nUppgift 2: Hur många fler bor i Sverige än i Norge? (tabell: Sverige 10,5 milj., Norge 5,5 milj.)\nPoäng: E 1, C 1, A 0\nRätt svar: 5 miljoner fler\nBedömning: +E läser tabellen, +C korrekt svar\n</task>\n<numeric_check>The final number is wrong: expected 1000000, the student gave 5000000.</numeric_check>\n<answer>fem miljoner</answer>"
+        "content": "<task>\nUppgift 2: Hur många fler bor i Sverige än i Norge? (tabell: Sverige 10,5 milj., Norge 5,5 milj.)\nPoäng: E 1, C 1, A 0\nRätt svar: 5 miljoner fler\nBedömning: +E läser tabellen, +C korrekt svar\n</task>\n<numeric_check>The final number is correct (5000000).</numeric_check>\n<answer>fem miljoner</answer>"
       }
     ],
     "output_config": {

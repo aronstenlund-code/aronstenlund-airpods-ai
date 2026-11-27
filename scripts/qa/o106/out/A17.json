@@ -34,7 +34,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: jag älskar mello.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>vem vann melodifestivalen 2031</fragment>"
+      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<preferences note=\"learned from this user's own corrections: follow them in this answer\">\n- Andra pratar runt användaren: at most three short sentences, the core only, nothing the others need to hear\n</preferences>\n<transcript>\nKompis: jag älskar mello.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:36 (svensk tid, Europe/Stockholm)</now>\n<fragment>vem vann melodifestivalen 2031</fragment>"
      }
     ],
     "output_config": {
@@ -62,11 +62,11 @@
      "model": "claude-haiku-5-5",
      "is_question": true,
      "confidence": 0.9,
-     "input_tokens": 4488,
+     "input_tokens": 4543,
      "output_tokens": 98,
-     "ttft_ms": 282,
-     "total_ms": 283,
-     "est_cost_usd": 0.0004978000000000001,
+     "ttft_ms": 308,
+     "total_ms": 309,
+     "est_cost_usd": 0.0005033,
      "status": "ok",
      "category": "övrigt",
      "persona": "tutor"
@@ -88,7 +88,7 @@
     {
      "event": "delta",
      "data": {
-      "text": "Melodifestivalen tvåtusen trettioen har inte hållits än, den avgörs först våren tvåtusen trettioett."
+      "text": "Melodifestivalen tvåtusen trettioett har inte hållits än, den avgörs först våren tvåtusen trettioett."
      }
     },
     {
@@ -96,29 +96,29 @@
      "data": {
       "answered": true,
       "timing": {
-       "meta_ms": 282,
-       "ttft_ms": 282,
-       "llm_first_token_ms": 236,
-       "total_ms": 283
+       "meta_ms": 308,
+       "ttft_ms": 308,
+       "llm_first_token_ms": 259,
+       "total_ms": 309
       },
       "breakdown": {
        "auth_ms": 0,
-       "body_ms": 170,
-       "limits_ms": 236,
-       "llm_first_chunk_ms": 236,
+       "body_ms": 191,
+       "limits_ms": 258,
+       "llm_first_chunk_ms": 259,
        "direct": false,
        "cold": true,
        "answer_type": "fact",
        "continuation": null
       },
       "usage": {
-       "input_tokens": 4488,
+       "input_tokens": 4543,
        "output_tokens": 98,
        "cache_read_tokens": 0,
        "cache_write_tokens": 0,
        "web_searches": 0,
        "model": "claude-haiku-5-5",
-       "est_cost_usd": 0.0004978000000000001
+       "est_cost_usd": 0.0005033
       },
       "summary": "Frågan gällde vinnaren av Melodifestivalen 2031. Svaret var att tävlingen inte har hållits än och avgörs våren 2031.",
       "relation": null,
@@ -128,7 +128,7 @@
      }
     }
    ],
-   "said": "Melodifestivalen tvåtusen trettioen har inte hållits än, den avgörs först våren tvåtusen trettioett.",
+   "said": "Melodifestivalen tvåtusen trettioett har inte hållits än, den avgörs först våren tvåtusen trettioett.",
    "meta": [
     {
      "reconstructed_question": "Vem vann Melodifestivalen 2031?",
@@ -142,29 +142,29 @@
    "done": {
     "answered": true,
     "timing": {
-     "meta_ms": 282,
-     "ttft_ms": 282,
-     "llm_first_token_ms": 236,
-     "total_ms": 283
+     "meta_ms": 308,
+     "ttft_ms": 308,
+     "llm_first_token_ms": 259,
+     "total_ms": 309
     },
     "breakdown": {
      "auth_ms": 0,
-     "body_ms": 170,
-     "limits_ms": 236,
-     "llm_first_chunk_ms": 236,
+     "body_ms": 191,
+     "limits_ms": 258,
+     "llm_first_chunk_ms": 259,
      "direct": false,
      "cold": true,
      "answer_type": "fact",
      "continuation": null
     },
     "usage": {
-     "input_tokens": 4488,
+     "input_tokens": 4543,
      "output_tokens": 98,
      "cache_read_tokens": 0,
      "cache_write_tokens": 0,
      "web_searches": 0,
      "model": "claude-haiku-5-5",
-     "est_cost_usd": 0.0004978000000000001
+     "est_cost_usd": 0.0005033
     },
     "summary": "Frågan gällde vinnaren av Melodifestivalen 2031. Svaret var att tävlingen inte har hållits än och avgörs våren 2031.",
     "relation": null,
