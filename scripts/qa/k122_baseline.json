@@ -435,7 +435,7 @@
        },
        {
         "id": "q2",
-        "question": "How do clouds form from water vapour?"
+        "question": "Why do the droplets in clouds fall as precipitation?"
        },
        {
         "id": "q3",
@@ -2445,7 +2445,7 @@
        {
         "id": "q3",
         "long": "Växtceller har också en cellvägg och kloroplaster, vilket djurceller saknar. Båda celltyperna har cellkärna, mitokondrier och cellmembran. Cellväggen är ett fast skal utanför cellmembranet som ger cellen stöd, och i kloroplasterna sker fotosyntesen, där växten bildar socker med hjälp av ljus.",
-        "question": "Hur skiljer sig växtceller från andra celler?",
+        "question": "Vad innehåller cellkärnan?",
         "short": "Växtceller har också en cellvägg och kloroplaster, vilket djurceller saknar."
        }
       ],

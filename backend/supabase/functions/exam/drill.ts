@@ -238,8 +238,17 @@ export function parsePlan(
  * R3 (live 2026-11-13: 8 of 19 at most five words, then 59 of 100 understanding questions): the model writes a few
  * extra; plain recall questions go first, then questions over five words, then the longest; the order stays.
  */
-export function trimQuestions(list: string[], count: number): string[] {
+export function trimQuestions(list: string[], count: number, material = ""): string[] {
   const questions = [...list];
+  // Oscar PF1 (O104 E1): with the material, the last question on a sentence the model asked about twice or more (what
+  // the material dwells on) is never the one taken out while another can go. (Taking a second question on one
+  // sentence out first was tried: it beat the question types and cost PX6 its cause question, so it is not used.)
+  const sent = material ? numberedSentences(material) : [];
+  const at = sent.length > 1 ? (q: string) => sentenceOf(q, sent) : () => -1;
+  const asked = new Map<number, number>();
+  for (const q of list) if (at(q) >= 0) asked.set(at(q), (asked.get(at(q)) ?? 0) + 1);
+  const onSame = (i: number) => at(questions[i]) >= 0 && questions.filter((q) => at(q) === at(questions[i])).length > 1;
+  const dwelt = (i: number) => at(questions[i]) >= 0 && (asked.get(at(questions[i])) ?? 0) > 1 && !onSame(i);
   // D176: no word limit; the weakest go (leaning on the material, then plain recall), the last of equals first
   // O104 E1: a bare time or person ("När …", "Who …") is the plainest recall and goes before "Vilka …"/"Which …"
   const plain = (q: string) => /^(?:när |vem |vilket år|when |who |what year|in what year)/i.test(q.trim());
@@ -248,8 +257,13 @@ export function trimQuestions(list: string[], count: number): string[] {
   const protectedQ = (q: string, list: string[]) =>
     !leansOnMaterial(q) && ((isCause(q) && list.filter(isCause).length === 1) || (isDefinition(q) && list.filter(isDefinition).length === 1));
   while (questions.length > count) {
-    const free = questions.map((q, i) => i).filter((i) => !protectedQ(questions[i], questions));
-    const pool = free.length ? free : questions.map((_, i) => i);
+    const all = questions.map((_, i) => i);
+    const free = all.filter((i) => !protectedQ(questions[i], questions));
+    const base = free.length ? free : all;
+    // while a sentence's last question is kept, the one taken out is another single-sentence question; a question
+    // that spans sentences (a comparison) is never what gives way for it (D1, O107)
+    const giveWay = base.some(dwelt) ? base.filter((i) => !dwelt(i) && at(questions[i]) >= 0) : [];
+    const pool = giveWay.length ? giveWay : base;
     let worst = pool[0];
     for (const i of pool) if (score(questions[i]) >= score(questions[worst])) worst = i;
     questions.splice(worst, 1);
@@ -470,6 +484,24 @@ export async function refillQuestions(
   if (out.length < n) console.log("drill_refill_short", JSON.stringify({ wanted: n, got: out.length, repeats: rejected.length, ...skipped }));
   return { questions: out, usage };
 }
+
+/** PF1: the material sentence a question is about (content words, rare words count more); -1 when unclear. */
+function sentenceOf(q: string, sent: string[]): number {
+  const stems = (t: string) => new Set((t.toLowerCase().match(/\p{L}{4,}/gu) ?? []).filter((w) => !TRIM_STOP.has(w)).map((w) => w.slice(0, 6)));
+  const ss = sent.map(stems);
+  const df = new Map<string, number>();
+  for (const x of ss) for (const w of x) df.set(w, (df.get(w) ?? 0) + 1);
+  let best = -1, top = 0, tie = false;
+  const qw = stems(q);
+  ss.forEach((x, k) => {
+    let v = 0;
+    for (const w of qw) if (x.has(w)) v += 1 / (df.get(w) ?? 1);
+    if (v > top) (best = k, top = v, tie = false);
+    else if (v === top && v > 0) tie = true;
+  });
+  return tie ? -1 : best;
+}
+const TRIM_STOP = new Set("vilken vilket vilka varför när vad vem hur finns från till eller och som inte med för har hade blir blev kan också andra annan sina deras what which when where does with from that this have they their about".split(" "));
 
 /** K107: the material as numbered sentences for the last check (paragraph lines, then sentence ends), at most 8 000 characters. */
 export function numberedSentences(material: string, maxChars = 8000): string[] {
@@ -1368,7 +1400,7 @@ export async function handleDrill(
     // first; a part still short gets a call of its own. Every question passes the same checks (cleanQuestion, no
     // question that leans on the material, no duplicate).
     const material = (text || p.notes || "").trim();
-    const before = trimQuestions(sh.questions, possible);
+    const before = trimQuestions(sh.questions, possible, material); // PF1: covers the material's sentences
     const target = material ? Math.max(possible, codeCap(material.length, count)) : possible;
     // O79 F1 (Oscar): the material's own sections (headings, else paragraphs) are the parts; length only as a fallback
     const sections = sectionParts(material, target);
