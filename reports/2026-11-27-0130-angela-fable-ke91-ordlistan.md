@@ -45,6 +45,14 @@ Angela Fable (moln), 2026-11-27. Beställt av Deangelo 00:10 ("Kellys tio ordfö
 - KÖRNINGEN
 - 0 ElevenLabs.
 
+## Samordning med Angela Schrute
+
+Vi delade Ke91 men hann båda ändra några av samma engelska värden (practice, Beta, två foto-rader). De var lika
+utom ett, "Snap your textbook. EarMind creates …", där hon bad mig ta mitt ("creates", punkt 7). Vi hade båda gjort
+`LumenTests/Ke91WordsTests.swift`; hennes heter så, mina tester heter nu `Ke91RepetitionWordsTests.swift`.
+
 ## Kvar
 
 - Engelska skärmbilder för App Store tar Kelly i sitt flöde.
+- När Angela Schrutes K124 (telefonens röst läser när ElevenLabs-kvoten är slut) är på main: dölj kostnadsraden för
+  ett prov som telefonen läser (inget dras), villkoret `audio.problem(for:) == CloudDrillAudio.phoneLine`.
