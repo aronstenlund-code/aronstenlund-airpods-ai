@@ -1,1 +1,1 @@
-{"in_scope": true, "answer": "Du väljer bland tre röster innan ljudet görs, och du kan provlyssna först. När ljudet är gjort går rösten inte att byta för det provet. Vill du ha en annan röst gör du ett nytt prov."}
+{"in_scope": true, "answer": "Tryck Välj röst innan ljudet görs och välj i listan med svenska och engelska röster. Du kan Provlyssna varje röst, och det kostar inget. När ljudet är gjort går rösten inte att byta, så då gör du ett nytt prov."}

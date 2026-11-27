@@ -1,7 +1,7 @@
 {
  "prompts": {
   "style": "You add ElevenLabs Eleven v3 audio tags to a text that will be read aloud.\nThe t",
-  "voice": "You choose the voice that best fits how a listener wants a Swedish text to sound"
+  "voice": "You choose the voice that best fits how a listener wants a text to sound. You ge"
  },
  "out": [
   {
@@ -82,13 +82,18 @@
    "result": null
   },
   {
+   "id": "VO5-prompt",
+   "system_has_english": false,
+   "system_tail": "n the list has (an accent, a dialect, an age, a gender), the reason must say so plainly, e.g. \"Ingen röst med kinesisk brytning finns ännu, så en lugn och tydlig röst.\" (en: \"No voice with a Chinese accent yet, so a calm, clear voice.\") Never claim that a voice has a quality its entry does not show."
+  },
+  {
    "id": "VO5",
    "kind": "röstval",
-   "style": "on English, friendly",
-   "reply": "{\"voice_id\": \"v_alyssa\", \"reason\": \"Alyssa talar tydlig amerikansk engelska och låter vänlig.\"}",
+   "style": "friendly, in English",
+   "reply": "{\"voice_id\": \"v_alyssa\", \"reason\": \"Alyssa has clear American English and sounds friendly.\"}",
    "result": {
     "voice_id": "v_alyssa",
-    "reason": "Alyssa talar tydlig amerikansk engelska och låter vänlig."
+    "reason": "Alyssa has clear American English and sounds friendly."
    }
   },
   {
@@ -96,35 +101,45 @@
    "kind": "talformat",
    "in": "Mötet är kl. 14.30 den 3 maj, t.ex. i sal 2B. Ta med ca 50 kr.",
    "lang": "sv",
-   "rules4": "Mötet är klockan fjorton och trettio den tredje maj, till exempel i sal två B. Ta med cirka femtio kronor."
+   "rules4": "Mötet är klockan fjorton och trettio den tredje maj, till exempel i sal två B. Ta med cirka femtio kronor.",
+   "current": "Mötet är klockan fjorton och trettio den tredje maj, till exempel i sal två B. Ta med cirka femtio kronor.",
+   "version": 5
   },
   {
    "id": "TT2",
    "kind": "talformat",
    "in": "Vattnet kokar vid 100 °C och fryser vid 0 °C. Skolan har 1 250 elever, 12 % fler än 2019.",
    "lang": "sv",
-   "rules4": "Vattnet kokar vid hundra grader celsius och fryser vid noll grader celsius. Skolan har tolvhundrafemtio elever, tolv procent fler än tvåtusen nitton."
+   "rules4": "Vattnet kokar vid hundra grader celsius och fryser vid noll grader celsius. Skolan har tolvhundrafemtio elever, tolv procent fler än tvåtusen nitton.",
+   "current": "Vattnet kokar vid hundra grader celsius och fryser vid noll grader celsius. Skolan har tolvhundrafemtio elever, tolv procent fler än tvåtusen nitton.",
+   "version": 5
   },
   {
    "id": "TT3",
    "kind": "talformat",
    "in": "Läs s. 45–47 och kap. 3. pH 7 är neutralt, H2O är vatten och CO2 koldioxid.",
    "lang": "sv",
-   "rules4": "Läs sidan fyrtiofem till fyrtiosju och kapitel tre. pH sju är neutralt, vatten är vatten och koldioxid koldioxid."
+   "rules4": "Läs sidan fyrtiofem till fyrtiosju och kapitel tre. pH sju är neutralt, vatten är vatten och koldioxid koldioxid.",
+   "current": "Läs sidan fyrtiofem till fyrtiosju och kapitel tre. pH sju är neutralt, H två O är vatten och C O två koldioxid.",
+   "version": 5
   },
   {
    "id": "TT4",
    "kind": "talformat",
    "in": "The meeting is at 2.30 pm on 3 May, e.g. in room 2B. Bring about $5.",
    "lang": "en",
-   "rules4": "The meeting is at 2.30 pm on 3 May, e.g. in room 2B. Bring about $5."
+   "rules4": "The meeting is at 2.30 pm on 3 May, e.g. in room 2B. Bring about $5.",
+   "current": "The meeting is at 2.30 pm on 3 May, e.g. in room 2B. Bring about $5.",
+   "version": 5
   },
   {
    "id": "TT5",
    "kind": "talformat",
    "in": "Ring 112 vid nödläge, 1177 för vård. Karl XII dog 1718, och Gustav II Adolf 1632.",
    "lang": "sv",
-   "rules4": "Ring ett ett två vid nödläge, elva sjuttiosju för vård. Karl den tolfte dog sjuttonhundraarton, och Gustav den andre Adolf sextonhundratrettiotvå."
+   "rules4": "Ring ett ett två vid nödläge, elva sjuttiosju för vård. Karl den tolfte dog sjuttonhundraarton, och Gustav den andre Adolf sextonhundratrettiotvå.",
+   "current": "Ring ett ett två vid nödläge, elva sjuttiosju för vård. Karl den tolfte dog sjuttonhundraarton, och Gustav den andre Adolf sextonhundratrettiotvå.",
+   "version": 5
   }
  ]
 }

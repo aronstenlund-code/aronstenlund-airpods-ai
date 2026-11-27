@@ -1,1 +1,1 @@
-{"in_scope": true, "answer": "Det vet jag inte. Skriv till oss under Inställningar › Om EarMind."}
+{"in_scope": true, "answer": "Nej, Spela in själv är helt gratis och kostar inga krediter. Ljudet stannar på din telefon och skickas aldrig till oss."}

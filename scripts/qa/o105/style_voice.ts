@@ -4,6 +4,7 @@
 // Inga nätanrop, 0 ElevenLabs. Kör: cd backend && deno run --no-lock --allow-read ../scripts/qa/o105/style_voice.ts
 import { haikuStyler, haikuVoicePicker, SYSTEM_PROMPT_STYLE, SYSTEM_PROMPT_VOICE_PICK } from "../../../backend/supabase/functions/drill/style.ts";
 import { voiceText } from "../../../backend/supabase/functions/drill/handler.ts";
+import { VOICE_RULES_VERSION } from "../../../backend/supabase/functions/drill/voicerules.ts";
 import type { LLMChunk, LLMProvider, LLMRequest } from "../../../backend/supabase/functions/answer/llm/types.ts";
 
 function fake(reply: string | Error): { p: LLMProvider; seen: LLMRequest[] } {
@@ -39,11 +40,12 @@ const voice: [string, string, string][] = [
   ["VO2", "med kinesisk brytning", '{"voice_id": "v_jonas", "reason": "Ingen röst med kinesisk brytning finns ännu, så en lugn och tydlig röst."}'],
   ["VO3", "på skånska", '{"voice_id": "v_bertil", "reason": "Bertil talar skånska och berättar lugnt."}'],
   ["VO4", "glatt", '{"voice_id": "v_lisa", "reason": "Lisa är glad."}'],
-  ["VO5", "on English, friendly", '{"voice_id": "v_alyssa", "reason": "Alyssa talar tydlig amerikansk engelska och låter vänlig."}'],
+  ["VO5", "friendly, in English", '{"voice_id": "v_alyssa", "reason": "Alyssa has clear American English and sounds friendly."}'],
 ];
 for (const [id, st, reply] of voice) {
   const f = fake(reply);
-  const r = await haikuVoicePicker(f.p)(st, CAT);
+  const r = await haikuVoicePicker(f.p)(st, CAT, id === "VO5" ? "en" : undefined as never);
+  if (id === "VO5") out.push({ id: "VO5-prompt", system_has_english: /English/.test(f.seen[0]?.system ?? ""), system_tail: (f.seen[0]?.system ?? "").slice(-300) });
   out.push({ id, kind: "röstval", style: st, reply, result: r });
 }
 const TTS: [string, string, string][] = [
@@ -53,5 +55,5 @@ const TTS: [string, string, string][] = [
   ["TT4", "The meeting is at 2.30 pm on 3 May, e.g. in room 2B. Bring about $5.", "en"],
   ["TT5", "Ring 112 vid nödläge, 1177 för vård. Karl XII dog 1718, och Gustav II Adolf 1632.", ""],
 ];
-for (const [id, s, lang] of TTS) out.push({ id, kind: "talformat", in: s, lang: lang || "sv", rules4: voiceText(s, lang, 4) });
+for (const [id, s, lang] of TTS) out.push({ id, kind: "talformat", in: s, lang: lang || "sv", rules4: voiceText(s, lang, 4), current: voiceText(s, lang, VOICE_RULES_VERSION), version: VOICE_RULES_VERSION });
 console.log(JSON.stringify({ prompts: { style: SYSTEM_PROMPT_STYLE.slice(0, 80), voice: SYSTEM_PROMPT_VOICE_PICK.slice(0, 80) }, out }, null, 1));

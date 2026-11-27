@@ -1,1 +1,1 @@
-{"in_scope": true, "answer": "Det vet jag inte. Skriv till oss under Inställningar › Om EarMind."}
+{"in_scope": true, "answer": "Lås upp telefonen, öppna EarMind och tryck spela igen. Ha gärna EarMind öppen medan Säg i AirPods spelar."}

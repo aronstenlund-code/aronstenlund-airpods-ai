@@ -1,1 +1,1 @@
-{"in_scope": true, "answer": "1. Tryck på Dela uppe till höger i provet. 2. Skicka länken, till exempel med Meddelanden. Dela går först när allt ljud är klart. Vill du att hela skolan ska kunna plugga på provet använder du Publicera prov."}
+{"in_scope": true, "answer": "1. Tap Dela (the symbol with the arrow up) at the top right of the quiz. 2. Send the link, for example with Messages. Sharing works once all the audio is ready. To let everyone at your school study it, use Publicera prov."}
