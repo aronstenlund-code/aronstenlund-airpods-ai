@@ -40,6 +40,11 @@ struct ComebackE2ETests {
         if repetition.examDrills.first?.id != quizB.id { wrong.append("the newest quiz is not first before anything is played") }
 
         // Play A: one press for the answer of question 2, at least three questions heard, then Avsluta.
+        // Run 45944078112: in the mock mode the sound is made on the phone after the save (the phone's voice), and
+        // Starta prov starts nothing until the first question has it (`canStart`).
+        let ready = await waitFor(90) { repetition.canStart(quizA) }
+        notes.append("A ready to start: \(ready)")
+        if !ready { wrong.append("A's first question never got its sound (mock mode, the phone's voice)") }
         await repetition.start(quizA)
         var pressed = false
         var phases: [String] = []
