@@ -31,12 +31,13 @@ run_pass() { # $1 name, $2 extra env (KEY=VALUE or empty)
     -derivedDataPath "$ROOT/DerivedData-t60" \
     -resultBundlePath "$OUT/logs/t60-$1.xcresult" \
     -only-testing:"LumenE2ETests/TroubleE2ETests" \
+    -only-testing:"LumenE2ETests/ComebackE2ETests" \
     -testLanguage sv -testRegion SE \
     -parallel-testing-enabled NO \
     CODE_SIGNING_ALLOWED=NO \
     > "$OUT/logs/t60-$1.log" 2>&1
   local status=$?
-  grep -E "error:|✘|✔|Test run|T60 " "$OUT/logs/t60-$1.log" | cut -c1-600 | tail -n 60
+  grep -E "error:|✘|✔|Test run|T60 |T61 " "$OUT/logs/t60-$1.log" | cut -c1-600 | tail -n 60
   echo "::endgroup::"
   return $status
 }
@@ -51,7 +52,7 @@ xcrun simctl privacy "$UDID" grant microphone com.rsolutions.lumen || true
 [ "$STATUS" = 0 ] && STATUS=$DENIED
 
 {
-  echo "### T60 – Lyssnar när något går fel (D273) och Historik (D271) (Simulator)"
+  echo "### T60/T61 – Lyssnar när något går fel (D273), Historik (D271), komma tillbaka (A168) (Simulator)"
   echo
   if [ -f "$OUT/trouble.jsonl" ]; then
     jq -r '"- **\(.id)**: \(.verdict)", (.notes[] | "  - " + .)' "$OUT/trouble.jsonl"
