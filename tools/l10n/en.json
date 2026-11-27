@@ -1592,5 +1592,17 @@
  "”Lumen, jag har prov i engelska på onsdag”": "”Lumen, jag har prov i engelska på onsdag”",
  "”Säg mina svar” är av i Inställningar. EarMind svarar själv tills du sätter på det.": "“Say my answers” is off in Settings. EarMind answers by itself until you turn it on.",
  "−\\(percent) %": "−\\(percent)%",
- "✓ Tillåtet": "✓ Allowed"
+ "✓ Tillåtet": "✓ Allowed",
+ "Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov och Säg i AirPods använder aldrig mikrofonen. Att fråga högt gör det, när du har sagt ja på nästa skärm.": "The photos and the text are sent once to make the questions and aren't saved. Start quiz and Say in AirPods never use the microphone. Asking out loud does, after you say yes on the next screen.",
+ "Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI.": "Question you're not prepared for? Say [ … ] so our AI activates.",
+ "Vår server är upptagen.": "Our server is busy.",
+ "t.ex. Hjälp mig": "e.g. Help me",
+ "Hör: \\(heard)": "Hearing: \\(heard)",
+ "Inga AirPods anslutna. Svaren hörs i telefonens högtalare – sätt i AirPods när du vill.": "No AirPods connected. Answers play on the phone's speaker – put in your AirPods whenever you like.",
+ "Inget nät. Telefonens egen modell svarar så länge.": "No network. The phone's own model answers for now.",
+ "Inget nät. EarMind lyssnar vidare och svarar när du är uppkopplad igen.": "No network. EarMind keeps listening and answers when you're back online.",
+ "Batteriet är på \\(Self.percentText(percent)). Sätt telefonen på laddning så att EarMind kan lyssna vidare.": "Battery at \\(Self.percentText(percent)). Plug in your phone so EarMind can keep listening.",
+ "Lågenergiläge är på. EarMind lyssnar som vanligt, men svaren kan dröja lite.": "Low Power Mode is on. EarMind listens as usual, but answers may take a little longer.",
+ "EarMind pausade. Sätt i AirPods så lyssnar den igen, eller lyssna vidare med telefonens högtalare.": "EarMind paused. Put your AirPods back in and it listens again, or keep listening on the phone's speaker.",
+ "Lyssna vidare": "Keep listening"
 }

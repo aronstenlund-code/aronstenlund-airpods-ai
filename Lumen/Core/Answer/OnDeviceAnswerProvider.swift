@@ -29,6 +29,9 @@ final class OnDeviceAnswerProvider: AnswerProvider {
 
     private let model: any OnDeviceModel
 
+    /// Whether the phone's model answers in this language ("sv" or "en"), for the line when there is no network.
+    func isAvailable(for language: String) -> Bool { model.isAvailable(for: language) }
+
     init(model: any OnDeviceModel = SystemOnDeviceModel()) {
         self.model = model
     }

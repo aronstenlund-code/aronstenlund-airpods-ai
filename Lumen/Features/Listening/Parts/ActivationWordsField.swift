@@ -13,25 +13,24 @@ struct ActivationWordsField: View {
         _typed = State(initialValue: settings.phrase)
     }
 
+    /// Aron's sentence (D259), whole (Kelly Ke93 (1): one block, the field on its own row under it).
+    static var sentence: String { String(localized: "Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI.") }
+
     var body: some View {
-        FlowLayout(spacing: 6) {
-            Text(String(localized: "Fråga du inte är beredd på? Säg"))
-                .frame(minHeight: 36)
-            TextField("…", text: $typed)
+        VStack(alignment: .leading, spacing: 8) {
+            Text(Self.sentence)
+                .fixedSize(horizontal: false, vertical: true)
+            TextField(String(localized: "t.ex. Hjälp mig"), text: $typed)
                 .textInputAutocapitalization(.never)
                 .autocorrectionDisabled()
                 .submitLabel(.done)
                 .focused($isTyping)
                 .onSubmit { isTyping = false }
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 10)
-                .frame(minWidth: 96, maxWidth: 220, minHeight: 36)
+                .padding(.horizontal, 12)
+                .frame(maxWidth: .infinity, minHeight: 44)
                 .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(LumenColor.line.opacity(0.6)))
-                .fixedSize(horizontal: true, vertical: false)
                 .accessibilityLabel(Text("Aktiveringsord"))
                 .accessibilityIdentifier("activation.words")
-            Text(String(localized: "så aktiveras vår AI."))
-                .frame(minHeight: 36)
         }
         .font(LumenFont.text(16))
         .frame(maxWidth: .infinity, alignment: .leading)

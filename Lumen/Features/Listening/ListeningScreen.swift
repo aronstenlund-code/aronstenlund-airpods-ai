@@ -47,7 +47,8 @@ struct ListeningScreen: View {
                         ErrorCard(problem: problem) { model.act(on: problem) }
                     }
                     // A162 (D259): the user's own activation words, where answers come (not in Socialt and Rizz).
-                    if !mode.isLive { ActivationWordsField(settings: model.activation.settings) }
+                    // Kelly Ke93 (2): not before the first answer.
+                    if !mode.isLive, model.showsActivationWords { ActivationWordsField(settings: model.activation.settings) }
                     latest
                     previous
                     notices
@@ -123,7 +124,39 @@ struct ListeningScreen: View {
                     .foregroundStyle(LumenColor.muted)
                     .multilineTextAlignment(.center)
             }
+            if let condition = model.listeningCondition {
+                // Deangelo 2026-11-27: no AirPods, no network, low battery, low power mode: one short line with the
+                // way on in it, never a silent stop.
+                Label {
+                    Text(verbatim: condition.line)
+                } icon: {
+                    Image(systemName: condition.symbol)
+                }
+                .font(LumenFont.text(14, relativeTo: .footnote))
+                .foregroundStyle(LumenColor.ink)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(LumenColor.soft, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("listening.condition")
+            }
+            if let heard = model.heardLine {
+                // Kelly (D269 a): what is heard, grey, at most two lines (the end shows), gone when the answer comes.
+                Text(verbatim: heard)
+                    .font(LumenFont.text(15, relativeTo: .subheadline))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(2)
+                    .truncationMode(.head)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .accessibilityLabel(Text(String(localized: "Hör: \(heard)")))
+                    .transition(.opacity)
+            }
         }
+        .animation(.easeOut(duration: 0.15), value: model.heardLine == nil)
         .padding(.horizontal, 12)
         .padding(.top, 4)
         .padding(.bottom, 12)

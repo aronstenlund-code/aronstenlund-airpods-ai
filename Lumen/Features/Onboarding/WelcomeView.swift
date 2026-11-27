@@ -72,7 +72,8 @@ struct WelcomeView: View {
     private var bottom: some View {
         VStack(spacing: 0) {
             // Kelly (A95): this line is what Fortsätt agrees to, so it has the text colour, not the grey.
-            Text("Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov använder aldrig mikrofonen.")
+            // Kelly Ke93 (3): the next screen asks for the microphone, so the line says when it is used.
+            Text("Fotona och texten skickas en gång för att göra frågorna och sparas inte. Starta prov och Säg i AirPods använder aldrig mikrofonen. Att fråga högt gör det, när du har sagt ja på nästa skärm.")
                 .font(.footnote)
                 .foregroundStyle(Color.primary)
                 .multilineTextAlignment(.center)
