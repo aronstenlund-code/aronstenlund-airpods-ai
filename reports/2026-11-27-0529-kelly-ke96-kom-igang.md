@@ -19,3 +19,13 @@
 
 ## Test (393 px och mörkt läge, punkt 3)
 **Lokalt, Chromium:** alla sju sidor (`/`, `/sv`, `/support`, `/sv/support`, `/start`, `/sv/start`, `/beta`) svarar 200. Ingen har vågrät rullning vid 393 px, i ljust eller mörkt läge, och inte heller vid 1280 px. Inga trasiga bilder. Mörkt läge är sett på bild för `/start`, `/sv/start`, `/` och `/sv/support`.
+
+**Live** (kelly-site-check 45942350917, 04:51 UTC, efter Vercels bygge från main):
+- `/start` svarar 200 med 9 793 byte och `/sv/start` 200 med 9 768 byte;
+- `/support` och `/sv/support` svarar 200;
+- `/` svarar 200 med 42 464 byte, med länkarna;
+- `/sv` och `/beta` svarar 200.
+
+Alla sju har 0 platshållare och ingen vågrät rullning vid 393 px. Storlekarna är samma som lokalt. **Verifierat i Actions.** Mörkt läge är bara provat lokalt, eftersom live-kontrollen inte tar bilder.
+
+0 ElevenLabs. Inget i appen är ändrat.
