@@ -444,7 +444,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       const othersSaid = (body0.social?.transcript ?? []).slice(-2).filter((x) => x.speaker !== "user").map((x) => x.text);
       // Oscar O17: a strong hit answers at once; a weak one (first person + a word about living, dying or harm, or an
       // everyday reading of a strong pattern) gets a one-word check by the small model first; a failed check = answer
-      const otherPersona = body0.persona === "social" || body0.persona === "interview" || aboutOther(body0.fragment);
+      // O109-1 (Oscar): in Intervju only the interviewer's question is someone else; the user's own answer
+      // (turn "user_answer") is the user, so crisis words there get the answer for the user
+      const otherPersona = body0.persona === "social" || (body0.persona === "interview" && body0.turn !== "user_answer") ||
+        aboutOther(body0.fragment);
       const fragLevel = crisisLevel(body0.fragment);
       const otherLevels = othersSaid.map(crisisLevel);
       let crisisWho: "self" | "other" | null = fragLevel === "strong"
