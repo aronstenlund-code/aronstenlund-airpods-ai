@@ -32,6 +32,7 @@ python3 scripts/qa/o105/run.py $DENO --only <ID,ID>
 | Modellen nere (`provider_*`, i18n) | o103: D1–D6 |
 | Hjälpen (`help`, `docs/HJALP.md` / `shared/hjalp.ts`) | o105: HL1–HL5 · bank: HE1 HE2 HT1 |
 | Säg i AirPods: stil och röstval (`drill/style.ts`) | o105: ST1–ST5 VO1–VO5 |
+| Lyssnarläget (auto, frågegrinden, `isClearQuestion`, `isCutOff`, direktvägen) | o106: A01–A28 (`python3 scripts/qa/o106/run.py $DENO`) |
 | Socialt, Rizz, intervju | bank: O01 RZ1 RZ1s I01 |
 
 Livetester som inte går genom K122:

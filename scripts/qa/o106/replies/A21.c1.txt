@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"Hur många ben har en bläckfisk?","confidence":0.95}
+En åttaarmad bläckfisk har 8 armar, inga ben. Tioarmade bläckfiskar som kalmarer har 8 armar och 2 längre fångstarmar.
+[[SAMMANFATTNING]] Frågan gällde hur många ben en bläckfisk har. Svaret var att en åttaarmad bläckfisk har 8 armar och tioarmade bläckfiskar har 8 armar och 2 fångstarmar.

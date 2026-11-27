@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"What is the largest planet in our solar system?","confidence":0.97}
+Jupiter is the largest planet in our solar system, more than 11 times wider than Earth.
+[[SAMMANFATTNING]] Frågan gällde vilken som är solsystemets största planet. Svaret var Jupiter, som är mer än 11 gånger bredare än jorden.

@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"Vad är ATP och var bildas det?","confidence":0.95}
+ATP, adenosintrifosfat, är cellens energivaluta som driver nästan alla processer i cellen. Det bildas främst i mitokondrierna vid cellandningen och hos växter även i kloroplasterna.
+[[SAMMANFATTNING]] Frågan gällde vad ATP är och var det bildas. Svaret var att ATP är cellens energibärare och bildas främst i mitokondrierna, hos växter även i kloroplasterna.

@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"Vad är fotosyntes?","confidence":0.95}
+Fotosyntes är när växter med hjälp av solljus gör socker av koldioxid och vatten och släpper ut syre. Det sker i bladens klorofyll.
+[[SAMMANFATTNING]] Frågan gällde vad fotosyntes är. Svaret var att växter med solljus gör socker av koldioxid och vatten och avger syre.

@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"Vem uppfann kulspetspennan?","confidence":0.95}
+Kulspetspennan uppfanns av ungraren László Bíró, som patenterade den 1938. På många håll kallas den fortfarande för biro.
+[[SAMMANFATTNING]] Frågan gällde vem som uppfann kulspetspennan. Svaret var ungraren László Bíró, som patenterade den 1938.

@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"Vad är klockan i New York och hur lång tid tar det att flyga dit?","confidence":0.9}
+I New York är klockan 20:59 på torsdagskvällen, 6 timmar efter svensk tid. Ett direktflyg från Stockholm tar ungefär 9 timmar.
+[[SAMMANFATTNING]] Frågan gällde tiden i New York och flygtiden dit. Svaret var att klockan är 6 timmar efter Sverige, torsdag kväll, och att ett direktflyg från Stockholm tar ungefär 9 timmar.

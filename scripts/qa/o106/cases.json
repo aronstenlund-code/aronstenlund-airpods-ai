@@ -1,0 +1,465 @@
+[
+ {
+  "id": "A01",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Kan någon säga vad fotosyntes är?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Läraren: Okej, sätt er ner. Idag fortsätter vi med växterna. Ni har läst kapitel fyra.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A02",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Vilket år började första världskriget?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Läraren: Vi har pratat om imperialismen och om allianserna i Europa.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A03",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "vet du vad huvudstaden i Kanada är",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: asså vi ska åka till Kanada i sommar med familjen.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A04",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "vad är ATP och var bildas det",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Läraren: Okej, sätt er ner. Idag fortsätter vi med växterna. Ni har läst kapitel fyra.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A05",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "och vad hette hennes",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: Marie Curie fick två nobelpris.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A06",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Ottawa?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: asså vi ska åka till Kanada i sommar med familjen.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A07",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "och cellandning då",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Läraren: Okej, sätt er ner. Idag fortsätter vi med växterna. Ni har läst kapitel fyra.",
+    "recent_qa": [
+     {
+      "q": "vad är fotosyntes",
+      "a": "Fotosyntesen är när växter gör socker av ljus, vatten och koldioxid och släpper ut syre."
+     }
+    ]
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A08",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "jag ska handla efter skolan sen",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: vad gör du sen?",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A09",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "haha nej men han är så rolig asså",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: såg du videon jag skickade?",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A10",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "varför händer alltid sånt här mig",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: oj, du tappade mobilen igen.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A11",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Elin, har du tagit med dig boken?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Läraren: Okej, sätt er ner. Idag fortsätter vi med växterna. Ni har läst kapitel fyra.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A12",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "vad sa du?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: [otydligt]",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A13",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Can anyone tell me what the largest planet in our solar system is?",
+   "mode": "auto",
+   "language": "en",
+   "context": {
+    "transcript": "Teacher: Today we start with the solar system.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: en"
+  ]
+ },
+ {
+  "id": "A14",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "vad betyder ubiquitous på svenska",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Läraren: Slå upp de nya orden i glosboken.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A15",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "okej so basically vad är skillnaden mellan weather och climate",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: vi har geografiprov imorgon.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A16",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "What year did the Berlin Wall fall?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Teacher: Let's talk about the end of the Cold War.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A17",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "vem vann melodifestivalen 2031",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: jag älskar mello.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A18",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "vem uppfann kulspetspennan",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: min penna är slut.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A19",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "vad är klockan i New York och hur lång tid tar det att flyga dit",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: asså vi ska åka till Kanada i sommar med familjen.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A20",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Fråga till klassen: vad är en metafor?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Läraren: Vi läser dikter idag.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A21",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "hur många ben har en bläckfisk",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: titta på den där bläckfisken i akvariet.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A22",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "äh jag vet inte, vad tror du",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: ska vi ta bussen eller cykla?",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A23",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "vilken är världens längsta flod",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: vi pluggar geografi.",
+    "recent_qa": [
+     {
+      "q": "vilken är världens högsta berg",
+      "a": "Mount Everest är världens högsta berg, 8 849 meter."
+     }
+    ]
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A24",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "men hur högt är det i fot då",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: vi pluggar geografi.",
+    "recent_qa": [
+     {
+      "q": "vilken är världens högsta berg",
+      "a": "Mount Everest är världens högsta berg, 8 849 meter."
+     }
+    ]
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A25",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Vad heter grundämnet med beteckningen Fe?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Läraren: Periodiska systemet, kapitel två.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A26",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Vad ska vi äta ikväll?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: jag är så hungrig.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A27",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Hur mår din mamma nu?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: hon var sjuk förra veckan.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ },
+ {
+  "id": "A28",
+  "endpoint": "answer",
+  "body": {
+   "fragment": "Var lade du mina nycklar?",
+   "mode": "auto",
+   "language": "sv",
+   "context": {
+    "transcript": "Kompis: jag hittar dem inte.",
+    "recent_qa": []
+   }
+  },
+  "headers": [
+   "x-earmind-lang: sv"
+  ]
+ }
+]
