@@ -233,7 +233,7 @@
      "model": "claude-haiku-5-5",
      "input_tokens": 1619,
      "output_tokens": 170,
-     "total_ms": 53,
+     "total_ms": 57,
      "est_cost_usd": 0.0002469,
      "status": "ok"
     },
@@ -244,7 +244,7 @@
      "model": "claude-haiku-5-5",
      "input_tokens": 1654,
      "output_tokens": 102,
-     "total_ms": 53,
+     "total_ms": 57,
      "est_cost_usd": 0.0002164,
      "status": "ok"
     },
@@ -255,7 +255,7 @@
      "model": "claude-haiku-5-5",
      "input_tokens": 877,
      "output_tokens": 18,
-     "total_ms": 53,
+     "total_ms": 57,
      "est_cost_usd": 9.67e-05,
      "status": "ok"
     },
@@ -266,7 +266,7 @@
      "model": "claude-sonnet-5-5",
      "input_tokens": 988,
      "output_tokens": 130,
-     "total_ms": 53,
+     "total_ms": 57,
      "est_cost_usd": 0.003276,
      "status": "ok"
     },
@@ -277,7 +277,7 @@
      "model": "claude-sonnet-5-5",
      "input_tokens": 1779,
      "output_tokens": 395,
-     "total_ms": 53,
+     "total_ms": 57,
      "est_cost_usd": 0.007508,
      "status": "ok"
     }
@@ -342,28 +342,28 @@
       "input_tokens": 1619,
       "output_tokens": 170,
       "est_cost_usd": 0.0002469,
-      "ms": 7
+      "ms": 6
      },
      "notes": {
       "model": "claude-haiku-5-5",
       "input_tokens": 1654,
       "output_tokens": 102,
       "est_cost_usd": 0.0002164,
-      "ms": 8
+      "ms": 7
      },
      "shorten": {
       "model": "claude-haiku-5-5",
       "input_tokens": 877,
       "output_tokens": 18,
       "est_cost_usd": 9.67e-05,
-      "ms": 1
+      "ms": 0
      },
      "answers": {
       "model": "claude-sonnet-5-5",
       "input_tokens": 1779,
       "output_tokens": 395,
       "est_cost_usd": 0.007508,
-      "ms": 4
+      "ms": 5
      },
      "final_check": {
       "model": "claude-sonnet-5-5",
@@ -378,7 +378,7 @@
       "questions": 4
      },
      "est_cost_usd": 0.011344,
-     "ms": 34
+     "ms": 40
     },
     "quota": {
      "unit": "chars",

@@ -30,7 +30,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<context>Ämne: Svenska</context>\n<notes>\nPlaneten Zorbia är en påhittad planet i berättelsen Stjärnresan. Zorbia har tre månar: Ilo, Brak och Seme. Ett år på Zorbia är 412 dagar långt. Invånarna heter zorbier. De andas kväve i stället för syre. De bor i städer under marken, eftersom ytan är för kall. Huvudstaden heter Vexa.\n</notes>\n<long_words>90</long_words>\n<may_fix>yes</may_fix>\n<questions>[{\"id\":\"q1\",\"question\":\"Vilka månar har Zorbia?\"},{\"id\":\"q2\",\"question\":\"I vilken berättelse finns planeten Zorbia?\"},{\"id\":\"q3\",\"question\":\"Hur långt är ett år på Zorbia?\"}]</questions>"
+        "content": "<context>Ämne: Svenska</context>\n<notes>\nPlaneten Zorbia är en påhittad planet i berättelsen Stjärnresan. Zorbia har tre månar: Ilo, Brak och Seme. Ett år på Zorbia är 412 dagar långt. Invånarna heter zorbier. De andas kväve i stället för syre. De bor i städer under marken, eftersom ytan är för kall. Huvudstaden heter Vexa.\n</notes>\n<long_words>90</long_words>\n<may_fix>yes</may_fix>\n<questions>[{\"id\":\"q1\",\"question\":\"I vilken berättelse finns planeten Zorbia?\"},{\"id\":\"q2\",\"question\":\"Hur långt är ett år på Zorbia?\"},{\"id\":\"q3\",\"question\":\"Varför bor zorbierna i städer under marken?\"}]</questions>"
       }
     ],
     "output_config": {

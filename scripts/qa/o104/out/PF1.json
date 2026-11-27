@@ -284,7 +284,7 @@
      "model": "claude-haiku-5-5",
      "input_tokens": 10991,
      "output_tokens": 115,
-     "total_ms": 47,
+     "total_ms": 48,
      "est_cost_usd": 0.0011566,
      "status": "ok"
     },
@@ -295,7 +295,7 @@
      "model": "claude-haiku-5-5",
      "input_tokens": 11026,
      "output_tokens": 62,
-     "total_ms": 47,
+     "total_ms": 48,
      "est_cost_usd": 0.0011336000000000002,
      "status": "ok"
     },
@@ -306,7 +306,7 @@
      "model": "claude-haiku-5-5",
      "input_tokens": 726,
      "output_tokens": 5,
-     "total_ms": 47,
+     "total_ms": 48,
      "est_cost_usd": 7.510000000000001e-05,
      "status": "ok"
     },
@@ -317,7 +317,7 @@
      "model": "claude-sonnet-5-5",
      "input_tokens": 917,
      "output_tokens": 68,
-     "total_ms": 47,
+     "total_ms": 48,
      "est_cost_usd": 0.002514,
      "status": "ok"
     },
@@ -328,7 +328,7 @@
      "model": "claude-sonnet-5-5",
      "input_tokens": 1703,
      "output_tokens": 358,
-     "total_ms": 47,
+     "total_ms": 48,
      "est_cost_usd": 0.006986,
      "status": "ok"
     }
@@ -379,14 +379,14 @@
       "input_tokens": 10991,
       "output_tokens": 115,
       "est_cost_usd": 0.0011566,
-      "ms": 6
+      "ms": 7
      },
      "notes": {
       "model": "claude-haiku-5-5",
       "input_tokens": 11026,
       "output_tokens": 62,
       "est_cost_usd": 0.0011336000000000002,
-      "ms": 7
+      "ms": 8
      },
      "shorten": {
       "model": "claude-haiku-5-5",

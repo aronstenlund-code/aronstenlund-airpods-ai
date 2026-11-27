@@ -16,7 +16,7 @@
   },
   "anthropic_request": {
     "model": "claude-sonnet-5-5",
-    "max_tokens": 470,
+    "max_tokens": 390,
     "stream": true,
     "system": [
       {
@@ -30,7 +30,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<material>\n[1] Klimatförändringar\n[2] Jordens medeltemperatur har stigit med ungefär 1,1 grad sedan slutet av 1800-talet.\n[3] Den främsta orsaken är utsläpp av koldioxid från fossila bränslen som kol, olja och gas.\n[4] Koldioxiden förstärker växthuseffekten.\n[5] Följderna är bland annat smältande isar, stigande havsnivåer och fler värmeböljor.\n</material>\n<used_sentences>2, 3, 4</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n<kept>[\"Hur mycket har jordens medeltemperatur stigit sedan slutet av 1800-talet?\"]</kept>\n<count>4</count>"
+        "content": "<material>\n[1] Klimatförändringar\n[2] Jordens medeltemperatur har stigit med ungefär 1,1 grad sedan slutet av 1800-talet.\n[3] Den främsta orsaken är utsläpp av koldioxid från fossila bränslen som kol, olja och gas.\n[4] Koldioxiden förstärker växthuseffekten.\n[5] Följderna är bland annat smältande isar, stigande havsnivåer och fler värmeböljor.\n</material>\n<used_sentences>2, 3, 4</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n<kept>[\"Hur mycket har jordens medeltemperatur stigit sedan slutet av 1800-talet?\",\"Varför har jordens medeltemperatur stigit?\"]</kept>\n<count>3</count>"
       }
     ],
     "output_config": {

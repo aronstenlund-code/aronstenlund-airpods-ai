@@ -50,7 +50,7 @@
               },
               {
                 "type": "text",
-                "text": "<count>9</count>\nRead the 1 page images.\n<part>notes</part> Return ONLY {\"notes\": \"...\"}: the notes exactly as described (every fact, concept, definition, formula, date, name, cause and example, in the material's order and the exam's language). Another step writes the summary and the questions at the same time. When the material cannot be read, return {\"notes\": \"\"}."
+                "text": "<count>9</count>\n<language>English</language>\nRead the 1 page images.\n<part>notes</part> Return ONLY {\"notes\": \"...\"}: the notes exactly as described (every fact, concept, definition, formula, date, name, cause and example, in the material's order and the exam's language). Another step writes the summary and the questions at the same time. When the material cannot be read, return {\"notes\": \"\"}."
               }
             ]
           }
@@ -112,7 +112,7 @@
               },
               {
                 "type": "text",
-                "text": "<count>9</count>\nRead the 1 page images.\n<part>questions</part> Return the JSON object with \"summary\", \"questions_possible\" and \"questions\" (or \"unreadable\"), but WITHOUT \"notes\": another step writes the notes at the same time."
+                "text": "<count>9</count>\n<language>English</language>\nRead the 1 page images.\n<part>questions</part> Return the JSON object with \"summary\", \"questions_possible\" and \"questions\" (or \"unreadable\"), but WITHOUT \"notes\": another step writes the notes at the same time."
               }
             ]
           }
@@ -212,7 +212,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<material>\n[1] The French Revolution.\n[2] It began in 1789 when the people of Paris stormed the Bastille.\n[3] The king, Louis XVI, was executed in 1793.\n[4] The revolution spread the ideas of liberty and equality.\n</material>\n<questions>[{\"i\":0,\"q\":\"How did the French Revolution begin?\"},{\"i\":1,\"q\":\"When did the French Revolution begin?\"},{\"i\":2,\"q\":\"What happened to King Louis the Sixteenth in 1793?\"}]</questions>"
+            "content": "<material>\n[1] The French Revolution.\n[2] It began in 1789 when the people of Paris stormed the Bastille.\n[3] The king, Louis XVI, was executed in 1793.\n[4] The revolution spread the ideas of liberty and equality.\n</material>\n<questions>[{\"i\":0,\"q\":\"How did the French Revolution begin?\"},{\"i\":1,\"q\":\"What happened to King Louis the Sixteenth in 1793?\"},{\"i\":2,\"q\":\"Which ideas did the French Revolution spread?\"}]</questions>"
           }
         ],
         "output_config": {
@@ -258,7 +258,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<material>\n[1] The French Revolution.\n[2] It began in 1789 when the people of Paris stormed the Bastille.\n[3] The king, Louis XVI, was executed in 1793.\n[4] The revolution spread the ideas of liberty and equality.\n</material>\n<used_sentences>2, 3</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n<kept>[\"How did the French Revolution begin?\",\"What happened to King Louis the Sixteenth in 1793?\"]</kept>\n<count>3</count>"
+            "content": "<material>\n[1] The French Revolution.\n[2] It began in 1789 when the people of Paris stormed the Bastille.\n[3] The king, Louis XVI, was executed in 1793.\n[4] The revolution spread the ideas of liberty and equality.\n</material>\n<used_sentences>2, 3</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n<kept>[\"How did the French Revolution begin?\",\"Which ideas did the French Revolution spread?\"]</kept>\n<count>3</count>"
           }
         ],
         "output_config": {
@@ -304,7 +304,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<context>Ämne: Historia</context>\n<notes>\nThe French Revolution. It began in 1789 when the people of Paris stormed the Bastille. The king, Louis XVI, was executed in 1793. The revolution spread the ideas of liberty and equality.\n</notes>\n<long_words>90</long_words>\n<language>English</language>\n<may_fix>yes</may_fix>\n<questions>[{\"id\":\"q1\",\"question\":\"Which ideas did the French Revolution spread?\"},{\"id\":\"q2\",\"question\":\"How did the French Revolution begin?\"},{\"id\":\"q3\",\"question\":\"What happened to King Louis the Sixteenth in 1793?\"}]</questions>"
+            "content": "<context>Ämne: Historia</context>\n<notes>\nThe French Revolution. It began in 1789 when the people of Paris stormed the Bastille. The king, Louis XVI, was executed in 1793. The revolution spread the ideas of liberty and equality.\n</notes>\n<long_words>90</long_words>\n<language>English</language>\n<may_fix>yes</may_fix>\n<questions>[{\"id\":\"q1\",\"question\":\"How did the French Revolution begin?\"},{\"id\":\"q2\",\"question\":\"Which ideas did the French Revolution spread?\"},{\"id\":\"q3\",\"question\":\"What followed from the revolution for the idea of equality?\"}]</questions>"
           }
         ],
         "output_config": {
@@ -328,10 +328,10 @@
           "endpoint": "exam-drill",
           "provider": "anthropic",
           "model": "claude-haiku-5-5",
-          "input_tokens": 10336,
+          "input_tokens": 10343,
           "output_tokens": 121,
-          "total_ms": 48,
-          "est_cost_usd": 0.0010941000000000002,
+          "total_ms": 49,
+          "est_cost_usd": 0.0010948,
           "status": "ok"
         },
         {
@@ -339,10 +339,10 @@
           "endpoint": "exam-drill",
           "provider": "anthropic",
           "model": "claude-haiku-5-5",
-          "input_tokens": 10371,
+          "input_tokens": 10378,
           "output_tokens": 57,
-          "total_ms": 48,
-          "est_cost_usd": 0.0010656,
+          "total_ms": 49,
+          "est_cost_usd": 0.0010663,
           "status": "ok"
         },
         {
@@ -352,7 +352,7 @@
           "model": "claude-haiku-5-5",
           "input_tokens": 725,
           "output_tokens": 5,
-          "total_ms": 48,
+          "total_ms": 49,
           "est_cost_usd": 0.000075,
           "status": "ok"
         },
@@ -361,10 +361,10 @@
           "endpoint": "exam-drill",
           "provider": "anthropic",
           "model": "claude-sonnet-5-5",
-          "input_tokens": 920,
+          "input_tokens": 922,
           "output_tokens": 64,
-          "total_ms": 48,
-          "est_cost_usd": 0.00248,
+          "total_ms": 49,
+          "est_cost_usd": 0.002484,
           "status": "ok"
         },
         {
@@ -372,10 +372,10 @@
           "endpoint": "exam-drill",
           "provider": "anthropic",
           "model": "claude-sonnet-5-5",
-          "input_tokens": 367,
+          "input_tokens": 366,
           "output_tokens": 58,
-          "total_ms": 48,
-          "est_cost_usd": 0.001314,
+          "total_ms": 49,
+          "est_cost_usd": 0.001312,
           "status": "ok"
         },
         {
@@ -383,10 +383,10 @@
           "endpoint": "exam-drill",
           "provider": "anthropic",
           "model": "claude-sonnet-5-5",
-          "input_tokens": 1712,
+          "input_tokens": 1714,
           "output_tokens": 212,
-          "total_ms": 48,
-          "est_cost_usd": 0.005544,
+          "total_ms": 49,
+          "est_cost_usd": 0.005548,
           "status": "ok"
         }
       ],
@@ -408,19 +408,19 @@
         "items": [
           {
             "id": "q1",
-            "question": "Which ideas did the French Revolution spread?",
+            "question": "How did the French Revolution begin?",
             "short": "The French Revolution spread the ideas of liberty and equality.",
             "long": "The French Revolution spread the ideas of liberty and equality. Liberty means that people should be free, and equality means that all people should have the same rights instead of being ranked by birth."
           },
           {
             "id": "q2",
-            "question": "How did the French Revolution begin?",
+            "question": "Which ideas did the French Revolution spread?",
             "short": "It began in 1789 when the people of Paris stormed the Bastille.",
             "long": "It began in 1789 when the people of Paris stormed the Bastille. The Bastille was a fortress and prison in Paris, and the storming of it is the event that marks the start of the revolution."
           },
           {
             "id": "q3",
-            "question": "What happened to King Louis the Sixteenth in 1793?",
+            "question": "What followed from the revolution for the idea of equality?",
             "short": "King Louis the Sixteenth was executed in 1793.",
             "long": "King Louis the Sixteenth was executed in 1793. That was four years after the revolution had begun in 1789.",
             "screen": {
@@ -434,16 +434,16 @@
         "usage": {
           "plan": {
             "model": "claude-haiku-5-5",
-            "input_tokens": 10336,
+            "input_tokens": 10343,
             "output_tokens": 121,
-            "est_cost_usd": 0.0010941000000000002,
-            "ms": 6
+            "est_cost_usd": 0.0010948,
+            "ms": 5
           },
           "notes": {
             "model": "claude-haiku-5-5",
-            "input_tokens": 10371,
+            "input_tokens": 10378,
             "output_tokens": 57,
-            "est_cost_usd": 0.0010656,
+            "est_cost_usd": 0.0010663,
             "ms": 7
           },
           "shorten": {
@@ -455,25 +455,25 @@
           },
           "answers": {
             "model": "claude-sonnet-5-5",
-            "input_tokens": 1712,
+            "input_tokens": 1714,
             "output_tokens": 212,
-            "est_cost_usd": 0.005544,
+            "est_cost_usd": 0.005548,
             "ms": 3
           },
           "final_check": {
             "model": "claude-sonnet-5-5",
-            "input_tokens": 920,
+            "input_tokens": 922,
             "output_tokens": 64,
-            "est_cost_usd": 0.00248,
+            "est_cost_usd": 0.002484,
             "ms": 1,
             "fixed": 0,
             "dropped": 1,
             "refilled": 1,
             "refill_ms": 1,
-            "understanding": 2,
+            "understanding": 1,
             "questions": 3
           },
-          "est_cost_usd": 0.011572700000000002,
+          "est_cost_usd": 0.0115801,
           "ms": 31
         },
         "quota": {

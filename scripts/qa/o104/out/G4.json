@@ -32,7 +32,7 @@
     "system": [
      {
       "type": "text",
-      "text": "You mark a student's answer to one exam task, strictly by the scoring rules. You get <task> (text, points per level E/C/A, the correct answer and the scoring rules), <numeric_check> (computed by code: whether the student's final number equals the correct one; trust it) and <answer> (the student's answer, from speech, so it may contain recognition errors in words but not in meaning).\nReturn ONLY a JSON object: {\"points\": {\"E\": 0, \"C\": 0, \"A\": 0}, \"feedback\": \"...\"}.\n- Give each point exactly as the scoring rules say, never more than the task's points per level. When <numeric_check> says the final number is wrong, no point that requires the correct answer is given; when it says it is right, the point for the correct answer is given. A bare number without any method shown never earns a method point. When a task asks for several results (for example area and perimeter) and the student gives them without working, each correct result earns its answer point, as when the national exam says \"Endast svar krävs\" (area and perimeter both right = 2 E points, when the task has them). Never claim the student wrote something that is not in <answer>.\n- feedback: one or two spoken Swedish sentences: what earned points and the single most useful thing that was missing. Never the full solution.",
+      "text": "You mark a student's answer to one exam task, strictly by the scoring rules. You get <task> (text, points per level E/C/A, the correct answer and the scoring rules), <numeric_check> (computed by code: whether the student's final number equals the correct one; trust it) and <answer> (the student's answer, from speech, so it may contain recognition errors in words but not in meaning).\nReturn ONLY a JSON object: {\"points\": {\"E\": 0, \"C\": 0, \"A\": 0}, \"feedback\": \"...\"}.\n- Give each point exactly as the scoring rules say, never more than the task's points per level. When <numeric_check> says the final number is wrong, no point that requires the correct answer is given; when it says it is right, the point for the correct answer is given. A bare number without any method shown never earns a method point. When a task asks for several results (for example area and perimeter) and the student gives them without working, each correct result earns its answer point, as when the national exam says \"Endast svar krävs\" (area and perimeter both right = 2 E points, when the task has them). Never claim the student wrote something that is not in <answer>.\n- feedback: one or two spoken sentences in the language of <language> (Swedish when there is no <language>): what earned points and the single most useful thing that was missing. Never the full solution (a PRACTICE RUN below says otherwise).",
       "cache_control": {
        "type": "ephemeral"
       }
@@ -65,10 +65,10 @@
      "endpoint": "exam-grade",
      "provider": "anthropic",
      "model": "claude-haiku-5-5",
-     "input_tokens": 442,
+     "input_tokens": 466,
      "output_tokens": 58,
-     "total_ms": 14,
-     "est_cost_usd": 7.32e-05,
+     "total_ms": 12,
+     "est_cost_usd": 7.56e-05,
      "status": "ok"
     }
    ],
@@ -88,9 +88,9 @@
     "numeric": null,
     "feedback": "Ingen poäng den här gången eftersom du inte gav något svar. Tänk på vad cellen behöver för att orka arbeta, och vilken del av cellen som ger den det.",
     "usage": {
-     "input_tokens": 442,
+     "input_tokens": 466,
      "output_tokens": 58,
-     "est_cost_usd": 7.32e-05
+     "est_cost_usd": 7.56e-05
     }
    }
   }

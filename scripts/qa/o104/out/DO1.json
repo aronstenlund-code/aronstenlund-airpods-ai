@@ -59,7 +59,7 @@
      "model": "claude-sonnet-5-5",
      "input_tokens": 1663,
      "output_tokens": 132,
-     "total_ms": 16,
+     "total_ms": 17,
      "est_cost_usd": 0.004646,
      "status": "ok"
     }
@@ -79,7 +79,7 @@
       "input_tokens": 1663,
       "output_tokens": 132,
       "est_cost_usd": 0.004646,
-      "ms": 6
+      "ms": 7
      },
      "est_cost_usd": 0.004646
     }

@@ -166,7 +166,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<material>\n[1] Syror och baser\n[2] En syra är ett ämne som lämnar ifrån sig vätejoner i vatten. pH-skalan går från 0 till 14, där 7 är neutralt.\n[3] En lösning med pH under 7 är sur och över 7 är basisk.\n[4] Saltsyra har ett pH runt 1, medan natronlut kan ha pH 14.\n[5] När en syra och en bas blandas i rätt mängd bildas vatten och ett salt, och det kallas neutralisation.\n</material>\n<questions>[{\"i\":0,\"q\":\"Hur visar pH-skalan om en lösning är sur, neutral eller basisk?\"},{\"i\":1,\"q\":\"Hur skiljer sig saltsyra från natronlut?\"},{\"i\":2,\"q\":\"Vad händer när en syra och en bas blandas i rätt mängd?\"}]</questions>"
+      "content": "<material>\n[1] Syror och baser\n[2] En syra är ett ämne som lämnar ifrån sig vätejoner i vatten. pH-skalan går från 0 till 14, där 7 är neutralt.\n[3] En lösning med pH under 7 är sur och över 7 är basisk.\n[4] Saltsyra har ett pH runt 1, medan natronlut kan ha pH 14.\n[5] När en syra och en bas blandas i rätt mängd bildas vatten och ett salt, och det kallas neutralisation.\n</material>\n<questions>[{\"i\":0,\"q\":\"Vad är en syra?\"},{\"i\":1,\"q\":\"Hur visar pH-skalan om en lösning är sur, neutral eller basisk?\"},{\"i\":2,\"q\":\"Hur skiljer sig saltsyra från natronlut?\"}]</questions>"
      }
     ],
     "output_config": {
@@ -207,7 +207,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<context>Ämne: Kemi</context>\n<notes>\nSyror och baser. En syra är ett ämne som lämnar ifrån sig vätejoner i vatten. pH-skalan går från 0 till 14, där 7 är neutralt. En lösning med pH under 7 är sur och en lösning med pH över 7 är basisk. Exempel: saltsyra har pH runt 1, natronlut kan ha pH 14. Neutralisation: när en syra och en bas blandas i rätt mängd bildas vatten och ett salt.\n</notes>\n<long_words>90</long_words>\n<may_fix>yes</may_fix>\n<questions>[{\"id\":\"q1\",\"question\":\"Hur visar pH-skalan om en lösning är sur, neutral eller basisk?\"},{\"id\":\"q2\",\"question\":\"Hur skiljer sig saltsyra från natronlut?\"},{\"id\":\"q3\",\"question\":\"Vad händer när en syra och en bas blandas i rätt mängd?\"}]</questions>"
+      "content": "<context>Ämne: Kemi</context>\n<notes>\nSyror och baser. En syra är ett ämne som lämnar ifrån sig vätejoner i vatten. pH-skalan går från 0 till 14, där 7 är neutralt. En lösning med pH under 7 är sur och en lösning med pH över 7 är basisk. Exempel: saltsyra har pH runt 1, natronlut kan ha pH 14. Neutralisation: när en syra och en bas blandas i rätt mängd bildas vatten och ett salt.\n</notes>\n<long_words>90</long_words>\n<may_fix>yes</may_fix>\n<questions>[{\"id\":\"q1\",\"question\":\"Vad är en syra?\"},{\"id\":\"q2\",\"question\":\"Hur visar pH-skalan om en lösning är sur, neutral eller basisk?\"},{\"id\":\"q3\",\"question\":\"Hur skiljer sig saltsyra från natronlut?\"}]</questions>"
      }
     ],
     "output_config": {
@@ -264,10 +264,10 @@
      "endpoint": "exam-drill",
      "provider": "anthropic",
      "model": "claude-sonnet-5-5",
-     "input_tokens": 968,
+     "input_tokens": 958,
      "output_tokens": 97,
      "total_ms": 46,
-     "est_cost_usd": 0.002906,
+     "est_cost_usd": 0.002886,
      "status": "ok"
     },
     {
@@ -275,10 +275,10 @@
      "endpoint": "exam-drill",
      "provider": "anthropic",
      "model": "claude-sonnet-5-5",
-     "input_tokens": 1750,
+     "input_tokens": 1740,
      "output_tokens": 280,
      "total_ms": 46,
-     "est_cost_usd": 0.0063,
+     "est_cost_usd": 0.00628,
      "status": "ok"
     }
    ],
@@ -300,19 +300,19 @@
     "items": [
      {
       "id": "q1",
-      "question": "Hur visar pH-skalan om en lösning är sur, neutral eller basisk?",
+      "question": "Vad är en syra?",
       "short": "pH-skalan går från 0 till 14: under 7 är lösningen sur, vid 7 är den neutral och över 7 är den basisk.",
       "long": "pH-skalan går från 0 till 14: under 7 är lösningen sur, vid 7 är den neutral och över 7 är den basisk. Sura lösningar innehåller en syra, alltså ett ämne som lämnar ifrån sig vätejoner i vatten. Saltsyra med pH runt 1 ligger därför långt ner i den sura delen av skalan, medan natronlut med pH 14 ligger högst upp i den basiska delen."
      },
      {
       "id": "q2",
-      "question": "Hur skiljer sig saltsyra från natronlut?",
+      "question": "Hur visar pH-skalan om en lösning är sur, neutral eller basisk?",
       "short": "Saltsyra är sur med ett pH runt 1, medan natronlut är basisk och kan ha pH 14.",
       "long": "Saltsyra är sur med ett pH runt 1, medan natronlut är basisk och kan ha pH 14. De ligger alltså i var sin ände av pH-skalan, som går från 0 till 14 där 7 är neutralt. Saltsyra är en syra, ett ämne som lämnar ifrån sig vätejoner i vatten, och natronlut är en bas."
      },
      {
       "id": "q3",
-      "question": "Vad händer när en syra och en bas blandas i rätt mängd?",
+      "question": "Hur skiljer sig saltsyra från natronlut?",
       "short": "Syran och basen neutraliserar varandra, och det bildas vatten och ett salt.",
       "long": "Syran och basen neutraliserar varandra, och det bildas vatten och ett salt. Den reaktionen kallas neutralisation, och den kräver att syran och basen blandas i rätt mängd. Blandar man till exempel saltsyra och natronlut i rätt mängd bildas vatten och koksalt."
      }
@@ -324,14 +324,14 @@
       "input_tokens": 1617,
       "output_tokens": 130,
       "est_cost_usd": 0.0002267,
-      "ms": 6
+      "ms": 5
      },
      "notes": {
       "model": "claude-haiku-5-5",
       "input_tokens": 1652,
       "output_tokens": 102,
       "est_cost_usd": 0.00021620000000000002,
-      "ms": 8
+      "ms": 7
      },
      "shorten": {
       "model": "claude-haiku-5-5",
@@ -342,25 +342,25 @@
      },
      "answers": {
       "model": "claude-sonnet-5-5",
-      "input_tokens": 1750,
+      "input_tokens": 1740,
       "output_tokens": 280,
-      "est_cost_usd": 0.0063,
+      "est_cost_usd": 0.00628,
       "ms": 2
      },
      "final_check": {
       "model": "claude-sonnet-5-5",
-      "input_tokens": 968,
+      "input_tokens": 958,
       "output_tokens": 97,
-      "est_cost_usd": 0.002906,
-      "ms": 1,
+      "est_cost_usd": 0.002886,
+      "ms": 2,
       "fixed": 0,
       "dropped": 0,
       "refilled": 0,
-      "understanding": 3,
+      "understanding": 2,
       "questions": 3
      },
-     "est_cost_usd": 0.009737800000000001,
-     "ms": 30
+     "est_cost_usd": 0.0096978,
+     "ms": 29
     },
     "quota": {
      "unit": "chars",
