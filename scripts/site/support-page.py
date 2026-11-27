@@ -56,11 +56,12 @@ T = {
         "lead": "Short answers to common questions about EarMind. The app is in English and Swedish.",
         "start": 'New to EarMind? <a href="/start">Get started in five steps</a>.',
         "back": "Back to EarMind",
-        "contact": "Something not working? In the app, go to <b>Settings › Feedback and suggestions</b> and tell us what happened.",
+        "contact": "Quick question? In the app, tap <b>Settings › Ask about EarMind</b>. Something not working? Go to <b>Settings › Feedback and suggestions</b> and tell us what happened.",
         "topics": [
             ("start", "Getting started", [
                 ("What is EarMind?", "EarMind helps you study by listening in your AirPods. Snap your textbook and EarMind creates quiz questions with answers and reads them in your ear. Or type any text in <b>Say in AirPods</b> and hear it again and again."),
                 ("How do I make my first quiz?", "<ol><li>Tap <b>New quiz</b>.</li><li>Add material: <b>Take photos</b>, <b>Choose photos</b>, <b>Add document</b> (PDF, Word or text) or <b>Type text</b>.</li><li>Tap <b>Create questions</b>. You can leave the app while it works.</li><li>Check <b>Is this right?</b> and tap <b>Looks right</b>, or write a correction.</li><li>Tap <b>Start quiz</b>.</li></ol>"),
+                ("I stopped a quiz. How do I go on?", "Start shows the quiz you played last at the top, with <b>Continue</b>. When you tap <b>End</b>, you see how many questions you heard and can tap <b>Practice those … again</b> for the ones you asked for the answer to. It uses the same audio, so it costs nothing."),
                 ("How does Say in AirPods work?", "Type or paste a text and tap <b>Play for 10 min</b>. It repeats until the time is up, from 10 minutes up to an hour. Write how it should sound under <b>How should it sound?</b>, or pick a voice and preview it for free. Long text? Tap <b>Compress</b> for a shorter one with the same content."),
             ]),
             ("airpods", "AirPods", [
@@ -70,7 +71,7 @@ T = {
                 ("A press doesn't get through", "Check that both AirPods are in your ears and connected. If another app is playing music, the presses go to that app: start EarMind again and they come back. You can try the presses first under <b>Control with your AirPods</b>."),
             ]),
             ("words", "Your activation words", [
-                ("What are activation words?", "In More modes (beta) the app says: <b>“Question you're not prepared for? Say [ … ] so our AI activates.”</b> Type one or more words of your own in the field. When EarMind hears them while it listens, it answers the question that was just asked."),
+                ("What are activation words?", "In More modes (beta) the app says: <b>“Question you're not prepared for? Say [ … ] so our AI activates.”</b> Type one or more words of your own in the field, or under <b>Settings › Activation words</b>. When EarMind hears them while it listens, it answers the question that was just asked."),
                 ("When does it listen?", "Only in More modes, after you have said yes and started it. You always see “● Listening” at the top, and you stop it with one tap. Start quiz and Say in AirPods never use the microphone."),
             ]),
             ("record", "Record it yourself – completely free", [
@@ -92,6 +93,7 @@ T = {
                 ("Is my material saved?", "No. Photos, documents and text are sent once to make the questions and are then deleted."),
                 ("Is any sound saved?", "EarMind never saves what the microphone hears. In More modes the sound is sent to ElevenLabs to be turned into text, and EarMind keeps only the text. Your own recordings in Record it yourself stay on your phone."),
                 ("What is saved?", "Your quizzes, with questions, answers and audio, are saved with your account so they're there on a new phone. You don't need to sign up with an email."),
+                ("Where are my questions and answers from More modes?", "In <b>Settings › History</b>, on this phone only, for up to two years. You can search, play an answer again and delete it all."),
                 ("Can I delete everything?", "Yes. In the app: <b>Settings › Account › Delete account</b> deletes the account and everything on our server."),
             ]),
         ],
@@ -104,11 +106,12 @@ T = {
         "lead": "Korta svar på vanliga frågor om EarMind. Appen finns på svenska och engelska.",
         "start": 'Ny i EarMind? <a href="/sv/start">Kom igång i fem steg</a>.',
         "back": "Tillbaka till EarMind",
-        "contact": "Fungerar något inte? Gå till <b>Inställningar › Feedback och förslag</b> i appen och berätta vad som hände.",
+        "contact": "Snabb fråga? Tryck <b>Inställningar › Fråga om EarMind</b> i appen. Fungerar något inte? Gå till <b>Inställningar › Feedback och förslag</b> och berätta vad som hände.",
         "topics": [
             ("start", "Kom igång", [
                 ("Vad är EarMind?", "EarMind hjälper dig att plugga genom att lyssna i dina AirPods. Fota boken, så gör EarMind provfrågor med svar och läser upp dem i örat. Eller skriv valfri text i <b>Säg i AirPods</b> och hör den om och om igen."),
                 ("Hur gör jag mitt första prov?", "<ol><li>Tryck <b>Nytt prov</b>.</li><li>Lägg till material: <b>Fota sidor</b>, <b>Välj bilder</b>, <b>Lägg till dokument</b> (PDF, Word eller text) eller <b>Skriv text</b>.</li><li>Tryck <b>Gör frågor</b>. Du kan lämna appen under tiden.</li><li>Kolla <b>Stämmer det här?</b> och tryck <b>Ser rätt ut</b>, eller skriv en rättelse.</li><li>Tryck <b>Starta prov</b>.</li></ol>"),
+                ("Jag stoppade ett prov. Hur fortsätter jag?", "Start visar provet du spelade senast överst, med <b>Fortsätt</b>. När du trycker <b>Avsluta</b> ser du hur många frågor du hörde och kan trycka <b>Öva de … igen</b> för dem du bad om svaret på. Samma ljud används, så det kostar inget."),
                 ("Hur fungerar Säg i AirPods?", "Skriv eller klistra in en text och tryck <b>Spela i 10 min</b>. Den upprepas tills tiden är slut, från 10 minuter upp till en timme. Skriv hur det ska låta under <b>Hur ska det låta?</b>, eller välj en röst och provlyssna gratis. Lång text? Tryck <b>Komprimera</b>, så blir den kortare med samma innehåll."),
             ]),
             ("airpods", "AirPods", [
@@ -118,7 +121,7 @@ T = {
                 ("Ett tryck kommer inte fram", "Kolla att båda AirPods sitter i öronen och är anslutna. Spelar en annan app musik går trycken dit: starta EarMind igen, så kommer de tillbaka. Du kan prova trycken först under <b>Styr med dina AirPods</b>."),
             ]),
             ("words", "Dina aktiveringsord", [
-                ("Vad är aktiveringsord?", "I Fler lägen (beta) står det: <b>”Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI.”</b> Skriv ett eller flera egna ord i fältet. När EarMind hör dem medan den lyssnar svarar den på frågan som just ställdes."),
+                ("Vad är aktiveringsord?", "I Fler lägen (beta) står det: <b>”Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI.”</b> Skriv ett eller flera egna ord i fältet, eller under <b>Inställningar › Aktiveringsord</b>. När EarMind hör dem medan den lyssnar svarar den på frågan som just ställdes."),
                 ("När lyssnar den?", "Bara i Fler lägen, när du har sagt ja och startat. Du ser alltid ”● Lyssnar” överst och stoppar med ett tryck. Starta prov och Säg i AirPods använder aldrig mikrofonen."),
             ]),
             ("record", "Spela in själv – helt gratis", [
@@ -140,6 +143,7 @@ T = {
                 ("Sparas mitt material?", "Nej. Foton, dokument och text skickas en gång för att göra frågorna och raderas sedan."),
                 ("Sparas något ljud?", "EarMind sparar aldrig det mikrofonen hör. I Fler lägen skickas ljudet till ElevenLabs för att bli text, och EarMind behåller bara texten. Dina egna inspelningar i Spela in själv stannar på telefonen."),
                 ("Vad sparas?", "Dina prov, med frågor, svar och ljud, sparas på ditt konto så att de finns kvar på en ny telefon. Du behöver inte registrera dig med e-post."),
+                ("Var finns mina frågor och svar från Fler lägen?", "Under <b>Inställningar › Historik</b>, bara på den här telefonen, i högst två år. Du kan söka, spela upp ett svar igen och radera allt."),
                 ("Kan jag radera allt?", "Ja. I appen: <b>Inställningar › Konto › Radera konto</b> raderar kontot och allt på vår server."),
             ]),
         ],
