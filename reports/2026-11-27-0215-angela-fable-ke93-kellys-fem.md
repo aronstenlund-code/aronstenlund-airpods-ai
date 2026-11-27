@@ -21,7 +21,7 @@ Angela Fable (moln), 2026-11-27. Kellys rad 02:03 i min kö (fable/screens-first
 
 - A161:s test väntar nu "−65 %" (minustecken).
 - KÖRNINGEN
-- BILDERNA
+- Bilder (Fable screens 45921715117, iPhone 17 Pro, Simulator): `reports/2026-11-27-ke93-bilder/ke93-tom-start-bladet.jpg` – tomma Start ljust och mörkt (raderna i ett kort, ingen rad om låst telefon), lanseringsbladet och Start med prov på engelska. Bilderna togs före rättningen av undertextens radbrytning i Spela in själv-raden (den centrerades på andra raden).
 - 0 ElevenLabs.
 
 ## Påverkar andra
