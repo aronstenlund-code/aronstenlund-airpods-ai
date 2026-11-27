@@ -782,6 +782,55 @@ export function rewriteLeadIn(sentence: string, heard: string): string {
   return `${r.charAt(0).toUpperCase()}${r.slice(1)}${/[.!?]$/.test(r) ? "" : "."}${trail}`;
 }
 
+/**
+ * Deangelo 04:09: no "som en AI" talk in an answer. A leading clause about being an AI is cut ("Som en AI har jag inga
+ * egna åsikter, men de flesta …" -> "De flesta …"); a sentence that is only that goes. Asked whether it is an AI, a
+ * robot or a person (D113 A3), the honest answer stays (the gate is off then).
+ */
+const AI_CLAUSE = /^\s*(?:som (?:en )?(?:ai|ai-assistent|språkmodell|artificiell intelligens)|jag är (?:bara )?(?:en )?(?:ai|ai-assistent|språkmodell)|eftersom jag är (?:en )?(?:ai|språkmodell)|as an ai(?: (?:assistant|language model))?|i(?:'m| am) (?:just |only )?an ai(?: (?:assistant|language model))?)(?![\p{L}])[^,.!?]*[,.!?]?\s*(?:(?:men|but|och|and|så|so)\s+)?/iu;
+export const ASKS_ABOUT_AI = /(?<![\p{L}])(?:ai|robot|människa|person|språkmodell|chatgpt|claude|human|are you real|är du (?:på )?riktig)(?![\p{L}])/iu;
+export function withoutAiTalk(sentence: string): string {
+  const m = AI_CLAUSE.exec(sentence);
+  if (!m) return sentence;
+  const rest = sentence.slice(m[0].length).trim();
+  // what is left is still about the assistant's limits ("I cannot taste food", "jag kan inte veta det"): all of it goes
+  if (!rest || /^(?:i (?:can't|cannot|can not|don't|do not|have no)|jag (?:kan inte|har inga|har ingen|har inte|vet inte))(?![\p{L}])/iu.test(rest)) return "";
+  return rest[0].toUpperCase() + rest.slice(1) + (/\s$/.test(sentence) ? " " : "");
+}
+
+/**
+ * The AI-talk filter without delay: only the answer's first sentence can be held, and only while its first characters
+ * could still begin such a clause ("Som …", "Jag är …", "As an …"); any other answer streams on at once.
+ */
+const AI_START = /^\s*(?:som(?:\s|$)|jag(?:\s|$)|eftersom(?:\s|$)|as(?:\s|$)|i(?:'m|\s|$)|i am)/iu;
+export class AiTalkGate {
+  private buf = "";
+  private decided = false;
+  constructor(private readonly enabled: boolean) {}
+  push(text: string): string {
+    if (!this.enabled || this.decided) return text;
+    this.buf += text;
+    const t = this.buf;
+    if (t.trim().length < 3) return "";
+    // the start can no longer be AI talk: everything goes on as it is
+    if (!AI_START.test(t) && !/^\s*\S{0,2}$/u.test(t)) return this.release(t);
+    const end = /[.!?](?:\s+|$)/u.exec(t);
+    if (!end) return t.length > 400 ? this.release(t) : "";
+    if (end.index + end[0].length >= t.length && !/\s$/.test(end[0])) return ""; // the sentence end may still grow ("3.5")
+    const first = t.slice(0, end.index + end[0].length), rest = t.slice(end.index + end[0].length);
+    return this.release(withoutAiTalk(first) + rest);
+  }
+  finish(): string {
+    if (!this.enabled || this.decided) return "";
+    return this.release(withoutAiTalk(this.buf));
+  }
+  private release(t: string): string {
+    this.decided = true;
+    this.buf = "";
+    return t;
+  }
+}
+
 export class MetaGate {
   dropped = 0;
   private buf = "";
@@ -1268,6 +1317,7 @@ export class AnswerPost {
   private readonly input: MetaGate;
   private readonly level: MetaGate;
   private readonly lead: MetaGate;
+  private readonly aiTalk: AiTalkGate;
   private readonly quote: MetaGate;
   private readonly social: MetaGate;
   private readonly depends: MetaGate;
@@ -1333,6 +1383,7 @@ export class AnswerPost {
       }
       return rewriteLeadIn(sentence, opts.heard ?? "");
     });
+    this.aiTalk = new AiTalkGate(!ASKS_ABOUT_AI.test(opts.heard ?? ""));
     let openQuote = false;
     this.quote = new MetaGate(opts.quoteCheck === true, () => false, (sentence) => {
       if (openQuote) {
@@ -1432,7 +1483,7 @@ ${text}`;
     c.source += t2.length;
     const t3 = this.en.push(t2);
     c.english += t3.length;
-    const t4 = this.lead.push(this.level.push(this.input.push(this.meta.push(this.social.push(this.depends.push(this.quote.push(t3)))))));
+    const t4 = this.lead.push(this.level.push(this.input.push(this.meta.push(this.social.push(this.depends.push(this.quote.push(this.aiTalk.push(t3))))))));
     c.meta += t4.length;
     const a = this.dup.push(this.gate.push(this.imeta.push(t4)));
     c.gate += a.length;
@@ -1452,7 +1503,8 @@ ${text}`;
     const t = this.strip.push(t0) + this.strip.finish();
     const s = this.src.push(t) + this.src.finish();
     const e0q = this.en.push(s) + this.en.finish();
-    const e0a = this.quote.push(e0q) + this.quote.finish();
+    const e0ai = this.aiTalk.push(e0q) + this.aiTalk.finish();
+    const e0a = this.quote.push(e0ai) + this.quote.finish();
     const e0d = this.depends.push(e0a) + this.depends.finish();
     const e0 = this.social.push(e0d) + this.social.finish();
     const e1 = this.meta.push(e0) + this.meta.finish();

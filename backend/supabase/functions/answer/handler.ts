@@ -140,6 +140,8 @@ export function isClearQuestion(text: string): boolean {
 export const LISTEN_GATE_PROMPT =
   `A study assistant listens in a room through the student's earphones and answers questions out loud. You get ONE utterance the microphone picked up. Is it a question someone would want the assistant to answer: a fact, school, language or general-knowledge question that has one answer anyone can give ("När dog Gustav Vasa?", "Hur många kromosomer har en människa?", "What is the boiling point of water?"), also when it is put to the room ("vet du vad …", "kommer du ihåg vem …")? Answer "nej" when people are talking to each other: questions about each other, their plans, feelings, belongings or what someone said or thinks ("Ska vi gå hem nu?", "Hur var det på jobbet?", "Har du sett min laddare?", "Johan, kan du stänga fönstret?", "Vad menade du?", "Do you want some tea?"). Reply with one word, ja or nej, and nothing else.`;
 export const LISTEN_GATE_MS = 2500;
+/** Deangelo 04:09: a study answer to a question overheard in the listening mode (three short sentences fit). */
+export const OVERHEARD_MAX_TOKENS = 360;
 
 /** K44: "vad kan du (göra)?", "vad kan EarMind?", "vad mer kan du?" */
 const WHAT_CAN = /^(?:(?:hej|okej|ok)\s+)?(?:(?:lumen|earmind),?\s+)?(?:vad (?:mer )?kan (?:du|earmind|lumen|appen)(?: göra| hjälpa (?:mig )?med)?(?: mer)?|vad (?:gör|är) du bra på|vad kan jag (?:be dig om|fråga dig om|använda dig till)|vilka funktioner (?:har|finns)\b.*)\s*[?.!]?$/iu;
@@ -165,7 +167,8 @@ function firstWords(t: string, n: number): string {
 // Oscar O51 (prio 1): a verb at the end is the normal word order of a Swedish subordinate clause ("kan du säga vad
 // klockan är", "vad tror du att svaret är"), so a final verb counts only in a main clause with no subject or clause
 // before it ("hur många invånare har"); "än" is gone; a word asked ABOUT ("ordet och", "mellan som och att") never counts
-const DANGLING_WORD = new Set(("mellan och eller som att en ett min mitt mina din ditt dina sin sitt vilken vilket vilka").split(" "));
+// O106 L2 (Oscar): also the possessives of others ("och vad hette hennes" waits for the rest)
+const DANGLING_WORD = new Set(("mellan och eller som att en ett min mitt mina din ditt dina sin sitt sina hennes hans deras dess vår vårt våra er ert era vilken vilket vilka").split(" "));
 const DANGLING_VERB = new Set("har hade är blir blev".split(" "));
 const CLAUSE_BEFORE = new Set(("du jag det den hon han hen vi ni de man dom mig dig att som om tror tycker säga säger vet " +
   "veta undrar kolla berätta förklara visa").split(" "));
@@ -1441,7 +1444,10 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
       ].filter(Boolean).join("; ");
       const prefLines = applicableHere.map((x) => `${describe(x)}: ${PREF_RULE[`${x.key}:${x.value}`] ?? ""}`.replace(/: $/, ""));
       // K13.3 (live: 3/5 shorter with only the situation line): others talking near the user = a short, discreet answer
-      if (body.situation?.othersTalking && !demo) {
+      // Deangelo 04:09: a question overheard in the listening mode (not addressed to the app: no name, no action, not the
+      // activation words, which come as push_to_talk) is answered as with others around: the shortest answer that is right
+      const overheard = !demo && body.mode === "auto" && !body.social && (body.persona ?? "tutor") === "tutor" && !namedQuestion && !autoAction && !body.voiceInstruction;
+      if ((body.situation?.othersTalking || overheard) && !demo) {
         prefLines.push("Andra pratar runt användaren: at most three short sentences, the core only, nothing the others need to hear");
       }
       // K10.3: the profile goes in its own cached system block after the shared prompt
@@ -1631,7 +1637,7 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
         // K42.1 (D128): the assistant has a name; it never says it has none
         (!plan ? `\n- Your name is ${body.assistantName ?? "EarMind"}. Asked your name or who you are, say "Jag heter ${body.assistantName ?? "EarMind"}"; never say that you have no name or call yourself anything else.` + capabilitiesRule(body.assistantName ?? "EarMind", body.context.capabilities) : "");
       const baseTokens = plan?.maxTokens ?? (textReq ? 1100 : undefined) ?? (webOn ? 600 : undefined) ??
-        (answerType === "study" ? cfg.maxTokensStudy : cfg.maxTokens);
+        (answerType === "study" ? (overheard ? Math.min(cfg.maxTokensStudy, OVERHEARD_MAX_TOKENS) : cfg.maxTokensStudy) : cfg.maxTokens);
       const maxTokens = demo
         ? demoCaps.answerMaxTokens + (relationTag ? 12 : 0)
         : Math.max(baseTokens, askedCaps?.maxTokens ?? 0) + (noSummary ? 0 : 80) + (relationTag ? 12 : 0);
