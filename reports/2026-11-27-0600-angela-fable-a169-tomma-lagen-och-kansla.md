@@ -27,6 +27,11 @@ Angela Fable (moln), 2026-11-27. Beställt av Deangelo 05:16. Inget nytt flöde,
 - 2 nya enhetstester (`A169FeelTests` i `LumenTests/A168ComingBackTests.swift`): när haptiken ges, och de nya orden på
   sv och en.
 - KÖRNINGEN
-- BILDERNA
+- Bilder (Fable screens 45938789982, iPhone 17 Pro, Simulator; "före" från A104:s körning, samma vy):
+  `reports/2026-11-27-a169-bilder/a169-skolans-prov-fore-efter.jpg` – det tomma läget före och efter (sv, en mörkt),
+  och felet med Försök igen som förut. Platshållarraderna medan listan laddas syns inte på en stillbild (demo-listan
+  kommer direkt); de är kontrollerade i koden.
+- Sett på bilden: den engelska stora rubriken "Quizzes from your sch…" kapas (systemets stora rubrik). Ett kortare
+  ord är Kellys sak; rad i hennes kö.
 - Haptik syns inte på bilder och känns inte i Simulatorn: **otestat antagande** att den känns rätt på telefon.
 - 0 ElevenLabs.
