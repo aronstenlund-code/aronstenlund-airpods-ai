@@ -87,12 +87,12 @@ final class FakeDeviceConditions: DeviceConditions {
         h.session.eventHandler?(.routeChanged(reason: "oldDeviceUnavailable", outputLost: true, snapshot: snapshot("Speaker")))
         #expect(await waitUntil { model.state == .paused(.outputDeviceLost) })
         #expect(model.problem == .airPodsLostPaused, "paused: the card says so, not \"answers play on the speaker\"")
-        #expect(model.problem?.text.contains("pausade") == true)
-        #expect(model.problem?.actionTitle == "Lyssna vidare")
+        #expect(model.problem?.text.contains("Lyssna igen") == true, "Kelly Ke95 (3): the card points to the footer's button")
+        #expect(model.problem?.actionTitle == nil, "no second button: the footer's Lyssna igen is the way on")
 
-        model.act(on: .airPodsLostPaused) // "Lyssna vidare": on with the phone's speaker
-        #expect(model.problem == nil)
+        await model.togglePause(fromScreen: true) // the footer's "Lyssna igen": on with the phone's speaker
         #expect(await waitUntil { model.isListening })
+        #expect(model.problem == nil)
         #expect(model.listeningCondition == .noAirPods, "and the line says where the answers are heard")
         await model.stopListening()
     }
@@ -227,8 +227,10 @@ final class FakeDeviceConditions: DeviceConditions {
             #expect(!condition.line.isEmpty && condition.line.count <= 110, "\(condition): short")
             #expect(!condition.symbol.isEmpty)
         }
-        for problem in [LumenProblem.airPodsLostPaused, .microphoneDenied, .offline, .overloaded] {
+        for problem in [LumenProblem.microphoneDenied, .offline, .overloaded] {
             #expect(problem.actionTitle != nil, "\(problem): a button, a way on")
         }
+        // Kelly Ke95 (3): the paused AirPods card has the footer's Lyssna igen as its way on, and says so.
+        #expect(LumenProblem.airPodsLostPaused.text.contains("Lyssna igen"))
     }
 }

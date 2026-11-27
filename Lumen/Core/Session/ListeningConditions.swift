@@ -18,9 +18,9 @@ enum ListeningCondition: Equatable, Sendable {
     var line: String {
         switch self {
         case .noAirPods:
-            String(localized: "Inga AirPods anslutna. Svaren hörs i telefonens högtalare – sätt i AirPods när du vill.")
+            String(localized: "Inga AirPods – svaren spelas i högtalaren.") // Kelly Ke95 (4)
         case .offline(phoneModel: true):
-            String(localized: "Inget nät. Telefonens egen modell svarar så länge.")
+            String(localized: "Inget nät – telefonens egen modell svarar.") // Kelly Ke95 (4)
         case .offline(phoneModel: false):
             String(localized: "Inget nät. EarMind lyssnar vidare och svarar när du är uppkopplad igen.")
         case .lowBattery(let percent):

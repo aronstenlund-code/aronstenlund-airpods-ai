@@ -35,7 +35,7 @@ enum LumenProblem: Equatable, Sendable {
         case .microphoneDenied: String(localized: "Mikrofonen är avstängd. Slå på den i Inställningar för att fortsätta.")
         case .offline: String(localized: "EarMind behöver internet för att svara. Den fortsätter lyssna och svarar igen när du är uppkopplad.")
         case .airPodsDisconnected: String(localized: "Svaren hörs nu i telefonens högtalare.")
-        case .airPodsLostPaused: String(localized: "EarMind pausade. Sätt i AirPods så lyssnar den igen, eller lyssna vidare med telefonens högtalare.")
+        case .airPodsLostPaused: String(localized: "Sätt i dem igen, eller tryck Lyssna igen för att lyssna vidare i högtalaren.") // Kelly Ke95 (3)
         case .overloaded: String(localized: "Vår server är upptagen.") // Kelly Ke93 (4): the button says Försök igen
         case .voiceUnavailable: String(localized: "Svaren läses med iPhonens röst tills den fungerar igen.")
         case .cannotHear: String(localized: "Taligenkänningen gick ner. EarMind försöker igen av sig själv.")
@@ -48,7 +48,7 @@ enum LumenProblem: Equatable, Sendable {
         case .microphoneDenied: String(localized: "Öppna Inställningar")
         case .offline: String(localized: "Försök igen") // the flow: the question that got no answer, asked again
         case .airPodsDisconnected: String(localized: "Pausa")
-        case .airPodsLostPaused: String(localized: "Lyssna vidare")
+        case .airPodsLostPaused: nil // Kelly Ke95 (3): the footer's Lyssna igen is the way on; no second button
         case .overloaded: String(localized: "Försök igen")
         case .voiceUnavailable: nil
         case .cannotHear: nil

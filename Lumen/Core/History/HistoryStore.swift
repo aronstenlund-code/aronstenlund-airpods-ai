@@ -36,6 +36,17 @@ struct HistoryEntry: Identifiable, Codable, Equatable, Sendable {
         return trimmed.count > 90 ? String(trimmed.prefix(87)) + "…" : trimmed
     }
 
+    /// Kelly Ke95 (1): a row's lines. The question is always the heading (black) with the answer grey under it; without
+    /// a question (asked without "Lumen", D56) the answer is the heading after a grey "Svar". `answerIsHeading`: that case.
+    var rowLines: (heading: String, answerIsHeading: Bool, under: String?) {
+        let answer = answer.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let question = question?.trimmingCharacters(in: .whitespacesAndNewlines), !question.isEmpty {
+            return (question, false, answer.isEmpty ? nil : answer)
+        }
+        if !answer.isEmpty { return (answer, true, nil) }
+        return (suggestions.first ?? summary ?? "", false, nil)
+    }
+
     /// The flow: Historik's search. Every word that is typed is in the question, the answer, the summary or a
     /// suggestion; case and accents do not matter ("fotosyntes" finds "Fotosyntesen", "ar" finds "är").
     func matches(_ search: String) -> Bool {

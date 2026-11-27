@@ -75,9 +75,19 @@ struct HistoryView: View {
     }
 
     private func row(_ entry: HistoryEntry) -> some View {
-        HStack(alignment: .center, spacing: 12) {
+        let lines = entry.rowLines
+        return HStack(alignment: .center, spacing: 12) {
             VStack(alignment: .leading, spacing: 2) {
-                Text(entry.title).lineLimit(2)
+                // Kelly Ke95 (1): the question is the heading, the answer grey under it (also in the search).
+                if lines.answerIsHeading {
+                    (Text(String(localized: "Svar") + " ").foregroundStyle(.secondary) + Text(verbatim: lines.heading))
+                        .lineLimit(2)
+                } else {
+                    Text(verbatim: lines.heading).lineLimit(2)
+                }
+                if let under = lines.under {
+                    Text(verbatim: under).font(.subheadline).foregroundStyle(.secondary).lineLimit(2)
+                }
                 Text(entry.createdAt.formatted(date: .omitted, time: .shortened))
                     .font(.caption)
                     .foregroundStyle(.secondary)
@@ -127,14 +137,23 @@ struct HistoryDetailView: View {
 
     var body: some View {
         List {
+            // Kelly Ke95 (2): the date small at the top, the question as the heading, the answer under it.
+            Section {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(entry.createdAt.formatted(date: .abbreviated, time: .shortened))
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    if let question = entry.question, !question.isEmpty {
+                        Text(verbatim: question).font(.headline).textSelection(.enabled)
+                    }
+                    if !entry.answer.isEmpty {
+                        Text(verbatim: entry.answer).textSelection(.enabled)
+                    }
+                }
+                .padding(.vertical, 4)
+            }
             if let listening, !entry.answer.isEmpty {
                 Section { ReadAgainButton(listening: listening, entry: entry) } // Deangelo 2026-11-27: one tap
-            }
-            if let question = entry.question {
-                Section("You") { Text(question).textSelection(.enabled) }
-            }
-            if !entry.answer.isEmpty {
-                Section("EarMind") { Text(entry.answer).textSelection(.enabled) }
             }
             if let link = entry.link {
                 Section("Länk") { LinkRow(link: link) } // A19 (K19), opens in Safari
@@ -149,7 +168,7 @@ struct HistoryDetailView: View {
             }
         }
         .lumenForm()
-        .navigationTitle(entry.createdAt.formatted(date: .abbreviated, time: .shortened))
+        .navigationTitle(String(localized: "Svar"))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {

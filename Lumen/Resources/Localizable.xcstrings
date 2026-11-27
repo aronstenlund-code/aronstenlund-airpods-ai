@@ -7268,24 +7268,6 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
-    "EarMind pausade. Sätt i AirPods så lyssnar den igen, eller lyssna vidare med telefonens högtalare.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "EarMind paused. Put your AirPods back in and it listens again, or keep listening on the phone's speaker."
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "EarMind pausade. Sätt i AirPods så lyssnar den igen, eller lyssna vidare med telefonens högtalare."
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
     "EarMind skriver": {
       "extractionState": "manual",
       "localizations": {
@@ -11443,19 +11425,19 @@
         }
       }
     },
-    "Inga AirPods anslutna. Svaren hörs i telefonens högtalare – sätt i AirPods när du vill.": {
+    "Inga AirPods – svaren spelas i högtalaren.": {
       "extractionState": "manual",
       "localizations": {
         "en": {
           "stringUnit": {
             "state": "needs_review",
-            "value": "No AirPods connected. Answers play on the phone's speaker – put in your AirPods whenever you like."
+            "value": "No AirPods – answers play on the speaker."
           }
         },
         "sv": {
           "stringUnit": {
             "state": "translated",
-            "value": "Inga AirPods anslutna. Svaren hörs i telefonens högtalare – sätt i AirPods när du vill."
+            "value": "Inga AirPods – svaren spelas i högtalaren."
           }
         }
       },
@@ -11929,6 +11911,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Inget nät – telefonens egen modell svarar.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "No network – the phone's own model answers."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inget nät – telefonens egen modell svarar."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Inget nät. EarMind lyssnar vidare och svarar när du är uppkopplad igen.": {
       "extractionState": "manual",
       "localizations": {
@@ -11942,24 +11942,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Inget nät. EarMind lyssnar vidare och svarar när du är uppkopplad igen."
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
-    "Inget nät. Telefonens egen modell svarar så länge.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "No network. The phone's own model answers for now."
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Inget nät. Telefonens egen modell svarar så länge."
           }
         }
       },
@@ -15084,24 +15066,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lyssna på röst %@"
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
-    "Lyssna vidare": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "Keep listening"
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lyssna vidare"
           }
         }
       },
@@ -24368,6 +24332,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sätt i AirPods och säg en fråga högt. Utan AirPods hörs svaret i telefonen."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Sätt i dem igen, eller tryck Lyssna igen för att lyssna vidare i högtalaren.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Put them back in, or tap Listen again to keep listening on the speaker."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sätt i dem igen, eller tryck Lyssna igen för att lyssna vidare i högtalaren."
           }
         }
       },

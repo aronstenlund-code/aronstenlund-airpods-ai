@@ -1613,5 +1613,8 @@
  "”Lumen, jag har prov i engelska på onsdag”": "”Lumen, jag har prov i engelska på onsdag”",
  "”Säg mina svar” är av i Inställningar. EarMind svarar själv tills du sätter på det.": "“Say my answers” is off in Settings. EarMind answers by itself until you turn it on.",
  "−\\(percent) %": "−\\(percent)%",
- "✓ Tillåtet": "✓ Allowed"
+ "✓ Tillåtet": "✓ Allowed",
+ "Sätt i dem igen, eller tryck Lyssna igen för att lyssna vidare i högtalaren.": "Put them back in, or tap Listen again to keep listening on the speaker.",
+ "Inga AirPods – svaren spelas i högtalaren.": "No AirPods – answers play on the speaker.",
+ "Inget nät – telefonens egen modell svarar.": "No network – the phone's own model answers."
 }
