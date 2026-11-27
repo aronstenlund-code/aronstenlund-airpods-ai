@@ -2,10 +2,19 @@
 
 Den här texten är kunskapen bakom **Fråga om EarMind** (`/help`, K57, D166). Hjälp-AI:n svarar bara utifrån den här texten och `Shared/capabilities.json`. **Uppdatera texten när en funktion ändras.** Servern läser en kopia i `backend/supabase/functions/_shared/hjalp.ts`, och ett test stoppar driftsättningen när de två skiljer sig.
 
-Skriv med du-form och korta meningar. Använd knapparnas namn exakt som i appen. Lova bara det som finns.
+Skriv med du-form och korta meningar. Använd knapparnas namn exakt som i appen. Lova bara det som finns. Appen finns på engelska och svenska; knappens engelska namn står inom parentes, till exempel **Nytt prov** (New quiz). Svarar hjälpen på engelska använder den de engelska namnen.
 
 ## Vad EarMind är
-EarMind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lägger till ditt material. EarMind gör provfrågor med svar och läser upp dem i örat. Du styr med tryck på AirPods, utan att röra telefonen och utan mikrofon. Det är huvudläget. Övriga lägen finns under **Fler lägen** och är i beta.
+EarMind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lägger till ditt material. EarMind gör provfrågor med svar och läser upp dem i örat. Du styr med tryck på AirPods, utan att röra telefonen och utan mikrofon. Det är huvudläget. Med **Säg i AirPods** (Say in AirPods) hör du vilken text du vill, och med **Spela in själv** (Record it yourself) gör du egna frågor med din egen röst, helt gratis. Övriga lägen finns under **Fler lägen** (More modes) och är i beta.
+
+## Säg i AirPods
+- **Säg i AirPods** (Say in AirPods) läser upp en text du skriver eller klistrar in, till exempel glosor, en sammanfattning eller formler.
+- Med **Spela i** (Play for) väljer du hur länge texten upprepas, till exempel 10 minuter. Upprepningar kostar inget.
+- **Kostnad:** det kostar lika många krediter som texten har tecken som behöver nytt ljud. Appen visar det innan, till exempel ”Kostar 764 krediter. Upprepningar kostar inget.”
+- **Tempo** (Speed) ändrar du utan kostnad.
+- **Komprimera** (Compress): en text på minst 160 tecken kan kortas innan ljudet görs, med samma innehåll. Den kortare texten visas i fältet och du kan ändra den. **Ångra** (Undo) ger tillbaka din text. Komprimera spelar inget och kostar inga krediter.
+- **Hur ska det låta?** (How should it sound?): skriv hur du vill att texten ska låta, till exempel ”lugnt”, ”glatt” eller ”med pauser så jag hinner skriva”. **Skriv i takt** (Type along) läser lite långsammare med en paus efter varje fras, så att du hinner skriva. Orden i din text ändras aldrig.
+- **Rösten:** se Ljud och röst.
 
 ## Nytt prov
 1. Tryck **Nytt prov** på startsidan.
@@ -23,7 +32,7 @@ EarMind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
 - **Ditt material sparas inte:** foton, dokument och text skickas en gång för att göra frågorna, och sedan raderas de.
 - **Varför det blev färre frågor:** EarMind gör aldrig fler frågor än materialet räcker till. Är texten kort blir det färre frågor än du valde, och appen säger hur många det blev, till exempel ”Materialet räckte till 12 frågor”.
 - **Frågorna:** de är korta och tydliga när man bara hör dem. De flesta frågar varför och hur, inte bara vad något heter.
-- **Hur många frågor:** EarMind gör aldrig fler frågor än du har kvar den här månaden.
+- **Räcker krediterna inte:** appen säger hur många frågor de räcker till innan något görs. Minsta provet, tre frågor, görs då med kortare svar så att det ryms.
 
 ## Frågor och svar
 - **Två svar per fråga:** varje fråga får ett kort svar och ett långt svar. Det korta svaret är första meningen i det långa och är ett fullgott svar i sig. Det långa svaret förklarar mer, med begrepp, samband och exempel.
@@ -38,7 +47,8 @@ EarMind hjälper dig att plugga inför prov med dina AirPods. Du fotar eller lä
 
 ## Ljud och röst
 - **Ljudet görs automatiskt** när frågorna är klara, i den ordning de spelas. Du ser förloppet som ”Ljud: 12 av 30 klara”. Den första frågan går att spela efter några sekunder.
-- **Rösten:** du väljer bland tre röster innan ljudet görs, och du kan provlyssna först. När ljudet är gjort går rösten inte att byta för det provet. Vill du ha en annan röst gör du ett nytt prov.
+- **Rösten:** tryck **Välj röst** (Choose voice) innan ljudet görs. Det finns en lista med röster, svenska och engelska, och du kan **Provlyssna** (Preview) varje röst. Provlyssning kostar inget. En ny röst blir nytt ljud. När ljudet är gjort går rösten inte att byta för den texten eller det provet, eftersom ljudet görs med den. Vill du ha en annan röst gör du ett nytt prov.
+- **Telefonens röst:** kan rösten inte läsa upp just nu läser telefonens egen röst i stället, och appen säger ”Telefonens röst läser just nu.” Inga krediter dras för det.
 - **Tempo:** du ändrar det under Inställningar, från 0,50 till 1,5. Det kostar inget och ändrar inte ljudfilerna. Långsammare än 0,70 spelas rösten i 0,70 med längre pauser mellan meningarna, så att den inte låter konstig.
 - **Utan mikrofon:** repetitionsläget använder aldrig mikrofonen.
 
@@ -57,11 +67,12 @@ Tryck **Starta prov**. EarMind läser en fråga, väntar en stund så att du kan
 - **Avbrott:** ett samtal eller Siri pausar provet. Provet fortsätter inte av sig självt när samtalet är slut, utan när du trycker igen.
 - **Spelar en annan app musik, till exempel Spotify:** då går trycken till den appen i stället för till EarMind. Starta EarMind igen från låsskärmen eller appen, så går trycken till EarMind igen.
 
-## Hur många frågor du kan göra
-- **Gräns:** du kan göra 15 frågor med ljud per kalendermånad, och gränsen börjar om den första i varje månad. Appen visar hur många du har kvar den här månaden.
-- **Det som inte räknas:** prov som andra har delat eller publicerat, och som du lägger till hos dig.
-- **Abonnemang, premium och priser:** ett abonnemang kommer senare. Priser finns inte än, och det går inte att köpa något i appen i dag.
-- **När frågorna är slut:** lägg till andras prov, som är gratis, eller vänta till nästa månad.
+## Krediter
+- **1 kredit = 1 tecken nytt ljud.** Det som kostar är ljud som görs nytt: frågor och svar i ett prov, och texten i Säg i AirPods.
+- **Varje månad:** du får 1 500 krediter i månaden. De förnyas den 1:a. Appen visar hur många du har kvar.
+- **Gratis:** upprepningar, ljud som redan finns, prov som andra har delat eller publicerat, Komprimera, att provlyssna röster och **Spela in själv**.
+- **När krediterna inte räcker:** appen säger vad det kostar och hur många du har, och inget dras. Tryck **Fyll på** (Top up) för kreditpaket eller **Veckokort** (Weekly pass). Priserna står där. Du betalar med ditt Apple-konto.
+- **Lanseringsrabatt:** under lanseringsveckan är det 65 % rabatt på allt. Det syns i appen så länge veckan pågår.
 
 ## Dela ett prov
 - Tryck på **Dela** (symbolen med pilen uppåt) uppe till höger i provet och skicka länken med till exempel Meddelanden.
@@ -78,6 +89,24 @@ Tryck **Starta prov**. EarMind läser en fråga, väntar en stund så att du kan
 - Är något fel med ett publicerat prov trycker du **Rapportera** längst ner i provet. Efter tre rapporter döljs provet tills det har granskats.
 - Du kan när som helst ta bort din publicering. De som redan har lagt till provet behåller sin kopia.
 
+## Spela in själv – helt gratis
+- **Spela in själv** (Record it yourself): skriv dina egna frågor och svar, spela in din egen röst när du läser dem, och öva sedan på dem i AirPods som på ett prov.
+- **Helt gratis** (Completely free): det kostar inga krediter. Ljudet stannar på din telefon och skickas aldrig till oss.
+- Det du inte har spelat in läser telefonens röst.
+- Din samling ligger bland proven på startsidan, till exempel ”Egen inspelning · 5 frågor”.
+- När krediterna är slut eller AI:n inte kan svara föreslår appen Spela in själv.
+
+## När servern inte kan
+- **Uppläsningen:** kan rösten inte läsa upp läser telefonens egen röst, och appen säger ”Telefonens röst läser just nu.”
+- **Komprimera:** kortar servern inte texten gör telefonens modell det, och appen säger ”Kortad av telefonens modell”.
+- **Rättning i Fler lägen:** när servern inte kan rätta ditt svar rättar telefonens modell det, och omdömet börjar med ”Telefonens modell:”.
+- **Svar i lyssnandet:** kan servern inte svara svarar telefonens egen modell där den finns.
+- **Nytt prov:** när servern inte kan göra frågor står det ”Kan inte skapa prov just nu”. Försök igen om en stund, eller använd Spela in själv.
+
+## Låst skärm
+- **Starta prov:** knapparna på låsskärmen gör samma sak som trycken på AirPods.
+- **Spelas inget när skärmen är låst?** Lås upp telefonen, öppna EarMind och tryck spela igen. Ha gärna EarMind öppen medan Säg i AirPods spelar.
+
 ## Fler lägen (beta)
 De här lägena lyssnar med mikrofonen och är i beta:
 - **Standardläge:** frågor och svar med rösten.
@@ -86,12 +115,14 @@ De här lägena lyssnar med mikrofonen och är i beta:
 - **Socialt och Rizz:** förslag på vad du kan säga.
 - **Sömn:** sömnprat, snarkning och ljud under natten.
 
+**Aktiveringsordet:** i lyssnandet står ”Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI.” (Question you're not prepared for? Say [ … ] so our AI activates.) Skriv ett eller flera egna ord i fältet. När EarMind hör orden svarar den med ett A-svar på frågan som just ställdes.
+
 I Standardläget kan EarMind också sätta en timer eller ett larm, lägga in i kalendern eller påminnelser, göra anteckningar, ringa, öppna musik, översätta och söka på webben. Vissa saker kräver att du tillåter dem i appen först. Att styra Spotify kommer snart.
 
 ## Det här finns inte i EarMind
 - Egna påminnelser om att plugga. (I Standardläget, som är i beta, kan du be EarMind lägga in en påminnelse i appen Påminnelser.)
 - Flervalsfrågor, svårighetsgrad, att hoppa över en fråga eller gå tillbaka till förra frågan.
-- Export till andra appar eller som PDF, inloggning med Google, en egen röst till svaren och EarMind för Android.
+- Export till andra appar eller som PDF, inloggning med Google och EarMind för Android. (Din egen röst finns med Spela in själv.)
 Frågar du om något som inte står här svarar hjälpen ”Det vet jag inte” och hänvisar till Inställningar › Om EarMind.
 
 ## Integritet

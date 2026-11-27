@@ -1613,7 +1613,10 @@
   "fotosyntes, cellandning": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "inte övat än": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "kolets kretslopp": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
-  "nej, det är min tur att svara": "demo data for the pictures (Debug only); Swedish until the English pictures need it"
+  "nej, det är min tur att svara": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Mitokondrierna är cellens kraftverk. Där sker cellandningen som ger energi.": "demo data for the pictures (Debug only); the scene shows it in the app's language (Historik)",
+  "Fotosyntesen bygger upp socker och lagrar energi. Cellandningen bryter ner sockret och frigör energin.": "demo data for the pictures (Debug only); the scene shows it in the app's language (Historik)",
+  "fotosyntes": "demo data for the pictures (Debug only); the scene shows it in the app's language (Historik)"
  },
  "Lumen/Features/Diagnostics/DeviceInfo.swift": {
   "\\(device.model) \\(modelIdentifier) · \\(device.systemName) \\(device.systemVersion) · region \\(region) · locale \\(Locale.current.identifier)": "a diagnostics export, a log line or a technical string, not a text on the screen"

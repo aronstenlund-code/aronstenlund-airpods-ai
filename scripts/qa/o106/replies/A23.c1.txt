@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":"new_topic","reconstructed_question":"Vilken är världens längsta flod?","confidence":0.95}
+Nilen räknas oftast som världens längsta flod, ungefär 6 650 km. Vissa mätningar gör dock Amazonfloden något längre.
+[[SAMMANFATTNING]] Frågan gällde världens längsta flod. Svaret var Nilen med ungefär 6 650 km, men att vissa mätningar gör Amazonfloden längre.

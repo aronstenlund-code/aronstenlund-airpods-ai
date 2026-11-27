@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"Vad är en metafor?","confidence":0.95}
+En metafor är ett bildligt uttryck där man säger att något är något annat utan att använda ordet som, till exempel livet är en resa.
+[[SAMMANFATTNING]] Frågan gällde vad en metafor är. Svaret var att en metafor är ett bildligt uttryck som säger att något är något annat utan ordet som.

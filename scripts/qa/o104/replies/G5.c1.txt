@@ -1,1 +1,1 @@
-{"points": {"E": 1, "C": 0, "A": 0}, "feedback": "Rätt år, 476, så du får E-poängen. Lägg gärna till efter Kristus så att svaret blir helt tydligt."}
+{"points":{"E":1,"C":0,"A":0},"feedback":"Correct year, 476, so you get the E point. Next time, add AD to make it complete."}

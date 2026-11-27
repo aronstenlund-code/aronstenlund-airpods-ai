@@ -32,7 +32,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<language>sv</language>\n<task>quiz_topic</task>\n<task_arg>franska revolutionen</task_arg>\n<task_rule>Ask ONE check question about the topic given in <task_arg>, at the A level of the grade in <profile>. Only the question, nothing before it. Never a question in <already_asked>. This is the student's spoken instruction, not a question about these words: carry it out, never silence.</task_rule>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: prov; natt</situation>\n<goals>\nHistoria 1b: franska revolutionen.\n</goals>\n<note>The student says \"förhör mig\": reply with ONE check question and nothing else: no answer, no introduction such as \"Här är en fråga\", the first word is the question. This explicit request overrides \"Kontrollfrågor: inga\" in ‹profile›. It is about something from ‹recent_qa›, or, when nothing was studied yet, something likely on the exam in ‹profile› (its subject, grade and \"På provet\"). Level: what an A answer needs in that grade. Style from ‹profile›: \"ja-nej\" = answerable with ja or nej; \"korta\" or no style = answerable with a word or a short phrase; \"svåra\" = needs a short explanation. Never a question listed in ‹already_asked›.</note>\n<now>fredag 27 november 2026, vecka 48, klockan 00:46 (svensk tid, Europe/Stockholm)</now>\n<fragment>förhör mig på franska revolutionen</fragment>"
+            "content": "<language>sv</language>\n<task>quiz_topic</task>\n<task_arg>franska revolutionen</task_arg>\n<task_rule>Ask ONE check question about the topic given in <task_arg>, at the A level of the grade in <profile>. Only the question, nothing before it. Never a question in <already_asked>. This is the student's spoken instruction, not a question about these words: carry it out, never silence.</task_rule>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: prov; natt</situation>\n<goals>\nHistoria 1b: franska revolutionen.\n</goals>\n<note>The student says \"förhör mig\": reply with ONE check question and nothing else: no answer, no introduction such as \"Här är en fråga\", the first word is the question. This explicit request overrides \"Kontrollfrågor: inga\" in ‹profile›. It is about something from ‹recent_qa›, or, when nothing was studied yet, something likely on the exam in ‹profile› (its subject, grade and \"På provet\"). Level: what an A answer needs in that grade. Style from ‹profile›: \"ja-nej\" = answerable with ja or nej; \"korta\" or no style = answerable with a word or a short phrase; \"svåra\" = needs a short explanation. Never a question listed in ‹already_asked›.</note>\n<now>fredag 27 november 2026, vecka 48, klockan 02:25 (svensk tid, Europe/Stockholm)</now>\n<fragment>förhör mig på franska revolutionen</fragment>"
           }
         ],
         "output_config": {
@@ -63,7 +63,7 @@
           "input_tokens": 5877,
           "output_tokens": 91,
           "ttft_ms": 292,
-          "total_ms": 294,
+          "total_ms": 295,
           "est_cost_usd": 0.012664,
           "status": "ok",
           "category": "historia",
@@ -94,16 +94,16 @@
           "data": {
             "answered": true,
             "timing": {
-              "meta_ms": 262,
+              "meta_ms": 263,
               "ttft_ms": 292,
-              "llm_first_token_ms": 259,
-              "total_ms": 292
+              "llm_first_token_ms": 260,
+              "total_ms": 293
             },
             "breakdown": {
               "auth_ms": 0,
-              "body_ms": 172,
-              "limits_ms": 258,
-              "llm_first_chunk_ms": 259,
+              "body_ms": 170,
+              "limits_ms": 260,
+              "llm_first_chunk_ms": 260,
               "direct": true,
               "cold": true,
               "answer_type": "study",
@@ -149,16 +149,16 @@
       "done": {
         "answered": true,
         "timing": {
-          "meta_ms": 262,
+          "meta_ms": 263,
           "ttft_ms": 292,
-          "llm_first_token_ms": 259,
-          "total_ms": 292
+          "llm_first_token_ms": 260,
+          "total_ms": 293
         },
         "breakdown": {
           "auth_ms": 0,
-          "body_ms": 172,
-          "limits_ms": 258,
-          "llm_first_chunk_ms": 259,
+          "body_ms": 170,
+          "limits_ms": 260,
+          "llm_first_chunk_ms": 260,
           "direct": true,
           "cold": true,
           "answer_type": "study",

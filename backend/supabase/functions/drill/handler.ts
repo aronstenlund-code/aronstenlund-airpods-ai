@@ -290,7 +290,7 @@ export interface DrillDeps {
   /** K98 (D224): the account started its audio (Starta prov / Spela): an invitation is rewarded on the first one. */
   onStarted?: (userId: string) => Promise<unknown>;
   /** K99 (D223): Haiku picks the catalog voice that fits a style; null = keep the default voice. */
-  voicePicker?: (style: string, voices: { voice_id: string; name: string; description?: string | null; accent?: string | null; gender?: string | null; age?: string | null }[]) => Promise<{ voice_id: string; reason: string } | null>;
+  voicePicker?: (style: string, voices: { voice_id: string; name: string; description?: string | null; accent?: string | null; gender?: string | null; age?: string | null }[], lang?: string) => Promise<{ voice_id: string; reason: string } | null>;
   /** K95 (D220): adds v3 tags for a style (Haiku); without it a styled file is made from the untagged text. */
   styler?: Styler;
   /** K49: Aron (OWNER_EMAIL, signed in by e-mail) shows a hidden publication again. */
@@ -854,7 +854,9 @@ export function createDrillHandler(deps: DrillDeps) {
     const catalog = catalog0 ?? (mix ? await catalogOf() : []);
     let picked: { voice_id: string; reason: string } | null = null;
     if (!existing && !askedVoice && !mix && styleAsked && catalog.length && deps.voicePicker) {
-      picked = await deps.voicePicker(styleAsked, catalog).catch(() => null);
+      // O105-4: the reason in English only when the app asks for English (no language = Swedish, as before)
+      const reasonLang = b?.lang === "en" || b?.language === "en" ? "en" : undefined;
+      picked = await deps.voicePicker(styleAsked, catalog, reasonLang).catch(() => null);
       if (picked && !catalog.some((v) => v.voice_id === picked!.voice_id)) picked = null;
     }
     const ownVoice = existing ? existing.voice_id ?? null : askedVoice || picked?.voice_id || null;

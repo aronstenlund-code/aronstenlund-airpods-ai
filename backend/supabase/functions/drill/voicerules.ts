@@ -5,7 +5,7 @@
  * Rules are versioned (`drills.voice_rules`): a drill made before K74 keeps version 1 (the same hashes, so no file
  * is made again and nothing is counted again when it is edited or started); new drills get version 2.
  */
-export const VOICE_RULES_VERSION = 4;
+export const VOICE_RULES_VERSION = 5; // O105-3: a formula next to its own name is read as written
 
 /**
  * K115 (D253): Aron heard "1999" as "nittonhundranittionien". The text was right ("nittonhundranittionio"), but every
@@ -121,6 +121,32 @@ const FORMULAS: [string, string, string][] = [
   ["HCl", "saltsyra", "hydrochloric acid"], ["NH3", "ammoniak", "ammonia"], ["SO2", "svaveldioxid", "sulphur dioxide"],
   ["NO2", "kvävedioxid", "nitrogen dioxide"], ["CaCO3", "kalciumkarbonat", "calcium carbonate"], ["NaOH", "natriumhydroxid", "sodium hydroxide"],
 ];
+/** O105-3: a formula read as written: each element symbol's letters, its count in words ("H2O" -> "H två O"). */
+const DIGITS: Record<"sv" | "en", string[]> = {
+  sv: ["noll", "ett", "två", "tre", "fyra", "fem", "sex", "sju", "åtta", "nio", "tio", "elva", "tolv"],
+  en: ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"],
+};
+export function spelledFormula(f: string, lang: "sv" | "en"): string {
+  return [...f.matchAll(/([A-Z][a-z]?)(\d*)/g)].map(([, el, n]) => [
+    el.toUpperCase().split("").join(" "),
+    n ? (DIGITS[lang][Number(n)] ?? n) : "",
+  ].filter(Boolean).join(" ")).join(" ");
+}
+/** Version 5 (O105-3, Oscar): when the same sentence already names the substance ("H2O är vatten"), the formula is read
+ *  as written, so what the student learns is still there; otherwise it is the name as before. */
+const formulaV5 = (f: string, name: string, lang: "sv" | "en") => (m: string, k: string, off: number, all: string) => {
+  const from = Math.max(all.lastIndexOf(".", off), all.lastIndexOf("!", off), all.lastIndexOf("?", off)) + 1;
+  const endRel = all.slice(off).search(/[.!?]/);
+  const sentence = all.slice(from, endRel < 0 ? all.length : off + endRel).toLowerCase();
+  const named = new RegExp(String.raw`(?<![\p{L}])${name.toLowerCase()}(?![\p{L}])`, "u").test(sentence);
+  if (!named) return atStart(name)(m, k, off, all);
+  return (k ? `${k} ` : "") + spelledFormula(f, lang);
+};
+const FORMULA_RULES_V5: VoiceRule[] = FORMULAS.flatMap(([f, sv, en]): VoiceRule[] => [
+  { kind: "formula", lang: "sv", re: new RegExp(String.raw`(?<![\p{L}\p{N}])(\d*)${f}(?![\p{L}\p{N}₀-₉])`, "gu"), to: formulaV5(f, sv, "sv") },
+  { kind: "formula", lang: "en", re: new RegExp(String.raw`(?<![\p{L}\p{N}])(\d*)${f}(?![\p{L}\p{N}₀-₉])`, "gu"), to: formulaV5(f, en, "en") },
+]);
+
 /** Version 3, before the text is made speakable (numbers, formulas and "/" are still as written). */
 export const VOICE_RULES_PRE_V3: VoiceRule[] = [
   // "CH4 + 2O2 -> CO2 + 2H2O": a coefficient stays a number ("två syre"), the formula becomes its name
@@ -240,7 +266,9 @@ export function preVoice(text: string, lang = "", version = 3): string {
   if (version < 3) return text;
   const L = /^english$/i.test(lang) ? "en" : lang ? "other" : "sv";
   let t = text;
-  for (const r of VOICE_RULES_PRE_V3) if (r.lang === "*" || r.lang === L) t = t.replace(r.re, r.to as never);
+  // O105-3: from version 5 the formulas use FORMULA_RULES_V5 (earlier drills keep theirs, so their hashes hold)
+  const rules = version >= 5 ? [...FORMULA_RULES_V5, ...VOICE_RULES_PRE_V3.filter((r) => r.kind !== "formula")] : VOICE_RULES_PRE_V3;
+  for (const r of rules) if (r.lang === "*" || r.lang === L) t = t.replace(r.re, r.to as never);
   return t;
 }
 

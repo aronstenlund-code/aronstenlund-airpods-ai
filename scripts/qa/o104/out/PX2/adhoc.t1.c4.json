@@ -30,7 +30,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<material>\n[1] Syror och baser\n[2] En syra är ett ämne som lämnar ifrån sig vätejoner i vatten. pH-skalan går från 0 till 14, där 7 är neutralt.\n[3] En lösning med pH under 7 är sur och över 7 är basisk.\n[4] Saltsyra har ett pH runt 1, medan natronlut kan ha pH 14.\n[5] När en syra och en bas blandas i rätt mängd bildas vatten och ett salt, och det kallas neutralisation.\n</material>\n<questions>[{\"i\":0,\"q\":\"Hur visar pH-skalan om en lösning är sur, neutral eller basisk?\"},{\"i\":1,\"q\":\"Hur skiljer sig saltsyra från natronlut?\"},{\"i\":2,\"q\":\"Vad händer när en syra och en bas blandas i rätt mängd?\"}]</questions>"
+        "content": "<material>\n[1] Syror och baser\n[2] En syra är ett ämne som lämnar ifrån sig vätejoner i vatten. pH-skalan går från 0 till 14, där 7 är neutralt.\n[3] En lösning med pH under 7 är sur och över 7 är basisk.\n[4] Saltsyra har ett pH runt 1, medan natronlut kan ha pH 14.\n[5] När en syra och en bas blandas i rätt mängd bildas vatten och ett salt, och det kallas neutralisation.\n</material>\n<questions>[{\"i\":0,\"q\":\"Vad är en syra?\"},{\"i\":1,\"q\":\"Hur visar pH-skalan om en lösning är sur, neutral eller basisk?\"},{\"i\":2,\"q\":\"Hur skiljer sig saltsyra från natronlut?\"}]</questions>"
       }
     ],
     "output_config": {

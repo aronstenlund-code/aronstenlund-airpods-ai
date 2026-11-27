@@ -1,0 +1,1 @@
+{"is_question":false,"answer_type":"fact","relation":null,"reconstructed_question":"","confidence":0.9}

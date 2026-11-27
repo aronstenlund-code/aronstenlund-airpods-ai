@@ -35,7 +35,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<material>\n[1] The French Revolution.\n[2] It began in 1789 when the people of Paris stormed the Bastille.\n[3] The king, Louis XVI, was executed in 1793.\n[4] The revolution spread the ideas of liberty and equality.\n</material>\n<questions>[{\"i\":0,\"q\":\"How did the French Revolution begin?\"},{\"i\":1,\"q\":\"When did the French Revolution begin?\"},{\"i\":2,\"q\":\"What happened to King Louis the Sixteenth in 1793?\"}]</questions>"
+        "content": "<material>\n[1] The French Revolution.\n[2] It began in 1789 when the people of Paris stormed the Bastille.\n[3] The king, Louis XVI, was executed in 1793.\n[4] The revolution spread the ideas of liberty and equality.\n</material>\n<questions>[{\"i\":0,\"q\":\"How did the French Revolution begin?\"},{\"i\":1,\"q\":\"What happened to King Louis the Sixteenth in 1793?\"},{\"i\":2,\"q\":\"Which ideas did the French Revolution spread?\"}]</questions>"
       }
     ],
     "output_config": {

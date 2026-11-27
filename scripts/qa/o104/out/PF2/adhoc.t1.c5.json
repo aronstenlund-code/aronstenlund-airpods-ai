@@ -35,7 +35,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<material>\n[1] The French Revolution.\n[2] It began in 1789 when the people of Paris stormed the Bastille.\n[3] The king, Louis XVI, was executed in 1793.\n[4] The revolution spread the ideas of liberty and equality.\n</material>\n<used_sentences>2, 3</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n<kept>[\"How did the French Revolution begin?\",\"What happened to King Louis the Sixteenth in 1793?\"]</kept>\n<count>3</count>"
+        "content": "<material>\n[1] The French Revolution.\n[2] It began in 1789 when the people of Paris stormed the Bastille.\n[3] The king, Louis XVI, was executed in 1793.\n[4] The revolution spread the ideas of liberty and equality.\n</material>\n<used_sentences>2, 3</used_sentences>\nThe kept questions are already answered by the sentences in <used_sentences>: base every new question on other sentences.\n<kept>[\"How did the French Revolution begin?\",\"Which ideas did the French Revolution spread?\"]</kept>\n<count>3</count>"
       }
     ],
     "output_config": {

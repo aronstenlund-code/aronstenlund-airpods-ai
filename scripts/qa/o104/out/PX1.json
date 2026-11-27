@@ -248,7 +248,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<context>Ämne: Historia</context>\n<notes>\nGustav Vasa (Gustav Eriksson Vasa) blev Sveriges kung 1523, efter att ha lett ett uppror mot den danske kungen Kristian II. Upproret började i Dalarna, där bönderna anslöt sig till honom. Som kung bröt Gustav Vasa med den katolska kyrkan och tog kyrkans egendomar, vilket gav kronan mycket pengar. 1544 gjorde han Sverige till ett arvrike, så att kungamakten gick i arv inom familjen. Gustav Vasa dog 1560 och efterträddes av sonen Erik XIV.\n</notes>\n<long_words>90</long_words>\n<may_fix>yes</may_fix>\n<questions>[{\"id\":\"q1\",\"question\":\"Vad hände med kungamakten när Gustav Vasa dog 1560?\"},{\"id\":\"q2\",\"question\":\"Hur blev Gustav Vasa Sveriges kung?\"},{\"id\":\"q3\",\"question\":\"Var började upproret mot Kristian II?\"},{\"id\":\"q4\",\"question\":\"Vad gjorde Gustav Vasa med den katolska kyrkan?\"},{\"id\":\"q5\",\"question\":\"Vad innebar det att Sverige blev ett arvrike 1544?\"}]</questions>"
+      "content": "<context>Ämne: Historia</context>\n<notes>\nGustav Vasa (Gustav Eriksson Vasa) blev Sveriges kung 1523, efter att ha lett ett uppror mot den danske kungen Kristian II. Upproret började i Dalarna, där bönderna anslöt sig till honom. Som kung bröt Gustav Vasa med den katolska kyrkan och tog kyrkans egendomar, vilket gav kronan mycket pengar. 1544 gjorde han Sverige till ett arvrike, så att kungamakten gick i arv inom familjen. Gustav Vasa dog 1560 och efterträddes av sonen Erik XIV.\n</notes>\n<long_words>90</long_words>\n<may_fix>yes</may_fix>\n<questions>[{\"id\":\"q1\",\"question\":\"Hur blev Gustav Vasa Sveriges kung?\"},{\"id\":\"q2\",\"question\":\"Var började upproret mot Kristian II?\"},{\"id\":\"q3\",\"question\":\"Vad gjorde Gustav Vasa med den katolska kyrkan?\"},{\"id\":\"q4\",\"question\":\"Vad innebar det att Sverige blev ett arvrike 1544?\"},{\"id\":\"q5\",\"question\":\"Vad hände med kungamakten när Gustav Vasa dog 1560?\"}]</questions>"
      }
     ],
     "output_config": {
@@ -274,7 +274,7 @@
      "model": "claude-haiku-5-5",
      "input_tokens": 1645,
      "output_tokens": 168,
-     "total_ms": 57,
+     "total_ms": 100,
      "est_cost_usd": 0.0002485,
      "status": "ok"
     },
@@ -285,7 +285,7 @@
      "model": "claude-haiku-5-5",
      "input_tokens": 1679,
      "output_tokens": 130,
-     "total_ms": 57,
+     "total_ms": 100,
      "est_cost_usd": 0.0002329,
      "status": "ok"
     },
@@ -296,7 +296,7 @@
      "model": "claude-haiku-5-5",
      "input_tokens": 896,
      "output_tokens": 5,
-     "total_ms": 57,
+     "total_ms": 100,
      "est_cost_usd": 9.21e-05,
      "status": "ok"
     },
@@ -307,7 +307,7 @@
      "model": "claude-sonnet-5-5",
      "input_tokens": 1021,
      "output_tokens": 130,
-     "total_ms": 57,
+     "total_ms": 100,
      "est_cost_usd": 0.003342,
      "status": "ok"
     },
@@ -318,7 +318,7 @@
      "model": "claude-sonnet-5-5",
      "input_tokens": 459,
      "output_tokens": 59,
-     "total_ms": 57,
+     "total_ms": 100,
      "est_cost_usd": 0.001508,
      "status": "ok"
     },
@@ -329,7 +329,7 @@
      "model": "claude-sonnet-5-5",
      "input_tokens": 1808,
      "output_tokens": 506,
-     "total_ms": 57,
+     "total_ms": 100,
      "est_cost_usd": 0.008676,
      "status": "ok"
     }
@@ -352,7 +352,7 @@
     "items": [
      {
       "id": "q1",
-      "question": "Vad hände med kungamakten när Gustav Vasa dog 1560?",
+      "question": "Hur blev Gustav Vasa Sveriges kung?",
       "short": "Kungamakten gick i arv inom familjen, så Gustav Vasas son Erik den fjortonde blev kung efter honom 1560.",
       "long": "Kungamakten gick i arv inom familjen, så Gustav Vasas son Erik den fjortonde blev kung efter honom 1560. Det var möjligt eftersom Gustav Vasa redan 1544 hade gjort Sverige till ett arvrike. Kronan stannade därmed i familjen när han dog, i stället för att gå till någon utanför släkten.",
       "screen": {
@@ -362,7 +362,7 @@
      },
      {
       "id": "q2",
-      "question": "Hur blev Gustav Vasa Sveriges kung?",
+      "question": "Var började upproret mot Kristian II?",
       "short": "Gustav Vasa ledde ett uppror mot den danske kungen Kristian den andre och blev Sveriges kung 1523.",
       "long": "Gustav Vasa ledde ett uppror mot den danske kungen Kristian den andre och blev Sveriges kung 1523. Upproret började i Dalarna, där bönderna anslöt sig till honom. När upproret mot den danske kungen hade lyckats blev Gustav Eriksson Vasa kung över Sverige.",
       "screen": {
@@ -372,19 +372,19 @@
      },
      {
       "id": "q3",
-      "question": "Var började upproret mot Kristian II?",
+      "question": "Vad gjorde Gustav Vasa med den katolska kyrkan?",
       "short": "Upproret började i Dalarna, där bönderna anslöt sig till Gustav Vasa.",
       "long": "Upproret började i Dalarna, där bönderna anslöt sig till Gustav Vasa. Det var alltså bönderna i Dalarna som slöt upp bakom honom i upproret mot den danske kungen. Upproret slutade med att Gustav Vasa blev Sveriges kung 1523."
      },
      {
       "id": "q4",
-      "question": "Vad gjorde Gustav Vasa med den katolska kyrkan?",
+      "question": "Vad innebar det att Sverige blev ett arvrike 1544?",
       "short": "Gustav Vasa bröt med den katolska kyrkan och tog kyrkans egendomar.",
       "long": "Gustav Vasa bröt med den katolska kyrkan och tog kyrkans egendomar. Det gjorde han som kung, efter 1523. Kyrkans egendomar gick då till kronan, och det gav kronan mycket pengar."
      },
      {
       "id": "q5",
-      "question": "Vad innebar det att Sverige blev ett arvrike 1544?",
+      "question": "Vad hände med kungamakten när Gustav Vasa dog 1560?",
       "short": "Det innebar att kungamakten gick i arv inom Gustav Vasas familj.",
       "long": "Det innebar att kungamakten gick i arv inom Gustav Vasas familj. När en kung dog skulle makten alltså föras vidare inom släkten. Det syntes när Gustav Vasa dog 1560 och hans son Erik den fjortonde blev kung efter honom.",
       "screen": {
@@ -399,28 +399,28 @@
       "input_tokens": 1645,
       "output_tokens": 168,
       "est_cost_usd": 0.0002485,
-      "ms": 6
+      "ms": 11
      },
      "notes": {
       "model": "claude-haiku-5-5",
       "input_tokens": 1679,
       "output_tokens": 130,
       "est_cost_usd": 0.0002329,
-      "ms": 7
+      "ms": 13
      },
      "shorten": {
       "model": "claude-haiku-5-5",
       "input_tokens": 896,
       "output_tokens": 5,
       "est_cost_usd": 9.21e-05,
-      "ms": 0
+      "ms": 1
      },
      "answers": {
       "model": "claude-sonnet-5-5",
       "input_tokens": 1808,
       "output_tokens": 506,
       "est_cost_usd": 0.008676,
-      "ms": 11
+      "ms": 10
      },
      "final_check": {
       "model": "claude-sonnet-5-5",
@@ -436,7 +436,7 @@
       "questions": 5
      },
      "est_cost_usd": 0.0140995,
-     "ms": 40
+     "ms": 51
     },
     "quota": {
      "unit": "chars",

@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"Vad är huvudstaden i Kanada?","confidence":0.97}
+Ottawa är Kanadas huvudstad. Den ligger i provinsen Ontario.
+[[SAMMANFATTNING]] Frågan gällde Kanadas huvudstad. Svaret var Ottawa i provinsen Ontario.

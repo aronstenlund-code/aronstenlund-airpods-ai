@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"Vem vann Melodifestivalen 2031?","confidence":0.9}
+Melodifestivalen 2031 har inte hållits än, den avgörs först våren 2031.
+[[SAMMANFATTNING]] Frågan gällde vinnaren av Melodifestivalen 2031. Svaret var att tävlingen inte har hållits än och avgörs våren 2031.

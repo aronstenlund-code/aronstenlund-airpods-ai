@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"Vad betyder ubiquitous på svenska?","confidence":0.95}
+Allestädes närvarande, alltså något som finns överallt.
+[[SAMMANFATTNING]] Frågan gällde vad det engelska ordet ubiquitous betyder på svenska. Svaret var allestädes närvarande, något som finns överallt.

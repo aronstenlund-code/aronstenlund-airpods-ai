@@ -783,7 +783,7 @@ Deno.test("K74 a new drill gets the newest voice rules (4 since K115); an old dr
   const w = world();
   const its = [{ question: "Vad gör klorofyll (i bladen)?", short: "Det fångar ljus.", long: "Det fångar ljus." }];
   const j = await (await w.h("u1")(post({ action: "save", items: its }))).json();
-  assertEquals(w.drills.get(j.drill.id)!.voice_rules, 4);
+  assertEquals(w.drills.get(j.drill.id)!.voice_rules, 5); // O105-3: version 5
   assert([...w.audio.values()].some((a) => a.text === "Vad gör klorofyll, i bladen?"));
   // an old drill: version 1 and its version 1 files
   const old = await (await w.h("u2")(post({ action: "save", defer_audio: true, items: its }))).json();

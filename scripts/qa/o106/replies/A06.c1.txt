@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":null,"reconstructed_question":"Är Ottawa Kanadas huvudstad?","confidence":0.75}
+Ja, Ottawa är Kanadas huvudstad. Den ligger i Ontario, nära gränsen till Québec.
+[[SAMMANFATTNING]] Frågan gällde om Ottawa är Kanadas huvudstad. Svaret var ja, Ottawa i Ontario är huvudstaden.

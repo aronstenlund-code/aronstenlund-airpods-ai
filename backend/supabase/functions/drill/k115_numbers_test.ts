@@ -15,7 +15,7 @@ Deno.test("K115: x9 words are written apart (-tionio never reaches the voice); o
 });
 
 Deno.test("K115: voice rules 4 for new drills; a drill made with 3 keeps its text (and hashes)", () => {
-  assertEquals(VOICE_RULES_VERSION, 4);
+  assertEquals(VOICE_RULES_VERSION, 5); // O105-3 (version 5: formulas next to their names); version 4 below as before
   assertEquals(voiceText("Det hände 1999.", "", 4), "Det hände nittonhundranittio nio.");
   assertEquals(voiceText("Det hände 1999.", "", 3), "Det hände nittonhundranittionio.");
   assertEquals(voiceText("Mellan 1939 och 1945.", "", 4), "Mellan nittonhundratrettio nio och nittonhundrafyrtiofem.");

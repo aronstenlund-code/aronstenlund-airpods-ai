@@ -1,0 +1,3 @@
+{"is_question":true,"answer_type":"fact","relation":"refines","reconstructed_question":"Vad är cellandning, jämfört med fotosyntes?","confidence":0.9}
+Cellandning är fotosyntesens motsats: cellerna bryter ner socker med syre till koldioxid och vatten och får energi i form av ATP. Den sker i mitokondrierna hos både växter och djur.
+[[SAMMANFATTNING]] Efter fotosyntesen frågades om cellandning. Svaret var att cellandning bryter ner socker med syre till koldioxid och vatten och ger energi som ATP i mitokondrierna.

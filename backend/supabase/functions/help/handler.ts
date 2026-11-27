@@ -34,17 +34,35 @@ export const isAnswersQuestion = (q: string) => DEF_Q.test(q);
 export const isPressQuestion = (q: string) => PRESS_Q.test(q) && !PRESS_TROUBLE.test(q);
 export const UNKNOWN = "Det vet jag inte. Skriv till oss under Inställningar › Om EarMind.";
 
+// O105-2 (Oscar): the help in the app's language (the app starts in English, D253); the fixed texts in English too
+export const OUT_OF_SCOPE_EN = "I can't answer that.";
+export const OUT_OF_SCOPE_HINT_EN = "I only answer how EarMind works, for example how you make a new quiz.";
+export const PRESS_LINE_EN = "1 press = the long A answer. 2 presses = the short A answer, one or two sentences. 3 presses = pause.";
+export const PRESSES_EN = `While the question plays: ${PRESS_LINE_EN} Press again to go on. During a pause any press goes on from the start of the sentence where you stopped.`;
+export const ANSWERS_DEF_EN = "The short A answer is the first sentence, or the first two, of the long A answer, and it is a full answer on its own. The long A answer explains more. You get the short one with 2 presses and the long one with 1 press.";
+export const UNKNOWN_EN = "I don't know that. Write to us under Settings › About EarMind.";
+const PRESS_Q_EN = /(?:how do|what do|what does|explain)[^?]{0,25}(?:press|presses|button|airpods)|press(?:es)?\s+(?:once|twice|three times|1|2|3)|how (?:do i )?(?:pause|resume|go on)|how (?:do|can) i (?:get|hear) the (?:long |short )?(?:a )?answer/iu;
+const DEF_Q_EN = /^\s*what (?:is|are) the (?:short|long) (?:a )?answer|difference between the (?:short|long)/iu;
+const TROUBLE_EN = /(?:doesn't|does not|don't|not) (?:work|come through|get through)|older|old airpods/iu;
+/** O105-2: the language of the help: the app's choice (lang / x-earmind-lang) first; else Swedish words = sv; else en. */
+export function helpLang(b: Record<string, unknown> | null, req: Request, question: string): "sv" | "en" {
+  const asked = String(b?.lang ?? b?.language ?? req.headers.get("x-earmind-lang") ?? "").toLowerCase().slice(0, 2);
+  if (asked === "sv" || asked === "en") return asked;
+  return /[åäö]|(?<![\p{L}])(?:hur|vad|varför|jag|kan|är|och|gör|mitt|min)(?![\p{L}])/iu.test(question) ? "sv" : "en";
+}
+
 const capsText = () =>
   CAPS.map((c) => `- ${c.name}: ${c.status === "finns" ? "finns" : "kommer snart"}${c.permission ? " (kräver att du tillåter det)" : ""}`).join("\n");
 
 export const SYSTEM_PROMPT_HELP = `You are the help inside the Swedish app EarMind. You answer ONLY questions about how EarMind works, using ONLY <hjalp> and <funktioner> below. Return ONLY a JSON object {"in_scope": true|false, "answer": "..."}.
 - in_scope is false for anything that is not about using EarMind (school subjects, homework, general knowledge, other apps, chat, jokes, personal questions, requests to do something outside the app). Then answer is "".
-- When it is about EarMind but <hjalp> and <funktioner> do not say, answer exactly: "${UNKNOWN}" Never invent a feature, a setting, a price, a number of seconds or a place in the app.
-- The answer: Swedish du-form, short sentences, at most 4 sentences or 5 numbered steps ("1. ..."), the answer first (no "Bra fråga", "Självklart", "Som en AI"). Button names exactly as in <hjalp> (Nytt prov, Fota sidor, Skapa frågor, Ser rätt ut, Starta prov, Avsluta, Fler lägen, Dela, Publicera prov). Never the words "övningsprov", "A+-svar", "drill", "TTS" or model or company names.
-- Questions about the presses: give the sentence in <hjalp> word for word. Never swap them: ${PRESS_LINE} "A-svaret" alone means the long answer.
+- The language: answer in <language> (sv = Swedish, en = English). In English use the English button names given in brackets in <hjalp>.
+- When it is about EarMind but <hjalp> and <funktioner> do not say, answer exactly: "${UNKNOWN}" (in English: "${UNKNOWN_EN}") Never invent a feature, a setting, a price, a number of seconds or a place in the app.
+- The answer: du-form in Swedish (plain "you" in English), short sentences, at most 4 sentences or 5 numbered steps ("1. ..."), the answer first (no "Bra fråga", "Självklart", "Som en AI"). Button names exactly as in <hjalp> (Nytt prov, Fota sidor, Skapa frågor, Ser rätt ut, Starta prov, Avsluta, Fler lägen, Dela, Publicera prov, Säg i AirPods, Komprimera, Hur ska det låta?, Välj röst, Fyll på, Veckokort, Spela in själv). Never the words "övningsprov", "A+-svar", "drill", "TTS" or model or company names.
+- Questions about the presses: give the sentence in <hjalp> word for word (in English: ${PRESS_LINE_EN}). Never swap them: ${PRESS_LINE} "A-svaret" alone means the long answer.
 - Use only the button names, gestures and steps that are in <hjalp>; never add one (no "Spara", no swiping, no setting that is not named).
 - A question about doing something IN EarMind (language, question types, skipping or going back, exporting, accounts, reminders) is always in_scope true, also when EarMind cannot do it: then say plainly that it is not in EarMind (see "Det här finns inte i EarMind"), or answer exactly the "Det vet jag inte" sentence.
-- The short answer is the first sentence (or two) of the long answer, never "the first answer". Premium, subscriptions and prices: say what <hjalp> says (coming later, no prices yet), never "Det vet jag inte".
+- The short answer is the first sentence (or two) of the long answer, never "the first answer". Credits, top-ups, the weekly pass and prices: say what <hjalp> says under Krediter (the prices are shown under Fyll på), never "Det vet jag inte".
 - Answer only what was asked: no extra sentence about another topic, and never the same instruction twice.
 - Say only what <hjalp> says about calls and reminders: a call pauses the drill and it goes on when you press again; EarMind has no study reminders of its own.
 - Something "kommer snart" is said to be coming; beta modes are said to be in beta.
@@ -72,7 +90,8 @@ export interface HelpDeps {
 
 const PRICE_IN = 0.10, PRICE_OUT = 0.50; // Haiku 5.5, verified 2026-11-13
 
-export function parseHelp(text: string): { in_scope: boolean; answer: string } {
+export function parseHelp(text: string, lang: "sv" | "en" = "sv"): { in_scope: boolean; answer: string } {
+  const OUT = lang === "en" ? OUT_OF_SCOPE_EN : OUT_OF_SCOPE, UNK = lang === "en" ? UNKNOWN_EN : UNKNOWN;
   const m = /\{[\s\S]*\}/.exec(text);
   try {
     const j = JSON.parse(m?.[0] ?? "{}");
@@ -80,10 +99,10 @@ export function parseHelp(text: string): { in_scope: boolean; answer: string } {
     const answer = typeof j.answer === "string"
       ? j.answer.replace(/\*\*/g, "").trim().replace(/^[^\n.!?]{0,60}:\s*(?=1\.\s)/u, "").slice(0, 1200)
       : "";
-    if (j.in_scope === false) return { in_scope: false, answer: OUT_OF_SCOPE };
+    if (j.in_scope === false) return { in_scope: false, answer: OUT };
     if (answer) return { in_scope: true, answer };
   } catch { /* falls through */ }
-  return { in_scope: true, answer: UNKNOWN };
+  return { in_scope: true, answer: UNK };
 }
 
 export function createHelpHandler(deps: HelpDeps) {
@@ -115,22 +134,25 @@ export function createHelpHandler(deps: HelpDeps) {
       if (!question) throw new HttpError(400, "invalid_request", "question is required");
       const rl = await enforceLimits(deps.rateLimiter, "help", user.id, { perMinute: 10, perDay: 200, globalPerDay: 200_000 }, 1);
       if (!rl.allowed) throw new HttpError(429, "rate_limited", "För många frågor just nu. Vänta en liten stund.", { retryAfterSec: rl.retryAfterSec });
+      const lang = helpLang(b, req, question); // O105-2
       let text = "", inTok = 0, outTok = 0;
-      for await (const c of deps.provider.stream({ system: SYSTEM_PROMPT_HELP, user: `<fråga>${sanitizeTagged(question)}</fråga>`, maxTokens: 500, cacheSystem: true, timeoutMs: 30_000, signal: req.signal })) {
+      for await (const c of deps.provider.stream({ system: SYSTEM_PROMPT_HELP, user: `<language>${lang}</language>\n<fråga>${sanitizeTagged(question)}</fråga>`, maxTokens: 500, cacheSystem: true, timeoutMs: 30_000, signal: req.signal })) {
         if (c.type === "text") text += c.text;
         else if (c.type === "usage") {
           inTok = c.inputTokens ?? inTok;
           outTok = c.outputTokens ?? outTok;
         }
       }
-      let r = parseHelp(text);
+      let r = parseHelp(text, lang);
       // Kelly Ke57 rule 3: the presses are always explained with Aron's text, word for word (not left to the model)
       // these questions are about the app also when the model thought not ("jag vill höra hela förklaringen", O58b)
       if (isPressQuestion(question)) r = { in_scope: true, answer: PRESSES };
       else if (isAnswersQuestion(question)) r = { in_scope: true, answer: ANSWERS_DEF };
+      else if (PRESS_Q_EN.test(question) && !TROUBLE_EN.test(question)) r = { in_scope: true, answer: PRESSES_EN };
+      else if (DEF_Q_EN.test(question)) r = { in_scope: true, answer: ANSWERS_DEF_EN };
       const cost = (inTok * PRICE_IN + outTok * PRICE_OUT) / 1e6;
       await Promise.resolve(deps.recordUsage?.({ user_id: user.id, endpoint: "help", provider: deps.provider.name, model: deps.provider.model, input_tokens: inTok, output_tokens: outTok, est_cost_usd: cost, status: "ok" })).catch(() => {});
-      return json({ ...r, ...(r.in_scope ? {} : { hint: OUT_OF_SCOPE_HINT }), usage: { input_tokens: inTok, output_tokens: outTok, est_cost_usd: cost } });
+      return json({ ...r, ...(r.in_scope ? {} : { hint: lang === "en" ? OUT_OF_SCOPE_HINT_EN : OUT_OF_SCOPE_HINT }), usage: { input_tokens: inTok, output_tokens: outTok, est_cost_usd: cost } });
     } catch (e) {
       return errorResponse(toHttpError(e));
     }

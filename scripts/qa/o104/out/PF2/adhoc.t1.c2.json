@@ -46,7 +46,7 @@
           },
           {
             "type": "text",
-            "text": "<count>9</count>\nRead the 1 page images.\n<part>questions</part> Return the JSON object with \"summary\", \"questions_possible\" and \"questions\" (or \"unreadable\"), but WITHOUT \"notes\": another step writes the notes at the same time."
+            "text": "<count>9</count>\n<language>English</language>\nRead the 1 page images.\n<part>questions</part> Return the JSON object with \"summary\", \"questions_possible\" and \"questions\" (or \"unreadable\"), but WITHOUT \"notes\": another step writes the notes at the same time."
           }
         ]
       }
