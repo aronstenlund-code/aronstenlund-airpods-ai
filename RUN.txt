@@ -1,0 +1,23 @@
+run: 45932431120
+commit: 4aed584815e5b9ce300a6212e7c0b9de2e3c7926
+device: iPhone 17 Pro Max
+en-listeningActivation.png: 1320 2868 
+en-repOwnDeck.png: 1320 2868 
+en-repPlayAnswer.png: 1320 2868 
+en-repSayCompressed.png: 1320 2868 
+en-repSayCredits.png: 1320 2868 
+en-repSayOnCard.png: 1320 2868 
+en-repSayPicked.png: 1320 2868 
+en-repSayVoicesUser.png: 1320 2868 
+en-repShop.png: 1320 2868 
+en-repTextNew.png: 1320 2868 
+listeningActivation.png: 1320 2868 
+repOwnDeck.png: 1320 2868 
+repPlayAnswer.png: 1320 2868 
+repSayCompressed.png: 1320 2868 
+repSayCredits.png: 1320 2868 
+repSayOnCard.png: 1320 2868 
+repSayPicked.png: 1320 2868 
+repSayVoicesUser.png: 1320 2868 
+repShop.png: 1320 2868 
+repTextNew.png: 1320 2868 
