@@ -26751,6 +26751,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Tryck 1 gång för frågans A-svar.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Press once for the question's top-grade answer."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tryck 1 gång för frågans A-svar."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Tryck 2 gånger för ett kort A-svar på en till två meningar.": {
       "extractionState": "manual",
       "localizations": {
@@ -29799,24 +29817,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "till %@"
-          }
-        }
-      },
-      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
-    },
-    "tryck 1 gång för frågans A-svar.": {
-      "extractionState": "manual",
-      "localizations": {
-        "en": {
-          "stringUnit": {
-            "state": "needs_review",
-            "value": "press once for the question's top-grade answer."
-          }
-        },
-        "sv": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "tryck 1 gång för frågans A-svar."
           }
         }
       },

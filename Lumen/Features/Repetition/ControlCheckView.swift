@@ -156,7 +156,7 @@ struct ControlCheckView: View {
                 .padding(.leading, 12)
             VStack(spacing: 0) {
                 // Kelly K1: lower case after the colon, as Aron wrote it
-                row(.one, forText ? String(localized: "Tryck 1 gång för att pausa eller fortsätta.") : String(localized: "tryck 1 gång för frågans A-svar."))
+                row(.one, forText ? String(localized: "Tryck 1 gång för att pausa eller fortsätta.") : String(localized: "Tryck 1 gång för frågans A-svar."))
                 Divider().padding(.leading, 52)
                 row(.two, forText ? String(localized: "Tryck 2 gånger för nästa mening.") : String(localized: "Tryck 2 gånger för ett kort A-svar på en till två meningar."))
                 Divider().padding(.leading, 52)
