@@ -77,7 +77,9 @@ Samtyckets version (`ConsentPolicy.currentVersion` 6) är **inte** höjd. D21 kr
 
 ## Testresultat
 
-BYGGRAD
+- **iOS build 45910351295 grön** på `angela/ke91-ord` (58cd664f): enhetsbygge med varningar som fel, hela sviten (1 180 gröna testrader, 0 röda), Release-arkivet och kontrollen att testläget inte finns i Release. *Verified in CI.* Alla 5 Ke91-testerna är gröna.
+- **Röd körning först: 45910330297** på `angela/ke91-test-rod` (bara testerna, mot main) föll med 18 förväntningar som inte höll: de engelska orden i provfrågorna, "Lumen, continue/fortsätt" och "quiz me". Det testade alltså rätt sak. Svenska orden och yes/no var redan gröna där.
+- På main slogs grenen ihop med Angela Fables A167 och Kevins K124 utan krockar; `tools/l10n/sync.py` och `check.py` är rena på det sammanslagna läget. Main-bygget skrivs in i STATUS.
 
 - **Röda först** (`angela/ke91-test-rod`, bara befintligt API, mot main): `LumenTests/Ke91WordsTests.swift`, 5 tester: provfrågornas engelska ord, att svenska ord och svar fungerar som förut, "Lumen, continue/fortsätt", "quiz me" som kontrollfråga och yes/no.
 - `LumenTests/A164OwnDeckTests.swift`: förvalsnamnet är "Mina frågor".
