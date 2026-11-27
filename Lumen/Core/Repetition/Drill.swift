@@ -505,12 +505,12 @@ enum SaidText {
 /// sound that already exists cost nothing. Every number comes from the server; these are only the words.
 enum CreditText {
     /// Ke91 (Kelly): an account that counts credits hears about credits, never about "questions this month".
-    static func usedUp(credits: Bool) -> String {
+    @MainActor static func usedUp(credits: Bool) -> String {
         credits ? String(localized: "Du har inga krediter kvar. Nya krediter kommer den 1 \(ChatGPTImportView.nextMonth()).")
             : String(localized: "Du har inga frågor kvar den här månaden. Nya frågor går att göra från den 1 \(ChatGPTImportView.nextMonth()).")
     }
 
-    static func usedUpShort(credits: Bool) -> String {
+    @MainActor static func usedUpShort(credits: Bool) -> String {
         credits ? String(localized: "Inga krediter kvar.") : String(localized: "Inga frågor kvar den här månaden.")
     }
 

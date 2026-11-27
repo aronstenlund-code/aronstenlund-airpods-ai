@@ -31,6 +31,7 @@ import Testing
 }
 
 /// Ke91 point 5: an account that counts credits hears about credits when it has run out, never about questions.
+@MainActor
 @Suite struct Ke91CreditWordsTests {
     @Test func runningOutSaysCreditsOnACreditAccount() {
         #expect(CreditText.usedUpShort(credits: true) == "Inga krediter kvar.")
