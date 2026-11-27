@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="sv">
+<head>
+<!-- Kelly Ke96: genererad av scripts/site/start-page.py. Ändra skriptet, inte filen. -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kom igång med EarMind</title>
+<meta name="description" content="Fem korta steg: installera EarMind, koppla dina AirPods, ställ din första fråga, välj dina aktiveringsord och spela in själv.">
+<link rel="canonical" href="https://earmind.vercel.app/sv/start">
+<link rel="alternate" hreflang="en" href="https://earmind.vercel.app/start">
+<link rel="alternate" hreflang="sv" href="https://earmind.vercel.app/sv/start">
+<link rel="alternate" hreflang="x-default" href="https://earmind.vercel.app/start">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#FFFFFF">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0F1218">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --surface: #F4F6FA;
+    --raised: #FFFFFF;
+    --soft: #EAF0FF;
+    --ink: #141A2E;
+    --mut: #5E6779;
+    --line: #E4E8EF;
+    --chip: #F4F6FA;
+    --seg-on: #FFFFFF;
+    --shadow: 0 1px 2px rgba(16,24,40,.06), 0 6px 20px rgba(16,24,40,.07);
+    --blue: #2346C8;
+    --on-blue: #FFFFFF;
+    --red: #D9342B;
+    --on-red: #FFFFFF;
+    --bad: #B8261E;          /* röd text på papper: mörkare än knappen för läsbarhet */
+    --ease-out: cubic-bezier(.23, 1, .32, 1);
+    --gut: 20px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0F1218;
+      --surface: #181C26;
+      --raised: #1D2230;
+      --soft: #1E2A4F;
+      --ink: #EEF1F7;
+      --mut: #9AA3B5;
+      --line: #272D3B;
+      --chip: #181C26;
+      --seg-on: #2B3245;
+      --shadow: none;
+      --blue: #7F9BFF;
+      --on-blue: #0E1630;
+      --red: #FF6F61;
+      --on-red: #2A0B07;
+      --bad: #FF8A7E;
+      color-scheme: dark;
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+    background: var(--bg);
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 1.0625rem/1.5 -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, "Segoe UI", Roboto, sans-serif;
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+  }
+  h1, h2, h3, p, ul, ol, figure { margin: 0; padding: 0; }
+  ul, ol { list-style: none; }
+  a { color: inherit; text-underline-offset: .18em; }
+  button, input { font: inherit; color: inherit; }
+  button {
+    cursor: pointer;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+  }
+  :focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+  [hidden] { display: none !important; }
+  .sr {
+    position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0;
+    overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0;
+  }
+  /* Ke13: frågor i vanlig text (halvfet), kort i stället för rutpapper. Klassnamnen finns kvar. */
+  .hand { font-weight: 600; }
+  .paper {
+    background: var(--raised);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+  }
+  @media (prefers-color-scheme: dark) { .paper { border-color: transparent; } }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--gut); }
+
+  /* ---------- Huvud ---------- */
+  .top { padding-top: calc(14px + env(safe-area-inset-top)); }
+  .name {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    font-weight: 700;
+    font-size: 1.375rem;
+    letter-spacing: -.02em;
+    text-decoration: none;
+  }
+  .name img { width: 32px; height: 32px; border-radius: 7px; flex: none; }
+
+  .fine { color: var(--mut); font-size: .9375rem; line-height: 1.45; max-width: 60ch; margin-top: 28px; }
+  .fine + .fine { margin-top: 10px; }
+  .fine a { color: var(--blue); }
+  .fine a, .mini-fine a { display: inline-block; padding: 12px 0; margin: -12px 0; }
+    .top { padding-top: 24px; }
+  .top { display: flex; align-items: center; justify-content: space-between; }
+  .langsw { display: inline-flex; border-radius: 999px; background: var(--line, rgba(127,127,127,.18)); padding: 3px; gap: 2px; }
+  .langsw a { padding: 5px 12px; border-radius: 999px; font-size: .875rem; color: inherit; text-decoration: none; }
+  .langsw a[aria-current="true"] { background: Canvas; color: CanvasText; font-weight: 600; box-shadow: 0 1px 2px rgba(0,0,0,.12); }
+  .top.narrow { max-width: 880px; }
+  .guide { padding-top: 28px; padding-bottom: calc(56px + env(safe-area-inset-bottom)); max-width: 880px; }
+  .guide h1 { font-weight: 700; font-size: clamp(2.25rem, 10vw, 3.25rem); line-height: 1.04; letter-spacing: -.035em; }
+  .guide .lead { margin-top: 10px; color: var(--mut); line-height: 1.5; max-width: 40em; }
+  .steps { counter-reset: st; }
+  .step { counter-increment: st; margin-top: 24px; padding: 20px; display: grid; gap: 18px; align-items: center; }
+  .step h2 { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.375rem; line-height: 1.2; }
+  .step h2::before { content: counter(st); flex: none; width: 34px; height: 34px; border-radius: 50%; background: var(--blue);
+                     color: var(--on-blue); display: grid; place-items: center; font-size: 1rem; }
+  .step p { margin-top: 8px; color: var(--mut); line-height: 1.5; }
+  .step b { color: var(--ink); font-weight: 600; }
+  .shot { display: block; width: 100%; max-width: 260px; height: auto; margin: 0 auto; border-radius: 26px;
+          border: 6px solid #1d1d1f; background: #1d1d1f; }
+  .note { margin-top: 28px; color: var(--mut); }
+  .note a, .back { color: var(--blue); }
+  .back { display: inline-block; margin-top: 16px; }
+  @media (min-width: 720px) { .step { grid-template-columns: minmax(0, 1fr) 260px; padding: 28px; } }
+
+</style>
+</head>
+<body>
+<header class="top wrap narrow">
+  <a class="name" href="/sv"><img src="/img/ikon-64.webp" width="32" height="32" alt=""> <span>EarMind</span></a>
+  <nav class="langsw" aria-label="Language"><a href="/start" hreflang="en" lang="en" data-lang="en" aria-label="English">EN</a><a href="/sv/start" hreflang="sv" lang="sv" data-lang="sv" aria-label="Svenska" aria-current="true">SV</a></nav>
+</header>
+<main class="guide wrap">
+  <h1>Kom igång</h1>
+  <p class="lead">Fem korta steg från första skärmen till ditt första svar i dina AirPods.</p>
+  <ol class="steps"><li class="step paper"><div><h2>Installera och öppna EarMind</h2><p>iPhone-appen kommer snart till App Store. När den finns: installera och öppna den. Läs välkomstskärmen och tryck <b>Fortsätt</b>. Du behöver inget konto.</p></div><img class="shot" src="/img/start/sv-fsWelcome.webp" width="600" height="1304" loading="lazy" alt="Skärm ur appen: välkomstskärmen med Fota boken, Lyssna i dina AirPods och Fråga högt"></li><li class="step paper"><div><h2>Koppla dina AirPods</h2><p>Sätt i dina AirPods. De kopplas till telefonen som vanligt. Öppna <b>Styr med dina AirPods</b> i EarMind och prova trycken: en gång för det långa svaret, två gånger för det korta, tre gånger för paus. Inga AirPods? Då spelas svaren i telefonens högtalare.</p></div><img class="shot" src="/img/start/sv-repControls.webp" width="600" height="1304" loading="lazy" alt="Skärm ur appen: Styr med dina AirPods, där du provar trycken"></li><li class="step paper"><div><h2>Ställ din första fråga</h2><p>Nästa skärm förklarar vad som händer med ljud och text. Tryck <b>Jag förstår, starta EarMind</b>, tillåt mikrofonen och fråga högt, till exempel ”Vad är fotosyntes?” Svaret kommer i örat och på skärmen. Du ser alltid ”● Lyssnar”, och ett tryck stoppar. Vill du plugga utan mikrofon? Tryck <b>Senare</b> och sedan <b>Nytt prov</b>.</p></div><img class="shot" src="/img/start/sv-firstListening.webp" width="600" height="1304" loading="lazy" alt="Skärm ur appen: Lyssnar, med Fråga vad du vill"></li><li class="step paper"><div><h2>Välj dina aktiveringsord</h2><p>Under ”Fråga du inte är beredd på? Säg [ … ] så aktiveras vår AI.” skriver du ett eller flera egna ord, till exempel <b>Hjälp mig</b>. När EarMind hör dem medan den lyssnar svarar den på frågan som just ställdes.</p></div><img class="shot" src="/img/start/sv-listeningActivation.webp" width="600" height="1304" loading="lazy" alt="Skärm ur appen: fältet för aktiveringsorden med Hjälp mig, och ett svar"></li><li class="step paper"><div><h2>Spela in själv – helt gratis</h2><p>Tryck <b>Spela in själv</b> på första skärmen. Skriv en fråga och ett svar, tryck <b>Spela in</b> och läs upp dem, och tryck sedan <b>Öva</b>. Inga krediter, och ljudet stannar på din telefon.</p></div><img class="shot" src="/img/start/sv-repOwnDeck.webp" width="600" height="1304" loading="lazy" alt="Skärm ur appen: Spela in själv, med frågor, svar och knappen Öva"></li></ol>
+  <p class="note">Fler frågor? Se <a href="/sv/support">Hjälp och support</a>.</p>
+  <a class="back" href="/sv">Tillbaka till EarMind</a>
+</main>
+<script>
+// Samma språkval som sajten och betan (Ke87).
+(function(){var k="earmind.beta.lang";try{document.querySelectorAll(".langsw a").forEach(function(a){a.addEventListener("click",function(){try{localStorage.setItem(k,a.dataset.lang)}catch(e){}})});
+if(location.pathname==="/start"&&localStorage.getItem(k)==="sv")location.replace("/sv/start");}catch(e){}})();
+</script>
+</body>
+</html>
