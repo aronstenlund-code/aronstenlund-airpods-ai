@@ -39,6 +39,18 @@ const MEM: [string, string, string[], string][] = [
   ["M13", "I have an English test on Monday", [], '{"add":["Har prov i engelska måndag 30 november 2026."],"update":[],"remove":[]}'],
   ["M14", "vad är fotosyntes", [], '{"add":["Undrar vad fotosyntes är."],"update":[],"remove":[]}'],
   ["M15", "jag har glutenallergi", [], '{"add":["Har glutenallergi."],"update":[],"remove":[]}'],
+  ["M16", "mitt nummer är 0701234567", [], '{"add":["Mobilnummer 0701234567."],"update":[],"remove":[]}'],
+  ["M17", "ring mig på +46 70 123 45 67", [], '{"add":["Nås på +46 70 123 45 67."],"update":[],"remove":[]}'],
+  ["M18", "mitt nummer är noll sju noll ett två tre fyra fem sex sju", [], '{"add":["Telefonnummer noll sju noll ett två tre fyra fem sex sju."],"update":[],"remove":[]}'],
+  ["M19", "min mejl är elev at example dot com", [], '{"add":["Mejl elev at example dot com."],"update":[],"remove":[]}'],
+  ["M20", "jag bor på Kungsgatan 3B, lgh 1101, 752 37 Uppsala", [], '{"add":["Bor på Kungsgatan 3B, lgh 1101, 752 37 Uppsala."],"update":[],"remove":[]}'],
+  ["M21", "my number is 07012 34567 and I live at 5 Baker Street", [], '{"add":["Telefon 07012 34567.","Bor på 5 Baker Street."],"update":[],"remove":[]}'],
+  ["M22", "min bror heter Elias", [], '{"add":["Brodern heter Elias."],"update":[],"remove":[]}'],
+  ["M23", "min mamma heter Anna och är sjuk", [], '{"add":["Mamman heter Anna och är sjuk."],"update":[],"remove":[]}'],
+  ["M24", "min kompis Elias är arbetslös", [], '{"add":["Elias är arbetslös."],"update":[],"remove":[]}'],
+  ["M25", "min bästa vän Sara har ADHD", [], '{"add":["Bästa vännen Sara har ADHD."],"update":[],"remove":[]}'],
+  ["M26", "min kompis Leo bor på Ringvägen 5", [], '{"add":["Kompisen Leo bor på Ringvägen 5."],"update":[],"remove":[]}'],
+  ["M27", "jag bor i Uppsala och går på Katedralskolan", [], '{"add":["Bor i Uppsala.","Går på Katedralskolan."],"update":[],"remove":[]}'],
 ];
 for (const [id, q, mem, reply] of MEM) {
   const f = fake(reply);
