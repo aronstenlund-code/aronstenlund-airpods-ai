@@ -58,7 +58,7 @@ for i in ids:
     results[f"bank/{i}"] = case_view(json.loads(f.read_text())) if f.exists() else {"status": "saknas"}
 # 2. Oscar's own suites
 env_replay = " ".join([str(QA / "k122_fixed_clock.ts"), "scripts/k122-replay.ts"])
-for s in ("o103", "o104", "o105", "o106", "o107"):
+for s in ("o103", "o104", "o105", "o106", "o107", "o109"):
     out = tmp / s
     os.environ["K122_REPLAY"] = env_replay
     os.environ["K122_OUT"] = str(out)
