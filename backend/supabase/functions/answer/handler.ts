@@ -138,7 +138,7 @@ export function isClearQuestion(text: string): boolean {
  * mamma?", "Var lade du mina nycklar?") are not for the assistant. One word back: ja or nej.
  */
 export const LISTEN_GATE_PROMPT =
-  `A study assistant listens in a room through the student's earphones and answers questions out loud. You get ONE utterance the microphone picked up. Is it a question someone would want the assistant to answer: a fact, school, language or general-knowledge question that has one answer anyone can give ("Vilket år började första världskriget?", "Vad heter grundämnet med beteckningen Fe?", "What year did the Berlin Wall fall?")? Answer "nej" when people are talking to each other: questions about each other, their plans, feelings, things or what someone said or thinks ("Vad ska vi äta ikväll?", "Hur mår din mamma nu?", "Var lade du mina nycklar?", "Elin, har du tagit med dig boken?", "vad sa du?", "vad tror du?"). Reply with one word: ja or nej.`;
+  `A study assistant listens in a room through the student's earphones and answers questions out loud. You get ONE utterance the microphone picked up. Is it a question someone would want the assistant to answer: a fact, school, language or general-knowledge question that has one answer anyone can give ("När dog Gustav Vasa?", "Hur många kromosomer har en människa?", "What is the boiling point of water?"), also when it is put to the room ("vet du vad …", "kommer du ihåg vem …")? Answer "nej" when people are talking to each other: questions about each other, their plans, feelings, belongings or what someone said or thinks ("Ska vi gå hem nu?", "Hur var det på jobbet?", "Har du sett min laddare?", "Johan, kan du stänga fönstret?", "Vad menade du?", "Do you want some tea?"). Reply with one word, ja or nej, and nothing else.`;
 export const LISTEN_GATE_MS = 2500;
 
 /** K44: "vad kan du (göra)?", "vad kan EarMind?", "vad mer kan du?" */
@@ -1267,13 +1267,14 @@ export function createHandler(deps: Deps): (req: Request) => Promise<Response> {
             for await (const c of provider0!.stream({
               system: LISTEN_GATE_PROMPT,
               user: `<utterance>${sanitizeTagged(body.fragment.slice(0, 400))}</utterance>`,
-              maxTokens: 5, cacheSystem: true, noThinking: true, signal: AbortSignal.timeout(LISTEN_GATE_MS),
+              maxTokens: 3, cacheSystem: true, noThinking: true, signal: AbortSignal.timeout(LISTEN_GATE_MS),
             })) if (c.type === "text") reply += c.text;
           } catch (e) {
             console.warn("listen_gate_failed", e instanceof Error ? e.message.slice(0, 120) : String(e));
             return true;
           }
-          const no = /^\s*(?:nej|no)[.!]?\s*$/iu.test(reply);
+          // O106 N1 (Oscar): only the first word counts ("nej, det är en fråga till kompisen" is a no)
+          const no = /^\W*(?:nej|no)(?![\p{L}])/iu.test(reply);
           console.log(JSON.stringify({ event: "listen_gate", verdict: no ? "nej" : "ja", reply: reply.trim().slice(0, 10) }));
           return !no;
         })()
