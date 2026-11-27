@@ -31,6 +31,10 @@ final class RepetitionPlayer {
     private(set) var index: Int
     /// Laps played through the whole list (R5d).
     private(set) var lap = 0
+    /// A168 (Deangelo 2026-11-27): the questions played to their end, and those whose answer was asked for with a
+    /// press. The summary after Avsluta says how many were heard, and offers the asked ones again.
+    private(set) var heardQuestions: Set<Int> = []
+    private(set) var askedAnswers: Set<Int> = []
     /// Why it paused: a press, or iOS (call, Siri, an AirPod out). Only iOS's own pause comes back by itself.
     private(set) var pausedBySystem = false
     /// When the thinking time began (the screen's ring counts down from it).
@@ -192,6 +196,7 @@ final class RepetitionPlayer {
 
     private func questionEnded(_ i: Int) {
         guard phase == .question(i) else { return }
+        heardQuestions.insert(i) // A168
         onQuestionPlayed?(i)
         current = nil
         startThinking(i)
@@ -225,6 +230,7 @@ final class RepetitionPlayer {
         current = nil
         thinkingStarted = nil
         phase = .answer(i, kind)
+        askedAnswers.insert(i) // A168: the user pressed for this answer
         step("\(kind.rawValue) answer \(i + 1)")
         let done: @MainActor () -> Void = { [weak self] in
             guard let self, self.phase == .answer(i, kind) else { return }

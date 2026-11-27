@@ -54,7 +54,7 @@ const STUDY_CUES = re(
     "steg för steg",
     "instruktion(?:er|erna)?",
     "plan för",
-    "hur lång tid",
+    // O106 L4 (Oscar): "hur lång tid tar det att flyga dit" is a fact (a duration), not a study answer
   ].join("|"),
 );
 

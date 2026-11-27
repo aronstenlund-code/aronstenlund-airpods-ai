@@ -1,0 +1,52 @@
+{
+ "stem": "adhoc.t1.c1",
+ "case": "adhoc",
+ "turn": 1,
+ "call": 1,
+ "endpoint": "exam",
+ "url": "https://k122-replay.invalid/v1/messages",
+ "client_request": {
+  "action": "hint",
+  "level": 1,
+  "tried": "vet inte hur jag börjar",
+  "task": {
+   "no": "1",
+   "text": "Lös x² + 2x − 8 = 0.",
+   "points": {
+    "E": 1,
+    "C": 1,
+    "A": 0
+   },
+   "answer": "x = 2 eller x = −4",
+   "assessment": ""
+  },
+  "lang": "sv"
+ },
+ "anthropic_request": {
+  "model": "claude-haiku-5-5",
+  "max_tokens": 200,
+  "stream": true,
+  "system": [
+   {
+    "type": "text",
+    "text": "You help a student during an exam practice session in Sweden. You get <task> (text, points, the correct answer and the scoring rules), <level> (1, 2 or 3) and <tried> (optional: what the student has tried). Reply with plain spoken Swedish (in English when <language> is en), never the final answer:\n- level 1: a nudge in one sentence: what the task is really asking or which idea to start from.\n- level 2: the method in one or two sentences: the formula, concept or first step, without doing the calculation.\n- level 3: a worked first step in two or three sentences, stopping before the final answer.\nNo markdown, no symbols the speech would read out, numbers as digits.",
+    "cache_control": {
+     "type": "ephemeral"
+    }
+   }
+  ],
+  "messages": [
+   {
+    "role": "user",
+    "content": "<task>\nUppgift 1: Lös x² + 2x − 8 = 0.\nPoäng: E 1, C 1, A 0\nRätt svar: x = 2 eller x = −4\nBedömning: \n</task>\n<level>1</level>\n<tried>vet inte hur jag börjar</tried>"
+   }
+  ],
+  "output_config": {
+   "effort": "low"
+  },
+  "thinking": {
+   "type": "disabled"
+  }
+ },
+ "reply_hint": "As the system prompt's Return line says."
+}

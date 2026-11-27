@@ -32,6 +32,8 @@ struct RepetitionHomeSection: View {
     @State private var showsShop = false
     /// A165 (D263): the deck whose screen is up, and the deck to practise once that screen has closed.
     @State private var ownDeck: OwnDeckSheet?
+    /// A168: "Öva de 3 igen" was pressed; it starts when the summary sheet is down.
+    @State private var practisesMissed: PracticeSummary?
 
     /// A165: the user's own decks, listed among the quizzes (Ke89 §1).
     private var ownDecks: [OwnDeck] { model.ownDecks?.decks ?? [] }
@@ -75,7 +77,7 @@ struct RepetitionHomeSection: View {
     /// A165 (D263): nothing of Start's own is over it, so the sheet about "Spela in själv" can come up here.
     private var isFront: Bool {
         if isCreating || showsShop || showsLaunchOffer || askingReminder || askingCode { return false }
-        if checking != nil || ownDeck != nil { return false }
+        if checking != nil || ownDeck != nil || model.practiceSummary != nil { return false }
         return !model.showsPlayer
     }
 
@@ -195,6 +197,25 @@ struct RepetitionHomeSection: View {
             }
         }
         .sheet(isPresented: $showsShop) { CreditsSheet(model: model) }
+        // A168 (Deangelo 2026-11-27): after Avsluta, what was heard and the missed questions to practise again.
+        .sheet(item: Binding(get: { model.showsPlayer ? nil : model.practiceSummary },
+                             set: { if $0 == nil { model.practiceSummary = nil } }),
+               onDismiss: {
+                   // The player is a cover from the app's root: it comes once this sheet is down.
+                   if let asked = practisesMissed {
+                       practisesMissed = nil
+                       Task { await model.practiseMissed(asked) }
+                   } else {
+                       offerReminder()
+                   }
+               }) { summary in
+            PracticeSummarySheet(summary: summary) {
+                practisesMissed = summary
+                model.practiceSummary = nil
+            } onDone: {
+                model.practiceSummary = nil
+            }
+        }
         // Toby T36 (2026-11-17): the capsule still said 15 after a new text had been played. The number is read again
         // when the player closes, so what was counted (or given back, D200) while it played shows on Start.
         .onChange(of: model.showsPlayer) { _, shows in if !shows { Task { await model.refreshQuota() } } }
@@ -568,7 +589,8 @@ struct RepetitionHomeSection: View {
     private func offerReminder() {
         // Toby T46: a text from "Säg i AirPods" plays on its card, and the question came up over it after the first
         // lap, hiding Pausa and Stoppa. It waits until nothing plays on the card.
-        guard model.asksForReminders, !model.showsPlayer, !model.isSayingOnCard, !askingReminder else { return }
+        guard model.asksForReminders, !model.showsPlayer, !model.isSayingOnCard, !askingReminder,
+              model.practiceSummary == nil else { return } // A168: after the summary
         Task {
             try? await Task.sleep(for: .milliseconds(700))
             if model.asksForReminders, !model.showsPlayer, !model.isSayingOnCard { askingReminder = true }

@@ -1,0 +1,1 @@
+{"points": {"E": 1, "C": 0, "A": 0}, "feedback": "x lika med 2 är en rätt rot och ger en E-poäng. Ekvationen har två lösningar, så leta också efter den andra roten för att få C-poängen."}

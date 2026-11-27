@@ -16,6 +16,12 @@ python3 scripts/qa/o105/run.py $DENO --only <ID,ID>
 ```
 **Jämför** med förra körningen: `said`, `done.source`, `source_fallback`, `source_missing`, `safety`, felkod och `json` (poäng, frågor). Ett skript som gör det finns i rapporten O103 del 2.
 
+
+## Hela sviten i CI (O108)
+`python3 scripts/qa/k122_regression.py --deno $DENO` kör om alla 188 fall: bank, o103–o107 och de två harnessarna, med fast klocka (`K122_NOW`, standard 2026-11-27T08:00:00Z). Utfallet jämförs med `scripts/qa/k122_baseline.json`.
+- **I CI:** `.github/workflows/oscar-k122-regression.yml` körs efter varje lyckad "Deploy backend" och för hand. Den blir röd när ett fall har ändrats, och rapporten står i jobbets sammanfattning.
+- **Efter en avsiktlig ändring:** granska rapporten och kör `--update`. Skriv ett nytt svar där en prompt har ändrats så att modellen borde svara annorlunda.
+
 ## Ändrat område → fall
 | Ändring i | Kör om |
 |---|---|
@@ -32,7 +38,10 @@ python3 scripts/qa/o105/run.py $DENO --only <ID,ID>
 | Modellen nere (`provider_*`, i18n) | o103: D1–D6 |
 | Hjälpen (`help`, `docs/HJALP.md` / `shared/hjalp.ts`) | o105: HL1–HL5 · bank: HE1 HE2 HT1 |
 | Säg i AirPods: stil och röstval (`drill/style.ts`) | o105: ST1–ST5 VO1–VO5 |
-| Lyssnarläget (auto, frågegrinden, `isClearQuestion`, `isCutOff`, direktvägen) | o106: A01–A28 (`python3 scripts/qa/o106/run.py $DENO`) |
+| Lyssnarläget (auto, frågegrinden, `isClearQuestion`, `isCutOff`, direktvägen) | o106: A01–A34 (`python3 scripts/qa/o106/run.py $DENO`; för tydliga frågor är c1 grinden ja/nej och c2 svaret) |
+| Provläge från foto (`parse`, talad uppgiftstext, rättning med siffror) | o107: P1–P6 PT1 PT2 D1 D2 G1–G8 H1 H2 (`python3 scripts/qa/o107/run.py $DENO`) |
+| Minnet, studieprofilen, studieplanen | `(cd backend && $DENO run --no-lock --no-check --allow-read --allow-env ../scripts/qa/o107/memory_plan.ts)` |
+| Delning och publicering (live) | `o107_share_live.py` i oscar-live.yml |
 | Socialt, Rizz, intervju | bank: O01 RZ1 RZ1s I01 |
 
 Livetester som inte går genom K122:

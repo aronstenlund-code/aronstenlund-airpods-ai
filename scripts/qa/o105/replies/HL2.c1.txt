@@ -1,1 +1,1 @@
-{"in_scope": true, "answer": "1. Tap Dela (the symbol with the arrow up) at the top right of the quiz. 2. Send the link, for example with Messages. Sharing works once all the audio is ready. To let everyone at your school study it, use Publicera prov."}
+{"in_scope": true, "answer": "1. Tap Share (the symbol with the arrow up) at the top right of the quiz. 2. Send the link, for example with Messages. Sharing works once all the audio is ready. To let everyone at your school study it, use Publish quiz."}

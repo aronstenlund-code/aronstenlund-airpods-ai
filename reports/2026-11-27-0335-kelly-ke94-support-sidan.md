@@ -34,3 +34,12 @@
 - **Live:** se tillägget nedan. Vercel bygger produktionen från main ungefär en gång i timmen (Ke93). Mitt commit `a856b6d7` (02:34 UTC) kom precis efter bygget 02:31.
 
 0 ElevenLabs. Inget i appen är ändrat.
+
+## Tillägg: live (Ke95)
+`/support` och `/sv/support` är live efter Vercels bygge 03:05 UTC (main `c6862ed0`, som innehåller `a856b6d7`). kelly-site-check 45932270267:
+- båda svarar 200, med 13 205 och 13 227 byte;
+- 0 platshållare och 0 mailto;
+- ingen vågrät rullning vid 393 px;
+- `/`, `/sv` och `/beta` svarar fortsatt 200.
+
+Raden "MISSING 308 /support" är samma fel i kontrollskriptet som tidigare gav "//beta", inget fel på sajten. **Verifierat i Actions.**

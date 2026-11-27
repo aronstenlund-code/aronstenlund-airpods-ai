@@ -1,0 +1,103 @@
+{
+ "id": "adhoc",
+ "status": "done",
+ "prompts": [
+  {
+   "stem": "adhoc.t1.c1",
+   "case": "adhoc",
+   "turn": 1,
+   "call": 1,
+   "endpoint": "exam",
+   "url": "https://k122-replay.invalid/v1/messages",
+   "client_request": {
+    "action": "grade",
+    "task": {
+     "no": "2",
+     "text": "Förenkla √49 + ½ · 6.",
+     "points": {
+      "E": 1,
+      "C": 0,
+      "A": 0
+     },
+     "answer": "10",
+     "assessment": ""
+    },
+    "answer": "7 plus 3 är 10",
+    "lang": "sv"
+   },
+   "anthropic_request": {
+    "model": "claude-haiku-5-5",
+    "max_tokens": 300,
+    "stream": true,
+    "system": [
+     {
+      "type": "text",
+      "text": "You mark a student's answer to one exam task, strictly by the scoring rules. You get <task> (text, points per level E/C/A, the correct answer and the scoring rules), <numeric_check> (computed by code: whether the student's final number equals the correct one; trust it) and <answer> (the student's answer, from speech, so it may contain recognition errors in words but not in meaning).\nReturn ONLY a JSON object: {\"points\": {\"E\": 0, \"C\": 0, \"A\": 0}, \"feedback\": \"...\"}.\n- Give each point exactly as the scoring rules say, never more than the task's points per level. When <numeric_check> says the final number is wrong, no point that requires the correct answer is given; when it says it is right, the point for the correct answer is given. A bare number without any method shown never earns a method point. When a task asks for several results (for example area and perimeter) and the student gives them without working, each correct result earns its answer point, as when the national exam says \"Endast svar krävs\" (area and perimeter both right = 2 E points, when the task has them). Never claim the student wrote something that is not in <answer>.\n- feedback: one or two spoken sentences in the language of <language> (Swedish when there is no <language>): what earned points and the single most useful thing that was missing. Never the full solution (a PRACTICE RUN below says otherwise).",
+      "cache_control": {
+       "type": "ephemeral"
+      }
+     }
+    ],
+    "messages": [
+     {
+      "role": "user",
+      "content": "<task>\nUppgift 2: Förenkla √49 + ½ · 6.\nPoäng: E 1, C 0, A 0\nRätt svar: 10\nBedömning: \n</task>\n<numeric_check>The final number is correct (10).</numeric_check>\n<answer>7 plus 3 är 10</answer>"
+     }
+    ],
+    "output_config": {
+     "effort": "low"
+    },
+    "thinking": {
+     "type": "disabled"
+    }
+   },
+   "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
+  }
+ ],
+ "turns": [
+  {
+   "turn": 1,
+   "endpoint": "exam",
+   "http_status": 200,
+   "usage": [
+    {
+     "user_id": "k122-adhoc",
+     "endpoint": "exam-grade",
+     "provider": "anthropic",
+     "model": "claude-haiku-5-5",
+     "input_tokens": 462,
+     "output_tokens": 46,
+     "total_ms": 12,
+     "est_cost_usd": 6.92e-05,
+     "status": "ok"
+    }
+   ],
+   "credits": [],
+   "json": {
+    "points": {
+     "E": 1,
+     "C": 0,
+     "A": 0
+    },
+    "max": {
+     "E": 1,
+     "C": 0,
+     "A": 0
+    },
+    "total": 1,
+    "numeric": {
+     "expected": 10,
+     "given": 10,
+     "equal": true
+    },
+    "feedback": "Rätt, du räknade roten ur 49 till 7 och en halv gånger 6 till 3, och 7 plus 3 blir 10. Det ger full poäng.",
+    "usage": {
+     "input_tokens": 462,
+     "output_tokens": 46,
+     "est_cost_usd": 6.92e-05
+    }
+   }
+  }
+ ],
+ "blocked": []
+}

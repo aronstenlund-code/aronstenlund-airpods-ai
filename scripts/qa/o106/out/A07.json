@@ -39,7 +39,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<recent_qa>\nQ: vad är fotosyntes\nA: Fotosyntesen är när växter gör socker av ljus, vatten och koldioxid och släpper ut syre.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>vad är fotosyntes</active_topic>\n<transcript>\nLäraren: Okej, sätt er ner. Idag fortsätter vi med växterna. Ni har läst kapitel fyra.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>och cellandning då</fragment>"
+      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<preferences note=\"learned from this user's own corrections: follow them in this answer\">\n- Andra pratar runt användaren: at most three short sentences, the core only, nothing the others need to hear\n</preferences>\n<recent_qa>\nQ: vad är fotosyntes\nA: Fotosyntesen är när växter gör socker av ljus, vatten och koldioxid och släpper ut syre.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>vad är fotosyntes</active_topic>\n<transcript>\nLäraren: Okej, sätt er ner. Idag fortsätter vi med växterna. Ni har läst kapitel fyra.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:36 (svensk tid, Europe/Stockholm)</now>\n<fragment>och cellandning då</fragment>"
      }
     ],
     "output_config": {
@@ -67,11 +67,11 @@
      "model": "claude-haiku-5-5",
      "is_question": true,
      "confidence": 0.9,
-     "input_tokens": 4561,
+     "input_tokens": 4616,
      "output_tokens": 148,
-     "ttft_ms": 334,
-     "total_ms": 353,
-     "est_cost_usd": 0.0005301,
+     "ttft_ms": 290,
+     "total_ms": 303,
+     "est_cost_usd": 0.0005356,
      "status": "ok",
      "category": "övrigt",
      "persona": "tutor"
@@ -107,29 +107,29 @@
      "data": {
       "answered": true,
       "timing": {
-       "meta_ms": 334,
-       "ttft_ms": 334,
-       "llm_first_token_ms": 282,
-       "total_ms": 352
+       "meta_ms": 290,
+       "ttft_ms": 290,
+       "llm_first_token_ms": 250,
+       "total_ms": 302
       },
       "breakdown": {
        "auth_ms": 0,
-       "body_ms": 192,
-       "limits_ms": 280,
-       "llm_first_chunk_ms": 282,
+       "body_ms": 173,
+       "limits_ms": 249,
+       "llm_first_chunk_ms": 250,
        "direct": false,
        "cold": true,
        "answer_type": "fact",
        "continuation": null
       },
       "usage": {
-       "input_tokens": 4561,
+       "input_tokens": 4616,
        "output_tokens": 148,
        "cache_read_tokens": 0,
        "cache_write_tokens": 0,
        "web_searches": 0,
        "model": "claude-haiku-5-5",
-       "est_cost_usd": 0.0005301
+       "est_cost_usd": 0.0005356
       },
       "summary": "Efter fotosyntesen frågades om cellandning. Svaret var att cellandning bryter ner socker med syre till koldioxid och vatten och ger energi som ATP i mitokondrierna.",
       "relation": "refines",
@@ -153,29 +153,29 @@
    "done": {
     "answered": true,
     "timing": {
-     "meta_ms": 334,
-     "ttft_ms": 334,
-     "llm_first_token_ms": 282,
-     "total_ms": 352
+     "meta_ms": 290,
+     "ttft_ms": 290,
+     "llm_first_token_ms": 250,
+     "total_ms": 302
     },
     "breakdown": {
      "auth_ms": 0,
-     "body_ms": 192,
-     "limits_ms": 280,
-     "llm_first_chunk_ms": 282,
+     "body_ms": 173,
+     "limits_ms": 249,
+     "llm_first_chunk_ms": 250,
      "direct": false,
      "cold": true,
      "answer_type": "fact",
      "continuation": null
     },
     "usage": {
-     "input_tokens": 4561,
+     "input_tokens": 4616,
      "output_tokens": 148,
      "cache_read_tokens": 0,
      "cache_write_tokens": 0,
      "web_searches": 0,
      "model": "claude-haiku-5-5",
-     "est_cost_usd": 0.0005301
+     "est_cost_usd": 0.0005356
     },
     "summary": "Efter fotosyntesen frågades om cellandning. Svaret var att cellandning bryter ner socker med syre till koldioxid och vatten och ger energi som ATP i mitokondrierna.",
     "relation": "refines",

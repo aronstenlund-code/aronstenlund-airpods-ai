@@ -1,0 +1,1 @@
+{"tasks": [{"no": "1", "text": "Name the gas that plants release during photosynthesis.", "points": {"E": 1, "C": 0, "A": 0}, "answer": "", "assessment": "", "topic": "fotosyntes"}, {"no": "2", "text": "Explain why plants need light.", "points": {"E": 0, "C": 1, "A": 1}, "answer": "", "assessment": "", "topic": "fotosyntes"}], "boundaries": []}

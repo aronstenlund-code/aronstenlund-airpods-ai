@@ -27,7 +27,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:38 (svensk tid, Europe/Stockholm)</now>\n<fragment>vem var Marie Curie</fragment>"
+        "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; morgon</situation>\n<now>fredag 27 november 2026, vecka 48, klockan 09:00 (svensk tid, Europe/Stockholm)</now>\n<fragment>vem var Marie Curie</fragment>"
       }
     ],
     "output_config": {

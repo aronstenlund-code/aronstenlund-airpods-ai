@@ -30,7 +30,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: ska vi ta bussen eller cykla?\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>äh jag vet inte, vad tror du</fragment>"
+        "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<preferences note=\"learned from this user's own corrections: follow them in this answer\">\n- Andra pratar runt användaren: at most three short sentences, the core only, nothing the others need to hear\n</preferences>\n<transcript>\nKompis: ska vi ta bussen eller cykla?\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:36 (svensk tid, Europe/Stockholm)</now>\n<fragment>äh jag vet inte, vad tror du</fragment>"
       }
     ],
     "output_config": {

@@ -1,0 +1,991 @@
+[
+ {
+  "id": "M1",
+  "kind": "minne",
+  "said": "jag har prov i kemi på fredag",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Har prov i kemi fredag 28 november 2026."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [
+    "Har prov i kemi fredag 28 november 2026."
+   ],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "M2",
+  "kind": "minne",
+  "said": "provet i kemi är flyttat till nästa onsdag",
+  "model_called": false,
+  "reply": {
+   "add": [],
+   "update": [
+    {
+     "old": "Har prov i kemi fredag 28 november 2026.",
+     "new": "Har prov i kemi onsdag 3 december 2026."
+    }
+   ],
+   "remove": []
+  },
+  "saved": {
+   "add": [],
+   "update": [],
+   "remove": [],
+   "skipped": "no_self_reference"
+  },
+  "status": 200
+ },
+ {
+  "id": "M3",
+  "kind": "minne",
+  "said": "svara alltid kortare till mig",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Vill ha kortare svar."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [
+    "Vill ha kortare svar."
+   ],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "M4",
+  "kind": "minne",
+  "said": "jag har dyslexi så läs långsamt",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Har dyslexi.",
+    "Vill att texten läses långsamt."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [
+    "Vill att texten läses långsamt."
+   ],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "M5",
+  "kind": "minne",
+  "said": "jag tar penicillin den här veckan",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Tar penicillin den här veckan."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [
+    "Tar penicillin den här veckan."
+   ],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "M6",
+  "kind": "minne",
+  "said": "jag har hörselnedsättning på vänster öra",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Har hörselnedsättning på vänster öra."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [
+    "Har hörselnedsättning på vänster öra."
+   ],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "M7",
+  "kind": "minne",
+  "said": "jag går på KBT varje tisdag",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Går på KBT varje tisdag."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [
+    "Går på KBT varje tisdag."
+   ],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "M8",
+  "kind": "minne",
+  "said": "mitt mobilnummer är 070-123 45 67",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Mobilnummer 070-123 45 67."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [
+    "Mobilnummer 070-123 45 67."
+   ],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "M9",
+  "kind": "minne",
+  "said": "jag bor på Storgatan 12 i Uppsala",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Bor på Storgatan 12 i Uppsala."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [
+    "Bor på Storgatan 12 i Uppsala."
+   ],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "M10",
+  "kind": "minne",
+  "said": "min mejl är elev.test@example.com",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Mejladress elev.test@example.com."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [
+    "Mejladress elev.test@example.com."
+   ],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "M11",
+  "kind": "minne",
+  "said": "min pappa heter Johan och är arbetslös",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Pappan heter Johan och är arbetslös."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [
+    "Pappan heter Johan och är arbetslös."
+   ],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "M12",
+  "kind": "minne",
+  "said": "jag orkar inte leva längre",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Orkar inte leva längre."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "M13",
+  "kind": "minne",
+  "said": "I have an English test on Monday",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Har prov i engelska måndag 30 november 2026."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [
+    "Har prov i engelska måndag 30 november 2026."
+   ],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "M14",
+  "kind": "minne",
+  "said": "vad är fotosyntes",
+  "model_called": false,
+  "reply": {
+   "add": [
+    "Undrar vad fotosyntes är."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [],
+   "update": [],
+   "remove": [],
+   "skipped": "no_self_reference"
+  },
+  "status": 200
+ },
+ {
+  "id": "M15",
+  "kind": "minne",
+  "said": "jag har glutenallergi",
+  "model_called": true,
+  "reply": {
+   "add": [
+    "Har glutenallergi."
+   ],
+   "update": [],
+   "remove": []
+  },
+  "saved": {
+   "add": [],
+   "update": [],
+   "remove": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200
+ },
+ {
+  "id": "SP1",
+  "kind": "profil",
+  "said": "jag går i nian och har prov i biologi om cellen på fredag",
+  "reply": {
+   "profile": {
+    "grade": "y9",
+    "course": null,
+    "subject": "Biologi",
+    "exam_date": "2026-11-28",
+    "no_exam": false,
+    "topic": "cellen"
+   },
+   "terms": [
+    "cell",
+    "cellkärna",
+    "mitokondrie",
+    "cellmembran",
+    "cellvägg",
+    "kloroplast",
+    "DNA",
+    "ribosom"
+   ]
+  },
+  "result": {
+   "profile": {
+    "grade": "y9",
+    "course": null,
+    "subject": "Biologi",
+    "exam_date": "2026-11-28",
+    "no_exam": false,
+    "topic": "cellen"
+   },
+   "terms": [
+    "cell",
+    "cellkärna",
+    "mitokondrie",
+    "cellmembran",
+    "cellvägg",
+    "kloroplast",
+    "DNA",
+    "ribosom"
+   ],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200,
+  "user": "<now>fredag 27 november 2026, vecka 48, klockan 09:00 (svensk tid, Europe/Stockholm)</now>\n<current></current>\n<said>jag går i nian och har prov i biologi om ce"
+ },
+ {
+  "id": "SP2",
+  "kind": "profil",
+  "said": "jag läser Matematik 2c på gymnasiet, inget prov just nu",
+  "reply": {
+   "profile": {
+    "grade": "gy2",
+    "course": "Matematik 2c",
+    "subject": "Matematik",
+    "exam_date": null,
+    "no_exam": true,
+    "topic": null
+   },
+   "terms": [
+    "andragradsekvation",
+    "logaritm",
+    "derivata",
+    "linjär funktion"
+   ]
+  },
+  "result": {
+   "profile": {
+    "grade": "gy2",
+    "course": "Matematik 2c",
+    "subject": "Matematik",
+    "exam_date": null,
+    "no_exam": true,
+    "topic": null
+   },
+   "terms": [
+    "andragradsekvation",
+    "logaritm",
+    "derivata",
+    "linjär funktion"
+   ],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200,
+  "user": "<now>fredag 27 november 2026, vecka 48, klockan 09:00 (svensk tid, Europe/Stockholm)</now>\n<current></current>\n<said>jag läser Matematik 2c på gymnasiet, inget "
+ },
+ {
+  "id": "SP3",
+  "kind": "profil",
+  "said": "jag har ADHD och går i åttan",
+  "reply": {
+   "profile": {
+    "grade": "y8",
+    "course": null,
+    "subject": null,
+    "exam_date": null,
+    "no_exam": false,
+    "topic": null,
+    "diagnosis": "ADHD"
+   },
+   "terms": []
+  },
+  "result": {
+   "profile": {
+    "grade": "y8",
+    "course": null,
+    "subject": null,
+    "exam_date": null,
+    "no_exam": false,
+    "topic": null
+   },
+   "terms": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200,
+  "user": "<now>fredag 27 november 2026, vecka 48, klockan 09:00 (svensk tid, Europe/Stockholm)</now>\n<current></current>\n<said>jag har ADHD och går i åttan</said>"
+ },
+ {
+  "id": "SP4",
+  "kind": "profil",
+  "said": "geografiprov nästa vecka om Europas floder",
+  "reply": {
+   "profile": {
+    "grade": null,
+    "course": null,
+    "subject": "Geografi",
+    "exam_date": "2026-11-30",
+    "no_exam": false,
+    "topic": "Europas floder"
+   },
+   "terms": [
+    "Donau",
+    "Rhen",
+    "Volga",
+    "Seine",
+    "Loire",
+    "Elbe",
+    "Po",
+    "Themsen"
+   ]
+  },
+  "result": {
+   "profile": {
+    "grade": null,
+    "course": null,
+    "subject": "Geografi",
+    "exam_date": "2026-11-30",
+    "no_exam": false,
+    "topic": "Europas floder"
+   },
+   "terms": [
+    "Donau",
+    "Rhen",
+    "Volga",
+    "Seine",
+    "Loire",
+    "Elbe",
+    "Po",
+    "Themsen"
+   ],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200,
+  "user": "<now>fredag 27 november 2026, vecka 48, klockan 09:00 (svensk tid, Europe/Stockholm)</now>\n<current></current>\n<said>geografiprov nästa vecka om Europas floder<"
+ },
+ {
+  "id": "SP5",
+  "kind": "profil",
+  "said": "jag går i fjärde klass",
+  "reply": {
+   "profile": {
+    "grade": "y4",
+    "course": null,
+    "subject": null,
+    "exam_date": null,
+    "no_exam": false,
+    "topic": null
+   },
+   "terms": []
+  },
+  "result": {
+   "profile": {
+    "grade": null,
+    "course": null,
+    "subject": null,
+    "exam_date": null,
+    "no_exam": false,
+    "topic": null
+   },
+   "terms": [],
+   "usage": {
+    "input_tokens": 300,
+    "output_tokens": 40,
+    "est_cost_usd": 0.00005
+   }
+  },
+  "status": 200,
+  "user": "<now>fredag 27 november 2026, vecka 48, klockan 09:00 (svensk tid, Europe/Stockholm)</now>\n<current></current>\n<said>jag går i fjärde klass</said>"
+ },
+ {
+  "id": "PL1",
+  "kind": "plan",
+  "status": 200,
+  "result": {
+   "today": "2026-11-27",
+   "exams": [
+    {
+     "name": "Biologiprovet",
+     "date": "2026-11-28",
+     "days_left": 1,
+     "due": [
+      {
+       "concept": "cellandning",
+       "last": "2026-11-26",
+       "box": 0,
+       "next": "2026-11-27",
+       "reason": "missed"
+      }
+     ],
+     "prompt": "I går missade du cellandning. Ska vi ta det nu?",
+     "plan": [
+      {
+       "date": "2026-11-27",
+       "minutes": 15,
+       "concepts": [
+        "cellandning",
+        "fotosyntes"
+       ],
+       "note": "Blandat förhör på det viktigaste, dagen före provet."
+      }
+     ],
+     "readiness": {
+      "ready_pct": 25,
+      "practiced": 2,
+      "total": 2,
+      "weakest": [
+       {
+        "concept": "cellandning",
+        "score": 0,
+        "why": "fel senast"
+       },
+       {
+        "concept": "fotosyntes",
+        "score": 0.5,
+        "why": "rätt, men behöver fler gånger"
+       }
+      ],
+      "explain": "Räknat på 2 begrepp, 2 övade. Ett begrepp räknas fullt när du har haft rätt tre gånger i rad."
+     }
+    }
+   ],
+   "streak": {
+    "current": 0,
+    "best": 0,
+    "done_today": false,
+    "at_risk": false
+   },
+   "notification": {
+    "title": "I morgon är det Biologiprovet",
+    "body": "5 snabba frågor på cellandning? Det tar två minuter."
+   }
+  }
+ },
+ {
+  "id": "PL2",
+  "kind": "plan",
+  "status": 200,
+  "result": {
+   "today": "2026-11-27",
+   "exams": [
+    {
+     "name": "Historia",
+     "date": "2026-12-10",
+     "days_left": 13,
+     "due": [],
+     "prompt": null,
+     "plan": [
+      {
+       "date": "2026-11-27",
+       "minutes": 10,
+       "concepts": [],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-11-28",
+       "minutes": 10,
+       "concepts": [],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-11-29",
+       "minutes": 10,
+       "concepts": [],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-11-30",
+       "minutes": 10,
+       "concepts": [],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-12-01",
+       "minutes": 10,
+       "concepts": [],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-12-02",
+       "minutes": 10,
+       "concepts": [],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-12-03",
+       "minutes": 10,
+       "concepts": [],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-12-04",
+       "minutes": 10,
+       "concepts": [],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-12-05",
+       "minutes": 10,
+       "concepts": [],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-12-06",
+       "minutes": 10,
+       "concepts": [],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-12-07",
+       "minutes": 10,
+       "concepts": [],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-12-08",
+       "minutes": 10,
+       "concepts": [],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-12-09",
+       "minutes": 15,
+       "concepts": [],
+       "note": "Blandat förhör på det viktigaste, dagen före provet."
+      }
+     ],
+     "readiness": {
+      "ready_pct": null,
+      "practiced": 0,
+      "total": 0,
+      "weakest": [],
+      "explain": "Inga begrepp i provet än."
+     }
+    }
+   ],
+   "streak": {
+    "current": 0,
+    "best": 0,
+    "done_today": false,
+    "at_risk": false
+   },
+   "notification": {
+    "title": "13 dagar kvar till Historia",
+    "body": "5 snabba frågor? Det tar två minuter."
+   }
+  }
+ },
+ {
+  "id": "PL3",
+  "kind": "plan",
+  "status": 200,
+  "result": {
+   "today": "2026-11-27",
+   "exams": [
+    {
+     "name": "Gammalt prov",
+     "date": "2026-11-20",
+     "days_left": -7,
+     "due": [],
+     "prompt": null,
+     "plan": [],
+     "readiness": {
+      "ready_pct": 0,
+      "practiced": 0,
+      "total": 1,
+      "weakest": [
+       {
+        "concept": "x",
+        "score": 0,
+        "why": "inte övat än"
+       }
+      ],
+      "explain": "Räknat på 1 begrepp, 0 övade. Ett begrepp räknas fullt när du har haft rätt tre gånger i rad."
+     }
+    }
+   ],
+   "streak": {
+    "current": 0,
+    "best": 0,
+    "done_today": false,
+    "at_risk": false
+   },
+   "notification": {
+    "title": "5 snabba frågor",
+    "body": "5 snabba frågor? Det tar två minuter."
+   }
+  }
+ },
+ {
+  "id": "PL4",
+  "kind": "plan",
+  "status": 200,
+  "result": {
+   "today": "2026-11-27",
+   "exams": [
+    {
+     "name": "Kemi",
+     "date": "2026-12-03",
+     "days_left": 6,
+     "due": [
+      {
+       "concept": "syror",
+       "last": "2026-11-26",
+       "box": 0,
+       "next": "2026-11-27",
+       "reason": "missed"
+      }
+     ],
+     "prompt": "I går missade du syror. Ska vi ta det nu?",
+     "plan": [
+      {
+       "date": "2026-11-27",
+       "minutes": 10,
+       "concepts": [
+        "syror",
+        "baser"
+       ],
+       "note": "Det du missade först."
+      },
+      {
+       "date": "2026-11-28",
+       "minutes": 10,
+       "concepts": [
+        "syror",
+        "baser"
+       ],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-11-29",
+       "minutes": 10,
+       "concepts": [
+        "syror",
+        "baser"
+       ],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-11-30",
+       "minutes": 10,
+       "concepts": [
+        "syror",
+        "baser"
+       ],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-12-01",
+       "minutes": 10,
+       "concepts": [
+        "syror",
+        "baser"
+       ],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-12-02",
+       "minutes": 15,
+       "concepts": [
+        "syror",
+        "baser"
+       ],
+       "note": "Blandat förhör på det viktigaste, dagen före provet."
+      }
+     ],
+     "readiness": {
+      "ready_pct": 38,
+      "practiced": 2,
+      "total": 2,
+      "weakest": [
+       {
+        "concept": "syror",
+        "score": 0,
+        "why": "fel senast"
+       },
+       {
+        "concept": "baser",
+        "score": 0.75,
+        "why": "rätt, men behöver fler gånger"
+       }
+      ],
+      "explain": "Räknat på 2 begrepp, 2 övade. Ett begrepp räknas fullt när du har haft rätt tre gånger i rad."
+     }
+    }
+   ],
+   "streak": {
+    "current": 2,
+    "best": 2,
+    "done_today": false,
+    "at_risk": true
+   },
+   "notification": {
+    "title": "6 dagar kvar till Kemi",
+    "body": "5 snabba frågor på syror håller din svit på 2 dagar vid liv."
+   }
+  }
+ },
+ {
+  "id": "PL5",
+  "kind": "plan",
+  "status": 200,
+  "result": {
+   "today": "2026-11-27",
+   "exams": [
+    {
+     "name": "script alert(1) /script",
+     "date": "2026-11-30",
+     "days_left": 3,
+     "due": [],
+     "prompt": null,
+     "plan": [
+      {
+       "date": "2026-11-27",
+       "minutes": 10,
+       "concepts": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+       ],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-11-28",
+       "minutes": 10,
+       "concepts": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+       ],
+       "note": "Förhör på det som är svårast."
+      },
+      {
+       "date": "2026-11-29",
+       "minutes": 15,
+       "concepts": [
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+       ],
+       "note": "Blandat förhör på det viktigaste, dagen före provet."
+      }
+     ],
+     "readiness": {
+      "ready_pct": 50,
+      "practiced": 1,
+      "total": 1,
+      "weakest": [
+       {
+        "concept": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "score": 0.5,
+        "why": "rätt, men behöver fler gånger"
+       }
+      ],
+      "explain": "Räknat på 1 begrepp, 1 övade. Ett begrepp räknas fullt när du har haft rätt tre gånger i rad."
+     }
+    }
+   ],
+   "streak": {
+    "current": 0,
+    "best": 0,
+    "done_today": false,
+    "at_risk": false
+   },
+   "notification": {
+    "title": "3 dagar kvar till script alert(1) /script",
+    "body": "5 snabba frågor på aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa? Det tar två minuter."
+   }
+  }
+ }
+]

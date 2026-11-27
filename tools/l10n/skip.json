@@ -215,6 +215,7 @@
   "ett": "language data: what is listened for (Swedish commands and words), not a text on the screen",
   "fel svar": "language data: what is listened for (Swedish commands and words), not a text on the screen",
   "fem snabba frågor": "language data: what is listened for (Swedish commands and words), not a text on the screen",
+  "fortsätt": "spoken: follows the language listened for, not the texts' language",
   "fortsätt lyssna": "language data: what is listened for (Swedish commands and words), not a text on the screen",
   "följdfråga": "language data: what is listened for (Swedish commands and words), not a text on the screen",
   "föregående låt": "language data: what is listened for (Swedish commands and words), not a text on the screen",
@@ -325,6 +326,7 @@
   "tack": "language data: what is listened for (Swedish commands and words), not a text on the screen",
   "testa mig": "language data: what is listened for (Swedish commands and words), not a text on the screen",
   "testa mina svagaste områden": "language data: what is listened for (Swedish commands and words), not a text on the screen",
+  "tillbaka till earmind": "spoken: follows the language listened for, not the texts' language",
   "tillbaka till lumen": "language data: what is listened for (Swedish commands and words), not a text on the screen",
   "tre alternativ": "language data: what is listened for (Swedish commands and words), not a text on the screen",
   "tre förslag": "language data: what is listened for (Swedish commands and words), not a text on the screen",
@@ -354,9 +356,7 @@
   "vilket är nästa prov": "language data: what is listened for (Swedish commands and words), not a text on the screen",
   "viska": "language data: what is listened for (Swedish commands and words), not a text on the screen",
   "växla till": "language data: what is listened for (Swedish commands and words), not a text on the screen",
-  "är": "language data: what is listened for (Swedish commands and words), not a text on the screen",
-  "fortsätt": "spoken: follows the language listened for, not the texts' language",
-  "tillbaka till earmind": "spoken: follows the language listened for, not the texts' language"
+  "är": "language data: what is listened for (Swedish commands and words), not a text on the screen"
  },
  "Lumen/Core/Commands/CommandTips.swift": {
   "Lumen, ": "language data: what is listened for (Swedish commands and words), not a text on the screen",
@@ -962,6 +962,7 @@
   "Fotad sida ": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen"
  },
  "Lumen/Core/Study/PracticeRun.swift": {
+  " (?:tack|nu|snälla|då|please|now|thanks)$": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
   " och ": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
   " Öva på ": "spoken: follows the language listened for, not the texts' language",
   "Du hade \\(s.right) rätt av \\(s.answered).": "spoken: follows the language listened for, not the texts' language",
@@ -972,25 +973,24 @@
   "\\(s.skipped) överhoppade": "spoken: follows the language listened for, not the texts' language",
   "\\(s.wrong) fel": "spoken: follows the language listened for, not the texts' language",
   "\\\\s+": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
+  "^(?:(?:kör|starta|börja|gör|öva på) )?(?:mitt |det )?övningsprov(?:et)?$": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
+  "^(?:(?:okej|ok|hej|nej|men) )?(?:lumen )?(?:(?:kan|kunde) (?:du|vi) |snälla |vi tar |ta |gå till |jag vill (?:ha|ta|göra) )*": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
+  "^(?:fråga|uppgift|uppgiften|nummer|nr|frågan|del|question|task|number) (?:nummer |number )?([\\\\p{L}\\\\p{N}]+)(?: ([a-f]))?$": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
   "^\\\\d{1,2}[a-f]?$": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
   "en": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
   "ett": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
   "fråga \\(task.no)": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
+  "förra(?: fråga| uppgift(?:en)?)?|föregående(?: fråga)?|tillbaka|gå tillbaka|backa|den förra|previous(?: question| one)?|go back": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
+  "hoppa över(?: den(?: här)?| den här frågan| frågan)?|skippa(?: den)?|jag hoppar över den|vet inte hoppa över|pass|skip(?: it| this one| this question| the question)?": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
+  "hur (?:gick|går) det|resultat(?:et)?|hur många (?:rätt|poäng)|vad fick jag|how did i do|how am i doing|results?|my score|score": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
+  "nästa(?: fråga| uppgift)?|nästa tack|vidare|gå vidare|fortsätt|nästa då|next(?: question| one)?|go on|move on": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
+  "sluta|avsluta(?: provet| övningsprovet)?|stopp|jag är klar|vi slutar|det räcker|stop|end the (?:quiz|exam|test)|i m done|im done|that s enough|thats enough": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
   "tjugotvå": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
   "två": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
   "tvåan": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
-  "åtta": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
-  "åttan": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
-  "nästa(?: fråga| uppgift)?|nästa tack|vidare|gå vidare|fortsätt|nästa då|next(?: question| one)?|go on|move on": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
-  "förra(?: fråga| uppgift(?:en)?)?|föregående(?: fråga)?|tillbaka|gå tillbaka|backa|den förra|previous(?: question| one)?|go back": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
-  "hoppa över(?: den(?: här)?| den här frågan| frågan)?|skippa(?: den)?|jag hoppar över den|vet inte hoppa över|pass|skip(?: it| this one| this question| the question)?": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
   "upprepa(?: frågan)?|säg (?:den |frågan )?igen|en gång till|vad var frågan|läs (?:upp )?(?:den |frågan )?igen|repetera|repeat(?: the question| that)?|say (?:it |that )?again|what was the question": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
-  "sluta|avsluta(?: provet| övningsprovet)?|stopp|jag är klar|vi slutar|det räcker|stop|end the (?:quiz|exam|test)|i m done|im done|that s enough|thats enough": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
-  "hur (?:gick|går) det|resultat(?:et)?|hur många (?:rätt|poäng)|vad fick jag|how did i do|how am i doing|results?|my score|score": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
-  "^(?:(?:okej|ok|hej|nej|men) )?(?:lumen )?(?:(?:kan|kunde) (?:du|vi) |snälla |vi tar |ta |gå till |jag vill (?:ha|ta|göra) )*": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
-  " (?:tack|nu|snälla|då|please|now|thanks)$": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
-  "^(?:fråga|uppgift|uppgiften|nummer|nr|frågan|del|question|task|number) (?:nummer |number )?([\\\\p{L}\\\\p{N}]+)(?: ([a-f]))?$": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
-  "^(?:(?:kör|starta|börja|gör|öva på) )?(?:mitt |det )?övningsprov(?:et)?$": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen"
+  "åtta": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
+  "åttan": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen"
  },
  "Lumen/Core/Study/ProfileStatement.swift": {
   " på ": "language data (what is listened for or sent to the server), a log line or a technical string, not a text on the screen",
@@ -1580,6 +1580,7 @@
   "F": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Fotosyntes är när växter gör socker av koldioxid och vatten med ljusenergi. Syre blir över.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Fotosyntesen bygger upp glukos och lagrar energi. Cellandningen bryter ner glukos och frigör energin. De är varandras motsats.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Fotosyntesen bygger upp socker och lagrar energi. Cellandningen bryter ner sockret och frigör energin.": "demo data for the pictures (Debug only); the scene shows it in the app's language (Historik)",
   "Fotosyntesen är när växter använder ljusenergi för att göra socker av koldioxid och vatten. Syre bildas som en restprodukt.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Fotosyntesen är när växter gör socker av koldioxid och vatten med ljusenergi. Syre blir över.": "demo data for the pictures (Debug only); the scene shows it in the app's language (A166)",
   "Förklara hur fotosyntes och cellandning hänger ihop. Använd begreppen glukos och syre.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
@@ -1591,6 +1592,7 @@
   "Ljus, koldioxid och vatten": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Ljus, koldioxid och vatten. Klorofyllet i bladen fångar ljuset.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Mitokondrierna är cellens kraftverk. Där sker cellandningen som ger energi i form av ATP.": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "Mitokondrierna är cellens kraftverk. Där sker cellandningen som ger energi.": "demo data for the pictures (Debug only); the scene shows it in the app's language (Historik)",
   "Provfrågor": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Provträning": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "Provträning: öva på uppgifter som \\\"Cellandning och klorofyll\\\"": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
@@ -1610,13 +1612,11 @@
   "dags att repetera": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "eget svar": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "fel senast": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
+  "fotosyntes": "demo data for the pictures (Debug only); the scene shows it in the app's language (Historik)",
   "fotosyntes, cellandning": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "inte övat än": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
   "kolets kretslopp": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
-  "nej, det är min tur att svara": "demo data for the pictures (Debug only); Swedish until the English pictures need it",
-  "Mitokondrierna är cellens kraftverk. Där sker cellandningen som ger energi.": "demo data for the pictures (Debug only); the scene shows it in the app's language (Historik)",
-  "Fotosyntesen bygger upp socker och lagrar energi. Cellandningen bryter ner sockret och frigör energin.": "demo data for the pictures (Debug only); the scene shows it in the app's language (Historik)",
-  "fotosyntes": "demo data for the pictures (Debug only); the scene shows it in the app's language (Historik)"
+  "nej, det är min tur att svara": "demo data for the pictures (Debug only); Swedish until the English pictures need it"
  },
  "Lumen/Features/Diagnostics/DeviceInfo.swift": {
   "\\(device.model) \\(modelIdentifier) · \\(device.systemName) \\(device.systemVersion) · region \\(region) · locale \\(Locale.current.identifier)": "a diagnostics export, a log line or a technical string, not a text on the screen"

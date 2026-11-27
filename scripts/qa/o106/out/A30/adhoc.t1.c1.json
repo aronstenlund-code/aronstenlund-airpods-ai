@@ -1,0 +1,44 @@
+{
+  "stem": "adhoc.t1.c1",
+  "case": "adhoc",
+  "turn": 1,
+  "call": 1,
+  "endpoint": "answer",
+  "url": "https://k122-replay.invalid/v1/messages",
+  "client_request": {
+    "fragment": "Var är min mobil?",
+    "mode": "auto",
+    "language": "sv",
+    "context": {
+      "transcript": "Kompis: du hade den nyss.",
+      "recent_qa": []
+    }
+  },
+  "anthropic_request": {
+    "model": "claude-haiku-5-5",
+    "max_tokens": 3,
+    "stream": true,
+    "system": [
+      {
+        "type": "text",
+        "text": "A study assistant listens in a room through the student's earphones and answers questions out loud. You get ONE utterance the microphone picked up. Is it a question someone would want the assistant to answer: a fact, school, language or general-knowledge question that has one answer anyone can give (\"När dog Gustav Vasa?\", \"Hur många kromosomer har en människa?\", \"What is the boiling point of water?\"), also when it is put to the room (\"vet du vad …\", \"kommer du ihåg vem …\")? Answer \"nej\" when people are talking to each other: questions about each other, their plans, feelings, belongings or what someone said or thinks (\"Ska vi gå hem nu?\", \"Hur var det på jobbet?\", \"Har du sett min laddare?\", \"Johan, kan du stänga fönstret?\", \"Vad menade du?\", \"Do you want some tea?\"). Reply with one word, ja or nej, and nothing else.",
+        "cache_control": {
+          "type": "ephemeral"
+        }
+      }
+    ],
+    "messages": [
+      {
+        "role": "user",
+        "content": "<utterance>Var är min mobil?</utterance>"
+      }
+    ],
+    "output_config": {
+      "effort": "low"
+    },
+    "thinking": {
+      "type": "disabled"
+    }
+  },
+  "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
+}

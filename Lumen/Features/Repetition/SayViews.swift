@@ -593,9 +593,17 @@ struct SayInAirPodsField: View {
     /// plays); then Starta prov is toned down.
     private func setStage() { model.sayHoldsTheStage = model.isSayingOnCard || (!isEmpty && !tooMany) }
 
-    /// A132 (D215.3, Kelly Ke72): "Senaste". The three latest said texts as capsules in a row under the card; a tap
-    /// puts the text back in the field (it does not play), a long press removes it. They are not exams: they are never
+    /// A132 (D215.3, Kelly Ke72): "Senaste". The three latest said texts as capsules in a row under the card. A168: a
+    /// tap plays the text again; a long press puts it back in the field (to change it first) or removes it. They are not exams: they are never
     /// "Nästa prov" and never among "Andra prov".
+    /// A136 (Ke75 §7.3): a said text back in the field with its voice and its style.
+    private func putBack(_ drill: Drill) {
+        text = String(drill.saidText.prefix(SaidText.maxChars))
+        style = drill.style ?? ""
+        storedVoice = drill.voicePicked == true ? "" : drill.voiceID ?? "" // a voice the server chose is chosen again
+        mixVoices = drill.mixVoices == true
+    }
+
     @ViewBuilder
     private var recents: some View {
         let said = Array(model.recentSaid.prefix(3)) // A135 (D219.4): every text once
@@ -605,11 +613,13 @@ struct SayInAirPodsField: View {
                     Text("Senaste").font(.footnote).foregroundStyle(LumenColor.secondaryText)
                     ForEach(said) { drill in
                         Button {
-                            text = String(drill.saidText.prefix(SaidText.maxChars))
-                            // A136 (Ke75 §7.3): one tap puts back all three: the text, its voice and its style.
-                            style = drill.style ?? ""
-                            storedVoice = drill.voicePicked == true ? "" : drill.voiceID ?? "" // a voice the server chose is chosen again
-                            mixVoices = drill.mixVoices == true
+                            // A168 (Deangelo 2026-11-27): one tap plays it again. Its sound is on the phone already,
+                            // so it plays at once and nothing is counted (A135, D219.2).
+                            putBack(drill)
+                            Task { @MainActor in
+                                await Task.yield() // the field holds the text before Spela reads it
+                                play()
+                            }
                         } label: {
                             // Kelly (review of A136): the text is cut first; what tells two sounds apart stays.
                             HStack(spacing: 4) {
@@ -626,8 +636,12 @@ struct SayInAirPodsField: View {
                         .tint(.primary)
                         // Ke79: the whole text and its style or voice, not the cut one with "…".
                         .accessibilityLabel(SayText.spokenCapsule(drill.saidText, mark: SayText.soundMark(drill, voices: model.sayVoices, defaultName: model.sayDefaultVoice)))
-                        .accessibilityHint("Lägger tillbaka texten i fältet")
+                        .accessibilityHint(String(localized: "Spelar texten igen i dina AirPods"))
+                        .accessibilityIdentifier("say.recent")
+                        .disabled(isStarting)
                         .contextMenu {
+                            // The text back in the field, to change it before it is played.
+                            Button(String(localized: "Lägg i fältet"), systemImage: "square.and.pencil") { putBack(drill) }
                             Button("Ta bort", systemImage: "trash", role: .destructive) { model.delete(drill) }
                         }
                         .transition(SayMotion.appear)

@@ -34,7 +34,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: vad gör du sen?\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>jag ska handla efter skolan sen</fragment>"
+      "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<preferences note=\"learned from this user's own corrections: follow them in this answer\">\n- Andra pratar runt användaren: at most three short sentences, the core only, nothing the others need to hear\n</preferences>\n<transcript>\nKompis: vad gör du sen?\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:36 (svensk tid, Europe/Stockholm)</now>\n<fragment>jag ska handla efter skolan sen</fragment>"
      }
     ],
     "output_config": {
@@ -62,11 +62,11 @@
      "model": "claude-haiku-5-5",
      "is_question": false,
      "confidence": 0.95,
-     "input_tokens": 4488,
+     "input_tokens": 4543,
      "output_tokens": 1,
      "ttft_ms": null,
-     "total_ms": 285,
-     "est_cost_usd": 0.0004493,
+     "total_ms": 277,
+     "est_cost_usd": 0.0004548,
      "status": "not_question",
      "category": "övrigt",
      "persona": "tutor"
@@ -90,29 +90,29 @@
      "data": {
       "answered": false,
       "timing": {
-       "meta_ms": 263,
+       "meta_ms": 254,
        "ttft_ms": null,
-       "llm_first_token_ms": 258,
-       "total_ms": 285
+       "llm_first_token_ms": 249,
+       "total_ms": 276
       },
       "breakdown": {
        "auth_ms": 0,
-       "body_ms": 181,
-       "limits_ms": 258,
-       "llm_first_chunk_ms": 258,
+       "body_ms": 173,
+       "limits_ms": 248,
+       "llm_first_chunk_ms": 249,
        "direct": false,
        "cold": true,
        "answer_type": "fact",
        "continuation": null
       },
       "usage": {
-       "input_tokens": 4488,
+       "input_tokens": 4543,
        "output_tokens": 1,
        "cache_read_tokens": 0,
        "cache_write_tokens": 0,
        "web_searches": 0,
        "model": "claude-haiku-5-5",
-       "est_cost_usd": 0.0004493
+       "est_cost_usd": 0.0004548
       },
       "summary": null,
       "relation": null,
@@ -136,29 +136,29 @@
    "done": {
     "answered": false,
     "timing": {
-     "meta_ms": 263,
+     "meta_ms": 254,
      "ttft_ms": null,
-     "llm_first_token_ms": 258,
-     "total_ms": 285
+     "llm_first_token_ms": 249,
+     "total_ms": 276
     },
     "breakdown": {
      "auth_ms": 0,
-     "body_ms": 181,
-     "limits_ms": 258,
-     "llm_first_chunk_ms": 258,
+     "body_ms": 173,
+     "limits_ms": 248,
+     "llm_first_chunk_ms": 249,
      "direct": false,
      "cold": true,
      "answer_type": "fact",
      "continuation": null
     },
     "usage": {
-     "input_tokens": 4488,
+     "input_tokens": 4543,
      "output_tokens": 1,
      "cache_read_tokens": 0,
      "cache_write_tokens": 0,
      "web_searches": 0,
      "model": "claude-haiku-5-5",
-     "est_cost_usd": 0.0004493
+     "est_cost_usd": 0.0004548
     },
     "summary": null,
     "relation": null,

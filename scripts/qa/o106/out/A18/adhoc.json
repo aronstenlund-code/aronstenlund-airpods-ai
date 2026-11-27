@@ -34,7 +34,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: min penna är slut.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>vem uppfann kulspetspennan</fragment>"
+            "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<preferences note=\"learned from this user's own corrections: follow them in this answer\">\n- Andra pratar runt användaren: at most three short sentences, the core only, nothing the others need to hear\n</preferences>\n<transcript>\nKompis: min penna är slut.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:36 (svensk tid, Europe/Stockholm)</now>\n<fragment>vem uppfann kulspetspennan</fragment>"
           }
         ],
         "output_config": {
@@ -62,11 +62,11 @@
           "model": "claude-haiku-5-5",
           "is_question": true,
           "confidence": 0.95,
-          "input_tokens": 4488,
+          "input_tokens": 4543,
           "output_tokens": 108,
-          "ttft_ms": 277,
-          "total_ms": 293,
-          "est_cost_usd": 0.0005028,
+          "ttft_ms": 304,
+          "total_ms": 320,
+          "est_cost_usd": 0.0005083,
           "status": "ok",
           "category": "övrigt",
           "persona": "tutor"
@@ -102,29 +102,29 @@
           "data": {
             "answered": true,
             "timing": {
-              "meta_ms": 277,
-              "ttft_ms": 277,
-              "llm_first_token_ms": 240,
-              "total_ms": 293
+              "meta_ms": 304,
+              "ttft_ms": 304,
+              "llm_first_token_ms": 267,
+              "total_ms": 320
             },
             "breakdown": {
               "auth_ms": 0,
-              "body_ms": 174,
-              "limits_ms": 240,
-              "llm_first_chunk_ms": 240,
+              "body_ms": 191,
+              "limits_ms": 267,
+              "llm_first_chunk_ms": 267,
               "direct": false,
               "cold": true,
               "answer_type": "fact",
               "continuation": null
             },
             "usage": {
-              "input_tokens": 4488,
+              "input_tokens": 4543,
               "output_tokens": 108,
               "cache_read_tokens": 0,
               "cache_write_tokens": 0,
               "web_searches": 0,
               "model": "claude-haiku-5-5",
-              "est_cost_usd": 0.0005028
+              "est_cost_usd": 0.0005083
             },
             "summary": "Frågan gällde vem som uppfann kulspetspennan. Svaret var ungraren László Bíró, som patenterade den 1938.",
             "relation": null,
@@ -148,29 +148,29 @@
       "done": {
         "answered": true,
         "timing": {
-          "meta_ms": 277,
-          "ttft_ms": 277,
-          "llm_first_token_ms": 240,
-          "total_ms": 293
+          "meta_ms": 304,
+          "ttft_ms": 304,
+          "llm_first_token_ms": 267,
+          "total_ms": 320
         },
         "breakdown": {
           "auth_ms": 0,
-          "body_ms": 174,
-          "limits_ms": 240,
-          "llm_first_chunk_ms": 240,
+          "body_ms": 191,
+          "limits_ms": 267,
+          "llm_first_chunk_ms": 267,
           "direct": false,
           "cold": true,
           "answer_type": "fact",
           "continuation": null
         },
         "usage": {
-          "input_tokens": 4488,
+          "input_tokens": 4543,
           "output_tokens": 108,
           "cache_read_tokens": 0,
           "cache_write_tokens": 0,
           "web_searches": 0,
           "model": "claude-haiku-5-5",
-          "est_cost_usd": 0.0005028
+          "est_cost_usd": 0.0005083
         },
         "summary": "Frågan gällde vem som uppfann kulspetspennan. Svaret var ungraren László Bíró, som patenterade den 1938.",
         "relation": null,

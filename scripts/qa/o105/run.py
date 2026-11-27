@@ -10,13 +10,14 @@ ONLY = None
 if "--only" in sys.argv:
     ONLY = set(sys.argv[sys.argv.index("--only") + 1].split(","))
 cases = json.loads((HERE / "cases.json").read_text())
+pathlib.Path(os.environ.get("K122_OUT", str(HERE / "out"))).mkdir(parents=True, exist_ok=True)
 for d in ("prompts", "out", "replies"):
     (HERE / d).mkdir(exist_ok=True)
 for c in cases:
     if ONLY and c["id"] not in ONLY:
         continue
-    cmd = [DENO, "run", "--no-lock", "--allow-read", "--allow-write", "--allow-env", "scripts/k122-replay.ts", "--endpoint", c["endpoint"],
-           "--body", json.dumps(c["body"], ensure_ascii=False), "--out", str(HERE / "out" / c["id"]), "--json"]
+    cmd = [DENO, "run", "--no-lock", "--allow-read", "--allow-write", "--allow-env", *os.environ.get("K122_REPLAY", "scripts/k122-replay.ts").split(), "--endpoint", c["endpoint"],
+           "--body", json.dumps(c["body"], ensure_ascii=False), "--out", str(pathlib.Path(os.environ.get("K122_OUT", str(HERE / "out"))) / c["id"]), "--json"]
     for h in c.get("headers", []):
         cmd += ["--header", h]
     n = 1
@@ -32,7 +33,7 @@ for c in cases:
         print(c["id"], "FEL", p.stderr[-600:])
         continue
     r = json.loads(line)
-    (HERE / "out" / f"{c['id']}.json").write_text(json.dumps(r, ensure_ascii=False, indent=1))
+    (pathlib.Path(os.environ.get("K122_OUT", str(HERE / "out"))) / f"{c['id']}.json").write_text(json.dumps(r, ensure_ascii=False, indent=1))
     if r.get("needs"):
         pr = next((x for x in r["prompts"] if x["stem"] == r["needs"]), r["prompts"][-1])
         (HERE / "prompts" / f"{c['id']}.c{n}.json").write_text(json.dumps(pr, ensure_ascii=False, indent=1))

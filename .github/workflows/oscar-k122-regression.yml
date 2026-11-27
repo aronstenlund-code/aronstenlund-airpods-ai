@@ -1,0 +1,37 @@
+name: Oscar K122 regression
+
+# Oscar (QA, O108): after every backend deploy, replay Oscar's ~190 saved model replies (O102–O107) through the
+# server's own chain (scripts/qa/k122_regression.py) with a fixed clock and compare with scripts/qa/k122_baseline.json.
+# No model calls, no network to Anthropic or ElevenLabs (the replay runs Deno without --allow-net); no secrets.
+# Red = a case changed: same model reply, different result for the user. The report is in the job summary and the
+# artifact "k122-regression". It never blocks a deploy (it runs after it).
+on:
+  workflow_run:
+    workflows: ["Deploy backend"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  replay:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+      - name: Replay and compare
+        run: python3 scripts/qa/k122_regression.py --deno deno --report k122-regression.md
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: k122-regression
+          path: k122-regression.md
+          retention-days: 30

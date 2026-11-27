@@ -20,6 +20,50 @@
    },
    "anthropic_request": {
     "model": "claude-haiku-5-5",
+    "max_tokens": 3,
+    "stream": true,
+    "system": [
+     {
+      "type": "text",
+      "text": "A study assistant listens in a room through the student's earphones and answers questions out loud. You get ONE utterance the microphone picked up. Is it a question someone would want the assistant to answer: a fact, school, language or general-knowledge question that has one answer anyone can give (\"När dog Gustav Vasa?\", \"Hur många kromosomer har en människa?\", \"What is the boiling point of water?\"), also when it is put to the room (\"vet du vad …\", \"kommer du ihåg vem …\")? Answer \"nej\" when people are talking to each other: questions about each other, their plans, feelings, belongings or what someone said or thinks (\"Ska vi gå hem nu?\", \"Hur var det på jobbet?\", \"Har du sett min laddare?\", \"Johan, kan du stänga fönstret?\", \"Vad menade du?\", \"Do you want some tea?\"). Reply with one word, ja or nej, and nothing else.",
+      "cache_control": {
+       "type": "ephemeral"
+      }
+     }
+    ],
+    "messages": [
+     {
+      "role": "user",
+      "content": "<utterance>Hur mår din mamma nu?</utterance>"
+     }
+    ],
+    "output_config": {
+     "effort": "low"
+    },
+    "thinking": {
+     "type": "disabled"
+    }
+   },
+   "reply_hint": "Direct mode: the spoken answer as plain text (no JSON line – it would be read aloud), with the markers the system prompt asks for: [[REL continues|refines|new_topic]] as the first line when there is <recent_qa>, [[VET]] or [[SÖK]] where it asks, [[KRIS]] alone for a crisis, [[SAMMANFATTNING]] … where it asks."
+  },
+  {
+   "stem": "adhoc.t1.c2",
+   "case": "adhoc",
+   "turn": 1,
+   "call": 2,
+   "endpoint": "answer",
+   "url": "https://k122-replay.invalid/v1/messages",
+   "client_request": {
+    "fragment": "Hur mår din mamma nu?",
+    "mode": "auto",
+    "language": "sv",
+    "context": {
+     "transcript": "Kompis: hon var sjuk förra veckan.",
+     "recent_qa": []
+    }
+   },
+   "anthropic_request": {
+    "model": "claude-haiku-5-5",
     "max_tokens": 336,
     "stream": true,
     "system": [
@@ -34,7 +78,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: hon var sjuk förra veckan.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:02 (svensk tid, Europe/Stockholm)</now>\n<fragment>Hur mår din mamma nu?</fragment>"
+      "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<preferences note=\"learned from this user's own corrections: follow them in this answer\">\n- Andra pratar runt användaren: at most three short sentences, the core only, nothing the others need to hear\n</preferences>\n<transcript>\nKompis: hon var sjuk förra veckan.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:36 (svensk tid, Europe/Stockholm)</now>\n<fragment>Hur mår din mamma nu?</fragment>"
      }
     ],
     "output_config": {
@@ -52,125 +96,82 @@
    "turn": 1,
    "endpoint": "answer",
    "http_status": 200,
-   "usage": [
-    {
-     "user_id": "k122-adhoc",
-     "endpoint": "answer",
-     "mode": "auto",
-     "language": "sv",
-     "provider": "anthropic",
-     "model": "claude-haiku-5-5",
-     "is_question": true,
-     "confidence": 1,
-     "input_tokens": 3551,
-     "output_tokens": 24,
-     "ttft_ms": 282,
-     "total_ms": 283,
-     "est_cost_usd": 0.00036710000000000003,
-     "status": "ok",
-     "category": "övrigt",
-     "persona": "tutor"
-    }
-   ],
+   "usage": [],
    "credits": [],
    "events": [
     {
      "event": "meta",
      "data": {
       "reconstructed_question": "Hur mår din mamma nu?",
-      "confidence": 1,
-      "is_question": true,
+      "confidence": 0.2,
+      "is_question": false,
       "needs_confirmation": false,
-      "answer_type": "fact",
-      "relation": null
-     }
-    },
-    {
-     "event": "delta",
-     "data": {
-      "text": "Det vet jag inte, men du kan fråga hur hon mår och om hon behöver hjälp med något."
+      "answer_type": "fact"
      }
     },
     {
      "event": "done",
      "data": {
-      "answered": true,
+      "answered": false,
       "timing": {
-       "meta_ms": 282,
-       "ttft_ms": 282,
-       "llm_first_token_ms": 239,
-       "total_ms": 282
+       "meta_ms": 245,
+       "ttft_ms": null,
+       "llm_first_token_ms": null,
+       "total_ms": 245
       },
       "breakdown": {
-       "auth_ms": 0,
-       "body_ms": 168,
-       "limits_ms": 239,
-       "llm_first_chunk_ms": 239,
        "direct": true,
        "cold": true,
        "answer_type": "fact",
        "continuation": null
       },
       "usage": {
-       "input_tokens": 3551,
-       "output_tokens": 24,
+       "input_tokens": 0,
+       "output_tokens": 0,
        "cache_read_tokens": 0,
-       "cache_write_tokens": 0,
        "web_searches": 0,
-       "model": "claude-haiku-5-5",
-       "est_cost_usd": 0.00036710000000000003
+       "model": "listen_gate"
       },
       "summary": null,
-      "relation": null,
-      "source": null,
       "memory_add": null,
-      "calibration": null
+      "not_for_assistant": true
      }
     }
    ],
-   "said": "Det vet jag inte, men du kan fråga hur hon mår och om hon behöver hjälp med något.",
+   "said": "",
    "meta": [
     {
      "reconstructed_question": "Hur mår din mamma nu?",
-     "confidence": 1,
-     "is_question": true,
+     "confidence": 0.2,
+     "is_question": false,
      "needs_confirmation": false,
-     "answer_type": "fact",
-     "relation": null
+     "answer_type": "fact"
     }
    ],
    "done": {
-    "answered": true,
+    "answered": false,
     "timing": {
-     "meta_ms": 282,
-     "ttft_ms": 282,
-     "llm_first_token_ms": 239,
-     "total_ms": 282
+     "meta_ms": 245,
+     "ttft_ms": null,
+     "llm_first_token_ms": null,
+     "total_ms": 245
     },
     "breakdown": {
-     "auth_ms": 0,
-     "body_ms": 168,
-     "limits_ms": 239,
-     "llm_first_chunk_ms": 239,
      "direct": true,
      "cold": true,
      "answer_type": "fact",
      "continuation": null
     },
     "usage": {
-     "input_tokens": 3551,
-     "output_tokens": 24,
+     "input_tokens": 0,
+     "output_tokens": 0,
      "cache_read_tokens": 0,
-     "cache_write_tokens": 0,
      "web_searches": 0,
-     "model": "claude-haiku-5-5",
-     "est_cost_usd": 0.00036710000000000003
+     "model": "listen_gate"
     },
     "summary": null,
-    "relation": null,
-    "source": null,
     "memory_add": null,
-    "calibration": null
+    "not_for_assistant": true
    }
   }
  ],

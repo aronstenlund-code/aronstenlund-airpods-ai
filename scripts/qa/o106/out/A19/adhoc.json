@@ -20,7 +20,7 @@
       },
       "anthropic_request": {
         "model": "claude-haiku-5-5",
-        "max_tokens": 880,
+        "max_tokens": 336,
         "stream": true,
         "system": [
           {
@@ -34,7 +34,7 @@
         "messages": [
           {
             "role": "user",
-            "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>study</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: asså vi ska åka till Kanada i sommar med familjen.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 03:01 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad är klockan i New York och hur lång tid tar det att flyga dit</fragment>"
+            "content": "<mode>auto</mode>\n<language>sv</language>\n<confidence_threshold>0.45</confidence_threshold>\n<answer_type_hint>fact</answer_type_hint>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<preferences note=\"learned from this user's own corrections: follow them in this answer\">\n- Andra pratar runt användaren: at most three short sentences, the core only, nothing the others need to hear\n</preferences>\n<transcript>\nKompis: asså vi ska åka till Kanada i sommar med familjen.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:37 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad är klockan i New York och hur lång tid tar det att flyga dit</fragment>"
           }
         ],
         "output_config": {
@@ -62,11 +62,11 @@
           "model": "claude-haiku-5-5",
           "is_question": true,
           "confidence": 0.9,
-          "input_tokens": 4505,
-          "output_tokens": 140,
-          "ttft_ms": 274,
-          "total_ms": 287,
-          "est_cost_usd": 0.0005205,
+          "input_tokens": 4560,
+          "output_tokens": 118,
+          "ttft_ms": 272,
+          "total_ms": 284,
+          "est_cost_usd": 0.000515,
           "status": "ok",
           "category": "övrigt",
           "persona": "tutor"
@@ -88,7 +88,7 @@
         {
           "event": "delta",
           "data": {
-            "text": "I New York är klockan tjugo och femtio nio på torsdagskvällen, sex timmar efter svensk tid. "
+            "text": "I New York är klockan tjugotvå och trettiosex på torsdagskvällen, sex timmar efter svensk tid. "
           }
         },
         {
@@ -102,31 +102,31 @@
           "data": {
             "answered": true,
             "timing": {
-              "meta_ms": 274,
-              "ttft_ms": 274,
-              "llm_first_token_ms": 233,
-              "total_ms": 286
+              "meta_ms": 271,
+              "ttft_ms": 272,
+              "llm_first_token_ms": 230,
+              "total_ms": 283
             },
             "breakdown": {
               "auth_ms": 0,
-              "body_ms": 171,
-              "limits_ms": 232,
-              "llm_first_chunk_ms": 233,
+              "body_ms": 167,
+              "limits_ms": 229,
+              "llm_first_chunk_ms": 230,
               "direct": false,
               "cold": true,
-              "answer_type": "study",
+              "answer_type": "fact",
               "continuation": null
             },
             "usage": {
-              "input_tokens": 4505,
-              "output_tokens": 140,
+              "input_tokens": 4560,
+              "output_tokens": 118,
               "cache_read_tokens": 0,
               "cache_write_tokens": 0,
               "web_searches": 0,
               "model": "claude-haiku-5-5",
-              "est_cost_usd": 0.0005205
+              "est_cost_usd": 0.000515
             },
-            "summary": "Frågan gällde tiden i New York och flygtiden dit. Svaret var att klockan är 6 timmar efter Sverige, torsdag kväll, och att ett direktflyg från Stockholm tar ungefär 9 timmar.",
+            "summary": "Frågan gällde tiden i New York och flygtiden; svaret var sex timmar efter och cirka nio timmar.",
             "relation": null,
             "source": null,
             "memory_add": null,
@@ -134,7 +134,7 @@
           }
         }
       ],
-      "said": "I New York är klockan tjugo och femtio nio på torsdagskvällen, sex timmar efter svensk tid. Ett direktflyg från Stockholm tar ungefär nio timmar.",
+      "said": "I New York är klockan tjugotvå och trettiosex på torsdagskvällen, sex timmar efter svensk tid. Ett direktflyg från Stockholm tar ungefär nio timmar.",
       "meta": [
         {
           "reconstructed_question": "Vad är klockan i New York och hur lång tid tar det att flyga dit?",
@@ -148,31 +148,31 @@
       "done": {
         "answered": true,
         "timing": {
-          "meta_ms": 274,
-          "ttft_ms": 274,
-          "llm_first_token_ms": 233,
-          "total_ms": 286
+          "meta_ms": 271,
+          "ttft_ms": 272,
+          "llm_first_token_ms": 230,
+          "total_ms": 283
         },
         "breakdown": {
           "auth_ms": 0,
-          "body_ms": 171,
-          "limits_ms": 232,
-          "llm_first_chunk_ms": 233,
+          "body_ms": 167,
+          "limits_ms": 229,
+          "llm_first_chunk_ms": 230,
           "direct": false,
           "cold": true,
-          "answer_type": "study",
+          "answer_type": "fact",
           "continuation": null
         },
         "usage": {
-          "input_tokens": 4505,
-          "output_tokens": 140,
+          "input_tokens": 4560,
+          "output_tokens": 118,
           "cache_read_tokens": 0,
           "cache_write_tokens": 0,
           "web_searches": 0,
           "model": "claude-haiku-5-5",
-          "est_cost_usd": 0.0005205
+          "est_cost_usd": 0.000515
         },
-        "summary": "Frågan gällde tiden i New York och flygtiden dit. Svaret var att klockan är 6 timmar efter Sverige, torsdag kväll, och att ett direktflyg från Stockholm tar ungefär 9 timmar.",
+        "summary": "Frågan gällde tiden i New York och flygtiden; svaret var sex timmar efter och cirka nio timmar.",
         "relation": null,
         "source": null,
         "memory_add": null,

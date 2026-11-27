@@ -1,0 +1,6168 @@
+{
+ "cases": {
+  "bank/B05": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Räknade ut: 24 × 6 = 144."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Tjugofyra gånger sex är hundrafyrtiofyra.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "continues",
+      "source": null,
+      "summary": "Uträkningen fortsatte från 24 gånger 6 som blev 144. Frågan var 144 delat med 3, och svaret var 48."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Hundrafyrtiofyra delat med tre är fyrtioåtta.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "new_topic",
+      "source": null,
+      "summary": "Frågan gällde vad en fotboll består av. Svaret var ett skal av konstläder, fodringslager av tyg och en luftfylld blåsa av latex eller butylgummi."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "En modern fotboll har ett yttre skal av konstläder, oftast polyuretan, med fodringslager av polyester eller bomull under. Innerst sitter en blåsa av latex eller butylgummi som fylls med luft.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/C01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Räknade ut: 23 × 19 = 437."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Tjugotre gånger nitton är fyrahundratrettiosju.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/C02": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Räknade ut: 38 % av 1250 = 475."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Trettioåtta procent av tolvhundrafemtio är fyrahundrasjuttiofem.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/C03": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Räknade ut: 7 ^ 3 = 343."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Sju upphöjt till tre är trehundrafyrtiotre.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/C04": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Räknade ut: √1764 = 42."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Roten ur sjuttonhundrasextiofyra är fyrtiotvå.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/C05": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde att dela 1500 kronor på 7 personer. Svaret var ungefär 214,29 kronor per person."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Var och en får ungefär tvåhundrafjorton kronor och tjugonio öre.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/C10": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Räknade ut: 100 °F = 37,7778 °C."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Hundra grader Fahrenheit är ungefär trettiosju komma åtta grader Celsius.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/CO1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "text": "Andra världskriget började 1 september 1939 när Tyskland anföll Polen. Två dagar senare förklarade Storbritannien och Frankrike krig. Kriget slutade i Europa i maj 1945 och i Asien i september 1945, när Japan kapitulerade efter atombomberna över Hiroshima och Nagasaki."
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/E01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "quiz_key": {
+       "alternatives": [
+        "endoplasmatiska nätverket",
+        "ribosomerna",
+        "lysosomerna",
+        "vesiklarna",
+        "cellmembranet"
+       ],
+       "answer": "Golgiapparaten"
+      },
+      "relation": null,
+      "source": null,
+      "summary": "Förhör på cellens delar i Biologi 1 med en kontrollfråga om vilket cellorgan som sorterar och paketerar proteiner."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Vilket cellorgan sorterar och paketerar proteiner innan de skickas vidare eller ut ur cellen?",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "continues",
+      "source": null,
+      "summary": "Förhör på cellens delar där eleven svarade mitokondrien på frågan om vilket cellorgan som paketerar proteiner, och rätt svar Golgiapparaten förklarades tillsammans med mitokondriens roll."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Inte riktigt. Rätt svar är Golgiapparaten, som tar emot proteiner från det endoplasmatiska nätverket, sorterar och paketerar dem och skickar dem vidare i små blåsor. Mitokondrien är cellens kraftverk där cellandningen bildar ATP, men den hanterar inte proteinerna.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "quiz_key": {
+       "alternatives": [
+        "Nej",
+        "bara i djurceller",
+        "bara i växtceller",
+        "vet inte"
+       ],
+       "answer": "Ja"
+      },
+      "relation": "continues",
+      "source": null,
+      "summary": "Förhör på cellens delar där eleven inte visste och fick en förklaring av ribosomerna och proteinernas väg genom cellen, följd av en kontrollfråga om ribosomer i bakterier."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Ribosomerna är cellens proteinfabriker: de läser av budbärar-RNA och fogar ihop aminosyror till proteiner. En del sitter fria i cytoplasman och andra på det kornrika endoplasmatiska nätverket, och därifrån går proteinerna vidare till Golgiapparaten. Ett exempel är insulin, som byggs på ribosomer i bukspottkörtelns celler och sedan skickas ut ur cellen. På provet kan du beskriva vägen från ribosom via endoplasmatiska nätverket och Golgiapparaten ut ur cellen. Finns det ribosomer även i bakterieceller?",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "quiz_key": {
+       "alternatives": [
+        "Golgiapparaten",
+        "vakuolen",
+        "mitokondrien",
+        "peroxisomen"
+       ],
+       "answer": "Lysosomen"
+      },
+      "relation": "continues",
+      "source": null,
+      "summary": "Förhör på cellens delar där eleven ville ha nästa fråga, fick svaret att bakterier också har ribosomer och en ny kontrollfråga om vilket cellorgan som bryter ner avfall."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Ja, även bakterier har ribosomer, men de är mindre än i djur- och växtceller, och därför kan vissa antibiotika slå ut just bakteriernas ribosomer. Vilket cellorgan bryter ner utslitna celldelar och avfall med hjälp av enzymer?",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/EX1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "question": "Hur tar växten upp koldioxid och vatten?"
+       },
+       {
+        "id": "q2",
+        "question": "Hur används solljusets energi när växten bygger glukos?"
+       },
+       {
+        "id": "q3",
+        "question": "Vad händer med glukosen som växten bildar?"
+       }
+      ],
+      "long_words": 90,
+      "notes": "Fotosyntes. Växter tar upp koldioxid genom klyvöppningarna och vatten genom rötterna. I kloroplasterna fångar klorofyllet solljusets energi. Energin används för att bygga glukos av koldioxid och vatten. Syre bildas som en restprodukt. Glukosen används i cellandningen eller lagras som stärkelse. Fotosyntesen är grunden för nästan all mat på jorden.",
+      "questions_asked": 3,
+      "questions_possible": 3,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "Provet handlar om fotosyntesen: hur växten tar upp koldioxid och vatten, hur klorofyllet fångar solljusets energi och bygger glukos, och vad som händer med glukosen och syret.",
+       "grade": "",
+       "subject": "Biologi"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/EX2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "question": "How does water move between the oceans, the air and the land?"
+       },
+       {
+        "id": "q2",
+        "question": "How do clouds form from water vapour?"
+       },
+       {
+        "id": "q3",
+        "question": "What happens when the droplets in clouds join and become heavy?"
+       }
+      ],
+      "long_words": 90,
+      "notes": "The Water Cycle. Water moves between the oceans, the air and the land in a cycle. The sun heats the oceans and water evaporates into the air as water vapour. As the vapour rises it cools and condenses into tiny droplets that form clouds. When the droplets join and become heavy they fall as precipitation: rain, snow or hail.",
+      "questions_asked": 3,
+      "questions_possible": 3,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "The exam covers the water cycle: how water moves between the oceans, the air and the land, evaporation, condensation into clouds and precipitation.",
+       "grade": "",
+       "subject": "Geografi"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/EX4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Du fick E-poängen för rätt metod, att räkna noll komma femton gånger 840, och C-poängen för rätt svar, 126 kronor. Bra, inget saknas här.",
+      "max": {
+       "A": 0,
+       "C": 1,
+       "E": 1
+      },
+      "numeric": {
+       "equal": true,
+       "expected": 126,
+       "given": 126
+      },
+      "points": {
+       "A": 0,
+       "C": 1,
+       "E": 1
+      },
+      "total": 2
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/F01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde hur många ben en spindel har. Svaret var 8 ben, till skillnad från insekternas 6."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "En spindel har åtta ben, och det skiljer den från insekter, som har sex.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/F03": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vem som skrev Röda rummet. Svaret var August Strindberg, romanen kom 1879 och ses som den första moderna svenska romanen."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "August Strindberg skrev Röda rummet, som kom ut artonhundrasjuttio nio och brukar räknas som Sveriges första moderna roman.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/F05": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde hur högt Kebnekaise är. Svaret var ungefär 2097 meter på nordtoppen, som blivit högst sedan sydtoppens glaciär smält."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Kebnekaise är ungefär tvåtusen nittiosju meter högt, mätt på nordtoppen. Sydtoppen var länge högst, men dess glaciär har smält så mycket att nordtoppen sedan tvåtusen nitton är Sveriges högsta punkt.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/F10": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde när Berlinmuren föll. Svaret var den 9 november 1989, då gränsen i Berlin öppnades."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Berlinmuren föll den nionde november nittonhundraåttio nio, när gränsen mellan Östberlin och Västberlin öppnades.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/F14": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde när Aristoteles levde. Svaret var 384 till 322 före Kristus, och att han var elev till Platon och lärare åt Alexander den store."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Aristoteles levde från trehundraåttiofyra till trehundratjugotvå före Kristus. Han var elev till Platon och lärare åt Alexander den store.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/HE1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "answer": "1. Tryck Nytt prov på startsidan. 2. Lägg till dina anteckningar med Fota sidor, Välj bilder, Skriv text eller Lägg till dokument. 3. Ge provet ett namn och välj Antal frågor. 4. Tryck Skapa frågor. 5. Kolla ämne och årskurs under Stämmer det här? och tryck Ser rätt ut.",
+      "in_scope": true
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/HE2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "answer": "Det kan jag inte svara på.",
+      "hint": "Jag svarar bara på hur EarMind fungerar, till exempel hur du gör ett nytt prov.",
+      "in_scope": false
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/HT1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "help.useQuota",
+       "n": 0
+      },
+      {
+       "fn": "help.addTryCredits",
+       "n": 3
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "long": "Nedbrytare bryter ner döda organismer så att näringen kommer tillbaka till marken. Nedbrytare är till exempel svampar och bakterier. På så sätt hänger ekosystemets delar ihop: producenter som växter gör sin egen näring med fotosyntes, konsumenter äter andra organismer, och nedbrytarna tar hand om det som har dött så att näringen inte stannar kvar i de döda organismerna utan återvänder till marken.",
+        "question": "Vad består ett ekosystem av?",
+        "short": "Nedbrytare bryter ner döda organismer så att näringen kommer tillbaka till marken."
+       },
+       {
+        "id": "q2",
+        "long": "Ett ekosystem består av levande organismer och den miljö de lever i. De levande organismerna har olika roller. Producenter, till exempel växter, gör sin egen näring med fotosyntes. Konsumenter äter andra organismer. Nedbrytare bryter ner döda organismer så att näringen kommer tillbaka till marken.",
+        "question": "Hur får producenter sin näring?",
+        "short": "Ett ekosystem består av levande organismer och den miljö de lever i."
+       },
+       {
+        "id": "q3",
+        "long": "Producenter, till exempel växter, gör sin egen näring med fotosyntes. I fotosyntesen använder växten solljusets energi för att bygga socker av koldioxid och vatten, och syre blir över. Därför behöver producenter inte äta andra organismer, till skillnad från konsumenter som får sin näring genom att äta andra.",
+        "question": "Varför är nedbrytare viktiga för marken?",
+        "short": "Producenter, till exempel växter, gör sin egen näring med fotosyntes."
+       }
+      ],
+      "long_words": 90,
+      "notes": "Ekosystem består av levande organismer och den miljö de lever i. Producenter, till exempel växter, gör sin egen näring med fotosyntes. Konsumenter äter andra organismer. Nedbrytare bryter ner döda organismer så att näringen kommer tillbaka till marken.",
+      "questions_asked": 3,
+      "questions_possible": 3,
+      "quota": {
+       "limit": 100000,
+       "remaining": 100000,
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "Provet handlar om ekosystem: vad ett ekosystem består av och vilken roll producenter, konsumenter och nedbrytare har.",
+       "grade": "",
+       "subject": "Biologi"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/I01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Intervjuträning för ett sommarjobb som butiksbiträde i en matbutik där frågan var att berätta om sig själv, och svaret lyfte noggrannhet, servicekänsla, tempo och vilja att lära sig."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Jag är en person som trivs när det är mycket att göra och tempot är högt. Jag är noggrann, så när jag fyller på hyllor eller håller ordning i en avdelning gör jag det ordentligt hela vägen. Jag tycker om att möta människor och vill att varje kund ska känna sig välkommen och få hjälp snabbt. Jag lär mig fort och frågar hellre en gång för mycket än gör fel. Därför ser jag fram emot att jobba i en matbutik i sommar, där service och samarbete i laget är viktigt.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Intervjuträning för ett sommarjobb som butiksbiträde där användarens egen presentation med namn, ålder, intresse för människor och ett tidigare kaféjobb gjordes tydligare och starkare."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Jag heter Sam och är tjugo år. Jag gillar att träffa folk, och det är en stor anledning till att jag söker jobb i en matbutik. Förra sommaren jobbade jag på ett kafé, och där mötte jag kunder varje dag. Nu vill jag ta med mig det hit, så att varje kund känner sig välkommen och får hjälp snabbt.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Intervjuträning för ett sommarjobb som butiksbiträde där frågan var varför användaren vill jobba i butiken, och svaret byggde på intresset för människor, kaféjobbet och variationen i arbetet."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Jag vill jobba här för att jag gillar att träffa folk, och i en matbutik möter man många olika kunder varje dag. Förra sommaren jobbade jag på ett kafé och märkte hur roligt det är när en kund går därifrån nöjd. Jobbet här blandar kundkontakt i kassan med att fylla på varor och hålla ordning, och jag gillar att ha flera saker att göra. Jag vill vara den som kunderna gärna frågar när de inte hittar något.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Intervjuträning för ett sommarjobb som butiksbiträde där användarens svar att hen behöver pengar gjordes starkare genom att kopplas till intresset för människor och kaféjobbet."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Jag vill ha ett jobb där jag tjänar egna pengar och samtidigt gör något jag tycker om, och det är att träffa folk. I en matbutik möter jag kunder varje dag, precis som på kaféet förra sommaren. Jag tar jobbet på allvar och vill vara någon ni kan räkna med hela sommaren.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Avslutad intervjuträning för ett sommarjobb som butiksbiträde med en sammanfattning av styrkor, två saker att öva på och ett tips om att förbereda ett konkret exempel från kaféjobbet."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Din största styrka är att du gillar att träffa folk och kan knyta det till kaféjobbet förra sommaren, vilket gör dina svar trovärdiga. Öva på att börja presentationen med vad du bidrar med, inte bara namn och ålder. Öva också på att svara på varför du vill jobba där med vad som lockar i själva jobbet, inte främst att du behöver pengar. Inför den riktiga intervjun, förbered ett konkret exempel från kaféet där du hjälpte en kund.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/L01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde en översättning till tyska av att vara trött. Svaret var Ich bin müde."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Ich bin müde.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/L03": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vad slangordet YOLO betyder. Svaret var you only live once, man lever bara en gång, och att det används om spontana eller vågade val."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "YOLO står för you only live once, alltså man lever bara en gång. Det sägs när någon gör något spontant eller lite vågat, ungefär som kör, man lever bara en gång.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/M01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": "jag är allergisk mot nötter",
+      "summary": "Användaren bad om att få ett minne sparat."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Okej, det kommer jag ihåg.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "refines",
+      "source": null,
+      "summary": "Frågan gällde vilket godis man kan köpa till bion med nötallergi. Svaret var att välja förpackat godis med tydlig allergimärkning, läsa etiketten varje gång och undvika lösgodis."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Välj förpackat godis med tydlig allergimärkning, till exempel vingummi eller lakrits, och läs innehållsförteckningen varje gång eftersom även spår av nötter kan finnas. Undvik lösgodis, där risken för spår är stor.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/O01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Användaren ville svara på ett tack för en fin kväll och fick en varm rad som tackar tillbaka och föreslår att ses igen."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Tack själv, jag hade jättekul. Vi måste ses snart igen!",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/P03": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Användaren har ont i halsen och fick råd om varm dryck, vila och halstabletter samt när man bör ringa 1177."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Drick mycket varmt, till exempel te med honung, vila rösten och suga på halstabletter för att lindra. Ring elva sjuttiosju om du får svårt att svälja eller andas, hög feber eller inte blir bättre efter en vecka.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/P04": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Användaren har segt wifi och fick råd om att starta om routern, sitta närmare den, mäta hastigheten och kontakta leverantören."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Starta om routern genom att dra ur strömmen i trettio sekunder, och sitt närmare den, gärna utan väggar emellan. Blir det inte bättre, mät hastigheten med Bredbandskollen och kontakta din bredbandsleverantör.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/PE1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Eleven frågade om skillnaden mellan mitos och meios i biologi. Svaret jämförde antal dotterceller, kromosomantal, genetisk variation och var delningarna sker."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Mitos ger två genetiskt identiska dotterceller med lika många kromosomer som modercellen, medan meios ger fyra könsceller med halva kromosomantalet som alla är genetiskt olika. Mitos används när kroppen växer och ersätter celler, till exempel i huden. Meios sker bara i könskörtlarna och har två celldelningar efter varandra. Under meiosen byter homologa kromosomer bitar med varandra i överkorsning, och kromosomerna fördelas slumpmässigt, vilket ger variation. Hos människan har en kroppscell fyrtiosex kromosomer och en könscell tjugotre. På provet kan du jämföra antalet dotterceller, kromosomantalet, den genetiska variationen och var delningen sker.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/PG1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "empty": 0,
+      "first_answer_suffices": 1,
+      "judge": "claude-sonnet-5-5",
+      "note": "För tunt för A i Biologi 1: saknar att koldioxid och vatten bildas och vad ATP används till i cellen.",
+      "parsed": true,
+      "rubric": 2,
+      "scores": {
+       "a_level": 0,
+       "closing_ok": 1,
+       "correct": 1,
+       "covers": 1,
+       "lang_ok": 1,
+       "length_ok": 1,
+       "level_ok": 1,
+       "natural": 1,
+       "sufficient": 1
+      },
+      "sentences": 3,
+      "strict": 1,
+      "words": 23
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/R01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "source_fallback": true,
+      "summary": "Användaren bad om ett recept på köttbullar och fick ingredienser och steg för att blanda smeten, rulla bullarna och steka dem."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Jag hittade inget recept med en säker källa.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/R02": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "source_fallback": true,
+      "summary": "Användaren frågade hur man kokar ris och fick mängder för ris och vatten samt stegen med uppkokning, sjudning under lock och vila."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Jag hittade inget recept med en säker källa.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/R04": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Användaren frågade vad man kan laga med kyckling och kokosmjölk och fick ett enkelt recept på kycklingcurry med ris."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Gör en kycklingcurry: stek femhundra gram strimlad kyckling och en hackad gul lök i olja, rör ner en matsked currypulver och häll på fyra deciliter kokosmjölk. Låt sjuda i femton minuter, smaka av med salt och servera med ris.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "continues",
+      "source": null,
+      "summary": "Användaren ville ha kycklingrätten med kokosmjölk utan curry och fick en kokosgryta med vitlök och ingefära med samma mängder kyckling, lök och kokosmjölk."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Gör en kokosgryta med vitlök och ingefära i stället: stek femhundra gram strimlad kyckling och en hackad gul lök i olja, tillsätt två pressade vitlöksklyftor och en matsked riven ingefära och häll på fyra deciliter kokosmjölk. Låt sjuda i femton minuter, smaka av med salt och limesaft och servera med ris.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/RZ1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Ärlig och strategisk, jag gillar dig redan."
+      ]
+     ]
+    }
+   ]
+  },
+  "bank/RZ1s": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": [
+      [
+       "Du är den ärligaste konstkritikern i hela rummet."
+      ]
+     ]
+    }
+   ]
+  },
+  "bank/S01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vem Gustav Vasa var. Svaret var att han var kung 1523 till 1560, bröt med Kalmarunionen och införde reformationen."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Gustav Vasa var Sveriges kung från femtonhundratjugotre till femtonhundrasextio och räknas som grundaren av den moderna svenska staten. Han bröt landet loss från Kalmarunionen och införde reformationen.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/S03": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde Tysklands huvudstad. Svaret var Berlin."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Berlin är Tysklands huvudstad.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/T01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Räknade ut: Klockan 09:00 i Sverige just nu är klockan 03:00 i New York (New York är 6 timmar efter Sverige)."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Just nu är klockan nio i Sverige och tre i New York. New York är sex timmar efter Sverige.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/T02": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Räknade ut: Klockan 09:00 i Sverige är klockan 08:00 i London (London är 1 timme efter Sverige)."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Klockan nio i Sverige är klockan åtta i London. London är en timme efter Sverige.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/T03": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde tidsskillnaden mellan Sverige och Sydney. Svaret var att Sydney ligger 10 timmar före."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Sydney ligger tio timmar före Sverige just nu, så där är klockan åtta och trettioett på fredag morgon.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/T04": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Räknade ut: Klockan 09:00 i Sverige just nu är klockan 10:00 i Kapstaden (Kapstaden är 1 timme före Sverige)."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Just nu är klockan nio i Sverige och tio i Kapstaden. Kapstaden är en timme före Sverige.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/U01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde varför himlen är blå. Svaret förklarade Rayleighspridning, att blått ljus sprids mer än rött i luften, varför himlen inte ser violett ut och varför solnedgången blir röd."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Himlen är blå för att solljuset sprids mot molekylerna i luften, något som kallas Rayleighspridning. Solljuset ser vitt ut men består av alla regnbågens färger. Kortvågigt ljus, alltså blått och violett, sprids mycket mer än rött ljus när det träffar kväve- och syremolekyler. Det blå ljuset studsar därför runt över hela himlen och når våra ögon från alla håll. Violett sprids ännu mer, men solen sänder ut mindre violett och våra ögon är mindre känsliga för det, så vi uppfattar himlen som blå. Vid solnedgång går ljuset en mycket längre väg genom atmosfären, så det mesta blå sprids bort och kvar blir rött och orange.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "continues",
+      "source": null,
+      "summary": "Följdfrågan gällde varför blått ljus sprids mer än rött. Svaret förklarade att små molekyler får elektroner att svänga och stråla ut ljus, och att spridningen ökar starkt med kortare våglängd, så blått sprids ungefär 5 gånger mer."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Blått ljus sprids mer för att luftens molekyler är mycket mindre än ljusets våglängd, och då ökar spridningen kraftigt ju kortare våglängden är. Ljuset får elektronerna i molekylerna att svänga, och de sänder sedan ut ljus åt alla håll. Kortare våglängd betyder snabbare svängningar, och snabbare svängningar strålar ut mycket mer ljus. Blått ljus har ungefär halva våglängden mot rött och sprids därför runt fem gånger mer. Spridningen ökar nämligen med fjärde potensen av hur kort våglängden är. Därför fylls himlen av blått ljus från alla riktningar, medan det röda mest går rakt fram.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "continues",
+      "source": null,
+      "summary": "Användaren ville ha en kortare förklaring av varför blått ljus sprids mer. Svaret var att små molekyler sprider kort våglängd mest, så blått sprids ungefär 5 gånger mer än rött."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Luftens molekyler är mycket mindre än ljusets våglängd, och då sprids kort våglängd mycket mer. Blått ljus har ungefär halva våglängden mot rött och sprids därför runt fem gånger mer.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/U05": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vem Marie Curie var. Svaret var att hon forskade om radioaktivitet, upptäckte polonium och radium och fick nobelpris i både fysik och kemi."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Marie Curie var en polskfödd fysiker och kemist i Frankrike som forskade om radioaktivitet och upptäckte grundämnena polonium och radium. Hon var första kvinnan som fick nobelpris och den enda som fått det i både fysik och kemi.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "refines",
+      "source": null,
+      "summary": "Följdfrågan gällde vad Marie Curie upptäckte. Svaret var polonium och radium 1898, att strålningen kommer från atomerna och att hon myntade ordet radioaktivitet."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Marie Curie upptäckte artonhundranittioåtta grundämnena polonium, som hon döpte efter Polen, och radium tillsammans med Pierre Curie. Hon visade också att strålningen kommer inifrån atomerna och myntade ordet radioaktivitet.",
+     "suggestions": null
+    },
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "refines",
+      "source": null,
+      "summary": "Följdfrågan gällde hur Marie Curie dog. Svaret var att hon dog 1934 av aplastisk anemi, troligen orsakad av strålning från hennes arbete utan skydd."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Marie Curie dog nittonhundratrettiofyra i blodsjukdomen aplastisk anemi, som troligen orsakades av att hon under många år utsatts för strålning i sitt arbete. Hon hanterade radioaktiva ämnen utan skydd, och hennes anteckningar är fortfarande radioaktiva.",
+     "suggestions": null
+    }
+   ]
+  },
+  "bank/W01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "source_missing": true,
+      "summary": "Användaren frågade vem som är riksbankschef och fick svaret att det är Erik Thedéen, som tillträdde 2023."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Erik Thedéen är riksbankschef. Han tillträdde den första januari tvåtusen tjugotre och leder Riksbankens direktion, som bestämmer styrräntan.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/CE1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "text": "The water cycle is how water moves between the oceans, the atmosphere and the land. The Sun heats water so it evaporates as water vapour, and plants release vapour through transpiration; together this is called evapotranspiration. Rising air cools and the vapour condenses around dust or salt into clouds. When droplets collide and grow, they fall as precipitation: rain, snow, sleet or hail depending on the temperature. Some water runs off into streams and rivers and back to the sea. Some soaks in through infiltration and becomes groundwater, which can stay underground for thousands of years. Glaciers and ice caps store water as snow and ice. About 97 percent of Earth's water is salt water, and only about 3 percent is fresh, mostly frozen. Humans affect the cycle through deforestation, which reduces transpiration, and climate change, which speeds evaporation and brings heavier rain in some regions and drought in others."
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/CS1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "text": "Fotosyntesen är processen där gröna växter, alger och vissa bakterier gör om ljusenergi till kemisk energi. Den sker främst i bladens kloroplaster, som innehåller klorofyll. Klorofyllet tar upp rött och blått ljus men reflekterar grönt, därför ser bladen gröna ut. Koldioxid tas in genom klyvöppningarna på bladens undersida, och vatten tas upp av rötterna och leds upp i vedkärlen. I de ljusberoende reaktionerna spjälkas vatten med hjälp av ljus; syre frigörs och energin lagras i ATP och NADPH. I Calvincykeln används ATP och NADPH för att bygga glukos av koldioxid. Glukosen används i cellandningen, lagras som stärkelse eller blir cellulosa i cellväggarna. Sammanfattat blir sex koldioxid och sex vatten med ljus en glukos och sex syre. Fotosyntesen är grunden för nästan allt liv, eftersom den ger syret vi andas och energin i näringskedjorna. Hastigheten beror på ljusintensitet, koldioxidhalt och temperatur, och den faktor som är lägst begränsar, så kallade begränsande faktorer. Odlare höjer ibland koldioxidhalten i växthus. På 1700-talet visade Jan Ingenhousz att växter bara ger syre i ljus."
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/CS2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "text": "The water cycle is how water moves between the oceans, the atmosphere and the land. The Sun heats water so it evaporates as water vapour, and plants release vapour through transpiration; together this is called evapotranspiration. Rising air cools and the vapour condenses around dust or salt into clouds. When droplets collide and grow, they fall as precipitation: rain, snow, sleet or hail depending on the temperature. Some water runs off into streams and rivers and back to the sea. Some soaks in through infiltration and becomes groundwater, which can stay underground for thousands of years. Glaciers and ice caps store water as snow and ice. About 97 percent of Earth's water is salt water, and only about 3 percent is fresh, mostly frozen. Humans affect the cycle through deforestation, which reduces transpiration, and climate change, which speeds evaporation and brings heavier rain in some regions and drought in others."
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/CX1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": "invalid_request",
+     "http": 400,
+     "json": {
+      "error": {
+       "code": "invalid_request",
+       "fallback": false,
+       "message": "text: at most 12000 characters"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/D1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": "provider_quota",
+     "http": 503,
+     "json": {
+      "error": {
+       "code": "provider_quota",
+       "fallback": true,
+       "message": "EarMind är nere en stund. Försök igen senare."
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/D2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": "provider_quota",
+     "http": 503,
+     "json": {
+      "error": {
+       "code": "provider_quota",
+       "fallback": true,
+       "message": "EarMind is down for a moment. Try again later."
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/D3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": "provider_unavailable",
+     "http": 502,
+     "json": {
+      "error": {
+       "code": "provider_unavailable",
+       "fallback": true,
+       "message": "EarMind is down for a moment. Try again later."
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/D4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": "provider_busy",
+     "http": 503,
+     "json": {
+      "error": {
+       "code": "provider_busy",
+       "fallback": true,
+       "message": "EarMind har mycket att göra just nu. Försök igen om en stund."
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/D5": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": "provider_misconfigured",
+     "http": 503,
+     "json": {
+      "error": {
+       "code": "provider_misconfigured",
+       "fallback": true,
+       "message": "EarMind is down for a moment. Try again later."
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/D6": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": "provider_quota",
+     "http": 503,
+     "json": {
+      "error": {
+       "code": "provider_quota",
+       "fallback": true,
+       "message": "EarMind är nere en stund. Försök igen senare."
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/K1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vad fotosyntes är; svaret förklarade att växter gör socker av ljus, vatten och koldioxid och släpper ut syre."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Fotosyntesen är när gröna växter använder solljus för att göra socker av vatten och koldioxid. Det sker i bladens klorofyll, och syre släpps ut som en restprodukt.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/K2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde Australiens huvudstad; svaret var Canberra, en kompromiss mellan Sydney och Melbourne."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "The capital of Australia is Canberra, not Sydney. It was chosen as a compromise between Sydney and Melbourne.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/K3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vem som grundade Stockholm; svaret var Birger jarl, med första omnämnandet 1252."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Det var Birger jarl, som inte var kung utan jarl. Han räknas som Stockholms grundare, och staden nämns första gången tolvhundrafemtiotvå.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/N1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde talet pi; svaret förklarade vad det är och att det är ungefär tre komma fjorton."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Pi är förhållandet mellan en cirkels omkrets och dess diameter, ungefär tre komma ett fyra ett fem nio. I skolan avrundar man ofta till tre komma ett fyra, och decimalerna tar aldrig slut.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/N2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde slaget vid Hastings; svaret gav datum, segraren och en osäker uppskattning av de döda."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Slaget vid Hastings stod den fjortonde oktober tiohundrasextiosex, när Vilhelm Erövraren besegrade kung Harald. Hur många som dog vet man inte säkert, men uppskattningar ligger runt femtusen till tiotusen man.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/N3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": "smhi.se",
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "En vuxen behöver ungefär ett komma fem till två liter vätska om dagen, mer när det är varmt. I Kiruna ligger medeltemperaturen i januari runt minus tolv grader, och kalla nätter kan det bli minus trettio. Källa: SMHI.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/N4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": "riksbank.se",
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "I Sverige bor drygt tio komma fem miljoner människor, och Riksbankens styrränta är ett komma sju fem procent sedan september tvåtusen tjugosex. Källa: Riksbank.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/N5": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vilka nummer man ringer; svaret var 112 vid nödläge och 1177 vid sjukdom."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Ring ett ett två vid nödläge, när det är fara för liv. Vid sjukdom som inte är akut ringer du elva sjuttiosju, och polisen når du på ett ett fyra, ett fyra när det inte är bråttom.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/N6": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde när andra världskriget tog slut; svaret var 1945 och cirka 70 till 85 miljoner döda."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "World War Two ended in 1945, on 8 May in Europe and on 2 September in Asia. Around 70 to 85 million people died, about 3 percent of the world's population in 1940.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/RQ1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": "ica.se",
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Vispa ihop två komma fem deciliter vetemjöl och en halv tesked salt med hälften av sex deciliter mjölk till en slät smet, och vispa sedan i resten av mjölken och tre ägg. Stek tunna pannkakor i smör på medelvärme, ungefär en minut per sida. Källa: ICA.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/RQ2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "source_fallback": true,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Jag hittade ingen instruktion med en säker källa.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o103/RQ3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": "bbcgoodfood.com",
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Whisk 250 ml of flour, a pinch of salt and 600 ml of milk into a smooth batter, then whisk in 3 eggs. Fry thin pancakes in butter for about 1 minute on each side. Source: Bbcgoodfood.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/DA1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "long": "Den främsta orsaken är utsläpp av koldioxid från fossila bränslen som kol, olja och gas, eftersom koldioxiden förstärker växthuseffekten. Växthuseffekten innebär att gaser i atmosfären hindrar en del av jordens värmestrålning från att försvinna ut i rymden. När vi bränner fossila bränslen ökar mängden koldioxid i luften, och då stannar mer värme kvar vid jorden. Därför har medeltemperaturen stigit med cirka 1,1 grad sedan slutet av 1800-talet.",
+        "question": "Varför har jordens medeltemperatur stigit?",
+        "short": "Den främsta orsaken är utsläpp av koldioxid från fossila bränslen som kol, olja och gas, eftersom koldioxiden förstärker växthuseffekten."
+       },
+       {
+        "id": "q2",
+        "long": "En varmare jord leder bland annat till smältande isar, stigande hav och fler värmeböljor. De här följderna hänger ihop med att medeltemperaturen har stigit med cirka 1,1 grad sedan slutet av 1800-talet, främst på grund av koldioxid från fossila bränslen som förstärker växthuseffekten.",
+        "question": "Vilka följder får den varmare jorden?",
+        "short": "En varmare jord leder bland annat till smältande isar, stigande hav och fler värmeböljor."
+       },
+       {
+        "id": "q3",
+        "long": "Jordens medeltemperatur har stigit med cirka 1,1 grad sedan slutet av 1800-talet. Höjningen beror främst på koldioxid från fossila bränslen som kol, olja och gas, som förstärker växthuseffekten.",
+        "question": "Hur mycket har medeltemperaturen stigit?",
+        "short": "Jordens medeltemperatur har stigit med cirka 1,1 grad sedan slutet av 1800-talet."
+       }
+      ],
+      "long_words": 90,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/DO1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "item": {
+       "id": "q9",
+       "long": "Växthuseffekten är att gaser i atmosfären, som koldioxid, håller kvar en del av jordens värme så att den inte strålar ut i rymden. Koldioxid från fossila bränslen som kol, olja och gas förstärker växthuseffekten. När mer värme stannar kvar stiger jordens medeltemperatur, som har ökat med cirka 1,1 grad sedan slutet av 1800-talet. Följderna blir bland annat smältande isar, stigande hav och fler värmeböljor.",
+       "question": "Vad är växthuseffekten?",
+       "short": "Växthuseffekten är att gaser i atmosfären, som koldioxid, håller kvar en del av jordens värme så att den inte strålar ut i rymden."
+      },
+      "long_words": 90
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/G1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Du får båda poängen: du säger att han tog kyrkans pengar och mark, och du kopplar det till att han bröt med påven. Nämn gärna reformationen också, så blir sambandet ännu tydligare.",
+      "max": {
+       "A": 0,
+       "C": 1,
+       "E": 1
+      },
+      "numeric": null,
+      "points": {
+       "A": 0,
+       "C": 1,
+       "E": 1
+      },
+      "total": 2
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/G2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Du får E-poängen för att neutralisation är när syra och bas blandas. Det som saknas är vad som bildas när de reagerar med varandra.",
+      "max": {
+       "A": 1,
+       "C": 1,
+       "E": 1
+      },
+      "numeric": null,
+      "points": {
+       "A": 0,
+       "C": 0,
+       "E": 1
+      },
+      "total": 1
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/G3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Ingen poäng, 1523 är året då Gustav Vasa valdes till kung, inte när Sverige blev ett arvrike. Arvriket infördes senare under hans tid som kung.",
+      "max": {
+       "A": 0,
+       "C": 0,
+       "E": 1
+      },
+      "numeric": {
+       "equal": false,
+       "expected": 1544,
+       "given": 1523
+      },
+      "points": {
+       "A": 0,
+       "C": 0,
+       "E": 0
+      },
+      "total": 0
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/G4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Ingen poäng den här gången eftersom du inte gav något svar. Tänk på vad cellen behöver för att orka arbeta, och vilken del av cellen som ger den det.",
+      "max": {
+       "A": 0,
+       "C": 0,
+       "E": 1
+      },
+      "numeric": null,
+      "points": {
+       "A": 0,
+       "C": 0,
+       "E": 0
+      },
+      "total": 0
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/G5": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Correct year, 476, so you get the E point. Next time, add AD to make it complete.",
+      "max": {
+       "A": 0,
+       "C": 0,
+       "E": 1
+      },
+      "numeric": {
+       "equal": true,
+       "expected": 476,
+       "given": 476
+      },
+      "points": {
+       "A": 0,
+       "C": 0,
+       "E": 1
+      },
+      "total": 1
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/G6": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Delvis rätt. Du får metodpoängen för att du räknar 0,2 gånger 450, men svaret blev fel. Rätt svar är 90 kronor, eftersom 10 procent av 450 är 45 kronor och 20 procent är dubbelt så mycket.",
+      "max": {
+       "A": 0,
+       "C": 1,
+       "E": 1
+      },
+      "numeric": {
+       "equal": false,
+       "expected": 90,
+       "given": 80
+      },
+      "points": {
+       "A": 0,
+       "C": 0,
+       "E": 1
+      },
+      "total": 1
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/G7": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Rätt. Du får båda poängen: växterna gör socker med hjälp av solljus av koldioxid och vatten, och syre bildas. Sockret heter glukos, och det sker i kloroplasterna där klorofyllet fångar ljuset.",
+      "max": {
+       "A": 0,
+       "C": 1,
+       "E": 1
+      },
+      "numeric": null,
+      "points": {
+       "A": 0,
+       "C": 1,
+       "E": 1
+      },
+      "total": 2
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/H1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "hint": "Rätt spår, utgå från reformationen och riksdagen i Västerås 1527. Fundera på vad kyrkan ägde i Sverige och vad som hände med det när kungen bröt med påven."
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/PF1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "long": "Cellen får energi från mitokondrierna, som gör energi åt cellen i form av a-te-pe. A-te-pe är den form av energi som cellen kan använda direkt för sitt arbete. Mitokondrierna fungerar alltså som cellens kraftverk, medan cellkärnan styr cellen och cellmembranet släpper in och ut ämnen.",
+        "question": "Hur får cellen energi?",
+        "screen": {
+         "long": "Cellen får energi från mitokondrierna, som gör energi åt cellen i form av ATP. ATP är den form av energi som cellen kan använda direkt för sitt arbete. Mitokondrierna fungerar alltså som cellens kraftverk, medan cellkärnan styr cellen och cellmembranet släpper in och ut ämnen.",
+         "short": "Cellen får energi från mitokondrierna, som gör energi åt cellen i form av ATP."
+        },
+        "short": "Cellen får energi från mitokondrierna, som gör energi åt cellen i form av a-te-pe."
+       },
+       {
+        "id": "q2",
+        "long": "Cellmembranet är cellens yttre hinna som släpper in och ut ämnen. Det avgör alltså vilka ämnen som kommer in i cellen och vilka som går ut. Membranet finns runt både djurceller och växtceller, men växtceller har dessutom en cellvägg.",
+        "question": "Hur fungerar cellmembranet?",
+        "short": "Cellmembranet är cellens yttre hinna som släpper in och ut ämnen."
+       },
+       {
+        "id": "q3",
+        "long": "Växtceller har också en cellvägg och kloroplaster, vilket djurceller saknar. Båda celltyperna har cellkärna, mitokondrier och cellmembran. Cellväggen är ett fast skal utanför cellmembranet som ger cellen stöd, och i kloroplasterna sker fotosyntesen, där växten bildar socker med hjälp av ljus.",
+        "question": "Hur skiljer sig växtceller från andra celler?",
+        "short": "Växtceller har också en cellvägg och kloroplaster, vilket djurceller saknar."
+       }
+      ],
+      "long_words": 90,
+      "notes": "Cellens delar (Biologi, åk 8). Cellkärnan styr cellen och innehåller DNA. Mitokondrien gör energi åt cellen (ATP). Cellmembranet släpper in och ut ämnen. Växtceller har också cellvägg och kloroplaster.",
+      "questions_asked": 3,
+      "questions_possible": 3,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "Provet handlar om cellens delar: cellkärnan, mitokondrien och cellmembranet, och vad växtceller har som andra celler saknar.",
+       "grade": "åk 8",
+       "subject": "Biologi"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/PF2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "long": "The French Revolution spread the ideas of liberty and equality. Liberty means that people should be free, and equality means that all people should have the same rights instead of being ranked by birth.",
+        "question": "How did the French Revolution begin?",
+        "short": "The French Revolution spread the ideas of liberty and equality."
+       },
+       {
+        "id": "q2",
+        "long": "It began in 1789 when the people of Paris stormed the Bastille. The Bastille was a fortress and prison in Paris, and the storming of it is the event that marks the start of the revolution.",
+        "question": "Which ideas did the French Revolution spread?",
+        "short": "It began in 1789 when the people of Paris stormed the Bastille."
+       },
+       {
+        "id": "q3",
+        "long": "King Louis the Sixteenth was executed in 1793. That was four years after the revolution had begun in 1789.",
+        "question": "What followed from the revolution for the idea of equality?",
+        "screen": {
+         "long": "King Louis XVI was executed in 1793. That was four years after the revolution had begun in 1789.",
+         "question": "What happened to King Louis XVI in 1793?",
+         "short": "King Louis XVI was executed in 1793."
+        },
+        "short": "King Louis the Sixteenth was executed in 1793."
+       }
+      ],
+      "long_words": 90,
+      "notes": "The French Revolution. It began in 1789 when the people of Paris stormed the Bastille. The king, Louis XVI, was executed in 1793. The revolution spread the ideas of liberty and equality.",
+      "questions_asked": 3,
+      "questions_possible": 3,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "The exam covers the French Revolution: how it began in 1789, the execution of King Louis the Sixteenth in 1793, and the ideas it spread.",
+       "grade": "",
+       "subject": "Historia"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/PX1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "long": "Kungamakten gick i arv inom familjen, så Gustav Vasas son Erik den fjortonde blev kung efter honom 1560. Det var möjligt eftersom Gustav Vasa redan 1544 hade gjort Sverige till ett arvrike. Kronan stannade därmed i familjen när han dog, i stället för att gå till någon utanför släkten.",
+        "question": "Hur blev Gustav Vasa Sveriges kung?",
+        "screen": {
+         "long": "Kungamakten gick i arv inom familjen, så Gustav Vasas son Erik XIV blev kung efter honom 1560. Det var möjligt eftersom Gustav Vasa redan 1544 hade gjort Sverige till ett arvrike. Kronan stannade därmed i familjen när han dog, i stället för att gå till någon utanför släkten.",
+         "short": "Kungamakten gick i arv inom familjen, så Gustav Vasas son Erik XIV blev kung efter honom 1560."
+        },
+        "short": "Kungamakten gick i arv inom familjen, så Gustav Vasas son Erik den fjortonde blev kung efter honom 1560."
+       },
+       {
+        "id": "q2",
+        "long": "Gustav Vasa ledde ett uppror mot den danske kungen Kristian den andre och blev Sveriges kung 1523. Upproret började i Dalarna, där bönderna anslöt sig till honom. När upproret mot den danske kungen hade lyckats blev Gustav Eriksson Vasa kung över Sverige.",
+        "question": "Var började upproret mot Kristian II?",
+        "screen": {
+         "long": "Gustav Vasa ledde ett uppror mot den danske kungen Kristian II och blev Sveriges kung 1523. Upproret började i Dalarna, där bönderna anslöt sig till honom. När upproret mot den danske kungen hade lyckats blev Gustav Eriksson Vasa kung över Sverige.",
+         "short": "Gustav Vasa ledde ett uppror mot den danske kungen Kristian II och blev Sveriges kung 1523."
+        },
+        "short": "Gustav Vasa ledde ett uppror mot den danske kungen Kristian den andre och blev Sveriges kung 1523."
+       },
+       {
+        "id": "q3",
+        "long": "Upproret började i Dalarna, där bönderna anslöt sig till Gustav Vasa. Det var alltså bönderna i Dalarna som slöt upp bakom honom i upproret mot den danske kungen. Upproret slutade med att Gustav Vasa blev Sveriges kung 1523.",
+        "question": "Vad gjorde Gustav Vasa med den katolska kyrkan?",
+        "short": "Upproret började i Dalarna, där bönderna anslöt sig till Gustav Vasa."
+       },
+       {
+        "id": "q4",
+        "long": "Gustav Vasa bröt med den katolska kyrkan och tog kyrkans egendomar. Det gjorde han som kung, efter 1523. Kyrkans egendomar gick då till kronan, och det gav kronan mycket pengar.",
+        "question": "Vad innebar det att Sverige blev ett arvrike 1544?",
+        "short": "Gustav Vasa bröt med den katolska kyrkan och tog kyrkans egendomar."
+       },
+       {
+        "id": "q5",
+        "long": "Det innebar att kungamakten gick i arv inom Gustav Vasas familj. När en kung dog skulle makten alltså föras vidare inom släkten. Det syntes när Gustav Vasa dog 1560 och hans son Erik den fjortonde blev kung efter honom.",
+        "question": "Vad hände med kungamakten när Gustav Vasa dog 1560?",
+        "screen": {
+         "long": "Det innebar att kungamakten gick i arv inom Gustav Vasas familj. När en kung dog skulle makten alltså föras vidare inom släkten. Det syntes när Gustav Vasa dog 1560 och hans son Erik XIV blev kung efter honom."
+        },
+        "short": "Det innebar att kungamakten gick i arv inom Gustav Vasas familj."
+       }
+      ],
+      "long_words": 90,
+      "notes": "Gustav Vasa (Gustav Eriksson Vasa) blev Sveriges kung 1523, efter att ha lett ett uppror mot den danske kungen Kristian II. Upproret började i Dalarna, där bönderna anslöt sig till honom. Som kung bröt Gustav Vasa med den katolska kyrkan och tog kyrkans egendomar, vilket gav kronan mycket pengar. 1544 gjorde han Sverige till ett arvrike, så att kungamakten gick i arv inom familjen. Gustav Vasa dog 1560 och efterträddes av sonen Erik XIV.",
+      "questions_asked": 5,
+      "questions_possible": 5,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "Provet handlar om Gustav Vasa: hur han blev kung efter upproret mot Kristian II, hans brytning med katolska kyrkan, arvriket 1544 och hans död och efterträdare.",
+       "grade": "",
+       "subject": "Historia"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/PX2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "long": "pH-skalan går från 0 till 14: under 7 är lösningen sur, vid 7 är den neutral och över 7 är den basisk. Sura lösningar innehåller en syra, alltså ett ämne som lämnar ifrån sig vätejoner i vatten. Saltsyra med pH runt 1 ligger därför långt ner i den sura delen av skalan, medan natronlut med pH 14 ligger högst upp i den basiska delen.",
+        "question": "Vad är en syra?",
+        "short": "pH-skalan går från 0 till 14: under 7 är lösningen sur, vid 7 är den neutral och över 7 är den basisk."
+       },
+       {
+        "id": "q2",
+        "long": "Saltsyra är sur med ett pH runt 1, medan natronlut är basisk och kan ha pH 14. De ligger alltså i var sin ände av pH-skalan, som går från 0 till 14 där 7 är neutralt. Saltsyra är en syra, ett ämne som lämnar ifrån sig vätejoner i vatten, och natronlut är en bas.",
+        "question": "Hur visar pH-skalan om en lösning är sur, neutral eller basisk?",
+        "short": "Saltsyra är sur med ett pH runt 1, medan natronlut är basisk och kan ha pH 14."
+       },
+       {
+        "id": "q3",
+        "long": "Syran och basen neutraliserar varandra, och det bildas vatten och ett salt. Den reaktionen kallas neutralisation, och den kräver att syran och basen blandas i rätt mängd. Blandar man till exempel saltsyra och natronlut i rätt mängd bildas vatten och koksalt.",
+        "question": "Hur skiljer sig saltsyra från natronlut?",
+        "short": "Syran och basen neutraliserar varandra, och det bildas vatten och ett salt."
+       }
+      ],
+      "long_words": 90,
+      "notes": "Syror och baser. En syra är ett ämne som lämnar ifrån sig vätejoner i vatten. pH-skalan går från 0 till 14, där 7 är neutralt. En lösning med pH under 7 är sur och en lösning med pH över 7 är basisk. Exempel: saltsyra har pH runt 1, natronlut kan ha pH 14. Neutralisation: när en syra och en bas blandas i rätt mängd bildas vatten och ett salt.",
+      "questions_asked": 3,
+      "questions_possible": 3,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "Provet handlar om syror och baser: vad en syra är, pH-skalan med sura, neutrala och basiska lösningar, och neutralisation.",
+       "grade": "",
+       "subject": "Kemi"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/PX3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "long": "According to legend, Rome was founded in 753 before Christ. Because the date comes from a legend, it is the traditional founding year that the Romans told about their city, not a proven fact.",
+        "question": "When was Rome founded, according to legend?",
+        "screen": {
+         "long": "According to legend, Rome was founded in 753 BC. Because the date comes from a legend, it is the traditional founding year that the Romans told about their city, not a proven fact.",
+         "short": "According to legend, Rome was founded in 753 BC."
+        },
+        "short": "According to legend, Rome was founded in 753 before Christ."
+       },
+       {
+        "id": "q2",
+        "long": "The Republic was replaced by an empire when Augustus became the first Roman emperor in 27 before Christ. From then on Rome was led by an emperor instead of being a republic, and Augustus was the first to hold that position.",
+        "question": "How did the Roman Republic become an empire?",
+        "screen": {
+         "long": "The Republic was replaced by an empire when Augustus became the first Roman emperor in 27 BC. From then on Rome was led by an emperor instead of being a republic, and Augustus was the first to hold that position.",
+         "short": "The Republic was replaced by an empire when Augustus became the first Roman emperor in 27 BC."
+        },
+        "short": "The Republic was replaced by an empire when Augustus became the first Roman emperor in 27 before Christ."
+       },
+       {
+        "id": "q3",
+        "long": "The Roman Empire built roads, aqueducts and a common legal system across Europe. Aqueducts are channels that carry water to towns and cities. The roads and aqueducts were things the Romans built, while the common legal system meant that the same laws were used across the empire.",
+        "question": "What did the Roman Empire build across Europe?",
+        "short": "The Roman Empire built roads, aqueducts and a common legal system across Europe."
+       },
+       {
+        "id": "q4",
+        "long": "The Western Roman Empire fell in 476 after Christ, while the Eastern part, the Byzantine Empire, lasted until 1453. So the Eastern part survived for almost a thousand years after the West had fallen.",
+        "question": "How did the fate of the Western Roman Empire differ from the Eastern part?",
+        "screen": {
+         "long": "The Western Roman Empire fell in 476 AD, while the Eastern part, the Byzantine Empire, lasted until 1453. So the Eastern part survived for almost a thousand years after the West had fallen.",
+         "short": "The Western Roman Empire fell in 476 AD, while the Eastern part, the Byzantine Empire, lasted until 1453."
+        },
+        "short": "The Western Roman Empire fell in 476 after Christ, while the Eastern part, the Byzantine Empire, lasted until 1453."
+       }
+      ],
+      "long_words": 90,
+      "notes": "The Roman Empire. According to legend, Rome was founded in 753 BC. The Roman Republic was replaced by an empire when Augustus became the first emperor in 27 BC. The empire built roads, aqueducts and a common legal system across Europe. The Western Roman Empire fell in 476 AD. The Eastern part, called the Byzantine Empire, lasted until 1453.",
+      "questions_asked": 4,
+      "questions_possible": 4,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "The exam covers the Roman Empire: the legend of Rome's founding, the change from republic to empire under Augustus, what the empire built, and the fall of the Western and Eastern empires.",
+       "grade": "",
+       "subject": "Historia"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/PX4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "long": "Zorbia har tre månar som heter Ilo, Brak och Seme. Zorbia är en påhittad planet i berättelsen Stjärnresan, så månarna finns bara i den berättelsen.",
+        "question": "I vilken berättelse finns planeten Zorbia?",
+        "short": "Zorbia har tre månar som heter Ilo, Brak och Seme."
+       },
+       {
+        "id": "q2",
+        "long": "Planeten Zorbia finns i berättelsen Stjärnresan, där den är en påhittad planet. I berättelsen bor invånarna, zorbierna, i städer under marken eftersom ytan är för kall, och huvudstaden heter Vexa.",
+        "question": "Hur långt är ett år på Zorbia?",
+        "short": "Planeten Zorbia finns i berättelsen Stjärnresan, där den är en påhittad planet."
+       },
+       {
+        "id": "q3",
+        "long": "Ett år på Zorbia är 412 dagar långt. Det gäller den påhittade planeten Zorbia i berättelsen Stjärnresan.",
+        "question": "Varför bor zorbierna i städer under marken?",
+        "short": "Ett år på Zorbia är 412 dagar långt."
+       }
+      ],
+      "long_words": 90,
+      "notes": "Planeten Zorbia är en påhittad planet i berättelsen Stjärnresan. Zorbia har tre månar: Ilo, Brak och Seme. Ett år på Zorbia är 412 dagar långt. Invånarna heter zorbier. De andas kväve i stället för syre. De bor i städer under marken, eftersom ytan är för kall. Huvudstaden heter Vexa.",
+      "questions_asked": 3,
+      "questions_possible": 3,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "Provet handlar om den påhittade planeten Zorbia i berättelsen Stjärnresan: dess månar, årets längd, invånarna zorbierna och hur de lever, och huvudstaden.",
+       "grade": "",
+       "subject": "Svenska"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/PX5": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "question": "Vid vilken temperatur fryser vatten?"
+       },
+       {
+        "id": "q2",
+        "question": "Vid vilken temperatur kokar vatten vid normalt lufttryck?"
+       }
+      ],
+      "long_words": 90,
+      "note": "Materialet räckte till 2 frågor.",
+      "notes": "Vatten fryser vid 0 grader. Vatten kokar vid 100 grader vid normalt lufttryck.",
+      "questions_asked": 12,
+      "questions_possible": 2,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "Provet handlar om vid vilka temperaturer vatten fryser och kokar.",
+       "grade": "",
+       "subject": "Fysik"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/PX6": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "question": "Hur mycket har jordens medeltemperatur stigit sedan slutet av 1800-talet?"
+       },
+       {
+        "id": "q2",
+        "question": "Varför har jordens medeltemperatur stigit?"
+       },
+       {
+        "id": "q3",
+        "question": "Vilka följder får klimatförändringarna?"
+       }
+      ],
+      "long_words": 90,
+      "notes": "Klimatförändringar. Jordens medeltemperatur har stigit med ungefär 1,1 grad sedan slutet av 1800-talet. Den främsta orsaken är utsläpp av koldioxid från fossila bränslen som kol, olja och gas. Koldioxiden förstärker växthuseffekten. Följder är bland annat smältande isar, stigande havsnivåer och fler värmeböljor.",
+      "questions_asked": 3,
+      "questions_possible": 3,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "Provet handlar om klimatförändringar: hur mycket jordens medeltemperatur har stigit, varför, hur koldioxiden påverkar växthuseffekten och vilka följderna blir.",
+       "grade": "",
+       "subject": "Geografi"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/T1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "quiz_key": {
+       "alternatives": [
+        "Montesquieu",
+        "Voltaire",
+        "Locke",
+        "Diderot"
+       ],
+       "answer": "Rousseau"
+      },
+      "relation": null,
+      "source": null,
+      "summary": "Eleven bad om att bli förhörd på franska revolutionen och fick en kontrollfråga om vilken upplysningsfilosof som låg bakom idén om folksuveränitet."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Vilken upplysningsfilosof låg bakom idén om folksuveränitet som revolutionärerna byggde på?",
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/T2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "continues",
+      "source": null,
+      "summary": "Eleven svarade på kontrollfrågan om när och hur franska revolutionen började och fick rätt för 1789 och stormningen av Bastiljen, med tillägget om generalständerna och orsakerna som nästa steg."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Rätt. Revolutionen började sjuttonhundraåttio nio, och stormningen av Bastiljen den fjortonde juli blev symbolen för starten, även om generalständernas möte och eden i bollhuset kom några veckor före. Nästa steg är att kunna förklara orsakerna: statens skulder, dåliga skördar och upplysningens idéer.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/T3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "continues",
+      "source": null,
+      "summary": "Eleven svarade att kungen avrättades på frågan om vilka idéer franska revolutionen spred och fick veta att idéerna var frihet, jämlikhet, broderskap, folksuveränitet och mänskliga rättigheter, medan avrättningen var en händelse."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Inte riktigt. Idéerna var frihet, jämlikhet och broderskap, folksuveränitet och de mänskliga rättigheterna, och de var viktiga eftersom de utmanade kungens och adelns makt och inspirerade demokratiska rörelser i hela Europa. Att kungen avrättades sjuttonhundranittiotre var en händelse under revolutionen, inte en idé, men den visar hur långt tanken på folkets makt drevs.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o104/T4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "quiz_key": {
+       "alternatives": [
+        "photosynthesis",
+        "digestion",
+        "fermentation",
+        "transpiration"
+       ],
+       "answer": "cellular respiration"
+      },
+      "relation": null,
+      "source": null,
+      "summary": "Eleven bad om att bli förhörd på fotosyntesen och fick en kontrollfråga om vilken process som använder glukosen från fotosyntesen för att frigöra energi."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Which process in the cells uses the glucose made in photosynthesis to release energy?",
+     "suggestions": null
+    }
+   ]
+  },
+  "o105-harness/ST1": {
+   "id": "ST1",
+   "kind": "stil",
+   "reply": "[calm] Fotosyntesen sker i bladen. [pause] Växten gör socker av ljus, vatten och koldioxid. [pause] Syre släpps ut.",
+   "result": "[calm] Fotosyntesen sker i bladen. [pause] Växten gör socker av ljus, vatten och koldioxid. [pause] Syre släpps ut.",
+   "style": "lugnt och tydligt, som en lärare"
+  },
+  "o105-harness/ST2": {
+   "id": "ST2",
+   "kind": "stil",
+   "reply": "[cheerful] Fotosyntesen sker i löven. Växten gör socker av ljus, vatten och koldioxid. Syre släpps ut.",
+   "result": "[cheerful] Fotosyntesen sker i bladen. Växten gör socker av ljus, vatten och koldioxid. Syre släpps ut.",
+   "style": "glatt"
+  },
+  "o105-harness/ST3": {
+   "id": "ST3",
+   "kind": "stil",
+   "reply": "[slowly] Photosynthesis happens in the leaves. [long pause] The plant makes sugar from light, water and carbon dioxide.",
+   "result": "[slowly] Photosynthesis happens in the leaves. [long pause] The plant makes sugar from light, water and carbon dioxide.",
+   "style": "slow, with pauses so I can write"
+  },
+  "o105-harness/ST4": {
+   "id": "ST4",
+   "kind": "stil",
+   "reply": "fel: Provider refused the request",
+   "result": "[whispers] Fotosyntesen sker i bladen. Växten gör socker av ljus, vatten och koldioxid. Syre släpps ut.",
+   "style": "viska lite"
+  },
+  "o105-harness/ST5": {
+   "id": "ST5",
+   "kind": "stil",
+   "reply": "[pause] Glosor: [pause] hund dog, [pause] katt cat, [pause] häst horse. [pause]",
+   "result": "[pause] Glosor: [pause] hund dog, [pause] katt cat, [pause] häst horse. [pause]",
+   "style": "med pauser så jag hinner skriva"
+  },
+  "o105-harness/TT1": {
+   "current": "Mötet är klockan fjorton och trettio den tredje maj, till exempel i sal två B. Ta med cirka femtio kronor.",
+   "id": "TT1",
+   "in": "Mötet är kl. 14.30 den 3 maj, t.ex. i sal 2B. Ta med ca 50 kr.",
+   "kind": "talformat",
+   "lang": "sv",
+   "rules4": "Mötet är klockan fjorton och trettio den tredje maj, till exempel i sal två B. Ta med cirka femtio kronor.",
+   "version": 5
+  },
+  "o105-harness/TT2": {
+   "current": "Vattnet kokar vid hundra grader celsius och fryser vid noll grader celsius. Skolan har tolvhundrafemtio elever, tolv procent fler än tvåtusen nitton.",
+   "id": "TT2",
+   "in": "Vattnet kokar vid 100 °C och fryser vid 0 °C. Skolan har 1 250 elever, 12 % fler än 2019.",
+   "kind": "talformat",
+   "lang": "sv",
+   "rules4": "Vattnet kokar vid hundra grader celsius och fryser vid noll grader celsius. Skolan har tolvhundrafemtio elever, tolv procent fler än tvåtusen nitton.",
+   "version": 5
+  },
+  "o105-harness/TT3": {
+   "current": "Läs sidan fyrtiofem till fyrtiosju och kapitel tre. pH sju är neutralt, H två O är vatten och C O två koldioxid.",
+   "id": "TT3",
+   "in": "Läs s. 45–47 och kap. 3. pH 7 är neutralt, H2O är vatten och CO2 koldioxid.",
+   "kind": "talformat",
+   "lang": "sv",
+   "rules4": "Läs sidan fyrtiofem till fyrtiosju och kapitel tre. pH sju är neutralt, vatten är vatten och koldioxid koldioxid.",
+   "version": 5
+  },
+  "o105-harness/TT4": {
+   "current": "The meeting is at 2.30 pm on 3 May, e.g. in room 2B. Bring about $5.",
+   "id": "TT4",
+   "in": "The meeting is at 2.30 pm on 3 May, e.g. in room 2B. Bring about $5.",
+   "kind": "talformat",
+   "lang": "en",
+   "rules4": "The meeting is at 2.30 pm on 3 May, e.g. in room 2B. Bring about $5.",
+   "version": 5
+  },
+  "o105-harness/TT5": {
+   "current": "Ring ett ett två vid nödläge, elva sjuttiosju för vård. Karl den tolfte dog sjuttonhundraarton, och Gustav den andre Adolf sextonhundratrettiotvå.",
+   "id": "TT5",
+   "in": "Ring 112 vid nödläge, 1177 för vård. Karl XII dog 1718, och Gustav II Adolf 1632.",
+   "kind": "talformat",
+   "lang": "sv",
+   "rules4": "Ring ett ett två vid nödläge, elva sjuttiosju för vård. Karl den tolfte dog sjuttonhundraarton, och Gustav den andre Adolf sextonhundratrettiotvå.",
+   "version": 5
+  },
+  "o105-harness/VO1": {
+   "id": "VO1",
+   "kind": "röstval",
+   "reply": "{\"voice_id\": \"v_jonas\", \"reason\": \"Jonas är lugn och tydlig, som en lärare.\"}",
+   "result": {
+    "reason": "Jonas är lugn och tydlig, som en lärare.",
+    "voice_id": "v_jonas"
+   },
+   "style": "lugnt, som en lärare"
+  },
+  "o105-harness/VO2": {
+   "id": "VO2",
+   "kind": "röstval",
+   "reply": "{\"voice_id\": \"v_jonas\", \"reason\": \"Ingen röst med kinesisk brytning finns ännu, så en lugn och tydlig röst.\"}",
+   "result": {
+    "reason": "Ingen röst med kinesisk brytning finns ännu, så en lugn och tydlig röst.",
+    "voice_id": "v_jonas"
+   },
+   "style": "med kinesisk brytning"
+  },
+  "o105-harness/VO3": {
+   "id": "VO3",
+   "kind": "röstval",
+   "reply": "{\"voice_id\": \"v_bertil\", \"reason\": \"Bertil talar skånska och berättar lugnt.\"}",
+   "result": {
+    "reason": "Bertil talar skånska och berättar lugnt.",
+    "voice_id": "v_bertil"
+   },
+   "style": "på skånska"
+  },
+  "o105-harness/VO4": {
+   "id": "VO4",
+   "kind": "röstval",
+   "reply": "{\"voice_id\": \"v_lisa\", \"reason\": \"Lisa är glad.\"}",
+   "result": null,
+   "style": "glatt"
+  },
+  "o105-harness/VO5": {
+   "id": "VO5",
+   "kind": "röstval",
+   "reply": "{\"voice_id\": \"v_alyssa\", \"reason\": \"Alyssa has clear American English and sounds friendly.\"}",
+   "result": {
+    "reason": "Alyssa has clear American English and sounds friendly.",
+    "voice_id": "v_alyssa"
+   },
+   "style": "friendly, in English"
+  },
+  "o105-harness/VO5-prompt": {
+   "id": "VO5-prompt",
+   "system_has_english": false
+  },
+  "o105/CO2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "text": "Mitokondrien kallas cellens kraftverk, där cellandningen gör socker och syre till energi i form av ATP, och koldioxid och vatten bildas."
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o105/HL1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "answer": "Tryck Välj röst innan ljudet görs och välj i listan med svenska och engelska röster. Du kan Provlyssna varje röst, och det kostar inget. När ljudet är gjort går rösten inte att byta, så då gör du ett nytt prov.",
+      "in_scope": true
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o105/HL2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "answer": "1. Tap Share (the symbol with the arrow up) at the top right of the quiz. 2. Send the link, for example with Messages. Sharing works once all the audio is ready. To let everyone at your school study it, use Publish quiz.",
+      "in_scope": true
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o105/HL3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "answer": "Det kan jag inte svara på.",
+      "hint": "Jag svarar bara på hur EarMind fungerar, till exempel hur du gör ett nytt prov.",
+      "in_scope": false
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o105/HL4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "answer": "Nej, Spela in själv är helt gratis och kostar inga krediter. Ljudet stannar på din telefon och skickas aldrig till oss.",
+      "in_scope": true
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o105/HL5": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "answer": "Lås upp telefonen, öppna EarMind och tryck spela igen. Ha gärna EarMind öppen medan Säg i AirPods spelar.",
+      "in_scope": true
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A01": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vad fotosyntes är. Svaret var att växter med solljus gör socker av koldioxid och vatten och avger syre."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Fotosyntes är när växter med hjälp av solljus gör socker av koldioxid och vatten och släpper ut syre. Det sker i bladens klorofyll.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A02": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde när första världskriget började. Svaret var 1914, efter Österrike-Ungerns krigsförklaring mot Serbien."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Första världskriget började nittonhundrafjorton, när Österrike-Ungern förklarade krig mot Serbien den tjugoåttonde juli efter skotten i Sarajevo.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A03": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde Kanadas huvudstad. Svaret var Ottawa i provinsen Ontario."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Ottawa är Kanadas huvudstad. Den ligger i provinsen Ontario.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A04": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vad ATP är och var det bildas. Svaret var att ATP är cellens energibärare och bildas främst i mitokondrierna, hos växter även i kloroplasterna."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "ATP, adenosintrifosfat, är cellens energivaluta som driver nästan alla processer i cellen. Det bildas främst i mitokondrierna vid cellandningen och hos växter även i kloroplasterna.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A05": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "cut_off": true,
+      "memory_add": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A06": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde om Ottawa är Kanadas huvudstad. Svaret var ja, Ottawa i Ontario är huvudstaden."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Ja, Ottawa är Kanadas huvudstad. Den ligger i Ontario, nära gränsen till Québec.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A07": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "refines",
+      "source": null,
+      "summary": "Efter fotosyntesen frågades om cellandning. Svaret var att cellandning bryter ner socker med syre till koldioxid och vatten och ger energi som ATP i mitokondrierna."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Cellandning är fotosyntesens motsats: cellerna bryter ner socker med syre till koldioxid och vatten och får energi i form av ATP. Den sker i mitokondrierna hos både växter och djur.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A08": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A09": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A10": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A11": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A12": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "not_for_assistant": true,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A13": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vilken som är solsystemets största planet. Svaret var Jupiter, som är mer än 11 gånger bredare än jorden."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Jupiter is the largest planet in our solar system, more than 11 times wider than Earth.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A14": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vad det engelska ordet ubiquitous betyder på svenska. Svaret var allestädes närvarande, något som finns överallt."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Allestädes närvarande, alltså något som finns överallt.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A15": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "study",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde skillnaden mellan väder och klimat; svaret var att väder är nu och klimat är medelvärdet över lång tid."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Väder är hur det är ute just nu, som regn eller sol. Klimat är vädret i genomsnitt på en plats under lång tid, oftast trettio år. Väder ändras från dag till dag, klimatet ändras långsamt.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A16": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vilket år Berlinmuren föll. Svaret var 1989, den 9 november."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Berlinmuren föll nittonhundraåttio nio, den nionde november.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A17": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vinnaren av Melodifestivalen 2031. Svaret var att tävlingen inte har hållits än och avgörs våren 2031."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Melodifestivalen tvåtusen trettioett har inte hållits än, den avgörs först våren tvåtusen trettioett.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A18": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vem som uppfann kulspetspennan. Svaret var ungraren László Bíró, som patenterade den 1938."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Kulspetspennan uppfanns av ungraren László Bíró, som patenterade den nittonhundratrettioåtta. På många håll kallas den fortfarande för biro.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A19": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde tiden i New York och flygtiden; svaret var sex timmar efter och cirka nio timmar."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "I New York är klockan tjugotvå och trettiosex på torsdagskvällen, sex timmar efter svensk tid. Ett direktflyg från Stockholm tar ungefär nio timmar.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A20": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vad en metafor är. Svaret var att en metafor är ett bildligt uttryck som säger att något är något annat utan ordet som."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "En metafor är ett bildligt uttryck där man säger att något är något annat utan att använda ordet som, till exempel livet är en resa.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A21": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde hur många ben en bläckfisk har. Svaret var att en åttaarmad bläckfisk har 8 armar och tioarmade bläckfiskar har 8 armar och 2 fångstarmar."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "En åttaarmad bläckfisk har åtta armar, inga ben. Tioarmade bläckfiskar som kalmarer har åtta armar och två längre fångstarmar.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A22": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A23": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "new_topic",
+      "source": null,
+      "summary": "Frågan gällde världens längsta flod. Svaret var Nilen med ungefär 6 650 km, men att vissa mätningar gör Amazonfloden längre."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Nilen räknas oftast som världens längsta flod, ungefär sextusen sexhundrafemtio kilometer. Vissa mätningar gör dock Amazonfloden något längre.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A24": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": false
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": "continues",
+      "source": null,
+      "summary": "Som uppföljning på Mount Everest frågades om höjden i fot. Svaret var ungefär 29 032 fot, vilket motsvarar 8 849 meter."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Mount Everest är ungefär tjugoniotusen trettiotvå fot högt.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A25": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": "Frågan gällde vilket grundämne som har beteckningen Fe. Svaret var järn, nummer 26, från latinets ferrum."
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Fe är järn, grundämne nummer tjugosex i periodiska systemet. Beteckningen kommer från latinets ferrum.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A26": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "not_for_assistant": true,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A27": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "not_for_assistant": true,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A28": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "not_for_assistant": true,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A29": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "not_for_assistant": true,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A30": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "not_for_assistant": true,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A31": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "ATP, adenosintrifosfat, är cellens energivaluta. Den bildas framför allt i mitokondrierna vid cellandningen.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A32": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": false,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "memory_add": null,
+      "not_for_assistant": true,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A33": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Frankrikes huvudstad är Paris.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o106/A34": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": {
+      "answered": true,
+      "breakdown": {
+       "answer_type": "fact",
+       "continuation": null,
+       "direct": true
+      },
+      "calibration": null,
+      "memory_add": null,
+      "relation": null,
+      "source": null,
+      "summary": null
+     },
+     "error": null,
+     "http": 200,
+     "json": null,
+     "said": "Hamlet skrevs av William Shakespeare, troligen runt år sextonhundra.",
+     "suggestions": null
+    }
+   ]
+  },
+  "o107-harness/M1": {
+   "id": "M1",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Har prov i kemi fredag 28 november 2026."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "jag har prov i kemi på fredag",
+   "saved": {
+    "add": [
+     "Har prov i kemi fredag 28 november 2026."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M10": {
+   "id": "M10",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Mejladress elev.test@example.com."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "min mejl är elev.test@example.com",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M11": {
+   "id": "M11",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Pappan heter Johan och är arbetslös."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "min pappa heter Johan och är arbetslös",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M12": {
+   "id": "M12",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Orkar inte leva längre."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "jag orkar inte leva längre",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M13": {
+   "id": "M13",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Har prov i engelska måndag 30 november 2026."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "I have an English test on Monday",
+   "saved": {
+    "add": [
+     "Har prov i engelska måndag 30 november 2026."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M14": {
+   "id": "M14",
+   "kind": "minne",
+   "model_called": false,
+   "reply": {
+    "add": [
+     "Undrar vad fotosyntes är."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "vad är fotosyntes",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "skipped": "no_self_reference",
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M15": {
+   "id": "M15",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Har glutenallergi."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "jag har glutenallergi",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M16": {
+   "id": "M16",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Mobilnummer 0701234567."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "mitt nummer är 0701234567",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M17": {
+   "id": "M17",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Nås på +46 70 123 45 67."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "ring mig på +46 70 123 45 67",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M18": {
+   "id": "M18",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Telefonnummer noll sju noll ett två tre fyra fem sex sju."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "mitt nummer är noll sju noll ett två tre fyra fem sex sju",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M19": {
+   "id": "M19",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Mejl elev at example dot com."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "min mejl är elev at example dot com",
+   "saved": {
+    "add": [
+     "Mejl elev at example dot com."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M2": {
+   "id": "M2",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [],
+    "remove": [],
+    "update": [
+     {
+      "new": "Har prov i kemi onsdag 3 december 2026.",
+      "old": "Har prov i kemi fredag 28 november 2026."
+     }
+    ]
+   },
+   "said": "provet i kemi är flyttat till nästa onsdag",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": [
+     {
+      "new": "Har prov i kemi onsdag 3 december 2026.",
+      "old": "Har prov i kemi fredag 28 november 2026."
+     }
+    ]
+   },
+   "status": 200
+  },
+  "o107-harness/M20": {
+   "id": "M20",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Bor på Kungsgatan 3B, lgh 1101, 752 37 Uppsala."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "jag bor på Kungsgatan 3B, lgh 1101, 752 37 Uppsala",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M21": {
+   "id": "M21",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Telefon 07012 34567.",
+     "Bor på 5 Baker Street."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "my number is 07012 34567 and I live at 5 Baker Street",
+   "saved": {
+    "add": [
+     "Telefon 07012 34567."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M22": {
+   "id": "M22",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Brodern heter Elias."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "min bror heter Elias",
+   "saved": {
+    "add": [
+     "Brodern heter Elias."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M23": {
+   "id": "M23",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Mamman heter Anna och är sjuk."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "min mamma heter Anna och är sjuk",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M24": {
+   "id": "M24",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Elias är arbetslös."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "min kompis Elias är arbetslös",
+   "saved": {
+    "add": [
+     "Elias är arbetslös."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M25": {
+   "id": "M25",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Bästa vännen Sara har ADHD."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "min bästa vän Sara har ADHD",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M26": {
+   "id": "M26",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Kompisen Leo bor på Ringvägen 5."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "min kompis Leo bor på Ringvägen 5",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M27": {
+   "id": "M27",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Bor i Uppsala.",
+     "Går på Katedralskolan."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "jag bor i Uppsala och går på Katedralskolan",
+   "saved": {
+    "add": [
+     "Bor i Uppsala.",
+     "Går på Katedralskolan."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M3": {
+   "id": "M3",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Vill ha kortare svar."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "svara alltid kortare till mig",
+   "saved": {
+    "add": [
+     "Vill ha kortare svar."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M4": {
+   "id": "M4",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Har dyslexi.",
+     "Vill att texten läses långsamt."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "jag har dyslexi så läs långsamt",
+   "saved": {
+    "add": [
+     "Vill att texten läses långsamt."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M5": {
+   "id": "M5",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Tar penicillin den här veckan."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "jag tar penicillin den här veckan",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M6": {
+   "id": "M6",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Har hörselnedsättning på vänster öra."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "jag har hörselnedsättning på vänster öra",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M7": {
+   "id": "M7",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Går på KBT varje tisdag."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "jag går på KBT varje tisdag",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M8": {
+   "id": "M8",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Mobilnummer 070-123 45 67."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "mitt mobilnummer är 070-123 45 67",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/M9": {
+   "id": "M9",
+   "kind": "minne",
+   "model_called": true,
+   "reply": {
+    "add": [
+     "Bor på Storgatan 12 i Uppsala."
+    ],
+    "remove": [],
+    "update": []
+   },
+   "said": "jag bor på Storgatan 12 i Uppsala",
+   "saved": {
+    "add": [],
+    "remove": [],
+    "update": []
+   },
+   "status": 200
+  },
+  "o107-harness/PL1": {
+   "id": "PL1",
+   "kind": "plan",
+   "result": {
+    "exams": [
+     {
+      "date": "2026-11-28",
+      "days_left": 1,
+      "due": [
+       {
+        "box": 0,
+        "concept": "cellandning",
+        "last": "2026-11-26",
+        "next": "2026-11-27",
+        "reason": "missed"
+       }
+      ],
+      "name": "Biologiprovet",
+      "plan": [
+       {
+        "concepts": [
+         "cellandning",
+         "fotosyntes"
+        ],
+        "date": "2026-11-27",
+        "minutes": 15,
+        "note": "Blandat förhör på det viktigaste, dagen före provet."
+       }
+      ],
+      "prompt": "I går missade du cellandning. Ska vi ta det nu?",
+      "readiness": {
+       "explain": "Räknat på 2 begrepp, 2 övade. Ett begrepp räknas fullt när du har haft rätt tre gånger i rad.",
+       "practiced": 2,
+       "ready_pct": 25,
+       "total": 2,
+       "weakest": [
+        {
+         "concept": "cellandning",
+         "score": 0,
+         "why": "fel senast"
+        },
+        {
+         "concept": "fotosyntes",
+         "score": 0.5,
+         "why": "rätt, men behöver fler gånger"
+        }
+       ]
+      }
+     }
+    ],
+    "notification": {
+     "body": "5 snabba frågor på cellandning? Det tar två minuter.",
+     "title": "I morgon är det Biologiprovet"
+    },
+    "streak": {
+     "at_risk": false,
+     "best": 0,
+     "current": 0,
+     "done_today": false
+    },
+    "today": "2026-11-27"
+   },
+   "status": 200
+  },
+  "o107-harness/PL2": {
+   "id": "PL2",
+   "kind": "plan",
+   "result": {
+    "exams": [
+     {
+      "date": "2026-12-10",
+      "days_left": 13,
+      "due": [],
+      "name": "Historia",
+      "plan": [
+       {
+        "concepts": [],
+        "date": "2026-11-27",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [],
+        "date": "2026-11-28",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [],
+        "date": "2026-11-29",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [],
+        "date": "2026-11-30",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [],
+        "date": "2026-12-01",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [],
+        "date": "2026-12-02",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [],
+        "date": "2026-12-03",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [],
+        "date": "2026-12-04",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [],
+        "date": "2026-12-05",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [],
+        "date": "2026-12-06",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [],
+        "date": "2026-12-07",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [],
+        "date": "2026-12-08",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [],
+        "date": "2026-12-09",
+        "minutes": 15,
+        "note": "Blandat förhör på det viktigaste, dagen före provet."
+       }
+      ],
+      "prompt": null,
+      "readiness": {
+       "explain": "Inga begrepp i provet än.",
+       "practiced": 0,
+       "ready_pct": null,
+       "total": 0,
+       "weakest": []
+      }
+     }
+    ],
+    "notification": {
+     "body": "5 snabba frågor? Det tar två minuter.",
+     "title": "13 dagar kvar till Historia"
+    },
+    "streak": {
+     "at_risk": false,
+     "best": 0,
+     "current": 0,
+     "done_today": false
+    },
+    "today": "2026-11-27"
+   },
+   "status": 200
+  },
+  "o107-harness/PL3": {
+   "id": "PL3",
+   "kind": "plan",
+   "result": {
+    "exams": [
+     {
+      "date": "2026-11-20",
+      "days_left": -7,
+      "due": [],
+      "name": "Gammalt prov",
+      "plan": [],
+      "prompt": null,
+      "readiness": {
+       "explain": "Räknat på 1 begrepp, 0 övade. Ett begrepp räknas fullt när du har haft rätt tre gånger i rad.",
+       "practiced": 0,
+       "ready_pct": 0,
+       "total": 1,
+       "weakest": [
+        {
+         "concept": "x",
+         "score": 0,
+         "why": "inte övat än"
+        }
+       ]
+      }
+     }
+    ],
+    "notification": {
+     "body": "5 snabba frågor? Det tar två minuter.",
+     "title": "5 snabba frågor"
+    },
+    "streak": {
+     "at_risk": false,
+     "best": 0,
+     "current": 0,
+     "done_today": false
+    },
+    "today": "2026-11-27"
+   },
+   "status": 200
+  },
+  "o107-harness/PL4": {
+   "id": "PL4",
+   "kind": "plan",
+   "result": {
+    "exams": [
+     {
+      "date": "2026-12-03",
+      "days_left": 6,
+      "due": [
+       {
+        "box": 0,
+        "concept": "syror",
+        "last": "2026-11-26",
+        "next": "2026-11-27",
+        "reason": "missed"
+       }
+      ],
+      "name": "Kemi",
+      "plan": [
+       {
+        "concepts": [
+         "syror",
+         "baser"
+        ],
+        "date": "2026-11-27",
+        "minutes": 10,
+        "note": "Det du missade först."
+       },
+       {
+        "concepts": [
+         "syror",
+         "baser"
+        ],
+        "date": "2026-11-28",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [
+         "syror",
+         "baser"
+        ],
+        "date": "2026-11-29",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [
+         "syror",
+         "baser"
+        ],
+        "date": "2026-11-30",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [
+         "syror",
+         "baser"
+        ],
+        "date": "2026-12-01",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [
+         "syror",
+         "baser"
+        ],
+        "date": "2026-12-02",
+        "minutes": 15,
+        "note": "Blandat förhör på det viktigaste, dagen före provet."
+       }
+      ],
+      "prompt": "I går missade du syror. Ska vi ta det nu?",
+      "readiness": {
+       "explain": "Räknat på 2 begrepp, 2 övade. Ett begrepp räknas fullt när du har haft rätt tre gånger i rad.",
+       "practiced": 2,
+       "ready_pct": 38,
+       "total": 2,
+       "weakest": [
+        {
+         "concept": "syror",
+         "score": 0,
+         "why": "fel senast"
+        },
+        {
+         "concept": "baser",
+         "score": 0.75,
+         "why": "rätt, men behöver fler gånger"
+        }
+       ]
+      }
+     }
+    ],
+    "notification": {
+     "body": "5 snabba frågor på syror håller din svit på 2 dagar vid liv.",
+     "title": "6 dagar kvar till Kemi"
+    },
+    "streak": {
+     "at_risk": true,
+     "best": 2,
+     "current": 2,
+     "done_today": false
+    },
+    "today": "2026-11-27"
+   },
+   "status": 200
+  },
+  "o107-harness/PL5": {
+   "id": "PL5",
+   "kind": "plan",
+   "result": {
+    "exams": [
+     {
+      "date": "2026-11-30",
+      "days_left": 3,
+      "due": [],
+      "name": "script alert(1) /script",
+      "plan": [
+       {
+        "concepts": [
+         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "date": "2026-11-27",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [
+         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "date": "2026-11-28",
+        "minutes": 10,
+        "note": "Förhör på det som är svårast."
+       },
+       {
+        "concepts": [
+         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        ],
+        "date": "2026-11-29",
+        "minutes": 15,
+        "note": "Blandat förhör på det viktigaste, dagen före provet."
+       }
+      ],
+      "prompt": null,
+      "readiness": {
+       "explain": "Räknat på 1 begrepp, 1 övade. Ett begrepp räknas fullt när du har haft rätt tre gånger i rad.",
+       "practiced": 1,
+       "ready_pct": 50,
+       "total": 1,
+       "weakest": [
+        {
+         "concept": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+         "score": 0.5,
+         "why": "rätt, men behöver fler gånger"
+        }
+       ]
+      }
+     }
+    ],
+    "notification": {
+     "body": "5 snabba frågor på aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa? Det tar två minuter.",
+     "title": "3 dagar kvar till script alert(1) /script"
+    },
+    "streak": {
+     "at_risk": false,
+     "best": 0,
+     "current": 0,
+     "done_today": false
+    },
+    "today": "2026-11-27"
+   },
+   "status": 200
+  },
+  "o107-harness/SP1": {
+   "id": "SP1",
+   "kind": "profil",
+   "reply": {
+    "profile": {
+     "course": null,
+     "exam_date": "2026-11-28",
+     "grade": "y9",
+     "no_exam": false,
+     "subject": "Biologi",
+     "topic": "cellen"
+    },
+    "terms": [
+     "cell",
+     "cellkärna",
+     "mitokondrie",
+     "cellmembran",
+     "cellvägg",
+     "kloroplast",
+     "DNA",
+     "ribosom"
+    ]
+   },
+   "result": {
+    "profile": {
+     "course": null,
+     "exam_date": "2026-11-28",
+     "grade": "y9",
+     "no_exam": false,
+     "subject": "Biologi",
+     "topic": "cellen"
+    },
+    "terms": [
+     "cell",
+     "cellkärna",
+     "mitokondrie",
+     "cellmembran",
+     "cellvägg",
+     "kloroplast",
+     "DNA",
+     "ribosom"
+    ]
+   },
+   "said": "jag går i nian och har prov i biologi om cellen på fredag",
+   "status": 200
+  },
+  "o107-harness/SP2": {
+   "id": "SP2",
+   "kind": "profil",
+   "reply": {
+    "profile": {
+     "course": "Matematik 2c",
+     "exam_date": null,
+     "grade": "gy2",
+     "no_exam": true,
+     "subject": "Matematik",
+     "topic": null
+    },
+    "terms": [
+     "andragradsekvation",
+     "logaritm",
+     "derivata",
+     "linjär funktion"
+    ]
+   },
+   "result": {
+    "profile": {
+     "course": "Matematik 2c",
+     "exam_date": null,
+     "grade": "gy2",
+     "no_exam": true,
+     "subject": "Matematik",
+     "topic": null
+    },
+    "terms": [
+     "andragradsekvation",
+     "logaritm",
+     "derivata",
+     "linjär funktion"
+    ]
+   },
+   "said": "jag läser Matematik 2c på gymnasiet, inget prov just nu",
+   "status": 200
+  },
+  "o107-harness/SP3": {
+   "id": "SP3",
+   "kind": "profil",
+   "reply": {
+    "profile": {
+     "course": null,
+     "diagnosis": "ADHD",
+     "exam_date": null,
+     "grade": "y8",
+     "no_exam": false,
+     "subject": null,
+     "topic": null
+    },
+    "terms": []
+   },
+   "result": {
+    "profile": {
+     "course": null,
+     "exam_date": null,
+     "grade": "y8",
+     "no_exam": false,
+     "subject": null,
+     "topic": null
+    },
+    "terms": []
+   },
+   "said": "jag har ADHD och går i åttan",
+   "status": 200
+  },
+  "o107-harness/SP4": {
+   "id": "SP4",
+   "kind": "profil",
+   "reply": {
+    "profile": {
+     "course": null,
+     "exam_date": "2026-11-30",
+     "grade": null,
+     "no_exam": false,
+     "subject": "Geografi",
+     "topic": "Europas floder"
+    },
+    "terms": [
+     "Donau",
+     "Rhen",
+     "Volga",
+     "Seine",
+     "Loire",
+     "Elbe",
+     "Po",
+     "Themsen"
+    ]
+   },
+   "result": {
+    "profile": {
+     "course": null,
+     "exam_date": "2026-11-30",
+     "grade": null,
+     "no_exam": false,
+     "subject": "Geografi",
+     "topic": "Europas floder"
+    },
+    "terms": [
+     "Donau",
+     "Rhen",
+     "Volga",
+     "Seine",
+     "Loire",
+     "Elbe",
+     "Po",
+     "Themsen"
+    ]
+   },
+   "said": "geografiprov nästa vecka om Europas floder",
+   "status": 200
+  },
+  "o107-harness/SP5": {
+   "id": "SP5",
+   "kind": "profil",
+   "reply": {
+    "profile": {
+     "course": null,
+     "exam_date": null,
+     "grade": "y4",
+     "no_exam": false,
+     "subject": null,
+     "topic": null
+    },
+    "terms": []
+   },
+   "result": {
+    "profile": {
+     "course": null,
+     "exam_date": null,
+     "grade": null,
+     "no_exam": false,
+     "subject": null,
+     "topic": null
+    },
+    "terms": []
+   },
+   "said": "jag går i fjärde klass",
+   "status": 200
+  },
+  "o107/D1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "long": "Sveriges huvudstad är Stockholm.",
+        "question": "Vilken stad är Sveriges huvudstad?",
+        "short": "Sveriges huvudstad är Stockholm."
+       },
+       {
+        "id": "q2",
+        "long": "I Finland talar man två språk, finska och svenska, medan man i Sverige bara talar svenska och på Island isländska. Svenska är alltså gemensamt för Sverige och Finland, medan isländska bara talas på Island. Finland är det enda av de tre länderna som har två språk.",
+        "question": "Hur skiljer sig Finland från Sverige och Island när det gäller språk?",
+        "short": "I Finland talar man två språk, finska och svenska, medan man i Sverige bara talar svenska och på Island isländska."
+       },
+       {
+        "id": "q3",
+        "long": "Finlands huvudstad är Helsingfors och Islands huvudstad är Reykjavik.",
+        "question": "Jämför huvudstäderna i Finland och på Island.",
+        "short": "Finlands huvudstad är Helsingfors och Islands huvudstad är Reykjavik."
+       }
+      ],
+      "long_words": 90,
+      "notes": "Anteckningar: Nordens länder. Sverige: huvudstad Stockholm, språk svenska. Finland: huvudstad Helsingfors, språk finska och svenska. Island: huvudstad Reykjavik, språk isländska.",
+      "questions_asked": 3,
+      "questions_possible": 3,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "Provet handlar om Nordens länder: huvudstäder och språk i Sverige, Finland och Island.",
+       "grade": "",
+       "subject": "Geografi"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/D2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": [
+      {
+       "fn": "exam.quota",
+       "n": 0
+      }
+     ],
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "items": [
+       {
+        "id": "q1",
+        "long": "Man räknar ut hastighet genom att dela sträckan med tiden, och hastigheten mäts i meter per sekund. Om man till exempel springer 100 meter på 20 sekunder blir hastigheten 100 delat med 20, alltså 5 meter per sekund.",
+        "question": "Hur räknar man ut hastighet?",
+        "screen": {
+         "long": "Man räknar ut hastighet genom att dela sträckan med tiden, v = s / t, och hastigheten mäts i m/s. Om man till exempel springer 100 m på 20 s blir hastigheten 100 / 20, alltså 5 m/s.",
+         "short": "Man räknar ut hastighet genom att dela sträckan med tiden, v = s / t, och hastigheten mäts i m/s."
+        },
+        "short": "Man räknar ut hastighet genom att dela sträckan med tiden, och hastigheten mäts i meter per sekund."
+       },
+       {
+        "id": "q2",
+        "long": "Hastighet är hur lång sträcka något rör sig per tid, medan acceleration är hur mycket hastigheten ändras per tid. Hastighet räknas ut som sträckan delat med tiden och mäts i meter per sekund. Acceleration räknas ut som ändringen i hastighet delat med ändringen i tid och mäts i meter per sekundkvadrat. Den som springer 100 meter på 20 sekunder har hastigheten 5 meter per sekund.",
+        "question": "Vad är skillnaden mellan hastighet och acceleration?",
+        "screen": {
+         "long": "Hastighet är hur lång sträcka något rör sig per tid, medan acceleration är hur mycket hastigheten ändras per tid. Hastighet räknas ut som v = s / t och mäts i m/s. Acceleration räknas ut som a = Δv / Δt och mäts i m/s². Den som springer 100 m på 20 s har hastigheten 5 m/s."
+        },
+        "short": "Hastighet är hur lång sträcka något rör sig per tid, medan acceleration är hur mycket hastigheten ändras per tid."
+       }
+      ],
+      "long_words": 90,
+      "note": "Materialet räckte till 2 frågor.",
+      "notes": "Rörelse (fysik). Hastighet: v = s / t, mäts i meter per sekund (m/s). Acceleration: a = Δv / Δt, mäts i meter per sekundkvadrat (m/s²). Exempel: 100 meter på 20 sekunder ger hastigheten v = 5 m/s.",
+      "questions_asked": 3,
+      "questions_possible": 2,
+      "quota": {
+       "left": 100000,
+       "limit": 100000,
+       "per": "month",
+       "remaining": 100000,
+       "resets": "2026-12-01",
+       "unit": "chars",
+       "used": 0
+      },
+      "summary": {
+       "covers": "Provet handlar om rörelse: hur man räknar ut hastighet och acceleration, vilka enheter de mäts i och ett räkneexempel på hastighet.",
+       "grade": "",
+       "subject": "Fysik"
+      }
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/G1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Bra, du visade metoden genom att först få 3x till 15 och sedan dela med 3, och svaret x är 5 är rätt. Det gav full poäng.",
+      "max": {
+       "A": 0,
+       "C": 0,
+       "E": 2
+      },
+      "numeric": {
+       "equal": true,
+       "expected": 5,
+       "given": 5
+      },
+      "points": {
+       "A": 0,
+       "C": 0,
+       "E": 2
+      },
+      "total": 2
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/G2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Du använde rätt metod, pi gånger radien i kvadrat, och det ger en E-poäng. För C-poängen behöver du ge ett mer exakt svar, avrunda till en decimal i stället för till hela tiotal.",
+      "max": {
+       "A": 0,
+       "C": 1,
+       "E": 1
+      },
+      "numeric": {
+       "equal": false,
+       "expected": 50.3,
+       "given": 50
+      },
+      "points": {
+       "A": 0,
+       "C": 0,
+       "E": 1
+      },
+      "total": 1
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/G3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "x lika med 2 är en rätt rot och ger en E-poäng. Ekvationen har två lösningar, så leta också efter den andra roten för att få C-poängen.",
+      "max": {
+       "A": 0,
+       "C": 1,
+       "E": 1
+      },
+      "numeric": null,
+      "points": {
+       "A": 0,
+       "C": 0,
+       "E": 1
+      },
+      "total": 1
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/G4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Rätt, fem miljoner fler: du läste av tabellen och räknade 10,5 minus 5,5. Skriv gärna uträkningen också.",
+      "max": {
+       "A": 0,
+       "C": 1,
+       "E": 1
+      },
+      "numeric": {
+       "equal": true,
+       "expected": 5000000,
+       "given": 5000000
+      },
+      "points": {
+       "A": 0,
+       "C": 1,
+       "E": 1
+      },
+      "total": 2
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/G5": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Att kvadraten har fyra hörn räcker inte, eftersom alla fyrhörningar har det. Det som saknas är att både rektangeln och kvadraten har fyra räta vinklar.",
+      "max": {
+       "A": 1,
+       "C": 1,
+       "E": 0
+      },
+      "numeric": {
+       "equal": true,
+       "expected": 4,
+       "given": 4
+      },
+      "points": {
+       "A": 0,
+       "C": 0,
+       "E": 0
+      },
+      "total": 0
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/G6": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Rätt, du räknade roten ur 49 till 7 och en halv gånger 6 till 3, och 7 plus 3 blir 10. Det ger full poäng.",
+      "max": {
+       "A": 0,
+       "C": 0,
+       "E": 1
+      },
+      "numeric": {
+       "equal": true,
+       "expected": 10,
+       "given": 10
+      },
+      "points": {
+       "A": 0,
+       "C": 0,
+       "E": 1
+      },
+      "total": 1
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/G7": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Correct, O2 is oxygen, the gas plants release during photosynthesis. Next time you can simply say oxygen.",
+      "max": {
+       "A": 0,
+       "C": 0,
+       "E": 1
+      },
+      "numeric": null,
+      "points": {
+       "A": 0,
+       "C": 0,
+       "E": 1
+      },
+      "total": 1
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/G8": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "feedback": "Rätt. Svavelsyra har formeln H2SO4 med fyra syreatomer, och du motiverade det med antalet syre. H2SO3 med tre syreatomer är svavelsyrlighet, en annan och svagare syra.",
+      "max": {
+       "A": 0,
+       "C": 1,
+       "E": 0
+      },
+      "numeric": null,
+      "points": {
+       "A": 0,
+       "C": 1,
+       "E": 0
+      },
+      "total": 1
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/H1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "hint": "Det här är en andragradsekvation, så fundera på hur du kan använda pq-formeln för att hitta de värden på x som gör vänsterledet lika med noll."
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/H2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "hint": "Läs av hur många miljoner som bor i Sverige och hur många som bor i Norge i tabellen, och räkna sedan ut skillnaden genom att dra Norges antal från Sveriges."
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/P1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "boundaries": [
+       {
+        "grade": "E",
+        "total": 3
+       },
+       {
+        "grade": "C",
+        "min_ca": 1,
+        "total": 5
+       },
+       {
+        "grade": "A",
+        "min_a": 1,
+        "total": 7
+       }
+      ],
+      "tasks": [
+       {
+        "answer": "Subtrahera 5 från båda leden: 3x = 15. Dividera båda leden med 3: x = 5. Kontroll: 3 · 5 + 5 = 20. Svar: x = 5",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "1",
+        "points": {
+         "A": 0,
+         "C": 0,
+         "E": 2
+        },
+        "spoken": "Fråga ett. Lös ekvationen tre x plus fem är lika med tjugo. Den ger två poäng.",
+        "text": "Lös ekvationen 3x + 5 = 20.",
+        "topic": "linjära ekvationer"
+       },
+       {
+        "answer": "Arean av en cirkel är A = πr². Med r = 4 cm blir A = π · 4² = 16π ≈ 50,3 cm². Svar: cirka 50,3 cm²",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "2",
+        "points": {
+         "A": 0,
+         "C": 1,
+         "E": 1
+        },
+        "spoken": "Fråga två. Beräkna arean av en cirkel med radien fyra centimeter. Den ger två poäng, en E-poäng och en C-poäng.",
+        "text": "Beräkna arean av en cirkel med radien 4 cm.",
+        "topic": "cirkelns area"
+       },
+       {
+        "answer": "En rektangel är en fyrhörning där alla fyra vinklar är räta. En kvadrat är en fyrhörning med fyra räta vinklar och dessutom fyra lika långa sidor. Eftersom kvadraten uppfyller rektangelns definition är den alltid en rektangel, men en rektangel behöver inte vara en kvadrat, till exempel en rektangel med sidorna 2 cm och 5 cm.",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "3",
+        "points": {
+         "A": 1,
+         "C": 1,
+         "E": 0
+        },
+        "spoken": "Fråga tre. Förklara varför en kvadrat alltid är en rektangel. Den ger två poäng, en C-poäng och en A-poäng.",
+        "text": "Förklara varför en kvadrat alltid är en rektangel.",
+        "topic": "fyrhörningar"
+       }
+      ]
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/P2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "boundaries": [
+       {
+        "grade": "E",
+        "total": 3
+       },
+       {
+        "grade": "C",
+        "min_ca": 1,
+        "total": 5
+       },
+       {
+        "grade": "A",
+        "min_a": 1,
+        "total": 7
+       }
+      ],
+      "tasks": [
+       {
+        "answer": "Subtrahera 5 från båda leden: 3x = 15. Dividera båda leden med 3: x = 5. Kontroll: 3 · 5 + 5 = 20. Svar: x = 5",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "1",
+        "points": {
+         "A": 0,
+         "C": 0,
+         "E": 2
+        },
+        "spoken": "Fråga ett. Lös ekvationen tre x plus fem är lika med tjugo. Den ger två poäng.",
+        "text": "Lös ekvationen 3x + 5 = 20.",
+        "topic": "linjära ekvationer"
+       },
+       {
+        "answer": "Arean av en cirkel är A = πr². Med r = 4 cm blir A = π · 4² = 16π ≈ 50,3 cm². Svar: cirka 50,3 cm²",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "2",
+        "points": {
+         "A": 0,
+         "C": 1,
+         "E": 1
+        },
+        "spoken": "Fråga två. Beräkna arean av en cirkel med radien fyra centimeter. Den ger två poäng, en E-poäng och en C-poäng.",
+        "text": "Beräkna arean av en cirkel med radien 4 cm.",
+        "topic": "cirkelns area"
+       },
+       {
+        "answer": "En rektangel är en fyrhörning där alla fyra vinklar är räta. En kvadrat är en fyrhörning med fyra räta vinklar och dessutom fyra lika långa sidor. Eftersom kvadraten uppfyller rektangelns definition är den alltid en rektangel, men en rektangel behöver inte vara en kvadrat, till exempel en rektangel med sidorna 2 cm och 5 cm.",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "3",
+        "points": {
+         "A": 1,
+         "C": 1,
+         "E": 0
+        },
+        "spoken": "Fråga tre. Förklara varför en kvadrat alltid är en rektangel. Den ger två poäng, en C-poäng och en A-poäng.",
+        "text": "Förklara varför en kvadrat alltid är en rektangel.",
+        "topic": "fyrhörningar"
+       }
+      ]
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/P3": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "boundaries": [],
+      "tasks": [
+       {
+        "answer": "Jämför invånarantalen i tabellen: Sverige 10,5 miljoner, Danmark 5,9 miljoner och Norge 5,5 miljoner. Sverige har flest invånare.",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "1",
+        "points": {
+         "A": 0,
+         "C": 0,
+         "E": 1
+        },
+        "spoken": "Fråga ett. Använd tabellen. Vilket land har flest invånare? Tabell: Land, Huvudstad, Invånare (miljoner). Sverige: Stockholm, tio komma fem; Norge: Oslo, fem komma fem; Danmark: Köpenhamn, fem komma nio. Den ger en poäng.",
+        "text": "Använd tabellen. Vilket land har flest invånare? [Tabell: Land, Huvudstad, Invånare (milj.)] Sverige: Stockholm, 10,5; Norge: Oslo, 5,5; Danmark: Köpenhamn, 5,9",
+        "topic": "befolkning"
+       },
+       {
+        "answer": "Räkna skillnaden mellan Sveriges och Norges invånarantal: 10,5 − 5,5 = 5,0 miljoner. Svar: Det bor 5 miljoner fler i Sverige än i Norge.",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "2",
+        "points": {
+         "A": 0,
+         "C": 1,
+         "E": 1
+        },
+        "spoken": "Fråga två. Använd tabellen. Hur många fler bor i Sverige än i Norge? Tabell: Land, Huvudstad, Invånare (miljoner). Sverige: Stockholm, tio komma fem; Norge: Oslo, fem komma fem; Danmark: Köpenhamn, fem komma nio. Den ger två poäng, en E-poäng och en C-poäng.",
+        "text": "Använd tabellen. Hur många fler bor i Sverige än i Norge? [Tabell: Land, Huvudstad, Invånare (milj.)] Sverige: Stockholm, 10,5; Norge: Oslo, 5,5; Danmark: Köpenhamn, 5,9",
+        "topic": "befolkning"
+       }
+      ]
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/P4": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "boundaries": [],
+      "tasks": [
+       {
+        "answer": "Använd pq-formeln med p = 2 och q = −8: x = −1 ± √(1² + 8) = −1 ± √9 = −1 ± 3. Det ger x₁ = 2 och x₂ = −4. Kontroll: 2² + 2 · 2 − 8 = 0 och (−4)² + 2 · (−4) − 8 = 0. Svar: x = 2 eller x = −4",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "1",
+        "points": {
+         "A": 0,
+         "C": 1,
+         "E": 1
+        },
+        "spoken": "Fråga ett. Lös x i kvadrat plus två x minus åtta är lika med noll. Den ger två poäng, en E-poäng och en C-poäng.",
+        "text": "Lös x² + 2x − 8 = 0.",
+        "topic": "andragradsekvationer"
+       },
+       {
+        "answer": "Beräkna roten och multiplikationen först: √49 = 7 och ½ · 6 = 3. Sedan 7 + 3 = 10. Svar: 10",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "2",
+        "points": {
+         "A": 0,
+         "C": 0,
+         "E": 1
+        },
+        "spoken": "Fråga två. Förenkla roten ur fyrtionio plus en halv gånger sex. Den ger en poäng.",
+        "text": "Förenkla √49 + ½ · 6.",
+        "topic": "prioriteringsregler"
+       },
+       {
+        "answer": "Svavelsyra har formeln H₂SO₄. Den innehåller två väteatomer, en svavelatom och fyra syreatomer. H₂SO₃ har bara tre syreatomer och är svavelsyrlighet, en svagare syra.",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "3",
+        "points": {
+         "A": 0,
+         "C": 1,
+         "E": 0
+        },
+        "spoken": "Fråga tre. Vilken formel har svavelsyra, H två S O fyra eller H två S O tre? Motivera. Den ger en poäng.",
+        "text": "Vilken formel har svavelsyra, H₂SO₄ eller H₂SO₃? Motivera.",
+        "topic": "kemiska formler"
+       }
+      ]
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/P5": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "boundaries": [],
+      "tasks": [
+       {
+        "answer": "Subtrahera 5 från båda leden: 3x = 15. Dividera båda leden med 3: x = 5. Kontroll: 3 · 5 + 5 = 20. Svar: x = 5",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "1",
+        "points": {
+         "A": 0,
+         "C": 0,
+         "E": 2
+        },
+        "spoken": "Fråga ett. Lös ekvationen tre x plus fem är lika med tjugo. Den ger två poäng.",
+        "text": "Lös ekvationen 3x + 5 = 20.",
+        "topic": "linjära ekvationer"
+       },
+       {
+        "answer": "Arean av en cirkel är A = πr². Med r = 4 cm blir A = π · 4² = 16π ≈ 50,3 cm². Svar: cirka 50,3 cm²",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "2",
+        "points": {
+         "A": 0,
+         "C": 1,
+         "E": 1
+        },
+        "spoken": "Fråga två. Beräkna arean av en cirkel med radien fyra centimeter. Den ger två poäng, en E-poäng och en C-poäng.",
+        "text": "Beräkna arean av en cirkel med radien 4 cm.",
+        "topic": "cirkelns area"
+       }
+      ]
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/P6": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "boundaries": [],
+      "tasks": [
+       {
+        "answer": "Växterna avger syrgas (oxygen, O₂) vid fotosyntesen.",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "1",
+        "points": {
+         "A": 0,
+         "C": 0,
+         "E": 1
+        },
+        "spoken": "Question one. Name the gas that plants release during photosynthesis. It gives one point.",
+        "text": "Name the gas that plants release during photosynthesis.",
+        "topic": "fotosyntes"
+       },
+       {
+        "answer": "Växter behöver ljus eftersom ljusenergin driver fotosyntesen. Klorofyllet i bladens kloroplaster fångar ljuset, och energin används för att omvandla koldioxid och vatten till glukos och syre. Glukosen ger växten energi och byggmaterial för att växa, så utan ljus kan växten inte tillverka sin egen näring, till exempel vissnar en krukväxt som står i ett mörkt rum.",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "2",
+        "points": {
+         "A": 1,
+         "C": 1,
+         "E": 0
+        },
+        "spoken": "Question two. Explain why plants need light. It gives two points, one C point and one A point.",
+        "text": "Explain why plants need light.",
+        "topic": "fotosyntes"
+       }
+      ]
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/PT1": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "boundaries": [],
+      "tasks": [
+       {
+        "answer": "Första världskriget började 1914, sommaren 1914 efter skotten i Sarajevo den 28 juni 1914.",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "1",
+        "points": {
+         "A": 0,
+         "C": 0,
+         "E": 1
+        },
+        "spoken": "Fråga ett. När började första världskriget? Den ger en poäng.",
+        "text": "När började första världskriget?",
+        "topic": "första världskriget"
+       },
+       {
+        "answer": "En orsak var allianssystemet: stormakterna var bundna till varandra genom förbund, så när Österrike-Ungern förklarade Serbien krig efter mordet på Franz Ferdinand drogs Ryssland, Tyskland, Frankrike och Storbritannien in. En annan orsak var nationalismen och kapprustningen, där stormakterna tävlade om makt, kolonier och den starkaste armén och flottan, till exempel Tysklands och Storbritanniens kapprustning till sjöss. Tillsammans gjorde de att en lokal konflikt snabbt blev ett världskrig.",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "2",
+        "points": {
+         "A": 1,
+         "C": 1,
+         "E": 0
+        },
+        "spoken": "Fråga två. Förklara två orsaker till kriget. Den ger två poäng, en C-poäng och en A-poäng.",
+        "text": "Förklara två orsaker till kriget.",
+        "topic": "krigets orsaker"
+       }
+      ]
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  },
+  "o107/PT2": {
+   "needs": null,
+   "status": "done",
+   "turns": [
+    {
+     "credits": null,
+     "done": null,
+     "error": null,
+     "http": 200,
+     "json": {
+      "boundaries": [],
+      "tasks": [
+       {
+        "answer": "Preteritum av 'go' är 'went', eftersom 'go' är ett oregelbundet verb. Exempel: I went to school yesterday.",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "1",
+        "points": {
+         "A": 0,
+         "C": 0,
+         "E": 1
+        },
+        "spoken": "Question one. What is the past tense of 'go'? It gives one point.",
+        "text": "What is the past tense of 'go'?",
+        "topic": "oregelbundna verb"
+       },
+       {
+        "answer": "Exempel: Although it was raining, we went for a walk. 'Although' betyder 'fastän' och inleder en bisats som visar en motsättning mot huvudsatsen.",
+        "answer_source": "eget svar",
+        "assessment": "",
+        "no": "2",
+        "points": {
+         "A": 0,
+         "C": 1,
+         "E": 0
+        },
+        "spoken": "Question two. Write a sentence using 'although'. It gives one point.",
+        "text": "Write a sentence using 'although'.",
+        "topic": "bisatser"
+       }
+      ]
+     },
+     "said": null,
+     "suggestions": null
+    }
+   ]
+  }
+ },
+ "now": "2026-11-27T08:00:00Z"
+}

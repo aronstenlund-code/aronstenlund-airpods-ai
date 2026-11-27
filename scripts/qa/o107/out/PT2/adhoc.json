@@ -1,0 +1,148 @@
+{
+  "id": "adhoc",
+  "status": "done",
+  "prompts": [
+    {
+      "stem": "adhoc.t1.c1",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 1,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "parse",
+        "text": "English test\n1. What is the past tense of 'go'? (1/0/0)\n2. Write a sentence using 'although'. (0/1/0)",
+        "subject": "Engelska",
+        "lang": "en"
+      },
+      "anthropic_request": {
+        "model": "claude-haiku-5-5",
+        "max_tokens": 8000,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You read an exam or practice exam, usually Swedish (often a national exam, \"nationellt prov\", or a teacher's \"övningsprov\" or \"instuderingsfrågor\") and/or its assessment instructions (\"bedömningsanvisningar\"), given as page images or as text. Return ONLY a JSON object:\n{\"tasks\": [{\"no\": \"1a\", \"text\": \"...\", \"points\": {\"E\": 1, \"C\": 0, \"A\": 0}, \"answer\": \"...\", \"assessment\": \"...\", \"topic\": \"...\"}], \"boundaries\": [{\"grade\": \"E\", \"total\": 15, \"min_ca\": 0, \"min_a\": 0}]}\n- tasks: every task you can see, in order. \"no\" as printed (\"1\", \"3b\"). \"text\": the full task text, word for word, including every value of a table (row by row, \"Måndag: 12, Tisdag: 18, …\") and a one-sentence description of a figure in square brackets. \"points\": the points per level as printed, e.g. (1/1/0) = E 1, C 1, A 0; 0 when not printed. \"answer\": the correct answer or model solution from the instructions (\"\" when not on these pages). \"assessment\": the scoring rules for the task from the instructions, word for word in substance (\"\" when not on these pages).\n- boundaries: the grade limits (\"provbetygsgränser\") when they are on these pages: total points for E, D, C, B, A and the extra conditions (min_ca = points on at least C level, min_a = A points); [] otherwise.\n- \"topic\": the concept the task tests, in one to three words in the exam's language (\"procent\", \"linjära ekvationer\", \"franska revolutionen\"; \"photosynthesis\" for an English exam).\n- A list of numbered questions without points: each question is a task, its points 0. Questions that are not numbered: number them 1, 2, 3 in order.\n- Copy numbers exactly. Never invent a task, an answer or a limit; leave a field empty when it is not in the material. No other text.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<context>Ämne: Engelska</context>\n<material>\nEnglish test\n1. What is the past tense of 'go'? (1/0/0)\n2. Write a sentence using 'although'. (0/1/0)\n</material>\nRead this material."
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        },
+        "thinking": {
+          "type": "disabled"
+        }
+      },
+      "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
+    },
+    {
+      "stem": "adhoc.t1.c2",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 2,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "parse",
+        "text": "English test\n1. What is the past tense of 'go'? (1/0/0)\n2. Write a sentence using 'although'. (0/1/0)",
+        "subject": "Engelska",
+        "lang": "en"
+      },
+      "anthropic_request": {
+        "model": "claude-sonnet-5-5",
+        "max_tokens": 6000,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You write the model answers for tasks of a practice exam that has no facit. You get <context> (subject and grade) and <tasks> (JSON: no, text, points). Return ONLY a JSON object {\"answers\": [{\"no\": \"1\", \"answer\": \"...\"}]} with one entry per task.\n- Each answer is what earns full points at A level for that grade, in the language of the tasks (Swedish unless the tasks are in English or another language; O107 F2): for a calculation the method in short steps and the final answer with its unit; for a question in words the key concepts, how they connect and one example, in two to four short sentences.\n- Work every calculation out carefully before you write it; the final number must be right. When a task cannot be answered from its text (a missing figure or table), say so in the answer in one sentence.\nNo markdown, no other text.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<context>Ämne: Engelska</context>\n<tasks>[{\"no\":\"1\",\"text\":\"What is the past tense of 'go'?\",\"points\":{\"E\":1,\"C\":0,\"A\":0}},{\"no\":\"2\",\"text\":\"Write a sentence using 'although'.\",\"points\":{\"E\":0,\"C\":1,\"A\":0}}]</tasks>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        },
+        "thinking": {
+          "type": "between_tools"
+        }
+      },
+      "reply_hint": "A JSON object, exactly as the system prompt's Return line says."
+    }
+  ],
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "exam",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-parse",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 557,
+          "output_tokens": 95,
+          "total_ms": 9,
+          "est_cost_usd": 0.0001032,
+          "status": "ok"
+        }
+      ],
+      "credits": [],
+      "json": {
+        "tasks": [
+          {
+            "no": "1",
+            "text": "What is the past tense of 'go'?",
+            "points": {
+              "E": 1,
+              "C": 0,
+              "A": 0
+            },
+            "answer": "Preteritum av 'go' är 'went', eftersom 'go' är ett oregelbundet verb. Exempel: I went to school yesterday.",
+            "assessment": "",
+            "topic": "oregelbundna verb",
+            "answer_source": "eget svar",
+            "spoken": "Question one. What is the past tense of 'go'? It gives one point."
+          },
+          {
+            "no": "2",
+            "text": "Write a sentence using 'although'.",
+            "points": {
+              "E": 0,
+              "C": 1,
+              "A": 0
+            },
+            "answer": "Exempel: Although it was raining, we went for a walk. 'Although' betyder 'fastän' och inleder en bisats som visar en motsättning mot huvudsatsen.",
+            "assessment": "",
+            "topic": "bisatser",
+            "answer_source": "eget svar",
+            "spoken": "Question two. Write a sentence using 'although'. It gives one point."
+          }
+        ],
+        "boundaries": [],
+        "usage": {
+          "input_tokens": 557,
+          "output_tokens": 95,
+          "est_cost_usd": 0.0016852
+        }
+      }
+    }
+  ],
+  "blocked": []
+}

@@ -45,6 +45,7 @@ on:
           - o100_security_live.py
           - o100b_retest_live.py
           - o101_reviewer_today.py
+          - o107_share_live.py
       args:
         description: "Arguments (optional, e.g. --fast)"
         required: false
