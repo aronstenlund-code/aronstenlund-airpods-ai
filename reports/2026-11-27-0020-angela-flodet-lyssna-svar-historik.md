@@ -89,7 +89,14 @@ Varje fynd nedan är kontrollerat i koden innan det rättades (*verified in code
 
 ## Testresultat
 
-BYGGRAD
+- **iOS build 45910685671 grön** på `claude/fervent-fermi-34hrer` (665f1196): enhetsbygge med varningar som fel, hela sviten (1 189 gröna testrader, 0 röda), Release-arkivet och Release-kontrollen. `FlowTests`, `FlowRetryTests` och `ScribeStopTests` gröna. *Verified in CI.*
+- **Röd körning först: 45910689257** på `angela/flode-test-rod` (bara testerna, mot main) föll på fyra av sex tester, som väntat:
+  - "Försök igen" frågade `"vad är pi"`, alltså den förra frågan, i stället för `"vad är fotosyntes"`.
+  - En talad fråga som misslyckats ställdes inte igen, varken med knappen eller med rösten (A74 tog bort den).
+  - `ScribeProvider.stop()` tog **2,03 s** med en långsam rapport, mot gränsen 0,5 s.
+  - Två tester var gröna redan på main: den första frågan som misslyckas, och att en besvarad fråga inte ställs två gånger.
+- Min första röda körning (45909390188) kompilerade inte på grund av ett fel i mitt eget test (språket som text i stället för `.swedish`). Rättat innan den riktiga röda körningen.
+- På main slogs grenen ihop med Ke91, Angela Fables A167 och Kevins K124 utan krockar. Main-bygget skrivs in i STATUS.
 
 - **Röda först** (`angela/flode-test-rod`, bara befintligt API, mot main): `LumenTests/FlowRetryTests.swift` med fem tester för Försök igen, upprepad fråga och besvarad fråga, plus ett test för Scribe-stängningen.
 - **Nytt API** (`LumenTests/FlowTests.swift`, 10 tester): Pausa från skärmen i och utanför fönstret, AirPods-tryck i fönstret, Försök igen offline, startkontrollen med och utan samtycke, Fler lägen genom ett pass och efter första starten, Historik från Lyssnar och sökningen. De kan inte köras röda, eftersom de inte kompilerar mot main.
