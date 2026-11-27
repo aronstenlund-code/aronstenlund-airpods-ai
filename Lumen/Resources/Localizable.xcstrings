@@ -3506,6 +3506,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Batteriet är på %@. Sätt telefonen på laddning så att EarMind kan lyssna vidare.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Battery at %@. Plug in your phone so EarMind can keep listening."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Batteriet är på %@. Sätt telefonen på laddning så att EarMind kan lyssna vidare."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Before you start": {
       "extractionState": "manual",
       "localizations": {
@@ -7173,6 +7191,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "EarMind läser upp materialet som en löpande text, utan frågor. Du pausar och hoppar mellan meningar med AirPods."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "EarMind pausade. Sätt i AirPods så lyssnar den igen, eller lyssna vidare med telefonens högtalare.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "EarMind paused. Put your AirPods back in and it listens again, or keep listening on the phone's speaker."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EarMind pausade. Sätt i AirPods så lyssnar den igen, eller lyssna vidare med telefonens högtalare."
           }
         }
       },
@@ -11371,6 +11407,24 @@
         }
       }
     },
+    "Inga AirPods anslutna. Svaren hörs i telefonens högtalare – sätt i AirPods när du vill.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "No AirPods connected. Answers play on the phone's speaker – put in your AirPods whenever you like."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inga AirPods anslutna. Svaren hörs i telefonens högtalare – sätt i AirPods när du vill."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Inga fel sedan appen startade.": {
       "extractionState": "manual",
       "localizations": {
@@ -11834,6 +11888,42 @@
           "stringUnit": {
             "state": "translated",
             "value": "Inget konto. Testa nu betyder att du godkänner punkterna ovan."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Inget nät. EarMind lyssnar vidare och svarar när du är uppkopplad igen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "No network. EarMind keeps listening and answers when you're back online."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inget nät. EarMind lyssnar vidare och svarar när du är uppkopplad igen."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Inget nät. Telefonens egen modell svarar så länge.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "No network. The phone's own model answers for now."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inget nät. Telefonens egen modell svarar så länge."
           }
         }
       },
@@ -14981,6 +15071,24 @@
       },
       "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
     },
+    "Lyssna vidare": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Keep listening"
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lyssna vidare"
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
     "Lyssnande lägen använder mikrofonen. Starta prov gör det aldrig.": {
       "extractionState": "manual",
       "localizations": {
@@ -15822,6 +15930,24 @@
           "stringUnit": {
             "state": "translated",
             "value": "Läses på telefonen och sparas bara här. Högst 2 000 tecken skickas, utan e-post, telefonnummer, personnummer och adress."
+          }
+        }
+      },
+      "comment": "A157: English by Angela Fable, for Kelly's review (Ke86)."
+    },
+    "Lågenergiläge är på. EarMind lyssnar som vanligt, men svaren kan dröja lite.": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "needs_review",
+            "value": "Low Power Mode is on. EarMind listens as usual, but answers may take a little longer."
+          }
+        },
+        "sv": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lågenergiläge är på. EarMind lyssnar som vanligt, men svaren kan dröja lite."
           }
         }
       },

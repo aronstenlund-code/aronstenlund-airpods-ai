@@ -124,6 +124,25 @@ struct ListeningScreen: View {
                     .foregroundStyle(LumenColor.muted)
                     .multilineTextAlignment(.center)
             }
+            if let condition = model.listeningCondition {
+                // Deangelo 2026-11-27: no AirPods, no network, low battery, low power mode: one short line with the
+                // way on in it, never a silent stop.
+                Label {
+                    Text(verbatim: condition.line)
+                } icon: {
+                    Image(systemName: condition.symbol)
+                }
+                .font(LumenFont.text(14, relativeTo: .footnote))
+                .foregroundStyle(LumenColor.ink)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(LumenColor.soft, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .accessibilityElement(children: .combine)
+                .accessibilityIdentifier("listening.condition")
+            }
             if let heard = model.heardLine {
                 // Kelly (D269 a): what is heard, grey, at most two lines (the end shows), gone when the answer comes.
                 Text(verbatim: heard)

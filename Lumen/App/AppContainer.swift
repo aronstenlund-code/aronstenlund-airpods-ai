@@ -117,6 +117,7 @@ final class AppContainer {
                                        examPlans: ExamPlanStore(), phrases: CommandPhraseStore(), music: MusicRemote.live(),
                                        tips: CommandTipStore(), preferences: PreferenceStore(),
                                        studyPlanClient: StudyPlanClient(config: .lumen, auth: auth, http: http))
+        listening.deviceConditions = SystemDeviceConditions() // Deangelo 2026-11-27: no network, low battery, low power
         ListeningRemote.toggle = { [weak listening] in await listening?.togglePause() }
         ListeningRemote.nextSuggestion = { [weak listening] in listening?.nextSuggestion() }
         ListeningRemote.start = { [weak listening] in await listening?.startFromShortcut() }

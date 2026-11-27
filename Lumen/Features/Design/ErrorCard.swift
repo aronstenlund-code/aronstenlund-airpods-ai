@@ -7,6 +7,10 @@ enum LumenProblem: Equatable, Sendable {
     case microphoneDenied
     case offline
     case airPodsDisconnected
+    /// Deangelo 2026-11-27: the AirPods went and EarMind paused (the setting "pausa när AirPods försvinner" is on;
+    /// off, it goes on in the speaker: `airPodsDisconnected`). Said as it is, with the way on: AirPods back in, or go
+    /// on with the phone's speaker.
+    case airPodsLostPaused
     /// A5: /answer failed (credits out, the provider down, too slow): "Jag kan inte svara just nu".
     case overloaded
     /// A5: the chosen voice (ElevenLabs) failed; answers are read with the iPhone's voice meanwhile.
@@ -19,6 +23,7 @@ enum LumenProblem: Equatable, Sendable {
         case .microphoneDenied: String(localized: "EarMind hör dig inte")
         case .offline: String(localized: "Ingen internetanslutning")
         case .airPodsDisconnected: String(localized: "AirPods kopplades bort")
+        case .airPodsLostPaused: String(localized: "AirPods kopplades bort")
         case .overloaded: String(localized: "EarMind kan inte svara just nu")
         case .voiceUnavailable: String(localized: "Rösten fungerar inte just nu")
         case .cannotHear: String(localized: "Jag hör inte just nu")
@@ -30,6 +35,7 @@ enum LumenProblem: Equatable, Sendable {
         case .microphoneDenied: String(localized: "Mikrofonen är avstängd. Slå på den i Inställningar för att fortsätta.")
         case .offline: String(localized: "EarMind behöver internet för att svara. Den fortsätter lyssna och svarar igen när du är uppkopplad.")
         case .airPodsDisconnected: String(localized: "Svaren hörs nu i telefonens högtalare.")
+        case .airPodsLostPaused: String(localized: "EarMind pausade. Sätt i AirPods så lyssnar den igen, eller lyssna vidare med telefonens högtalare.")
         case .overloaded: String(localized: "Vår server är upptagen.") // Kelly Ke93 (4): the button says Försök igen
         case .voiceUnavailable: String(localized: "Svaren läses med iPhonens röst tills den fungerar igen.")
         case .cannotHear: String(localized: "Taligenkänningen gick ner. EarMind försöker igen av sig själv.")
@@ -42,6 +48,7 @@ enum LumenProblem: Equatable, Sendable {
         case .microphoneDenied: String(localized: "Öppna Inställningar")
         case .offline: String(localized: "Försök igen") // the flow: the question that got no answer, asked again
         case .airPodsDisconnected: String(localized: "Pausa")
+        case .airPodsLostPaused: String(localized: "Lyssna vidare")
         case .overloaded: String(localized: "Försök igen")
         case .voiceUnavailable: nil
         case .cannotHear: nil
@@ -55,6 +62,7 @@ enum LumenProblem: Equatable, Sendable {
         case .microphoneDenied: nil
         case .offline: "Ingen internetanslutning."
         case .airPodsDisconnected: nil
+        case .airPodsLostPaused: nil // no AirPods to say it in; the phone's speaker would be heard by everyone
         case .overloaded: "Jag kan inte svara just nu, försök igen om en stund."
         case .voiceUnavailable: nil
         case .cannotHear: "Jag hör inte just nu, försöker igen."
@@ -66,6 +74,7 @@ enum LumenProblem: Equatable, Sendable {
         case .microphoneDenied: "mic.slash"
         case .offline: "wifi.slash"
         case .airPodsDisconnected: "airpods"
+        case .airPodsLostPaused: "airpods"
         case .overloaded: "exclamationmark.bubble"
         case .voiceUnavailable: "speaker.slash"
         case .cannotHear: "ear.trianglebadge.exclamationmark"
@@ -78,7 +87,7 @@ extension LumenProblem {
     /// back to the iPhone's, or the AirPods going, still gets answers: no red.
     nonisolated var stopsAnswers: Bool {
         switch self {
-        case .voiceUnavailable, .airPodsDisconnected: false
+        case .voiceUnavailable, .airPodsDisconnected, .airPodsLostPaused: false
         default: true
         }
     }

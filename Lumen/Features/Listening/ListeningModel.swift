@@ -284,6 +284,36 @@ final class ListeningModel: TranscriptSink, AnswerSink {
     }
     static let heardLineLimit = 120
 
+    /// Deangelo 2026-11-27: the network, the battery and the low power mode, watched while EarMind listens. Set by the
+    /// app (`SystemDeviceConditions`); nil in tests that do not need it.
+    @ObservationIgnored var deviceConditions: (any DeviceConditions)? {
+        didSet { deviceConditions?.onChange = { [weak self] in self?.conditionsTick += 1 } }
+    }
+    private(set) var conditionsTick = 0
+
+    /// The one line on Lyssnar when something is not as it should be (no AirPods, no network, low battery, low power
+    /// mode), with the way on in it. Nil while all is well, and while not listening.
+    var listeningCondition: ListeningCondition? {
+        _ = conditionsTick
+        #if DEBUG
+        if let shown = screenshotCondition { return shown }
+        #endif
+        guard isListening else { return nil }
+        let outputs = controller.session.snapshot?.outputs ?? []
+        let conditions = deviceConditions
+        let code = language == .swedish ? "sv" : "en"
+        return ListeningCondition.current(externalOutput: outputs.isEmpty || outputs.contains(where: \.isExternalOutput),
+                                          online: conditions?.isOnline ?? true,
+                                          phoneModel: (answers.offline as? OnDeviceAnswerProvider)?.isAvailable(for: code) ?? false,
+                                          batteryPercent: conditions?.batteryPercent, charging: conditions?.isCharging ?? false,
+                                          lowPowerMode: conditions?.isLowPowerMode ?? false)
+    }
+
+    #if DEBUG
+    /// The pictures of each line, without a phone in that state.
+    var screenshotCondition: ListeningCondition?
+    #endif
+
     /// Historik: the row whose answer is being read again, while it is read (its button shows ■).
     private(set) var readingAgain: UUID?
     @ObservationIgnored private var readingAgainTask: Task<Void, Never>?
@@ -436,7 +466,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         controller.keepsListeningWhenOutputLost = { [weak self] in !(self?.microphone.pauseWhenAirPodsLost ?? true) }
         controller.onOutputLost = { [weak self] in self?.report(problem: .airPodsDisconnected) }
         controller.onOutputRestored = { [weak self] in
-            if self?.problem == .airPodsDisconnected { self?.problem = nil }
+            if self?.problem == .airPodsDisconnected || self?.problem == .airPodsLostPaused { self?.problem = nil }
+            self?.conditionsTick += 1 // the AirPods are back: "Inga AirPods" goes
         }
         speakers?.onIdentified = { [weak self] identity, date in self?.voiceIdentified(identity, at: date) }
         let firstPause = modes.pause(for: .standard)
@@ -726,11 +757,11 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         }
         switch state {
         case .paused(.outputDeviceLost):
-            problem = .airPodsDisconnected
+            problem = .airPodsLostPaused // Deangelo 2026-11-27: paused, so the card says so and how to go on
         case .error(let message) where message.localizedCaseInsensitiveContains("permission"):
             problem = .microphoneDenied
         case .listening:
-            if problem == .microphoneDenied || problem == .airPodsDisconnected { problem = nil }
+            if problem == .microphoneDenied || problem == .airPodsDisconnected || problem == .airPodsLostPaused { problem = nil }
         default:
             break
         }
@@ -738,6 +769,8 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .listening:
             beginVoiceWork()
             showActivity()
+            deviceConditions?.startWatching() // the network, the battery, the low power mode (Deangelo 2026-11-27)
+            conditionsTick += 1
             if let again = resumeMode {
                 resumeMode = nil
                 controller.log("Listening again: back to \(again.rawValue)")
@@ -751,6 +784,7 @@ final class ListeningModel: TranscriptSink, AnswerSink {
             showActivity()
         case .idle, .error:
             resumeMode = nil
+            deviceConditions?.stopWatching()
             endVoiceWork()
             discardAhead(reason: "listening stopped")
             aheadStats = AheadStats()
@@ -2313,6 +2347,10 @@ final class ListeningModel: TranscriptSink, AnswerSink {
         case .airPodsDisconnected:
             Task { await controller.pause() }
             self.problem = nil
+        case .airPodsLostPaused:
+            // "Lyssna vidare": on with the phone's speaker (the line "Inga AirPods anslutna" says so).
+            self.problem = nil
+            Task { await controller.resume() }
         case .voiceUnavailable:
             self.problem = nil
         case .overloaded, .offline:

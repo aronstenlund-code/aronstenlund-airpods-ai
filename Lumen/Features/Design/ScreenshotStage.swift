@@ -50,6 +50,13 @@ struct ScreenshotStage: View {
             for entry in HistoryDemo.entries(AppLanguage.current) { model.history.record(entry) }
             return
         }
+        // Deangelo 2026-11-27: Lyssnar when something is not as it should be, one line each, and the AirPods card.
+        if let condition = ConditionDemo.scenes[name] {
+            model.screenshotShows = .standard
+            model.screenshotCondition = condition
+            return
+        }
+        if name == "airPodsLostPaused" { return } // the card is set when the screen appears
         // A166: Lyssnar as a new user meets it, right after the consent and the microphone: listening, nothing asked.
         if name == "firstListening" {
             model.screenshotShows = .standard
@@ -144,6 +151,8 @@ struct ScreenshotStage: View {
             case "home", "empty": NavigationStack { HomeView(model: model) }
             case "addExam": AddExamView(model: model) {}
             case "listening", "listeningActivation", "firstListening": ListeningScreen(model: model) {} // set up in `seed`
+            case _ where ConditionDemo.scenes[name] != nil: ListeningScreen(model: model) {}
+            case "airPodsLostPaused": ListeningScreen(model: model) {}.onAppear { model.showProblemForScreenshot(.airPodsLostPaused) }
             // Historik: the days, a search, and an answer with "Spela upp i AirPods".
             case "history": NavigationStack { HistoryView(store: model.history, listening: model) }
             case "historySearch":
@@ -192,7 +201,7 @@ struct ScreenshotStage: View {
             case "errors":
                 ScrollView {
                     VStack(spacing: 12) {
-                        ForEach([LumenProblem.overloaded, .offline, .voiceUnavailable, .microphoneDenied, .airPodsDisconnected], id: \.self) { problem in
+                        ForEach([LumenProblem.overloaded, .offline, .voiceUnavailable, .microphoneDenied, .airPodsDisconnected, .airPodsLostPaused], id: \.self) { problem in
                             ErrorCard(problem: problem) {}
                         }
                     }
@@ -226,6 +235,17 @@ struct ScreenshotStage: View {
         }
     }
 }
+/// The lines on Lyssnar when something is not as it should be (Deangelo 2026-11-27).
+enum ConditionDemo {
+    static let scenes: [String: ListeningCondition] = [
+        "listeningNoAirPods": .noAirPods,
+        "listeningOffline": .offline(phoneModel: true),
+        "listeningOfflineNoModel": .offline(phoneModel: false),
+        "listeningLowBattery": .lowBattery(percent: 8),
+        "listeningLowPower": .lowPowerMode,
+    ]
+}
+
 /// Historik's pictures: three answers today and one yesterday (the answers saved without the question, D56, and one
 /// asked with "Lumen" that has it).
 enum HistoryDemo {
