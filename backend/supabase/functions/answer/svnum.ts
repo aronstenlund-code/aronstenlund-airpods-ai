@@ -262,6 +262,8 @@ const NOT_A_NOUN = new Set(
   ("och plus minus gånger delat av är var blir till eller i på med som om än men så att för från under över efter " +
     "före vid mot per komma tusen hundra miljon miljoner miljard").split(" "),
 );
+/** O106 L3: words after a year that are no noun it counts (verbs, conjunctions). */
+const YEAR_NEXT = new Set("har hade är var blir blev vann vinner kom kommer ska skulle kan kunde började börjar slutade slutar hölls hålls och eller men när då som".split(" "));
 function genderBefore(next: string | undefined): Gender {
   if (!next || NOT_A_NOUN.has(next)) return "ett";
   if (EN_NOUNS.has(next)) return "en";
@@ -357,7 +359,10 @@ export function numbersToSpeech(text: string): string {
       const next = /^\s+(\p{L}+)/u.exec(whole.slice(off + m.length))?.[1]?.toLowerCase();
       const n = Number(int);
       if (!Number.isSafeInteger(n) || n >= 1e15) return m;
-      const gender: Gender = unit ? unit.g : genderBefore(next);
+      // O106 L3 (Oscar): a year before a verb or at the end ("2031 har inte hållits", "hände 1921") is counted "ett", the
+      // same as after "år"; a counted thing ("2031 kronor", "1021 elever") keeps its own gender
+      const yearish = !unit && dec === undefined && int.length === 4 && n >= 1000 && n <= 2099 && (!next || YEAR_NEXT.has(next));
+      const gender: Gender = unit ? unit.g : yearish ? "ett" : genderBefore(next);
       if (unitKey === "kr" && dec !== undefined && dec.length <= 2) return kronorOre(n, dec);
       let words: string;
       if (dec !== undefined) words = yearOrCardinal(n, "ett") + " komma " + readDecimals(dec);

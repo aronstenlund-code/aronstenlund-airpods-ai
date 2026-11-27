@@ -25,7 +25,7 @@ W, H = 1320, 2868
 
 # (scen, rubrik, rad under) per språk. Ke90 (D253, D259, D262, D263): engelska först. Inget om låst skärm (D209) och
 # inget om 5 000 välkomstkrediter (D239). Sista bilden Spela in själv (A165, repOwnDeck).
-# Bild 8 aktiveringsordet: scenen listeningActivation (Angela Schrute, A166), tagen i en egen körning (kelly/appstore-shots-ke90b).
+# Bild 8 aktiveringsordet: scenen listeningActivation (Angela Schrute, A166). Ke95: alla tio i samma körning.
 SHOTS = {
     "en": [
         ("repSayCredits", "Type. Listen.", "What you type is read in your earbuds."),

@@ -1,0 +1,1 @@
+{"notes": "Rörelse (fysik). Hastighet: v = s / t, mäts i meter per sekund (m/s). Acceleration: a = Δv / Δt, mäts i meter per sekundkvadrat (m/s²). Exempel: 100 meter på 20 sekunder ger hastigheten v = 5 m/s."}

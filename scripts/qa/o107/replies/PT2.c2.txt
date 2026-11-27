@@ -1,0 +1,1 @@
+{"answers": [{"no": "1", "answer": "Preteritum av 'go' är 'went', eftersom 'go' är ett oregelbundet verb. Exempel: I went to school yesterday."}, {"no": "2", "answer": "Exempel: Although it was raining, we went for a walk. 'Although' betyder 'fastän' och inleder en bisats som visar en motsättning mot huvudsatsen."}]}

@@ -1,0 +1,88 @@
+{
+  "id": "adhoc",
+  "status": "done",
+  "prompts": [
+    {
+      "stem": "adhoc.t1.c1",
+      "case": "adhoc",
+      "turn": 1,
+      "call": 1,
+      "endpoint": "exam",
+      "url": "https://k122-replay.invalid/v1/messages",
+      "client_request": {
+        "action": "hint",
+        "level": 2,
+        "tried": "",
+        "task": {
+          "no": "2",
+          "text": "Hur många fler bor i Sverige än i Norge? (tabell: Sverige 10,5 milj., Norge 5,5 milj.)",
+          "points": {
+            "E": 1,
+            "C": 1,
+            "A": 0
+          },
+          "answer": "5 miljoner fler",
+          "assessment": ""
+        },
+        "lang": "sv"
+      },
+      "anthropic_request": {
+        "model": "claude-haiku-5-5",
+        "max_tokens": 200,
+        "stream": true,
+        "system": [
+          {
+            "type": "text",
+            "text": "You help a student during an exam practice session in Sweden. You get <task> (text, points, the correct answer and the scoring rules), <level> (1, 2 or 3) and <tried> (optional: what the student has tried). Reply with plain spoken Swedish (in English when <language> is en), never the final answer:\n- level 1: a nudge in one sentence: what the task is really asking or which idea to start from.\n- level 2: the method in one or two sentences: the formula, concept or first step, without doing the calculation.\n- level 3: a worked first step in two or three sentences, stopping before the final answer.\nNo markdown, no symbols the speech would read out, numbers as digits.",
+            "cache_control": {
+              "type": "ephemeral"
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "<task>\nUppgift 2: Hur många fler bor i Sverige än i Norge? (tabell: Sverige 10,5 milj., Norge 5,5 milj.)\nPoäng: E 1, C 1, A 0\nRätt svar: 5 miljoner fler\nBedömning: \n</task>\n<level>2</level>\n<tried></tried>"
+          }
+        ],
+        "output_config": {
+          "effort": "low"
+        },
+        "thinking": {
+          "type": "disabled"
+        }
+      },
+      "reply_hint": "As the system prompt's Return line says."
+    }
+  ],
+  "turns": [
+    {
+      "turn": 1,
+      "endpoint": "exam",
+      "http_status": 200,
+      "usage": [
+        {
+          "user_id": "k122-adhoc",
+          "endpoint": "exam-hint",
+          "provider": "anthropic",
+          "model": "claude-haiku-5-5",
+          "input_tokens": 282,
+          "output_tokens": 45,
+          "total_ms": 9,
+          "est_cost_usd": 0.000050700000000000006,
+          "status": "ok"
+        }
+      ],
+      "credits": [],
+      "json": {
+        "hint": "Läs av hur många miljoner som bor i Sverige och hur många som bor i Norge i tabellen, och räkna sedan ut skillnaden genom att dra Norges antal från Sveriges.",
+        "usage": {
+          "input_tokens": 282,
+          "output_tokens": 45,
+          "est_cost_usd": 0.000050700000000000006
+        }
+      }
+    }
+  ],
+  "blocked": []
+}

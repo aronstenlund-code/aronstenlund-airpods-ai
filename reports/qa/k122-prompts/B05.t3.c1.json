@@ -38,7 +38,7 @@
     "messages": [
       {
         "role": "user",
-        "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; sen kväll</situation>\n<recent_qa>\nQ: 24 gånger 6\nA: Tjugofyra gånger sex är hundrafyrtiofyra.\nQ: delat med tre\nA: Hundrafyrtiofyra delat med tre är fyrtioåtta.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>delat med tre</active_topic>\n<now>torsdag 26 november 2026, vecka 48, klockan 23:38 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad består en fotboll av</fragment>"
+        "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; morgon</situation>\n<recent_qa>\nQ: 24 gånger 6\nA: Tjugofyra gånger sex är hundrafyrtiofyra.\nQ: delat med tre\nA: Hundrafyrtiofyra delat med tre är fyrtioåtta.\n</recent_qa>\n<last_assistant_turn>answer</last_assistant_turn>\n<active_topic>delat med tre</active_topic>\n<now>fredag 27 november 2026, vecka 48, klockan 09:00 (svensk tid, Europe/Stockholm)</now>\n<fragment>vad består en fotboll av</fragment>"
       }
     ],
     "output_config": {

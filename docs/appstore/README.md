@@ -9,7 +9,7 @@ Connect och lägg till *Swedish* som lokalisering med texterna i §2b. Integrite
 Rubrik ovanför en oförändrad skärmbild ur appen (Apple-stil, D160): grå bakgrund, mörk ram, ingen skugga. Skärmbilderna
 är tagna i **full storlek** på iPhone 17 Pro Max med Kellys bildflöde `kelly-appstore-shots.yml` på engelska
 (`en/`) och svenska (`sv/`), ljust läge, med `say.hasPlayed` så att raden om låst skärm inte syns. Rådata: grenen
-`kelly/appstore-shots-ke90`. Rubrikerna är satta i Inter Display (molnet); byt till SF Pro Display på en Mac om Aron vill.
+`kelly/appstore-shots-ke95` (körning 45932431120, main `4aed5848`, alla tio scener i en körning). Rubrikerna är satta i Inter Display (molnet); byt till SF Pro Display på en Mac om Aron vill.
 
 | # | Scen | English | Svenska |
 |---|---|---|---|
@@ -27,8 +27,7 @@ Rubrik ovanför en oförändrad skärmbild ur appen (Apple-stil, D160): grå bak
 Bild 1–3 syns i sökresultatet och berättar idén. Bild 8 visar lyssnarvyn med "● Listening" och orden ifyllda (scenen `listeningActivation`, Angela Schrute A166), så att det syns att mikrofonen används. Bild 10 är Spela in själv (A165). Telefonens egen modell (D258) syns
 inte på någon bild: den finns ingen scen för, och det riktiga provet på telefon är inte gjort; den står bara i texten
 (§2, med villkor i §5). Inget om låst skärm (D209) och inget som antyder dold användning: varje bild visar appen öppen.
-"Swedish voices" i bild 4 är appens riktiga rubrik (katalogen har
-bara svenska röster), och priserna i kr kommer från simulatorns butik.
+Bild 4 heter nu "Voices" / "Röster" (Ke91), och priserna i kr kommer från simulatorns butik.
 
 ## 2. Texter, English (primärt språk; tecken räknade med Python)
 | Field | Limit | Text | Chars |
@@ -48,7 +47,7 @@ bara svenska röster), och priserna i kr kommer från simulatorns butik.
 "AirPods" står inte i namnet, undertiteln eller nyckelorden (D122, Apples varumärkesregler), bara i beskrivningen.
 Ke78-sidorna är på svenska; en engelsk version behövs innan den engelska sidan skickas in (förslag, Arons ja först).
 
-**Description** (2 406 av 4 000 tecken):
+**Description** (2 508 av 4 000 tecken):
 
 > Type what you want to hear, or snap your textbook. EarMind reads it in your earbuds, again and again.
 >
@@ -84,6 +83,7 @@ Ke78-sidorna är på svenska; en engelsk version behövs innan den engelska sida
 > MORE MODES (BETA)
 > EarMind also has modes that listen to what you say and answer in your ear, like a spoken quiz. They ask for permission and for the microphone before they start, and always show that they're listening.
 > • Question you're not prepared for? Say your own words, and EarMind answers the question that was just asked.
+> • Questions and answers are saved in History on your phone, where you can search and play them again.
 >
 > WHEN OUR SERVER CAN'T ANSWER
 > On iPhones with Apple Intelligence, EarMind can answer and grade with the phone's own model instead, and tells you when it does. No credits are used for that.
@@ -104,7 +104,7 @@ Ke78-sidorna är på svenska; en engelsk version behövs innan den engelska sida
 
 URL:er, kategori och åldersgräns som på engelska.
 
-**Beskrivning** (2 383 av 4 000 tecken):
+**Beskrivning** (2 473 av 4 000 tecken):
 
 > Skriv det du vill höra, eller fota boken. EarMind läser upp det i dina hörlurar, om och om igen.
 >
@@ -140,6 +140,7 @@ URL:er, kategori och åldersgräns som på engelska.
 > FLER LÄGEN (BETA)
 > EarMind har också lägen som lyssnar på vad du säger och svarar i örat, till exempel förhör med rösten. De frågar om lov och om mikrofonen innan de startar, och visar hela tiden att de lyssnar.
 > • Fråga du inte är beredd på? Säg dina egna ord, så svarar EarMind på frågan som just ställdes.
+> • Frågor och svar sparas i Historik på telefonen, där du kan söka och spela upp dem igen.
 >
 > NÄR VÅR SERVER INTE KAN SVARA
 > På iPhone med Apple Intelligence kan EarMind svara och rätta med telefonens egen modell i stället, och säger till när den gör det. Det kostar inga krediter.
@@ -153,7 +154,7 @@ URL:er, kategori och åldersgräns som på engelska.
 1. **Ke78 publicerad** (integritet och villkor), annars fungerar inte länkarna. Arons ja (TILL-ARON #30).
 2. **Produkterna** (tre paket och veckokortet) finns i App Store Connect och skickas med bygget; annars ser granskaren
    bara "Paketen kunde inte hämtas …". (TILL-ARON #27)
-3. **Byggnummer** på bilderna: se `kelly/appstore-shots-ke90`/RUN.txt (körning och commit). Ändras en skärm före
+3. **Byggnummer** på bilderna: se `kelly/appstore-shots-ke95`/RUN.txt (körning och commit). Ändras en skärm före
    inskickning: kör flödet igen och `appstore.py`.
 4. **Telefonens egen modell** (D258): Aron har provat den på sin iPhone; annars stryks stycket "WHEN OUR SERVER CAN'T
    ANSWER" / "NÄR VÅR SERVER INTE KAN SVARA" och punkt 9 i granskningsanteckningarna.
@@ -187,13 +188,13 @@ Mot `granskning.md` §1 och dagens main. [V] i koden eller beslut, [S] sett i Si
 | Egna ord aktiverar svaret på frågan som just ställdes (Ke90) | [V] A162; att orden hörs i riktigt tal **[O]** |
 | Telefonens egen modell svarar och rättar, säger till, inga krediter (Ke90) | [V] A159/A160 med låtsasmodell i CI; **[O]** på telefon, se §3 punkt 4 |
 | Spela in själv, gratis, ljudet stannar på telefonen (Ke90) | [V] A164/A165 (`OwnDeckStore` på telefonen, `PhoneVoice` = `AVSpeechSynthesizer` för det som inte är inspelat); [S] A165. Inspelning på telefon **[O]** |
+| Historik: söka och spela upp igen, på telefonen (Ke95) | [V] D269/D271; [S] `fable/screens-historik` (sök, ▶, "Saved only on this iPhone") |
 | **Står inte i texten:** låst skärm (D209), "andra hörlurar", att ljudet fungerar utan nät | medvetet utelämnat |
 
 ## Göra om bilderna
 ```
-gh workflow run kelly-appstore-shots.yml --ref main -f branch=kelly/appstore-shots-ke90 -f languages="en sv" -f screens="repSayCredits repSayOnCard repSayPicked repSayVoicesUser repSayCompressed repTextNew repPlayAnswer repShop repOwnDeck"
-gh workflow run kelly-appstore-shots.yml --ref main -f branch=kelly/appstore-shots-ke90b -f languages="en sv" -f screens="listeningActivation"
-python3 -I docs/appstore/_src/appstore.py <mapp med bilderna från båda grenarna> en
+gh workflow run kelly-appstore-shots.yml --ref main -f branch=kelly/appstore-shots-ke95 -f languages="en sv" -f screens="repSayCredits repSayOnCard repSayPicked repSayVoicesUser repSayCompressed repTextNew repPlayAnswer listeningActivation repShop repOwnDeck"
+python3 -I docs/appstore/_src/appstore.py <mapp med bilderna> en
 python3 -I docs/appstore/_src/appstore.py <mapp med bilderna> sv
 ```
 Utan fontargument används Inter Display (finns i molnet). Äldre bilder (Ke56–Ke80, `69-*.jpg`) finns i git-historiken.

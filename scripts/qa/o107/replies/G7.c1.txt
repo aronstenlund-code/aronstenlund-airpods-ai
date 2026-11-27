@@ -1,0 +1,1 @@
+{"points": {"E": 1, "C": 0, "A": 0}, "feedback": "Correct, O2 is oxygen, the gas plants release during photosynthesis. Next time you can simply say oxygen."}

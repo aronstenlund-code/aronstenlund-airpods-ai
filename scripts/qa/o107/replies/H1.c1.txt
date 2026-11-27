@@ -1,0 +1,1 @@
+Det här är en andragradsekvation, så fundera på hur du kan använda pq-formeln för att hitta de värden på x som gör vänsterledet lika med noll.

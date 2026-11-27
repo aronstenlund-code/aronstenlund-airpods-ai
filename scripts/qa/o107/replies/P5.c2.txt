@@ -1,0 +1,1 @@
+{"answers": [{"no": "1", "answer": "Subtrahera 5 från båda leden: 3x = 15. Dividera båda leden med 3: x = 5. Kontroll: 3 · 5 + 5 = 20. Svar: x = 5"}, {"no": "2", "answer": "Arean av en cirkel är A = πr². Med r = 4 cm blir A = π · 4² = 16π ≈ 50,3 cm². Svar: cirka 50,3 cm²"}]}

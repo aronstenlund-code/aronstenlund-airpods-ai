@@ -1,0 +1,1 @@
+{"points": {"E": 0, "C": 0, "A": 0}, "feedback": "Att kvadraten har fyra hörn räcker inte, eftersom alla fyrhörningar har det. Det som saknas är att både rektangeln och kvadraten har fyra räta vinklar."}

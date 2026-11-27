@@ -1,0 +1,1 @@
+{"points": {"E": 0, "C": 1, "A": 0}, "feedback": "Rätt. Svavelsyra har formeln H2SO4 med fyra syreatomer, och du motiverade det med antalet syre. H2SO3 med tre syreatomer är svavelsyrlighet, en annan och svagare syra."}

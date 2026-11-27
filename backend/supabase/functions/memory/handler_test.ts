@@ -107,12 +107,12 @@ Deno.test("D80 memory: accepts the app's body (turn.question / turn.answer / mod
   assert(llm.calls[0].user.includes("<a>Lycka till!</a>"));
 });
 
-Deno.test("D113 A5 (K34): address, debts and money are no longer stopped in code, ID numbers are; English 'I' turns are read", async () => {
+Deno.test("D113 A5 (K34): debts and money are not stopped in code, ID numbers are, and a street address is (D274); English 'I' turns are read", async () => {
   const r = parseMemoryReply(
     '{"add": ["Bor på Storgatan 5 i Umeå.", "Har skulder på 50 000 kronor.", "Personnummer 20090314-1234.", "Har prov i kemi fredag 13 november 2026."]}',
     [],
   );
-  assertEquals(r.add, ["Bor på Storgatan 5 i Umeå.", "Har skulder på 50 000 kronor.", "Har prov i kemi fredag 13 november 2026."]);
+  assertEquals(r.add, ["Har skulder på 50 000 kronor.", "Har prov i kemi fredag 13 november 2026."]);
   const { h, llm } = mk('{"add": ["Har prov i kemi fredag 13 november 2026."]}');
   const res = await h(post({ turn: { question: "I have a chemistry exam on Friday" } }));
   assertEquals((await res.json()).add, ["Har prov i kemi fredag 13 november 2026."]);

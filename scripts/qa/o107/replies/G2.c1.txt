@@ -1,0 +1,1 @@
+{"points": {"E": 1, "C": 0, "A": 0}, "feedback": "Du använde rätt metod, pi gånger radien i kvadrat, och det ger en E-poäng. För C-poängen behöver du ge ett mer exakt svar, avrunda till en decimal i stället för till hela tiotal."}

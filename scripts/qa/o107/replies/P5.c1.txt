@@ -1,0 +1,1 @@
+{"tasks": [{"no": "1", "text": "Lös ekvationen 3x + 5 = 20.", "points": {"E": 2, "C": 0, "A": 0}, "answer": "", "assessment": "", "topic": "linjära ekvationer"}, {"no": "2", "text": "Beräkna arean av en cirkel med radien 4 cm.", "points": {"E": 1, "C": 1, "A": 0}, "answer": "", "assessment": "", "topic": "cirkelns area"}], "boundaries": []}

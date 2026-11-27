@@ -1,0 +1,1 @@
+Läs av hur många miljoner som bor i Sverige och hur många som bor i Norge i tabellen, och räkna sedan ut skillnaden genom att dra Norges antal från Sveriges.

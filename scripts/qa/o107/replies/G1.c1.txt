@@ -1,0 +1,1 @@
+{"points": {"E": 2, "C": 0, "A": 0}, "feedback": "Bra, du visade metoden genom att först få 3x till 15 och sedan dela med 3, och svaret x är 5 är rätt. Det gav full poäng."}

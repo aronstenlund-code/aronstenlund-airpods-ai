@@ -6,7 +6,7 @@ import { readLimitedJson } from "../answer/validate.ts";
 import { sanitizeTagged } from "../answer/prompt.ts";
 import { finalNumber, isBareNumber } from "./spoken.ts";
 import type { LLMProvider, LLMRequest } from "../answer/llm/types.ts";
-import { practiceNav, spokenTask } from "./practice.ts";
+import { practiceNav, spokenTask, taskLanguage } from "./practice.ts";
 import { DEFAULT_DRILL_CONFIG, docxText, DRILL_LIMITS, DRILL_WEIGHT, type DrillConfig, drillConfigForTest, estimateDrillCost, fitLongWords, handleDrill, intIn, type MaterialStore, textLanguage, uploadUrls } from "./drill.ts";
 import { testModelPick } from "../_shared/testmode.ts";
 import { handleRead } from "./read.ts";
@@ -144,18 +144,18 @@ function monthResets(nowMs: number): string {
 }
 
 export const SYSTEM_PROMPT_EXAM_PARSE =
-  `You read a Swedish exam or practice exam (often a national exam, "nationellt prov", or a teacher's "övningsprov" or "instuderingsfrågor") and/or its assessment instructions ("bedömningsanvisningar"), given as page images or as text. Return ONLY a JSON object:
+  `You read an exam or practice exam, usually Swedish (often a national exam, "nationellt prov", or a teacher's "övningsprov" or "instuderingsfrågor") and/or its assessment instructions ("bedömningsanvisningar"), given as page images or as text. Return ONLY a JSON object:
 {"tasks": [{"no": "1a", "text": "...", "points": {"E": 1, "C": 0, "A": 0}, "answer": "...", "assessment": "...", "topic": "..."}], "boundaries": [{"grade": "E", "total": 15, "min_ca": 0, "min_a": 0}]}
 - tasks: every task you can see, in order. "no" as printed ("1", "3b"). "text": the full task text, word for word, including every value of a table (row by row, "Måndag: 12, Tisdag: 18, …") and a one-sentence description of a figure in square brackets. "points": the points per level as printed, e.g. (1/1/0) = E 1, C 1, A 0; 0 when not printed. "answer": the correct answer or model solution from the instructions ("" when not on these pages). "assessment": the scoring rules for the task from the instructions, word for word in substance ("" when not on these pages).
 - boundaries: the grade limits ("provbetygsgränser") when they are on these pages: total points for E, D, C, B, A and the extra conditions (min_ca = points on at least C level, min_a = A points); [] otherwise.
-- "topic": the concept the task tests, in one to three Swedish words ("procent", "linjära ekvationer", "franska revolutionen").
+- "topic": the concept the task tests, in one to three words in the exam's language ("procent", "linjära ekvationer", "franska revolutionen"; "photosynthesis" for an English exam).
 - A list of numbered questions without points: each question is a task, its points 0. Questions that are not numbered: number them 1, 2, 3 in order.
 - Copy numbers exactly. Never invent a task, an answer or a limit; leave a field empty when it is not in the material. No other text.`;
 
 /** K15: Lumen's own A-level answers for tasks the material gives no facit for. */
 export const SYSTEM_PROMPT_EXAM_SOLVE =
-  `You write the model answers for tasks of a Swedish practice exam that has no facit. You get <context> (subject and grade) and <tasks> (JSON: no, text, points). Return ONLY a JSON object {"answers": [{"no": "1", "answer": "..."}]} with one entry per task.
-- Each answer is what earns full points at A level for that grade, in Swedish: for a calculation the method in short steps and the final answer with its unit; for a question in words the key concepts, how they connect and one example, in two to four short sentences.
+  `You write the model answers for tasks of a practice exam that has no facit. You get <context> (subject and grade) and <tasks> (JSON: no, text, points). Return ONLY a JSON object {"answers": [{"no": "1", "answer": "..."}]} with one entry per task.
+- Each answer is what earns full points at A level for that grade, in the language of the tasks (Swedish unless the tasks are in English or another language; O107 F2): for a calculation the method in short steps and the final answer with its unit; for a question in words the key concepts, how they connect and one example, in two to four short sentences.
 - Work every calculation out carefully before you write it; the final number must be right. When a task cannot be answered from its text (a missing figure or table), say so in the answer in one sentence.
 No markdown, no other text.`;
 
@@ -246,7 +246,26 @@ export function lastNumber(text: string): number | null {
 }
 
 /** "beräkningar i kod": the student's final number against the correct one. Exact for whole numbers, two decimals otherwise. */
+/**
+ * O107 F1 (Oscar): a digit with a scale word is one number ("5 miljoner" = 5 000 000, "2,5 miljarder"), and "minus 4"
+ * is −4, before the spoken numbers are read.
+ */
+const SCALE: Record<string, number> = { tusen: 1e3, thousand: 1e3, miljon: 1e6, miljoner: 1e6, million: 1e6, millions: 1e6, miljard: 1e9, miljarder: 1e9, billion: 1e9, billions: 1e9 };
+export function numericText(t: string): string {
+  return t
+    .replace(/(\d+(?:[.,]\d+)?)\s*(tusen|thousand|miljon(?:er)?|millions?|miljard(?:er)?|billions?)(?![\p{L}])/giu, (_m, n: string, w: string) => {
+      const v = Number(n.replace(",", ".")) * SCALE[w.toLowerCase()];
+      return Number.isFinite(v) ? String(Math.round(v * 1000) / 1000) : _m;
+    })
+    .replace(/(?<![\p{L}])minus\s+(?=\d)/giu, "-")
+    .replace(/(\d)\.(?=\s|$)/gu, "$1"); // a number at the end of a sentence ("… med 5000000.")
+}
+
 export function numericCheck(correct: string, answer: string): { expected: number; given: number | null; equal: boolean } | null {
+  // O107 F1: several roots or values ("x = 2 eller x = −4", "x₁ = 3, x₂ = -1") are no single number: the scoring rules decide
+  if ((correct.match(/(?<![\p{L}])[a-zA-Z][₀-₉\d]?\s*=\s*[-−]?\d/gu) ?? []).length >= 2) return null;
+  correct = numericText(correct);
+  answer = numericText(answer);
   // an algebraic answer ("8 − x") is not a number: no numeric check, the scoring rules decide
   if (/[+\-−*/^]\s*\(?[a-zåäö]\)?\s*$|^\s*[a-zåäö]\s*[+\-−*/^]/i.test(correct.trim())) return null;
   // O104 G-a (Oscar): in a worded facit ("När en syra och en bas blandas …") "en"/"ett" is an article, not the number
@@ -677,10 +696,12 @@ export function createExamHandler(deps: ExamDeps) {
             }
           } catch { /* malformed: the tasks stay without an answer */ }
         }
+        // O107 F2: the frame's language for the whole exam (all its tasks together, or the app asking for English)
+        const examLang = taskLanguage(out.tasks.map((t) => t.text).join(" "));
         const tasks = out.tasks.map((t) => ({
           ...t,
           ...(t.answer && !t.answer_source ? { answer_source: "facit" as const } : {}),
-          spoken: spokenTask(t.no, t.text, t.points),
+          spoken: spokenTask(t.no, t.text, t.points, examLang),
         }));
         return json({ ...out, tasks, usage: { ...usage, est_cost_usd: usage.est_cost_usd + solveCost } });
       }

@@ -20,12 +20,12 @@
    },
    "anthropic_request": {
     "model": "claude-haiku-5-5",
-    "max_tokens": 5,
+    "max_tokens": 3,
     "stream": true,
     "system": [
      {
       "type": "text",
-      "text": "A study assistant listens in a room through the student's earphones and answers questions out loud. You get ONE utterance the microphone picked up. Is it a question someone would want the assistant to answer: a fact, school, language or general-knowledge question that has one answer anyone can give (\"Vilket år började första världskriget?\", \"Vad heter grundämnet med beteckningen Fe?\", \"What year did the Berlin Wall fall?\")? Answer \"nej\" when people are talking to each other: questions about each other, their plans, feelings, things or what someone said or thinks (\"Vad ska vi äta ikväll?\", \"Hur mår din mamma nu?\", \"Var lade du mina nycklar?\", \"Elin, har du tagit med dig boken?\", \"vad sa du?\", \"vad tror du?\"). Reply with one word: ja or nej.",
+      "text": "A study assistant listens in a room through the student's earphones and answers questions out loud. You get ONE utterance the microphone picked up. Is it a question someone would want the assistant to answer: a fact, school, language or general-knowledge question that has one answer anyone can give (\"När dog Gustav Vasa?\", \"Hur många kromosomer har en människa?\", \"What is the boiling point of water?\"), also when it is put to the room (\"vet du vad …\", \"kommer du ihåg vem …\")? Answer \"nej\" when people are talking to each other: questions about each other, their plans, feelings, belongings or what someone said or thinks (\"Ska vi gå hem nu?\", \"Hur var det på jobbet?\", \"Har du sett min laddare?\", \"Johan, kan du stänga fönstret?\", \"Vad menade du?\", \"Do you want some tea?\"). Reply with one word, ja or nej, and nothing else.",
       "cache_control": {
        "type": "ephemeral"
       }
@@ -78,7 +78,7 @@
     "messages": [
      {
       "role": "user",
-      "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<transcript>\nKompis: vi har bioprov på fredag.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:03 (svensk tid, Europe/Stockholm)</now>\n<fragment>Vad är ATP, vet du?</fragment>"
+      "content": "<language>sv</language>\n<situation note=\"use it to choose the level and the length: someone else talking = shorter and discreet; exam within two days = what the exam asks for first\">läge: fragor; natt</situation>\n<preferences note=\"learned from this user's own corrections: follow them in this answer\">\n- Andra pratar runt användaren: at most three short sentences, the core only, nothing the others need to hear\n</preferences>\n<transcript>\nKompis: vi har bioprov på fredag.\n</transcript>\n<now>fredag 27 november 2026, vecka 48, klockan 04:36 (svensk tid, Europe/Stockholm)</now>\n<fragment>Vad är ATP, vet du?</fragment>"
      }
     ],
     "output_config": {
@@ -106,11 +106,11 @@
      "model": "claude-haiku-5-5",
      "is_question": true,
      "confidence": 1,
-     "input_tokens": 3551,
+     "input_tokens": 3606,
      "output_tokens": 31,
-     "ttft_ms": 347,
-     "total_ms": 365,
-     "est_cost_usd": 0.0003706,
+     "ttft_ms": 274,
+     "total_ms": 286,
+     "est_cost_usd": 0.00037610000000000003,
      "status": "ok",
      "category": "övrigt",
      "persona": "tutor"
@@ -146,29 +146,29 @@
      "data": {
       "answered": true,
       "timing": {
-       "meta_ms": 347,
-       "ttft_ms": 347,
-       "llm_first_token_ms": 290,
-       "total_ms": 364
+       "meta_ms": 274,
+       "ttft_ms": 274,
+       "llm_first_token_ms": 236,
+       "total_ms": 285
       },
       "breakdown": {
        "auth_ms": 0,
-       "body_ms": 187,
-       "limits_ms": 289,
-       "llm_first_chunk_ms": 290,
+       "body_ms": 168,
+       "limits_ms": 235,
+       "llm_first_chunk_ms": 236,
        "direct": true,
        "cold": true,
        "answer_type": "fact",
        "continuation": null
       },
       "usage": {
-       "input_tokens": 3551,
+       "input_tokens": 3606,
        "output_tokens": 31,
        "cache_read_tokens": 0,
        "cache_write_tokens": 0,
        "web_searches": 0,
        "model": "claude-haiku-5-5",
-       "est_cost_usd": 0.0003706
+       "est_cost_usd": 0.00037610000000000003
       },
       "summary": null,
       "relation": null,
@@ -192,29 +192,29 @@
    "done": {
     "answered": true,
     "timing": {
-     "meta_ms": 347,
-     "ttft_ms": 347,
-     "llm_first_token_ms": 290,
-     "total_ms": 364
+     "meta_ms": 274,
+     "ttft_ms": 274,
+     "llm_first_token_ms": 236,
+     "total_ms": 285
     },
     "breakdown": {
      "auth_ms": 0,
-     "body_ms": 187,
-     "limits_ms": 289,
-     "llm_first_chunk_ms": 290,
+     "body_ms": 168,
+     "limits_ms": 235,
+     "llm_first_chunk_ms": 236,
      "direct": true,
      "cold": true,
      "answer_type": "fact",
      "continuation": null
     },
     "usage": {
-     "input_tokens": 3551,
+     "input_tokens": 3606,
      "output_tokens": 31,
      "cache_read_tokens": 0,
      "cache_write_tokens": 0,
      "web_searches": 0,
      "model": "claude-haiku-5-5",
-     "est_cost_usd": 0.0003706
+     "est_cost_usd": 0.00037610000000000003
     },
     "summary": null,
     "relation": null,

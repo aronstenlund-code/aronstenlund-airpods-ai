@@ -1,0 +1,1 @@
+{"points":{"E":1,"C":1,"A":0},"feedback":"Rätt, fem miljoner fler: du läste av tabellen och räknade 10,5 minus 5,5. Skriv gärna uträkningen också."}

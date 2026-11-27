@@ -1,0 +1,1 @@
+{"tasks": [{"no": "1", "text": "What is the past tense of 'go'?", "points": {"E": 1, "C": 0, "A": 0}, "answer": "", "assessment": "", "topic": "oregelbundna verb"}, {"no": "2", "text": "Write a sentence using 'although'.", "points": {"E": 0, "C": 1, "A": 0}, "answer": "", "assessment": "", "topic": "bisatser"}], "boundaries": []}
